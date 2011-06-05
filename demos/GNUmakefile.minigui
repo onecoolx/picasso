@@ -14,9 +14,7 @@ subwaymap_objs = platform.o subwaymap.o
 
 clock_objs = platform.o clock.o
 
-lake_objs = platform.o lake.o
-
-all: flowers.exe tiger.exe subwaymap.exe clock.exe lake.exe
+all: flowers.exe tiger.exe subwaymap.exe clock.exe
 
 flowers.exe : ${flowers_objs}
 	${CC} ${flowers_objs} ../src/libpicasso.a -o $@ ${INC} ${SYSTEM_LIBS}
@@ -30,9 +28,6 @@ subwaymap.exe : ${subwaymap_objs}
 clock.exe : ${clock_objs}
 	${CC} ${clock_objs} ../src/libpicasso.a -o $@ ${INC} ${SYSTEM_LIBS}
 
-lake.exe : ${lake_objs}
-	${CC} ${lake_objs} ../src/libpicasso.a -o $@ ${INC} ${SYSTEM_LIBS}
-
 flowers.o : flowers.c
 	${CC} ${CFLAGS} -c $< -o $@ ${INC}
 
@@ -43,9 +38,6 @@ subwaymap.o : subwaymap.c
 	${CC} ${CFLAGS} -c $< -o $@ ${INC}
 
 clock.o : clock.c
-	${CC} ${CFLAGS} -c $< -o $@ ${INC}
-
-lake.o : lake.c
 	${CC} ${CFLAGS} -c $< -o $@ ${INC}
 
 platform.o : platform_minigui.c
