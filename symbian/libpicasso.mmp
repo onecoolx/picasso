@@ -1,0 +1,77 @@
+//
+// Picasso project for Symbian platform
+//
+
+// Copyright 2013 by
+// Zhang JiPeng (onecoolx@gmail.com)
+
+TARGET		libpicasso.lib
+TARGETTYPE	lib
+
+SOURCEPATH	../src
+
+SOURCE \
+		picasso.cpp \
+		picasso_canvas.cpp \
+		picasso_matrix.cpp \
+		picasso_image.cpp \
+		picasso_pattern.cpp \
+		picasso_path.cpp \
+		picasso_gradient.cpp \
+		picasso_font.cpp \
+		picasso_gpc.cpp \
+		picasso_mask.cpp \
+		picasso_painter.cpp \
+		picasso_rendering_buffer.cpp \
+		picasso_raster_adapter.cpp
+
+SOURCEPATH	../src/core
+
+SOURCE \
+		fixedopt.cpp \
+		device.cpp \
+		curve.cpp \
+		graphic_path.cpp 
+
+SOURCEPATH	../src/gfx
+
+SOURCE \
+		gfx_device.cpp \
+		gfx_trans_affine.cpp \
+		gfx_painter.cpp \
+		gfx_raster_adapter.cpp \
+		gfx_gradient_adapter.cpp \
+		gfx_rendering_buffer.cpp \
+		gfx_mask_layer.cpp \
+		gfx_font_adapter_win32.cpp \
+		gfx_font_adapter_freetype2.cpp \
+		gfx_font_load_freetype2.cpp 
+
+SOURCEPATH	../src/gfx/lib
+
+SOURCE \
+		agg_arc.cpp \
+		agg_bezier_arc.cpp \
+		agg_bspline.cpp \
+		agg_curves.cpp \
+		agg_image_filters.cpp \
+		agg_line_aa_basics.cpp \
+		agg_line_profile_aa.cpp \
+		agg_rounded_rect.cpp \
+		agg_sqrt_tables.cpp \
+		agg_trans_affine.cpp \
+		agg_vcgen_bspline.cpp \
+		agg_vcgen_dash.cpp \
+		agg_vcgen_smooth_poly1.cpp \
+		agg_vcgen_stroke.cpp 
+
+
+USERINCLUDE	../src
+
+USERINCLUDE	../src/include
+
+USERINCLUDE	../src/gfx
+
+USERINCLUDE	../src/gfx/include
+
+SYSTEMINCLUDE   \epoc32\include \epoc32\include\stdapis \epoc32\include\stdapis\stlport

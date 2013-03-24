@@ -1,0 +1,23 @@
+//
+// Picasso project for Symbian platform
+//
+
+// Copyright 2010 by
+// Zhang JiPeng (onecoolx@gmail.com)
+
+TARGET			alpha.exe
+TARGETTYPE		exe
+UID			0x00000000 0x0CF49CC0
+
+SOURCEPATH ./
+SOURCE 		testSymbian.cpp
+
+SOURCEPATH ../test
+SOURCE		alpha_func.c
+
+USERINCLUDE ../test
+SYSTEMINCLUDE  /epoc32/include /epoc32/include/stdapis
+
+LIBRARY      euser.lib apparc.lib cone.lib eikcore.lib avkon.lib libpicasso.lib freetype.lib libc.lib
+
+EPOCSTACKSIZE 0x8000
