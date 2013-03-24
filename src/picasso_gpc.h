@@ -35,6 +35,9 @@ Copyright: (C) 1997-2004, Advanced Interfaces Group,
 #ifndef _PICASSO_GPC_H_
 #define _PICASSO_GPC_H_
 
+#include "common.h"
+#include "math_type.h"
+
 namespace picasso {
 
 typedef enum                        /* Set operation type                */
@@ -47,8 +50,8 @@ typedef enum                        /* Set operation type                */
 
 typedef struct                      /* Polygon vertex structure          */
 {
-  float              x;            /* Vertex x component                */
-  float              y;            /* vertex y component                */
+  scalar              x;            /* Vertex x component                */
+  scalar              y;            /* vertex y component                */
 } gpc_vertex;
 
 typedef struct                      /* Vertex list structure             */

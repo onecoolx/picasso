@@ -2,10 +2,10 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT(picasso, 1.2, onecoolx@gmail.com)
+AC_INIT(picasso, 2.0, onecoolx@gmail.com)
 
-VERSION_MAJOR=1
-VERSION_MINOR=2
+VERSION_MAJOR=2
+VERSION_MINOR=0
 VERSION_MICRO=0
 VERSION=$VERSION_MAJOR.$VERSION_MINOR.$VERSION_MICRO
 AC_SUBST(VERSION_MAJOR)

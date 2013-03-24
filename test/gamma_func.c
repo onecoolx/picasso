@@ -13,6 +13,18 @@ static ps_pattern * pt;
 static double gamma = 1.0;
 static step = 0;
 static ps_bool anti = False;
+
+struct dash_data 
+{
+	double s;
+	double d[4];
+} dashs[] = {
+	{1, {1, 1, 1, 1}},
+	{0.5, {1.5, 3, 1.5, 3}},
+	{2, {4, 1, 4, 1}},
+	{1, {0.5, 1.5, 1, 2}},
+};
+
 void draw_test (int id, ps_context* gc)
 {
 	ps_color col = {0, 0, 1, 1};
@@ -28,25 +40,33 @@ void draw_test (int id, ps_context* gc)
 
 	ps_set_line_width(gc, 1);
 	ps_set_stroke_color(gc, &sol);
+
+//	ps_set_line_dash(gc, dashs[0].s, dashs[0].d, 4);
 	ps_set_source_color(gc, &col);
 	ps_arc (gc, &cp, 10 , 0, 6.28, True);
 	ps_stroke(gc);
 
+//	ps_set_line_dash(gc, dashs[1].s, dashs[1].d, 4);
 	ps_tangent_arc(gc, &br, 0, 1.254);
 	ps_stroke(gc);
-
 	ps_move_to(gc, &sc);
 	ps_bezier_curve_to(gc, &p[0], &p[1], &p[2]);
+
 	ps_arc (gc, &cp, 100 , 0.785, 3.140, False);
+	
 	ps_bezier_curve_to(gc, &p[0], &p[1], &p[2]);
+	
+//	ps_set_line_dash(gc, dashs[2].s, dashs[2].d, 4);
 	ps_quad_curve_to(gc, &p[1], &p[2]);
 	ps_stroke(gc);
 
+//	ps_set_line_dash(gc, dashs[3].s, dashs[3].d, 4);
 	ps_rectangle(gc, &cr);
 	ps_rounded_rect(gc, &gt, 45.2, 35.2, 25.2, 25.2, 35.2, 55.2, 65.2, 85.2);
 	ps_ellipse(gc, &gr);
 	ps_stroke(gc);
 
+//	ps_reset_line_dash(gc);
 	ps_move_to(gc, &s);
 	ps_line_to(gc, &e);
 	ps_stroke(gc);

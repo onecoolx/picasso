@@ -1,13 +1,13 @@
 /**
  * \file picasso.h
  * \author Zhang Ji Peng <onecoolx@gmail.com>
- * \date 2010/12/18
+ * \date 2013/1/26
  *
  * This file includes all interfaces of Picasso
  *
  \verbatim
 
-    Copyright (C) 2008 ~ 2010  Zhang Ji Peng
+    Copyright (C) 2008 ~ 2013  Zhang Ji Peng
 
     All rights reserved.
 
@@ -20,7 +20,7 @@
 #define _PICASSO_H_
 
 #ifdef DLL_EXPORT
-#ifdef WIN32
+#if defined(WIN32) || defined(WINCE)
 #ifdef EXPORT
 #define PICAPI  __stdcall
 #define PEXPORT __declspec(dllexport) 
@@ -271,6 +271,10 @@ typedef enum _ps_status {
      * Not support this feature. 
      */
     STATUS_NOT_SUPPORT,
+	/**
+	 * Device is not ready.
+	 */
+	STATUS_DEVICE_ERROR,
     /** 
      * Unknown error. 
      */
@@ -851,7 +855,7 @@ PEXPORT ps_pattern* PICAPI ps_pattern_create_image(const ps_image* img, ps_wrap_
 													ps_wrap_type y_wrap, const ps_matrix* transform);
 
 /**
- * \fn void PICAPI ps_pattern_transform(ps_pattern* pattern, const ps_matrix* matrix)
+ * \fn void ps_pattern_transform(ps_pattern* pattern, const ps_matrix* matrix)
  * \brief Transform the pattern object.
  * 
  * \param pattern  Pointer to an existing pattern object.
@@ -973,7 +977,7 @@ PEXPORT ps_gradient* PICAPI ps_gradient_create_conic(ps_gradient_spread spread,
 									const ps_point* origin, double sangle);
 
 /**
- * \fn void PICAPI ps_gradient_transform(ps_gradient* gradient, const ps_matrix* matrix)
+ * \fn void ps_gradient_transform(ps_gradient* gradient, const ps_matrix* matrix)
  * \brief Transform the gradient object.
  * 
  * \param gradient Pointer to an existing gradient object.
@@ -1813,24 +1817,6 @@ typedef enum _ps_charset {
 }ps_charset;
 
 /**
- * \brief Font output type
- */
-typedef enum _ps_font_type {
-	/** 
-	 * Smooth font.
-	 */
-	FONT_TYPE_SMOOTH,
-	/**
-	 * Mono font.
-	 */
-	FONT_TYPE_MONO,
-	/**
-	 * OutLine font.
-	 */
-	FONT_TYPE_STROKE,
-}ps_font_type;
-
-/**
  * \brief Font weight
  */
 typedef enum _ps_font_weight {
@@ -1853,13 +1839,11 @@ typedef enum _ps_font_weight {
 }ps_font_weight;
 
 /**
- * \fn ps_font* ps_font_create(const char* name, ps_charset charset, 
- * 								ps_font_type type, double size, int weight, ps_bool italic)
+ * \fn ps_font* ps_font_create(const char* name, ps_charset charset, double size, int weight, ps_bool italic)
  * \brief Create a font object using the given parameters.
  *
  * \param name     The font family name. 
  * \param charset  The charset type. 
- * \param type     The font rendering type.
  * \param size     The font size.
  * \param weight   The font weight.
  * \param italic   Whether or not it is italic.
@@ -1871,8 +1855,7 @@ typedef enum _ps_font_weight {
  *
  * \sa ps_font_create_copy, ps_font_ref, ps_font_unref
  */
-PEXPORT ps_font* PICAPI ps_font_create(const char* name, ps_charset charset, ps_font_type type, 
-																double size, int weight, ps_bool italic);
+PEXPORT ps_font* PICAPI ps_font_create(const char* name, ps_charset charset, double size, int weight, ps_bool italic);
 
 /**
  * \fn ps_font* ps_font_create_copy(const ps_font* font)
@@ -1923,7 +1906,7 @@ PEXPORT void PICAPI ps_font_unref(ps_font* font);
  * \param size  Size for the font.
  *
  * \sa ps_font_set_weight, ps_font_set_italic, ps_font_set_charset, 
- * 	   ps_font_set_type, ps_font_set_hint, ps_font_set_flip
+ * 	   ps_font_set_hint, ps_font_set_flip
  */
 PEXPORT void PICAPI ps_font_set_size(ps_font* font, double size);
 
@@ -1935,7 +1918,7 @@ PEXPORT void PICAPI ps_font_set_size(ps_font* font, double size);
  * \param weight  Weight for the font.
  *
  * \sa ps_font_set_size, ps_font_set_italic, ps_font_set_charset, 
- * 	   ps_font_set_type, ps_font_set_hint, ps_font_set_flip
+ * 	   ps_font_set_hint, ps_font_set_flip
  */
 PEXPORT void PICAPI ps_font_set_weight(ps_font* font, int weight);
 
@@ -1947,7 +1930,7 @@ PEXPORT void PICAPI ps_font_set_weight(ps_font* font, int weight);
  * \param italic  Whether or not italic for the font. (False default)
  *
  * \sa ps_font_set_size, ps_font_set_weight, ps_font_set_charset, 
- * 	   ps_font_set_type, ps_font_set_hint, ps_font_set_flip
+ * 	   ps_font_set_hint, ps_font_set_flip
  */
 PEXPORT void PICAPI ps_font_set_italic(ps_font* font, ps_bool italic);
 
@@ -1959,21 +1942,9 @@ PEXPORT void PICAPI ps_font_set_italic(ps_font* font, ps_bool italic);
  * \param charset Charset for the font.
  *
  * \sa ps_font_set_size, ps_font_set_weight, ps_font_set_italic, 
- * 	   ps_font_set_type, ps_font_set_hint, ps_font_set_flip
+ * 	   ps_font_set_hint, ps_font_set_flip
  */
 PEXPORT void PICAPI ps_font_set_charset(ps_font* font, ps_charset charset);
-
-/**
- * \fn void ps_font_set_type(ps_font* font, ps_font_type type)
- * \brief Set rendering type for a font object.
- *
- * \param font  Pointer to an existing font object.
- * \param type 	Rendering type for the font.
- *
- * \sa ps_font_set_size, ps_font_set_weight, ps_font_set_italic, 
- * 	   ps_font_set_charset, ps_font_set_hint, ps_font_set_flip
- */
-PEXPORT void PICAPI ps_font_set_type(ps_font* font, ps_font_type type);
 
 /**
  * \fn void ps_font_set_hint(ps_font* font, ps_bool hint)
@@ -1983,7 +1954,7 @@ PEXPORT void PICAPI ps_font_set_type(ps_font* font, ps_font_type type);
  * \param hint 	Whether or not auto hiting for the font. (True default)
  *
  * \sa ps_font_set_size, ps_font_set_weight, ps_font_set_italic, 
- * 	   ps_font_set_charset, ps_font_set_type, ps_font_set_flip
+ * 	   ps_font_set_charset, ps_font_set_flip
  */
 PEXPORT void PICAPI ps_font_set_hint(ps_font* font, ps_bool hint);
 
@@ -1995,7 +1966,7 @@ PEXPORT void PICAPI ps_font_set_hint(ps_font* font, ps_bool hint);
  * \param flip 	Whether or not flip y for the font. (False default)
  *
  * \sa ps_font_set_size, ps_font_set_weight, ps_font_set_italic, 
- * 	   ps_font_set_charset, ps_font_set_type, ps_font_set_hint
+ * 	   ps_font_set_charset, ps_font_set_hint
  */
 PEXPORT void PICAPI ps_font_set_flip(ps_font* font, ps_bool flip);
 
@@ -2022,7 +1993,7 @@ typedef struct _ps_font_info {
 	/**
 	 * UnitsEm, the number of glyph space units per em.
 	 */
-	unsigned unitsEM;
+	unsigned int unitsEM;
 }ps_font_info;
 
 /**
@@ -2034,7 +2005,7 @@ typedef struct _ps_font_info {
  *
  * \return  True if is success, otherwise False.
  *
- * \sa ps_set_font, ps_set_font_antialias
+ * \sa ps_set_font
  */
 PEXPORT ps_bool PICAPI ps_get_font_info(ps_context* ctx, ps_font_info* info);
 
@@ -2050,20 +2021,9 @@ PEXPORT ps_bool PICAPI ps_get_font_info(ps_context* ctx, ps_font_info* info);
  *
  * \note To get extended error information, call \a ps_last_status.
  *
- * \sa ps_get_font_info, ps_set_font_antialias
+ * \sa ps_get_font_info
  */
 PEXPORT ps_font* PICAPI ps_set_font(ps_context* ctx, const ps_font* font);
-
-/**
- * \fn void ps_set_font_antialias(ps_context* ctx, ps_bool antialias)
- * \brief Set whether the font allowed be anti-aliasing.
- *
- * \param ctx 		Pointer to an existing context object.
- * \param antialias Boolean value whether anti-aliasing is allowed. (True default)
- *
- * \sa ps_get_font_info, ps_set_font
- */
-PEXPORT void PICAPI ps_set_font_antialias(ps_context* ctx, ps_bool antialias);
 
 /** @} end of font functions*/
 
@@ -2071,6 +2031,24 @@ PEXPORT void PICAPI ps_set_font_antialias(ps_context* ctx, ps_bool antialias);
  * \defgroup text Text
  * @{
  */
+
+/**
+ * \brief Text rendering type
+ */
+typedef enum _ps_text_type {
+	/** 
+	 * Smooth rendering.
+	 */
+	TEXT_TYPE_SMOOTH,
+	/**
+	 * Mono rendering.
+	 */
+	TEXT_TYPE_MONO,
+	/**
+	 * OutLine rendering.
+	 */
+	TEXT_TYPE_STROKE,
+}ps_text_type;
 
 /**
  * \fn ps_size ps_get_text_extent(ps_context* ctx, const void* text, unsigned int length)
@@ -2096,7 +2074,8 @@ PEXPORT ps_size PICAPI ps_get_text_extent(ps_context* ctx, const void* text, uns
  * \param ctx 	Pointer to an existing context object.
  * \param color	The text fill color.		  
  *
- * \sa ps_set_text_stroke_color
+ * \sa ps_transform, ps_set_text_matrix, ps_set_text_antialias,
+ *     ps_set_text_stroke_color, ps_set_text_render_type, ps_set_text_kerning
  */
 PEXPORT void PICAPI ps_set_text_color(ps_context* ctx, const ps_color * color);
 
@@ -2107,7 +2086,8 @@ PEXPORT void PICAPI ps_set_text_color(ps_context* ctx, const ps_color * color);
  * \param ctx 	Pointer to an existing context object.
  * \param color	The text stroke color.		  
  *
- * \sa ps_set_text_color
+ * \sa ps_set_text_color, ps_set_text_matrix, ps_set_text_antialias,
+ *     ps_text_transform, ps_set_text_render_type, ps_set_text_kerning
  */
 PEXPORT void PICAPI ps_set_text_stroke_color(ps_context* ctx, const ps_color * color);
 
@@ -2120,12 +2100,13 @@ PEXPORT void PICAPI ps_set_text_stroke_color(ps_context* ctx, const ps_color * c
  * \param ctx 	  Pointer to an existing context object.
  * \param matrix  Pointer to an existing matrix object.
  *
- * \sa ps_set_text_matrix
+ * \sa ps_set_text_matrix, ps_set_text_antialias, ps_set_text_color, 
+ *     ps_set_text_stroke_color, ps_set_text_render_type, ps_set_text_kerning
  */
 PEXPORT void PICAPI ps_text_transform(ps_context* ctx, const ps_matrix* matrix);
 
 /**
- * \fn void PICAPI ps_set_text_matrix(ps_context* ctx, const ps_matrix* matrix)
+ * \fn void ps_set_text_matrix(ps_context* ctx, const ps_matrix* matrix)
  * \brief Set text matrix for the graphic context.
  * 		  The text matrix is not a part of graphic state -- saving and restoring has no 
  * 		  effect on the text matrix. The text matrix is an attribute of graphic context.
@@ -2133,9 +2114,46 @@ PEXPORT void PICAPI ps_text_transform(ps_context* ctx, const ps_matrix* matrix);
  * \param ctx 	  Pointer to an existing context object.
  * \param matrix  Pointer to an existing matrix object.
  *
- * \sa ps_text_transform
+ * \sa ps_text_transform, ps_set_text_antialias, ps_set_text_color, 
+ *     ps_set_text_stroke_color, ps_set_text_render_type, ps_set_text_kerning
  */
 PEXPORT void PICAPI ps_set_text_matrix(ps_context* ctx, const ps_matrix* matrix);
+
+/**
+ * \fn void ps_set_text_render_type(ps_context* ctx, ps_text_type type)
+ * \brief Set rendering type for text.
+ *
+ * \param ctx 	  Pointer to an existing context object.
+ * \param type 	  Rendering type for the text.
+ *
+ * \sa ps_set_text_matrix, ps_set_text_color, ps_set_text_stroke_color, 
+ *     ps_set_text_antialias, ps_text_transform, ps_set_text_kerning
+ */
+PEXPORT void PICAPI ps_set_text_render_type(ps_context* ctx, ps_text_type type);
+
+/**
+ * \fn void ps_set_text_antialias(ps_context* ctx, ps_bool antialias)
+ * \brief Set whether the font allowed be anti-aliasing.
+ *
+ * \param ctx 		Pointer to an existing context object.
+ * \param antialias Boolean value whether anti-aliasing is allowed. (True default)
+ *
+ * \sa ps_set_text_matrix, ps_set_text_color, ps_set_text_stroke_color, 
+ *     ps_set_text_render_type, ps_text_transform, ps_set_text_kerning
+ */
+PEXPORT void PICAPI ps_set_text_antialias(ps_context* ctx, ps_bool antialias);
+
+/**
+ * \fn void ps_set_text_kerning(ps_context* ctx, ps_bool kerning)
+ * \brief Set whether the font auto kerning is allowed.
+ *
+ * \param ctx 		Pointer to an existing context object.
+ * \param kerning   Boolean value whether auto kerning is allowed. (True default)
+ *
+ * \sa ps_set_text_matrix, ps_set_text_color, ps_set_text_stroke_color, 
+ *     ps_set_text_render_type, ps_text_transform, ps_set_text_antialias
+ */
+PEXPORT void PICAPI ps_set_text_kerning(ps_context* ctx, ps_bool kerning);
 
 /**
  * \fn void ps_text_out_length(ps_context* ctx, double x, double y, const char* text, unsigned int length)
@@ -2247,7 +2265,7 @@ PEXPORT ps_bool PICAPI ps_get_glyph(ps_context* ctx, int ch, ps_glyph* glyph);
  * \param ctx 	  Pointer to an existing context object.
  * \param x       The X-coordinate at which to draw the glyphs.	
  * \param y 	  The Y-coordinate at which to draw the glyphs.	
- * \param text 	  The array of glyphs.
+ * \param glyphs  The array of glyphs.
  * \param length  The length of array.	 
  *
  * \sa ps_get_path_from_glyph
@@ -2755,7 +2773,7 @@ PEXPORT void PICAPI ps_matrix_transform_path(const ps_matrix* matrix, ps_path* p
 /** @} end of matrix functions*/
 
 /**
- * \defgroup curve Curve
+ * \defgroup geometry Geometry
  * @{
  */
 
@@ -2931,7 +2949,7 @@ PEXPORT void PICAPI ps_rounded_rect(ps_context* ctx, const ps_rect* rect, double
  */
 PEXPORT void PICAPI ps_ellipse(ps_context* ctx, const ps_rect* rect);
 
-/** @} end of curve functions*/
+/** @} end of geometry functions*/
 
 /**
  * \defgroup path Path
@@ -3226,7 +3244,7 @@ PEXPORT void PICAPI ps_path_add_line(ps_path* path, const ps_point* p1, const ps
 
 /**
  * \fn void ps_path_add_arc(ps_path* path, const ps_point* cp, double radius, double sangle,
- *                                                                double eangle, ps_bool cloclwise)
+ *                                                                double eangle, ps_bool clockwise)
  * \brief Add a arc to the path.
  *
  * \param path      Pointer to an existing path object.
@@ -3239,7 +3257,7 @@ PEXPORT void PICAPI ps_path_add_line(ps_path* path, const ps_point* p1, const ps
  * \sa ps_path_add_line, ps_path_add_rect, ps_path_add_ellipse, ps_path_add_rounded_rect
  */
 PEXPORT void PICAPI ps_path_add_arc(ps_path* path, const ps_point* cp, double radius, double sangle, 
-                                                                   double eangle, ps_bool cloclwise);
+                                                                   double eangle, ps_bool clockwise);
 
 /**
  * \fn void ps_path_add_rect(ps_path* path, const ps_rect* rect)
@@ -3306,7 +3324,7 @@ typedef enum _ps_path_op {
 }ps_path_operation;
 
 /**
- * \fn void PICAPI ps_path_clipping(ps_path* result, ps_path_operation op, const ps_path* a, const ps_path* b)
+ * \fn void ps_path_clipping(ps_path* result, ps_path_operation op, const ps_path* a, const ps_path* b)
  *
  * \brief Clipping two path with the operation and get the result path.
  *

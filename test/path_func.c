@@ -37,6 +37,8 @@ void init_context (ps_context* gc, ps_canvas* cs)
 	ps_rect rc = {20, 20, 100, 80};
 	ps_rect rc2 = {80, 20, 100, 80};
 
+    ps_point pp = {21 ,25};
+
 	float version = (float)ps_version() / 10000;
 	fprintf(stderr, "picasso version %.2f\n", version);
 
@@ -47,6 +49,11 @@ void init_context (ps_context* gc, ps_canvas* cs)
 	ps_path_add_rounded_rect(pa, &rc, 5, 5, 5, 5, 5, 5, 5, 5);
 
 	ps_path_add_ellipse(pb, &rc2);
+
+    if (ps_path_contains(pa, &pp, FILL_RULE_WINDING))
+        fprintf (stderr, "point in path!\n");
+    else
+        fprintf (stderr, "point not in path!\n");
 
     pm = ps_matrix_create();
     ps_translate(gc, 20, 35);

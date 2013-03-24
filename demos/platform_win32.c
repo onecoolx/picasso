@@ -70,7 +70,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 	wcex.hCursor		= LoadCursor(NULL, IDC_ARROW);
 	wcex.hbrBackground	= (HBRUSH)(COLOR_WINDOW+1);
 	wcex.lpszMenuName	= 0;
-	wcex.lpszClassName	= "AppDemo";
+	wcex.lpszClassName	= L"AppDemo";
 	wcex.hIconSm		= 0;
 	
 	return RegisterClassEx(&wcex);
@@ -80,7 +80,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
 	hInst = hInstance;
-	hmWnd = CreateWindow("AppDemo", "Picasso Demos", WS_OVERLAPPEDWINDOW,
+	hmWnd = CreateWindow(L"AppDemo", L"Picasso Demos", WS_OVERLAPPEDWINDOW,
 		0, 0, width, height, NULL, NULL, hInstance, NULL);
 	if (!hmWnd)
 	{
@@ -250,7 +250,7 @@ picture* load_picture(const char* name)
 	sprintf(pname, "%s.bmp", name);
 
 	nb = (BITMAP*)malloc(sizeof(BITMAP)); 
-	hbmp = (HBITMAP)LoadImage(hInst, pname, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_DEFAULTCOLOR);
+	hbmp = (HBITMAP)LoadImageA(hInst, pname, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_DEFAULTCOLOR);
 	GetObject(hbmp, sizeof(BITMAP), (LPVOID)nb);
 
 	size = nb->bmWidthBytes * nb->bmHeight; 

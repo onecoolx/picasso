@@ -1,114 +1,261 @@
 /* Picasso - a vector graphics library
  * 
- * Copyright (C) 2008 Zhang Ji Peng
+ * Copyright (C) 2013 Zhang Ji Peng
  * Contact: onecoolx@gmail.com
  */
-#include <new>
-#include <stdlib.h>
 
-#include "pconfig.h"
+#include <stdio.h>
+#include "common.h"
+#include "device.h"
+#include "graphic_path.h"
+#include "geometry.h"
+#include "convert.h"
+
 #include "picasso.h"
-#include "picasso_utils.h"
-#include "picasso_p.h"
-
-using namespace picasso;
+#include "picasso_global.h"
+#include "picasso_painter.h"
+#include "picasso_font.h"
+#include "picasso_objects.h"
 
 namespace picasso {
 
-#define GLYPH_STABLE_ADVANCE_WIDTH(g) \
-	(((g->bounds.x2-g->bounds.x1-1) <= (g->advance_x/2) \
-	 && (g->advance_x>8) && ((g->bounds.x2-g->bounds.x1)>2)) \
-	 ? (((g->bounds.x2 > g->advance_x/2) && (g->bounds.x2 < g->advance_x)) ? (g->bounds.x2+1) : \
-	 (g->advance_x/2+1)) : (g->advance_x))
+font_engine::font_engine(unsigned int max_fonts)
+    : m_fonts(pod_allocator<font_adapter*>::allocate(max_fonts))
+    , m_current(0)
+    , m_max_fonts(max_fonts)
+    , m_num_fonts(0)
+    , m_signature(0)
+    , m_stamp_change(false)
+    , m_antialias(false)
+{
+    memset(m_fonts, 0, sizeof(font_adapter*) * max_fonts);
+    m_signature = (char*)mem_calloc(1, MAX_FONT_NAME_LENGTH + 128);
+}
+
+font_engine::~font_engine()
+{
+    if (m_signature)
+        mem_free(m_signature);
+
+    for (unsigned int i = 0; i < m_num_fonts; ++i) 
+        delete m_fonts[i];
+    
+    pod_allocator<font_adapter*>::deallocate(m_fonts, m_max_fonts);
+}
+
+void font_engine::set_antialias(bool b)
+{
+    if (m_antialias != b) {
+        m_antialias = b;
+        m_stamp_change = true;
+    }
+}
+
+void font_engine::set_transform(const trans_affine& mtx) 
+{
+    if (m_affine != mtx){
+        m_affine = mtx;
+        m_stamp_change = true;
+    }
+}
+
+int font_engine::find_font(const char* font_signature)
+{
+    for (unsigned int i = 0; i < m_num_fonts; i++) {
+        if(strcmp(m_fonts[i]->signature(), font_signature) == 0) 
+            return (int)i;
+    }
+    return -1;
+}
+
+bool font_engine::create_font(const font_desc& desc)
+{
+    if (!font_adapter::create_signature(desc, m_affine, m_antialias, m_signature))
+        return false;
+
+    if (m_current)
+        m_current->deactive();
+
+    int idx = find_font(m_signature);
+    if (idx >= 0) {
+        m_current = m_fonts[idx];
+    } else {
+        if (m_num_fonts >= m_max_fonts) {
+            delete m_fonts[0];
+            memcpy (m_fonts, m_fonts + 1, (m_max_fonts - 1) * sizeof(font_adapter*)); 
+            m_num_fonts = m_max_fonts - 1;
+        }
+
+        m_fonts[m_num_fonts] = new font_adapter(desc, m_signature, m_affine, m_antialias);
+        m_current = m_fonts[m_num_fonts];
+        m_num_fonts++;
+    }
+
+    m_current->active();
+    m_stamp_change = false;
+    return true;
+}
+
+bool font_engine::initialize(void)
+{
+    return platform_font_init();
+}
+
+void font_engine::shutdown(void)
+{
+    platform_font_shutdown();
+}
+
+// font adapter
+bool font_adapter::create_signature(const font_desc& desc, const trans_affine& mtx, bool anti, char* recv_sig)
+{
+    if (!recv_sig)
+        return false; //out of memory.
+
+    recv_sig[0] = 0;
+    
+    sprintf(recv_sig,
+            "%s,%d,%d,%d,%d,%d,%d,%d-",
+            desc.name(),
+            desc.charset(),
+            (int)desc.height(),
+            (int)desc.weight(),
+            (int)desc.italic(),
+            (int)desc.hint(),
+            (int)desc.flip_y(),
+            (int)anti);
+
+    char mbuf[64] = {0};
+    sprintf(mbuf,
+            "%08X%08X%08X%08X%08X%08X",
+            fxmath::dbl_to_fixed(SCALAR_TO_DBL(mtx.sx())), 
+            fxmath::dbl_to_fixed(SCALAR_TO_DBL(mtx.sy())), 
+            fxmath::dbl_to_fixed(SCALAR_TO_DBL(mtx.shx())), 
+            fxmath::dbl_to_fixed(SCALAR_TO_DBL(mtx.shy())), 
+            fxmath::dbl_to_fixed(SCALAR_TO_DBL(mtx.tx())), 
+            fxmath::dbl_to_fixed(SCALAR_TO_DBL(mtx.ty())));
+
+    strcat(recv_sig, mbuf);
+    return true;
+}
+
+void font_adapter::active(void)
+{
+    m_impl->active(); 
+    m_prev_glyph = m_last_glyph = 0;
+}
+
+void font_adapter::deactive(void)
+{
+    m_prev_glyph = m_last_glyph = 0;
+    m_impl->deactive();
+}
+
+void font_adapter::add_kerning(scalar* x, scalar* y)
+{
+    if (m_prev_glyph && m_last_glyph)
+        m_impl->add_kerning(m_prev_glyph->index, m_last_glyph->index, x, y);
+}
+
+const glyph* font_adapter::get_glyph(unsigned int code)
+{
+    const glyph* gl = m_cache->find_glyph(code);
+    if (gl) {
+        m_prev_glyph = m_last_glyph;
+        m_last_glyph = gl;
+        return gl;
+    } else {
+        if (m_impl->prepare_glyph(code)) {
+            m_prev_glyph = m_last_glyph;
+            gl = m_cache->cache_glyph(code,
+                                 m_impl->glyph_index(),
+                                 m_impl->data_size(),
+                                 m_impl->data_type(),
+                                 m_impl->bounds(),
+                                 m_impl->height(),
+                                 m_impl->advance_x(),
+                                 m_impl->advance_y());  
+            m_impl->write_glyph_to(gl->data);
+            m_last_glyph = gl;
+            return gl;
+        }
+    }
+    return 0;
+}
+
+bool font_adapter::generate_raster(const glyph* g, scalar x, scalar y)
+{
+    if (g) {
+        if (g->type == glyph_type_mono) {
+            m_mono_storage.serialize_from(g->data, g->data_size, x, y);
+            return true;
+        } else {
+            unsigned int count = 0;
+            unsigned int offset = sizeof(unsigned int);
+            memcpy(&count, g->data, offset);
+            m_path_adaptor.serialize_from(count, g->data+offset, g->data_size-offset);
+            m_path_adaptor.translate(x, y);
+        }
+        return true;
+    } else
+        return false;
+}
 
 ps_font* _default_font(void)
 {
-	ps_font* f = (ps_font*)malloc(sizeof(ps_font));
-	if (f) {
-		f->refcount = 1;
-		memset(f->name, 0, MAX_FONT_NAME_LENGTH);
-		strcpy(f->name, "Arial");
-		f->charset = CHARSET_ANSI;
-		f->type = FONT_TYPE_STROKE;
-		f->resolution = 0;
-		f->height = 12;
-		f->width = 0;
-		f->weight = 400;
-		f->italic = false;
-		f->hint = true;
-		f->flip_y = true;
-		f->kerning = true;
-		global_status = STATUS_SUCCEED;
-		return f;
-	} else  {
-        	global_status = STATUS_OUT_OF_MEMORY;
-		return 0;
-	}
+    static ps_font* font = 0;
+    if (!font) {
+        ps_font* f = (ps_font*)mem_malloc(sizeof(ps_font));
+        if (f) {
+            f->refcount = 1;
+            new ((void*)&(f->desc)) font_desc("Arial");
+            f->desc.set_charset(CHARSET_ANSI);
+            f->desc.set_height(12);
+            f->desc.set_weight(400);
+            f->desc.set_italic(false);
+            f->desc.set_hint(true);
+            f->desc.set_flip_y(true);
+            font = f;
+        }
+    }
+    return font;
 }
 
-static inline void set_font_attr(ps_context* ctx, ps_font* f)
-{
-	//font attrib set
-	ctx->fonts->resolution(f->resolution);
-	ctx->fonts->hinting(f->hint);
-	ctx->fonts->height(f->height);
-	ctx->fonts->width(f->width);
-	ctx->fonts->weight(f->weight);
-	ctx->fonts->italic(f->italic);
-	ctx->fonts->flip_y(f->flip_y);
-	ctx->fonts->char_set(f->charset);
 }
 
-static bool inline is_same_font(ps_context* ctx)
+static bool inline create_device_font(ps_context* ctx)
 {
-	return (ctx->fonts->resolution() == ctx->state->font->resolution) &&
-		   (ctx->fonts->hinting() == ctx->state->font->hint) &&
-		   (ctx->fonts->height() == ctx->state->font->height) &&
-		   (ctx->fonts->width() == ctx->state->font->width) &&
-		   (ctx->fonts->weight() == ctx->state->font->weight) &&
-		   (ctx->fonts->italic() == ctx->state->font->italic) &&
-		   (ctx->fonts->flip_y() == ctx->state->font->flip_y) &&
-		   (ctx->fonts->char_set() == ctx->state->font->charset) &&
-		   (ctx->fonts->antialias() == (ctx->font_antialias ? true : false)) &&
-		   (strcmp(ctx->fonts->name(), ctx->state->font->name) == 0);
-}
-
-static bool inline create_device_font(ps_context* ctx, trans_affine& mtx)
-{
-	ctx->fonts->transform(mtx);
-	if (is_same_font(ctx))
-		return true;
-
-	glyph_rendering gren = glyph_ren_outline;
-	set_font_attr(ctx, ctx->state->font);
+	ctx->fonts->set_transform(ctx->text_matrix);
 	ctx->fonts->set_antialias(ctx->font_antialias ? true : false);
 
-	if (ctx->fonts->create_font(ctx->state->font->name, gren))
+    // same with current font.
+	if (!ctx->fonts->stamp_change() && ctx->fonts->current_font()
+        && (ctx->fonts->current_font()->desc() == ctx->state->font->desc))
 		return true;
-	else
+
+	if (ctx->fonts->create_font(ctx->state->font->desc)) {
+		return true;
+    } else
 		return false;
 }
 
-static inline void _add_glyph_to_path(ps_context* ctx, font_cache_manager<font_engine>& f, path_storage& path)	
+static inline void _add_glyph_to_path(ps_context* ctx, picasso::graphic_path& path)	
 {
-	typedef font_cache_manager<font_engine> font_cache_type;
-	typedef conv_curve<font_cache_type::path_adaptor_type> conv_curve_type;
-	conv_curve_type curve(f.path_adaptor());
+    picasso::conv_curve curve(ctx->fonts->current_font()->path_adaptor());
 
-	float x = 0;
-	float y = 0;
+	scalar x = 0;
+	scalar y = 0;
 
 	while (true) {
-		unsigned cmd = curve.vertex(&x, &y);
-		if (cmd == path_cmd_stop) {
-			path.add_vertex(x, y, path_cmd_end_poly);
-			break;
-		} else 
-			path.add_vertex(x, y, cmd);
+		unsigned int cmd = curve.vertex(&x, &y);
+        if (picasso::is_stop(cmd)) {
+            path.add_vertex(x, y, picasso::path_cmd_end_poly|picasso::path_flags_close);
+            break;
+        } else 
+            path.add_vertex(x, y, cmd);
 	}
 }
 
-}
 
 #ifdef __cplusplus
 extern "C" {
@@ -116,26 +263,26 @@ extern "C" {
 
 ps_font* PICAPI ps_font_create_copy(const ps_font* font)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return 0;
+	}
+
 	if (!font) {
 		global_status = STATUS_INVALID_ARGUMENT;
 		return 0;
 	}
 
-	ps_font* f = (ps_font*)malloc(sizeof(ps_font));
+	ps_font* f = (ps_font*)mem_malloc(sizeof(ps_font));
 	if (f) {
 		f->refcount = 1;
-		memset(f->name, 0, MAX_FONT_NAME_LENGTH);
-		strncpy(f->name, font->name, MAX_FONT_NAME_LENGTH-1);
-		f->charset = font->charset;
-		f->type = font->type;
-		f->resolution = font->resolution;
-		f->height = font->height;
-		f->width = font->width;
-		f->weight = font->weight;
-		f->italic = font->italic;
-		f->hint = font->hint;
-		f->flip_y = font->flip_y;
-		f->kerning = font->kerning;
+        new ((void*)&(f->desc)) picasso::font_desc(font->desc.name());
+        f->desc.set_charset(font->desc.charset());
+        f->desc.set_height(font->desc.height());
+        f->desc.set_weight(font->desc.weight());
+        f->desc.set_italic(font->desc.italic());
+        f->desc.set_hint(font->desc.hint());
+        f->desc.set_flip_y(font->desc.flip_y());
 		global_status = STATUS_SUCCEED;
 		return f;
 	} else {
@@ -144,28 +291,28 @@ ps_font* PICAPI ps_font_create_copy(const ps_font* font)
 	}
 }
 
-ps_font* PICAPI ps_font_create(const char* name, ps_charset c, ps_font_type t, double s, int w, ps_bool i)
+ps_font* PICAPI ps_font_create(const char* name, ps_charset c, double s, int w, ps_bool i)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return 0;
+	}
+
 	if (!name) {
 		global_status = STATUS_INVALID_ARGUMENT;
 		return 0;
 	}
 
-	ps_font* f = (ps_font*)malloc(sizeof(ps_font));
+	ps_font* f = (ps_font*)mem_malloc(sizeof(ps_font));
 	if (f) {
 		f->refcount = 1;
-		memset(f->name, 0, MAX_FONT_NAME_LENGTH);
-		strncpy(f->name, name, MAX_FONT_NAME_LENGTH-1);
-		f->charset = c;
-		f->type = t;
-		f->resolution = 0;
-		f->height = (float)s;
-		f->width = 0;
-		f->weight = w;
-		f->italic = i ? true : false;
-		f->hint = true;
-		f->flip_y = true;
-		f->kerning = true;
+        new ((void*)&(f->desc)) picasso::font_desc(name);
+        f->desc.set_charset(c);
+        f->desc.set_height(DBL_TO_SCALAR(s));
+        f->desc.set_weight(DBL_TO_SCALAR(w));
+        f->desc.set_italic(i ? true: false);
+        f->desc.set_hint(true);
+        f->desc.set_flip_y(true);
 		global_status = STATUS_SUCCEED;
 		return f;
 	} else {
@@ -176,6 +323,11 @@ ps_font* PICAPI ps_font_create(const char* name, ps_charset c, ps_font_type t, d
 
 ps_font* PICAPI ps_font_ref(ps_font* f)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return 0;
+	}
+
 	if (!f) {
 		global_status = STATUS_INVALID_ARGUMENT;
 		return 0;
@@ -188,6 +340,11 @@ ps_font* PICAPI ps_font_ref(ps_font* f)
 
 void PICAPI ps_font_unref(ps_font* f)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
 	if (!f) {
 		global_status = STATUS_INVALID_ARGUMENT;
 		return;
@@ -195,174 +352,182 @@ void PICAPI ps_font_unref(ps_font* f)
 
 	f->refcount--;
 	if (f->refcount <= 0) {
-		free(f);
+		mem_free(f);
 	}
 	global_status = STATUS_SUCCEED;
 }
 
 void PICAPI ps_font_set_size(ps_font* f, double s)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
 	if (!f || s < 0.0) {
 		global_status = STATUS_INVALID_ARGUMENT;
 		return;
 	}
 	
-	f->height = (float)s;
+	f->desc.set_height(DBL_TO_SCALAR(s));
 	global_status = STATUS_SUCCEED;
 }
 
 void PICAPI ps_font_set_weight(ps_font* f, int w)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
 	if (!f || w < 100 || w > 900) {
 		global_status = STATUS_INVALID_ARGUMENT;
 		return;
 	}
 
-	f->weight = w;
+	f->desc.set_weight(DBL_TO_SCALAR(w));
 	global_status = STATUS_SUCCEED;
 }
 
 void PICAPI ps_font_set_italic(ps_font* f, ps_bool it)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
 	if (!f) {
 		global_status = STATUS_INVALID_ARGUMENT;
 		return;
 	}
 
-	f->italic = it ? true : false;
+	f->desc.set_italic(it ? true : false);
 	global_status = STATUS_SUCCEED;
 }
 
 void PICAPI ps_font_set_hint(ps_font* f, ps_bool h)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
 	if (!f) {
 		global_status = STATUS_INVALID_ARGUMENT;
 		return;
 	}
 
-	f->hint = h ? true : false;
+	f->desc.set_hint(h ? true : false);
 	global_status = STATUS_SUCCEED;
 }
 
 void PICAPI ps_font_set_flip(ps_font* f, ps_bool l)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
 	if (!f) {
 		global_status = STATUS_INVALID_ARGUMENT;
 		return;
 	}
 	
-	f->flip_y = l ? false : true;
+    //Note: FIXME:this will change next time.
+    f->desc.set_flip_y(l ? false : true);
 	global_status = STATUS_SUCCEED;
 }
 
 void PICAPI ps_font_set_charset(ps_font* f, ps_charset c)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
 	if (!f) {
 		global_status = STATUS_INVALID_ARGUMENT;
 		return;
 	}
 
-	f->charset = c;
-	global_status = STATUS_SUCCEED;
-}
-
-void PICAPI ps_font_set_type(ps_font* f, ps_font_type t)
-{
-	if (!f) {
-		global_status = STATUS_INVALID_ARGUMENT;
-		return;
-	}
-
-	f->type = t;
+	f->desc.set_charset(c);
 	global_status = STATUS_SUCCEED;
 }
 
 void PICAPI ps_text_out_length(ps_context* ctx, double x, double y, const char* text, unsigned int len)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
 	if (!ctx || !text || !len) {
 		global_status = STATUS_INVALID_ARGUMENT;
 		return;
 	}
 
-	float gx = 0;
-	float gy = 0;
+	scalar gx = DBL_TO_SCALAR(x);
+	scalar gy = DBL_TO_SCALAR(y);
 
-	float tx = (float)x;
-	float ty = (float)y;
+	if (create_device_font(ctx)) {
+		gy += ctx->fonts->current_font()->ascent();
 
-	trans_affine mtx = ctx->text_matrix;
-
-	mtx.translation(&gx, &gy);
-	mtx.transform(&tx, &ty);
-	mtx *= trans_affine_translation(-gx, -gy);
-
-	if (create_device_font(ctx, mtx)) {
-
-		ty += ctx->fonts->ascent();
 		const char* p = text;
-
 		while (*p && len) {
-
-			const glyph_cache* glyph = ctx->cache->glyph(*p);
+            register char c = *p;
+			const picasso::glyph* glyph = ctx->fonts->current_font()->get_glyph(c);
 			if (glyph) {
-				if (ctx->state->font->kerning)
-					ctx->cache->add_kerning(&tx, &ty);
-				ctx->cache->init_embedded_adaptors(glyph, tx, ty);
+                if (ctx->font_kerning)
+                    ctx->fonts->current_font()->add_kerning(&gx, &gy);
+                if (ctx->fonts->current_font()->generate_raster(glyph, gx, gy)) 
+                   ctx->canvas->p->render_glyph(ctx->state, ctx->raster, ctx->fonts->current_font(), glyph->type);
 
-				ctx->canvas->p->render_font_cache(ctx, *(ctx->cache), glyph->data_type);
-
-				tx += GLYPH_STABLE_ADVANCE_WIDTH(glyph);
-				ty += glyph->advance_y;
+				gx += glyph->advance_x;
+				gy += glyph->advance_y;
 			}
 			len--;
 			p++;
 		}
-		ctx->canvas->p->render_font_raster(ctx);
+		ctx->canvas->p->render_glyphs_raster(ctx->state, ctx->raster, ctx->font_render_type);
 	}
 	global_status = STATUS_SUCCEED;
 }
 
 void PICAPI ps_wide_text_out_length(ps_context* ctx, double x, double y, const ps_uchar16* text, unsigned int len)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
 	if (!ctx || !text || !len) {
 		global_status = STATUS_INVALID_ARGUMENT;
 		return;
 	}
 
-	float gx = 0;
-	float gy = 0;
+	scalar gx = DBL_TO_SCALAR(x);
+	scalar gy = DBL_TO_SCALAR(y);
 
-	float tx = (float)x;
-	float ty = (float)y;
+	if (create_device_font(ctx)) {
+		gy += ctx->fonts->current_font()->ascent();
 
-	trans_affine mtx = ctx->text_matrix;
-
-	mtx.translation(&gx, &gy);
-	mtx.transform(&tx, &ty);
-	mtx *= trans_affine_translation(-gx, -gy);
-
-	if (create_device_font(ctx, mtx)) {
-
-		ty += ctx->fonts->ascent();
 		const ps_uchar16* p = text;
-
 		while (*p && len) {
-
-			const glyph_cache* glyph = ctx->cache->glyph(*p);
+            register ps_uchar16 c = *p;
+			const picasso::glyph* glyph = ctx->fonts->current_font()->get_glyph(c);
 			if (glyph) {
-				if (ctx->state->font->kerning)
-					ctx->cache->add_kerning(&tx, &ty);
-				ctx->cache->init_embedded_adaptors(glyph, tx, ty);
+                if (ctx->font_kerning)
+                    ctx->fonts->current_font()->add_kerning(&gx, &gy);
+                if (ctx->fonts->current_font()->generate_raster(glyph, gx, gy)) 
+                   ctx->canvas->p->render_glyph(ctx->state, ctx->raster, ctx->fonts->current_font(), glyph->type);
 
-				ctx->canvas->p->render_font_cache(ctx, *(ctx->cache), glyph->data_type);
-
-				tx += GLYPH_STABLE_ADVANCE_WIDTH(glyph);
-				ty += glyph->advance_y;
+				gx += glyph->advance_x;
+				gy += glyph->advance_y;
 			}
 			len--;
 			p++;
 		}
-		ctx->canvas->p->render_font_raster(ctx);
+		ctx->canvas->p->render_glyphs_raster(ctx->state, ctx->raster, ctx->font_render_type);
 	}
 	global_status = STATUS_SUCCEED;
 }
@@ -370,79 +535,75 @@ void PICAPI ps_wide_text_out_length(ps_context* ctx, double x, double y, const p
 void PICAPI ps_draw_text(ps_context* ctx, const ps_rect* area, const void* text, unsigned int len,
 																ps_draw_text_type type, ps_text_align align)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
 	if (!ctx || !area || !text || !len) {
 		global_status = STATUS_INVALID_ARGUMENT;
 		return;
 	}
 
-	trans_affine mtx = ctx->text_matrix;
+	scalar x = DBL_TO_SCALAR(area->x);
+	scalar y = DBL_TO_SCALAR(area->y);
 
-	float gx = 0;
-	float gy = 0;
+	picasso::graphic_path text_path;
 
-	float x = (float)area->x;
-	float y = (float)area->y;
-
-	mtx.translation(&gx, &gy);
-	mtx *= trans_affine_translation(-gx, -gy);
-
-	path_storage text_path;
-
-	if (create_device_font(ctx, mtx)) {
+    ps_bool text_antialias = ctx->font_antialias;
+    ctx->font_antialias = True;
+	if (create_device_font(ctx)) {
 
 		// align layout
-		float w = 0, h = 0;
-		const glyph_cache* glyph_test = 0;
+		scalar w = 0, h = 0;
+		const picasso::glyph* glyph_test = 0;
 
-		if (ctx->state->font->charset == CHARSET_ANSI) {
+		if (ctx->state->font->desc.charset() == CHARSET_ANSI) {
 			const char* p = (const char*)text;
-			glyph_test = ctx->cache->glyph(*p);
+			glyph_test = ctx->fonts->current_font()->get_glyph(*p);
 		} else {
 			const ps_uchar16* p = (const ps_uchar16*)text;
-			glyph_test = ctx->cache->glyph(*p);
+			glyph_test = ctx->fonts->current_font()->get_glyph(*p);
 		}
 
 		if (glyph_test) {
-			w = GLYPH_STABLE_ADVANCE_WIDTH(glyph_test);
-			h = glyph_test->advance_y;
+			w = glyph_test->advance_x;
+			h = glyph_test->height; //Note: advance_y always 0.
 		}
 
-		w *= len; //note: estimate
+		w *= len; //FIXME: estimate!
 
 		if (align & TEXT_ALIGN_LEFT)
-			x = (float)area->x;
+			x = DBL_TO_SCALAR(area->x);
 		else if (align & TEXT_ALIGN_RIGHT)
-			x = (float)(area->x + (area->w - w));
+			x = DBL_TO_SCALAR(area->x + (area->w - w));
 		else
-			x = (float)(area->x + (area->w - w)/2);
+			x = DBL_TO_SCALAR(area->x + (area->w - w)/2);
 
 		if (align & TEXT_ALIGN_TOP) {
-			y = (float)area->y;
-			y += ctx->fonts->ascent();
+			y = DBL_TO_SCALAR(area->y);
+			y += ctx->fonts->current_font()->ascent();
 		} else if (align & TEXT_ALIGN_BOTTOM) {
-			y = (float)(area->y + (area->h - h));
-			y -= ctx->fonts->descent();
+			y = DBL_TO_SCALAR(area->y + (area->h - SCALAR_TO_DBL(h)));
+			y -= ctx->fonts->current_font()->descent();
 		} else {
-			y = (float)(area->y + (area->h - h)/2);
-			y += (ctx->fonts->ascent() - ctx->fonts->descent())/2;
+			y = DBL_TO_SCALAR(area->y + (area->h - SCALAR_TO_DBL(h))/2);
+			y += (ctx->fonts->current_font()->ascent() - ctx->fonts->current_font()->descent())/2;
 		}
 
 		// draw the text
-
-		if (ctx->state->font->charset == CHARSET_ANSI) {
+		if (ctx->state->font->desc.charset() == CHARSET_ANSI) {
 			const char* p = (const char*)text;
-
 			while (*p && len) {
-
-				const glyph_cache* glyph = ctx->cache->glyph(*p);
+                register char c = *p;
+				const picasso::glyph* glyph = ctx->fonts->current_font()->get_glyph(c);
 				if (glyph) {
-					if (ctx->state->font->kerning)
-						ctx->cache->add_kerning(&x,&y);
-					ctx->cache->init_embedded_adaptors(glyph, x, y);
+                    if (ctx->font_kerning)
+                        ctx->fonts->current_font()->add_kerning(&x, &y);
+                    if (ctx->fonts->current_font()->generate_raster(glyph, x, y))
+                        _add_glyph_to_path(ctx, text_path);
 
-					_add_glyph_to_path(ctx, *(ctx->cache), text_path);
-
-					x += GLYPH_STABLE_ADVANCE_WIDTH(glyph);
+					x += glyph->advance_x;
 					y += glyph->advance_y;
 				}
 				len--;
@@ -450,19 +611,16 @@ void PICAPI ps_draw_text(ps_context* ctx, const ps_rect* area, const void* text,
 			}
 		} else {
 			const ps_uchar16* p = (const ps_uchar16*)text;
-
 			while (*p && len) {
-
-				const glyph_cache* glyph = ctx->cache->glyph(*p);
+                register ps_uchar16 c = *p;
+				const picasso::glyph* glyph = ctx->fonts->current_font()->get_glyph(c);
 				if (glyph) {
-					if (ctx->state->font->kerning)
-						ctx->cache->add_kerning(&x,&y);
+                    if (ctx->font_kerning)
+                        ctx->fonts->current_font()->add_kerning(&x, &y);
+                    if (ctx->fonts->current_font()->generate_raster(glyph, x, y))
+                        _add_glyph_to_path(ctx, text_path);
 
-					ctx->cache->init_embedded_adaptors(glyph, x, y);
-
-					_add_glyph_to_path(ctx, *(ctx->cache), text_path);
-
-					x += GLYPH_STABLE_ADVANCE_WIDTH(glyph);
+					x += glyph->advance_x;
 					y += glyph->advance_y;
 				}
 				len--;
@@ -470,29 +628,32 @@ void PICAPI ps_draw_text(ps_context* ctx, const ps_rect* area, const void* text,
 			}
 		}
 	}
+
+	text_path.close_polygon();
+    ctx->font_antialias = text_antialias;
+
 	//store the old color
-	rgba bc = ctx->state->brush.color;
-	rgba pc = ctx->state->pen.color;
+	picasso::rgba bc = ctx->state->brush.color;
+	picasso::rgba pc = ctx->state->pen.color;
 
 	ctx->state->brush.color = ctx->state->font_fcolor;
 	ctx->state->pen.color = ctx->state->font_scolor;
 
 	switch (type) {
 		case DRAW_TEXT_FILL:
-			ctx->canvas->p->render_shadow(ctx, text_path, true, false);
-    		ctx->canvas->p->render_fill(ctx, text_path);
-    		ctx->canvas->p->render_blur(ctx);
+			ctx->canvas->p->render_shadow(ctx->state, text_path, true, false);
+    		ctx->canvas->p->render_fill(ctx->state, ctx->raster, text_path);
+    		ctx->canvas->p->render_blur(ctx->state);
 			break;
 		case DRAW_TEXT_STROKE:
-			ctx->canvas->p->render_shadow(ctx, text_path, false, true);
-    		ctx->canvas->p->render_stroke(ctx, text_path);
-    		ctx->canvas->p->render_blur(ctx);
+			ctx->canvas->p->render_shadow(ctx->state, text_path, false, true);
+    		ctx->canvas->p->render_stroke(ctx->state, ctx->raster, text_path);
+    		ctx->canvas->p->render_blur(ctx->state);
 			break;
 		case DRAW_TEXT_BOTH:
-			ctx->canvas->p->render_shadow(ctx, text_path, true, true);
-    		ctx->canvas->p->render_fill(ctx, text_path);
-    		ctx->canvas->p->render_stroke(ctx, text_path);
-    		ctx->canvas->p->render_blur(ctx);
+			ctx->canvas->p->render_shadow(ctx->state, text_path, true, true);
+    		ctx->canvas->p->render_paint(ctx->state, ctx->raster, text_path);
+    		ctx->canvas->p->render_blur(ctx->state);
 			break;
 	}
 
@@ -506,124 +667,92 @@ ps_size PICAPI ps_get_text_extent(ps_context* ctx, const void* text, unsigned in
 {
 	ps_size size = {0 , 0};
 
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return size;
+	}
+
 	if (!ctx || !text || !len) {
 		global_status = STATUS_INVALID_ARGUMENT;
 		return size;
 	}
 
-	float width = 0;
-	float height = 0;
+	scalar width = 0;
 
-	trans_affine mtx;
+	if (create_device_font(ctx)) {
 
-	if (create_device_font(ctx, mtx)) {
-
-		if (ctx->state->font->charset == CHARSET_ANSI) {
+		if (ctx->state->font->desc.charset() == CHARSET_ANSI) {
 			const char* p = (const char*)text;
-
 			while (*p && len) {
-
-				const glyph_cache* glyph = ctx->cache->glyph(*p);
-				if (glyph) {
-					if (ctx->state->font->kerning)
-						ctx->cache->add_kerning(&width, &height);
-					width += GLYPH_STABLE_ADVANCE_WIDTH(glyph);
-				}
+                register char c = *p;
+				const picasso::glyph* glyph = ctx->fonts->current_font()->get_glyph(c);
+				if (glyph) 
+					width += glyph->advance_x;
+				
 				len--;
 				p++;
 			}
 		} else {
 			const ps_uchar16* p = (const ps_uchar16*)text;
-
 			while (*p && len) {
-
-				const glyph_cache* glyph = ctx->cache->glyph(*p);
-				if (glyph) {
-					if (ctx->state->font->kerning)
-						ctx->cache->add_kerning(&width, &height);
-					width += GLYPH_STABLE_ADVANCE_WIDTH(glyph);
-				}
+                register ps_uchar16 c = *p;
+				const picasso::glyph* glyph = ctx->fonts->current_font()->get_glyph(c);
+				if (glyph) 
+					width += glyph->advance_x;
+				
 				len--;
 				p++;
 			}
 		}
 	}
 
-	size.h = ctx->state->font->height;
-	size.w = width;
+	size.h = SCALAR_TO_DBL(ctx->fonts->current_font()->height());
+	size.w = SCALAR_TO_DBL(width);
 	global_status = STATUS_SUCCEED;
 	return size;
 }
 
-ps_bool PICAPI ps_get_glyph(ps_context* ctx, int ch, ps_glyph* g)
-{
-	if (!ctx || !g) {
-		global_status = STATUS_INVALID_ARGUMENT;
-		return False;
-	}
-
-	trans_affine mtx;
-	if (create_device_font(ctx, mtx)) {
-
-		if (ctx->state->font->charset == CHARSET_ANSI) {
-			char c = (char)ch;
-			g->glyph = (void*)ctx->cache->glyph(c);
-		} else {
-			ps_uchar16 c = (ps_uchar16)ch;
-			g->glyph = (void*)ctx->cache->glyph(c);
-		}
-		global_status = STATUS_SUCCEED;
-		return True;
-	} else {
-		g->glyph = NULL;
-		global_status = STATUS_SUCCEED;
-		return False;
-	}
-}
-
 void PICAPI ps_show_glyphs(ps_context* ctx, double x, double y,  ps_glyph* g, unsigned int len)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
 	if (!ctx || !g || !len) {
 		global_status = STATUS_INVALID_ARGUMENT;
 		return;
 	}
 
-	trans_affine mtx = ctx->text_matrix;
+	scalar gx = DBL_TO_SCALAR(x);
+	scalar gy = DBL_TO_SCALAR(y);
 
-	float gx = 0;
-	float gy = 0;
-
-	float tx = (float)x;
-	float ty = (float)y;
-
-	mtx.translation(&gx, &gy);
-	mtx.transform(&tx, &ty);
-	mtx *= trans_affine_translation(-gx, -gy);
-	
-	if (create_device_font(ctx, mtx)) {
-
-		ty += ctx->fonts->ascent();
-
+	if (create_device_font(ctx)) {
+        gy += ctx->fonts->current_font()->ascent();
 		for (unsigned int i = 0; i < len; i++) {
-			const glyph_cache* glyph = (const glyph_cache*)g[i].glyph;
-			if (glyph) {
-				if (ctx->state->font->kerning)
-					ctx->cache->add_kerning(&tx, &ty);
-				ctx->cache->init_embedded_adaptors(glyph, tx, ty);
+			const picasso::glyph* glyph = (const picasso::glyph*)g[i].glyph;
+            if (glyph) {
+                if (ctx->font_kerning)
+                    ctx->fonts->current_font()->add_kerning(&gx, &gy);
+                if (ctx->fonts->current_font()->generate_raster(glyph, gx, gy)) 
+                   ctx->canvas->p->render_glyph(ctx->state, ctx->raster, ctx->fonts->current_font(), glyph->type);
 
-				ctx->canvas->p->render_font_cache(ctx, *(ctx->cache), glyph->data_type);
-
-				tx += GLYPH_STABLE_ADVANCE_WIDTH(glyph);
-				ty += glyph->advance_y;
-			}
+                gx += glyph->advance_x;
+                gy += glyph->advance_y;
+            }
 		}
-		ctx->canvas->p->render_font_raster(ctx);
+		ctx->canvas->p->render_glyphs_raster(ctx->state, ctx->raster, ctx->font_render_type);
 	}
 	global_status = STATUS_SUCCEED;
 }
 
 ps_bool PICAPI ps_get_path_from_glyph(ps_context* ctx, const ps_glyph* g, ps_path* p)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return False;
+	}
+
 	if (!ctx || !g || !p) {
 		global_status = STATUS_INVALID_ARGUMENT;
 		return False;
@@ -631,41 +760,67 @@ ps_bool PICAPI ps_get_path_from_glyph(ps_context* ctx, const ps_glyph* g, ps_pat
 
 	p->path.remove_all(); // clear the path
 
-	trans_affine mtx = ctx->text_matrix;
+    scalar x = 0;
+    scalar y = 0;
 
-	float gx = 0;
-	float gy = 0;
-	float x = 0;
-	float y = 0;
+    ps_bool text_antialias = ctx->font_antialias;
+    ctx->font_antialias = True;
+	if (create_device_font(ctx)) {
+		const picasso::glyph* gly = (const picasso::glyph*)g->glyph;
+		if (gly) {
+            if (gly->type != picasso::glyph_type_outline)
+                gly = ctx->fonts->current_font()->get_glyph(gly->code);
 
-	mtx.translation(&gx, &gy);
-	mtx.transform(&x, &y);
-	mtx *= trans_affine_translation(-gx, -gy);
-	
-	if (create_device_font(ctx, mtx)) {
-
-		y += ctx->fonts->ascent();
-
-		const glyph_cache* glyph = (const glyph_cache*)g->glyph;
-		if (glyph) {
-			if (ctx->state->font->kerning)
-				ctx->cache->add_kerning(&x, &y);
-
-			ctx->cache->init_embedded_adaptors(glyph, x, y);
-
-			_add_glyph_to_path(ctx, *(ctx->cache), p->path);
+            if (gly) { // Must be outline glyph for path.
+                y += ctx->fonts->current_font()->ascent();
+                if (ctx->fonts->current_font()->generate_raster(gly, x, y))
+                    _add_glyph_to_path(ctx, p->path);
+            }
 		}
 	}
 
-
 	p->path.close_polygon();
+    ctx->font_antialias = text_antialias;
 	global_status = STATUS_SUCCEED;
 	return True;
+}
+
+ps_bool PICAPI ps_get_glyph(ps_context* ctx, int ch, ps_glyph* g)
+{
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return False;
+	}
+
+	if (!ctx || !g) {
+		global_status = STATUS_INVALID_ARGUMENT;
+		return False;
+	}
+
+	if (create_device_font(ctx)) {
+		if (ctx->state->font->desc.charset() == CHARSET_ANSI) {
+			char c = (char)ch;
+			g->glyph = (void*)ctx->fonts->current_font()->get_glyph(c);
+		} else {
+			ps_uchar16 c = (ps_uchar16)ch;
+			g->glyph = (void*)ctx->fonts->current_font()->get_glyph(c);
+		}
+		global_status = STATUS_SUCCEED;
+		return True;
+	} else {
+		g->glyph = NULL;
+		global_status = STATUS_UNKNOWN_ERROR;
+		return False;
+	}
 }
 
 ps_size PICAPI ps_glyph_get_extent(const ps_glyph* g)
 {
 	ps_size size = {0 , 0};
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return size;
+	}
 
 	if (!g) {
 		global_status = STATUS_INVALID_ARGUMENT;
@@ -673,9 +828,9 @@ ps_size PICAPI ps_glyph_get_extent(const ps_glyph* g)
 	}
 
 	if (g->glyph) {
-		const glyph_cache* glyph = (const glyph_cache*)g->glyph;
-		size.w = GLYPH_STABLE_ADVANCE_WIDTH(glyph);
-		size.h = glyph->height;
+		const picasso::glyph* gp = static_cast<const picasso::glyph*>(g->glyph);
+		size.w = SCALAR_TO_DBL(gp->advance_x);
+		size.h = SCALAR_TO_DBL(gp->height); //Note: advance_y is 0
 	}
 	global_status = STATUS_SUCCEED;
 	return size;
@@ -683,26 +838,37 @@ ps_size PICAPI ps_glyph_get_extent(const ps_glyph* g)
 
 ps_bool PICAPI ps_get_font_info(ps_context* ctx, ps_font_info* info)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return False;
+	}
+
 	if (!ctx || !info) {
 		global_status = STATUS_INVALID_ARGUMENT;
 		return False;
 	}
 
-	trans_affine mtx;
-	if (create_device_font(ctx, mtx)) {
-		info->size = ctx->fonts->height();
-		info->ascent = ctx->fonts->ascent();
-		info->descent = ctx->fonts->descent();
-		info->leading = ctx->fonts->leading();
-		info->unitsEM = ctx->fonts->units_per_em();
+	if (create_device_font(ctx)) {
+		info->size = SCALAR_TO_DBL(ctx->fonts->current_font()->height());
+		info->ascent = SCALAR_TO_DBL(ctx->fonts->current_font()->ascent());
+		info->descent = SCALAR_TO_DBL(ctx->fonts->current_font()->descent());
+		info->leading = SCALAR_TO_DBL(ctx->fonts->current_font()->leading());
+		info->unitsEM = SCALAR_TO_INT(ctx->fonts->current_font()->units_per_em());
+        global_status = STATUS_SUCCEED;
+        return True;
 	}
 
-	global_status = STATUS_SUCCEED;
-	return True;
+    global_status = STATUS_UNKNOWN_ERROR;
+    return False;
 }
 
 ps_font* PICAPI ps_set_font(ps_context* ctx, const ps_font* f)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return 0;
+	}
+
 	if (!ctx || !f) {
 		global_status = STATUS_INVALID_ARGUMENT;
 		return 0;
@@ -715,8 +881,45 @@ ps_font* PICAPI ps_set_font(ps_context* ctx, const ps_font* f)
 	return old;
 }
 
-void PICAPI ps_set_font_antialias(ps_context* ctx, ps_bool a)
+void PICAPI ps_set_text_render_type(ps_context* ctx, ps_text_type type)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
+	if (!ctx) {
+		global_status = STATUS_INVALID_ARGUMENT;
+		return;
+	}
+
+	ctx->font_render_type = type;
+	global_status = STATUS_SUCCEED;
+}
+
+void PICAPI ps_set_text_kerning(ps_context* ctx, ps_bool k)
+{
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
+	if (!ctx) {
+		global_status = STATUS_INVALID_ARGUMENT;
+		return;
+	}
+	
+	ctx->font_kerning = k;
+	global_status = STATUS_SUCCEED;
+}
+
+void PICAPI ps_set_text_antialias(ps_context* ctx, ps_bool a)
+{
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
 	if (!ctx) {
 		global_status = STATUS_INVALID_ARGUMENT;
 		return;
@@ -728,28 +931,45 @@ void PICAPI ps_set_font_antialias(ps_context* ctx, ps_bool a)
 
 void PICAPI ps_set_text_color(ps_context* ctx, const ps_color* c)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
 	if (!ctx || !c) {
 		global_status = STATUS_INVALID_ARGUMENT;
 		return;
 	}
 
-	ctx->state->font_fcolor = rgba((float)c->r, (float)c->g, (float)c->b, (float)c->a);
+	ctx->state->font_fcolor =
+         picasso::rgba(DBL_TO_SCALAR(c->r), DBL_TO_SCALAR(c->g), DBL_TO_SCALAR(c->b), DBL_TO_SCALAR(c->a));
 	global_status = STATUS_SUCCEED;
 }
 
 void PICAPI ps_set_text_stroke_color(ps_context* ctx, const ps_color* c)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
 	if (!ctx || !c) {
 		global_status = STATUS_INVALID_ARGUMENT;
 		return;
 	}
 
-	ctx->state->font_scolor = rgba((float)c->r, (float)c->g, (float)c->b, (float)c->a);
+	ctx->state->font_scolor =
+         picasso::rgba(DBL_TO_SCALAR(c->r), DBL_TO_SCALAR(c->g), DBL_TO_SCALAR(c->b), DBL_TO_SCALAR(c->a));
 	global_status = STATUS_SUCCEED;
 }
 
 void PICAPI ps_text_transform(ps_context* ctx, const ps_matrix* m)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
 	if (!ctx || !m) {
 		global_status = STATUS_INVALID_ARGUMENT;
 		return;
@@ -761,6 +981,11 @@ void PICAPI ps_text_transform(ps_context* ctx, const ps_matrix* m)
 
 void PICAPI ps_set_text_matrix(ps_context* ctx, const ps_matrix* m)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
 	if (!ctx || !m) {
 		global_status = STATUS_INVALID_ARGUMENT;
 		return;

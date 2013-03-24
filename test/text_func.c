@@ -4,6 +4,7 @@
 
 #include "../include/picasso.h"
 #include "drawFunc.h"
+#include "timeuse.h"
 
 static ps_gradient * gr;
 static ps_matrix* pm;
@@ -14,7 +15,7 @@ static ps_pattern * pt;
 static ps_point p[2];
 static ps_font* pf;
 const char* text = "Hello World! this is the first words picasso out put!";
-const ps_uchar16 wtext[] = {0x4e3a,0x4eba,0x4eec,0x4f7f,0x7528};
+const ps_uchar16 wtext[] = {0x77e2,0x91cf,0x56fe,0x5f62,0x5e93};
 const char gtext[] = "ASDFG";
 static a = 0;
 static w = 400;
@@ -49,6 +50,7 @@ void draw_test (int id, ps_context* gc)
     ps_rotate(gc, 0.02);
     ps_translate(gc, 200, 200);
 
+  //  ps_set_text_antialias(gc, False);
 		
 //		double ds[] = {5, 3.1, 1.2, 5.5};
 
@@ -57,8 +59,10 @@ void draw_test (int id, ps_context* gc)
     	ps_line_to(gc, &e);
 	ps_stroke(gc);
 
+  //  ps_set_text_render_type(gc, TEXT_TYPE_MONO);
 	ps_set_text_matrix(gc, pn);
 	ps_text_out_length(gc, 100, 100, text, strlen(text));
+
 
 /*	
 	if (a) {
@@ -79,7 +83,7 @@ void draw_test (int id, ps_context* gc)
 
 	ps_rectangle(gc, &r);
 	ps_stroke(gc);
-	//ps_wide_text_out_length(gc, 200, 100, wtext, 5);
+//	ps_wide_text_out_length(gc, 200, 100, wtext, 5);
 	old = ps_set_font(gc, pf);
 
 	//ts = ps_text_extent(gc, wtext, 5);
@@ -106,8 +110,9 @@ void draw_test (int id, ps_context* gc)
 	ps_fill(gc);
 
 //	ps_get_font_info(gc, &info);
-//fprintf(stderr, "h: %.2f - a: %.2f - d: %.2f \n", info.height, info.ascent, info.descent);
+//fprintf(stderr, "h: %.2f - a: %.2f - d: %.2f - l: %.2f \n", info.size, info.ascent, info.descent, info.leading);
 	ps_set_font(gc, old);
+    ps_set_text_render_type(gc, TEXT_TYPE_STROKE);
 
 /*
 	for (i=0; i<5; i++)
@@ -126,7 +131,7 @@ void init_context (ps_context* gc, ps_canvas* cs)
     pm = ps_matrix_create();
     pn = ps_matrix_create();
 
-	pf = ps_font_create("ËÎÌו", CHARSET_UNICODE, FONT_TYPE_MONO, 48, FONT_WEIGHT_BOLD, False);
+	pf = ps_font_create("ËÎÌו", CHARSET_UNICODE,48, FONT_WEIGHT_BOLD, False);
 
 	p[0].x = 150;
 	p[0].y = 100;

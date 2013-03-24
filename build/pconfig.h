@@ -2,6 +2,8 @@
 
 //#define ENABLE_FREE_TYPE2 1
 
+//#define ENABLE_LOW_MEMORY 1
+
 #define ENABLE_FORMAT_RGBA 1
 
 #define ENABLE_FORMAT_ARGB 1

@@ -32,12 +32,11 @@ Copyright: (C) 1997-2004, Advanced Interfaces Group,
            software for any purpose. It is provided solely "as is".
 */
 
-#include "pconfig.h"
+#include "common.h"
 #include "picasso_gpc.h"
 
 #include <float.h>
 #include <math.h>
-#include <stdlib.h>
 
 namespace picasso {
 
@@ -71,7 +70,7 @@ namespace picasso {
 */
 
 #define GPC_EPSILON (DBL_EPSILON)
-#define EQ(a, b)           (fabs((a) - (b)) <= GPC_EPSILON)
+#define EQ(a, b)           (Fabs((a) - (b)) <= DBL_TO_SCALAR(GPC_EPSILON))
 
 #define PREV_INDEX(i, n)   ((i - 1 + n) % n)
 #define NEXT_INDEX(i, n)   ((i + 1    ) % n)
@@ -101,10 +100,10 @@ namespace picasso {
                             (i)= (d)->bot.x + (d)->dx * ((j)-(d)->bot.y);}
 
 #define MALLOC(p, b, s, t) {if ((b) > 0) { \
-                            p= (t*)malloc(b); if (!(p)) { \
+                            p= (t*)mem_malloc(b); if (!(p)) { \
                             exit(0);}} else p= NULL;}
 
-#define FREE(p)            {if (p) {free(p); (p)= NULL;}}
+#define FREE(p)            {if (p) {mem_free(p); (p)= NULL;}}
 
 
 /*
@@ -670,7 +669,7 @@ static void add_st_edge(st_node **st, it_node **it, edge_node *edge,
 
     /* If new edge and ST edge don't cross */
     if ((edge->xt >= (*st)->xt) || (edge->dx == (*st)->dx) || 
-        (fabs(den) <= DBL_EPSILON))
+        (Fabs(den) <= DBL_EPSILON))
     {
       /* No intersection - insert edge here (before the ST edge) */
       existing_node= *st;

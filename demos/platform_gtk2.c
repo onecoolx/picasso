@@ -33,7 +33,7 @@ static void size_change(GtkWidget *widget, GtkAllocation *allocation)
 	ps_canvas* old_canvas = 0;
 	width = allocation->width;
 	height = allocation->height;
-	gdk_pixbuf_unref(pixbuf);
+	g_object_unref(pixbuf);
 
 	if (width < 1)
 		width = 1;
@@ -62,7 +62,7 @@ static void destroy(GtkWidget *widget, gpointer data)
 	ps_context_unref(context);
 	ps_canvas_unref(canvas);
 	ps_shutdown();
-	gdk_pixbuf_unref(pixbuf);
+	g_object_unref(pixbuf);
 	gtk_main_quit();
 }
 
@@ -120,7 +120,7 @@ void free_picture(picture* p)
 		return;
 
 	ps_image_unref(p->image);
-	gdk_pixbuf_unref((GdkPixbuf*)p->native);
+	g_object_unref((GdkPixbuf*)p->native);
 	free(p);
 }
 
@@ -158,7 +158,7 @@ static gboolean key_release(GtkWidget *widget, GdkEventKey *event)
 static gboolean mouse_button_press(GtkWidget *widget, GdkEventButton *event)
 {
 	mouse_event_type type;
-	unsigned int key;
+	unsigned int key = 0;
 	switch(event->button){
 		case 1:
 			type = LEFT_BUTTON_DOWN;
@@ -184,7 +184,7 @@ static gboolean mouse_button_press(GtkWidget *widget, GdkEventButton *event)
 static gboolean mouse_button_release(GtkWidget *widget, GdkEventButton *event)
 {
 	mouse_event_type type;
-	unsigned int key;
+	unsigned int key = 0;
 	switch(event->button){
 		case 1:
 			type = LEFT_BUTTON_UP;
@@ -209,7 +209,7 @@ static gboolean mouse_button_release(GtkWidget *widget, GdkEventButton *event)
 
 static gboolean mouse_motion_notify(GtkWidget *widget, GdkEventMotion *event)
 {
-	unsigned int key;
+	unsigned int key = 0;
 	if (event->state & 1)
 		key |= EVT_SHIFT;
 	if (event->state & 4)

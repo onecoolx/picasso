@@ -1,33 +1,40 @@
 /* Picasso - a vector graphics library
  * 
- * Copyright (C) 2008 Zhang Ji Peng
+ * Copyright (C) 2012 Zhang Ji Peng
  * Contact: onecoolx@gmail.com
  */
 
-#include <new>
-#include <stdlib.h>
+#include "common.h"
+#include "device.h"
+#include "graphic_path.h"
+#include "geometry.h"
+#include "convert.h"
 
-#include "pconfig.h"
 #include "picasso.h"
-#include "picasso_utils.h"
-#include "picasso_p.h"
+#include "picasso_global.h"
+#include "picasso_objects.h"
 #include "picasso_painter.h"
+#include "picasso_private.h"
 
-#define PICASSO_VERSION 12000 //version 1.2
+namespace picasso {
 
-using namespace picasso;
+static void _clip_path(context_state* state, const graphic_path& p, filling_rule r)
+{
+	if (!state->clip.path.total_vertices()) {
+		state->clip.path = p;
+	} else if (p.total_vertices()) {
+		graphic_path rp;
+		_path_operation(conv_clipper::clip_intersect, state->clip.path, p, rp);
+		state->clip.path = rp;
+	}
+	state->clip.rule = r;
+}
+
+}
+#define PICASSO_VERSION 20000 	// version 2.0
 
 #ifdef __cplusplus
 extern "C" {
-#endif
-
-#if ENABLE(LOW_MEMORY)
-static font_engine g_engine;
-static font_cache_manager<font_engine> g_cache(g_engine);
-#endif
-
-#if ENABLE(FREE_TYPE2)
-static bool _init = false;
 #endif
 
 ps_status global_status = STATUS_SUCCEED;
@@ -39,24 +46,13 @@ int PICAPI ps_version(void)
 
 ps_bool PICAPI ps_initialize(void)
 {
-#if ENABLE(FREE_TYPE2)
-	if (!_init) {
-	    _init = _load_fonts();
-	}
-	return  _init ? True : False;
-#else
-	return True;
-#endif
+	return (picasso::_init_system_device() && picasso::font_engine::initialize()) ? True : False;
 }
 
 void PICAPI ps_shutdown(void)
 {
-#if ENABLE(FREE_TYPE2)
-	if (_init) {
-	    _free_fonts();
-	    _init = false;
-	}
-#endif
+    picasso::font_engine::shutdown();
+    picasso::_destroy_system_device();
 }
 
 ps_status PICAPI ps_last_status(void)
@@ -66,45 +62,50 @@ ps_status PICAPI ps_last_status(void)
 
 ps_context* PICAPI ps_context_create(ps_canvas* canvas)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return 0;
+	}
+
     if (!canvas) {
 		global_status = STATUS_INVALID_ARGUMENT;
         return 0;
     }
 
-	context_state * state = new context_state;
+	picasso::context_state * state = new picasso::context_state;
     if (!state) {
         global_status = STATUS_OUT_OF_MEMORY;
         return 0;
     }
 
-    ps_context *c = (ps_context*)malloc(sizeof(ps_context));
+    ps_context *c = (ps_context*)mem_malloc(sizeof(ps_context));
 	if (c) {
 		c->refcount = 1;
 		c->canvas = ps_canvas_ref(canvas);
 		c->state = state;
-#if ENABLE(LOW_MEMORY)
-		c->font_antialias = False;
-		c->fonts = &g_engine;
-		c->cache = &g_cache;
-#else
 		c->font_antialias = True;
-		c->fonts = new font_engine;
-		c->cache = new font_cache_manager<font_engine>(*(c->fonts));
-#endif
-		new ((void*)&(c->path)) path_storage;
-		new ((void*)&(c->raster)) rasterizer_scanline_aa<>;
-		new ((void*)&(c->text_matrix)) trans_affine;
+		c->font_kerning = True;
+        c->font_render_type = TEXT_TYPE_STROKE;
+		c->fonts = new picasso::font_engine;
+		new ((void*)&(c->text_matrix)) picasso::trans_affine;
+		new ((void*)&(c->path)) picasso::graphic_path;
+		new ((void*)&(c->raster)) picasso::raster_adapter;
 		global_status = STATUS_SUCCEED;
 		return c;
 	} else {
-		delete state; //free state on error
-        	global_status = STATUS_OUT_OF_MEMORY;
+		delete state; 	// free state on error
+        global_status = STATUS_OUT_OF_MEMORY;
 		return 0;
 	}
 }
 
 ps_canvas* PICAPI ps_context_set_canvas(ps_context* ctx, ps_canvas* canvas)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return 0;
+	}
+
     if (!ctx || !canvas) {
 		global_status = STATUS_INVALID_ARGUMENT;
         return 0;
@@ -118,6 +119,11 @@ ps_canvas* PICAPI ps_context_set_canvas(ps_context* ctx, ps_canvas* canvas)
 
 ps_canvas* PICAPI ps_context_get_canvas(ps_context* ctx)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return 0;
+	}
+
     if (!ctx) {
 		global_status = STATUS_INVALID_ARGUMENT;
         return 0;
@@ -130,6 +136,11 @@ ps_canvas* PICAPI ps_context_get_canvas(ps_context* ctx)
 
 ps_context* PICAPI ps_context_ref(ps_context* ctx)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return 0;
+	}
+
     if (!ctx) {
 		global_status = STATUS_INVALID_ARGUMENT;
         return 0;
@@ -142,6 +153,11 @@ ps_context* PICAPI ps_context_ref(ps_context* ctx)
 
 void PICAPI ps_context_unref(ps_context* ctx)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
     if (!ctx) {
 		global_status = STATUS_INVALID_ARGUMENT;
         return;
@@ -151,72 +167,95 @@ void PICAPI ps_context_unref(ps_context* ctx)
     if (ctx->refcount <= 0) {
 		ps_canvas_unref(ctx->canvas);
 		while (ctx->state) {
-			context_state * p = ctx->state;
+            picasso::context_state * p = ctx->state;
 			ctx->state = ctx->state->next;
 			delete p;
 		}
-#if !ENABLE(LOW_MEMORY)
-		delete ctx->cache;
         delete ctx->fonts;
-#endif
-        (&ctx->path)->path_storage::~path_storage();
-        (&ctx->raster)->rasterizer_scanline_aa<>::~rasterizer_scanline_aa();
+        (&ctx->path)->graphic_path::~graphic_path();
+        (&ctx->raster)->raster_adapter::~raster_adapter();
 		(&ctx->text_matrix)->trans_affine::~trans_affine();
-        free(ctx);
+        mem_free(ctx);
     }
     global_status = STATUS_SUCCEED;
 }
 
 void PICAPI ps_set_source_gradient(ps_context* ctx, const ps_gradient* gradient)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
 	if (!ctx || !gradient) {
 		global_status = STATUS_INVALID_ARGUMENT;
 		return;
 	}
 	ctx->state->brush.clear(); //clear source
 	ctx->state->brush.set_gradient_brush(const_cast<ps_gradient*>(gradient));
-    	global_status = STATUS_SUCCEED;
+    global_status = STATUS_SUCCEED;
 }
 
 void PICAPI ps_set_source_pattern(ps_context* ctx, const ps_pattern* pattern)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
 	if (!ctx || !pattern) {
 		global_status = STATUS_INVALID_ARGUMENT;
 		return;
 	}
 	ctx->state->brush.clear(); //clear source
 	ctx->state->brush.set_pattern_brush(const_cast<ps_pattern*>(pattern));
-    	global_status = STATUS_SUCCEED;
+    global_status = STATUS_SUCCEED;
 }
 
 void PICAPI ps_set_source_image(ps_context* ctx, const ps_image* image)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
 	if (!ctx || !image) {
 		global_status = STATUS_INVALID_ARGUMENT;
 		return;
 	}
 	ctx->state->brush.clear(); //clear source
 	ctx->state->brush.set_image_brush(const_cast<ps_image*>(image));
-    	global_status = STATUS_SUCCEED;
+    global_status = STATUS_SUCCEED;
 }
 
 void PICAPI ps_set_source_color(ps_context* ctx, const ps_color* color)
 {
-    if(!ctx || !color) {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
+    if (!ctx || !color) {
 		global_status = STATUS_INVALID_ARGUMENT;
         return;
     }
+
     ctx->state->brush.clear(); //clear source
-    ctx->state->brush.color.r = (float)color->r;
-    ctx->state->brush.color.g = (float)color->g;
-    ctx->state->brush.color.b = (float)color->b;
-    ctx->state->brush.color.a = (float)color->a;
+    ctx->state->brush.color.r = DBL_TO_SCALAR(color->r);
+    ctx->state->brush.color.g = DBL_TO_SCALAR(color->g);
+    ctx->state->brush.color.b = DBL_TO_SCALAR(color->b);
+    ctx->state->brush.color.a = DBL_TO_SCALAR(color->a);
     global_status = STATUS_SUCCEED;
 }
 
 void PICAPI ps_set_source_canvas(ps_context* ctx, const ps_canvas* canvas)
 {
-    if(!ctx || !canvas) {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
+    if (!ctx || !canvas) {
 		global_status = STATUS_INVALID_ARGUMENT;
         return;
     }
@@ -227,24 +266,35 @@ void PICAPI ps_set_source_canvas(ps_context* ctx, const ps_canvas* canvas)
 
 void PICAPI ps_set_stroke_color(ps_context* ctx, const ps_color* color)
 {
-    if(!ctx || !color) {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
+    if (!ctx || !color) {
 		global_status = STATUS_INVALID_ARGUMENT;
         return;
     }
 
-    ctx->state->pen.color.r = (float)color->r;
-    ctx->state->pen.color.g = (float)color->g;
-    ctx->state->pen.color.b = (float)color->b;
-    ctx->state->pen.color.a = (float)color->a;
+    ctx->state->pen.color.r = DBL_TO_SCALAR(color->r);
+    ctx->state->pen.color.g = DBL_TO_SCALAR(color->g);
+    ctx->state->pen.color.b = DBL_TO_SCALAR(color->b);
+    ctx->state->pen.color.a = DBL_TO_SCALAR(color->a);
     global_status = STATUS_SUCCEED;
 }
 
 ps_filter PICAPI ps_set_filter(ps_context* ctx, ps_filter filter)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return FILTER_UNKNOWN;
+	}
+
     if (!ctx) {
 		global_status = STATUS_INVALID_ARGUMENT;
         return FILTER_UNKNOWN;
     }
+
 	ps_filter old = ctx->state->filter;
 	ctx->state->filter = filter;
    	global_status = STATUS_SUCCEED;
@@ -254,14 +304,19 @@ ps_filter PICAPI ps_set_filter(ps_context* ctx, ps_filter filter)
 
 void PICAPI ps_stroke(ps_context* ctx)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
     if (!ctx) {
 		global_status = STATUS_INVALID_ARGUMENT;
         return;
     }
 
-	ctx->canvas->p->render_shadow(ctx, ctx->path, false, true);
-    ctx->canvas->p->render_stroke(ctx, ctx->path);
-    ctx->canvas->p->render_blur(ctx);
+	ctx->canvas->p->render_shadow(ctx->state, ctx->path, false, true);
+    ctx->canvas->p->render_stroke(ctx->state, ctx->raster, ctx->path);
+    ctx->canvas->p->render_blur(ctx->state);
     ctx->path.free_all();
     ctx->raster.reset();
     global_status = STATUS_SUCCEED;
@@ -269,14 +324,19 @@ void PICAPI ps_stroke(ps_context* ctx)
 
 void PICAPI ps_fill(ps_context* ctx)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
     if (!ctx) {
 		global_status = STATUS_INVALID_ARGUMENT;
         return;
     }
 
-	ctx->canvas->p->render_shadow(ctx, ctx->path, true, false);
-    ctx->canvas->p->render_fill(ctx, ctx->path);
-    ctx->canvas->p->render_blur(ctx);
+	ctx->canvas->p->render_shadow(ctx->state, ctx->path, true, false);
+    ctx->canvas->p->render_fill(ctx->state, ctx->raster, ctx->path);
+    ctx->canvas->p->render_blur(ctx->state);
     ctx->path.free_all();
     ctx->raster.reset();
     global_status = STATUS_SUCCEED;
@@ -284,15 +344,19 @@ void PICAPI ps_fill(ps_context* ctx)
 
 void PICAPI ps_paint(ps_context* ctx)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
     if (!ctx) {
 		global_status = STATUS_INVALID_ARGUMENT;
         return;
     }
 
-	ctx->canvas->p->render_shadow(ctx, ctx->path, true, true);
-    ctx->canvas->p->render_fill(ctx, ctx->path);
-    ctx->canvas->p->render_stroke(ctx, ctx->path);
-    ctx->canvas->p->render_blur(ctx);
+	ctx->canvas->p->render_shadow(ctx->state, ctx->path, true, true);
+    ctx->canvas->p->render_paint(ctx->state, ctx->raster, ctx->path);
+    ctx->canvas->p->render_blur(ctx->state);
     ctx->path.free_all();
     ctx->raster.reset();
     global_status = STATUS_SUCCEED;
@@ -300,17 +364,27 @@ void PICAPI ps_paint(ps_context* ctx)
 
 void PICAPI ps_clear(ps_context* ctx)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
     if (!ctx) {
 		global_status = STATUS_INVALID_ARGUMENT;
         return;
     }
 	
-	ctx->canvas->p->render_clear(ctx);
+	ctx->canvas->p->render_clear(ctx->state);
     global_status = STATUS_SUCCEED;
 }
 
 double PICAPI ps_set_alpha(ps_context* ctx, double a)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return 0.0;
+	}
+
     if (!ctx) {
 		global_status = STATUS_INVALID_ARGUMENT;
         return 0.0;
@@ -322,14 +396,19 @@ double PICAPI ps_set_alpha(ps_context* ctx, double a)
 	else if (a > 1.0)
 		a = 1.0;
 
-	float rd = ctx->state->alpha;
-	ctx->state->alpha = (float)a;
+	double rd = SCALAR_TO_DBL(ctx->state->alpha);
+	ctx->state->alpha = DBL_TO_SCALAR(a);
     global_status = STATUS_SUCCEED;
 	return rd;
 }
 
 double PICAPI ps_set_blur(ps_context* ctx, double b)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return 0.0;
+	}
+
     if (!ctx) {
 		global_status = STATUS_INVALID_ARGUMENT;
         return 0.0;
@@ -341,14 +420,19 @@ double PICAPI ps_set_blur(ps_context* ctx, double b)
 	else if (b > 1.0)
 		b = 1.0;
 
-	float rd = ctx->state->blur;
-	ctx->state->blur = (float)b;
+	double rd = SCALAR_TO_DBL(ctx->state->blur);
+	ctx->state->blur = DBL_TO_SCALAR(b);
     global_status = STATUS_SUCCEED;
 	return rd;
 }
 
 double PICAPI ps_set_gamma(ps_context* ctx, double g)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return 0.0;
+	}
+
     if (!ctx) {
 		global_status = STATUS_INVALID_ARGUMENT;
         return 0.0;
@@ -360,10 +444,10 @@ double PICAPI ps_set_gamma(ps_context* ctx, double g)
 	else if (g > 3.0)
 		g = 3.0;
 
-	float rd = ctx->state->gamma;
+	double rd = SCALAR_TO_DBL(ctx->state->gamma);
 	if (rd != g) {
-		ctx->state->gamma = (float)g;
-		ctx->canvas->p->render_gamma(ctx);
+		ctx->state->gamma = DBL_TO_SCALAR(g);
+		ctx->canvas->p->render_gamma(ctx->state, ctx->raster);
 	}
     global_status = STATUS_SUCCEED;
 	return rd;
@@ -371,6 +455,11 @@ double PICAPI ps_set_gamma(ps_context* ctx, double g)
 
 void PICAPI ps_set_antialias(ps_context* ctx, ps_bool anti)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
 	if (!ctx) {
 		global_status = STATUS_INVALID_ARGUMENT;
 		return;
@@ -379,13 +468,18 @@ void PICAPI ps_set_antialias(ps_context* ctx, ps_bool anti)
 	ps_bool old = ctx->state->antialias ? True : False;
 	if (old != anti) {
 		ctx->state->antialias = anti ? true : false;
-		ctx->canvas->p->render_gamma(ctx);
+		ctx->canvas->p->render_gamma(ctx->state, ctx->raster);
 	}
     global_status = STATUS_SUCCEED;
 }
 
 void PICAPI ps_set_shadow(ps_context* ctx, double x, double y, double b)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
 	if (!ctx) {
 		global_status = STATUS_INVALID_ARGUMENT;
 		return;
@@ -398,36 +492,52 @@ void PICAPI ps_set_shadow(ps_context* ctx, double x, double y, double b)
 		b = 1.0;
 
 	ctx->state->shadow.use_shadow = true;
-	ctx->state->shadow.x_offset = (float)x;
-	ctx->state->shadow.y_offset = (float)y;
-	ctx->state->shadow.blur = (float)b;
+	ctx->state->shadow.x_offset = DBL_TO_SCALAR(x);
+	ctx->state->shadow.y_offset = DBL_TO_SCALAR(y);
+	ctx->state->shadow.blur = DBL_TO_SCALAR(b);
     global_status = STATUS_SUCCEED;
 }
 
 void PICAPI ps_set_shadow_color(ps_context* ctx, const ps_color* c)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
 	if (!ctx || !c) {
 		global_status = STATUS_INVALID_ARGUMENT;
 		return;
 	}
 
-	ctx->state->shadow.color = rgba((float)c->r, (float)c->g, (float)c->b, (float)c->a);
+	ctx->state->shadow.color = 
+        picasso::rgba(DBL_TO_SCALAR(c->r), DBL_TO_SCALAR(c->g), DBL_TO_SCALAR(c->b), DBL_TO_SCALAR(c->a));
     global_status = STATUS_SUCCEED;
 }
 
 void PICAPI ps_reset_shadow(ps_context* ctx)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
 	if (!ctx) {
 		global_status = STATUS_INVALID_ARGUMENT;
 		return;
 	}
 
-	ctx->state->shadow = shadow_state();
+	ctx->state->shadow = picasso::shadow_state();
     global_status = STATUS_SUCCEED;
 }
 
 ps_fill_rule PICAPI ps_set_fill_rule(ps_context* ctx, ps_fill_rule rule)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return FILL_RULE_ERROR;
+	}
+
     if (!ctx) {
 		global_status = STATUS_INVALID_ARGUMENT;
         return FILL_RULE_ERROR;
@@ -437,10 +547,10 @@ ps_fill_rule PICAPI ps_set_fill_rule(ps_context* ctx, ps_fill_rule rule)
     switch (rule) 
     {
         case FILL_RULE_WINDING:
-            ctx->state->brush.rule = fill_non_zero;
+            ctx->state->brush.rule = picasso::fill_non_zero;
             break;
         case FILL_RULE_EVEN_ODD:
-            ctx->state->brush.rule = fill_even_odd;
+            ctx->state->brush.rule = picasso::fill_even_odd;
             break;
         default:
     	    global_status = STATUS_UNKNOWN_ERROR;
@@ -452,6 +562,11 @@ ps_fill_rule PICAPI ps_set_fill_rule(ps_context* ctx, ps_fill_rule rule)
 
 void PICAPI ps_set_line_cap(ps_context* ctx, ps_line_cap line_cap)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
     if (!ctx) {
 		global_status = STATUS_INVALID_ARGUMENT;
         return;
@@ -460,13 +575,13 @@ void PICAPI ps_set_line_cap(ps_context* ctx, ps_line_cap line_cap)
     switch (line_cap) 
     {
         case LINE_CAP_BUTT:
-            ctx->state->pen.cap = butt_cap;
+            ctx->state->pen.cap = picasso::butt_cap;
             break;
         case LINE_CAP_SQUARE:
-            ctx->state->pen.cap = square_cap;
+            ctx->state->pen.cap = picasso::square_cap;
             break;
         case LINE_CAP_ROUND:
-            ctx->state->pen.cap = round_cap;
+            ctx->state->pen.cap = picasso::round_cap;
             break;
         default:
     	    global_status = STATUS_UNKNOWN_ERROR;
@@ -477,24 +592,29 @@ void PICAPI ps_set_line_cap(ps_context* ctx, ps_line_cap line_cap)
 
 void PICAPI ps_set_line_inner_join(ps_context* ctx, ps_line_inner_join line_inner_join)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
     if (!ctx) {
-	global_status = STATUS_INVALID_ARGUMENT;
+		global_status = STATUS_INVALID_ARGUMENT;
         return;
     }
 
     switch (line_inner_join) 
     {
         case LINE_INNER_MITER:
-            ctx->state->pen.inner = inner_miter;
+            ctx->state->pen.inner = picasso::inner_miter;
             break;
         case LINE_INNER_ROUND:
-            ctx->state->pen.inner = inner_round;
+            ctx->state->pen.inner = picasso::inner_round;
             break;
         case LINE_INNER_BEVEL:
-            ctx->state->pen.inner = inner_bevel;
+            ctx->state->pen.inner = picasso::inner_bevel;
             break;
         case LINE_INNER_JAG:
-            ctx->state->pen.inner = inner_jag;
+            ctx->state->pen.inner = picasso::inner_jag;
             break;
         default:
     	    global_status = STATUS_UNKNOWN_ERROR;
@@ -505,27 +625,32 @@ void PICAPI ps_set_line_inner_join(ps_context* ctx, ps_line_inner_join line_inne
 
 void PICAPI ps_set_line_join(ps_context* ctx, ps_line_join line_join)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
     if (!ctx) {
-	global_status = STATUS_INVALID_ARGUMENT;
+		global_status = STATUS_INVALID_ARGUMENT;
         return;
     }
 
     switch (line_join) 
     {
         case LINE_JOIN_MITER:
-            ctx->state->pen.join = miter_join;
+            ctx->state->pen.join = picasso::miter_join;
             break;
         case LINE_JOIN_MITER_REVERT:
-            ctx->state->pen.join = miter_join_revert;
+            ctx->state->pen.join = picasso::miter_join_revert;
             break;
         case LINE_JOIN_MITER_ROUND:
-            ctx->state->pen.join = miter_join_round;
+            ctx->state->pen.join = picasso::miter_join_round;
             break;
         case LINE_JOIN_ROUND:
-            ctx->state->pen.join = round_join;
+            ctx->state->pen.join = picasso::round_join;
             break;
         case LINE_JOIN_BEVEL:
-            ctx->state->pen.join = bevel_join;
+            ctx->state->pen.join = picasso::bevel_join;
             break;
         default:
     	    global_status = STATUS_UNKNOWN_ERROR;
@@ -536,6 +661,11 @@ void PICAPI ps_set_line_join(ps_context* ctx, ps_line_join line_join)
 
 double PICAPI ps_set_line_width(ps_context* ctx, double width)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return 0.0;
+	}
+
     if (!ctx) {
 		global_status = STATUS_INVALID_ARGUMENT;
         return 0.0;
@@ -544,14 +674,19 @@ double PICAPI ps_set_line_width(ps_context* ctx, double width)
     if (width < 0.0)
         width = 0.0;
 
-	float rw = ctx->state->pen.width;
-    ctx->state->pen.width = (float)width;
+	double rw = SCALAR_TO_DBL(ctx->state->pen.width);
+    ctx->state->pen.width = DBL_TO_SCALAR(width);
     global_status = STATUS_SUCCEED;
 	return rw;
 }
 
 double PICAPI ps_set_miter_limit(ps_context* ctx, double limit)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return 0.0;
+	}
+
     if (!ctx) {
 		global_status = STATUS_INVALID_ARGUMENT;
         return 0.0;
@@ -560,14 +695,19 @@ double PICAPI ps_set_miter_limit(ps_context* ctx, double limit)
     if (limit < 0.0)
         limit = 0.0;
 
-	float rd = ctx->state->pen.miter_limit;
-    ctx->state->pen.miter_limit = (float)limit;
+	double rd = SCALAR_TO_DBL(ctx->state->pen.miter_limit);
+    ctx->state->pen.miter_limit = DBL_TO_SCALAR(limit);
     global_status = STATUS_SUCCEED;
 	return rd;
 }
 
 void PICAPI ps_set_line_dash(ps_context* ctx, double start, double* dashes, unsigned int num_dashes)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
     if (!ctx || !dashes || !num_dashes) {
 		global_status = STATUS_INVALID_ARGUMENT;
         return;
@@ -583,6 +723,11 @@ void PICAPI ps_set_line_dash(ps_context* ctx, double start, double* dashes, unsi
 
 void PICAPI ps_reset_line_dash(ps_context* ctx)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
     if (!ctx) {
 		global_status = STATUS_INVALID_ARGUMENT;
         return;
@@ -595,6 +740,11 @@ void PICAPI ps_reset_line_dash(ps_context* ctx)
 //path function
 void PICAPI ps_new_path(ps_context* ctx)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
     if (!ctx) {
 		global_status = STATUS_INVALID_ARGUMENT;
         return;
@@ -606,6 +756,11 @@ void PICAPI ps_new_path(ps_context* ctx)
 
 void PICAPI ps_new_sub_path(ps_context* ctx)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
     if (!ctx) {
 		global_status = STATUS_INVALID_ARGUMENT;
         return;
@@ -617,17 +772,22 @@ void PICAPI ps_new_sub_path(ps_context* ctx)
 
 void PICAPI ps_rectangle(ps_context* ctx, const ps_rect* pr)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
     if (!ctx || !pr) {
 		global_status = STATUS_INVALID_ARGUMENT;
         return;
     }
 
-	ctx->path.set_rect(true); //It is because boder edge.
-    ctx->path.move_to((float)floor(pr->x), (float)floor(pr->y));
-    ctx->path.hline_rel((float)floor(pr->w));
-    ctx->path.vline_rel((float)floor(pr->h));
-    ctx->path.hline_rel(-(float)floor(pr->w));
-    ctx->path.vline_rel(-(float)floor(pr->h));
+	ctx->path.set_shape(picasso::graphic_path::shape_rectangle); //It is because boder edge.
+    ctx->path.move_to(DBL_TO_SCALAR(floor(pr->x)), DBL_TO_SCALAR(floor(pr->y)));
+    ctx->path.hline_rel(DBL_TO_SCALAR(floor(pr->w)));
+    ctx->path.vline_rel(DBL_TO_SCALAR(floor(pr->h)));
+    ctx->path.hline_rel(-DBL_TO_SCALAR(floor(pr->w)));
+    ctx->path.vline_rel(-DBL_TO_SCALAR(floor(pr->h)));
     ctx->path.end_poly();
     global_status = STATUS_SUCCEED;
 }
@@ -635,16 +795,21 @@ void PICAPI ps_rectangle(ps_context* ctx, const ps_rect* pr)
 void PICAPI ps_rounded_rect(ps_context* ctx, const ps_rect* r, double ltx, double lty, double rtx, double rty,
 																	double lbx, double lby, double rbx, double rby)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
 	if (!ctx || !r) {
 		global_status = STATUS_INVALID_ARGUMENT;
 		return;
 	}
 
-	rounded_rect rr;
-	rr.rect((float)floor(r->x), (float)floor(r->y), 
-						(float)(floor(r->x)+r->w), (float)(floor(r->y)+r->h));
-	rr.radius(float(ltx), float(lty), float(rtx), float(rty), 
-						float(rbx), float(rby), float(lbx), float(lby));
+	picasso::rounded_rect rr;
+	rr.rect(DBL_TO_SCALAR(floor(r->x)), DBL_TO_SCALAR(floor(r->y)), 
+                    DBL_TO_SCALAR(floor(r->x)+r->w), DBL_TO_SCALAR(floor(r->y)+r->h));
+	rr.radius(DBL_TO_SCALAR(ltx), DBL_TO_SCALAR(lty), DBL_TO_SCALAR(rtx), DBL_TO_SCALAR(rty), 
+                    DBL_TO_SCALAR(rbx), DBL_TO_SCALAR(rby), DBL_TO_SCALAR(lbx), DBL_TO_SCALAR(lby));
 	rr.normalize_radius();
     if (_is_closed_path(ctx->path))
         ctx->path.concat_path(rr, 0);
@@ -655,12 +820,18 @@ void PICAPI ps_rounded_rect(ps_context* ctx, const ps_rect* r, double ltx, doubl
 
 void PICAPI ps_ellipse(ps_context* ctx, const ps_rect* r)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
     if (!ctx || !r) {
 		global_status = STATUS_INVALID_ARGUMENT;
         return;
     }
 
-    ellipse e(float(floor(r->x)+r->w/2), float(floor(r->y)+r->h/2), float(r->w/2), float(r->h/2));
+	picasso::ellipse e(DBL_TO_SCALAR(floor(r->x)+r->w/2), DBL_TO_SCALAR(floor(r->y)+r->h/2), 
+                                                DBL_TO_SCALAR(r->w/2), DBL_TO_SCALAR(r->h/2));
     if (_is_closed_path(ctx->path))
         ctx->path.concat_path(e, 0);
     else
@@ -671,6 +842,11 @@ void PICAPI ps_ellipse(ps_context* ctx, const ps_rect* r)
 
 void PICAPI ps_close_path(ps_context* ctx)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
     if (!ctx) {
 		global_status = STATUS_INVALID_ARGUMENT;
         return;
@@ -682,37 +858,52 @@ void PICAPI ps_close_path(ps_context* ctx)
 
 void PICAPI ps_move_to(ps_context* ctx, const ps_point* pt)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
     if (!ctx || !pt) {
 		global_status = STATUS_INVALID_ARGUMENT;
         return;
     }
 
-    ctx->path.move_to((float)floor(pt->x), (float)floor(pt->y));
+    ctx->path.move_to(DBL_TO_SCALAR(floor(pt->x)), DBL_TO_SCALAR(floor(pt->y)));
     global_status = STATUS_SUCCEED;
 }
 
 void PICAPI ps_line_to(ps_context* ctx, const ps_point* pt)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
     if (!ctx || !pt) {
-	global_status = STATUS_INVALID_ARGUMENT;
+		global_status = STATUS_INVALID_ARGUMENT;
         return;
     }
 
-    ctx->path.line_to((float)floor(pt->x), (float)floor(pt->y));
+    ctx->path.line_to(DBL_TO_SCALAR(floor(pt->x)), DBL_TO_SCALAR(floor(pt->y)));
     global_status = STATUS_SUCCEED;
 }
 
 void PICAPI ps_bezier_curve_to(ps_context* ctx, const ps_point* fcp, 
                                             const ps_point* scp, const ps_point* ep)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
     if (!ctx || !fcp || !scp || !ep) {
-	global_status = STATUS_INVALID_ARGUMENT;
+		global_status = STATUS_INVALID_ARGUMENT;
         return;
     }
 
-    curve4 c((float)floor(ctx->path.last_x()), (float)floor(ctx->path.last_y()), 
-			(float)floor(fcp->x), (float)floor(fcp->y), (float)floor(scp->x), (float)floor(scp->y), 
-			(float)floor(ep->x), (float)floor(ep->y));
+	picasso::curve4 c(DBL_TO_SCALAR(floor(ctx->path.last_x())), DBL_TO_SCALAR(floor(ctx->path.last_y())), 
+			DBL_TO_SCALAR(floor(fcp->x)), DBL_TO_SCALAR(floor(fcp->y)), DBL_TO_SCALAR(floor(scp->x)), 
+            DBL_TO_SCALAR(floor(scp->y)), DBL_TO_SCALAR(floor(ep->x)), DBL_TO_SCALAR(floor(ep->y)));
 
     if (_is_closed_path(ctx->path))
         ctx->path.concat_path(c, 0);
@@ -723,13 +914,19 @@ void PICAPI ps_bezier_curve_to(ps_context* ctx, const ps_point* fcp,
 
 void PICAPI ps_quad_curve_to(ps_context* ctx, const ps_point* cp, const ps_point* ep)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
     if (!ctx || !cp || !ep) {
-	global_status = STATUS_INVALID_ARGUMENT;
+		global_status = STATUS_INVALID_ARGUMENT;
         return;
     }
 
-    curve3 c((float)floor(ctx->path.last_x()), (float)floor(ctx->path.last_y()), 
-					(float)floor(cp->x), (float)floor(cp->y), (float)floor(ep->x), (float)floor(ep->y));
+	picasso::curve3 c(DBL_TO_SCALAR(floor(ctx->path.last_x())), DBL_TO_SCALAR(floor(ctx->path.last_y())), 
+                                        DBL_TO_SCALAR(floor(cp->x)), DBL_TO_SCALAR(floor(cp->y)), 
+                                        DBL_TO_SCALAR(floor(ep->x)), DBL_TO_SCALAR(floor(ep->y)));
 
     if (_is_closed_path(ctx->path))
         ctx->path.concat_path(c, 0);
@@ -741,12 +938,18 @@ void PICAPI ps_quad_curve_to(ps_context* ctx, const ps_point* cp, const ps_point
 void PICAPI ps_arc(ps_context* ctx, const ps_point* cp, double r, 
                                             double sa, double ea, ps_bool clockwise)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
     if (!ctx || !cp || r <=0 ) {
 		global_status = STATUS_INVALID_ARGUMENT;
         return;
     }
 
-    arc a((float)floor(cp->x), (float)floor(cp->y), float(r), float(r), float(sa), float(ea), (clockwise?true:false));
+	picasso::arc a(DBL_TO_SCALAR(floor(cp->x)), DBL_TO_SCALAR(floor(cp->y)), 
+            DBL_TO_SCALAR(r), DBL_TO_SCALAR(r), DBL_TO_SCALAR(sa), DBL_TO_SCALAR(ea), (clockwise ? true : false));
 
     if (_is_closed_path(ctx->path))
         ctx->path.concat_path(a, 0);
@@ -757,18 +960,23 @@ void PICAPI ps_arc(ps_context* ctx, const ps_point* cp, double r,
 
 void PICAPI ps_tangent_arc(ps_context* ctx, const ps_rect* r, double sa, double sw)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
     if (!ctx || !r) {
 		global_status = STATUS_INVALID_ARGUMENT;
         return;
     }
 
-	float xr = float(r->w / 2);
-	float yr = float(r->h / 2);
-	float cx = float(r->x + xr);
-	float cy = float(r->y + yr);
+	scalar xr = DBL_TO_SCALAR(r->w / 2);
+	scalar yr = DBL_TO_SCALAR(r->h / 2);
+	scalar cx = DBL_TO_SCALAR(r->x + xr);
+	scalar cy = DBL_TO_SCALAR(r->y + yr);
 
-    bezier_arc ba((float)floor(cx), (float)floor(cy), xr, yr, (float)sa, (float)sw);
-    conv_curve<bezier_arc> cr(ba);
+	picasso::bezier_arc ba(Floor(cx), Floor(cy), xr, yr, DBL_TO_SCALAR(sa), DBL_TO_SCALAR(sw));
+	picasso::conv_curve cr(ba);
 
     if (_is_closed_path(ctx->path))
         ctx->path.concat_path(cr, 0);
@@ -779,6 +987,11 @@ void PICAPI ps_tangent_arc(ps_context* ctx, const ps_rect* r, double sa, double 
 
 void PICAPI ps_set_path(ps_context* ctx, const ps_path* path)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
     if (!ctx || !path) {
 		global_status = STATUS_INVALID_ARGUMENT;
         return;
@@ -791,46 +1004,71 @@ void PICAPI ps_set_path(ps_context* ctx, const ps_path* path)
 // transform world
 void PICAPI ps_translate(ps_context* ctx, double tx, double ty)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
 	if (!ctx) {
 		global_status = STATUS_INVALID_ARGUMENT;
 		return;
 	}
-	ctx->state->world_matrix *= trans_affine_translation((float)tx, (float)ty);
+	ctx->state->world_matrix.translate(DBL_TO_SCALAR(tx), DBL_TO_SCALAR(ty));
 	global_status = STATUS_SUCCEED;
 }
 
 void PICAPI ps_scale(ps_context* ctx, double sx, double sy)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
 	if (!ctx) {
 		global_status = STATUS_INVALID_ARGUMENT;
 		return;
 	}
-	ctx->state->world_matrix *= trans_affine_scaling((float)sx, (float)sy);
+	ctx->state->world_matrix.scale(DBL_TO_SCALAR(sx), DBL_TO_SCALAR(sy));
 	global_status = STATUS_SUCCEED;
 }
 
 void PICAPI ps_shear(ps_context* ctx, double sx, double sy)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
 	if (!ctx) {
 		global_status = STATUS_INVALID_ARGUMENT;
 		return;
 	}
-	ctx->state->world_matrix *= trans_affine_skewing((float)sx, (float)sy);
+	ctx->state->world_matrix.shear(DBL_TO_SCALAR(sx), DBL_TO_SCALAR(sy));
 	global_status = STATUS_SUCCEED;
 }
 
 void PICAPI ps_rotate(ps_context* ctx, double angle)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
 	if (!ctx) {
 		global_status = STATUS_INVALID_ARGUMENT;
 		return;
 	}
-	ctx->state->world_matrix *= trans_affine_rotation((float)angle);
+	ctx->state->world_matrix.rotate(DBL_TO_SCALAR(angle));
 	global_status = STATUS_SUCCEED;
 }
 
 void PICAPI ps_identity(ps_context* ctx)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
 	if (!ctx) {
 		global_status = STATUS_INVALID_ARGUMENT;
 		return;
@@ -841,6 +1079,11 @@ void PICAPI ps_identity(ps_context* ctx)
 
 void PICAPI ps_transform(ps_context* ctx, const ps_matrix* matrix)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
 	if (!ctx || !matrix) {
 		global_status = STATUS_INVALID_ARGUMENT;
 		return;
@@ -851,6 +1094,11 @@ void PICAPI ps_transform(ps_context* ctx, const ps_matrix* matrix)
 
 void PICAPI ps_set_matrix(ps_context* ctx, const ps_matrix* matrix)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
 	if (!ctx || !matrix) {
 		global_status = STATUS_INVALID_ARGUMENT;
 		return;
@@ -861,6 +1109,11 @@ void PICAPI ps_set_matrix(ps_context* ctx, const ps_matrix* matrix)
 
 ps_bool PICAPI ps_get_matrix(ps_context* ctx, ps_matrix* matrix)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return False;
+	}
+
 	if (!ctx || !matrix) {
 		global_status = STATUS_INVALID_ARGUMENT;
 		return False;
@@ -872,36 +1125,51 @@ ps_bool PICAPI ps_get_matrix(ps_context* ctx, ps_matrix* matrix)
 
 void PICAPI ps_world_to_viewport(ps_context* ctx, ps_point* point)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
 	if (!ctx ||!point) {
 		global_status = STATUS_INVALID_ARGUMENT;
 		return;
 	}
 
-	float x = (float)point->x;
-	float y = (float)point->y;
+	scalar x = DBL_TO_SCALAR(point->x);
+	scalar y = DBL_TO_SCALAR(point->y);
 	ctx->state->world_matrix.transform(&x, &y);
-	point->x = x;
-	point->y = y;
+	point->x = SCALAR_TO_DBL(x);
+	point->y = SCALAR_TO_DBL(y);
 	global_status = STATUS_SUCCEED;
 }
 
 void PICAPI ps_viewport_to_world(ps_context* ctx, ps_point* point)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
 	if (!ctx ||!point) {
 		global_status = STATUS_INVALID_ARGUMENT;
 		return;
 	}
 
-	float x = (float)point->x;
-	float y = (float)point->y;
+	scalar x = DBL_TO_SCALAR(point->x);
+	scalar y = DBL_TO_SCALAR(point->y);
 	ctx->state->world_matrix.inverse_transform(&x, &y);
-	point->x = x;
-	point->y = y;
+	point->x = SCALAR_TO_DBL(x);
+	point->y = SCALAR_TO_DBL(y);
 	global_status = STATUS_SUCCEED;
 }
 
 ps_composite PICAPI ps_set_composite_operator(ps_context* ctx, ps_composite composite)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return COMPOSITE_ERROR;
+	}
+
 	if (!ctx) { 
 		global_status = STATUS_INVALID_ARGUMENT;
 		return COMPOSITE_ERROR;
@@ -912,88 +1180,88 @@ ps_composite PICAPI ps_set_composite_operator(ps_context* ctx, ps_composite comp
 	switch (composite)
 	{
 		case COMPOSITE_CLEAR:
-			ctx->state->composite = comp_op_clear;
+			ctx->state->composite = picasso::comp_op_clear;
 			break;
 		case COMPOSITE_SRC:
-			ctx->state->composite = comp_op_src;
+			ctx->state->composite = picasso::comp_op_src;
 			break;
 		case COMPOSITE_SRC_OVER:
-			ctx->state->composite = comp_op_src_over;
+			ctx->state->composite = picasso::comp_op_src_over;
 			break;
 		case COMPOSITE_SRC_IN:
-			ctx->state->composite = comp_op_src_in;
+			ctx->state->composite = picasso::comp_op_src_in;
 			break;
 		case COMPOSITE_SRC_OUT:
-			ctx->state->composite = comp_op_src_out;
+			ctx->state->composite = picasso::comp_op_src_out;
 			break;
 		case COMPOSITE_SRC_ATOP:
-			ctx->state->composite = comp_op_src_atop;
+			ctx->state->composite = picasso::comp_op_src_atop;
 			break;
 		case COMPOSITE_DST:
-			ctx->state->composite = comp_op_dst;
+			ctx->state->composite = picasso::comp_op_dst;
 			break;
 		case COMPOSITE_DST_OVER:
-			ctx->state->composite = comp_op_dst_over;
+			ctx->state->composite = picasso::comp_op_dst_over;
 			break;
 		case COMPOSITE_DST_IN:
-			ctx->state->composite = comp_op_dst_in;
+			ctx->state->composite = picasso::comp_op_dst_in;
 			break;
 		case COMPOSITE_DST_OUT:
-			ctx->state->composite = comp_op_dst_out;
+			ctx->state->composite = picasso::comp_op_dst_out;
 			break;
 		case COMPOSITE_DST_ATOP:
-			ctx->state->composite = comp_op_dst_atop;
+			ctx->state->composite = picasso::comp_op_dst_atop;
 			break;
 		case COMPOSITE_XOR:
-			ctx->state->composite = comp_op_xor;
+			ctx->state->composite = picasso::comp_op_xor;
 			break;
 		case COMPOSITE_DARKEN:
-			ctx->state->composite = comp_op_darken;
+			ctx->state->composite = picasso::comp_op_darken;
 			break;
 		case COMPOSITE_LIGHTEN:
-			ctx->state->composite = comp_op_lighten;
+			ctx->state->composite = picasso::comp_op_lighten;
 			break;
 		case COMPOSITE_OVERLAY:
-			ctx->state->composite = comp_op_overlay;
+			ctx->state->composite = picasso::comp_op_overlay;
 			break;
 		case COMPOSITE_SCREEN:
-			ctx->state->composite = comp_op_screen;
+			ctx->state->composite = picasso::comp_op_screen;
 			break;
 		case COMPOSITE_MULTIPLY:
-			ctx->state->composite = comp_op_multiply;
+			ctx->state->composite = picasso::comp_op_multiply;
 			break;
 		case COMPOSITE_PLUS:
-			ctx->state->composite = comp_op_plus;
+			ctx->state->composite = picasso::comp_op_plus;
 			break;
 		case COMPOSITE_MINUS:
-			ctx->state->composite = comp_op_minus;
+			ctx->state->composite = picasso::comp_op_minus;
 			break;
 		case COMPOSITE_EXCLUSION:
-			ctx->state->composite = comp_op_exclusion;
+			ctx->state->composite = picasso::comp_op_exclusion;
 			break;
 		case COMPOSITE_DIFFERENCE:
-			ctx->state->composite = comp_op_difference;
+			ctx->state->composite = picasso::comp_op_difference;
 			break;
 		case COMPOSITE_SOFTLIGHT:
-			ctx->state->composite = comp_op_soft_light;
+			ctx->state->composite = picasso::comp_op_soft_light;
 			break;
 		case COMPOSITE_HARDLIGHT:
-			ctx->state->composite = comp_op_hard_light;
+			ctx->state->composite = picasso::comp_op_hard_light;
 			break;
 		case COMPOSITE_BURN:
-			ctx->state->composite = comp_op_color_burn;
+			ctx->state->composite = picasso::comp_op_color_burn;
 			break;
 		case COMPOSITE_DODGE:
-			ctx->state->composite = comp_op_color_dodge;
+			ctx->state->composite = picasso::comp_op_color_dodge;
 			break;
 		case COMPOSITE_CONTRAST:
-			ctx->state->composite = comp_op_contrast;
+			ctx->state->composite = picasso::comp_op_contrast;
 			break;
 		case COMPOSITE_INVERT:
-			ctx->state->composite = comp_op_invert;
+			ctx->state->composite = picasso::comp_op_invert;
 			break;
 		case COMPOSITE_INVERT_BLEND:
-			ctx->state->composite = comp_op_invert_rgb;
+			ctx->state->composite = picasso::comp_op_invert_rgb;
 			break;
 		default:
 			global_status = STATUS_UNKNOWN_ERROR;
@@ -1005,6 +1273,11 @@ ps_composite PICAPI ps_set_composite_operator(ps_context* ctx, ps_composite comp
 
 void PICAPI ps_clip(ps_context* ctx)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
 	if (!ctx) {
 		global_status = STATUS_INVALID_ARGUMENT;
 		return;
@@ -1015,131 +1288,154 @@ void PICAPI ps_clip(ps_context* ctx)
 		return;
 	}
 
-	ctx->state->clip.needclip = true;
-	_clip_path(ctx, ctx->path, (filling_rule_e)ctx->state->brush.rule);
-	ctx->canvas->p->render_clip(ctx, true);
+	ctx->state->clip.type = picasso::clip_content;
+	_clip_path(ctx->state, ctx->path, ctx->state->brush.rule);
+	ctx->canvas->p->render_clip(ctx->state, true);
 	ctx->path.free_all();
 	global_status = STATUS_SUCCEED;
 }
 
 void PICAPI ps_clip_path(ps_context* ctx, const ps_path* p, ps_fill_rule r)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
 	if (!ctx || !p) {
 		global_status = STATUS_INVALID_ARGUMENT;
 		return;
 	}	
 
-	ctx->state->clip.needclip = true;
-	_clip_path(ctx, p->path, (filling_rule_e)r);
-	ctx->canvas->p->render_clip(ctx, true);
+	ctx->state->clip.type = picasso::clip_content;
+	_clip_path(ctx->state, p->path, (picasso::filling_rule)r);
+	ctx->canvas->p->render_clip(ctx->state, true);
 	global_status = STATUS_SUCCEED;
 }
 
 void PICAPI ps_clip_device_rect(ps_context* ctx, const ps_rect* r)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
 	if (!ctx || !r) {
 		global_status = STATUS_INVALID_ARGUMENT;
 		return;
 	}
 
-	rect_d tr((float)r->x, (float)r->y, (float)(r->x+r->w), (float)(r->y+r->h));
-	trans_affine mtx = ctx->state->world_matrix;
-	float rotate = mtx.rotation();
+	picasso::rect_s tr(DBL_TO_SCALAR(r->x),
+            DBL_TO_SCALAR(r->y), 
+            DBL_TO_SCALAR(r->x+r->w), 
+            DBL_TO_SCALAR(r->y+r->h));
+
+	picasso::trans_affine mtx = ctx->state->world_matrix;
+	scalar rotate = mtx.rotation();
 	mtx.rotate(-rotate); //not support rotation
 	mtx.transform(&(tr.x1), &(tr.y1));
 	mtx.transform(&(tr.x2), &(tr.y2));
 
-	if (ctx->state->clip.cliprect) {
-		rect_d cr(float(ctx->state->clip.fs_rect.x),
-				  float(ctx->state->clip.fs_rect.y),
-				  float(ctx->state->clip.fs_rect.x+ctx->state->clip.fs_rect.w),
-				  float(ctx->state->clip.fs_rect.y+ctx->state->clip.fs_rect.h));
-
+	if (ctx->state->clip.type == picasso::clip_device) { //clip device rect.
+		picasso::rect_s cr = ctx->state->clip.rect;
 		if (cr.clip(tr)) {
-			ctx->state->clip.fs_rect.x = cr.x1;
-			ctx->state->clip.fs_rect.y = cr.y1;
-			ctx->state->clip.fs_rect.w = cr.x2-cr.x1;
-			ctx->state->clip.fs_rect.h = cr.y2-cr.y1;
+			ctx->state->clip.rect = cr;
 		}
 	} else {
-		ctx->state->clip.fs_rect.x = tr.x1;
-		ctx->state->clip.fs_rect.y = tr.y1;
-		ctx->state->clip.fs_rect.w = tr.x2-tr.x1;
-		ctx->state->clip.fs_rect.h = tr.y2-tr.y1;
+		ctx->state->clip.rect = tr;
 	}
-	ctx->state->clip.needclip = true;
-	ctx->state->clip.cliprect = true;
-	ctx->canvas->p->render_clip(ctx, true);
+	ctx->state->clip.type = picasso::clip_device;
+	ctx->canvas->p->render_clip(ctx->state, true);
 	global_status = STATUS_SUCCEED;
 }
 
 void PICAPI ps_clip_rect(ps_context* ctx, const ps_rect* r)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
 	if (!ctx || !r) {
 		global_status = STATUS_INVALID_ARGUMENT;
 		return;
 	}
 
-	path_storage path;
-	path.move_to(float(r->x), float(r->y));
-	path.hline_rel(float(r->w));
-	path.vline_rel(float(r->h));
-	path.hline_rel(-float(r->w));
+	picasso::graphic_path path;
+	path.move_to(DBL_TO_SCALAR(r->x), DBL_TO_SCALAR(r->y));
+	path.hline_rel(DBL_TO_SCALAR(r->w));
+	path.vline_rel(DBL_TO_SCALAR(r->h));
+	path.hline_rel(-DBL_TO_SCALAR(r->w));
 	path.end_poly();
 
-	ctx->state->clip.needclip = true;
-	_clip_path(ctx, path, fill_non_zero);
-	ctx->canvas->p->render_clip(ctx, true);
+	ctx->state->clip.type = picasso::clip_content;
+	_clip_path(ctx->state, path, picasso::fill_non_zero);
+	ctx->canvas->p->render_clip(ctx->state, true);
 	global_status = STATUS_SUCCEED;
 }
 
 void PICAPI ps_clip_rects(ps_context* ctx, const ps_rect* rs, unsigned int num_rs)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
 	if (!ctx || !rs || !num_rs) {
 		global_status = STATUS_INVALID_ARGUMENT;
 	 	return;
 	}
 
-	path_storage path;
+	picasso::graphic_path path;
 	for (unsigned int i = 0; i < num_rs; i++) {
-		path.move_to(float(rs[i].x), float(rs[i].y));
-		path.hline_rel(float(rs[i].w));
-		path.vline_rel(float(rs[i].h));
-		path.hline_rel(-float(rs[i].w));
+		path.move_to(DBL_TO_SCALAR(rs[i].x), DBL_TO_SCALAR(rs[i].y));
+		path.hline_rel(DBL_TO_SCALAR(rs[i].w));
+		path.vline_rel(DBL_TO_SCALAR(rs[i].h));
+		path.hline_rel(-DBL_TO_SCALAR(rs[i].w));
 		path.end_poly();
 	}
-	ctx->state->clip.needclip = true;
-	_clip_path(ctx, path, fill_non_zero);
-	ctx->canvas->p->render_clip(ctx, true);
+	ctx->state->clip.type = picasso::clip_content;
+    _clip_path(ctx->state, path, picasso::fill_non_zero);
+	ctx->canvas->p->render_clip(ctx->state, true);
 	global_status = STATUS_SUCCEED;
 }
 
 void PICAPI ps_reset_clip(ps_context* ctx)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
 	if (!ctx) {
 		global_status = STATUS_INVALID_ARGUMENT;
 		return;
 	}
 
-	ctx->canvas->p->render_clip(ctx, false);
-	ctx->state->clip.rule = fill_non_zero;
+	ctx->canvas->p->render_clip(ctx->state, false);
+	ctx->state->clip.rule = picasso::fill_non_zero;
 	ctx->state->clip.path.free_all();
-	ctx->state->clip.cliprect = false;
-	ctx->state->clip.needclip = false;
+	ctx->state->clip.rect = picasso::rect_s(0,0,0,0);
+	ctx->state->clip.type = picasso::clip_none;
 	global_status = STATUS_SUCCEED;
 }
 
 void PICAPI ps_save(ps_context* ctx)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
 	if (!ctx || !ctx->state) {
 		global_status = STATUS_INVALID_ARGUMENT;
 	 	return;
 	}
 
-	context_state * new_state = new context_state(*ctx->state); //copy constructor
+	picasso::context_state * new_state = new picasso::context_state(*ctx->state); //copy constructor
 	if (!new_state) {
 		global_status = STATUS_OUT_OF_MEMORY;
-        	return;
+        return;
 	}
 
 	new_state->next = ctx->state;
@@ -1149,23 +1445,28 @@ void PICAPI ps_save(ps_context* ctx)
 
 void PICAPI ps_restore(ps_context* ctx)
 {
+	if (!picasso::is_valid_system_device()) {
+		global_status = STATUS_DEVICE_ERROR;
+		return;
+	}
+
 	if (!ctx || !ctx->state->next) {
 		global_status = STATUS_INVALID_ARGUMENT;
 		return;
 	}
 
-	context_state * old_state = ctx->state;
+	picasso::context_state * old_state = ctx->state;
 
 	ctx->state = ctx->state->next;
 
 	if (old_state->clip.is_not_same(ctx->state->clip)) {
-		ctx->canvas->p->render_clip(ctx, false);
-		ctx->canvas->p->render_clip(ctx, true);
+		ctx->canvas->p->render_clip(ctx->state, false);
+		ctx->canvas->p->render_clip(ctx->state, true);
 	}
 
 	if ((old_state->gamma != ctx->state->gamma) 
 		|| (old_state->antialias != ctx->state->antialias)) {
-		ctx->canvas->p->render_gamma(ctx);
+		ctx->canvas->p->render_gamma(ctx->state, ctx->raster);
 	}
 
 	delete old_state;
@@ -1175,21 +1476,3 @@ void PICAPI ps_restore(ps_context* ctx)
 #ifdef __cplusplus
 }
 #endif
-
-namespace picasso {
-
-void _clip_path(ps_context* ctx, const path_storage& p, filling_rule_e r)
-{
-	if (!ctx->state->clip.path.total_vertices()) {
-		ctx->state->clip.path = p;
-	} else if (p.total_vertices()) {
-		path_storage rp;
-		_path_operation(gpc_and, ctx->state->clip.path, p, rp);
-		ctx->state->clip.path = rp;
-	}
-	ctx->state->clip.rule = r;
-}
-
-}
-
-

@@ -31,7 +31,7 @@ void destroy(GtkWidget *widget, gpointer data)
 	ps_context_unref(context);
 	ps_canvas_unref(canvas);
 	ps_shutdown();
-	gdk_pixbuf_unref(pixbuf);
+	g_object_unref(pixbuf);
 	gtk_main_quit();
 }
 

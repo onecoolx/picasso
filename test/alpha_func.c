@@ -9,6 +9,7 @@ static ps_point gp = {0 , 0};
 static ps_matrix* pm;
 static ps_path * pa;
 static ps_image * pi;
+static ps_canvas * pc;
 static ps_pattern * pt;
 static double a = 1.0;
 int acase = 1;
@@ -24,6 +25,7 @@ void draw_test (int id, ps_context* gc)
 
 	ps_set_stroke_color(gc, &sol);
 	ps_set_source_image(gc, pi);
+//	ps_set_source_canvas(gc, pc);
 
 	ps_fill(gc);
 
@@ -46,10 +48,13 @@ void init_context (ps_context* gc, ps_canvas* cs)
     pa = ps_path_create();
     pm = ps_matrix_create();
 
+
     ps_translate(gc, 203, 105);
     ps_scale(gc, 0.5, 0.5);
     ps_rotate(gc, 0.35);
 	ps_set_filter(gc, FILTER_NEAREST);
+
+
 }
 
 void dini_context (ps_context* gc)
@@ -62,7 +67,20 @@ void dini_context (ps_context* gc)
 
 void set_image_data(unsigned char* data, ps_color_format fmt, int w, int h, int p)
 {
+    ps_context* ptc = 0;
+    ps_color c = {0, 0, 1, 1};
+    ps_rect r = {0, 0, 100, 100};
+
 	pi = ps_image_create_with_data(data, fmt, w, h, p);
+	pc = ps_canvas_create(fmt, w, h);
+    
+    ptc = ps_context_create(pc);
+    ps_clear(ptc);
+    ps_set_source_color(ptc, &c);
+    ps_rectangle(ptc, &r);
+    ps_fill(ptc);
+
+    ps_context_unref(ptc);
 }
 
 void set_pattern_data(unsigned char* data, ps_color_format fmt, int w, int h, int p)
