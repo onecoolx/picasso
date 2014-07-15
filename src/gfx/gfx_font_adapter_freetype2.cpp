@@ -447,8 +447,7 @@ bool gfx_font_adapter::prepare_glyph(unsigned int code)
                 {
                     m_impl->cur_bound_rect = get_bounding_rect(m_impl->cur_font_path);
                     m_impl->cur_data_size = m_impl->cur_font_path.total_byte_size()+sizeof(unsigned int);//count data
-                    m_impl->cur_advance_x = FLT_TO_SCALAR(int26p6_to_flt(m_impl->font->glyph->metrics.width
-                                                                  -m_impl->font->glyph->metrics.horiBearingX));
+                    m_impl->cur_advance_x = FLT_TO_SCALAR(int26p6_to_flt(m_impl->font->glyph->advance.x));
                     m_impl->cur_advance_y = FLT_TO_SCALAR(int26p6_to_flt(m_impl->font->glyph->advance.y));
                     m_impl->matrix.transform(&m_impl->cur_advance_x, &m_impl->cur_advance_y);
                     return true;
@@ -468,8 +467,7 @@ bool gfx_font_adapter::prepare_glyph(unsigned int code)
                                 m_impl->cur_font_scanlines_bin.max_x() + 1,
                                 m_impl->cur_font_scanlines_bin.max_y() + 1);
                         m_impl->cur_data_size = m_impl->cur_font_scanlines_bin.byte_size(); 
-                        m_impl->cur_advance_x = FLT_TO_SCALAR(int26p6_to_flt(m_impl->font->glyph->metrics.width
-                                                                    -m_impl->font->glyph->metrics.horiBearingX));
+                        m_impl->cur_advance_x = FLT_TO_SCALAR(int26p6_to_flt(m_impl->font->glyph->advance.x));
                         m_impl->cur_advance_y = FLT_TO_SCALAR(int26p6_to_flt(m_impl->font->glyph->advance.y));
                         return true;
                     }
@@ -502,8 +500,7 @@ bool gfx_font_adapter::prepare_glyph(unsigned int code)
                                 m_impl->cur_font_scanlines_bin.max_x() + 1,
                                 m_impl->cur_font_scanlines_bin.max_y() + 1);
                         m_impl->cur_data_size = m_impl->cur_font_scanlines_bin.byte_size(); 
-                        m_impl->cur_advance_x = FLT_TO_SCALAR(int26p6_to_flt(m_impl->font->glyph->metrics.width
-                                                                    -m_impl->font->glyph->metrics.horiBearingX));
+                        m_impl->cur_advance_x = FLT_TO_SCALAR(int26p6_to_flt(m_impl->font->glyph->advance.x));
                         m_impl->cur_advance_y = FLT_TO_SCALAR(int26p6_to_flt(m_impl->font->glyph->advance.y));
                         m_impl->matrix.transform(&m_impl->cur_advance_x, &m_impl->cur_advance_y);
                         return true;

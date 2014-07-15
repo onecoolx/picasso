@@ -10,3 +10,5 @@
 2013-02-12: Version 2.0.0
 	Update code version 2.0.0 alpha.
 
+2014-07-16: Version 2.0.1
+	Fix font glyph advance_x bug.
