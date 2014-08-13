@@ -12,3 +12,7 @@
 
 2014-07-16: Version 2.0.1
 	Fix font glyph advance_x bug.
+
+2014-08-13:
+    Fix crash bug for path clip.
+

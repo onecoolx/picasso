@@ -91,10 +91,11 @@ bool raster_adapter::fill_contents_point(const vertex_source& vs, scalar x, scal
 {
     bool ret = false;
     abstract_raster_adapter* rs = get_system_device()->create_raster_adapter();
+    trans_affine mtx;
     if (rs) {
         rs->set_raster_method(raster_fill);
         rs->set_fill_attr(FIA_FILL_RULE, rule);
-        rs->set_transform(trans_affine().impl());
+        rs->set_transform(mtx.impl());
         rs->add_shape(vs, 0);
         rs->commit();
         ret = rs->contains(x, y);
