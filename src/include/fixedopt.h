@@ -13,6 +13,8 @@ typedef int int32_t;
 typedef long long int64_t;
 #elif defined(_MSC_VER)
 typedef __int64 int64_t;
+#elif defined(__WATCOMC__)
+typedef __int64 int64_t;
 #else
 #error no define 64 bit integer.
 #endif
@@ -210,9 +212,9 @@ inline int round(fixed x)
     return floor(fixed(x.data()+FIXED_0_5, 0));
 }
 
-inline fixed_type dbl_to_fixed(double d)
+inline fixed_type flt_to_fixed(float f)
 {
-    return (fixed_type)(d * (double)FIXED_1);
+    return (fixed_type)(f * (float)FIXED_1);
 }
 
 // double fabs (double x)

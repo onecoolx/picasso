@@ -10,13 +10,13 @@
 
 namespace picasso {
 
-const scalar curve_distance_epsilon          = DBL_TO_SCALAR(1e-30);
-const scalar curve_collinearity_epsilon      = DBL_TO_SCALAR(1e-30);
-const scalar curve_angle_tolerance_epsilon   = DBL_TO_SCALAR(0.01);
+const scalar curve_distance_epsilon          = FLT_TO_SCALAR(1e-30f);
+const scalar curve_collinearity_epsilon      = FLT_TO_SCALAR(1e-30f);
+const scalar curve_angle_tolerance_epsilon   = FLT_TO_SCALAR(0.01f);
 
 enum curve_recursion_limit 
 {
-       curve_recursion_limit = 32,
+    curve_recursion_limit = 32,
 };
 
 // curve3_inc
@@ -104,7 +104,7 @@ unsigned int curve3_inc::vertex(scalar* x, scalar* y)
 //curve3_div
 void curve3_div::init(scalar x1, scalar y1, scalar x2, scalar y2, scalar x3, scalar y3)
 {
-    m_points.remove_all();
+    m_points.clear();
     m_distance_tolerance_square = FLT_TO_SCALAR(0.5f) / m_approximation_scale;
     m_distance_tolerance_square *= m_distance_tolerance_square;
     bezier(x1, y1, x2, y2, x3, y3);
@@ -308,7 +308,7 @@ void curve4_div::init(scalar x1, scalar y1,
         scalar x3, scalar y3,
         scalar x4, scalar y4)
 {
-    m_points.remove_all();
+    m_points.clear();
     m_distance_tolerance_square = FLT_TO_SCALAR(0.5f) / m_approximation_scale;
     m_distance_tolerance_square *= m_distance_tolerance_square;
     bezier(x1, y1, x2, y2, x3, y3, x4, y4);

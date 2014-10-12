@@ -8,14 +8,29 @@
 #define _PIXFMT_WRAPPER_H_
 
 #include "common.h"
-#include "aggheader.h"
 
 #include "gfx_mask_layer.h"
+#include "gfx_image_accessors.h"
 
 namespace gfx {
 
-// alpha mask type
-typedef agg::alpha_mask_gray8 mask_type;
+static inline bool operator == (const rgba8& a, const rgba8& b)
+{
+    return (a.r==b.r) && (a.g==b.g) && (a.b==b.b) && (a.a==b.a); 
+}
+
+// for color key compare
+static inline bool operator == (const rgba8* a, const rgba8& b)
+{
+    //Note : for color key only, not compare alpha value.
+    return (a->r==b.r) && (a->g==b.g) && (a->b==b.b); 
+}
+
+static inline bool operator != (const rgba8* a, const rgba8& b)
+{
+    //Note : for color key only, not compare alpha value.
+    return (a->r!=b.r) || (a->g!=b.g) || (a->b!=b.b); 
+}
 
 //pixfmt wrapper
 template<typename Pixfmt, typename AlphaMask>
@@ -42,14 +57,14 @@ public:
         : use_mask(false), m_colorkey(0), m_fmt(), m_filter(), m_mask(m_fmt, m_filter), m_colors(0) 
     {
     }
-    explicit pixfmt_wrapper(agg::rendering_buffer& rb)
+    explicit pixfmt_wrapper(gfx_rendering_buffer& rb)
         : use_mask(false), m_colorkey(0), m_fmt(rb), m_filter(), m_mask(m_fmt, m_filter), m_colors(0) 
     {
     }
 
     ~pixfmt_wrapper() { clear_mask(); clear_key();}
 
-    void attach(agg::rendering_buffer& rb) { m_fmt.attach(rb); }
+    void attach(gfx_rendering_buffer& rb) { m_fmt.attach(rb); }
 
     void clear_mask()
     {
@@ -72,7 +87,7 @@ public:
             m_colors = &mask->colors();
     }
 
-    void set_transparent_color(agg::rgba8 * color)
+    void set_transparent_color(rgba8 * color)
     {
         m_colorkey = color;
     }
@@ -99,17 +114,17 @@ public:
     int      stride() const { return m_fmt.stride(); }
 
     //--------------------------------------------------------------------
-    agg::int8u* row_ptr(int y)       { return m_fmt.row_ptr(y); }
-    const agg::int8u* row_ptr(int y) const { return m_fmt.row_ptr(y); }
+    byte* row_ptr(int y)       { return m_fmt.row_ptr(y); }
+    const byte* row_ptr(int y) const { return m_fmt.row_ptr(y); }
     row_data     row(int y)     const { return m_fmt.row(y); }
 
     //--------------------------------------------------------------------
-    agg::int8u* pix_ptr(int x, int y)
+    byte* pix_ptr(int x, int y)
     {
         return m_fmt.pix_ptr(x, y);
     }
 
-    const agg::int8u* pix_ptr(int x, int y) const
+    const byte* pix_ptr(int x, int y) const
     {
         return m_fmt.pix_ptr(x, y);
     }
@@ -119,11 +134,11 @@ public:
     float alpha() const { return m_fmt.alpha(); }
 
     //--------------------------------------------------------------------
-    void comp_op(unsigned op) { m_fmt.comp_op(op); }
-    unsigned comp_op() const  { return m_fmt.comp_op(); }
+    void comp_op(unsigned op) { m_fmt.blend_op(op); }
+    unsigned comp_op() const  { return m_fmt.blend_op(); }
 
     //--------------------------------------------------------------------
-    static void make_pix(agg::int8u* p, const color_type& c)
+    static void make_pix(byte* p, const color_type& c)
     {
         pixfmt_type::make_pix(p, c);
     }
@@ -490,31 +505,12 @@ public:
 
 private:
     bool use_mask;
-    agg::rgba8 *m_colorkey;
+    rgba8 *m_colorkey;
     pixfmt_type m_fmt;
     amask_type m_filter;
-    agg::pixfmt_amask_adaptor<pixfmt_type, amask_type> m_mask;
-    agg::pod_bvector<agg::rgba8> *m_colors;
+    gfx_pixfmt_amask_adaptor<pixfmt_type, amask_type> m_mask;
+    pod_bvector<rgba8> *m_colors;
 };
-
-inline bool operator == (const agg::rgba8& a, const agg::rgba8& b)
-{
-    return (a.r==b.r) && (a.g==b.g) && (a.b==b.b) && (a.a==b.a); 
-}
-
-// for color key compare
-inline bool operator == (const agg::rgba8* a, const agg::rgba8& b)
-{
-    //Note : for color key only, not compare alpha value.
-    return (a->r==b.r) && (a->g==b.g) && (a->b==b.b); 
-}
-
-inline bool operator != (const agg::rgba8* a, const agg::rgba8& b)
-{
-    //Note : for color key only, not compare alpha value.
-    return (a->r!=b.r) || (a->g!=b.g) || (a->b!=b.b); 
-}
-
 
 //pattern wrapper
 template<typename Pixfmt>
@@ -530,9 +526,9 @@ public:
 
     pattern_wrapper() {}
     virtual ~pattern_wrapper() {}
-    virtual const agg::int8u* span(int x, int y, unsigned) = 0;
-    virtual const agg::int8u* next_x() = 0;
-    virtual const agg::int8u* next_y() = 0;
+    virtual const byte* span(int x, int y, unsigned) = 0;
+    virtual const byte* next_x() = 0;
+    virtual const byte* next_y() = 0;
 };
 
 template<typename Pixfmt, typename Wrap_X, typename Wrap_Y>
@@ -543,57 +539,22 @@ public:
         : m_wrap(fmt)
     {
     }
-    virtual const agg::int8u* span(int x, int y, unsigned i)
+    virtual const byte* span(int x, int y, unsigned i)
     {
         return m_wrap.span(x, y, i);
     }
-    virtual const agg::int8u* next_x()
+    virtual const byte* next_x()
     {
         return m_wrap.next_x();
     }
-    virtual const agg::int8u* next_y()
+    virtual const byte* next_y()
     {
         return m_wrap.next_y();
     }
 private:
-    agg::image_accessor_wrap<Pixfmt, Wrap_X, Wrap_Y> m_wrap;
+    image_accessor_wrap<Pixfmt, Wrap_X, Wrap_Y> m_wrap;
 };
 
-
-// gradient wrapper
-class gradient_wrapper 
-{
-public:
-    gradient_wrapper() {}
-    virtual ~gradient_wrapper() {}
-    virtual void init(float r, float x, float y) = 0;
-    virtual int calculate(int x, int y, int) const = 0; 
-};
-
-
-template<typename GradientF, typename WapperF>
-class gradient_wrapper_adaptor : public gradient_wrapper
-{
-public:
-    gradient_wrapper_adaptor()
-        : m_wrapper(m_gradient) {}
-
-    virtual ~gradient_wrapper_adaptor() {}
-
-    virtual void init(float r, float x, float y)
-    {
-        m_gradient.init(r, x, y);
-    }
-
-    virtual int calculate(int x, int y, int d) const 
-    {
-        return m_wrapper.calculate(x, y, d);
-    }
-
-private:
-    GradientF m_gradient;
-    WapperF m_wrapper;
-};
 
 }
 #endif /*_PIXFMT_WRAPPER_H_*/

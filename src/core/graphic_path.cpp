@@ -15,7 +15,7 @@
 
 namespace picasso {
 
-#define DEFAULT_VERTEICES  (4)
+#define DEFAULT_VERTEICES  (8)
 
 class graphic_path_impl
 {
@@ -227,7 +227,7 @@ void graphic_path::hline_to(scalar x)
 
 void graphic_path::hline_rel(scalar dx)
 {
-    register scalar dy = 0;
+    scalar dy = 0;
     rel_to_abs(&dx, &dy);
     m_impl->add_vertex(dx, dy, path_cmd_line_to);
 }
@@ -239,7 +239,7 @@ void graphic_path::vline_to(scalar y)
 
 void graphic_path::vline_rel(scalar dy)
 {
-    register scalar dx = 0;
+    scalar dx = 0;
     rel_to_abs(&dx, &dy);
     m_impl->add_vertex(dx, dy, path_cmd_line_to);
 }
@@ -248,9 +248,9 @@ void graphic_path::arc_to(scalar rx, scalar ry, scalar angle,
         bool large_arc_flag, bool sweep_flag, scalar x, scalar y)
 {
     if (m_impl->total_vertices() && is_vertex(m_impl->last_command())) {
-        const scalar epsilon = DBL_TO_SCALAR(1e-30);
-        scalar x0 = 0.0;
-        scalar y0 = 0.0;
+        const scalar epsilon = FLT_TO_SCALAR(1e-30f);
+        scalar x0 = 0.0f;
+        scalar y0 = 0.0f;
         m_impl->last_vertex(&x0, &y0);
 
         rx = Fabs(rx);
@@ -673,7 +673,7 @@ void graphic_path::join_path(vertex_source& vs, unsigned int id)
             scalar x0, y0;
             unsigned int cmd0 = last_vertex(&x0, &y0);
             if (is_vertex(cmd0)) {
-                if (calc_distance(x, y, x0, y0) > DBL_TO_SCALAR(vertex_dist_epsilon)) {
+                if (calc_distance(x, y, x0, y0) > FLT_TO_SCALAR(vertex_dist_epsilon)) {
                     if (is_move_to(cmd)) { 
                         cmd = path_cmd_line_to;
                     }

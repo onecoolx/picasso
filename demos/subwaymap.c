@@ -20,189 +20,189 @@
 
 static int width;
 static int height;
-static double zoomFactor = 1;
-static double rotateFactor = 0;
+static float zoomFactor = 1;
+static float rotateFactor = 0;
 
 typedef struct {
-	const float *floats;
-	const unsigned char *cmds;
-	unsigned nCommands;
-	unsigned nFloats;
-	ps_color color;
-	double	transform[9];
+    const float *floats;
+    const unsigned char *cmds;
+    unsigned nCommands;
+    unsigned nFloats;
+    ps_color color;
+    float    transform[9];
 }PathData;
 
 
-#define OVG_RGB(r,g,b) {r/255.0, g/255.0, b/255.0, 1.0}
+#define OVG_RGB(r,g,b) {r/255.0f, g/255.0f, b/255.0f, 1.0f}
 #define NUM_PATHS 2130
 static const PathData objl_paths[NUM_PATHS];
 
 #define MAP_WIDTH 645.0f
 #define MAP_HEIGHT 420.0f
 static ps_path* paths[NUM_PATHS];
-double logX, logY;
-double logHW, logHH;
+float logX, logY;
+float logHW, logHH;
 
 static int oldx = 0;
 static int oldy = 0;
 
-static double tx = 0;
-static double ty = 0;
+static float tx = 0;
+static float ty = 0;
 
 static int change = 0;
 
 void on_init(ps_context* gc, int w, int h)
 {
-	int i,c;
-	unsigned j;
-	const float *points = 0;
-	logX = MAP_WIDTH / 2.0;
-	logY = MAP_HEIGHT / 2.0;
-	logHW = 75.0;
-	logHH = logHW * MAP_HEIGHT / MAP_WIDTH;
-	
-	width = w;
-	height = h;
+    int i,c;
+    unsigned j;
+    const float *points = 0;
+    logX = MAP_WIDTH / 2.0;
+    logY = MAP_HEIGHT / 2.0;
+    logHW = 75.0;
+    logHH = logHW * MAP_HEIGHT / MAP_WIDTH;
+    
+    width = w;
+    height = h;
 
-	for (i = 0; i < NUM_PATHS; i++) {
-		paths[i] = ps_path_create();
-		c = 0; points = objl_paths[i].floats;
-		for (j = 0; j < objl_paths[i].nCommands; j++) {
-			switch(objl_paths[i].cmds[j]) {
-				case 2:
-					{
-						ps_point pt = {points[c], points[c+1]};
-						ps_path_move_to(paths[i], &pt);
-						c += 2;
-					}
-					break;
-				case 4:
-					{
-						ps_point pt = {points[c], points[c+1]};
-						ps_path_line_to(paths[i], &pt);
-						c += 2;
-					}
-					break;
-				case 12:
-					{
-						ps_point pt[3] = {{points[c], points[c+1]}, {points[c+2], points[c+3]}, {points[c+4], points[c+5]}};
-						ps_path_bezier_to(paths[i], &pt[0], &pt[1], &pt[2]);
-						c += 6;
-					}
-					break;
-			}
-		}
-	}
-	change = 1;
+    for (i = 0; i < NUM_PATHS; i++) {
+        paths[i] = ps_path_create();
+        c = 0; points = objl_paths[i].floats;
+        for (j = 0; j < objl_paths[i].nCommands; j++) {
+            switch(objl_paths[i].cmds[j]) {
+                case 2:
+                    {
+                        ps_point pt = {points[c], points[c+1]};
+                        ps_path_move_to(paths[i], &pt);
+                        c += 2;
+                    }
+                    break;
+                case 4:
+                    {
+                        ps_point pt = {points[c], points[c+1]};
+                        ps_path_line_to(paths[i], &pt);
+                        c += 2;
+                    }
+                    break;
+                case 12:
+                    {
+                        ps_point pt[3] = {{points[c], points[c+1]}, {points[c+2], points[c+3]}, {points[c+4], points[c+5]}};
+                        ps_path_bezier_to(paths[i], &pt[0], &pt[1], &pt[2]);
+                        c += 6;
+                    }
+                    break;
+            }
+        }
+    }
+    change = 1;
 }
 
 void on_draw(ps_context* gc)
 {
-	int i;
-	double x0, y0, x1, y1;
-	ps_color color = {1, 1, 1, 1};
-	ps_rect rect = {width - 70, 0, 70, 100};
+    int i;
+    float x0, y0, x1, y1;
+    ps_color color = {1, 1, 1, 1};
+    ps_rect rect = {(float)width - 70, 0, 70, 100};
 
-	if (!change)
-		return;
+    if (!change)
+        return;
 
-	ps_set_source_color(gc, &color);
-	ps_clear(gc);
+    ps_set_source_color(gc, &color);
+    ps_clear(gc);
 
-	x0 = logX - logHW;
-	y0 = logY - logHH;
-	x1 = logX + logHW;
-	y1 = logY + logHH;
+    x0 = logX - logHW;
+    y0 = logY - logHH;
+    x1 = logX + logHW;
+    y1 = logY + logHH;
 
-	ps_identity(gc);
-	ps_translate(gc, -x0, -y0);
-	ps_scale(gc, (double)width / (x1 - x0), (double)height / (y1 - y0));
-	ps_translate(gc, -width/2, -height/2);
-	ps_rotate(gc, rotateFactor);
-	ps_scale(gc, zoomFactor, zoomFactor);
-	ps_translate(gc, width/2, height/2);
-	ps_translate(gc, tx, ty);
+    ps_identity(gc);
+    ps_translate(gc, -x0, -y0);
+    ps_scale(gc, (float)width / (x1 - x0), (float)height / (y1 - y0));
+    ps_translate(gc, -(float)width/2, -(float)height/2);
+    ps_rotate(gc, rotateFactor);
+    ps_scale(gc, zoomFactor, zoomFactor);
+    ps_translate(gc, (float)width/2, (float)height/2);
+    ps_translate(gc, tx, ty);
 
-	ps_set_fill_rule(gc, FILL_RULE_EVEN_ODD);
-	ps_set_composite_operator(gc, COMPOSITE_SRC);
-	for (i = 0; i < NUM_PATHS; i++) {
-		ps_set_source_color(gc, &objl_paths[i].color);
-		ps_set_path(gc, paths[i]);
-		ps_fill(gc);
-	}
+    ps_set_fill_rule(gc, FILL_RULE_EVEN_ODD);
+    ps_set_composite_operator(gc, COMPOSITE_SRC);
+    for (i = 0; i < NUM_PATHS; i++) {
+        ps_set_source_color(gc, &objl_paths[i].color);
+        ps_set_path(gc, paths[i]);
+        ps_fill(gc);
+    }
 
-	ps_identity(gc);
-	color.a = 0.9;
-	ps_set_composite_operator(gc, COMPOSITE_SRC_OVER);
-	ps_set_source_color(gc, &color);
-	ps_rectangle(gc, &rect);
-	ps_fill(gc);
+    ps_identity(gc);
+    color.a = 0.9f;
+    ps_set_composite_operator(gc, COMPOSITE_SRC_OVER);
+    ps_set_source_color(gc, &color);
+    ps_rectangle(gc, &rect);
+    ps_fill(gc);
 
-	ps_text_out(gc, rect.x+2, rect.y+2, "zoom: +");
-	ps_text_out(gc, rect.x+37, rect.y+14, " -");
-	ps_text_out(gc, rect.x+2, rect.y+26, "rotate: A");
-	ps_text_out(gc, rect.x+34, rect.y+38, " D");
-	ps_text_out(gc, rect.x+2, rect.y+50, "trans: up");
-	ps_text_out(gc, rect.x+34, rect.y+62, " down");
-	ps_text_out(gc, rect.x+34, rect.y+74, " left");
-	ps_text_out(gc, rect.x+34, rect.y+86, " right");
+    ps_text_out(gc, rect.x+2, rect.y+2, "zoom: +");
+    ps_text_out(gc, rect.x+37, rect.y+14, " -");
+    ps_text_out(gc, rect.x+2, rect.y+26, "rotate: A");
+    ps_text_out(gc, rect.x+34, rect.y+38, " D");
+    ps_text_out(gc, rect.x+2, rect.y+50, "trans: up");
+    ps_text_out(gc, rect.x+34, rect.y+62, " down");
+    ps_text_out(gc, rect.x+34, rect.y+74, " left");
+    ps_text_out(gc, rect.x+34, rect.y+86, " right");
 
-	change = 0;
+    change = 0;
 }
 
 void on_term(ps_context* gc)
 {
-	int i;
-	for (i = 0; i < NUM_PATHS; i++)
-		ps_path_unref(paths[i]);
+    int i;
+    for (i = 0; i < NUM_PATHS; i++)
+        ps_path_unref(paths[i]);
 }
 
 void on_mouse_event(mouse_event_type evt, unsigned key, int x, int y)
 {
-	if (evt == MOUSE_MOVE && (key&EVT_LBUTTON)) {
-		int dx = x - oldx;
-		int dy = y - oldy;
+    if (evt == MOUSE_MOVE && (key&EVT_LBUTTON)) {
+        int dx = x - oldx;
+        int dy = y - oldy;
 
-		oldx = x;
-		oldy = y;
+        oldx = x;
+        oldy = y;
 
-		tx += dx;
-		ty += dy;
-		change = 1;
-	} else if (evt == LEFT_BUTTON_DOWN) {
-		oldx = x;
-		oldy = y;
-	}
-	refresh(NULL);
+        tx += dx;
+        ty += dy;
+        change = 1;
+    } else if (evt == LEFT_BUTTON_DOWN) {
+        oldx = x;
+        oldy = y;
+    }
+    refresh(NULL);
 }
 
 void on_key_event(key_event_type kvt, int vk)
 {
-	if (kvt == KEY_EVENT_DOWN) {
-		if (vk == KEY_A) 
-			rotateFactor -= 0.1;
-		else if (vk == KEY_D)
-			rotateFactor += 0.1;
-		else if (vk == KEY_OEM_PLUS) {
-			zoomFactor += 0.1;
-			if (zoomFactor > 2)
-				zoomFactor = 2;
-		} else if (vk == KEY_OEM_MINUS) {
-			zoomFactor -= 0.1;
-			if (zoomFactor < 0.1)
-				zoomFactor = 0.1;
-		} else if (vk == KEY_UP) {
-			ty -= 10;
-		} else if (vk == KEY_DOWN) {
-			ty += 10;
-		} else if (vk == KEY_LEFT) {
-			tx -= 10;
-		} else if (vk == KEY_RIGHT) {
-			tx += 10;
-		}
-		change = 1;
-	}
-	refresh(NULL);
+    if (kvt == KEY_EVENT_DOWN) {
+        if (vk == KEY_A) 
+            rotateFactor -= 0.1f;
+        else if (vk == KEY_D)
+            rotateFactor += 0.1f;
+        else if (vk == KEY_OEM_PLUS) {
+            zoomFactor += 0.1f;
+            if (zoomFactor > 2)
+                zoomFactor = 2;
+        } else if (vk == KEY_OEM_MINUS) {
+            zoomFactor -= 0.1f;
+            if (zoomFactor < 0.1f)
+                zoomFactor = 0.1f;
+        } else if (vk == KEY_UP) {
+            ty -= 10;
+        } else if (vk == KEY_DOWN) {
+            ty += 10;
+        } else if (vk == KEY_LEFT) {
+            tx -= 10;
+        } else if (vk == KEY_RIGHT) {
+            tx += 10;
+        }
+        change = 1;
+    }
+    refresh(NULL);
 }
 
 void on_timer()
@@ -211,9 +211,9 @@ void on_timer()
 
 void on_size(int w, int h)
 {
-	width = w;
-	height = h;
-	change = 1;
+    width = w;
+    height = h;
+    change = 1;
 }
 
 

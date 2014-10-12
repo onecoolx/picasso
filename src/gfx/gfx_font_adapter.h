@@ -11,7 +11,6 @@
 #include "interfaces.h"
 
 #include "picasso_font.h"
-#include "aggheader.h"
 
 namespace gfx {
 

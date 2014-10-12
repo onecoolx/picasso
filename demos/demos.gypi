@@ -10,7 +10,7 @@
       'target_name': 'clock',
       'type': 'executable',
       'dependencies': [
-        'picasso2',
+        'picasso2_sw',
       ],
       'include_dirs': [
         '../include',
@@ -48,7 +48,7 @@
       'target_name': 'flowers',
       'type': 'executable',
       'dependencies': [
-        'picasso2',
+        'picasso2_sw',
       ],
       'include_dirs': [
         '../include',
@@ -86,7 +86,7 @@
       'target_name': 'subwaymap',
       'type': 'executable',
       'dependencies': [
-        'picasso2',
+        'picasso2_sw',
       ],
       'include_dirs': [
         '../include',
@@ -124,7 +124,7 @@
       'target_name': 'tiger',
       'type': 'executable',
       'dependencies': [
-        'picasso2',
+        'picasso2_sw',
       ],
       'include_dirs': [
         '../include',

@@ -391,7 +391,6 @@ fixed sqrt(fixed x)
 //fabs
 fixed fabs(fixed x)
 {
-    // from open skia.
     register fixed_type mask = x.data() >> (FIXED_BITS-1); 
     return fixed(((x.data() ^ mask) - mask), 0);
 }
@@ -399,7 +398,6 @@ fixed fabs(fixed x)
 //fmod
 fixed fmod(fixed x, fixed y)
 {
-    // from open skia.
     register fixed_type x_mask = x.data() >> (FIXED_BITS-1);
     register fixed_type y_mask = y.data() >> (FIXED_BITS-1);
 

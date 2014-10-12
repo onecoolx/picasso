@@ -122,7 +122,6 @@ ps_canvas* PICAPI ps_canvas_create(ps_color_format fmt, int w, int h)
 
     picasso::painter* pa = picasso::get_painter_from_format(fmt);
     if (!pa){
-        global_status = STATUS_OUT_OF_MEMORY;
         return 0;
     }
 
@@ -154,7 +153,6 @@ ps_canvas* PICAPI ps_canvas_create(ps_color_format fmt, int w, int h)
             global_status = STATUS_OUT_OF_MEMORY;
             return 0;
         }
-        return p;
     } else {
         delete pa; //mem_free painter on error
         global_status = STATUS_OUT_OF_MEMORY;
@@ -182,7 +180,6 @@ ps_canvas* PICAPI ps_canvas_create_compatible(const ps_canvas* c, int w, int h)
 
     picasso::painter* pa = picasso::get_painter_from_format(c->fmt);
     if (!pa){
-        global_status = STATUS_OUT_OF_MEMORY;
         return 0;
     }
 
@@ -214,7 +211,6 @@ ps_canvas* PICAPI ps_canvas_create_compatible(const ps_canvas* c, int w, int h)
             global_status = STATUS_OUT_OF_MEMORY;
             return 0;
         }
-        return p;
     } else {
         delete pa; //mem_free painter on error
         global_status = STATUS_OUT_OF_MEMORY;
@@ -234,7 +230,7 @@ ps_canvas* PICAPI ps_canvas_create_from_canvas(ps_canvas* c, const ps_rect* r)
         return 0;
     }
 
-    ps_rect rc = {0, 0, (double)c->buffer.width(), (double)c->buffer.height()}; 
+    ps_rect rc = {0, 0, (float)c->buffer.width(), (float)c->buffer.height()}; 
     if (!r) {
         //Note: if rect is NULL, It equal reference.
         global_status = STATUS_SUCCEED;
@@ -252,7 +248,6 @@ ps_canvas* PICAPI ps_canvas_create_from_canvas(ps_canvas* c, const ps_rect* r)
 
     picasso::painter* pa = picasso::get_painter_from_format(c->fmt);
     if (!pa){
-        global_status = STATUS_OUT_OF_MEMORY;
         return 0;
     }
 
@@ -290,7 +285,7 @@ ps_canvas* PICAPI ps_canvas_create_from_image(ps_image* i, const ps_rect* r)
         return 0;
     }
 
-    ps_rect rc = {0, 0, (double)i->buffer.width(), (double)i->buffer.height()}; 
+    ps_rect rc = {0, 0, (float)i->buffer.width(), (float)i->buffer.height()}; 
     if (r) {
         if (r->x > 0)
             rc.x = r->x;
@@ -304,7 +299,6 @@ ps_canvas* PICAPI ps_canvas_create_from_image(ps_image* i, const ps_rect* r)
 
     picasso::painter* pa = picasso::get_painter_from_format(i->fmt);
     if (!pa){
-        global_status = STATUS_OUT_OF_MEMORY;
         return 0;
     }
 
@@ -344,7 +338,6 @@ ps_canvas* PICAPI ps_canvas_create_with_data(ps_byte * addr, ps_color_format fmt
 
     picasso::painter* pa = picasso::get_painter_from_format(fmt);
     if (!pa){
-        global_status = STATUS_OUT_OF_MEMORY;
         return 0;
     }
 
@@ -366,6 +359,35 @@ ps_canvas* PICAPI ps_canvas_create_with_data(ps_byte * addr, ps_color_format fmt
         global_status = STATUS_OUT_OF_MEMORY;
         return 0;
     }
+}
+
+ps_canvas* PICAPI ps_canvas_replace_data(ps_canvas* canvas, ps_byte* addr,
+                                            ps_color_format fmt, int w, int h, int pitch)
+{
+    if (!picasso::is_valid_system_device()) {
+        global_status = STATUS_DEVICE_ERROR;
+        return 0;
+    }
+
+    if (!canvas || !addr || w <= 0 || h <= 0 || pitch <= 0) {
+        global_status = STATUS_INVALID_ARGUMENT;
+        return 0;
+    }
+
+    if (canvas->flage != buffer_alloc_none) {
+        global_status = STATUS_INVALID_ARGUMENT;
+        return 0;
+    }
+
+    if (canvas->fmt != fmt) {
+        global_status = STATUS_MISMATCHING_FORMAT;
+        return 0;
+    }
+
+    // replace target buffer address.
+    canvas->buffer.replace(addr, w, h, pitch);
+    global_status = STATUS_SUCCEED;
+    return canvas;
 }
 
 ps_canvas* PICAPI ps_canvas_ref(ps_canvas* canvas)
@@ -431,8 +453,8 @@ ps_size PICAPI ps_canvas_get_size(const ps_canvas* canvas)
         return size;
     }
 
-    size.w = canvas->buffer.width();
-    size.h = canvas->buffer.height();
+    size.w = (float)canvas->buffer.width();
+    size.h = (float)canvas->buffer.height();
     global_status = STATUS_SUCCEED;
     return size;
 }

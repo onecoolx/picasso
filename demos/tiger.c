@@ -15,6 +15,7 @@
 
 #include "picasso.h"
 #include "interface.h"
+#include "timeuse.h"
 
 const int tigerCommandCount;
 const char tigerCommands[];
@@ -27,250 +28,274 @@ const float tigerPoints[];
 
 static int width;
 static int height;
-static double zoomFactor = 1;
+static float zoomFactor = 1;
 static ps_matrix* matrix = 0;
 
 static int oldx = 0;
 static int oldy = 0;
 
-static double tx = 0;
-static double ty = 0;
+static float tx = 0;
+static float ty = 0;
 
 static int change = 0;
 
 
 typedef struct _pathData {
-	ps_fill_rule m_fillRule;	
-	unsigned int m_paintMode; /* 1: fill, 2 stroke*/
-	ps_line_cap  m_capStyle;
-	ps_line_join m_joinStyle;
-	double		 m_miterLimit;
-	double		 m_lineWidth;
-	ps_color     m_fcolor;
-	ps_color     m_scolor;
-	ps_path *    m_path;
+    ps_fill_rule m_fillRule;    
+    unsigned int m_paintMode; /* 1: fill, 2 stroke*/
+    ps_line_cap  m_capStyle;
+    ps_line_join m_joinStyle;
+    float         m_miterLimit;
+    float         m_lineWidth;
+    ps_color     m_fcolor;
+    ps_color     m_scolor;
+    ps_path *    m_path;
 }pathData;
 
 typedef struct _PS{
-	pathData*    m_paths;
-	int			 m_numPaths;
+    pathData*    m_paths;
+    int             m_numPaths;
 }PS;
 
 static PS* tiger = NULL;
 
 static PS* PS_construct(const char* commands, int commandCount, const float* points, int pointCount)
 {
-	PS *ps = (PS*)malloc(sizeof(PS));
-	int p = 0;
-	int c = 0;
-	int i = 0;
-	int paths = 0;
-	int maxElements = 0;
+    PS *ps = (PS*)malloc(sizeof(PS));
+    int p = 0;
+    int c = 0;
+    int i = 0;
+    int paths = 0;
+    int maxElements = 0;
 
-	while (c < commandCount) {
-		int elements, e;
-		c += 4;
-		p += 8;
-		elements = (int)points[p++];
-		if (elements > maxElements)
-			maxElements = elements;
-		for (e = 0; e < elements; e++) {
-			switch(commands[c]) {
-				case 'M': p += 2; break;
-				case 'L': p += 2; break;
-				case 'C': p += 6; break;
-				case 'E': break;
-			}
-			c++;
-		}
-		paths++;
-	}
+    while (c < commandCount) {
+        int elements, e;
+        c += 4;
+        p += 8;
+        elements = (int)points[p++];
+        if (elements > maxElements)
+            maxElements = elements;
+        for (e = 0; e < elements; e++) {
+            switch(commands[c]) {
+                case 'M': p += 2; break;
+                case 'L': p += 2; break;
+                case 'C': p += 6; break;
+                case 'E': break;
+            }
+            c++;
+        }
+        paths++;
+    }
 
-	ps->m_numPaths = paths;
-	ps->m_paths = (pathData*)malloc(paths*sizeof(pathData));
+    ps->m_numPaths = paths;
+    ps->m_paths = (pathData*)malloc(paths*sizeof(pathData));
 
-	i = 0; p = 0; c = 0;
-	while (c < commandCount) {
-		int elements, e;
-		// fill type
-		unsigned int paintMode = 0;
-		ps->m_paths[i].m_fillRule = FILL_RULE_WINDING;
-		switch(commands[c]) {
-			case 'N':
-				break;
-			case 'F':
-				ps->m_paths[i].m_fillRule = FILL_RULE_WINDING;
-				paintMode |= 1;
-				break;
-			case 'E':
-				ps->m_paths[i].m_fillRule = FILL_RULE_EVEN_ODD;
-				paintMode |= 1;
-				break;
-		}
-		c++;
+    i = 0; p = 0; c = 0;
+    while (c < commandCount) {
+        int elements, e;
+        // fill type
+        unsigned int paintMode = 0;
+        ps->m_paths[i].m_fillRule = FILL_RULE_WINDING;
+        switch(commands[c]) {
+            case 'N':
+                break;
+            case 'F':
+                ps->m_paths[i].m_fillRule = FILL_RULE_WINDING;
+                paintMode |= 1;
+                break;
+            case 'E':
+                ps->m_paths[i].m_fillRule = FILL_RULE_EVEN_ODD;
+                paintMode |= 1;
+                break;
+        }
+        c++;
 
-		// stroke type
-		switch (commands[c]) {
-			case 'N':
-				break;
-			case 'S':
-				paintMode |= 2;
-				break;
-		}
-		ps->m_paths[i].m_paintMode = paintMode;
-		c++;
+        // stroke type
+        switch (commands[c]) {
+            case 'N':
+                break;
+            case 'S':
+                paintMode |= 2;
+                break;
+        }
+        ps->m_paths[i].m_paintMode = paintMode;
+        c++;
 
-		//line cap
-		switch (commands[c]) {
-			case 'B':
-				ps->m_paths[i].m_capStyle = LINE_CAP_BUTT;
-				break;
-			case 'R':
-				ps->m_paths[i].m_capStyle = LINE_CAP_ROUND;
-				break;
-			case 'S':
-				ps->m_paths[i].m_capStyle = LINE_CAP_SQUARE;
-				break;
-		}
-		c++;
+        //line cap
+        switch (commands[c]) {
+            case 'B':
+                ps->m_paths[i].m_capStyle = LINE_CAP_BUTT;
+                break;
+            case 'R':
+                ps->m_paths[i].m_capStyle = LINE_CAP_ROUND;
+                break;
+            case 'S':
+                ps->m_paths[i].m_capStyle = LINE_CAP_SQUARE;
+                break;
+        }
+        c++;
 
-		//line join
-		switch (commands[c]) {
-			case 'M':
-				ps->m_paths[i].m_joinStyle = LINE_JOIN_MITER;
-				break;
-			case 'R':
-				ps->m_paths[i].m_joinStyle = LINE_JOIN_ROUND;
-				break;
-			case 'B':
-				ps->m_paths[i].m_joinStyle = LINE_JOIN_BEVEL;
-				break;
-		}
-		c++;
+        //line join
+        switch (commands[c]) {
+            case 'M':
+                ps->m_paths[i].m_joinStyle = LINE_JOIN_MITER;
+                break;
+            case 'R':
+                ps->m_paths[i].m_joinStyle = LINE_JOIN_ROUND;
+                break;
+            case 'B':
+                ps->m_paths[i].m_joinStyle = LINE_JOIN_BEVEL;
+                break;
+        }
+        c++;
 
-		ps->m_paths[i].m_miterLimit = points[p++];
-		ps->m_paths[i].m_lineWidth = points[p++];
+        ps->m_paths[i].m_miterLimit = points[p++];
+        ps->m_paths[i].m_lineWidth = points[p++];
 
-		ps->m_paths[i].m_scolor.r = points[p++];
-		ps->m_paths[i].m_scolor.g = points[p++];
-		ps->m_paths[i].m_scolor.b = points[p++];
-		ps->m_paths[i].m_scolor.a = 1.0;;
+        ps->m_paths[i].m_scolor.r = points[p++];
+        ps->m_paths[i].m_scolor.g = points[p++];
+        ps->m_paths[i].m_scolor.b = points[p++];
+        ps->m_paths[i].m_scolor.a = 1.0;;
 
-		ps->m_paths[i].m_fcolor.r = points[p++];
-		ps->m_paths[i].m_fcolor.g = points[p++];
-		ps->m_paths[i].m_fcolor.b = points[p++];
-		ps->m_paths[i].m_fcolor.a = 1.0;;
+        ps->m_paths[i].m_fcolor.r = points[p++];
+        ps->m_paths[i].m_fcolor.g = points[p++];
+        ps->m_paths[i].m_fcolor.b = points[p++];
+        ps->m_paths[i].m_fcolor.a = 1.0;;
 
-		// path element
-		elements = (int)points[p++];
-		ps->m_paths[i].m_path = ps_path_create();
-		for (e = 0; e < elements; e++) {
-			switch (commands[c]) {
-				case 'M':
-					{
-						ps_point pt = {points[p], points[p+1]};
-						ps_path_move_to(ps->m_paths[i].m_path, &pt);
-						p += 2;
-					}
-					break;
-				case 'L':
-					{
-						ps_point pt = {points[p], points[p+1]};
-						ps_path_line_to(ps->m_paths[i].m_path, &pt);
-						p += 2;
-					}
-					break;
-				case 'C':
-					{
-						ps_point pt[3] = {{points[p], points[p+1]}, {points[p+2], points[p+3]}, {points[p+4], points[p+5]}};
-						ps_path_bezier_to(ps->m_paths[i].m_path, &pt[0], &pt[1], &pt[2]);
-						p += 6;
-					}
-					break;
-				case 'E':
-					ps_path_sub_close(ps->m_paths[i].m_path);
-					break;
-			}
-			c++;
-		}
-		i++;
-	}
-	return ps;
+        // path element
+        elements = (int)points[p++];
+        ps->m_paths[i].m_path = ps_path_create();
+        for (e = 0; e < elements; e++) {
+            switch (commands[c]) {
+                case 'M':
+                    {
+                        ps_point pt;
+                        pt.x = points[p];
+                        pt.y = points[p+1];
+                        ps_path_move_to(ps->m_paths[i].m_path, &pt);
+                        p += 2;
+                    }
+                    break;
+                case 'L':
+                    {
+                        ps_point pt;
+                        pt.x = points[p];
+                        pt.y = points[p+1];
+                        ps_path_line_to(ps->m_paths[i].m_path, &pt);
+                        p += 2;
+                    }
+                    break;
+                case 'C':
+                    {
+                        ps_point pt[3];
+                        pt[0].x = points[p];
+                        pt[0].y = points[p+1];
+                        pt[1].x = points[p+2];
+                        pt[1].y = points[p+3];
+                        pt[2].x = points[p+4];
+                        pt[2].y = points[p+5];
+                        ps_path_bezier_to(ps->m_paths[i].m_path, &pt[0], &pt[1], &pt[2]);
+                        p += 6;
+                    }
+                    break;
+                case 'E':
+                    ps_path_sub_close(ps->m_paths[i].m_path);
+                    break;
+            }
+            c++;
+        }
+        i++;
+    }
+    return ps;
 }
 
 static void PS_destruct(PS* ps)
 {
-	int i;
-	for (i = 0; i < ps->m_numPaths; i++)  {
-		ps_path_unref(ps->m_paths[i].m_path);
-	}
-	free(ps->m_paths);
-	free(ps);
+    int i;
+    for (i = 0; i < ps->m_numPaths; i++)  {
+        ps_path_unref(ps->m_paths[i].m_path);
+    }
+    free(ps->m_paths);
+    free(ps);
 }
 
 void on_init(ps_context* gc, int w, int h)
 {
-	width = w;
-	height = h;
-	tiger = PS_construct(tigerCommands, tigerCommandCount, tigerPoints, tigerPointCount);
-	matrix = ps_matrix_create();
-	change = 1;
+    width = w;
+    height = h;
+    tiger = PS_construct(tigerCommands, tigerCommandCount, tigerPoints, tigerPointCount);
+    matrix = ps_matrix_create();
+    change = 1;
 }
 
 void on_draw(ps_context* gc)
 {
-	int i;
-	PS* ps = 0;
-	double scale = height/tigerMaxY;
-	ps_color color = {1, 1, 1, 1};
+    int i;
+#if defined(WIN32) || defined(WINCE)
+    clocktime_t t1, t2;
+#endif
+    PS* ps = 0;
+    float scale = height/tigerMaxY;
+    ps_color color = {1, 1, 1, 1};
 
-	if (!change)
-		return;
+    if (!change)
+        return;
 
-	ps_set_source_color(gc, &color);
-	ps_clear(gc);
+#if defined(WIN32) || defined(WINCE)
+    t1 = get_clock();
+#endif
 
-	ps_set_composite_operator(gc, COMPOSITE_SRC);
+    ps_set_source_color(gc, &color);
+    ps_clear(gc);
 
-	ps_identity(gc);
-	ps_matrix_reset(matrix);
-	ps_matrix_translate(matrix, tx, ty);
-	ps_matrix_translate(matrix, 0.5*(width-tigerMaxX*scale), -(double)height/12.0);
-	ps_matrix_scale(matrix, scale, scale);
-    ps_matrix_translate(matrix, tigerMaxX*0.5, tigerMaxY*0.5+65.0);
-	ps_matrix_scale(matrix, zoomFactor, zoomFactor);
-	ps_matrix_translate(matrix, -tigerMaxX*0.5, -tigerMaxY*0.5-65.0);
+    ps_set_composite_operator(gc, COMPOSITE_SRC);
 
-	ps_matrix_translate(matrix, -width/2, -height/2);
-	ps_matrix_flip_y(matrix);
-	ps_matrix_translate(matrix, width/2, height/2);
-	ps_set_matrix(gc, matrix);
+    ps_identity(gc);
+    ps_matrix_reset(matrix);
+    ps_matrix_translate(matrix, tx, ty);
+    ps_matrix_translate(matrix, 0.5f*(width-tigerMaxX*scale), -(float)height/12.0f);
+    ps_matrix_scale(matrix, scale, scale);
+    ps_matrix_translate(matrix, tigerMaxX*0.5f, tigerMaxY*0.5f+65.0f);
+    ps_matrix_scale(matrix, zoomFactor, zoomFactor);
+    ps_matrix_translate(matrix, -tigerMaxX*0.5f, -tigerMaxY*0.5f-65.0f);
 
-	ps = tiger;
-	for (i = 0; i < ps->m_numPaths; i++) {
-		ps_set_path(gc, ps->m_paths[i].m_path);
-		ps_set_fill_rule(gc, ps->m_paths[i].m_fillRule);
-		ps_set_line_cap(gc, ps->m_paths[i].m_capStyle);
-		ps_set_line_join(gc, ps->m_paths[i].m_joinStyle);
-		ps_set_miter_limit(gc, ps->m_paths[i].m_miterLimit);
-		ps_set_line_width(gc, ps->m_paths[i].m_lineWidth);
-		ps_set_stroke_color(gc, &ps->m_paths[i].m_scolor);
-		ps_set_source_color(gc, &ps->m_paths[i].m_fcolor);
+    ps_matrix_translate(matrix, -(float)width/2, -(float)height/2);
+    ps_matrix_flip_y(matrix);
+    ps_matrix_translate(matrix, (float)width/2, (float)height/2);
+    ps_set_matrix(gc, matrix);
 
-		if (ps->m_paths[i].m_paintMode == 1)
-			ps_fill(gc);
-		else if (ps->m_paths[i].m_paintMode == 2)
-			ps_stroke(gc);
-		else if (ps->m_paths[i].m_paintMode == 3)
-			ps_paint(gc);
-	}
-	change = 0;
+    ps = tiger;
+    for (i = 0; i < ps->m_numPaths; i++) {
+        ps_set_path(gc, ps->m_paths[i].m_path);
+        ps_set_fill_rule(gc, ps->m_paths[i].m_fillRule);
+        ps_set_line_cap(gc, ps->m_paths[i].m_capStyle);
+        ps_set_line_join(gc, ps->m_paths[i].m_joinStyle);
+        ps_set_miter_limit(gc, ps->m_paths[i].m_miterLimit);
+        ps_set_line_width(gc, ps->m_paths[i].m_lineWidth);
+        ps_set_stroke_color(gc, &ps->m_paths[i].m_scolor);
+        ps_set_source_color(gc, &ps->m_paths[i].m_fcolor);
+
+        if (ps->m_paths[i].m_paintMode == 1)
+            ps_fill(gc);
+        else if (ps->m_paths[i].m_paintMode == 2)
+            ps_stroke(gc);
+        else if (ps->m_paths[i].m_paintMode == 3)
+            ps_paint(gc);
+    }
+#if defined(WIN32) || defined(WINCE)
+    t2 = get_clock();
+#endif
+    change = 0;
+
+#if defined(WIN32) || defined(WINCE)
+    fprintf (stderr, "%f fps\n", 1000.0/get_clock_used_ms(t1, t2));
+#endif
 }
 
 void on_term(ps_context* gc)
 {
-	ps_matrix_unref(matrix);
-	PS_destruct(tiger);
+    ps_matrix_unref(matrix);
+    PS_destruct(tiger);
 }
 
 void on_key_event(key_event_type kvt, int vk)
@@ -279,22 +304,22 @@ void on_key_event(key_event_type kvt, int vk)
 
 void on_mouse_event(mouse_event_type evt, unsigned key, int x, int y)
 {
-	if (evt == MOUSE_MOVE && (key&EVT_LBUTTON)) {
-		int dx = x - oldx;
-		int dy = y - oldy;
+    if (evt == MOUSE_MOVE && (key&EVT_LBUTTON)) {
+        int dx = x - oldx;
+        int dy = y - oldy;
 
-		oldx = x;
-		oldy = y;
+        oldx = x;
+        oldy = y;
 
-		tx += dx;
-		ty += -dy;
-		change = 1;
-	} else if (evt == LEFT_BUTTON_DOWN) {
-		oldx = x;
-		oldy = y;
-	}
+        tx += dx;
+        ty += -dy;
+        change = 1;
+    } else if (evt == LEFT_BUTTON_DOWN) {
+        oldx = x;
+        oldy = y;
+    }
 
-	refresh(NULL);
+    refresh(NULL);
 }
 
 void on_timer()
@@ -303,9 +328,9 @@ void on_timer()
 
 void on_size(int w, int h)
 {
-	width = w;
-	height = h;
-	change = 1;
+    width = w;
+    height = h;
+    change = 1;
 }
 
 /****************************************************************************

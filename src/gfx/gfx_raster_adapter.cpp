@@ -5,8 +5,12 @@
  */
 
 #include "common.h"
+#include "convert.h"
+
+#include "gfx_gamma_function.h"
 #include "gfx_raster_adapter.h"
 #include "gfx_trans_affine.h"
+
 #include "picasso_raster_adapter.h"
 
 namespace gfx {
@@ -23,12 +27,12 @@ public:
         , m_dash_start(0)
         , m_dash_data(0)
         , m_dash_num(0)
-         , line_width(FLT_TO_SCALAR(1.0f))
-         , miter_limit(FLT_TO_SCALAR(4.0f))
-         , line_cap(butt_cap)
-         , line_join(miter_join)
-         , inner_join(inner_miter)
-        , filling_rule(fill_non_zero)
+        , m_line_width(FLT_TO_SCALAR(1.0f))
+        , m_miter_limit(FLT_TO_SCALAR(4.0f))
+        , m_line_cap(butt_cap)
+        , m_line_join(miter_join)
+        , m_inner_join(inner_miter)
+        , m_filling_rule(fill_non_zero)
     {
     }
 
@@ -47,12 +51,12 @@ public:
         m_dash_start = 0;
         m_dash_data = 0;
         m_dash_num = 0;
-         line_width = FLT_TO_SCALAR(1.0f);
-         miter_limit = FLT_TO_SCALAR(4.0f);
-         line_cap = butt_cap;
-         line_join = miter_join;
-         inner_join = inner_miter;
-        filling_rule = fill_non_zero;
+        m_line_width = FLT_TO_SCALAR(1.0f);
+        m_miter_limit = FLT_TO_SCALAR(4.0f);
+        m_line_cap = butt_cap;
+        m_line_join = miter_join;
+        m_inner_join = inner_miter;
+        m_filling_rule = fill_non_zero;
     }
 
     const vertex_source* m_source;
@@ -64,13 +68,13 @@ public:
     const scalar* m_dash_data;
     unsigned int m_dash_num;
     //stroke attributes
-    scalar line_width;
-    scalar miter_limit;
-    int line_cap;
-    int line_join;
-    int inner_join;
+    scalar m_line_width;
+    scalar m_miter_limit;
+    line_cap m_line_cap;
+    line_join m_line_join;
+    inner_join m_inner_join;
     //fill attributes
-    int filling_rule;
+    filling_rule m_filling_rule;
 };
 
 
@@ -87,11 +91,11 @@ gfx_raster_adapter::~gfx_raster_adapter()
 void gfx_raster_adapter::set_gamma_power(scalar g)
 {
     if (m_impl->m_antialias) {
-        m_sraster.gamma(agg::gamma_power(SCALAR_TO_FLT(g)));
-        m_fraster.gamma(agg::gamma_power(SCALAR_TO_FLT(g)));
+        m_sraster.gamma(gamma_power(SCALAR_TO_FLT(g)));
+        m_fraster.gamma(gamma_power(SCALAR_TO_FLT(g)));
     } else {
-        m_sraster.gamma(agg::gamma_threshold(0.5f));
-        m_fraster.gamma(agg::gamma_threshold(0.5f));
+        m_sraster.gamma(gamma_threshold(0.5f));
+        m_fraster.gamma(gamma_threshold(0.5f));
     }
 }
 
@@ -105,12 +109,12 @@ void gfx_raster_adapter::set_transform(const abstract_trans_affine* mtx)
     m_impl->m_transform = static_cast<const gfx_trans_affine*>(mtx);
 }
 
-agg::trans_affine gfx_raster_adapter::transformation(void) 
+gfx_trans_affine gfx_raster_adapter::transformation(void) const
 {
     if (m_impl->m_transform)
-        return const_cast<gfx_trans_affine*>(m_impl->m_transform)->impl();
+        return *const_cast<gfx_trans_affine*>(m_impl->m_transform);
     else
-        return agg::trans_affine();
+        return gfx_trans_affine();
 }
 
 void gfx_raster_adapter::set_raster_method(unsigned int m)
@@ -142,13 +146,13 @@ void gfx_raster_adapter::set_stroke_attr(int idx, int val)
 {
     switch (idx) {
         case STA_LINE_CAP:
-            m_impl->line_cap = val;
+            m_impl->m_line_cap = (line_cap)val;
             break;
         case STA_LINE_JOIN:
-            m_impl->line_join = val;
+            m_impl->m_line_join = (line_join)val;
             break;
         case STA_INNER_JOIN:
-            m_impl->inner_join = val;
+            m_impl->m_inner_join = (inner_join)val;
             break;
         default:
             break;
@@ -159,10 +163,10 @@ void gfx_raster_adapter::set_stroke_attr_val(int idx, scalar val)
 {
     switch (idx) {
         case STA_WIDTH:
-            m_impl->line_width = val;
+            m_impl->m_line_width = val;
             break;
         case STA_MITER_LIMIT:
-            m_impl->miter_limit = val;
+            m_impl->m_miter_limit = val;
             break;
         default:
             break;
@@ -173,7 +177,7 @@ void gfx_raster_adapter::set_fill_attr(int idx, int val)
 {
     switch (idx) {
         case FIA_FILL_RULE:
-            m_impl->filling_rule = val;
+            m_impl->m_filling_rule = (filling_rule)val;
             break;
         default:
             break;
@@ -188,41 +192,41 @@ bool gfx_raster_adapter::is_empty(void)
 void gfx_raster_adapter::setup_stroke_raster(void)
 {
     if (m_impl->m_dashline) {
-        agg::conv_dash<vertex_source> c(*const_cast<vertex_source*>(m_impl->m_source));
+        picasso::conv_dash c(*const_cast<vertex_source*>(m_impl->m_source));
 
         for (unsigned int i = 0; i < m_impl->m_dash_num; i += 2)
             c.add_dash(m_impl->m_dash_data[i], m_impl->m_dash_data[i+1]);
 
         c.dash_start(m_impl->m_dash_start);
 
-        agg::conv_stroke<agg::conv_dash<vertex_source> > p(c); 
+        picasso::conv_stroke p(c); 
 
-        agg::trans_affine adjmtx = stable_matrix(const_cast<gfx_trans_affine*>(m_impl->m_transform)->impl());
-        adjmtx *= agg::trans_affine_translation(0.5f, 0.5f); //adjust edge
+        gfx_trans_affine adjmtx = stable_matrix(*const_cast<gfx_trans_affine*>(m_impl->m_transform));
+        adjmtx *= gfx_trans_affine_translation(FLT_TO_SCALAR(0.5f), FLT_TO_SCALAR(0.5f)); //adjust edge
 
-        agg::conv_transform<agg::conv_stroke<agg::conv_dash<vertex_source> > > t(p, adjmtx);
+        picasso::conv_transform t(p, &adjmtx);
 
-        p.width(SCALAR_TO_FLT(m_impl->line_width));
-        p.line_cap((agg::line_cap_e)m_impl->line_cap);
-        p.line_join((agg::line_join_e)m_impl->line_join);
-        p.inner_join((agg::inner_join_e)m_impl->inner_join);
-        p.miter_limit(SCALAR_TO_FLT(m_impl->miter_limit));
+        p.set_width(SCALAR_TO_FLT(m_impl->m_line_width));
+        p.set_line_cap(m_impl->m_line_cap);
+        p.set_line_join(m_impl->m_line_join);
+        p.set_inner_join(m_impl->m_inner_join);
+        p.set_miter_limit(SCALAR_TO_FLT(m_impl->m_miter_limit));
 
         m_sraster.add_path(t);
     } else {
-        agg::conv_curve<vertex_source> c(*const_cast<vertex_source*>(m_impl->m_source));
-        agg::conv_stroke<agg::conv_curve<vertex_source> > p(c); 
+        picasso::conv_curve c(*const_cast<vertex_source*>(m_impl->m_source));
+        picasso::conv_stroke p(c); 
 
-        agg::trans_affine adjmtx = stable_matrix(const_cast<gfx_trans_affine*>(m_impl->m_transform)->impl());
-        adjmtx *= agg::trans_affine_translation(0.5f, 0.5f); //adjust edge
+        gfx_trans_affine adjmtx = stable_matrix(*const_cast<gfx_trans_affine*>(m_impl->m_transform));
+        adjmtx *= gfx_trans_affine_translation(FLT_TO_SCALAR(0.5f), FLT_TO_SCALAR(0.5f)); //adjust edge
 
-        agg::conv_transform<agg::conv_stroke<agg::conv_curve<vertex_source> > > t(p, adjmtx);
+        picasso::conv_transform t(p, &adjmtx);
 
-        p.width(SCALAR_TO_FLT(m_impl->line_width));
-        p.line_cap((agg::line_cap_e)m_impl->line_cap);
-        p.line_join((agg::line_join_e)m_impl->line_join);
-        p.inner_join((agg::inner_join_e)m_impl->inner_join);
-        p.miter_limit(SCALAR_TO_FLT(m_impl->miter_limit));
+        p.set_width(SCALAR_TO_FLT(m_impl->m_line_width));
+        p.set_line_cap(m_impl->m_line_cap);
+        p.set_line_join(m_impl->m_line_join);
+        p.set_inner_join(m_impl->m_inner_join);
+        p.set_miter_limit(SCALAR_TO_FLT(m_impl->m_miter_limit));
 
         m_sraster.add_path(t);
     }
@@ -230,11 +234,11 @@ void gfx_raster_adapter::setup_stroke_raster(void)
 
 void gfx_raster_adapter::setup_fill_raster(void)
 {
-    m_fraster.filling_rule((agg::filling_rule_e)m_impl->filling_rule);
-    agg::trans_affine adjmtx = stable_matrix(const_cast<gfx_trans_affine*>(m_impl->m_transform)->impl());
+    m_fraster.filling(m_impl->m_filling_rule);
+    gfx_trans_affine adjmtx = stable_matrix(*const_cast<gfx_trans_affine*>(m_impl->m_transform));
 
-    agg::conv_transform<vertex_source> t(*const_cast<vertex_source*>(m_impl->m_source), adjmtx);
-    m_fraster.add_path(t);
+    conv_transform mt(*const_cast<vertex_source*>(m_impl->m_source), &adjmtx);
+    m_fraster.add_path(mt);
 }
 
 void gfx_raster_adapter::commit(void)
@@ -257,9 +261,9 @@ bool gfx_raster_adapter::contains(scalar x, scalar y)
 {
     if (m_impl->m_source) {
         if (m_impl->m_method & raster_stroke)
-            return m_sraster.hit_test(agg::iround(x), agg::iround(y));
+            return m_sraster.hit_test(iround(x), iround(y));
         else if (m_impl->m_method & raster_fill)
-            return m_fraster.hit_test(agg::iround(x), agg::iround(y));
+            return m_fraster.hit_test(iround(x), iround(y));
         else
             return false;
     } else {

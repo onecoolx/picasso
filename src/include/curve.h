@@ -25,11 +25,11 @@ class curve3_inc : public vertex_source
 {
 public:
     curve3_inc() 
-        : m_num_steps(0), m_step(0), m_scale(DBL_TO_SCALAR(1.0)) 
+        : m_num_steps(0), m_step(0), m_scale(FLT_TO_SCALAR(1.0f)) 
     { }
 
     curve3_inc(scalar x1, scalar y1, scalar x2, scalar y2, scalar x3, scalar y3) 
-        : m_num_steps(0), m_step(0), m_scale(DBL_TO_SCALAR(1.0)) 
+        : m_num_steps(0), m_step(0), m_scale(FLT_TO_SCALAR(1.0f)) 
     { 
         init(x1, y1, x2, y2, x3, y3);
     }
@@ -49,10 +49,10 @@ public:
     scalar approximation_scale(void) const { return m_scale; }
 
     void angle_tolerance(scalar) {}
-    scalar angle_tolerance() const { return DBL_TO_SCALAR(0.0); }
+    scalar angle_tolerance() const { return FLT_TO_SCALAR(0.0f); }
 
     void cusp_limit(scalar) {}
-    scalar cusp_limit() const { return DBL_TO_SCALAR(0.0); }
+    scalar cusp_limit() const { return FLT_TO_SCALAR(0.0f); }
 
     virtual void rewind(unsigned int id);
     virtual unsigned int vertex(scalar* x, scalar* y);
@@ -83,21 +83,21 @@ class curve3_div : public vertex_source
 {
 public:
     curve3_div() 
-        : m_approximation_scale(DBL_TO_SCALAR(1.0))
-        , m_distance_tolerance_square(DBL_TO_SCALAR(0.0))
-        , m_angle_tolerance(DBL_TO_SCALAR(0.0))
+        : m_approximation_scale(FLT_TO_SCALAR(1.0f))
+        , m_distance_tolerance_square(FLT_TO_SCALAR(0.0f))
+        , m_angle_tolerance(FLT_TO_SCALAR(0.0f))
         , m_count(0)
     { }
 
     curve3_div(scalar x1, scalar y1, scalar x2, scalar y2, scalar x3, scalar y3) 
-        : m_approximation_scale(DBL_TO_SCALAR(1.0)), m_angle_tolerance(DBL_TO_SCALAR(0.0)), m_count(0)
+        : m_approximation_scale(FLT_TO_SCALAR(1.0f)), m_angle_tolerance(FLT_TO_SCALAR(0.0f)), m_count(0)
     { 
         init(x1, y1, x2, y2, x3, y3);
     }
 
     void reset(void) 
     {
-           m_points.remove_all(); 
+           m_points.clear(); 
         m_count = 0;
        }
 
@@ -113,7 +113,7 @@ public:
     scalar angle_tolerance() const { return m_angle_tolerance;  }
 
     void cusp_limit(scalar) {}
-    scalar cusp_limit() const { return DBL_TO_SCALAR(0.0); }
+    scalar cusp_limit() const { return FLT_TO_SCALAR(0.0f); }
 
     virtual void rewind(unsigned int id)
     {
@@ -148,11 +148,11 @@ class curve4_inc : public vertex_source
 {
 public:
     curve4_inc() 
-        : m_num_steps(0), m_step(0), m_scale(DBL_TO_SCALAR(1.0)) 
+        : m_num_steps(0), m_step(0), m_scale(FLT_TO_SCALAR(1.0f)) 
     { }
 
     curve4_inc(scalar x1, scalar y1, scalar x2, scalar y2, scalar x3, scalar y3,scalar x4, scalar y4)
-           : m_num_steps(0), m_step(0), m_scale(DBL_TO_SCALAR(1.0)) 
+           : m_num_steps(0), m_step(0), m_scale(FLT_TO_SCALAR(1.0f)) 
     { 
         init(x1, y1, x2, y2, x3, y3, x4, y4);
     }
@@ -172,10 +172,10 @@ public:
     scalar approximation_scale() const { return m_scale; }
 
     void angle_tolerance(scalar) {}
-    scalar angle_tolerance() const { return DBL_TO_SCALAR(0.0); }
+    scalar angle_tolerance() const { return FLT_TO_SCALAR(0.0f); }
 
     void cusp_limit(scalar) {}
-    scalar cusp_limit() const { return DBL_TO_SCALAR(0.0); }
+    scalar cusp_limit() const { return FLT_TO_SCALAR(0.0f); }
 
     virtual void rewind(unsigned int id);
     virtual unsigned int vertex(scalar* x, scalar* y);
@@ -209,22 +209,25 @@ class curve4_div : public vertex_source
 {
 public:
     curve4_div() 
-        : m_approximation_scale(DBL_TO_SCALAR(1.0))
-        , m_distance_tolerance_square(DBL_TO_SCALAR(0.0))
-        , m_angle_tolerance(DBL_TO_SCALAR(0.0))
-        , m_cusp_limit(DBL_TO_SCALAR(0.0))
+        : m_approximation_scale(FLT_TO_SCALAR(1.0f))
+        , m_distance_tolerance_square(FLT_TO_SCALAR(0.0f))
+        , m_angle_tolerance(FLT_TO_SCALAR(0.0f))
+        , m_cusp_limit(FLT_TO_SCALAR(0.0f))
         , m_count(0)
     { }
 
     curve4_div(scalar x1, scalar y1, scalar x2, scalar y2, scalar x3, scalar y3,scalar x4, scalar y4)
-           : m_approximation_scale(DBL_TO_SCALAR(1.0)), m_angle_tolerance(DBL_TO_SCALAR(0.0)), m_cusp_limit(DBL_TO_SCALAR(0.0)), m_count(0)
+           : m_approximation_scale(FLT_TO_SCALAR(1.0f))
+        , m_angle_tolerance(FLT_TO_SCALAR(0.0f))
+        , m_cusp_limit(FLT_TO_SCALAR(0.0f))
+        , m_count(0)
     { 
         init(x1, y1, x2, y2, x3, y3, x4, y4);
     }
 
     void reset(void) 
     {
-           m_points.remove_all(); 
+           m_points.clear(); 
         m_count = 0;
        }
 

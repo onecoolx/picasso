@@ -15,6 +15,9 @@
 #include "gfx_font_adapter.h"
 #include "gfx_mask_layer.h"
 #include "gfx_trans_affine.h"
+#include "gfx_pixfmt_rgba.h"
+#include "gfx_pixfmt_rgb.h"
+#include "gfx_pixfmt_rgb16.h"
 
 namespace gfx {
 
@@ -48,35 +51,35 @@ abstract_painter* gfx_device::create_painter(pix_fmt fmt)
     {
 #if ENABLE(FORMAT_RGBA)
         case pix_fmt_rgba:
-            return new gfx_painter<agg::pixfmt_rgba32>;
+            return new gfx_painter<pixfmt_rgba32>;
 #endif
 #if ENABLE(FORMAT_ARGB)
         case pix_fmt_argb:
-            return new gfx_painter<agg::pixfmt_argb32>;
+            return new gfx_painter<pixfmt_argb32>;
 #endif
 #if ENABLE(FORMAT_ABGR)
         case pix_fmt_abgr:
-            return new gfx_painter<agg::pixfmt_abgr32>;
+            return new gfx_painter<pixfmt_abgr32>;
 #endif
 #if ENABLE(FORMAT_BGRA)
         case pix_fmt_bgra:
-            return new gfx_painter<agg::pixfmt_bgra32>;
+            return new gfx_painter<pixfmt_bgra32>;
 #endif
 #if ENABLE(FORMAT_RGB)
         case pix_fmt_rgb:
-            return new gfx_painter<agg::pixfmt_rgb24>;
+            return new gfx_painter<pixfmt_rgb24>;
 #endif
 #if ENABLE(FORMAT_BGR)
         case pix_fmt_bgr:
-            return new gfx_painter<agg::pixfmt_bgr24>;
+            return new gfx_painter<pixfmt_bgr24>;
 #endif
 #if ENABLE(FORMAT_RGB565)
         case pix_fmt_rgb565:
-            return new gfx_painter<agg::pixfmt_rgb565>;
+            return new gfx_painter<pixfmt_rgb565>;
 #endif
 #if ENABLE(FORMAT_RGB555)
         case pix_fmt_rgb555:
-            return new gfx_painter<agg::pixfmt_rgb555>;
+            return new gfx_painter<pixfmt_rgb555>;
 #endif
         default:
             return 0;

@@ -7,14 +7,27 @@
 #ifndef _COMMON_H_
 #define _COMMON_H_
 
-//all source file must include this file.
+// all source file must include this file.
 
 #include "pconfig.h"
 
 #include "platform.h"
 #include "memory_manager.h"
 
-// Base type.
-typedef unsigned char byte;
+// base type for 32bit system.
+typedef signed char int8_t;
 
-#endif/*_COMMON_H_*/
+typedef unsigned char uint8_t;
+
+typedef signed short int16_t;
+
+typedef unsigned short uint16_t;
+
+typedef signed int int32_t;
+
+typedef unsigned int uint32_t;
+
+// special types
+typedef uint8_t byte;
+
+#endif /*_COMMON_H_*/

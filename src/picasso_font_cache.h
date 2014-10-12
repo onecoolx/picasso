@@ -22,7 +22,10 @@ namespace picasso {
 
 class glyph_cache_manager 
 {
-    enum { block_size = 16384-16 };  
+    enum { 
+        block_size = 16384-16
+    };  
+
 public:
     glyph_cache_manager()
         : m_allocator(block_size)

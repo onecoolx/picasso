@@ -8,6 +8,7 @@
 #define _GRAPHIC_BASE_H_
 
 #include "common.h"
+#include "math_type.h"
 
 namespace picasso {
 
@@ -130,8 +131,11 @@ inline unsigned int set_orientation(unsigned int c, unsigned int o)
     return clear_orientation(c) | o;
 }
 
-// Coinciding points maximal distance (Epsilon)
-const scalar vertex_dist_epsilon = DBL_TO_SCALAR(1e-14);
+// coinciding points maximal distance (Epsilon)
+const scalar vertex_dist_epsilon = FLT_TO_SCALAR(1e-14f);
+
+// see calc_intersection
+const scalar intersection_epsilon = FLT_TO_SCALAR(1.0e-30f);
 
 // math function
 inline scalar calc_distance(scalar x1, scalar y1, scalar x2, scalar y2)
@@ -139,6 +143,28 @@ inline scalar calc_distance(scalar x1, scalar y1, scalar x2, scalar y2)
     scalar dx = x2-x1;
     scalar dy = y2-y1;
     return Sqrt(dx * dx + dy * dy);
+}
+
+// calc intersection
+inline bool calc_intersection(scalar ax, scalar ay, scalar bx, scalar by,
+                              scalar cx, scalar cy, scalar dx, scalar dy, scalar* x, scalar* y)
+{
+    scalar num = (ay-cy) * (dx-cx) - (ax-cx) * (dy-cy);
+    scalar den = (bx-ax) * (dy-cy) - (by-ay) * (dx-cx);
+
+    if (Fabs(den) < intersection_epsilon)
+        return false;
+
+    scalar r = num / den;
+    *x = ax + r * (bx-ax);
+    *y = ay + r * (by-ay);
+    return true;
+}
+
+//cross product
+inline scalar cross_product(scalar x1, scalar y1, scalar x2, scalar y2, scalar x,  scalar y)
+{
+    return (x - x2) * (y2 - y1) - (y - y2) * (x2 - x1);
 }
 
 inline scalar calc_sq_distance(scalar x1, scalar y1, scalar x2, scalar y2)
@@ -154,10 +180,75 @@ inline int iround(scalar v)
     return _iround(v);
 }
 
-inline unsigned uround(scalar v)
+inline unsigned int uround(scalar v)
 {
     return _uround(v);
 }
+
+inline scalar sround(scalar v)
+{
+    return INT_TO_SCALAR(_iround(v));
+}
+
+// is equal eps
+template<typename T> inline bool is_equal_eps(T v1, T v2, T epsilon)
+{
+    return Fabs(v1 - v2) <= scalar(epsilon);
+}
+
+// deg2rad
+inline scalar deg2rad(scalar deg)
+{
+    return deg * PI / FLT_TO_SCALAR(180.0f);
+}
+
+// rad2deg
+inline scalar rad2deg(scalar rad)
+{
+    return rad * FLT_TO_SCALAR(180.0f) / PI;
+}
+
+// is boxer
+inline bool is_boxer(scalar rad)
+{
+    scalar a = Fmod(rad2deg(rad), FLT_TO_SCALAR(360.0f));
+    return (a == FLT_TO_SCALAR(0.0f))
+        || (a == FLT_TO_SCALAR(90.0f))
+        || (a == FLT_TO_SCALAR(180.0f))
+        || (a == FLT_TO_SCALAR(270.0f));
+}
+
+// These constants determine the subpixel accuracy, to be more precise, 
+// the number of bits of the fractional part of the coordinates. 
+// The possible coordinate capacity in bits can be calculated by formula:
+// sizeof(int) * 8 - poly_subpixel_shift, i.e, for 32-bit integers and
+// 8-bits fractional part the capacity is 24 bits.
+enum {
+    poly_subpixel_shift = 8,                        // poly_subpixel_shift
+    poly_subpixel_scale = 1 << poly_subpixel_shift, // poly_subpixel_scale 
+    poly_subpixel_mask  = poly_subpixel_scale - 1,  // poly_subpixel_mask 
+};
+
+// gradient subpixel
+enum {
+    gradient_subpixel_shift = 4,                            // gradient_subpixel_shift
+    gradient_subpixel_scale = 1 << gradient_subpixel_shift, // gradient_subpixel_scale
+    gradient_subpixel_mask  = gradient_subpixel_scale - 1   // gradient_subpixel_mask
+};
+
+// image filter scale
+enum {
+    image_filter_shift = 14,                      // image_filter_shift
+    image_filter_scale = 1 << image_filter_shift, // image_filter_scale 
+    image_filter_mask  = image_filter_scale - 1   // image_filter_mask 
+};
+
+// image subpixel
+enum {
+    image_subpixel_shift = 8,                         // image_subpixel_shift
+    image_subpixel_scale = 1 << image_subpixel_shift, // image_subpixel_scale 
+    image_subpixel_mask  = image_subpixel_scale - 1   // image_subpixel_mask 
+};
 
 // line style define
 typedef enum {
@@ -245,23 +336,30 @@ template<typename T> struct rect_base
     {
     } 
 
+    const self_type& normalize(void)
+    {
+        T t;
+        if (x1 > x2) { t = x1; x1 = x2; x2 = t; }
+        if (y1 > y2) { t = y1; y1 = y2; y2 = t; }
+        return *this;
+    }
+
     bool clip(const self_type& r)
     {
-        if(x2 > r.x2) x2 = r.x2;
-        if(y2 > r.y2) y2 = r.y2;
-        if(x1 < r.x1) x1 = r.x1;
-        if(y1 < r.y1) y1 = r.y1;
+        if (x2 > r.x2) x2 = r.x2;
+        if (y2 > r.y2) y2 = r.y2;
+        if (x1 < r.x1) x1 = r.x1;
+        if (y1 < r.y1) y1 = r.y1;
         return x1 <= x2 && y1 <= y2;
     }
 
-    T x() { return x1; }
-    T y() { return y1; }
-    T width() { return (x2-x1); }
-    T height() { return (y2-y1); }
-
+    T x(void) { return x1; }
+    T y(void) { return y1; }
+    T width(void) { return (x2-x1); }
+    T height(void) { return (y2-y1); }
 };
 
-typedef rect_base<int>       rect; //integer
+typedef rect_base<int>    rect; //integer
 typedef rect_base<scalar> rect_s; //scalar
 
 // color cover
@@ -272,7 +370,7 @@ typedef enum {
     cover_mask  = cover_size - 1,    //cover_mask 
     cover_none  = 0,                 //cover_none 
     cover_full  = cover_mask         //cover_full 
-}cover_scale;
+} cover_scale;
 
 // glyph
 typedef enum {
@@ -282,7 +380,7 @@ typedef enum {
     glyph_type_outline = 3,    
 } glyph_type;
 
-typedef struct {
+typedef struct _glyph {
     unsigned int  code;
     unsigned int  index;
     glyph_type    type;
@@ -295,5 +393,8 @@ typedef struct {
 } glyph;
 
 }
+
+using namespace picasso;
+
 #endif/*_GRAPHIC_BASE_H_*/
 

@@ -52,26 +52,24 @@ inline bool bounding_rect(vertex_source& vs, unsigned int path_id, scalar* x1, s
     scalar y;
     bool first = true;
 
-    *x1 = scalar(1);
-    *y1 = scalar(1);
-    *x2 = scalar(0);
-    *y2 = scalar(0);
+    *x1 = INT_TO_SCALAR(1);
+    *y1 = INT_TO_SCALAR(1);
+    *x2 = INT_TO_SCALAR(0);
+    *y2 = INT_TO_SCALAR(0);
 
     vs.rewind(path_id);
     unsigned int cmd;
     while (!is_stop(cmd = vs.vertex(&x, &y))) {
         if (is_vertex(cmd)) {
             if (first) {
-                *x1 = scalar(x);
-                *y1 = scalar(y);
-                *x2 = scalar(x);
-                *y2 = scalar(y);
+                *x1 = x; *y1 = y;
+                *x2 = x; *y2 = y;
                 first = false;
             } else {
-                if (scalar(x) < *x1) *x1 = scalar(x);
-                if (scalar(y) < *y1) *y1 = scalar(y);
-                if (scalar(x) > *x2) *x2 = scalar(x);
-                if (scalar(y) > *y2) *y2 = scalar(y);
+                if (x < *x1) *x1 = x;
+                if (y < *y1) *y1 = y;
+                if (x > *x2) *x2 = x;
+                if (y > *y2) *y2 = y;
             }
         }
     }
@@ -107,5 +105,5 @@ private:
 };
 
 }
-#endif/*_GRAPHIC_HELPER_H_*/
+#endif /*_GRAPHIC_HELPER_H_*/
 

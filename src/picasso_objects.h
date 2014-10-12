@@ -12,12 +12,12 @@
 #include "data_vector.h"
 #include "graphic_base.h"
 #include "graphic_path.h"
-#include "picasso_private.h"
 #include "picasso_matrix.h"
 #include "picasso_mask.h"
 #include "picasso_font.h"
 #include "picasso_gradient.h"
 #include "picasso_painter.h"
+#include "picasso_private.h"
 #include "picasso_rendering_buffer.h"
 #include "picasso_raster_adapter.h"
 
@@ -59,10 +59,10 @@ struct graphic_pen
     {
         if (style == pen_style_dash) {
             ndashes = o.ndashes;
-            dstart = o.dstart;          
+            dstart = o.dstart;            
             dashes = new scalar[ndashes];
             if (dashes) {
-                for (unsigned int i=0; i<ndashes; i++)
+                for(unsigned int i=0; i<ndashes; i++)
                     dashes[i] = o.dashes[i]; 
             } else {
                 //memory alloc error, ignore this dash
@@ -92,11 +92,11 @@ struct graphic_pen
 
         if (style == pen_style_dash) {
             ndashes = o.ndashes;
-            dstart = o.dstart;
+            dstart = o.dstart;            
             dashes = new scalar[ndashes];
             if (dashes) {
                 for (unsigned int i=0; i<ndashes; i++)
-                    dashes[i] = o.dashes[i];
+                    dashes[i] = o.dashes[i]; 
             } else {
                 //memory alloc error, ignore this dash
                 //I think it is never happen.
@@ -117,16 +117,16 @@ struct graphic_pen
         }
     }
 
-    void set_dash(double start, double* da, unsigned int ndash)
+    void set_dash(float start, float* da, unsigned int ndash)
     {
         style = pen_style_dash;
-        dstart = DBL_TO_SCALAR(start);
+        dstart = FLT_TO_SCALAR(start);
         ndashes = (ndash+1)&~1;  
         dashes = new scalar[ndashes];
         if (dashes) {
-            memset(dashes, 0 , ndashes*sizeof(scalar));
+            memset(dashes, 0, ndashes*sizeof(scalar));
             for(unsigned int i=0; i<ndash; i++)
-                dashes[i] = DBL_TO_SCALAR(da[i]); 
+                dashes[i] = FLT_TO_SCALAR(da[i]); 
         } else {
             //memory alloc error, ignore this dash
             //I think it is never happen.
@@ -286,10 +286,10 @@ struct graphic_brush {
 struct shadow_state {
     shadow_state()
         : use_shadow(false)
-        , x_offset(DBL_TO_SCALAR(0.0))
-        , y_offset(DBL_TO_SCALAR(0.0))
-        , blur(DBL_TO_SCALAR(0.375)) /* 0 ~ 1 */
-        , color(0,0,0,DBL_TO_SCALAR(0.33)) 
+        , x_offset(FLT_TO_SCALAR(0.0f))
+        , y_offset(FLT_TO_SCALAR(0.0f))
+        , blur(FLT_TO_SCALAR(0.375f)) /* 0 ~ 1 */
+        , color(0,0,0,FLT_TO_SCALAR(0.33f)) 
     {
     }
 
@@ -370,7 +370,7 @@ struct clip_area {
     }
 
     unsigned int type;
-    graphic_path path;  
+    graphic_path path;    
     filling_rule rule;
     rect_s       rect;
 };
@@ -383,9 +383,9 @@ struct context_state {
         , filter(FILTER_BILINEAR)
         , font(ps_font_ref(_default_font()))
         , antialias(true)
-        , gamma(DBL_TO_SCALAR(1.0))
-        , alpha(DBL_TO_SCALAR(1.0))
-        , blur(DBL_TO_SCALAR(0.0))
+        , gamma(FLT_TO_SCALAR(1.0f))
+        , alpha(FLT_TO_SCALAR(1.0f))
+        , blur(FLT_TO_SCALAR(0.0f))
         , font_scolor(0,0,0)
         , font_fcolor(0,0,0)
         , composite(comp_op_src_over)
@@ -472,6 +472,7 @@ struct _ps_context {
     ps_bool font_antialias;   
     ps_bool font_kerning;   
     ps_text_type font_render_type;
+    struct _ps_context* parent;
     picasso::font_engine* fonts; 
     picasso::trans_affine text_matrix;
     picasso::graphic_path path;
@@ -479,11 +480,11 @@ struct _ps_context {
 };
 
 enum {
-    buffer_alloc_none      = 0,
+    buffer_alloc_none       = 0,
     buffer_alloc_surface   = 1,
     buffer_alloc_malloc    = 2,
-    buffer_alloc_image     = 3,
-    buffer_alloc_canvas    = 4,
+    buffer_alloc_image       = 3,
+    buffer_alloc_canvas       = 4,
 };
 
 struct _ps_canvas {
@@ -491,7 +492,7 @@ struct _ps_canvas {
     ps_color_format fmt;
     picasso::painter *p;
     unsigned int flage;
-    void     *host;
+    void      *host;
     ps_mask* mask;
     picasso::rendering_buffer buffer;
 };
@@ -500,7 +501,7 @@ struct _ps_image {
     int refcount;
     ps_color_format fmt;
     unsigned int flage;
-    void     *host;
+    void      *host;
     picasso::rendering_buffer buffer;
 };
 

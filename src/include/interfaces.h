@@ -61,9 +61,6 @@ public:
     virtual void load_from(const scalar* m) = 0;
 protected:
     abstract_trans_affine() {}
-private:
-    abstract_trans_affine(const abstract_trans_affine&);
-    abstract_trans_affine& operator=(const abstract_trans_affine&);
 };
 
 // Rendering buffer interface

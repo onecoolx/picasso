@@ -13,7 +13,7 @@ class shared
 {
 public:
     shared()
-        :m_refCount(0)
+        :m_refCount(1)
     {
     }
 

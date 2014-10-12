@@ -4,52 +4,13 @@
  * Contact: onecoolx@gmail.com
  */
 
-/*
-Project:   Generic Polygon Clipper
-
-           A new algorithm for calculating the difference, intersection,
-           exclusive-or or union of arbitrary polygon sets.
-
-File:      gpc.h
-Author:    Alan Murta (email: gpc@cs.man.ac.uk)
-Version:   2.32
-Date:      17th December 2004
-
-Copyright: (C) 1997-2004, Advanced Interfaces Group,
-           University of Manchester.
-
-           This software is free for non-commercial use. It may be copied,
-           modified, and redistributed provided that this copyright notice
-           is preserved on all copies. The intellectual property rights of
-           the algorithms used reside with the University of Manchester
-           Advanced Interfaces Group.
-
-           You may not use this software, in whole or in part, in support
-           of any commercial product without the express consent of the
-           author.
-
-           There is no warranty or other guarantee of fitness of this
-           software for any purpose. It is provided solely "as is".
-*/
-
 #include "common.h"
+#include "picasso.h"
 #include "picasso_gpc.h"
 
 #include <float.h>
-#include <math.h>
 
 namespace picasso {
-
-/*
-===========================================================================
-                                Constants
-===========================================================================
-*/
-
-#ifndef TRUE
-#define FALSE              0
-#define TRUE               1
-#endif
 
 #define LEFT               0
 #define RIGHT              1
@@ -60,8 +21,6 @@ namespace picasso {
 #define CLIP               0
 #define SUBJ               1
 
-#define INVERT_TRISTRIPS   FALSE
-
 
 /*
 ===========================================================================
@@ -69,8 +28,7 @@ namespace picasso {
 ===========================================================================
 */
 
-#define GPC_EPSILON (DBL_EPSILON)
-#define EQ(a, b)           (Fabs((a) - (b)) <= DBL_TO_SCALAR(GPC_EPSILON))
+#define EQ(a, b)           (Fabs((a) - (b)) <= FLT_TO_SCALAR(FLT_EPSILON))
 
 #define PREV_INDEX(i, n)   ((i - 1 + n) % n)
 #define NEXT_INDEX(i, n)   ((i + 1    ) % n)
@@ -88,9 +46,6 @@ namespace picasso {
 
 #define NOT_RMAX(v, i, n)   (v[PREV_INDEX(i, n)].vertex.y > v[i].vertex.y)
 
-#define VERTEX(e,p,s,x,y)  {add_vertex(&((e)->outp[(p)]->v[(s)]), x, y); \
-                            (e)->outp[(p)]->active++;}
-
 #define P_EDGE(d,e,p,i,j)  {(d)= (e); \
                             do {(d)= (d)->prev;} while (!(d)->outp[(p)]); \
                             (i)= (d)->bot.x + (d)->dx * ((j)-(d)->bot.y);}
@@ -99,21 +54,13 @@ namespace picasso {
                             do {(d)= (d)->next;} while (!(d)->outp[(p)]); \
                             (i)= (d)->bot.x + (d)->dx * ((j)-(d)->bot.y);}
 
-#define MALLOC(p, b, s, t) {if ((b) > 0) { \
-                            p= (t*)mem_malloc(b); if (!(p)) { \
-                            exit(0);}} else p= NULL;}
-
-#define FREE(p)            {if (p) {mem_free(p); (p)= NULL;}}
-
-
 /*
 ===========================================================================
                             Private Data Types
 ===========================================================================
 */
 
-typedef enum                        /* Edge intersection classes         */
-{
+typedef enum {                      /* Edge intersection classes         */
   NUL,                              /* Empty non-intersection            */
   EMX,                              /* External maximum                  */
   ELI,                              /* External left intermediate        */
@@ -132,29 +79,25 @@ typedef enum                        /* Edge intersection classes         */
   FUL                               /* Full non-intersection             */
 } vertex_type;
 
-typedef enum                        /* Horizontal edge states            */
-{
+typedef enum {                      /* Horizontal edge states            */
   NH,                               /* No horizontal edge                */
   BH,                               /* Bottom horizontal edge            */
   TH                                /* Top horizontal edge               */
 } h_state;
 
-typedef enum                        /* Edge bundle state                 */
-{
+typedef enum {                      /* Edge bundle state                 */
   UNBUNDLED,                        /* Isolated edge not within a bundle */
   BUNDLE_HEAD,                      /* Bundle head node                  */
   BUNDLE_TAIL                       /* Passive bundle tail node          */
 } bundle_state;
 
-typedef struct v_shape              /* Internal vertex list datatype     */
-{
+typedef struct v_shape {            /* Internal vertex list datatype     */
   float              x;            /* X coordinate component            */
   float              y;            /* Y coordinate component            */
   struct v_shape     *next;         /* Pointer to next vertex in list    */
 } vertex_node;
 
-typedef struct p_shape              /* Internal contour / tristrip type  */
-{
+typedef struct p_shape {            /* Internal contour / tristrip type  */
   int                 active;       /* Active flag / vertex count        */
   int                 hole;         /* Hole / external contour flag      */
   vertex_node        *v[2];         /* Left and right vertex list ptrs   */
@@ -162,11 +105,10 @@ typedef struct p_shape              /* Internal contour / tristrip type  */
   struct p_shape     *proxy;        /* Pointer to actual structure used  */
 } polygon_node;
 
-typedef struct edge_shape
-{
-  gpc_vertex          vertex;       /* Piggy-backed contour vertex data  */
-  gpc_vertex          bot;          /* Edge lower (x, y) coordinate      */
-  gpc_vertex          top;          /* Edge upper (x, y) coordinate      */
+typedef struct edge_shape {
+  vertex_s          vertex;       /* Piggy-backed contour vertex data  */
+  vertex_s          bot;          /* Edge lower (x, y) coordinate      */
+  vertex_s          top;          /* Edge upper (x, y) coordinate      */
   float              xb;           /* Scanbeam bottom x coordinate      */
   float              xt;           /* Scanbeam top x coordinate         */
   float              dx;           /* Change in x for a unit y increase */
@@ -182,29 +124,25 @@ typedef struct edge_shape
   struct edge_shape  *next_bound;   /* Pointer to next bound in LMT      */
 } edge_node;
 
-typedef struct lmt_shape            /* Local minima table                */
-{
+typedef struct lmt_shape {          /* Local minima table                */
   float              y;            /* Y coordinate at local minimum     */
   edge_node          *first_bound;  /* Pointer to bound list             */
   struct lmt_shape   *next;         /* Pointer to next local minimum     */
 } lmt_node;
 
-typedef struct sbt_t_shape          /* Scanbeam tree                     */
-{
+typedef struct sbt_t_shape {        /* Scanbeam tree                     */
   float              y;            /* Scanbeam node y value             */
   struct sbt_t_shape *less;         /* Pointer to nodes with lower y     */
   struct sbt_t_shape *more;         /* Pointer to nodes with higher y    */
 } sb_tree;
 
-typedef struct it_shape             /* Intersection table                */
-{
+typedef struct it_shape {           /* Intersection table                */
   edge_node          *ie[2];        /* Intersecting edge (bundle) pair   */
-  gpc_vertex          point;        /* Point of intersection             */
+  vertex_s          point;        /* Point of intersection             */
   struct it_shape    *next;         /* The next intersection table node  */
 } it_node;
 
-typedef struct st_shape             /* Sorted edge table                 */
-{
+typedef struct st_shape {           /* Sorted edge table                 */
   edge_node          *edge;         /* Pointer to AET edge               */
   float              xb;           /* Scanbeam bottom x coordinate      */
   float              xt;           /* Scanbeam top x coordinate         */
@@ -212,8 +150,7 @@ typedef struct st_shape             /* Sorted edge table                 */
   struct st_shape    *prev;         /* Previous edge in sorted list      */
 } st_node;
 
-typedef struct bbox_shape           /* Contour axis-aligned bounding box */
-{
+typedef struct bbox_shape {         /* Contour axis-aligned bounding box */
   float             xmin;          /* Minimum x coordinate              */
   float             ymin;          /* Minimum y coordinate              */
   float             xmax;          /* Maximum x coordinate              */
@@ -251,7 +188,7 @@ static void reset_it(it_node **it)
   while (*it)
   {
     itn= (*it)->next;
-    FREE(*it);
+    mem_free(*it);
     *it= itn;
   }
 }
@@ -264,7 +201,7 @@ static void reset_lmt(lmt_node **lmt)
   while (*lmt)
   {
     lmtn= (*lmt)->next;
-    FREE(*lmt);
+    mem_free(*lmt);
     *lmt= lmtn;
   }
 }
@@ -324,8 +261,8 @@ static edge_node **bound_list(lmt_node **lmt, float y)
   if (!*lmt)
   {
     /* Add node onto the tail end of the LMT */
-    MALLOC(*lmt, sizeof(lmt_node), "LMT insertion", lmt_node);
-    (*lmt)->y= y;
+    (*lmt) = (lmt_node*)mem_malloc(sizeof(lmt_node));
+    (*lmt)->y = y;
     (*lmt)->first_bound= NULL;
     (*lmt)->next= NULL;
     return &((*lmt)->first_bound);
@@ -335,8 +272,8 @@ static edge_node **bound_list(lmt_node **lmt, float y)
     {
       /* Insert a new LMT node before the current node */
       existing_node= *lmt;
-      MALLOC(*lmt, sizeof(lmt_node), "LMT insertion", lmt_node);
-      (*lmt)->y= y;
+      (*lmt) = (lmt_node*)mem_malloc(sizeof(lmt_node));
+      (*lmt)->y = y;
       (*lmt)->first_bound= NULL;
       (*lmt)->next= existing_node;
       return &((*lmt)->first_bound);
@@ -356,8 +293,8 @@ static void add_to_sbtree(int *entries, sb_tree **sbtree, float y)
   if (!*sbtree)
   {
     /* Add a new tree node here */
-    MALLOC(*sbtree, sizeof(sb_tree), "scanbeam tree insertion", sb_tree);
-    (*sbtree)->y= y;
+    (*sbtree) = (sb_tree*)mem_malloc(sizeof(sb_tree));
+    (*sbtree)->y = y;
     (*sbtree)->less= NULL;
     (*sbtree)->more= NULL;
     (*entries)++;
@@ -398,7 +335,7 @@ static void free_sbtree(sb_tree **sbtree)
   {
     free_sbtree(&((*sbtree)->less));
     free_sbtree(&((*sbtree)->more));
-    FREE(*sbtree);
+    mem_free(*sbtree);
   }
 }
 
@@ -431,15 +368,14 @@ static edge_node *build_lmt(lmt_node **lmt, sb_tree **sbtree,
     total_vertices+= count_optimal_vertices(p->contour[c]);
 
   /* Create the entire input polygon edge table in one go */
-  MALLOC(edge_table, total_vertices * sizeof(edge_node),
-         "edge table creation", edge_node);
+  edge_table = (edge_node*)mem_malloc(total_vertices * sizeof(edge_node));
 
   for (c= 0; c < p->num_contours; c++)
   {
     if (p->contour[c].num_vertices < 0)
     {
       /* Ignore the non-contributing contour and repair the vertex count */
-      p->contour[c].num_vertices= -p->contour[c].num_vertices;
+      p->contour[c].num_vertices = -(p->contour[c].num_vertices);
     }
     else
     {
@@ -478,8 +414,8 @@ static edge_node *build_lmt(lmt_node **lmt, sb_tree **sbtree,
           e_index+= num_edges;
           v= min;
           e[0].bstate[BELOW]= UNBUNDLED;
-          e[0].bundle[BELOW][CLIP]= FALSE;
-          e[0].bundle[BELOW][SUBJ]= FALSE;
+          e[0].bundle[BELOW][CLIP]= False;
+          e[0].bundle[BELOW][SUBJ]= False;
           for (i= 0; i < num_edges; i++)
           {
             e[i].xb= edge_table[v].vertex.x;
@@ -528,8 +464,8 @@ static edge_node *build_lmt(lmt_node **lmt, sb_tree **sbtree,
           e_index+= num_edges;
           v= min;
           e[0].bstate[BELOW]= UNBUNDLED;
-          e[0].bundle[BELOW][CLIP]= FALSE;
-          e[0].bundle[BELOW][SUBJ]= FALSE;
+          e[0].bundle[BELOW][CLIP]= False;
+          e[0].bundle[BELOW][SUBJ]= False;
           for (i= 0; i < num_edges; i++)
           {
             e[i].xb= edge_table[v].vertex.x;
@@ -620,12 +556,12 @@ static void add_intersection(it_node **it, edge_node *edge0, edge_node *edge1,
   if (!*it)
   {
     /* Append a new node to the tail of the list */
-    MALLOC(*it, sizeof(it_node), "IT insertion", it_node);
-    (*it)->ie[0]= edge0;
-    (*it)->ie[1]= edge1;
-    (*it)->point.x= x;
-    (*it)->point.y= y;
-    (*it)->next= NULL;
+    (*it) = (it_node*)mem_malloc(sizeof(it_node));
+    (*it)->ie[0] = edge0;
+    (*it)->ie[1] = edge1;
+    (*it)->point.x = x;
+    (*it)->point.y = y;
+    (*it)->next = NULL;
   }
   else
   {
@@ -633,12 +569,12 @@ static void add_intersection(it_node **it, edge_node *edge0, edge_node *edge1,
     {
       /* Insert a new node mid-list */
       existing_node= *it;
-      MALLOC(*it, sizeof(it_node), "IT insertion", it_node);
-      (*it)->ie[0]= edge0;
-      (*it)->ie[1]= edge1;
-      (*it)->point.x= x;
-      (*it)->point.y= y;
-      (*it)->next= existing_node;
+      (*it) = (it_node*)mem_malloc(sizeof(it_node));
+      (*it)->ie[0] = edge0;
+      (*it)->ie[1] = edge1;
+      (*it)->point.x = x;
+      (*it)->point.y = y;
+      (*it)->next = existing_node;
     }
     else
       /* Head further down the list */
@@ -656,12 +592,12 @@ static void add_st_edge(st_node **st, it_node **it, edge_node *edge,
   if (!*st)
   {
     /* Append edge onto the tail end of the ST */
-    MALLOC(*st, sizeof(st_node), "ST insertion", st_node);
-    (*st)->edge= edge;
-    (*st)->xb= edge->xb;
-    (*st)->xt= edge->xt;
-    (*st)->dx= edge->dx;
-    (*st)->prev= NULL;
+    (*st) = (st_node*)mem_malloc(sizeof(st_node));
+    (*st)->edge = edge;
+    (*st)->xb = edge->xb;
+    (*st)->xt = edge->xt;
+    (*st)->dx = edge->dx;
+    (*st)->prev = NULL;
   }
   else
   {
@@ -669,16 +605,16 @@ static void add_st_edge(st_node **st, it_node **it, edge_node *edge,
 
     /* If new edge and ST edge don't cross */
     if ((edge->xt >= (*st)->xt) || (edge->dx == (*st)->dx) || 
-        (Fabs(den) <= DBL_EPSILON))
+        (Fabs(den) <= FLT_EPSILON))
     {
       /* No intersection - insert edge here (before the ST edge) */
       existing_node= *st;
-      MALLOC(*st, sizeof(st_node), "ST insertion", st_node);
-      (*st)->edge= edge;
-      (*st)->xb= edge->xb;
-      (*st)->xt= edge->xt;
-      (*st)->dx= edge->dx;
-      (*st)->prev= existing_node;
+      (*st) = (st_node*)mem_malloc(sizeof(st_node));
+      (*st)->edge = edge;
+      (*st)->xb = edge->xb;
+      (*st)->xt = edge->xt;
+      (*st)->dx = edge->dx;
+      (*st)->prev = existing_node;
     }
     else
     {
@@ -718,7 +654,7 @@ static void build_intersection_table(it_node **it, edge_node *aet, float dy)
   while (st)
   {
     stp= st->prev;
-    FREE(st);
+    mem_free(st);
     st= stp;
   }
 }
@@ -748,7 +684,7 @@ static int count_contours(polygon_node *polygon)
         for (v= polygon->proxy->v[LEFT]; v; v= nextv)
         {
           nextv= v->next;
-          FREE(v);
+          mem_free(v);
         }
         polygon->active= 0;
       }
@@ -762,7 +698,7 @@ static void add_left(polygon_node *p, float x, float y)
   vertex_node *nv;
 
   /* Create a new vertex node and set its fields */
-  MALLOC(nv, sizeof(vertex_node), "vertex node creation", vertex_node);
+  nv = (vertex_node*)mem_malloc(sizeof(vertex_node));
   nv->x= x;
   nv->y= y;
 
@@ -779,7 +715,7 @@ static void merge_left(polygon_node *p, polygon_node *q, polygon_node *list)
   polygon_node *target;
 
   /* Label contour as a hole */
-  q->proxy->hole= TRUE;
+  q->proxy->hole= True;
 
   if (p->proxy != q->proxy)
   {
@@ -793,7 +729,7 @@ static void merge_left(polygon_node *p, polygon_node *q, polygon_node *list)
     {
       if (list->proxy == target)
       {
-        list->active= FALSE;
+        list->active= False;
         list->proxy= q->proxy;
       }
     }
@@ -806,7 +742,7 @@ static void add_right(polygon_node *p, float x, float y)
   vertex_node *nv;
 
   /* Create a new vertex node and set its fields */
-  MALLOC(nv, sizeof(vertex_node), "vertex node creation", vertex_node);
+  nv = (vertex_node*)mem_malloc(sizeof(vertex_node));
   nv->x= x;
   nv->y= y;
   nv->next= NULL;
@@ -824,7 +760,7 @@ static void merge_right(polygon_node *p, polygon_node *q, polygon_node *list)
   polygon_node *target;
 
   /* Label contour as external */
-  q->proxy->hole= FALSE;
+  q->proxy->hole= False;
 
   if (p->proxy != q->proxy)
   {
@@ -837,7 +773,7 @@ static void merge_right(polygon_node *p, polygon_node *q, polygon_node *list)
     {
       if (list->proxy == target)
       {
-        list->active= FALSE;
+        list->active= False;
         list->proxy= q->proxy;
       }
     }
@@ -853,17 +789,17 @@ static void add_local_min(polygon_node **p, edge_node *edge,
 
   existing_min= *p;
 
-  MALLOC(*p, sizeof(polygon_node), "polygon node creation", polygon_node);
+  (*p) = (polygon_node*)mem_malloc(sizeof(polygon_node));
 
   /* Create a new vertex node and set its fields */
-  MALLOC(nv, sizeof(vertex_node), "vertex node creation", vertex_node);
+  nv = (vertex_node*)mem_malloc(sizeof(vertex_node));
   nv->x= x;
   nv->y= y;
   nv->next= NULL;
 
   /* Initialise proxy to point to p itself */
   (*p)->proxy= (*p);
-  (*p)->active= TRUE;
+  (*p)->active= True;
   (*p)->next= existing_min;
 
   /* Make v[LEFT] and v[RIGHT] point to new vertex nv */
@@ -874,47 +810,12 @@ static void add_local_min(polygon_node **p, edge_node *edge,
   edge->outp[ABOVE]= *p;
 }
 
-
-static void add_vertex(vertex_node **t, float x, float y)
-{
-  if (!(*t))
-  {
-    MALLOC(*t, sizeof(vertex_node), "tristrip vertex creation", vertex_node);
-    (*t)->x= x;
-    (*t)->y= y;
-    (*t)->next= NULL;
-  }
-  else
-    /* Head further down the list */
-    add_vertex(&((*t)->next), x, y);
-}
-
-
-static void new_tristrip(polygon_node **tn, edge_node *edge,
-                         float x, float y)
-{
-  if (!(*tn))
-  {
-    MALLOC(*tn, sizeof(polygon_node), "tristrip node creation", polygon_node);
-    (*tn)->next= NULL;
-    (*tn)->v[LEFT]= NULL;
-    (*tn)->v[RIGHT]= NULL;
-    (*tn)->active= 1;
-    add_vertex(&((*tn)->v[LEFT]), x, y); 
-    edge->outp[ABOVE]= *tn;
-  }
-  else
-    /* Head further down the list */
-    new_tristrip(&((*tn)->next), edge, x, y);
-}
-
-
 static bbox *create_contour_bboxes(gpc_polygon *p)
 {
   bbox *box;
   int   c, v;
 
-  MALLOC(box, p->num_contours * sizeof(bbox), "Bounding box creation", bbox);
+  box = (bbox*)mem_malloc(p->num_contours * sizeof(bbox));
 
   /* Construct contour bounding boxes */
   for (c= 0; c < p->num_contours; c++)
@@ -950,8 +851,7 @@ static void minimax_test(gpc_polygon *subj, gpc_polygon *clip, gpc_op op)
   s_bbox= create_contour_bboxes(subj);
   c_bbox= create_contour_bboxes(clip);
 
-  MALLOC(o_table, subj->num_contours * clip->num_contours * sizeof(int),
-         "overlap table creation", int);
+  o_table = (int*)mem_malloc(subj->num_contours * clip->num_contours * sizeof(int));
 
   /* Check all subject contour bounding boxes against clip boxes */
   for (s= 0; s < subj->num_contours; s++)
@@ -989,9 +889,9 @@ static void minimax_test(gpc_polygon *subj, gpc_polygon *clip, gpc_op op)
     }  
   }
 
-  FREE(s_bbox);
-  FREE(c_bbox);
-  FREE(o_table);
+  mem_free(s_bbox);
+  mem_free(c_bbox);
+  mem_free(o_table);
 }
 
 
@@ -1006,9 +906,9 @@ void gpc_free_polygon(gpc_polygon *p)
   int c;
 
   for (c= 0; c < p->num_contours; c++)
-    FREE(p->contour[c].vertex);
-  FREE(p->hole);
-  FREE(p->contour);
+    mem_free(p->contour[c].vertex);
+  mem_free(p->hole);
+  mem_free(p->contour);
   p->num_contours= 0;
 }
 
@@ -1020,12 +920,10 @@ void gpc_add_contour(gpc_polygon *p, gpc_vertex_list *new_contour, int hole)
   gpc_vertex_list *extended_contour;
 
   /* Create an extended hole array */
-  MALLOC(extended_hole, (p->num_contours + 1)
-         * sizeof(int), "contour hole addition", int);
+  extended_hole = (int*)mem_malloc((p->num_contours + 1) * sizeof(int));
 
   /* Create an extended contour array */
-  MALLOC(extended_contour, (p->num_contours + 1)
-         * sizeof(gpc_vertex_list), "contour addition", gpc_vertex_list);
+  extended_contour = (gpc_vertex_list*)mem_malloc((p->num_contours + 1) * sizeof(gpc_vertex_list));
 
   /* Copy the old contour and hole data into the extended arrays */
   for (c= 0; c < p->num_contours; c++)
@@ -1037,15 +935,14 @@ void gpc_add_contour(gpc_polygon *p, gpc_vertex_list *new_contour, int hole)
   /* Copy the new contour and hole onto the end of the extended arrays */
   c= p->num_contours;
   extended_hole[c]= hole;
-  extended_contour[c].num_vertices= new_contour->num_vertices;
-  MALLOC(extended_contour[c].vertex, new_contour->num_vertices
-         * sizeof(gpc_vertex), "contour addition", gpc_vertex);
+  extended_contour[c].num_vertices = new_contour->num_vertices;
+  extended_contour[c].vertex = (vertex_s*)mem_malloc(new_contour->num_vertices * sizeof(vertex_s));
   for (v= 0; v < new_contour->num_vertices; v++)
     extended_contour[c].vertex[v]= new_contour->vertex[v];
 
   /* Dispose of the old contour */
-  FREE(p->contour);
-  FREE(p->hole);
+  mem_free(p->contour);
+  mem_free(p->hole);
 
   /* Update the polygon information */
   p->num_contours++;
@@ -1099,13 +996,13 @@ void gpc_polygon_clip(gpc_op op, gpc_polygon *subj, gpc_polygon *clip,
     result->hole= NULL;
     result->contour= NULL;
     reset_lmt(&lmt);
-    FREE(s_heap);
-    FREE(c_heap);
+    mem_free(s_heap);
+    mem_free(c_heap);
     return;
   }
 
   /* Build scanbeam table from scanbeam tree */
-  MALLOC(sbt, sbt_entries * sizeof(float), "sbt creation", float);
+  sbt = (float*)mem_malloc(sbt_entries * sizeof(float));
   build_sbt(&scanbeam, sbt, sbtree);
   scanbeam= 0;
   free_sbtree(&sbtree);
@@ -1157,14 +1054,14 @@ void gpc_polygon_clip(gpc_op op, gpc_polygon *subj, gpc_polygon *clip,
 
     /* Set up bundle fields of first edge */
     aet->bundle[ABOVE][ aet->type]= (aet->top.y != yb);
-    aet->bundle[ABOVE][!aet->type]= FALSE;
+    aet->bundle[ABOVE][!aet->type]= False;
     aet->bstate[ABOVE]= UNBUNDLED;
 
     for (next_edge= aet->next; next_edge; next_edge= next_edge->next)
     {
       /* Set up bundle fields of next edge */
       next_edge->bundle[ABOVE][ next_edge->type]= (next_edge->top.y != yb);
-      next_edge->bundle[ABOVE][!next_edge->type]= FALSE;
+      next_edge->bundle[ABOVE][!next_edge->type]= False;
       next_edge->bstate[ABOVE]= UNBUNDLED;
 
       /* Bundle edges above the scanbeam boundary if they coincide */
@@ -1178,8 +1075,8 @@ void gpc_polygon_clip(gpc_op op, gpc_polygon *subj, gpc_polygon *clip,
           next_edge->bundle[ABOVE][!next_edge->type]= 
             e0->bundle[ABOVE][!next_edge->type];
           next_edge->bstate[ABOVE]= BUNDLE_HEAD;
-          e0->bundle[ABOVE][CLIP]= FALSE;
-          e0->bundle[ABOVE][SUBJ]= FALSE;
+          e0->bundle[ABOVE][CLIP]= False;
+          e0->bundle[ABOVE][SUBJ]= False;
           e0->bstate[ABOVE]= BUNDLE_TAIL;
         }
         e0= next_edge;
@@ -1570,17 +1467,17 @@ void gpc_polygon_clip(gpc_op op, gpc_polygon *subj, gpc_polygon *clip,
 
         if (e0->bstate[ABOVE] == BUNDLE_HEAD)
         {
-          search= TRUE;
+          search= True;
           while (search)
           {
             prev_edge= prev_edge->prev;
             if (prev_edge)
             {
               if (prev_edge->bstate[ABOVE] != BUNDLE_TAIL)
-                search= FALSE;
+                search= False;
             }
             else
-              search= FALSE;
+              search= False;
           }
         }
         if (!prev_edge)
@@ -1643,10 +1540,8 @@ void gpc_polygon_clip(gpc_op op, gpc_polygon *subj, gpc_polygon *clip,
   result->num_contours= count_contours(out_poly);
   if (result->num_contours > 0)
   {
-    MALLOC(result->hole, result->num_contours
-           * sizeof(int), "hole flag table creation", int);
-    MALLOC(result->contour, result->num_contours
-           * sizeof(gpc_vertex_list), "contour creation", gpc_vertex_list);
+    result->hole = (int*)mem_malloc(result->num_contours * sizeof(int));
+    result->contour = (gpc_vertex_list*)mem_malloc(result->num_contours * sizeof(gpc_vertex_list));
 
     c= 0;
     for (poly= out_poly; poly; poly= npoly)
@@ -1656,9 +1551,7 @@ void gpc_polygon_clip(gpc_op op, gpc_polygon *subj, gpc_polygon *clip,
       {
         result->hole[c]= poly->proxy->hole;
         result->contour[c].num_vertices= poly->active;
-        MALLOC(result->contour[c].vertex,
-          result->contour[c].num_vertices * sizeof(gpc_vertex),
-          "vertex creation", gpc_vertex);
+        result->contour[c].vertex = (vertex_s*)mem_malloc(result->contour[c].num_vertices * sizeof(vertex_s));
       
         v= result->contour[c].num_vertices - 1;
         for (vtx= poly->proxy->v[LEFT]; vtx; vtx= nv)
@@ -1666,12 +1559,12 @@ void gpc_polygon_clip(gpc_op op, gpc_polygon *subj, gpc_polygon *clip,
           nv= vtx->next;
           result->contour[c].vertex[v].x= vtx->x;
           result->contour[c].vertex[v].y= vtx->y;
-          FREE(vtx);
+          mem_free(vtx);
           v--;
         }
         c++;
       }
-      FREE(poly);
+      mem_free(poly);
     }
   }
   else
@@ -1679,16 +1572,16 @@ void gpc_polygon_clip(gpc_op op, gpc_polygon *subj, gpc_polygon *clip,
     for (poly= out_poly; poly; poly= npoly)
     {
       npoly= poly->next;
-      FREE(poly);
+      mem_free(poly);
     }
   }
 
   /* Tidy up */
   reset_it(&it);
   reset_lmt(&lmt);
-  FREE(c_heap);
-  FREE(s_heap);
-  FREE(sbt);
+  mem_free(c_heap);
+  mem_free(s_heap);
+  mem_free(sbt);
 }
 
 }

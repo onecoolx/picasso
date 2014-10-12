@@ -52,7 +52,7 @@ public:
 
     scalar approximation_scale(void) const 
     {
-           return m_scale;  
+        return m_scale;  
     }
 
     virtual void rewind(unsigned int id)
@@ -87,7 +87,7 @@ private:
     void normalize(scalar a1, scalar a2, bool ccw)
     {
         scalar ra = (Fabs(m_rx) + Fabs(m_ry)) / 2;
-        m_da = Acos(ra / (ra + DBL_TO_SCALAR(0.125) / m_scale)) * 2;
+        m_da = Acos(ra / (ra + FLT_TO_SCALAR(0.125f) / m_scale)) * 2;
         if (ccw) {
             while(a2 < a1) a2 += _2PI;
         } else {
@@ -141,7 +141,7 @@ public:
         if (sweep_angle <= -_2PI) 
             sweep_angle = -_2PI;
 
-        if (Fabs(sweep_angle) < DBL_TO_SCALAR(1e-10)) {
+        if (Fabs(sweep_angle) < FLT_TO_SCALAR(1e-10f)) {
             m_num_vertices = 4;
             m_cmd = path_cmd_line_to;
             m_vertices[0] = x + rx * Cos(start_angle);
@@ -151,18 +151,18 @@ public:
             return;
         }
 
-        scalar total_sweep = DBL_TO_SCALAR(0.0);
-        scalar local_sweep = DBL_TO_SCALAR(0.0);
+        scalar total_sweep = FLT_TO_SCALAR(0.0f);
+        scalar local_sweep = FLT_TO_SCALAR(0.0f);
         scalar prev_sweep;
         m_num_vertices = 2;
         m_cmd = path_cmd_curve4;
         bool done = false;
         do {
-            if (sweep_angle < DBL_TO_SCALAR(0.0)) {
+            if (sweep_angle < FLT_TO_SCALAR(0.0f)) {
                 prev_sweep  = total_sweep;
                 local_sweep = -_PIdiv2;
                 total_sweep -= _PIdiv2;
-                if (total_sweep <= sweep_angle + DBL_TO_SCALAR(0.01)) {
+                if (total_sweep <= sweep_angle + FLT_TO_SCALAR(0.01f)) {
                     local_sweep = sweep_angle - prev_sweep;
                     done = true;
                 }
@@ -170,7 +170,7 @@ public:
                 prev_sweep  = total_sweep;
                 local_sweep =  _PIdiv2;
                 total_sweep += _PIdiv2;
-                if (total_sweep >= sweep_angle - DBL_TO_SCALAR(0.01)) {
+                if (total_sweep >= sweep_angle - FLT_TO_SCALAR(0.01f)) {
                     local_sweep = sweep_angle - prev_sweep;
                     done = true;
                 }
@@ -259,14 +259,14 @@ public:
     {
         m_radii_ok = true;
 
-        if (rx < DBL_TO_SCALAR(0.0)) rx = -rx;
-        if (ry < DBL_TO_SCALAR(0.0)) ry = -rx;
+        if (rx < FLT_TO_SCALAR(0.0f)) rx = -rx;
+        if (ry < FLT_TO_SCALAR(0.0f)) ry = -rx;
 
         // Calculate the middle point between 
         // the current and the final points
         //------------------------
-        scalar dx2 = (x0 - x2) / DBL_TO_SCALAR(2.0);
-        scalar dy2 = (y0 - y2) / DBL_TO_SCALAR(2.0);
+        scalar dx2 = (x0 - x2) / FLT_TO_SCALAR(2.0f);
+        scalar dy2 = (y0 - y2) / FLT_TO_SCALAR(2.0f);
 
         scalar cos_a = Cos(angle);
         scalar sin_a = Sin(angle);
@@ -286,17 +286,17 @@ public:
         // Check that radii are large enough
         //------------------------
         scalar radii_check = px1/prx + py1/pry;
-        if (radii_check > DBL_TO_SCALAR(1.0)) {
+        if (radii_check > FLT_TO_SCALAR(1.0f)) {
             rx = Sqrt(radii_check) * rx;
             ry = Sqrt(radii_check) * ry;
             prx = rx * rx;
             pry = ry * ry;
-            if (radii_check > DBL_TO_SCALAR(10.0)) m_radii_ok = false;
+            if (radii_check > FLT_TO_SCALAR(10.0f)) m_radii_ok = false;
         }
 
         // Calculate (cx1, cy1)
         //------------------------
-        scalar sign = (large_arc_flag == sweep_flag) ? -DBL_TO_SCALAR(1.0) : DBL_TO_SCALAR(1.0);
+        scalar sign = (large_arc_flag == sweep_flag) ? -FLT_TO_SCALAR(1.0f) : FLT_TO_SCALAR(1.0f);
         scalar sq   = (prx*pry - prx*py1 - pry*px1) / (prx*py1 + pry*px1);
         scalar coef = sign * Sqrt((sq < 0) ? 0 : sq);
         scalar cx1  = coef *  ((rx * y1) / ry);
@@ -305,8 +305,8 @@ public:
         //
         // Calculate (cx, cy) from (cx1, cy1)
         //------------------------
-        scalar sx2 = (x0 + x2) / DBL_TO_SCALAR(2.0);
-        scalar sy2 = (y0 + y2) / DBL_TO_SCALAR(2.0);
+        scalar sx2 = (x0 + x2) / FLT_TO_SCALAR(2.0f);
+        scalar sy2 = (y0 + y2) / FLT_TO_SCALAR(2.0f);
         scalar cx = sx2 + (cos_a * cx1 - sin_a * cy1);
         scalar cy = sy2 + (sin_a * cx1 + cos_a * cy1);
 
@@ -322,20 +322,20 @@ public:
         //------------------------
         n = Sqrt(ux*ux + uy*uy);
         p = ux; // (1 * ux) + (0 * uy)
-        sign = (uy < 0) ? -DBL_TO_SCALAR(1.0) : DBL_TO_SCALAR(1.0);
+        sign = (uy < 0) ? -FLT_TO_SCALAR(1.0f) : FLT_TO_SCALAR(1.0f);
         scalar v = p / n;
-        if (v < -DBL_TO_SCALAR(1.0)) v = -DBL_TO_SCALAR(1.0);
-        if (v > DBL_TO_SCALAR(1.0)) v = DBL_TO_SCALAR(1.0);
+        if (v < -FLT_TO_SCALAR(1.0f)) v = -FLT_TO_SCALAR(1.0f);
+        if (v > FLT_TO_SCALAR(1.0f)) v = FLT_TO_SCALAR(1.0f);
         scalar start_angle = sign * Acos(v);
 
         // Calculate the sweep angle
         //------------------------
         n = Sqrt((ux*ux + uy*uy) * (vx*vx + vy*vy));
         p = ux * vx + uy * vy;
-        sign = (ux * vy - uy * vx < 0) ? -DBL_TO_SCALAR(1.0) : DBL_TO_SCALAR(1.0);
+        sign = (ux * vy - uy * vx < 0) ? -FLT_TO_SCALAR(1.0f) : FLT_TO_SCALAR(1.0f);
         v = p / n;
-        if (v < -DBL_TO_SCALAR(1.0)) v = -DBL_TO_SCALAR(1.0);
-        if (v > DBL_TO_SCALAR(1.0)) v = DBL_TO_SCALAR(1.0);
+        if (v < -FLT_TO_SCALAR(1.0f)) v = -FLT_TO_SCALAR(1.0f);
+        if (v > FLT_TO_SCALAR(1.0f)) v = FLT_TO_SCALAR(1.0f);
         scalar sweep_angle = sign * Acos(v);
         if (!sweep_flag && sweep_angle > 0) {
             sweep_angle -= _2PI;
@@ -347,7 +347,7 @@ public:
 
         // We can now build and transform the resulting arc
         //------------------------
-        m_arc.init(DBL_TO_SCALAR(0.0), DBL_TO_SCALAR(0.0), rx, ry, start_angle, sweep_angle);
+        m_arc.init(FLT_TO_SCALAR(0.0f), FLT_TO_SCALAR(0.0f), rx, ry, start_angle, sweep_angle);
 
         scalar sx = Cos(angle);
         scalar shy = Sin(angle);
@@ -454,14 +454,14 @@ public:
         scalar dx = Fabs(m_y2 - m_y1);
         scalar dy = Fabs(m_x2 - m_x1);
 
-        scalar k = DBL_TO_SCALAR(1.0);
+        scalar k = FLT_TO_SCALAR(1.0f);
         scalar t;
         t = dx / (m_rx1 + m_rx2); if(t < k) k = t; 
         t = dx / (m_rx3 + m_rx4); if(t < k) k = t; 
         t = dy / (m_ry1 + m_ry2); if(t < k) k = t; 
         t = dy / (m_ry3 + m_ry4); if(t < k) k = t; 
 
-        if (k < DBL_TO_SCALAR(1.0)) {
+        if (k < FLT_TO_SCALAR(1.0f)) {
             m_rx1 *= k; m_ry1 *= k; m_rx2 *= k; m_ry2 *= k;
             m_rx3 *= k; m_ry3 *= k; m_rx4 *= k; m_ry4 *= k;
         }
@@ -500,7 +500,7 @@ public:
                     return cmd;
 
             case 2:
-                m_arc.init(m_x2 - m_rx2, m_y1 + m_ry2, m_rx2, m_ry2, PI+_PIdiv2, DBL_TO_SCALAR(0.0));
+                m_arc.init(m_x2 - m_rx2, m_y1 + m_ry2, m_rx2, m_ry2, PI+_PIdiv2, FLT_TO_SCALAR(0.0f));
                 m_arc.rewind(0);
                 m_status++;
 
@@ -512,7 +512,7 @@ public:
                     return path_cmd_line_to;
 
             case 4:
-                m_arc.init(m_x2 - m_rx3, m_y2 - m_ry3, m_rx3, m_ry3, DBL_TO_SCALAR(0.0), _PIdiv2);
+                m_arc.init(m_x2 - m_rx3, m_y2 - m_ry3, m_rx3, m_ry3, FLT_TO_SCALAR(0.0f), _PIdiv2);
                 m_arc.rewind(0);
                 m_status++;
 
@@ -565,13 +565,13 @@ class ellipse : public vertex_source
 {
 public:
     ellipse() 
-        : m_x(DBL_TO_SCALAR(0.0)), m_y(DBL_TO_SCALAR(0.0)), m_rx(DBL_TO_SCALAR(1.0)), m_ry(DBL_TO_SCALAR(1.0))
-        , m_scale(DBL_TO_SCALAR(1.0)), m_num(4), m_step(0), m_cw(false) 
+        : m_x(FLT_TO_SCALAR(0.0f)), m_y(FLT_TO_SCALAR(0.0f)), m_rx(FLT_TO_SCALAR(1.0f)), m_ry(FLT_TO_SCALAR(1.0f))
+        , m_scale(FLT_TO_SCALAR(1.0f)), m_num(4), m_step(0), m_cw(false) 
     {
     }
 
     ellipse(scalar x, scalar y, scalar rx, scalar ry, unsigned int num_steps = 0, bool cw = false) 
-        : m_x(x), m_y(y), m_rx(rx), m_ry(ry), m_scale(DBL_TO_SCALAR(1.0)) 
+        : m_x(x), m_y(y), m_rx(rx), m_ry(ry), m_scale(FLT_TO_SCALAR(1.0f)) 
         , m_num(num_steps), m_step(0), m_cw(cw) 
     {
         if (0 == m_num) 
@@ -632,7 +632,7 @@ private:
     void calc_num_steps(void)
     {
         scalar ra = (Fabs(m_rx) + Fabs(m_ry)) / 2;
-        scalar da = Acos(ra / (ra + DBL_TO_SCALAR(0.125) / m_scale)) * 2;
+        scalar da = Acos(ra / (ra + FLT_TO_SCALAR(0.125f) / m_scale)) * 2;
         m_num = uround(_2PI / da);
     }
 

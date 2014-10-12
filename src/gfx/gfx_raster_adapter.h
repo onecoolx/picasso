@@ -10,7 +10,8 @@
 #include "common.h"
 #include "interfaces.h"
 
-#include "aggheader.h"
+#include "gfx_rasterizer_scanline.h"
+#include "gfx_trans_affine.h"
 
 namespace gfx {
 
@@ -40,15 +41,16 @@ public:
     virtual bool contains(scalar x, scalar y);
 
     unsigned int raster_method(void) const;
-    agg::rasterizer_scanline_aa<>& stroke_impl(void) { return m_sraster; } 
-    agg::rasterizer_scanline_aa<>& fill_impl(void) { return m_fraster; } 
-    agg::trans_affine transformation(void);
+    gfx_rasterizer_scanline_aa<>& stroke_impl(void) { return m_sraster; } 
+    gfx_rasterizer_scanline_aa<>& fill_impl(void) { return m_fraster; } 
+    gfx_trans_affine transformation(void) const;
 private:
     void setup_stroke_raster(void);
     void setup_fill_raster(void);
+
     gfx_raster_adapter_impl * m_impl;
-    agg::rasterizer_scanline_aa<> m_sraster;
-    agg::rasterizer_scanline_aa<> m_fraster;
+    gfx_rasterizer_scanline_aa<> m_sraster;
+    gfx_rasterizer_scanline_aa<> m_fraster;
 };
 
 }

@@ -6,7 +6,12 @@
 
 #include <stdio.h>
 #include "common.h"
+#include "convert.h"
 #include "gfx_font_adapter.h"
+#include "gfx_rasterizer_scanline.h"
+#include "gfx_scanline.h"
+#include "gfx_scanline_renderer.h"
+#include "gfx_scanline_storage.h"
 #include "gfx_trans_affine.h"
 
 #if ENABLE(FREE_TYPE2)
@@ -61,7 +66,7 @@ public:
     bool flip_y;
     bool hinting;
     scalar weight;
-    agg::trans_affine matrix;
+    gfx_trans_affine matrix;
     scalar height;
     scalar ascent;
     scalar descent;
@@ -77,8 +82,8 @@ public:
     scalar cur_advance_x;
     scalar cur_advance_y;
     picasso::graphic_path cur_font_path;
-    agg::scanline_storage_bin cur_font_scanlines_bin;
-    agg::serialized_scanlines_adaptor_bin cur_font_storage_bin;
+    gfx_scanline_storage_bin cur_font_scanlines_bin;
+    gfx_serialized_scanlines_adaptor_bin cur_font_storage_bin;
 };
 
 gfx_font_adapter::gfx_font_adapter(const char* name, int charset, scalar height, scalar weight, 
@@ -95,19 +100,19 @@ gfx_font_adapter::gfx_font_adapter(const char* name, int charset, scalar height,
         FT_Set_Pixel_Sizes(m_impl->font, 0, uround(height*FLT_TO_SCALAR(64.0f))>>6);
         FT_Select_Charmap(m_impl->font, char_set);
     }
-    m_impl->matrix = static_cast<gfx_trans_affine*>(const_cast<abstract_trans_affine*>(mtx))->impl();
+    m_impl->matrix = *static_cast<gfx_trans_affine*>(const_cast<abstract_trans_affine*>(mtx));
     if (italic)
         m_impl->matrix.shear(-0.4f, 0.0f);
 
     m_impl->height = height;
 
     if (m_impl->font) {
-        scalar top_base = DBL_TO_SCALAR(fabs(m_impl->font->ascender * m_impl->height / m_impl->font->height));
-        scalar top_leading = DBL_TO_SCALAR((m_impl->font->height - 
+        scalar top_base = FLT_TO_SCALAR(fabsf(m_impl->font->ascender * m_impl->height / m_impl->font->height));
+        scalar top_leading = FLT_TO_SCALAR((m_impl->font->height - 
               (abs(m_impl->font->ascender) + abs(m_impl->font->descender))) * m_impl->height / m_impl->font->height);
         m_impl->ascent = top_base + top_leading;
-        m_impl->descent = DBL_TO_SCALAR(fabs(m_impl->font->descender * m_impl->height / m_impl->font->height));
-        m_impl->leading = DBL_TO_SCALAR((m_impl->font->size->metrics.height - 
+        m_impl->descent = FLT_TO_SCALAR(fabs(m_impl->font->descender * m_impl->height / m_impl->font->height));
+        m_impl->leading = FLT_TO_SCALAR((m_impl->font->size->metrics.height - 
                     m_impl->font->size->metrics.ascender+m_impl->font->size->metrics.descender)/64.0);
         m_impl->units_per_em = m_impl->font->units_per_EM;
     }
@@ -147,7 +152,7 @@ void gfx_font_adapter::add_kerning(unsigned int first, unsigned int second, scal
 }
 
 static bool decompose_ft_outline(const FT_Outline& outline,
-                              bool flip_y, const agg::trans_affine& mtx, graphic_path& path)
+                              bool flip_y, const gfx_trans_affine& mtx, graphic_path& path)
 {   
     FT_Vector   v_last;
     FT_Vector   v_control;
@@ -386,7 +391,7 @@ static rect get_bounding_rect(graphic_path& path)
 }
 
 static void decompose_ft_bitmap_mono(const FT_Bitmap& bitmap, int x, int y,
-                            bool flip_y, agg::scanline_bin& sl,agg::scanline_storage_bin& storage)
+                            bool flip_y, gfx_scanline_bin& sl, gfx_scanline_storage_bin& storage)
 {
     const byte* buf = (const byte*)bitmap.buffer;
     int pitch = bitmap.pitch;
@@ -455,7 +460,7 @@ bool gfx_font_adapter::prepare_glyph(unsigned int code)
             } else {
                 m_impl->cur_data_type = glyph_type_mono;
                 if (is_sys_bitmap || !FT_IS_SCALABLE(m_impl->font) || m_impl->matrix.is_identity()) {
-                    agg::scanline_bin sl;
+                    gfx_scanline_bin sl;
                     error = FT_Render_Glyph(m_impl->font->glyph, FT_RENDER_MODE_MONO);
                     if (error == 0) {
                         decompose_ft_bitmap_mono(m_impl->font->glyph->bitmap, 
@@ -487,14 +492,14 @@ bool gfx_font_adapter::prepare_glyph(unsigned int code)
                     if (decompose_ft_outline(m_impl->font->glyph->outline,
                                 m_impl->flip_y, m_impl->matrix, m_impl->cur_font_path))
                     {
-                        agg::rasterizer_scanline_aa<> rasterizer;
-                        agg::conv_curve<graphic_path> curves(m_impl->cur_font_path);
+                        gfx_rasterizer_scanline_aa<> rasterizer;
+                        picasso::conv_curve curves(m_impl->cur_font_path);
                         curves.approximation_scale(4.0);
                         rasterizer.add_path(curves);
 
-                        agg::scanline_bin sl;
+                        gfx_scanline_bin sl;
                         m_impl->cur_font_scanlines_bin.prepare(); // Remove all 
-                        agg::render_scanlines(rasterizer, sl, m_impl->cur_font_scanlines_bin);
+                        gfx_render_scanlines(rasterizer, sl, m_impl->cur_font_scanlines_bin);
                         m_impl->cur_bound_rect = rect(m_impl->cur_font_scanlines_bin.min_x(),
                                 m_impl->cur_font_scanlines_bin.min_y(),
                                 m_impl->cur_font_scanlines_bin.max_x() + 1,
@@ -539,7 +544,7 @@ void gfx_font_adapter::destroy_storage(void*)
 
 void gfx_font_adapter::translate_storage(void* storage, scalar x, scalar y)
 {
-    agg::serialized_scanlines_adaptor_bin* sd = (agg::serialized_scanlines_adaptor_bin*)storage;
+    gfx_serialized_scanlines_adaptor_bin* sd = (gfx_serialized_scanlines_adaptor_bin*)storage;
     int ox = sd->x();
     int oy = sd->y();
     sd->setX(ox + SCALAR_TO_INT(Ceil(x)));

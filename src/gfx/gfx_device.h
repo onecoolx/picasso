@@ -11,8 +11,6 @@
 #include "device.h"
 #include "interfaces.h"
 
-#include "aggheader.h"
-
 namespace gfx {
 
 class gfx_device : public device
@@ -53,4 +51,4 @@ protected:
 };
 
 }
-#endif/*_GFX_DEVICE_H_*/
+#endif /*_GFX_DEVICE_H_*/

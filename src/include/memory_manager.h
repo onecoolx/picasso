@@ -11,12 +11,14 @@
 #include <new>
 #include <stdlib.h>
 
-//common memory managers
+// common memory managers
 
 #define mem_malloc(n)         malloc(n)
 #define mem_calloc(n, s)     calloc(n, s)
 #define mem_realloc(p, s)     realloc(p, s)
 #define mem_free(p)            free(p)
+
+#define mem_deep_copy(d, s, l)       memmove(d, s, l)
 
 #ifdef __cplusplus
 #undef new

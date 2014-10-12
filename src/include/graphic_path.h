@@ -20,10 +20,10 @@ class graphic_path : public vertex_container
 {
 public:
     typedef enum {
-        shape_polygon         = 0,
+        shape_polygon       = 0,
         shape_rectangle     = 1,
-        shape_ellipse        = 2,
-        shape_rounded_rect     = 3,
+        shape_ellipse       = 2,
+        shape_rounded_rect  = 3,
     } shape_type;
 
     graphic_path();
@@ -33,7 +33,6 @@ public:
 
     graphic_path& operator=(const graphic_path& o);
 
-    void remove_all(void);
     void free_all(void);
 
     //Make path functions
@@ -112,6 +111,7 @@ public:
     virtual void rewind(unsigned int id = 0);
     virtual unsigned int vertex(scalar* x, scalar* y);
     virtual void add_vertex(scalar x, scalar y, unsigned int cmd);
+    virtual void remove_all(void);
 
     // sheap type
     void set_shape(shape_type s) { m_shape = s; }
@@ -161,5 +161,5 @@ inline bool _is_closed_path(const graphic_path& path)
 }
 
 }
-#endif/*_GRAPHIC_PATH_H_*/
+#endif /*_GRAPHIC_PATH_H_*/
 

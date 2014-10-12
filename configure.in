@@ -2,11 +2,11 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT(picasso, 2.0, onecoolx@gmail.com)
+AC_INIT(picasso, 2.1, onecoolx@gmail.com)
 
 VERSION_MAJOR=2
-VERSION_MINOR=0
-VERSION_MICRO=1
+VERSION_MINOR=1
+VERSION_MICRO=0
 VERSION=$VERSION_MAJOR.$VERSION_MINOR.$VERSION_MICRO
 AC_SUBST(VERSION_MAJOR)
 AC_SUBST(VERSION_MINOR)
@@ -140,8 +140,9 @@ if test "x$format_rgb555" = "xyes"; then
     AC_DEFINE(ENABLE_FORMAT_RGB555, 1, [Define if RGB555 color format is supported.])
 fi
 
-CFLAGS="$CFLAGS -Wall" 
-CXXFLAGS="$CXXFLAGS -Wall -fno-rtti -fno-exceptions -fno-strict-aliasing"
+EXTRA_FLAGS="-fvisibility=hidden -fvisibility-inlines-hidden"
+CFLAGS="$CFLAGS -Wall -DDLL_EXPORT=1 $EXTRA_FLAGS" 
+CXXFLAGS="$CXXFLAGS -Wall -fno-rtti -fno-exceptions -fno-strict-aliasing -DDLL_EXPORT=1 $EXTRA_FLAGS"
 
 AC_OUTPUT(
 Makefile

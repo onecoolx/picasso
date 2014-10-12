@@ -6,7 +6,12 @@
 
 #include <stdio.h>
 #include "common.h"
+#include "convert.h"
 #include "gfx_font_adapter.h"
+#include "gfx_rasterizer_scanline.h"
+#include "gfx_scanline.h"
+#include "gfx_scanline_renderer.h"
+#include "gfx_scanline_storage.h"
 #include "gfx_trans_affine.h"
 
 #if defined(WIN32) && !ENABLE(FREE_TYPE2)
@@ -68,7 +73,7 @@ public:
     bool antialias;
     bool flip_y;
     bool hinting;
-    agg::trans_affine matrix;
+    gfx_trans_affine matrix;
     scalar height;
     scalar ascent;
     scalar descent;
@@ -88,8 +93,8 @@ public:
     scalar cur_advance_x;
     scalar cur_advance_y;
     picasso::graphic_path cur_font_path;
-    agg::scanline_storage_bin cur_font_scanlines_bin;
-    agg::serialized_scanlines_adaptor_bin cur_font_storage_bin;
+    gfx_scanline_storage_bin cur_font_scanlines_bin;
+    gfx_serialized_scanlines_adaptor_bin cur_font_storage_bin;
     //kerning
     unsigned int num_kerning_pairs;
     unsigned int max_kerning_pairs;
@@ -120,7 +125,7 @@ gfx_font_adapter::gfx_font_adapter(const char* name, int charset, scalar height,
                                 FF_DONTCARE,            // pitch and family
                                 name);              // typeface name
 
-    m_impl->matrix = static_cast<gfx_trans_affine*>(const_cast<abstract_trans_affine*>(mtx))->impl();
+    m_impl->matrix = *static_cast<gfx_trans_affine*>(const_cast<abstract_trans_affine*>(mtx));
     m_impl->height = height;
 
     OUTLINETEXTMETRIC omt;
@@ -263,7 +268,7 @@ static inline float fx_to_flt(const FIXED& p)
 }
 
 static void decompose_win32_glyph_bitmap_mono(const char* gbuf, int w, int h, int x, int y,
-                                bool flip_y, agg::scanline_bin& sl, agg::scanline_storage_bin& storage)
+                                bool flip_y, gfx_scanline_bin& sl, gfx_scanline_storage_bin& storage)
 {
     int pitch = ((w + 31) >> 5) << 2;
     const byte* buf = (const byte*)gbuf;
@@ -294,7 +299,7 @@ static void decompose_win32_glyph_bitmap_mono(const char* gbuf, int w, int h, in
 }
 
 static bool decompose_win32_glyph_outline(const char* gbuf, unsigned int total_size,
-                                     bool flip_y, const agg::trans_affine& mtx, graphic_path& path)
+                                     bool flip_y, const gfx_trans_affine& mtx, graphic_path& path)
 {
     const char* cur_glyph = gbuf;
     const char* end_glyph = gbuf + total_size;
@@ -428,7 +433,7 @@ bool gfx_font_adapter::prepare_glyph(unsigned int code)
             m_impl->cur_data_type = glyph_type_mono;
             // bitmap text
             if (sys_bitmap) { // bitmap create by system.
-                agg::scanline_bin sl;
+                gfx_scanline_bin sl;
                 decompose_win32_glyph_bitmap_mono(m_impl->buf, gm.gmBlackBoxX, gm.gmBlackBoxY,
                             gm.gmptGlyphOrigin.x, m_impl->flip_y ? -gm.gmptGlyphOrigin.y : gm.gmptGlyphOrigin.y,
                             m_impl->flip_y, sl, m_impl->cur_font_scanlines_bin);
@@ -445,14 +450,14 @@ bool gfx_font_adapter::prepare_glyph(unsigned int code)
                 if (decompose_win32_glyph_outline(m_impl->buf, total_size,
                             m_impl->flip_y, m_impl->matrix, m_impl->cur_font_path))
                 {
-                    agg::rasterizer_scanline_aa<> rasterizer;
-                    agg::conv_curve<graphic_path> curves(m_impl->cur_font_path);
+                    gfx_rasterizer_scanline_aa<> rasterizer;
+                    conv_curve curves(m_impl->cur_font_path);
                     curves.approximation_scale(4.0);
                     rasterizer.add_path(curves);
 
-                    agg::scanline_bin sl;
+                    gfx_scanline_bin sl;
                     m_impl->cur_font_scanlines_bin.prepare(); // Remove all 
-                    agg::render_scanlines(rasterizer, sl, m_impl->cur_font_scanlines_bin);
+                    gfx_render_scanlines(rasterizer, sl, m_impl->cur_font_scanlines_bin);
                     m_impl->cur_bound_rect = rect(m_impl->cur_font_scanlines_bin.min_x(),
                                                   m_impl->cur_font_scanlines_bin.min_y(),
                                                   m_impl->cur_font_scanlines_bin.max_x() + 1,
@@ -523,7 +528,7 @@ void gfx_font_adapter::destroy_storage(void*)
 
 void gfx_font_adapter::translate_storage(void* storage, scalar x, scalar y)
 {
-    agg::serialized_scanlines_adaptor_bin* sd = (agg::serialized_scanlines_adaptor_bin*)storage;
+    gfx_serialized_scanlines_adaptor_bin* sd = (gfx_serialized_scanlines_adaptor_bin*)storage;
     int ox = sd->x();
     int oy = sd->y();
     sd->setX(ox + SCALAR_TO_INT(x));
