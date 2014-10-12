@@ -17,38 +17,43 @@
 namespace picasso {
 
 rendering_buffer::rendering_buffer()
-	: m_impl(0)
+    : m_impl(0)
 {
 }
 
 rendering_buffer::rendering_buffer(byte* buf, unsigned int width, unsigned int height, int stride)
-	: m_impl(0)
+    : m_impl(0)
 {
-	attach(buf, width, height, stride);
+    attach(buf, width, height, stride);
 }
 
 rendering_buffer::~rendering_buffer()
 {
-	if (m_impl)
-		get_system_device()->destroy_rendering_buffer(m_impl);
+    if (m_impl)
+        get_system_device()->destroy_rendering_buffer(m_impl);
 }
 
 void rendering_buffer::attach(byte* buf, unsigned int width, unsigned int height, int stride)
 {
-	if (m_impl)
-		get_system_device()->destroy_rendering_buffer(m_impl);
+    if (m_impl)
+        get_system_device()->destroy_rendering_buffer(m_impl);
 
-	m_impl = get_system_device()->create_rendering_buffer(buf, width, height, stride);
+    m_impl = get_system_device()->create_rendering_buffer(buf, width, height, stride);
+}
+
+void rendering_buffer::replace(byte* buf, unsigned int width, unsigned int height, int stride)
+{
+    m_impl->init(buf, width, height, stride);
 }
 
 bool rendering_buffer::is_empty(void)
 {
-	return !m_impl;
+    return !m_impl;
 }
 
 unsigned int rendering_buffer::width(void) const 
 { 
-	if (m_impl)
+    if (m_impl)
         return m_impl->width(); 
 
     return 0;
@@ -56,7 +61,7 @@ unsigned int rendering_buffer::width(void) const
 
 unsigned int rendering_buffer::height(void) const 
 { 
-	if (m_impl)
+    if (m_impl)
         return m_impl->height(); 
 
     return 0;
@@ -64,7 +69,7 @@ unsigned int rendering_buffer::height(void) const
 
 int rendering_buffer::stride(void) const 
 { 
-	if (m_impl)
+    if (m_impl)
         return m_impl->stride(); 
 
     return 0;
@@ -72,7 +77,7 @@ int rendering_buffer::stride(void) const
 
 byte * rendering_buffer::buffer(void) const
 {
-	if (m_impl)
+    if (m_impl)
         return m_impl->buffer(); 
 
     return 0;
@@ -80,7 +85,7 @@ byte * rendering_buffer::buffer(void) const
 
 bool rendering_buffer::is_transparent(void) const 
 { 
-	if (m_impl)
+    if (m_impl)
         return m_impl->is_transparent();
 
     return false; // defalt false
@@ -88,7 +93,7 @@ bool rendering_buffer::is_transparent(void) const
 
 void rendering_buffer::set_transparent(bool b) 
 {
-	if (m_impl)
+    if (m_impl)
         m_impl->set_transparent(b);
 }
 
@@ -102,7 +107,7 @@ bool rendering_buffer::has_color_channel(void) const
 
 void rendering_buffer::clear_color_channel(void) 
 {
-	if (m_impl)
+    if (m_impl)
         m_impl->clear_color_channel();
 }
 
