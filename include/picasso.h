@@ -271,10 +271,10 @@ typedef enum _ps_status {
      * Not support this feature. 
      */
     STATUS_NOT_SUPPORT,
-	/**
-	 * Device is not ready.
-	 */
-	STATUS_DEVICE_ERROR,
+    /**
+     * Device is not ready.
+     */
+    STATUS_DEVICE_ERROR,
     /** 
      * Unknown error. 
      */
@@ -444,7 +444,7 @@ PEXPORT ps_canvas* PICAPI ps_canvas_create(ps_color_format fmt, int width, int h
  * \brief Create a new canvas using a given address in memory.
  *
  * \param data    A pointer to the destination in memory where the drawing is to be rendered. 
- * 				  The size of this memory block should be at least (pitch * height) bytes.
+ *                The size of this memory block should be at least (pitch * height) bytes.
  * \param fmt     The Pixel format to use for the canvas.
  * \param width   The width, in pixels, of the required canvas.
  * \param height  The height, in pixels, of the required canvas.
@@ -459,7 +459,7 @@ PEXPORT ps_canvas* PICAPI ps_canvas_create(ps_color_format fmt, int width, int h
  *     ps_canvas_create_from_image, ps_canvas_ref, ps_canvas_unref
  */
 PEXPORT ps_canvas* PICAPI ps_canvas_create_with_data(ps_byte* data, ps_color_format fmt, 
-								int width, int height, int pitch);
+                                int width, int height, int pitch);
 
 /**
  * \fn ps_canvas* ps_canvas_create_compatible(const ps_canvas* canvas, int width, int height)
@@ -467,9 +467,9 @@ PEXPORT ps_canvas* PICAPI ps_canvas_create_with_data(ps_byte* data, ps_color_for
  *
  * \param canvas  A pointer to an existing canvas.
  * \param width   The width, in pixels, of the required canvas. 
- * 				  If it is not more than zero, the width will be equal to the width of the reference canvas.
+ *                If it is not more than zero, the width will be equal to the width of the reference canvas.
  * \param height  The height, in pixels, of the required canvas.
- * 				  If it is not more than zero, the height will be equal to the height of the reference canvas.
+ *                If it is not more than zero, the height will be equal to the height of the reference canvas.
  *
  * \return If the function succeeds, the return value is the pointer to a new canvas object.
  *         If the function fails, the return value is NULL.
@@ -487,7 +487,7 @@ PEXPORT ps_canvas* PICAPI ps_canvas_create_compatible(const ps_canvas* canvas, i
  *
  * \param canvas  A pointer to an existing canvas.
  * \param rect    The rectangle area of the canvas from the parent canvas. 
- * 				  If it is NULL, the canvas's width and height will be equal to the parant canvas.
+ *                If it is NULL, the canvas's width and height will be equal to the parant canvas.
  *
  * \return If the function succeeds, the return value is the pointer to a new canvas object.
  *         If the function fails, the return value is NULL.
@@ -503,9 +503,9 @@ PEXPORT ps_canvas* PICAPI ps_canvas_create_from_canvas(ps_canvas* canvas, const 
  * \fn ps_canvas* ps_canvas_create_from_image(ps_image* img, const ps_rect* rect)
  * \brief Create a new canvas using part of an existing ps_image object in same pixel buffer.
  *
- * \param img  	  A pointer to an existing ps_image object.
+ * \param img     A pointer to an existing ps_image object.
  * \param rect    The rectangle area of the canvas from the ps_image. 
- * 				  If it is NULL, the canvas's width and height will be equal to ps_image object.
+ *                If it is NULL, the canvas's width and height will be equal to ps_image object.
  *
  * \return If the function succeeds, the return value is the pointer to a new canvas object.
  *         If the function fails, the return value is NULL.
@@ -529,7 +529,7 @@ PEXPORT ps_canvas* PICAPI ps_canvas_create_from_image(ps_image* img, const ps_re
  * \note To get extended error information, call \a ps_last_status.
  *
  * \sa ps_canvas_create, ps_canvas_create_with_data, ps_canvas_create_compatible,
- * 	   ps_canvas_create_from_canvas, ps_canvas_create_from_image, ps_canvas_unref
+ *     ps_canvas_create_from_canvas, ps_canvas_create_from_image, ps_canvas_unref
  */
 PEXPORT ps_canvas* PICAPI ps_canvas_ref(ps_canvas* canvas);
 
@@ -541,7 +541,7 @@ PEXPORT ps_canvas* PICAPI ps_canvas_ref(ps_canvas* canvas);
  * \param canvas  Pointer to an existing canvas object.
  *
  * \sa ps_canvas_create, ps_canvas_create_with_data, ps_canvas_create_compatible,
- * 	   ps_canvas_create_from_canvas, ps_canvas_create_from_image, ps_canvas_ref
+ *     ps_canvas_create_from_canvas, ps_canvas_create_from_image, ps_canvas_ref
  */
 PEXPORT void PICAPI ps_canvas_unref(ps_canvas* canvas);
 
@@ -581,7 +581,7 @@ PEXPORT ps_color_format PICAPI ps_canvas_get_format(const ps_canvas* canvas);
  *
  * \param canvas  Pointer to an existing canvas object.
  * \param mask    Pointer to an existing mask object to be set. 
- * 				
+ *              
  * \sa ps_canvas_reset_mask
  */
 PEXPORT void PICAPI ps_canvas_set_mask(ps_canvas* canvas, const ps_mask* mask);
@@ -591,25 +591,25 @@ PEXPORT void PICAPI ps_canvas_set_mask(ps_canvas* canvas, const ps_mask* mask);
  * \brief Clear the mask from the canvas object.
  *
  * \param canvas  Pointer to an existing canvas object.
- * 				
+ *              
  * \sa ps_canvas_set_mask
  */
 PEXPORT void PICAPI ps_canvas_reset_mask(ps_canvas* canvas);
 
 /**
  * \fn void ps_canvas_bitblt(ps_canvas* src, const ps_rect* rect, 
- * 									ps_canvas* dst, const ps_point* location)
+ *                                  ps_canvas* dst, const ps_point* location)
  * \brief Copy raster data between two canvas objects. 
  *
- * \param src  		The pointer to source canvas object.
- * \param rect 		The rectangle area will be copied in source canvas, NULL mean the whole area.
- * \param dst  		The pointer to destination canvas object.
+ * \param src       The pointer to source canvas object.
+ * \param rect      The rectangle area will be copied in source canvas, NULL mean the whole area.
+ * \param dst       The pointer to destination canvas object.
  * \param location  The location of the start point at destination canvas object.
  *
  * \sa ps_canvas_get_size, ps_canvas_get_format
  */
 PEXPORT void PICAPI ps_canvas_bitblt(ps_canvas* src, const ps_rect* rect, 
-												ps_canvas* dst, const ps_point* location);
+                                                ps_canvas* dst, const ps_point* location);
 /** @} end of canvas functions*/
 
 /**
@@ -640,7 +640,7 @@ PEXPORT ps_image* PICAPI ps_image_create(ps_color_format fmt, int width, int hei
  * \brief Create a new image using a given address in memory.
  *
  * \param data    A pointer to the destination in memory where the drawing is to be rendered. 
- * 				  The size of this memory block should be at least (pitch * height) bytes.
+ *                The size of this memory block should be at least (pitch * height) bytes.
  * \param fmt     The Pixel format to use for the image.
  * \param width   The width, in pixels, of the required image.
  * \param height  The height, in pixels, of the required image.
@@ -655,13 +655,13 @@ PEXPORT ps_image* PICAPI ps_image_create(ps_color_format fmt, int width, int hei
  *     ps_image_create_from_data, ps_image_create_from_image, ps_image_ref, ps_image_unref
  */
 PEXPORT ps_image* PICAPI ps_image_create_with_data(ps_byte* data, ps_color_format fmt, 
-								int width, int height, int pitch);
+                                int width, int height, int pitch);
 /**
  * \fn ps_image* ps_image_create_from_data(ps_byte* data, ps_color_format fmt, int width, int height, int pitch)
  * \brief Create a new image using a copy of given address in memory.
  *
  * \param data    A pointer to the destination in memory where the drawing is to be rendered. 
- * 				  The size of this memory block should be at least (pitch * height) bytes.
+ *                The size of this memory block should be at least (pitch * height) bytes.
  * \param fmt     The Pixel format to use for the image.
  * \param width   The width, in pixels, of the required image.
  * \param height  The height, in pixels, of the required image.
@@ -676,16 +676,16 @@ PEXPORT ps_image* PICAPI ps_image_create_with_data(ps_byte* data, ps_color_forma
  *     ps_image_create_with_data, ps_image_create_from_image, ps_image_ref, ps_image_unref
  */
 PEXPORT ps_image* PICAPI ps_image_create_from_data(ps_byte* data, ps_color_format fmt, 
-								int width, int height, int pitch);
+                                int width, int height, int pitch);
 /**
  * \fn ps_image* ps_image_create_compatible(const ps_canvas* canvas, int width, int height)
  * \brief Create a new image to compatible with an existing canvas.
  *
  * \param canvas  A pointer to an existing canvas.
  * \param width   The width, in pixels, of the required canvas. 
- * 				  If it is not more than zero, the width will be equal to the width of the reference canvas.
+ *                If it is not more than zero, the width will be equal to the width of the reference canvas.
  * \param height  The height, in pixels, of the required canvas.
- * 				  If it is not more than zero, the height will be equal to the height of the reference canvas.
+ *                If it is not more than zero, the height will be equal to the height of the reference canvas.
  *
  * \return If the function succeeds, the return value is the pointer to a new image object.
  *         If the function fails, the return value is NULL.
@@ -703,7 +703,7 @@ PEXPORT ps_image* PICAPI ps_image_create_compatible(const ps_canvas* canvas, int
  *
  * \param canvas  A pointer to an existing canvas.
  * \param rect    The rectangle area of the image from the ps_canvas. 
- * 				  If it is NULL, the image's width and height will be equal to the parant canvas.
+ *                If it is NULL, the image's width and height will be equal to the parant canvas.
  *
  * \return If the function succeeds, the return value is the pointer to a new image object.
  *         If the function fails, the return value is NULL.
@@ -719,9 +719,9 @@ PEXPORT ps_image* PICAPI ps_image_create_from_canvas(ps_canvas* canvas, const ps
  * \fn ps_image* ps_image_create_from_image(ps_image* img, const ps_rect* rect)
  * \brief Create a new image using part of an existing ps_image object in same pixel buffer.
  *
- * \param img  	  A pointer to an existing ps_image object.
+ * \param img     A pointer to an existing ps_image object.
  * \param rect    The rectangle area of the image from the parent image. 
- * 				  If it is NULL, the image's width and height will be equal to parent image object.
+ *                If it is NULL, the image's width and height will be equal to parent image object.
  *
  * \return If the function succeeds, the return value is the pointer to a new image object.
  *         If the function fails, the return value is NULL.
@@ -745,7 +745,7 @@ PEXPORT ps_image* PICAPI ps_image_create_from_image(ps_image* img, const ps_rect
  * \note To get extended error information, call \a ps_last_status.
  *
  * \sa ps_image_create, ps_image_create_with_data, ps_image_create_compatible,
- * 	   ps_image_create_from_data, ps_image_create_from_canvas, ps_image_create_from_image, ps_image_unref
+ *     ps_image_create_from_data, ps_image_create_from_canvas, ps_image_create_from_image, ps_image_unref
  */
 PEXPORT ps_image* PICAPI ps_image_ref(ps_image* img);
 
@@ -757,7 +757,7 @@ PEXPORT ps_image* PICAPI ps_image_ref(ps_image* img);
  * \param img  Pointer to an existing image object.
  *
  * \sa ps_image_create, ps_image_create_with_data, ps_image_create_compatible,
- * 	   ps_image_create_from_data, ps_image_create_from_canvas, ps_image_create_from_image, ps_image_ref
+ *     ps_image_create_from_data, ps_image_create_from_canvas, ps_image_create_from_image, ps_image_ref
  */
 PEXPORT void PICAPI ps_image_unref(ps_image* img);
 
@@ -827,16 +827,16 @@ typedef enum _ps_wrap_type {
     /** 
      * Wrap repeat, the pattern is repeated.
      */
-	WRAP_TYPE_REPEAT,
+    WRAP_TYPE_REPEAT,
     /** 
      * Wrap reflect the pattern is reflected.
      */
-	WRAP_TYPE_REFLECT,
+    WRAP_TYPE_REFLECT,
 }ps_wrap_type;
 
 /**
  * \fn ps_pattern* ps_pattern_create_image(const ps_image* img, ps_wrap_type x_wrap, 
- * 												ps_wrap_type y_wrap, const ps_matrix* transform)
+ *                                              ps_wrap_type y_wrap, const ps_matrix* transform)
  * \brief Create a new pattern with an existing image.
  *
  * \param img        An existing image object which will be a tiled of pattern object.
@@ -852,7 +852,7 @@ typedef enum _ps_wrap_type {
  * \sa ps_pattern_ref, ps_pattern_unref
  */
 PEXPORT ps_pattern* PICAPI ps_pattern_create_image(const ps_image* img, ps_wrap_type x_wrap, 
-													ps_wrap_type y_wrap, const ps_matrix* transform);
+                                                    ps_wrap_type y_wrap, const ps_matrix* transform);
 
 /**
  * \fn void ps_pattern_transform(ps_pattern* pattern, const ps_matrix* matrix)
@@ -905,20 +905,20 @@ typedef enum _ps_gradient_spread {
     /** 
      * Spread pad, the area is filled with closest stop color.
      */
-	GRADIENT_SPREAD_PAD,
+    GRADIENT_SPREAD_PAD,
     /** 
      * Spread repeat, the gradient is repeated outside the area.
      */
-	GRADIENT_SPREAD_REPEAT,
+    GRADIENT_SPREAD_REPEAT,
     /** 
      * Spread reflect, the gradient is reflected outside the area.
      */
-	GRADIENT_SPREAD_REFLECT,
+    GRADIENT_SPREAD_REFLECT,
 }ps_gradient_spread;
 
 /**
  * \fn ps_gradient* ps_gradient_create_linear(ps_gradient_spread spread, 
- * 	   											const ps_point* start, const ps_point* end)
+ *                                              const ps_point* start, const ps_point* end)
  * \brief Create a new gradient that varies along the line defined by provided starting and ending points.
  *
  * \param spread  The spread type of the gradient.
@@ -933,11 +933,11 @@ typedef enum _ps_gradient_spread {
  * \sa ps_gradient_create_radial, ps_gradient_create_conic, ps_gradient_ref, ps_gradient_unref
  */
 PEXPORT ps_gradient* PICAPI ps_gradient_create_linear(ps_gradient_spread spread, 
-													const ps_point* start, const ps_point* end);
+                                                    const ps_point* start, const ps_point* end);
 
 /**
  * \fn ps_gradient* ps_gradient_create_radial(ps_gradient_spread spread, 
- *									const ps_point* start, double sradius, const ps_point* end, double eradius)
+ *                                  const ps_point* start, double sradius, const ps_point* end, double eradius)
  * \brief Create a new gradient that varies along the area defined by provided starting and ending circles.
  *
  * \param spread  The spread type of the gradient.
@@ -954,11 +954,11 @@ PEXPORT ps_gradient* PICAPI ps_gradient_create_linear(ps_gradient_spread spread,
  * \sa ps_gradient_create_linear, ps_gradient_create_conic, ps_gradient_ref, ps_gradient_unref
  */
 PEXPORT ps_gradient* PICAPI ps_gradient_create_radial(ps_gradient_spread spread, 
-									const ps_point* start, double sradius, const ps_point* end, double eradius);
+                                    const ps_point* start, double sradius, const ps_point* end, double eradius);
 
 /**
  * \fn ps_gradient* ps_gradient_create_conic(ps_gradient_spread spread,
- *									const ps_point* origin, double sangle)
+ *                                  const ps_point* origin, double sangle)
  * \brief Create a new gradient that varies along the area defined by provided concentric circles.
  *
  * \param spread  The spread type of the gradient.
@@ -969,12 +969,12 @@ PEXPORT ps_gradient* PICAPI ps_gradient_create_radial(ps_gradient_spread spread,
  *         If the function fails, the return value is NULL.
  *
  * \note  Conic Gradient support reflect mode only, paramter spread will be ignored.
- * 		  To get extended error information, call \a ps_last_status.
+ *        To get extended error information, call \a ps_last_status.
  *
  * \sa ps_gradient_create_linear, ps_gradient_create_radial, ps_gradient_ref, ps_gradient_unref
  */
 PEXPORT ps_gradient* PICAPI ps_gradient_create_conic(ps_gradient_spread spread,
-									const ps_point* origin, double sangle);
+                                    const ps_point* origin, double sangle);
 
 /**
  * \fn void ps_gradient_transform(ps_gradient* gradient, const ps_matrix* matrix)
@@ -1049,8 +1049,8 @@ PEXPORT void PICAPI ps_gradient_clear_color_stops(ps_gradient* gradient);
  * \brief Create a new mask using a given data block.
  *
  * \param data    A pointer to the mask data block in memory.
- * 				  Each byte of data is a aplha value, from transparent to opaque (0 ~ 255). 
- * 				  The size of this memory block should be at least (width * height) bytes.
+ *                Each byte of data is a aplha value, from transparent to opaque (0 ~ 255). 
+ *                The size of this memory block should be at least (width * height) bytes.
  * \param width   The width, in pixels, of the required mask.
  * \param height  The height, in pixels, of the required mask.
  *
@@ -1095,7 +1095,7 @@ PEXPORT void PICAPI ps_mask_unref(ps_mask* mask);
  *
  * \param mask   Pointer to an existing mask object.
  * \param color  A color for be masked. Only the colors specified by filter can be masked. 
- * 				 If no color is specified, all colors can be masked.
+ *               If no color is specified, all colors can be masked.
  *
  * \sa ps_mask_clear_color_filters
  */
@@ -1189,17 +1189,17 @@ PEXPORT void PICAPI ps_set_source_canvas(ps_context* ctx, const ps_canvas* canva
  * \brief Styles for rendering the endpoint of a stroked line.
  */
 typedef enum _ps_line_cap {
-	/**
-	 * A line with a squared-off end. The line to extend only to the endpoint.(Default)
-	 */
+    /**
+     * A line with a squared-off end. The line to extend only to the endpoint.(Default)
+     */
     LINE_CAP_BUTT,
-	/**
-	 * A line with a rounded end. The line to extend beyond the endpoint.
-	 */
+    /**
+     * A line with a rounded end. The line to extend beyond the endpoint.
+     */
     LINE_CAP_ROUND,
-	/**
-	 * A line with a squared-off end. The line to extend beyond the endpoint.
-	 */
+    /**
+     * A line with a squared-off end. The line to extend beyond the endpoint.
+     */
     LINE_CAP_SQUARE,
 }ps_line_cap;
 
@@ -1219,25 +1219,25 @@ PEXPORT void PICAPI ps_set_line_cap(ps_context* ctx, ps_line_cap line_cap);
  * \brief Junction types for stroked lines.
  */
 typedef enum _ps_line_join {
-	/**
-	 * A join with a sharp corner.(Default)
-	 */
+    /**
+     * A join with a sharp corner.(Default)
+     */
     LINE_JOIN_MITER,
-	/**
-	 * A join with a sharp corner revert.
-	 */
+    /**
+     * A join with a sharp corner revert.
+     */
     LINE_JOIN_MITER_REVERT,
-	/**
-	 * A join with a miter rounded end.
-	 */
+    /**
+     * A join with a miter rounded end.
+     */
     LINE_JOIN_MITER_ROUND,
-	/**
-	 * A join with a rounded end.
-	 */
+    /**
+     * A join with a rounded end.
+     */
     LINE_JOIN_ROUND,
-	/**
-	 * A join with a squared-off end.
-	 */
+    /**
+     * A join with a squared-off end.
+     */
     LINE_JOIN_BEVEL,
 }ps_line_join;
 
@@ -1257,21 +1257,21 @@ PEXPORT void PICAPI ps_set_line_join(ps_context* ctx, ps_line_join line_join);
  * \brief Inner junction types for stroked lines.
  */
 typedef enum _ps_line_inner_join {
-	/**
-	 * A inner join with a sharp corner.(Default)
-	 */
+    /**
+     * A inner join with a sharp corner.(Default)
+     */
     LINE_INNER_MITER,
-	/**
-	 * A inner join with a squared-off end.
-	 */
+    /**
+     * A inner join with a squared-off end.
+     */
     LINE_INNER_BEVEL,
-	/**
-	 * A inner join with a jag end.
-	 */
+    /**
+     * A inner join with a jag end.
+     */
     LINE_INNER_JAG,
-	/**
-	 * A inner join with a rounded end.
-	 */
+    /**
+     * A inner join with a rounded end.
+     */
     LINE_INNER_ROUND,
 }ps_line_inner_join;
 
@@ -1340,7 +1340,7 @@ PEXPORT void PICAPI ps_set_stroke_color(ps_context* ctx, const ps_color* color);
  * \param ctx        Pointer to an existing context object.
  * \param start      A value that specifies how far into the dash pattern the line start.
  * \param dashes     An array of values that specify the length of the painted segments and 
- * 					 unpainted segments.
+ *                   unpainted segments.
  * \param num_dashes The number of elements in the array. 
  *
  * \sa ps_set_line_cap, ps_set_line_join, ps_set_line_width, ps_set_miter_limit, 
@@ -1353,7 +1353,7 @@ PEXPORT void PICAPI ps_set_line_dash(ps_context* ctx, double start, double* dash
  * \brief Clear the dashs from the context, and set to solid.
  *
  * \param ctx  Pointer to an existing context object.
- * 				
+ *              
  * \sa ps_set_line_cap, ps_set_line_join, ps_set_line_width, ps_set_miter_limit, 
  *     ps_set_stroke_color, ps_set_line_dash, ps_set_line_inner_join
  */
@@ -1410,64 +1410,64 @@ PEXPORT void PICAPI ps_reset_shadow(ps_context* ctx);
  * \brief Compositing operations for graphics context.
  */
 typedef enum _ps_composite {
-	/** Clear operation. */
-	COMPOSITE_CLEAR,
-	/** Source operation. */
-	COMPOSITE_SRC,
-	/** Source over operation. (Default) */
-	COMPOSITE_SRC_OVER,
-	/** Source in operation. */
-	COMPOSITE_SRC_IN,
-	/** Source out operation. */
-	COMPOSITE_SRC_OUT,
-	/** Source atop operation. */
-	COMPOSITE_SRC_ATOP,
-	/** Destination operation. */
-	COMPOSITE_DST,
-	/** Destination over operation. */
-	COMPOSITE_DST_OVER,
-	/** Destination in operation. */
-	COMPOSITE_DST_IN,
-	/** Destination out operation. */
-	COMPOSITE_DST_OUT,
-	/** Destination atop operation. */
-	COMPOSITE_DST_ATOP,
-	/** Xor operation. */
-	COMPOSITE_XOR,
-	/** Source darker operation. */
-	COMPOSITE_DARKEN,
-	/** Source lighter operation. */
-	COMPOSITE_LIGHTEN,
-	/** Overlay operation. */
-	COMPOSITE_OVERLAY,
-	/** Screen operation. */
-	COMPOSITE_SCREEN,
-	/** Multiply operation. */
-	COMPOSITE_MULTIPLY,
-	/** Plus operation. */
-	COMPOSITE_PLUS,
-	/** Minus operation. */
-	COMPOSITE_MINUS,
-	/** Exclusion operation. */
-	COMPOSITE_EXCLUSION,
-	/** Difference operation. */
-	COMPOSITE_DIFFERENCE,
-	/** Softlight operation. */
-	COMPOSITE_SOFTLIGHT,
-	/** Hardlight operation. */
-	COMPOSITE_HARDLIGHT,
-	/** Burn operation. */
-	COMPOSITE_BURN,
-	/** Dodge operation. */
-	COMPOSITE_DODGE,
-	/** Contrast operation. */
-	COMPOSITE_CONTRAST,
-	/** Invert operation. */
-	COMPOSITE_INVERT,
-	/** Invert blend operation. */
-	COMPOSITE_INVERT_BLEND,
-	/** Error value. */
-	COMPOSITE_ERROR,
+    /** Clear operation. */
+    COMPOSITE_CLEAR,
+    /** Source operation. */
+    COMPOSITE_SRC,
+    /** Source over operation. (Default) */
+    COMPOSITE_SRC_OVER,
+    /** Source in operation. */
+    COMPOSITE_SRC_IN,
+    /** Source out operation. */
+    COMPOSITE_SRC_OUT,
+    /** Source atop operation. */
+    COMPOSITE_SRC_ATOP,
+    /** Destination operation. */
+    COMPOSITE_DST,
+    /** Destination over operation. */
+    COMPOSITE_DST_OVER,
+    /** Destination in operation. */
+    COMPOSITE_DST_IN,
+    /** Destination out operation. */
+    COMPOSITE_DST_OUT,
+    /** Destination atop operation. */
+    COMPOSITE_DST_ATOP,
+    /** Xor operation. */
+    COMPOSITE_XOR,
+    /** Source darker operation. */
+    COMPOSITE_DARKEN,
+    /** Source lighter operation. */
+    COMPOSITE_LIGHTEN,
+    /** Overlay operation. */
+    COMPOSITE_OVERLAY,
+    /** Screen operation. */
+    COMPOSITE_SCREEN,
+    /** Multiply operation. */
+    COMPOSITE_MULTIPLY,
+    /** Plus operation. */
+    COMPOSITE_PLUS,
+    /** Minus operation. */
+    COMPOSITE_MINUS,
+    /** Exclusion operation. */
+    COMPOSITE_EXCLUSION,
+    /** Difference operation. */
+    COMPOSITE_DIFFERENCE,
+    /** Softlight operation. */
+    COMPOSITE_SOFTLIGHT,
+    /** Hardlight operation. */
+    COMPOSITE_HARDLIGHT,
+    /** Burn operation. */
+    COMPOSITE_BURN,
+    /** Dodge operation. */
+    COMPOSITE_DODGE,
+    /** Contrast operation. */
+    COMPOSITE_CONTRAST,
+    /** Invert operation. */
+    COMPOSITE_INVERT,
+    /** Invert blend operation. */
+    COMPOSITE_INVERT_BLEND,
+    /** Error value. */
+    COMPOSITE_ERROR,
 }ps_composite;
 
 /**
@@ -1490,22 +1490,22 @@ PEXPORT ps_composite PICAPI ps_set_composite_operator(ps_context* ctx, ps_compos
  * \brief Graphics quality for rendering an image.
  */
 typedef enum _ps_filter {
-	/** 
-	 * No interpolation filter. 
-	 */
-	FILTER_NEAREST,
-	/**
-	 * Bilinear interpolation filter. (Default)
-	 */
-	FILTER_BILINEAR,
-	/**
-	 * Gaussian interpolation filter.
-	 */
-	FILTER_GAUSSIAN,
-	/**
-	 * Error value.
-	 */
-	FILTER_UNKNOWN,
+    /** 
+     * No interpolation filter. 
+     */
+    FILTER_NEAREST,
+    /**
+     * Bilinear interpolation filter. (Default)
+     */
+    FILTER_BILINEAR,
+    /**
+     * Gaussian interpolation filter.
+     */
+    FILTER_GAUSSIAN,
+    /**
+     * Error value.
+     */
+    FILTER_UNKNOWN,
 }ps_filter;
 
 /**
@@ -1528,18 +1528,18 @@ PEXPORT ps_filter PICAPI ps_set_filter(ps_context* ctx, ps_filter filter);
  * \brief Fill rules for graphics.
  */
 typedef enum _ps_fill_rule {
-	/**
-	 * Nonzero winding fill rule. (Default)
-	 */
+    /**
+     * Nonzero winding fill rule. (Default)
+     */
     FILL_RULE_WINDING,
-	/**
-	 * Even-odd fill rule.
-	 */
+    /**
+     * Even-odd fill rule.
+     */
     FILL_RULE_EVEN_ODD,
-	/**
-	 * Error value.
-	 */
-	FILL_RULE_ERROR,
+    /**
+     * Error value.
+     */
+    FILL_RULE_ERROR,
 }ps_fill_rule;
 
 /**
@@ -1564,7 +1564,7 @@ PEXPORT ps_fill_rule PICAPI ps_set_fill_rule(ps_context* ctx, ps_fill_rule rule)
  *
  * \param ctx     Pointer to an existing context object.
  * \param alpha   A value that specifies the opacity level from transparent to opaque(0 ~ 1). 
- * 				  Default level is opaque (1).
+ *                Default level is opaque (1).
  *
  * \return If the function succeeds, the return value is the old level.
  *         If the function fails, the return value is 0.
@@ -1581,7 +1581,7 @@ PEXPORT double PICAPI ps_set_alpha(ps_context* ctx, double alpha);
  *
  * \param ctx     Pointer to an existing context object.
  * \param gamma   A value that specifies the gamma (0 ~ 3). 
- * 				  Default value is 1.
+ *                Default value is 1.
  *
  * \return If the function succeeds, the return value is the old one.
  *         If the function fails, the return value is 0.
@@ -1596,7 +1596,7 @@ PEXPORT double PICAPI ps_set_gamma(ps_context* ctx, double gamma);
  * \fn void ps_set_antialias(ps_context* ctx, ps_bool antialias)
  * \brief Set whether the Anti-aliasing should be turn on.
  *
- * \param ctx     	 Pointer to an existing context object.
+ * \param ctx        Pointer to an existing context object.
  * \param antialias  Boolean value whether the anti-aliasing is turn on. (True default)
  *
  * \sa ps_set_alpha, ps_set_blur, ps_set_gamma
@@ -1609,7 +1609,7 @@ PEXPORT void PICAPI ps_set_antialias(ps_context* ctx, ps_bool antialias);
  *
  * \param ctx     Pointer to an existing context object.
  * \param blur    A value that specifies the blur level (0 ~ 1). 
- * 				  Default value is none blur (0).
+ *                Default value is none blur (0).
  *
  * \return If the function succeeds, the return value is the old level.
  *         If the function fails, the return value is 0.
@@ -1630,7 +1630,7 @@ PEXPORT double PICAPI ps_set_blur(ps_context* ctx, double blur);
 /**
  * \fn void ps_stroke(ps_context* ctx)
  * \brief Stroke the current path according to the line attributes.
- * 		  After called, the current path will be cleared from the context.
+ *        After called, the current path will be cleared from the context.
  *
  * \param ctx Pointer to an existing context object.
  *
@@ -1641,7 +1641,7 @@ PEXPORT void PICAPI ps_stroke(ps_context* ctx);
 /**
  * \fn void ps_fill(ps_context* ctx)
  * \brief Fill the current path according to the source attributes.
- * 		  After called, the current path will be cleared from the context.
+ *        After called, the current path will be cleared from the context.
  *
  * \param ctx Pointer to an existing context object.
  *
@@ -1652,7 +1652,7 @@ PEXPORT void PICAPI ps_fill(ps_context* ctx);
 /**
  * \fn void ps_paint(ps_context* ctx)
  * \brief Fill and stroke the current path according to the source and line attributes.
- * 		  After called, the current path will be cleared from the context.
+ *        After called, the current path will be cleared from the context.
  *
  * \param ctx Pointer to an existing context object.
  *
@@ -1680,7 +1680,7 @@ PEXPORT void PICAPI ps_clear(ps_context* ctx);
 /**
  * \fn void ps_clip(ps_context* ctx)
  * \brief Cliping the current path, using the current fill rule.
- * 	      After called, the current path will be cleared from the context.
+ *        After called, the current path will be cleared from the context.
  *
  * \param ctx Pointer to an existing context object.
  *
@@ -1714,7 +1714,7 @@ PEXPORT void PICAPI ps_clip_rect(ps_context* ctx, const ps_rect* rect);
 /**
  * \fn void ps_clip_device_rect(ps_context* ctx, const ps_rect* rect)
  * \brief The fast wap to Cliping specified rectangle, the clip rect can not be rotated
- * 		  by world matrix.
+ *        by world matrix.
  *
  * \param ctx  Pointer to an existing context object.
  * \param rect The rectangle which will be clipped.
@@ -1730,8 +1730,8 @@ PEXPORT void PICAPI ps_clip_device_rect(ps_context* ctx, const ps_rect* rect);
  * \fn void ps_clip_rects(ps_context* ctx, const ps_rect* rects, unsigned int num_rects)
  * \brief Cliping specified area defined by an array of rectangles.
  *
- * \param ctx   	Pointer to an existing context object.
- * \param rects 	The array of rectangles which will be clipped.
+ * \param ctx       Pointer to an existing context object.
+ * \param rects     The array of rectangles which will be clipped.
  * \param num_rects The number of array entries.
  *
  * \sa ps_clip, ps_clip_path, ps_clip_rect, ps_reset_clip
@@ -1743,7 +1743,7 @@ PEXPORT void PICAPI ps_clip_rects(ps_context* ctx, const ps_rect* rects, unsigne
  * \brief Clear the cliping area from the context.
  *
  * \param ctx  Pointer to an existing context object.
- * 				
+ *              
  * \sa ps_clip, ps_clip_path, ps_clip_rect, ps_clip_rects
  */
 PEXPORT void PICAPI ps_reset_clip(ps_context* ctx);
@@ -1759,27 +1759,27 @@ PEXPORT void PICAPI ps_reset_clip(ps_context* ctx);
  * \brief Pushes a copy of the current graphics state on to stack for context.
  *
  * \param ctx  Pointer to an existing context object.
- * 			   The graphics state saved are:
- * 			   - Image filter
- * 			   - Font object
- * 			   - Gamma value
- * 			   - Alpha value
- * 			   - Blur value
- * 			   - Text stroke color
- * 			   - Text fill color
- * 			   - Compositing method
- * 			   - Transform matrix
- * 			   - Line width
- * 			   - Line cap
- * 			   - Line join
- * 			   - Line dash
- * 			   - Stroke color
- * 			   - Source object
- * 			   - Fill color
- * 			   - Fill rule
- * 			   - Clip region
- * 			   - Shadow parameters
- * 				
+ *             The graphics state saved are:
+ *             - Image filter
+ *             - Font object
+ *             - Gamma value
+ *             - Alpha value
+ *             - Blur value
+ *             - Text stroke color
+ *             - Text fill color
+ *             - Compositing method
+ *             - Transform matrix
+ *             - Line width
+ *             - Line cap
+ *             - Line join
+ *             - Line dash
+ *             - Stroke color
+ *             - Source object
+ *             - Fill color
+ *             - Fill rule
+ *             - Clip region
+ *             - Shadow parameters
+ *              
  * \sa ps_restore
  */
 PEXPORT void PICAPI ps_save(ps_context* ctx);
@@ -1789,7 +1789,7 @@ PEXPORT void PICAPI ps_save(ps_context* ctx);
  * \brief Set the current graphics state to the state most recently saved.
  *
  * \param ctx  Pointer to an existing context object.
- * 				
+ *              
  * \sa ps_save
  */
 PEXPORT void PICAPI ps_restore(ps_context* ctx);
@@ -1806,36 +1806,36 @@ PEXPORT void PICAPI ps_restore(ps_context* ctx);
  * \brief Charset for a font.
  */
 typedef enum _ps_charset {
-	/** 
-	 * Ansi ISO-8859-x charset 
-	 */
-	CHARSET_ANSI,
-	/** 
-	 * Unicode UCS-2 charset 
-	 */
-	CHARSET_UNICODE,
+    /** 
+     * Ansi ISO-8859-x charset 
+     */
+    CHARSET_ANSI,
+    /** 
+     * Unicode UCS-2 charset 
+     */
+    CHARSET_UNICODE,
 }ps_charset;
 
 /**
  * \brief Font weight
  */
 typedef enum _ps_font_weight {
-	/**
-	 * Regular weight.
-	 */
-	FONT_WEIGHT_REGULAR = 400,
-	/**
-	 * Medium weight.
-	 */
-	FONT_WEIGHT_MEDIUM = 500,
-	/**
-	 * Bold weight.
-	 */
-	FONT_WEIGHT_BOLD = 700,
-	/**
-	 * Heavy weight.
-	 */
-	FONT_WEIGHT_HEAVY = 900,
+    /**
+     * Regular weight.
+     */
+    FONT_WEIGHT_REGULAR = 400,
+    /**
+     * Medium weight.
+     */
+    FONT_WEIGHT_MEDIUM = 500,
+    /**
+     * Bold weight.
+     */
+    FONT_WEIGHT_BOLD = 700,
+    /**
+     * Heavy weight.
+     */
+    FONT_WEIGHT_HEAVY = 900,
 }ps_font_weight;
 
 /**
@@ -1906,7 +1906,7 @@ PEXPORT void PICAPI ps_font_unref(ps_font* font);
  * \param size  Size for the font.
  *
  * \sa ps_font_set_weight, ps_font_set_italic, ps_font_set_charset, 
- * 	   ps_font_set_hint, ps_font_set_flip
+ *     ps_font_set_hint, ps_font_set_flip
  */
 PEXPORT void PICAPI ps_font_set_size(ps_font* font, double size);
 
@@ -1918,7 +1918,7 @@ PEXPORT void PICAPI ps_font_set_size(ps_font* font, double size);
  * \param weight  Weight for the font.
  *
  * \sa ps_font_set_size, ps_font_set_italic, ps_font_set_charset, 
- * 	   ps_font_set_hint, ps_font_set_flip
+ *     ps_font_set_hint, ps_font_set_flip
  */
 PEXPORT void PICAPI ps_font_set_weight(ps_font* font, int weight);
 
@@ -1930,7 +1930,7 @@ PEXPORT void PICAPI ps_font_set_weight(ps_font* font, int weight);
  * \param italic  Whether or not italic for the font. (False default)
  *
  * \sa ps_font_set_size, ps_font_set_weight, ps_font_set_charset, 
- * 	   ps_font_set_hint, ps_font_set_flip
+ *     ps_font_set_hint, ps_font_set_flip
  */
 PEXPORT void PICAPI ps_font_set_italic(ps_font* font, ps_bool italic);
 
@@ -1942,7 +1942,7 @@ PEXPORT void PICAPI ps_font_set_italic(ps_font* font, ps_bool italic);
  * \param charset Charset for the font.
  *
  * \sa ps_font_set_size, ps_font_set_weight, ps_font_set_italic, 
- * 	   ps_font_set_hint, ps_font_set_flip
+ *     ps_font_set_hint, ps_font_set_flip
  */
 PEXPORT void PICAPI ps_font_set_charset(ps_font* font, ps_charset charset);
 
@@ -1951,10 +1951,10 @@ PEXPORT void PICAPI ps_font_set_charset(ps_font* font, ps_charset charset);
  * \brief Set hiting for a font object.
  *
  * \param font  Pointer to an existing font object.
- * \param hint 	Whether or not auto hiting for the font. (True default)
+ * \param hint  Whether or not auto hiting for the font. (True default)
  *
  * \sa ps_font_set_size, ps_font_set_weight, ps_font_set_italic, 
- * 	   ps_font_set_charset, ps_font_set_flip
+ *     ps_font_set_charset, ps_font_set_flip
  */
 PEXPORT void PICAPI ps_font_set_hint(ps_font* font, ps_bool hint);
 
@@ -1963,10 +1963,10 @@ PEXPORT void PICAPI ps_font_set_hint(ps_font* font, ps_bool hint);
  * \brief Set flip for a font object.
  *
  * \param font  Pointer to an existing font object.
- * \param flip 	Whether or not flip y for the font. (False default)
+ * \param flip  Whether or not flip y for the font. (False default)
  *
  * \sa ps_font_set_size, ps_font_set_weight, ps_font_set_italic, 
- * 	   ps_font_set_charset, ps_font_set_hint
+ *     ps_font_set_charset, ps_font_set_hint
  */
 PEXPORT void PICAPI ps_font_set_flip(ps_font* font, ps_bool flip);
 
@@ -1974,33 +1974,33 @@ PEXPORT void PICAPI ps_font_set_flip(ps_font* font, ps_bool flip);
  * \brief A structure that contains font information.
  */
 typedef struct _ps_font_info {
-	/**
-	 * Size, the height of glyph.
-	 */
-	double size;
-	/**
-	 * Ascent, maximum distance above the baseline.
-	 */
-	double ascent;
-	/**
-	 * Descent, maximum distance below the baseline.
-	 */
-	double descent;
-	/**
-	 * Leading, the spaceing between consecutive lines of text.
-	 */
-	double leading;
-	/**
-	 * UnitsEm, the number of glyph space units per em.
-	 */
-	unsigned int unitsEM;
+    /**
+     * Size, the height of glyph.
+     */
+    double size;
+    /**
+     * Ascent, maximum distance above the baseline.
+     */
+    double ascent;
+    /**
+     * Descent, maximum distance below the baseline.
+     */
+    double descent;
+    /**
+     * Leading, the spaceing between consecutive lines of text.
+     */
+    double leading;
+    /**
+     * UnitsEm, the number of glyph space units per em.
+     */
+    unsigned int unitsEM;
 }ps_font_info;
 
 /**
  * \fn ps_bool ps_get_font_info(ps_context* ctx, ps_font_info* info)
  * \brief Return the font information from the graphics context.
  *
- * \param ctx 	Pointer to an existing context object.
+ * \param ctx   Pointer to an existing context object.
  * \param info  Pointer to a structure to receiving the font information.
  *
  * \return  True if is success, otherwise False.
@@ -2013,7 +2013,7 @@ PEXPORT ps_bool PICAPI ps_get_font_info(ps_context* ctx, ps_font_info* info);
  * \fn ps_font* ps_set_font(ps_context* ctx, const ps_font* font)
  * \brief Set a new font to graphics context.
  *
- * \param ctx 	Pointer to an existing context object.
+ * \param ctx   Pointer to an existing context object.
  * \param font  The new font to be set.
  *
  * \return If the function succeeds, the return value is the pointer to old font object.
@@ -2036,25 +2036,25 @@ PEXPORT ps_font* PICAPI ps_set_font(ps_context* ctx, const ps_font* font);
  * \brief Text rendering type
  */
 typedef enum _ps_text_type {
-	/** 
-	 * Smooth rendering.
-	 */
-	TEXT_TYPE_SMOOTH,
-	/**
-	 * Mono rendering.
-	 */
-	TEXT_TYPE_MONO,
-	/**
-	 * OutLine rendering.
-	 */
-	TEXT_TYPE_STROKE,
+    /** 
+     * Smooth rendering.
+     */
+    TEXT_TYPE_SMOOTH,
+    /**
+     * Mono rendering.
+     */
+    TEXT_TYPE_MONO,
+    /**
+     * OutLine rendering.
+     */
+    TEXT_TYPE_STROKE,
 }ps_text_type;
 
 /**
  * \fn ps_size ps_get_text_extent(ps_context* ctx, const void* text, unsigned int length)
  * \brief Get extent for text using current font which selected to graphic context.
  *
- * \param ctx 	  Pointer to an existing context object.
+ * \param ctx     Pointer to an existing context object.
  * \param text    Text which being tested. It can be latin-1 or unicode encoding.
  * \param length  Length of the text.
  *
@@ -2071,8 +2071,8 @@ PEXPORT ps_size PICAPI ps_get_text_extent(ps_context* ctx, const void* text, uns
  * \fn void ps_set_text_color(ps_context* ctx, const ps_color * color)
  * \brief Set the text fill color for the graphic context.
  *
- * \param ctx 	Pointer to an existing context object.
- * \param color	The text fill color.		  
+ * \param ctx   Pointer to an existing context object.
+ * \param color The text fill color.          
  *
  * \sa ps_transform, ps_set_text_matrix, ps_set_text_antialias,
  *     ps_set_text_stroke_color, ps_set_text_render_type, ps_set_text_kerning
@@ -2083,8 +2083,8 @@ PEXPORT void PICAPI ps_set_text_color(ps_context* ctx, const ps_color * color);
  * \fn void ps_set_text_stroke_color(ps_context* ctx, const ps_color * color)
  * \brief Set the text stroke color for the graphic context.
  *
- * \param ctx 	Pointer to an existing context object.
- * \param color	The text stroke color.		  
+ * \param ctx   Pointer to an existing context object.
+ * \param color The text stroke color.        
  *
  * \sa ps_set_text_color, ps_set_text_matrix, ps_set_text_antialias,
  *     ps_text_transform, ps_set_text_render_type, ps_set_text_kerning
@@ -2094,10 +2094,10 @@ PEXPORT void PICAPI ps_set_text_stroke_color(ps_context* ctx, const ps_color * c
 /**
  * \fn void ps_text_transform(ps_context* ctx, const ps_matrix* matrix)
  * \brief Transform text matrix for the graphic context.
- * 		  The text matrix is not a part of graphic state -- saving and restoring has no 
- * 		  effect on the text matrix. The text matrix is an attribute of graphic context.
+ *        The text matrix is not a part of graphic state -- saving and restoring has no 
+ *        effect on the text matrix. The text matrix is an attribute of graphic context.
  *
- * \param ctx 	  Pointer to an existing context object.
+ * \param ctx     Pointer to an existing context object.
  * \param matrix  Pointer to an existing matrix object.
  *
  * \sa ps_set_text_matrix, ps_set_text_antialias, ps_set_text_color, 
@@ -2108,10 +2108,10 @@ PEXPORT void PICAPI ps_text_transform(ps_context* ctx, const ps_matrix* matrix);
 /**
  * \fn void ps_set_text_matrix(ps_context* ctx, const ps_matrix* matrix)
  * \brief Set text matrix for the graphic context.
- * 		  The text matrix is not a part of graphic state -- saving and restoring has no 
- * 		  effect on the text matrix. The text matrix is an attribute of graphic context.
+ *        The text matrix is not a part of graphic state -- saving and restoring has no 
+ *        effect on the text matrix. The text matrix is an attribute of graphic context.
  *
- * \param ctx 	  Pointer to an existing context object.
+ * \param ctx     Pointer to an existing context object.
  * \param matrix  Pointer to an existing matrix object.
  *
  * \sa ps_text_transform, ps_set_text_antialias, ps_set_text_color, 
@@ -2123,8 +2123,8 @@ PEXPORT void PICAPI ps_set_text_matrix(ps_context* ctx, const ps_matrix* matrix)
  * \fn void ps_set_text_render_type(ps_context* ctx, ps_text_type type)
  * \brief Set rendering type for text.
  *
- * \param ctx 	  Pointer to an existing context object.
- * \param type 	  Rendering type for the text.
+ * \param ctx     Pointer to an existing context object.
+ * \param type    Rendering type for the text.
  *
  * \sa ps_set_text_matrix, ps_set_text_color, ps_set_text_stroke_color, 
  *     ps_set_text_antialias, ps_text_transform, ps_set_text_kerning
@@ -2135,7 +2135,7 @@ PEXPORT void PICAPI ps_set_text_render_type(ps_context* ctx, ps_text_type type);
  * \fn void ps_set_text_antialias(ps_context* ctx, ps_bool antialias)
  * \brief Set whether the font allowed be anti-aliasing.
  *
- * \param ctx 		Pointer to an existing context object.
+ * \param ctx       Pointer to an existing context object.
  * \param antialias Boolean value whether anti-aliasing is allowed. (True default)
  *
  * \sa ps_set_text_matrix, ps_set_text_color, ps_set_text_stroke_color, 
@@ -2147,7 +2147,7 @@ PEXPORT void PICAPI ps_set_text_antialias(ps_context* ctx, ps_bool antialias);
  * \fn void ps_set_text_kerning(ps_context* ctx, ps_bool kerning)
  * \brief Set whether the font auto kerning is allowed.
  *
- * \param ctx 		Pointer to an existing context object.
+ * \param ctx       Pointer to an existing context object.
  * \param kerning   Boolean value whether auto kerning is allowed. (True default)
  *
  * \sa ps_set_text_matrix, ps_set_text_color, ps_set_text_stroke_color, 
@@ -2159,11 +2159,11 @@ PEXPORT void PICAPI ps_set_text_kerning(ps_context* ctx, ps_bool kerning);
  * \fn void ps_text_out_length(ps_context* ctx, double x, double y, const char* text, unsigned int length)
  * \brief Draw single byte characters (latin-1) at location in user space.
  *
- * \param ctx 	  Pointer to an existing context object.
- * \param x       The X-coordinate at which to draw the text.	
- * \param y 	  The Y-coordinate at which to draw the text.	
- * \param text 	  The text string to be draw.
- * \param length  The length of the text string.	 
+ * \param ctx     Pointer to an existing context object.
+ * \param x       The X-coordinate at which to draw the text.   
+ * \param y       The Y-coordinate at which to draw the text.   
+ * \param text    The text string to be draw.
+ * \param length  The length of the text string.     
  *
  * \sa ps_wide_text_out_length, ps_draw_text
  */
@@ -2173,82 +2173,82 @@ PEXPORT void PICAPI ps_text_out_length(ps_context* ctx, double x, double y, cons
  * \fn void ps_wide_text_out_length(ps_context* ctx, double x, double y, const ps_uchar16* text, unsigned int length)
  * \brief Draw unicode characters (ucs-2) at location in user space.
  *
- * \param ctx 	  Pointer to an existing context object.
- * \param x       The X-coordinate at which to draw the text.	
- * \param y 	  The Y-coordinate at which to draw the text.	
- * \param text 	  The unicode text string to be draw.
- * \param length  The length of the text string.	 
+ * \param ctx     Pointer to an existing context object.
+ * \param x       The X-coordinate at which to draw the text.   
+ * \param y       The Y-coordinate at which to draw the text.   
+ * \param text    The unicode text string to be draw.
+ * \param length  The length of the text string.     
  *
  * \sa ps_text_out_length, ps_draw_text
  */
 PEXPORT void PICAPI ps_wide_text_out_length(ps_context* ctx, double x, double y, 
-																const ps_uchar16* text, unsigned int length);
+                                                                const ps_uchar16* text, unsigned int length);
 /**
  * \brief Draw mode for rending text.
  */
 typedef enum _ps_draw_text_type {
-	/**
-	 * Perform a fill operation on the text.
-	 */
-	DRAW_TEXT_FILL,
-	/**
-	 * Perform a stroke operation on the text.
-	 */
-	DRAW_TEXT_STROKE,
-	/**
-	 * Perform fill,then stroke operation on the text.
-	 */
-	DRAW_TEXT_BOTH,
+    /**
+     * Perform a fill operation on the text.
+     */
+    DRAW_TEXT_FILL,
+    /**
+     * Perform a stroke operation on the text.
+     */
+    DRAW_TEXT_STROKE,
+    /**
+     * Perform fill,then stroke operation on the text.
+     */
+    DRAW_TEXT_BOTH,
 }ps_draw_text_type;
 
 /**
  * \brief Text align mode for drawing text.
  */
 typedef enum _ps_text_align {
-	/**
-	 * Centers text horizontally in the rectangle.
-	 */
-	TEXT_ALIGN_CENTER = 0,
-	/**
-	 * Justifies the text to the top of the rectangle.
-	 */
-	TEXT_ALIGN_TOP 	  = 1,
-	/**
-	 * Justifies the text to the bottom of the rectangle.
-	 */
-	TEXT_ALIGN_BOTTOM = 2,
-	/**
-	 * Aligns text to left.
-	 */
-	TEXT_ALIGN_LEFT   = 4,
-	/**
-	 * Aligns text to right.
-	 */
-	TEXT_ALIGN_RIGHT  = 8,
+    /**
+     * Centers text horizontally in the rectangle.
+     */
+    TEXT_ALIGN_CENTER = 0,
+    /**
+     * Justifies the text to the top of the rectangle.
+     */
+    TEXT_ALIGN_TOP    = 1,
+    /**
+     * Justifies the text to the bottom of the rectangle.
+     */
+    TEXT_ALIGN_BOTTOM = 2,
+    /**
+     * Aligns text to left.
+     */
+    TEXT_ALIGN_LEFT   = 4,
+    /**
+     * Aligns text to right.
+     */
+    TEXT_ALIGN_RIGHT  = 8,
 }ps_text_align;
 
 /**
  * \fn void ps_draw_text(ps_context* ctx, const ps_rect* area, const void* text, unsigned int length,
- *     																	ps_draw_text_type type, ps_text_align align)
+ *                                                                      ps_draw_text_type type, ps_text_align align)
  * \brief Draw text in a rectangle area, using font object which is selected in graphic context.
  *
- * \param ctx 	  Pointer to an existing context object.
+ * \param ctx     Pointer to an existing context object.
  * \param area    The rectangle area which text to be drawn.
- * \param text 	  The unicode text string to be draw.
- * \param length  The length of the text string.	 
+ * \param text    The unicode text string to be draw.
+ * \param length  The length of the text string.     
  * \param type    The rending type of text.
  * \param align   The text align mode.
  *
  * \sa ps_text_out_length, ps_wide_text_out_length
  */
 PEXPORT void PICAPI ps_draw_text(ps_context* ctx, const ps_rect* area, const void* text, unsigned int length,
-																ps_draw_text_type type, ps_text_align align);
+                                                                ps_draw_text_type type, ps_text_align align);
 
 /**
  * \fn ps_bool ps_get_glyph(ps_context* ctx, int ch, ps_glyph* glyph)
  * \brief Get the glyph from a given character, using font object which is selected in graphic context.
  *
- * \param ctx 	  Pointer to an existing context object.
+ * \param ctx     Pointer to an existing context object.
  * \param ch      The character value.
  * \param glyph   Pointer to a structure to receiving the glyph.
  *
@@ -2262,11 +2262,11 @@ PEXPORT ps_bool PICAPI ps_get_glyph(ps_context* ctx, int ch, ps_glyph* glyph);
  * \fn void ps_show_glyphs(ps_context* ctx, double x, double y, ps_glyph* glyphs, unsigned int length)
  * \brief Draw an array of glyphs at location in user space.
  *
- * \param ctx 	  Pointer to an existing context object.
- * \param x       The X-coordinate at which to draw the glyphs.	
- * \param y 	  The Y-coordinate at which to draw the glyphs.	
+ * \param ctx     Pointer to an existing context object.
+ * \param x       The X-coordinate at which to draw the glyphs. 
+ * \param y       The Y-coordinate at which to draw the glyphs. 
  * \param glyphs  The array of glyphs.
- * \param length  The length of array.	 
+ * \param length  The length of array.   
  *
  * \sa ps_get_path_from_glyph
  */
@@ -2276,7 +2276,7 @@ PEXPORT void PICAPI ps_show_glyphs(ps_context* ctx, double x, double y, ps_glyph
  * \fn ps_bool ps_get_path_from_glyph(ps_context* ctx, const ps_glyph* glyph, ps_path* path)
  * \brief Get the path from a given glyph object.
  *
- * \param ctx 	  Pointer to an existing context object.
+ * \param ctx     Pointer to an existing context object.
  * \param glyph   The glyph object.
  * \param path    Pointer to a structure to receiving the path.
  *
@@ -2348,8 +2348,8 @@ PEXPORT void PICAPI ps_shear(ps_context* ctx, double shx, double shy);
  * \fn void ps_rotate(ps_context* ctx, double angle)
  * \brief Rotates the user coordinate system in graphic context.
  *
- * \param ctx  	 Pointer to an existing context object.
- * \param angle	 The angle, in radians, which to rotate the specified context.
+ * \param ctx    Pointer to an existing context object.
+ * \param angle  The angle, in radians, which to rotate the specified context.
  *
  * \sa ps_translate, ps_scale, ps_shear, ps_identity, ps_transform
  */
@@ -2369,7 +2369,7 @@ PEXPORT void PICAPI ps_identity(ps_context* ctx);
  * \fn void ps_transform(ps_context* ctx, const ps_matrix* matrix)
  * \brief Transforms the user coordinate system in graphic context using a specified matrix.
  *
- * \param ctx  	  Pointer to an existing context object.
+ * \param ctx     Pointer to an existing context object.
  * \param matrix  The matrix to apply to the specified context's current transformation matrix. 
  *
  * \sa ps_translate, ps_scale, ps_shear, ps_rotate, ps_identity
@@ -2380,7 +2380,7 @@ PEXPORT void PICAPI ps_transform(ps_context* ctx, const ps_matrix* matrix);
  * \fn void ps_set_matrix(ps_context* ctx, const ps_matrix* matrix)
  * \brief Modifies the current transformation matrix to the given matrix.
  *
- * \param ctx  	  Pointer to an existing context object.
+ * \param ctx     Pointer to an existing context object.
  * \param matrix  The transformation matrix to be set.
  *
  * \sa ps_get_matrix
@@ -2391,7 +2391,7 @@ PEXPORT void PICAPI ps_set_matrix(ps_context* ctx, const ps_matrix* matrix);
  * \fn ps_bool ps_get_matrix(ps_context* ctx, ps_matrix* matrix)
  * \brief Get the current transformation matrix from graphic context.
  *
- * \param ctx  	  Pointer to an existing context object.
+ * \param ctx     Pointer to an existing context object.
  * \param matrix  Pointer to a matrix object to receiving the current transformation.
  *
  * \return  True if is success, otherwise False.
@@ -2404,7 +2404,7 @@ PEXPORT ps_bool PICAPI ps_get_matrix(ps_context* ctx, ps_matrix* matrix);
  * \fn void ps_world_to_viewport(ps_context* ctx, ps_point* point)
  * \brief Transform a coordinate from device space to user space.
  *
- * \param ctx  	 Pointer to an existing context object.
+ * \param ctx    Pointer to an existing context object.
  * \param point  The point which to be transformed.
  *
  * \sa ps_viewport_to_world
@@ -2415,7 +2415,7 @@ PEXPORT void PICAPI ps_world_to_viewport(ps_context* ctx, ps_point* point);
  * \fn void ps_viewport_to_world(ps_context* ctx, ps_point* point)
  * \brief Transform a coordinate from user space to device space.
  *
- * \param ctx  	 Pointer to an existing context object.
+ * \param ctx    Pointer to an existing context object.
  * \param point  The point which to be transformed.
  *
  * \sa ps_world_to_viewport
@@ -2444,7 +2444,7 @@ PEXPORT ps_matrix* PICAPI ps_matrix_create(void);
 
 /**
  * \fn ps_matrix* ps_matrix_create_init(double sx, double shy, double shx, 
- * 													double sy, double tx, double ty)
+ *                                                  double sy, double tx, double ty)
  * \brief Create a matrix with given parameters.
  *
  * \param sx  The horizontal scaling factor.
@@ -2462,7 +2462,7 @@ PEXPORT ps_matrix* PICAPI ps_matrix_create(void);
  * \sa ps_matrix_create, ps_matrix_create_copy, ps_matrix_ref, ps_matrix_unref
  */
 PEXPORT ps_matrix* PICAPI ps_matrix_create_init(double sx, double shy, double shx, 
-															double sy, double tx, double ty);
+                                                            double sy, double tx, double ty);
 
 /**
  * \fn ps_matrix* ps_matrix_create_copy(const ps_matrix* matrix)
@@ -2507,28 +2507,28 @@ PEXPORT void PICAPI ps_matrix_unref(ps_matrix* matrix);
 
 /**
  * \fn void ps_matrix_init(ps_matrix* matrix, double sx, double shy, 
- * 										double shx, double sy, double tx, double ty)
+ *                                      double shx, double sy, double tx, double ty)
  * \brief Initialize an existing matrix object with given parameters.
  *
  * \param matrix  Pointer to an existing matrix object. 
- * \param sx  	  The horizontal scaling factor.
- * \param shy 	  The vertical skewing factor.
- * \param shx 	  The horizontal skewing factor.
- * \param sy  	  The vertical scaling factor.
- * \param tx  	  The horizontal translating factor. 
- * \param ty  	  The vertical translating factor.
+ * \param sx      The horizontal scaling factor.
+ * \param shy     The vertical skewing factor.
+ * \param shx     The horizontal skewing factor.
+ * \param sy      The vertical scaling factor.
+ * \param tx      The horizontal translating factor. 
+ * \param ty      The vertical translating factor.
  *
  * \sa ps_matrix_translate, ps_matrix_scale, ps_matrix_shear, ps_matrix_rotate
  */
 PEXPORT void PICAPI ps_matrix_init(ps_matrix* matrix, double sx, double shy, 
-											double shx, double sy, double tx, double ty);
+                                            double shx, double sy, double tx, double ty);
 
 /**
  * \fn void ps_matrix_translate(ps_matrix* matrix, double tx, double ty)
  * \brief Modify a matrix by translating.
  *
  * \param matrix  Pointer to an existing matrix object.
- * \param tx   	  The amount, in pixels, which to translate in x direction.
+ * \param tx      The amount, in pixels, which to translate in x direction.
  * \param ty      The amount, in pixels, which to translate in y direction.
  *
  * \sa ps_matrix_scale, ps_matrix_shear, ps_matrix_rotate
@@ -2540,8 +2540,8 @@ PEXPORT void PICAPI ps_matrix_translate(ps_matrix* matrix, double tx, double ty)
  * \brief Modify a matrix by scaling.
  *
  * \param matrix  Pointer to an existing matrix object.
- * \param sx   	  The scale factor for the X dimension.
- * \param sy   	  The scale factor for the Y dimension.
+ * \param sx      The scale factor for the X dimension.
+ * \param sy      The scale factor for the Y dimension.
  *
  * \sa ps_matrix_translate, ps_matrix_shear, ps_matrix_rotate
  */
@@ -2552,7 +2552,7 @@ PEXPORT void PICAPI ps_matrix_scale(ps_matrix* matrix, double sx, double sy);
  * \brief Modify a matrix by rotating.
  *
  * \param matrix  Pointer to an existing matrix object.
- * \param angle	  The angle, in radians, which to rotate the specified matrix.
+ * \param angle   The angle, in radians, which to rotate the specified matrix.
  *
  * \sa ps_matrix_translate, ps_matrix_shear, ps_matrix_scale
  */
@@ -2664,7 +2664,7 @@ PEXPORT double PICAPI ps_matrix_get_determinant(const ps_matrix* matrix);
  * \brief Set the translate factors to the matrix.
  *
  * \param matrix  Pointer to an existing matrix object.
- * \param tx   	  The amount, in pixels, which the translate factor in x direction.
+ * \param tx      The amount, in pixels, which the translate factor in x direction.
  * \param ty      The amount, in pixels, which the translate factor in y direction.
  *
  * \sa ps_matrix_get_translate_factor
@@ -2676,7 +2676,7 @@ PEXPORT void PICAPI ps_matrix_set_translate_factor(ps_matrix* matrix, double tx,
  * \brief Get the translate factors from the matrix.
  *
  * \param matrix  Pointer to an existing matrix object.
- * \param tx   	  Pointer to a buffer to receiving the translate factor in x direction.
+ * \param tx      Pointer to a buffer to receiving the translate factor in x direction.
  * \param ty      Pointer to a buffer to receiving the translate factor in y direction.
  *
  * \return  True if is success, otherwise False.
@@ -2691,7 +2691,7 @@ PEXPORT ps_bool PICAPI ps_matrix_get_translate_factor(ps_matrix* matrix, double 
  *
  * \param matrix  Pointer to an existing matrix object.
  * \param sx      The scale factor in x dimension.
- * \param sy 	  The scale factor in y dimension.
+ * \param sy      The scale factor in y dimension.
  *
  * \sa ps_matrix_get_scale_factor
  */
@@ -2702,7 +2702,7 @@ PEXPORT void PICAPI ps_matrix_set_scale_factor(ps_matrix* matrix, double sx, dou
  * \brief Get the scale factors from the matrix.
  *
  * \param matrix  Pointer to an existing matrix object.
- * \param sx   	  Pointer to a buffer to receiving the scale factor in x dimension.
+ * \param sx      Pointer to a buffer to receiving the scale factor in x dimension.
  * \param sy      Pointer to a buffer to receiving the scale factor in y dimension.
  *
  * \return  True if is success, otherwise False.
@@ -2717,7 +2717,7 @@ PEXPORT ps_bool PICAPI ps_matrix_get_scale_factor(ps_matrix* matrix, double *sx,
  *
  * \param matrix  Pointer to an existing matrix object.
  * \param shx     The shear factor for the horizontal.
- * \param shy 	  The shear factor for the vertical.
+ * \param shy     The shear factor for the vertical.
  *
  * \sa ps_matrix_get_shear_factor
  */
@@ -2917,7 +2917,7 @@ PEXPORT void PICAPI ps_rectangle(ps_context* ctx, const ps_rect* rect);
 
 /**
  * \fn void ps_rounded_rect(ps_context* ctx, const ps_rect* rect, double ltx, double lty, double rtx, 
- *     											 double rty, double lbx, double lby, double rbx, double rby)
+ *                                               double rty, double lbx, double lby, double rbx, double rby)
  * \brief Add a rounded rectangle to the current path.
  *
  * \param ctx   Pointer to an existing context object.
@@ -2935,7 +2935,7 @@ PEXPORT void PICAPI ps_rectangle(ps_context* ctx, const ps_rect* rect);
  *     ps_arc, ps_tangent_arc, ps_rectangle, ps_ellipse
  */
 PEXPORT void PICAPI ps_rounded_rect(ps_context* ctx, const ps_rect* rect, double ltx, double lty, double rtx, 
-													 double rty, double lbx, double lby, double rbx, double rby);
+                                                     double rty, double lbx, double lby, double rbx, double rby);
 
 /**
  * \fn void ps_ellipse(ps_context* ctx, const ps_rect* rect)
@@ -3050,7 +3050,7 @@ PEXPORT void PICAPI ps_path_tangent_arc_to(ps_path* path, double radius, const p
 
 /**
  * \fn void ps_path_arc_to(ps_path* path, double radiusX, double radiusY, double angle, 
- *     											ps_bool large_arc, ps_bool clockwise, const ps_point* ep)
+ *                                              ps_bool large_arc, ps_bool clockwise, const ps_point* ep)
  * \brief Add an arc to the path, using radius, angle and end point.
  *
  * \param path       Pointer to an existing path object.
@@ -3065,16 +3065,16 @@ PEXPORT void PICAPI ps_path_tangent_arc_to(ps_path* path, double radius, const p
  *     ps_path_tangent_arc_to, ps_path_line_to
  */
 PEXPORT void PICAPI ps_path_arc_to(ps_path* path, double radiusX, double radiusY, double angle, 
-													ps_bool large_arc, ps_bool clockwise, const ps_point* ep);
+                                                    ps_bool large_arc, ps_bool clockwise, const ps_point* ep);
 
 /**
  * \fn void ps_path_bezier_to(ps_path* path, const ps_point* fcp, const ps_point* scp, const ps_point* ep)
  * \brief Add a cubic bezier spline to the path from current point to end point.
  *
  * \param path  Pointer to an existing path object.
- * \param fcp  	The first control point of the curve.
- * \param scp  	The second control point of the curve.
- * \param ep   	The end point of the curve.
+ * \param fcp   The first control point of the curve.
+ * \param scp   The second control point of the curve.
+ * \param ep    The end point of the curve.
  *
  * \sa ps_path_move_to, ps_path_arc_to, ps_path_quad_to
  *     ps_path_tangent_arc_to, ps_path_line_to
@@ -3086,8 +3086,8 @@ PEXPORT void PICAPI ps_path_bezier_to(ps_path* path, const ps_point* fcp, const 
  * \brief Add a quadratic bezier spline to the path from current point to end point.
  *
  * \param path  Pointer to an existing path object.
- * \param cp  	The control point of the curve.
- * \param ep   	The end point of the curve.
+ * \param cp    The control point of the curve.
+ * \param ep    The end point of the curve.
  *
  * \sa ps_path_move_to, ps_path_arc_to, ps_path_bezier_to
  *     ps_path_tangent_arc_to, ps_path_line_to
@@ -3158,30 +3158,30 @@ PEXPORT unsigned int PICAPI ps_path_get_vertex_count(const ps_path* path);
  * \brief Path command for vertices.
  */
 typedef enum _ps_path_cmd {
-	/**
-	 * Stop command.
-	 */
-	PATH_CMD_STOP     = 0,         
-	/**
-	 * Move to command.
-	 */
-	PATH_CMD_MOVE_TO  = 1,         
-	/**
-	 * Line to command.
-	 */
-	PATH_CMD_LINE_TO  = 2,         
-	/**
-	 * Quad curve to command.
-	 */
-	PATH_CMD_CURVE3   = 3,         
-	/**
-	 * Bezier curve to command.
-	 */
-	PATH_CMD_CURVE4   = 4,         
-	/**
-	 * End polyline command.
-	 */
-	PATH_CMD_END_POLY = 0x0F,     
+    /**
+     * Stop command.
+     */
+    PATH_CMD_STOP     = 0,         
+    /**
+     * Move to command.
+     */
+    PATH_CMD_MOVE_TO  = 1,         
+    /**
+     * Line to command.
+     */
+    PATH_CMD_LINE_TO  = 2,         
+    /**
+     * Quad curve to command.
+     */
+    PATH_CMD_CURVE3   = 3,         
+    /**
+     * Bezier curve to command.
+     */
+    PATH_CMD_CURVE4   = 4,         
+    /**
+     * End polyline command.
+     */
+    PATH_CMD_END_POLY = 0x0F,     
 }ps_path_cmd;
 
 /**
@@ -3283,7 +3283,7 @@ PEXPORT void PICAPI ps_path_add_ellipse(ps_path* path, const ps_rect* rect);
 
 /**
  * \fn void ps_path_add_rounded_rect(ps_path* path, const ps_rect* rect, double ltx, double lty,
- *     	   								double rtx, double rty, double lbx, double lby, double rbx, double rby)
+ *                                      double rtx, double rty, double lbx, double lby, double rbx, double rby)
  * \brief Add a rounded rectangle to the path.
  *
  * \param path  Pointer to an existing path object.
@@ -3300,27 +3300,27 @@ PEXPORT void PICAPI ps_path_add_ellipse(ps_path* path, const ps_rect* rect);
  * \sa ps_path_add_arc, ps_path_add_line, ps_path_add_rect, ps_path_add_ellipse
  */
 PEXPORT void PICAPI ps_path_add_rounded_rect(ps_path* path, const ps_rect* rect, double ltx, double lty,
-			   								double rtx, double rty, double lbx, double lby, double rbx, double rby);
+                                            double rtx, double rty, double lbx, double lby, double rbx, double rby);
 /**
  * \brief Path clipping operations.
  */
 typedef enum _ps_path_op {
-	/**
-	 * Union.
-	 */
-	PATH_OP_UNION,
-	/**
-	 * Intersection. 
-	 */
-	PATH_OP_INTERSECT,
-	/**
-	 * Exclusive or.
-	 */
-	PATH_OP_XOR,
-	/**
-	 * Difference.
-	 */
-	PATH_OP_DIFF,
+    /**
+     * Union.
+     */
+    PATH_OP_UNION,
+    /**
+     * Intersection. 
+     */
+    PATH_OP_INTERSECT,
+    /**
+     * Exclusive or.
+     */
+    PATH_OP_XOR,
+    /**
+     * Difference.
+     */
+    PATH_OP_DIFF,
 }ps_path_operation;
 
 /**
@@ -3329,9 +3329,9 @@ typedef enum _ps_path_op {
  * \brief Clipping two path with the operation and get the result path.
  *
  * \param result  Pointer to an existing path object for result.
- * \param op	  The specified operation for clipping.
- * \param a		  The source path for clipping.
- * \param b		  The path which will be clipping.
+ * \param op      The specified operation for clipping.
+ * \param a       The source path for clipping.
+ * \param b       The path which will be clipping.
  *
  * \sa ps_path_get_vertex, ps_path_get_vertex_count
  */
