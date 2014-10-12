@@ -10,18 +10,18 @@
 #include "unistd.h"
 #include "sys/time.h"
 #endif
-#ifdef WIN32
+#if defined(WIN32) || defined(WINCE)
 #include <windows.h>
 #endif
 
-#ifdef WIN32
+#if defined(WIN32) || defined(WINCE)
 typedef long suseconds_t;
 #define inline __inline
 #endif
 
 static inline suseconds_t get_time()
 {
-#ifdef WIN32
+#if defined(WIN32) || defined(WINCE)
     DWORD t1 = GetTickCount();
 #else
     struct timeval t;
@@ -31,7 +31,7 @@ static inline suseconds_t get_time()
     return t1;
 }
 
-#ifdef WIN32
+#if defined(WIN32) || defined(WINCE)
 typedef LARGE_INTEGER clocktime_t;
 
 static inline clocktime_t get_clock()
