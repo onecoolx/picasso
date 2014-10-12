@@ -10,7 +10,7 @@
       'target_name': 'alpha',
       'type': 'executable',
       'dependencies': [
-        'picasso2',
+        'picasso2_sw',
       ],
       'include_dirs': [
         '../include',
@@ -49,7 +49,7 @@
       'target_name': 'bitblt',
       'type': 'executable',
       'dependencies': [
-        'picasso2',
+        'picasso2_sw',
       ],
       'include_dirs': [
         '../include',
@@ -88,7 +88,7 @@
       'target_name': 'blur',
       'type': 'executable',
       'dependencies': [
-        'picasso2',
+        'picasso2_sw',
       ],
       'include_dirs': [
         '../include',
@@ -127,7 +127,7 @@
       'target_name': 'clip',
       'type': 'executable',
       'dependencies': [
-        'picasso2',
+        'picasso2_sw',
       ],
       'include_dirs': [
         '../include',
@@ -166,7 +166,7 @@
       'target_name': 'composite',
       'type': 'executable',
       'dependencies': [
-        'picasso2',
+        'picasso2_sw',
       ],
       'include_dirs': [
         '../include',
@@ -204,7 +204,7 @@
       'target_name': 'gamma',
       'type': 'executable',
       'dependencies': [
-        'picasso2',
+        'picasso2_sw',
       ],
       'include_dirs': [
         '../include',
@@ -242,7 +242,7 @@
       'target_name': 'gcstate',
       'type': 'executable',
       'dependencies': [
-        'picasso2',
+        'picasso2_sw',
       ],
       'include_dirs': [
         '../include',
@@ -281,7 +281,7 @@
       'target_name': 'gradient',
       'type': 'executable',
       'dependencies': [
-        'picasso2',
+        'picasso2_sw',
       ],
       'include_dirs': [
         '../include',
@@ -319,7 +319,7 @@
       'target_name': 'mask',
       'type': 'executable',
       'dependencies': [
-        'picasso2',
+        'picasso2_sw',
       ],
       'include_dirs': [
         '../include',
@@ -358,7 +358,7 @@
       'target_name': 'part',
       'type': 'executable',
       'dependencies': [
-        'picasso2',
+        'picasso2_sw',
       ],
       'include_dirs': [
         '../include',
@@ -397,7 +397,7 @@
       'target_name': 'path',
       'type': 'executable',
       'dependencies': [
-        'picasso2',
+        'picasso2_sw',
       ],
       'include_dirs': [
         '../include',
@@ -435,7 +435,7 @@
       'target_name': 'pattern',
       'type': 'executable',
       'dependencies': [
-        'picasso2',
+        'picasso2_sw',
       ],
       'include_dirs': [
         '../include',
@@ -474,7 +474,7 @@
       'target_name': 'shadow',
       'type': 'executable',
       'dependencies': [
-        'picasso2',
+        'picasso2_sw',
       ],
       'include_dirs': [
         '../include',
@@ -513,7 +513,7 @@
       'target_name': 'text',
       'type': 'executable',
       'dependencies': [
-        'picasso2',
+        'picasso2_sw',
       ],
       'include_dirs': [
         '../include',
@@ -552,7 +552,7 @@
       'target_name': 'threads',
       'type': 'executable',
       'dependencies': [
-        'picasso2',
+        'picasso2_sw',
       ],
       'include_dirs': [
         '../include',

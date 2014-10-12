@@ -13,15 +13,15 @@ extern void thread_func2(void* data);
 void* linux_thread_1(void *p1)
 {
 
-	thread_func1(p1);
-	return NULL;
+    thread_func1(p1);
+    return NULL;
 }
 
 void* linux_thread_2(void *p1)
 {
 
-	thread_func2(p1);
-	return NULL;
+    thread_func2(p1);
+    return NULL;
 }
 
 static pthread_t th1, th2;
@@ -40,5 +40,5 @@ void stop_worker_threads(void)
 
 void loop_wait(int ms)
 {
-	usleep(ms*1000);
+    usleep(ms*1000);
 }

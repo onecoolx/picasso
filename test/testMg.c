@@ -30,52 +30,52 @@ static int LoadBmpWinProc(HWND hWnd, int message, WPARAM wParam, LPARAM lParam)
             GetClientRect(hWnd, &r);
             HDC hdc = GetClientDC(hWnd);
 #if RGB555
-			sdc = CreateMemDC(640, 480, 16, MEMDC_FLAG_SWSURFACE, 0x7C00, 0x3E0, 0x1F, 0x8000);	
+            sdc = CreateMemDC(640, 480, 16, MEMDC_FLAG_SWSURFACE, 0x7C00, 0x3E0, 0x1F, 0x8000);    
 #else
-			sdc = CreateMemDC(640, 480, 16, MEMDC_FLAG_SWSURFACE, 0xF800, 0x7E0, 0x1F, 0x00);	
+            sdc = CreateMemDC(640, 480, 16, MEMDC_FLAG_SWSURFACE, 0xF800, 0x7E0, 0x1F, 0x00);    
 #endif
             LoadBitmap(sdc, &bmp, "selt2.bmp");
             LoadBitmap(sdc, &abmp, "pat.bmp");
             pdr = LockDC(sdc, &r, &w, &h, &p);
             UnlockDC(sdc);
             ReleaseDC(hdc);
-			fprintf(stderr, "device depth:%d, color size %d\n", bmp.bmBitsPerPixel, bmp.bmBytesPerPixel);
+            fprintf(stderr, "device depth:%d, color size %d\n", bmp.bmBitsPerPixel, bmp.bmBytesPerPixel);
 
-			ps_color_format fmt;	
-			if (bmp.bmBytesPerPixel == 4)
-			    fmt = COLOR_FORMAT_RGBA;
-			else if (bmp.bmBytesPerPixel == 3)
-			    fmt = COLOR_FORMAT_RGB;
-			else if (bmp.bmBytesPerPixel == 2)
+            ps_color_format fmt;    
+            if (bmp.bmBytesPerPixel == 4)
+                fmt = COLOR_FORMAT_RGBA;
+            else if (bmp.bmBytesPerPixel == 3)
+                fmt = COLOR_FORMAT_RGB;
+            else if (bmp.bmBytesPerPixel == 2)
 #if RGB555
-			    fmt = COLOR_FORMAT_RGB555;
+                fmt = COLOR_FORMAT_RGB555;
 #else
-			    fmt = COLOR_FORMAT_RGB565;
+                fmt = COLOR_FORMAT_RGB565;
 #endif
 
-			ps_initialize();
+            ps_initialize();
 
             canvas = ps_canvas_create_with_data(pdr, fmt, w, h, p);
-            context = ps_context_create(canvas);
-			init_context(context, canvas);	
-   			set_image_data(bmp.bmBits, fmt, bmp.bmWidth, bmp.bmHeight, bmp.bmPitch);
-   			set_pattern_data(abmp.bmBits, fmt, abmp.bmWidth, abmp.bmHeight, abmp.bmPitch);
-			SetTimer(hWnd, 33, 10);
+            context = ps_context_create(canvas, 0);
+            init_context(context, canvas);    
+               set_image_data(bmp.bmBits, fmt, bmp.bmWidth, bmp.bmHeight, bmp.bmPitch);
+               set_pattern_data(abmp.bmBits, fmt, abmp.bmWidth, abmp.bmHeight, abmp.bmPitch);
+            SetTimer(hWnd, 33, 10);
             }
             return 0;
-		case MSG_TIMER:
-			timer_action(context);
-			InvalidateRect(hWnd, 0, TRUE);
-			break;
-		case MSG_ERASEBKGND:
-			return 0;
+        case MSG_TIMER:
+            timer_action(context);
+            InvalidateRect(hWnd, 0, TRUE);
+            break;
+        case MSG_ERASEBKGND:
+            return 0;
         case MSG_PAINT:
             {
             HDC hdc = BeginPaint(hWnd);
-			SetBrushColor(sdc, RGB2Pixel(sdc, 0xFF, 0xFF, 0xFF));
-			FillBox(sdc, 0, 0, 640, 480);
-			draw_test(0, context);
-			BitBlt(sdc, 0, 0, 640, 480, hdc, 0, 0, 0);
+            SetBrushColor(sdc, RGB2Pixel(sdc, 0xFF, 0xFF, 0xFF));
+            FillBox(sdc, 0, 0, 640, 480);
+            draw_test(0, context);
+            BitBlt(sdc, 0, 0, 640, 480, hdc, 0, 0, 0);
             EndPaint(hWnd, hdc);
             }
             return 0;
@@ -83,11 +83,11 @@ static int LoadBmpWinProc(HWND hWnd, int message, WPARAM wParam, LPARAM lParam)
             InvalidateRect(hWnd, 0, TRUE);
             break;
         case MSG_CLOSE:
-			DeleteMemDC(sdc);
+            DeleteMemDC(sdc);
             dini_context(context);
             ps_context_unref(context);
             ps_canvas_unref(canvas);
-			ps_shutdown();
+            ps_shutdown();
             DestroyMainWindow (hWnd);
             PostQuitMessage (hWnd);
             return 0;
