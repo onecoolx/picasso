@@ -61,14 +61,14 @@ namespace agg
         //--------------------------------------------------------------------
         void attach(T* buf, unsigned width, unsigned height, int stride)
         {
-			m_buf = m_start = buf;
-			m_width = width;
-			m_height = height;
-			m_stride = stride;
-			if(stride < 0) 
+            m_buf = m_start = buf;
+            m_width = width;
+            m_height = height;
+            m_stride = stride;
+            if(stride < 0) 
             { 
-				m_start = m_buf - int(height - 1) * stride;
-			}
+                m_start = m_buf - int(height - 1) * stride;
+            }
         }
 
         //--------------------------------------------------------------------
@@ -83,13 +83,13 @@ namespace agg
         }
 
         //--------------------------------------------------------------------
-		AGG_INLINE       T* row_ptr(int, int y, unsigned) 
+        AGG_INLINE       T* row_ptr(int, int y, unsigned) 
         { 
             return m_start + y * m_stride; 
         }
-		AGG_INLINE       T* row_ptr(int y)       { return m_start + y * m_stride; }
-		AGG_INLINE const T* row_ptr(int y) const { return m_start + y * m_stride; }
-		AGG_INLINE row_data row    (int y) const 
+        AGG_INLINE       T* row_ptr(int y)       { return m_start + y * m_stride; }
+        AGG_INLINE const T* row_ptr(int y) const { return m_start + y * m_stride; }
+        AGG_INLINE row_data row    (int y) const 
         { 
             return row_data(0, m_width-1, row_ptr(y)); 
         }
@@ -295,7 +295,7 @@ namespace agg
 #ifdef AGG_RENDERING_BUFFER
     typedef AGG_RENDERING_BUFFER rendering_buffer;
 #else
-	typedef row_ptr_cache<int8u> rendering_buffer;
+    typedef row_ptr_cache<int8u> rendering_buffer;
    // typedef row_accessor<int8u> rendering_buffer;
 #endif
 

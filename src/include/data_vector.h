@@ -23,16 +23,16 @@ template<typename T> class pod_vector
 {
 public:
     pod_vector() 
-		: m_size(0)
-		, m_capacity(0)
-		, m_array(0) 
-	{
-	}
+        : m_size(0)
+        , m_capacity(0)
+        , m_array(0) 
+    {
+    }
 
     ~pod_vector() 
-	{ 
-		pod_allocator<T>::deallocate(m_array, m_capacity);
-   	}
+    { 
+        pod_allocator<T>::deallocate(m_array, m_capacity);
+       }
 
     pod_vector(unsigned int cap);
 
@@ -51,7 +51,7 @@ public:
 
     bool push_back(const T& v);   
 
-	bool is_full(void) const { return m_size == m_capacity;}
+    bool is_full(void) const { return m_size == m_capacity;}
 
     bool insert_at(unsigned int pos, const T& val);
 
@@ -94,7 +94,7 @@ void pod_vector<T>::resize(unsigned new_size)
             T* data = pod_allocator<T>::allocate(new_size);
             memcpy(data, m_array, m_size * sizeof(T));
             pod_allocator<T>::deallocate(m_array, m_capacity);
-			m_capacity = new_size;
+            m_capacity = new_size;
             m_array = data;
         }
     } else {
@@ -104,9 +104,9 @@ void pod_vector<T>::resize(unsigned new_size)
 
 //------------------------------------------------------------------------
 template<typename T> pod_vector<T>::pod_vector(unsigned int cap)
-   	: m_size(0)
-	, m_capacity(cap)
-	, m_array(pod_allocator<T>::allocate(m_capacity)) 
+       : m_size(0)
+    , m_capacity(cap)
+    , m_array(pod_allocator<T>::allocate(m_capacity)) 
 {
 }
 
@@ -123,19 +123,19 @@ template<typename T> pod_vector<T>::pod_vector(const pod_vector<T>& v) :
 template<typename T> 
 const pod_vector<T>& pod_vector<T>::operator = (const pod_vector<T>&v)
 {
-	if (this == &v)
-		return *this;
+    if (this == &v)
+        return *this;
 
     pod_allocator<T>::deallocate(m_array, m_capacity);
-	m_capacity = v.m_capacity;
-	m_size = v.m_size;
-	m_array = 0;
+    m_capacity = v.m_capacity;
+    m_size = v.m_size;
+    m_array = 0;
 
-	if (m_capacity)
-		m_array = pod_allocator<T>::allocate(m_capacity);
+    if (m_capacity)
+        m_array = pod_allocator<T>::allocate(m_capacity);
 
     if (m_size) 
-		memcpy(m_array, v.m_array, sizeof(T) * v.m_size);
+        memcpy(m_array, v.m_array, sizeof(T) * v.m_size);
 
     return *this;
 }
@@ -144,19 +144,19 @@ const pod_vector<T>& pod_vector<T>::operator = (const pod_vector<T>&v)
 template<typename T> 
 bool pod_vector<T>::push_back(const T& v)   
 {
-	if (m_size >= m_capacity)
-		return false;
+    if (m_size >= m_capacity)
+        return false;
 
-	m_array[m_size++] = v;
-	return true;
+    m_array[m_size++] = v;
+    return true;
 }
 
 //------------------------------------------------------------------------
 template<typename T> 
 bool pod_vector<T>::insert_at(unsigned int pos, const T& val)
 {
-	if (pos >= m_capacity)
-		return false;
+    if (pos >= m_capacity)
+        return false;
 
     if (pos >= m_size) {
         m_array[m_size] = val;
@@ -165,7 +165,7 @@ bool pod_vector<T>::insert_at(unsigned int pos, const T& val)
         m_array[pos] = val;
     }
     ++m_size;
-	return true;
+    return true;
 }
 
 //------------------------------------------------------------------------
@@ -188,35 +188,35 @@ bool pod_vector<T>::set_data(unsigned int num, T* data)
 template <typename T> class pod_bvector : public pod_vector<T>
 {
 public:
-	typedef pod_vector<T> base_type;
+    typedef pod_vector<T> base_type;
 
-	enum {
-		block_size = 4,
-	};
+    enum {
+        block_size = 4,
+    };
 
-	void add(const T& v)
-	{
-		if (!base_type::capacity()) {
-			base_type::resize(block_size);
-		}
+    void add(const T& v)
+    {
+        if (!base_type::capacity()) {
+            base_type::resize(block_size);
+        }
 
-		if (base_type::is_full()) {
-			base_type::resize(base_type::capacity() << 1);
-		}
+        if (base_type::is_full()) {
+            base_type::resize(base_type::capacity() << 1);
+        }
 
-		base_type::push_back(v);
-	}
+        base_type::push_back(v);
+    }
 
-	void remove_all(void)
-	{
-		pod_allocator<T>::deallocate(base_type::m_array, base_type::m_capacity);
-		base_type::m_array = 0;
-		base_type::m_capacity = 0;
-		base_type::m_size = 0;
-	}
+    void remove_all(void)
+    {
+        pod_allocator<T>::deallocate(base_type::m_array, base_type::m_capacity);
+        base_type::m_array = 0;
+        base_type::m_capacity = 0;
+        base_type::m_size = 0;
+    }
 
 private:
-	bool push_back(const T& v);
+    bool push_back(const T& v);
     bool insert_at(unsigned int pos, const T& val);
 };
 

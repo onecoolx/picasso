@@ -359,16 +359,16 @@ namespace agg
      //------------------------------------------------------------------------
     inline const trans_affine& trans_affine::shear(float x, float y) 
     {
-		float t0 = y*shx;
-		float t1 = y*sy;
-		float t2 = x*sx;
-		float t3 = x*shy;
-		sx += t0;
-		shy += t1;
-		shx += t2;
-		sy += t3;
+        float t0 = y*shx;
+        float t1 = y*sy;
+        float t2 = x*sx;
+        float t3 = x*shy;
+        sx += t0;
+        shy += t1;
+        shx += t2;
+        sy += t3;
         return *this;
-	}
+    }
 
    //------------------------------------------------------------------------
     inline const trans_affine& trans_affine::scale(float x, float y) 

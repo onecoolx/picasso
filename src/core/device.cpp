@@ -16,24 +16,24 @@ static device* _global_device = NULL;
 
 bool _init_system_device(void)
 {
-	_global_device = gfx::gfx_device::create();
-	return _global_device != NULL;
+    _global_device = gfx::gfx_device::create();
+    return _global_device != NULL;
 }
 
 void _destroy_system_device(void)
 {
-	delete _global_device;
+    delete _global_device;
     _global_device = NULL;
 }
 
 bool is_valid_system_device(void)
 {
-	return _global_device ? true : false;
+    return _global_device ? true : false;
 }
 
 device* get_system_device(void)
 {
-	return _global_device;
+    return _global_device;
 }
 
 }

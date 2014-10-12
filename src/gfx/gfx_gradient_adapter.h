@@ -74,11 +74,11 @@ public:
     agg::trans_affine& matrix(void) { return m_matrix; }
 private:
     gradient_wrapper* m_wrapper;
-	float m_start;
-	float m_length;
+    float m_start;
+    float m_length;
     agg::trans_affine m_matrix;
-	agg::gradient_lut<agg::color_interpolator<agg::rgba8> > m_colors;
-	bool m_build;
+    agg::gradient_lut<agg::color_interpolator<agg::rgba8> > m_colors;
+    bool m_build;
 };
 
 }

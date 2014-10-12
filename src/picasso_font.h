@@ -207,11 +207,11 @@ public:
         delete m_cache;
     }
 
-	scalar height(void) const { return m_impl->height(); }
-	scalar ascent(void) const { return m_impl->ascent(); }
-	scalar descent(void) const { return m_impl->descent(); }
-	scalar leading(void) const { return m_impl->leading(); }
-	unsigned int units_per_em(void) const { return m_impl->units_per_em(); }
+    scalar height(void) const { return m_impl->height(); }
+    scalar ascent(void) const { return m_impl->ascent(); }
+    scalar descent(void) const { return m_impl->descent(); }
+    scalar leading(void) const { return m_impl->leading(); }
+    unsigned int units_per_em(void) const { return m_impl->units_per_em(); }
 
     const glyph* get_glyph(unsigned int code);
 
@@ -248,13 +248,13 @@ public:
     font_engine(unsigned int max_fonts = MAX_FONTS);
     ~font_engine();
 
-	void set_antialias(bool b);
+    void set_antialias(bool b);
     void set_transform(const trans_affine& mtx);
 
     bool create_font(const font_desc& desc);
 
     bool stamp_change(void) const { return m_stamp_change; }
-	bool antialias(void) const { return m_antialias; }
+    bool antialias(void) const { return m_antialias; }
     font_adapter* current_font(void) const { return m_current; }
 
     static bool initialize(void);

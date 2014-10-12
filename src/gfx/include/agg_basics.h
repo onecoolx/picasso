@@ -263,12 +263,12 @@ namespace agg
         return rad * 180.0f / pi;
     }
  
-	inline bool is_boxer(float m)
-	{
-		float a = (float)fmod(rad2deg(m), 360.0f);
+    inline bool is_boxer(float m)
+    {
+        float a = (float)fmod(rad2deg(m), 360.0f);
 
-		return (a == 0.0f) || (a == 90.0f) || (a == 180.0f) || (a == 270.0f);
-	}
+        return (a == 0.0f) || (a == 90.0f) || (a == 180.0f) || (a == 270.0f);
+    }
 
     //----------------------------------------------------------------rect_base
     template<class T> struct rect_base

@@ -78,7 +78,7 @@ public:
         g->data_size    = data_size;
         g->type         = data_type;
         g->bounds       = bounds;
-        g->height	    = height;
+        g->height        = height;
         g->advance_x    = advance_x;
         g->advance_y    = advance_y;
         return m_glyphs[msb][lsb] = g;

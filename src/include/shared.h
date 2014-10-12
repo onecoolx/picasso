@@ -12,42 +12,42 @@ namespace picasso {
 class shared
 {
 public:
-	shared()
-		:m_refCount(0)
-	{
-	}
+    shared()
+        :m_refCount(0)
+    {
+    }
 
-	virtual ~shared()
-	{
-		//must be virtual for deref
-	}
+    virtual ~shared()
+    {
+        //must be virtual for deref
+    }
 
-	void ref(void)
-	{
-		++m_refCount;
-	}
+    void ref(void)
+    {
+        ++m_refCount;
+    }
 
-	void deref(void)
-	{
-		if (--m_refCount <= 0)
-			removeThis();
-	}
+    void deref(void)
+    {
+        if (--m_refCount <= 0)
+            removeThis();
+    }
 
-	int count(void)
-	{
-		return m_refCount;
-	}
+    int count(void)
+    {
+        return m_refCount;
+    }
 protected:
-	virtual void removeThis(void) 
-	{
-		//can be extend in sub classa for more clean up code
-		delete this;
-	}
+    virtual void removeThis(void) 
+    {
+        //can be extend in sub classa for more clean up code
+        delete this;
+    }
 
 private:
-	shared(const shared&);
-	shared& operator=(const shared&);
-	int m_refCount;
+    shared(const shared&);
+    shared& operator=(const shared&);
+    int m_refCount;
 };
 
 }

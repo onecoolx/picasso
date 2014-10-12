@@ -15,14 +15,14 @@
 #include "picasso.h"
 
 //this can be replace by hw buffer!
-#define BufferAlloc(n) 		mem_malloc(n)
-#define BuffersAlloc(n, s) 	mem_calloc(n, s)
-#define BufferFree(p) 		mem_free(p)
-#define BufferCopy(d, s, n) 	memcpy(d, s, n)
+#define BufferAlloc(n)         mem_malloc(n)
+#define BuffersAlloc(n, s)     mem_calloc(n, s)
+#define BufferFree(p)         mem_free(p)
+#define BufferCopy(d, s, n)     memcpy(d, s, n)
 
-#define MAX(x, y)	(((x) > (y))?(x):(y))
-#define MIN(x, y)	(((x) < (y))?(x):(y))
-#define ABS(x)		(((x) < 0)?(-(x)):(x))
+#define MAX(x, y)    (((x) > (y))?(x):(y))
+#define MIN(x, y)    (((x) < (y))?(x):(y))
+#define ABS(x)        (((x) < 0)?(-(x)):(x))
 
 
 // global error code

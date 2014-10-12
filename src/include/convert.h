@@ -20,12 +20,12 @@ namespace picasso {
 class conv_curve : public vertex_source
 {
 public:
-	conv_curve(const vertex_source& v) 
-		: m_source(const_cast<vertex_source*>(&v)) 
+    conv_curve(const vertex_source& v) 
+        : m_source(const_cast<vertex_source*>(&v)) 
     { 
     }
 
-	virtual void rewind(unsigned int id) 
+    virtual void rewind(unsigned int id) 
     { 
         m_source->rewind(id); 
         m_last_x = FLT_TO_SCALAR(0.0f);
@@ -34,7 +34,7 @@ public:
         m_curve4.reset();
     }
 
-	virtual unsigned int vertex(scalar* x, scalar* y) 
+    virtual unsigned int vertex(scalar* x, scalar* y) 
     { 
         if (!is_stop(m_curve3.vertex(x, y))) {
             m_last_x = *x;
@@ -80,7 +80,7 @@ private:
     conv_curve(const conv_curve&);
     conv_curve& operator=(const conv_curve&);
 
-	vertex_source* m_source;
+    vertex_source* m_source;
     scalar m_last_x;
     scalar m_last_y;
     curve3 m_curve3;
@@ -91,42 +91,42 @@ private:
 class conv_transform : public vertex_source
 {
 public:
-	conv_transform(const vertex_source& v, const trans_affine& m) 
-		: m_source(const_cast<vertex_source*>(&v)), m_trans(&m) { }
+    conv_transform(const vertex_source& v, const trans_affine& m) 
+        : m_source(const_cast<vertex_source*>(&v)), m_trans(&m) { }
 
-	void attach(const vertex_source& v) { m_source = const_cast<vertex_source*>(&v); }
+    void attach(const vertex_source& v) { m_source = const_cast<vertex_source*>(&v); }
 
-	void transformer(const trans_affine& t) { m_trans = &t; }
+    void transformer(const trans_affine& t) { m_trans = &t; }
 
-	virtual void rewind(unsigned int id) { m_source->rewind(id); }
+    virtual void rewind(unsigned int id) { m_source->rewind(id); }
 
-	virtual unsigned int vertex(scalar* x, scalar* y) 
-	{
-		unsigned int cmd = m_source->vertex(x, y);
-		if (is_vertex(cmd)) {
-			m_trans->transform(x, y);
-		}
-		return cmd;
-   	}
+    virtual unsigned int vertex(scalar* x, scalar* y) 
+    {
+        unsigned int cmd = m_source->vertex(x, y);
+        if (is_vertex(cmd)) {
+            m_trans->transform(x, y);
+        }
+        return cmd;
+       }
 private:
-	conv_transform(const conv_transform&);
-	conv_transform& operator=(const conv_transform&);
+    conv_transform(const conv_transform&);
+    conv_transform& operator=(const conv_transform&);
 
-	vertex_source* m_source;
-	const trans_affine* m_trans;
+    vertex_source* m_source;
+    const trans_affine* m_trans;
 };
 
 // Convert clipper
 class conv_clipper : public vertex_source
 {
 public:
-	typedef enum {
-		clip_union,
-		clip_intersect,
-		clip_xor,
-		clip_diff,
-	} clip_op;
-	
+    typedef enum {
+        clip_union,
+        clip_intersect,
+        clip_xor,
+        clip_diff,
+    } clip_op;
+    
     typedef enum
     {
         status_move_to,
@@ -141,7 +141,7 @@ public:
         gpc_vertex* vertices;
     } contour_header;
 
-	conv_clipper(const vertex_source& a, const vertex_source& b, clip_op op) 
+    conv_clipper(const vertex_source& a, const vertex_source& b, clip_op op) 
         : m_src_a(const_cast<vertex_source*>(&a))
         , m_src_b(const_cast<vertex_source*>(&b))
         , m_status(status_move_to)
@@ -159,7 +159,7 @@ public:
         free_all();
     }
 
-	virtual void rewind(unsigned int id) 
+    virtual void rewind(unsigned int id) 
     {
         free_result();
         m_src_a->rewind(id);
@@ -188,7 +188,7 @@ public:
         m_vertex = -1;
     }
 
-	virtual unsigned int vertex(scalar* x, scalar* y) 
+    virtual unsigned int vertex(scalar* x, scalar* y) 
     { 
         if (m_status == status_move_to) {
             if(next_contour()) {

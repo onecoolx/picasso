@@ -21,17 +21,17 @@ namespace picasso {
 
 painter::painter(pix_fmt fmt)
 {
-	m_impl = get_system_device()->create_painter(fmt);
+    m_impl = get_system_device()->create_painter(fmt);
 }
 
 painter::~painter()
 {
-	get_system_device()->destroy_painter(m_impl);
+    get_system_device()->destroy_painter(m_impl);
 }
 
 void painter::attach(rendering_buffer& buf)
 {
-	m_impl->attach(buf.m_impl);
+    m_impl->attach(buf.m_impl);
 }
 
 void painter::init_raster_data(context_state* state, unsigned int methods, 
@@ -60,57 +60,57 @@ void painter::init_raster_data(context_state* state, unsigned int methods,
 
 void painter::init_source_data(context_state* state, unsigned int methods, const graphic_path& p)
 {
-	m_impl->set_alpha(state->alpha);
-	m_impl->set_composite(state->composite);
+    m_impl->set_alpha(state->alpha);
+    m_impl->set_composite(state->composite);
 
-	if (methods & raster_stroke) {
-		m_impl->set_stroke_color(state->pen.color); //FIXME: need implement stroke pattern and gradient support.
-	}
+    if (methods & raster_stroke) {
+        m_impl->set_stroke_color(state->pen.color); //FIXME: need implement stroke pattern and gradient support.
+    }
 
-	if (methods & raster_fill) {
-		switch (state->brush.style) {
-			case brush_style_canvas:
+    if (methods & raster_fill) {
+        switch (state->brush.style) {
+            case brush_style_canvas:
                 {
-    				scalar x1 = 1, y1 = 1, x2 = 0 ,y2 = 0;
-    				bounding_rect(const_cast<graphic_path&>(p), 0, &x1, &y1, &x2, &y2);
+                    scalar x1 = 1, y1 = 1, x2 = 0 ,y2 = 0;
+                    bounding_rect(const_cast<graphic_path&>(p), 0, &x1, &y1, &x2, &y2);
                     ps_canvas* canvas = static_cast<ps_canvas*>(state->brush.data);
-					rect_s rect(x1, y1, x2, y2);
-					m_impl->set_fill_canvas(canvas->buffer.impl(), (int)state->filter, rect);
+                    rect_s rect(x1, y1, x2, y2);
+                    m_impl->set_fill_canvas(canvas->buffer.impl(), (int)state->filter, rect);
                 }
                 break;
-			case brush_style_pattern:
+            case brush_style_pattern:
                 {
-    				scalar x1 = 1, y1 = 1, x2 = 0 ,y2 = 0;
-    				bounding_rect(const_cast<graphic_path&>(p), 0, &x1, &y1, &x2, &y2);
+                    scalar x1 = 1, y1 = 1, x2 = 0 ,y2 = 0;
+                    bounding_rect(const_cast<graphic_path&>(p), 0, &x1, &y1, &x2, &y2);
                     ps_pattern* pattern = static_cast<ps_pattern*>(state->brush.data);
-					rect_s rect(x1, y1, x2, y2);
+                    rect_s rect(x1, y1, x2, y2);
                     m_impl->set_fill_pattern(pattern->img->buffer.impl(), (int)state->filter, rect,
                                                 pattern->xtype, pattern->ytype, pattern->matrix.impl());
                 }
                 break;
-			case brush_style_image:
-				{
-    				scalar x1 = 1, y1 = 1, x2 = 0 ,y2 = 0;
-    				bounding_rect(const_cast<graphic_path&>(p), 0, &x1, &y1, &x2, &y2);
-					ps_image* img = static_cast<ps_image*>(state->brush.data);
-					rect_s rect(x1, y1, x2, y2);
-					m_impl->set_fill_image(img->buffer.impl(), (int)state->filter, rect);
-				}
-				break;
+            case brush_style_image:
+                {
+                    scalar x1 = 1, y1 = 1, x2 = 0 ,y2 = 0;
+                    bounding_rect(const_cast<graphic_path&>(p), 0, &x1, &y1, &x2, &y2);
+                    ps_image* img = static_cast<ps_image*>(state->brush.data);
+                    rect_s rect(x1, y1, x2, y2);
+                    m_impl->set_fill_image(img->buffer.impl(), (int)state->filter, rect);
+                }
+                break;
             case brush_style_gradient:
                 {
                     ps_gradient* gradient = static_cast<ps_gradient*>(state->brush.data);
                     m_impl->set_fill_gradient(gradient->gradient.impl());
                 }
                 break;
-			case brush_style_solid:
-				m_impl->set_fill_color(state->brush.color); //solid color brush.
-				break;
-			default:
-				//make compiler happy only.
-				break;
-		}
-	}
+            case brush_style_solid:
+                m_impl->set_fill_color(state->brush.color); //solid color brush.
+                break;
+            default:
+                //make compiler happy only.
+                break;
+        }
+    }
 }
 
 void painter::render_stroke(context_state* state, raster_adapter& raster, const graphic_path& p)
@@ -118,10 +118,10 @@ void painter::render_stroke(context_state* state, raster_adapter& raster, const 
     if (raster.is_empty()) 
         init_raster_data(state, raster_stroke, raster, p, state->world_matrix);
 
-	init_source_data(state, raster_stroke, p);
+    init_source_data(state, raster_stroke, p);
 
-	raster.commit(); //calc raster data.
-	m_impl->apply_stroke(raster.impl());
+    raster.commit(); //calc raster data.
+    m_impl->apply_stroke(raster.impl());
 }
 
 void painter::render_fill(context_state* state, raster_adapter& raster, const graphic_path& p)
@@ -129,10 +129,10 @@ void painter::render_fill(context_state* state, raster_adapter& raster, const gr
     if (raster.is_empty()) 
         init_raster_data(state, raster_fill, raster, p, state->world_matrix);
 
-	init_source_data(state, raster_fill, p);
+    init_source_data(state, raster_fill, p);
 
-	raster.commit(); //calc raster data.
-	m_impl->apply_fill(raster.impl());
+    raster.commit(); //calc raster data.
+    m_impl->apply_fill(raster.impl());
 }
 
 void painter::render_paint(context_state* state, raster_adapter& raster, const graphic_path& p)
@@ -140,11 +140,11 @@ void painter::render_paint(context_state* state, raster_adapter& raster, const g
     if (raster.is_empty()) 
         init_raster_data(state, raster_fill | raster_stroke, raster, p, state->world_matrix);
 
-	init_source_data(state, raster_fill | raster_stroke, p);
+    init_source_data(state, raster_fill | raster_stroke, p);
 
-	raster.commit(); //calc raster data.
-	m_impl->apply_fill(raster.impl());
-	m_impl->apply_stroke(raster.impl());
+    raster.commit(); //calc raster data.
+    m_impl->apply_fill(raster.impl());
+    m_impl->apply_stroke(raster.impl());
 }
 
 void painter::render_clear(context_state* state)
@@ -159,13 +159,13 @@ void painter::render_blur(context_state* state)
 
 void painter::render_gamma(context_state* state, raster_adapter& raster)
 {
-	if (state->antialias) {
-		raster.set_antialias(true);
-		raster.set_gamma_power(state->gamma);		
-	} else {
-		raster.set_antialias(false);
-		raster.set_gamma_power(state->gamma);		
-	}
+    if (state->antialias) {
+        raster.set_antialias(true);
+        raster.set_gamma_power(state->gamma);        
+    } else {
+        raster.set_antialias(false);
+        raster.set_gamma_power(state->gamma);        
+    }
 }
 
 void painter::render_clip(context_state* state, bool clip)
@@ -199,10 +199,10 @@ void painter::render_shadow(context_state* state, const graphic_path& p, bool fi
         bounding_rect(tp, 0, &x1, &y1, &x2, &y2);
 
         //FIXME: it is hard code here right?
-		x1 -= (state->shadow.blur*40+5);
-		y1 -= (state->shadow.blur*40+5);
-		x2 += (state->shadow.blur*40+5);
-		y2 += (state->shadow.blur*40+5);
+        x1 -= (state->shadow.blur*40+5);
+        y1 -= (state->shadow.blur*40+5);
+        x2 += (state->shadow.blur*40+5);
+        y2 += (state->shadow.blur*40+5);
 
         rect_s rect(x1, y1, x2, y2);
 
@@ -259,14 +259,14 @@ void painter::render_copy(rendering_buffer& src, const rect* r, const painter* d
 void painter::render_glyph(context_state* state, raster_adapter& raster, const font_adapter* font, int type)
 {
     //FIXME: support other source !
-	m_impl->set_alpha(state->alpha);
-	m_impl->set_composite(state->composite);
+    m_impl->set_alpha(state->alpha);
+    m_impl->set_composite(state->composite);
 
     m_impl->set_font_fill_color(state->font_fcolor);
 
     if (type == glyph_type_mono) {
         mono_storage& mono = const_cast<font_adapter*>(font)->mono_adaptor(); 
-		scalar tx = state->world_matrix.tx();
+        scalar tx = state->world_matrix.tx();
         scalar ty = state->world_matrix.ty();
         mono.translate(tx, ty);
         m_impl->apply_mono_text_fill(mono.get_storage());
@@ -281,10 +281,10 @@ void painter::render_glyph(context_state* state, raster_adapter& raster, const f
 
 void painter::render_glyphs_raster(context_state* state, raster_adapter& raster, int type)
 {
-	if (!raster.is_empty()) {
-	    m_impl->apply_text_fill(raster.impl(), type);
-		raster.reset();
-	}
+    if (!raster.is_empty()) {
+        m_impl->apply_text_fill(raster.impl(), type);
+        raster.reset();
+    }
 }
 
 }

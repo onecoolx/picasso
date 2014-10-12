@@ -78,7 +78,7 @@ namespace agg
         return sqrt(dx * dx + dy * dy);
     }
 
-	//--------------------------------------------------------calc_sq_distance
+    //--------------------------------------------------------calc_sq_distance
     AGG_INLINE float calc_sq_distance(float x1, float y1, float x2, float y2)
     {
         float dx = x2-x1;
@@ -111,7 +111,7 @@ namespace agg
 
         if(dx == 0 && dy == 0)
         {
-	        return 0;
+            return 0;
         }
 
         float pdx = x - x1;
@@ -128,12 +128,12 @@ namespace agg
     {
         if(u <= 0)
         {
-	        return calc_sq_distance(x, y, x1, y1);
+            return calc_sq_distance(x, y, x1, y1);
         }
         else 
         if(u >= 1)
         {
-	        return calc_sq_distance(x, y, x2, y2);
+            return calc_sq_distance(x, y, x2, y2);
         }
         return calc_sq_distance(x, y, x1 + u * (x2 - x1), y1 + u * (y2 - y1));
     }

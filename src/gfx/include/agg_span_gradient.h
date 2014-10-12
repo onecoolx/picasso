@@ -349,7 +349,7 @@ namespace agg
         {
             int ret = m_gradient->calculate(x, y, d);
             if(ret < 0) ret = 0;
-			if(ret > d) ret = d;
+            if(ret > d) ret = d;
             return ret;
         }
 
@@ -387,7 +387,7 @@ namespace agg
             int d2 = d << 1;
             int ret = m_gradient->calculate(x, y, d) % d2;
             if(ret <  0) ret += d2;
-		 	if(ret >= d) ret  = d2 - ret;
+             if(ret >= d) ret  = d2 - ret;
             return ret;
         }
 

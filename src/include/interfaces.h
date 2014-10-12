@@ -19,106 +19,106 @@ namespace picasso {
 class abstract_trans_affine
 {
 public:
-	virtual ~abstract_trans_affine() {}
+    virtual ~abstract_trans_affine() {}
 
-	virtual void sx(scalar v) = 0;
-	virtual void sy(scalar v) = 0;
-	virtual scalar sx(void) const = 0;
-	virtual scalar sy(void) const = 0;
-	virtual void shx(scalar v) = 0;
-	virtual void shy(scalar v) = 0;
-	virtual scalar shx(void) const = 0;
-	virtual scalar shy(void) const = 0;
-	virtual void tx(scalar v) = 0;
-	virtual void ty(scalar v) = 0;
-	virtual scalar tx(void) const = 0;
-	virtual scalar ty(void) const = 0;
+    virtual void sx(scalar v) = 0;
+    virtual void sy(scalar v) = 0;
+    virtual scalar sx(void) const = 0;
+    virtual scalar sy(void) const = 0;
+    virtual void shx(scalar v) = 0;
+    virtual void shy(scalar v) = 0;
+    virtual scalar shx(void) const = 0;
+    virtual scalar shy(void) const = 0;
+    virtual void tx(scalar v) = 0;
+    virtual void ty(scalar v) = 0;
+    virtual scalar tx(void) const = 0;
+    virtual scalar ty(void) const = 0;
 
-	virtual void translate(scalar x, scalar y) = 0;
-	virtual void scale(scalar x, scalar y) = 0; 
-	virtual void rotate(scalar a) = 0; 
-	virtual void shear(scalar x, scalar y) = 0;
+    virtual void translate(scalar x, scalar y) = 0;
+    virtual void scale(scalar x, scalar y) = 0; 
+    virtual void rotate(scalar a) = 0; 
+    virtual void shear(scalar x, scalar y) = 0;
 
-	virtual void invert(void) = 0;
-	virtual void flip_x(void) = 0;
-	virtual void flip_y(void) = 0;
-	virtual void reset(void) = 0;
-	virtual void multiply(const abstract_trans_affine* o) = 0;
+    virtual void invert(void) = 0;
+    virtual void flip_x(void) = 0;
+    virtual void flip_y(void) = 0;
+    virtual void reset(void) = 0;
+    virtual void multiply(const abstract_trans_affine* o) = 0;
 
-	virtual bool is_identity(void) const = 0;
-	virtual scalar determinant(void) const = 0;
-	virtual scalar rotation(void) const = 0;
-	virtual void translation(scalar* dx, scalar* dy) const = 0;
-	virtual void scaling(scalar* x, scalar* y) const = 0;
-	virtual void shearing(scalar* x, scalar* y) const = 0;
+    virtual bool is_identity(void) const = 0;
+    virtual scalar determinant(void) const = 0;
+    virtual scalar rotation(void) const = 0;
+    virtual void translation(scalar* dx, scalar* dy) const = 0;
+    virtual void scaling(scalar* x, scalar* y) const = 0;
+    virtual void shearing(scalar* x, scalar* y) const = 0;
 
-	virtual bool is_equal(const abstract_trans_affine* o) = 0;
-	virtual void transform(scalar* x, scalar* y) const = 0;
-	virtual void transform_2x2(scalar* x, scalar* y) const = 0;
+    virtual bool is_equal(const abstract_trans_affine* o) = 0;
+    virtual void transform(scalar* x, scalar* y) const = 0;
+    virtual void transform_2x2(scalar* x, scalar* y) const = 0;
     virtual void inverse_transform(scalar* x, scalar* y) const = 0;
 
-	virtual void store_to(scalar* m) const = 0;
-	virtual void load_from(const scalar* m) = 0;
+    virtual void store_to(scalar* m) const = 0;
+    virtual void load_from(const scalar* m) = 0;
 protected:
-	abstract_trans_affine() {}
+    abstract_trans_affine() {}
 private:
-	abstract_trans_affine(const abstract_trans_affine&);
-	abstract_trans_affine& operator=(const abstract_trans_affine&);
+    abstract_trans_affine(const abstract_trans_affine&);
+    abstract_trans_affine& operator=(const abstract_trans_affine&);
 };
 
 // Rendering buffer interface
 class abstract_rendering_buffer
 {
 public: 
-	virtual ~abstract_rendering_buffer() {}
+    virtual ~abstract_rendering_buffer() {}
 
-	virtual void init(byte* ptr, unsigned int width, unsigned int height, int stride) = 0;
+    virtual void init(byte* ptr, unsigned int width, unsigned int height, int stride) = 0;
 
-	virtual unsigned int width(void) const = 0;
-	virtual unsigned int height(void) const = 0;
-	virtual int stride(void) const = 0;
+    virtual unsigned int width(void) const = 0;
+    virtual unsigned int height(void) const = 0;
+    virtual int stride(void) const = 0;
     virtual byte* buffer(void) const = 0;
 
-	virtual bool is_transparent(void) const = 0;
-	virtual void set_transparent(bool b) = 0;
+    virtual bool is_transparent(void) const = 0;
+    virtual void set_transparent(bool b) = 0;
 
-	virtual bool has_color_channel(void) const = 0;
-	virtual void clear_color_channel(void) = 0;
-	virtual void set_color_channel(const rgba&) = 0;
-	virtual rgba get_color_channel(void) const = 0;
+    virtual bool has_color_channel(void) const = 0;
+    virtual void clear_color_channel(void) = 0;
+    virtual void set_color_channel(const rgba&) = 0;
+    virtual rgba get_color_channel(void) const = 0;
 protected:
-	abstract_rendering_buffer() {}
+    abstract_rendering_buffer() {}
 private:
-	abstract_rendering_buffer(const abstract_rendering_buffer&);
-	abstract_rendering_buffer& operator=(const abstract_rendering_buffer&);
+    abstract_rendering_buffer(const abstract_rendering_buffer&);
+    abstract_rendering_buffer& operator=(const abstract_rendering_buffer&);
 };
 
 //Raster adapter interface
 class abstract_raster_adapter
 {
 public:
-	virtual ~abstract_raster_adapter() {}
+    virtual ~abstract_raster_adapter() {}
 
-	virtual void set_gamma_power(scalar) = 0;
-	virtual void set_antialias(bool) = 0;
-	virtual void set_transform(const abstract_trans_affine* mtx) = 0;
-	virtual void set_raster_method(unsigned int methods) = 0;
-	virtual void set_stroke_dashes(scalar start, const scalar* dashes, unsigned int num) = 0;
-	virtual void set_stroke_attr(int idx, int val) = 0;
-	virtual void set_stroke_attr_val(int idx, scalar val) = 0;
+    virtual void set_gamma_power(scalar) = 0;
+    virtual void set_antialias(bool) = 0;
+    virtual void set_transform(const abstract_trans_affine* mtx) = 0;
+    virtual void set_raster_method(unsigned int methods) = 0;
+    virtual void set_stroke_dashes(scalar start, const scalar* dashes, unsigned int num) = 0;
+    virtual void set_stroke_attr(int idx, int val) = 0;
+    virtual void set_stroke_attr_val(int idx, scalar val) = 0;
 
-	virtual void set_fill_attr(int idx, int val) = 0;
+    virtual void set_fill_attr(int idx, int val) = 0;
 
-	virtual void add_shape(const vertex_source& vs, unsigned int id) = 0;
-	virtual void reset(void) = 0;
-	virtual void commit(void) = 0;
-	virtual bool is_empty(void) = 0;
+    virtual void add_shape(const vertex_source& vs, unsigned int id) = 0;
+    virtual void reset(void) = 0;
+    virtual void commit(void) = 0;
+    virtual bool is_empty(void) = 0;
     virtual bool contains(scalar x, scalar y) = 0;
 protected:
-	abstract_raster_adapter() {}
+    abstract_raster_adapter() {}
 private:
-	abstract_raster_adapter(const abstract_raster_adapter&);
-	abstract_raster_adapter& operator=(const abstract_raster_adapter&);
+    abstract_raster_adapter(const abstract_raster_adapter&);
+    abstract_raster_adapter& operator=(const abstract_raster_adapter&);
 };
 
 //Masking layer interface
@@ -164,26 +164,26 @@ private:
 class abstract_painter
 {
 public:
-	virtual ~abstract_painter() {}
+    virtual ~abstract_painter() {}
 
-	virtual void attach(abstract_rendering_buffer* b) = 0;
-	virtual pix_fmt pixel_format(void) const = 0;
+    virtual void attach(abstract_rendering_buffer* b) = 0;
+    virtual pix_fmt pixel_format(void) const = 0;
 
-	virtual void set_alpha(scalar a) = 0;
-	virtual void set_composite(comp_op op) = 0;
-	virtual void set_stroke_color(const rgba& c) = 0;
-	virtual void set_fill_color(const rgba& c) = 0;
-	virtual void set_fill_image(const abstract_rendering_buffer* img, int filter, const rect_s& rc) = 0;
-	virtual void set_fill_canvas(const abstract_rendering_buffer* img, int filter, const rect_s& rc) = 0;
+    virtual void set_alpha(scalar a) = 0;
+    virtual void set_composite(comp_op op) = 0;
+    virtual void set_stroke_color(const rgba& c) = 0;
+    virtual void set_fill_color(const rgba& c) = 0;
+    virtual void set_fill_image(const abstract_rendering_buffer* img, int filter, const rect_s& rc) = 0;
+    virtual void set_fill_canvas(const abstract_rendering_buffer* img, int filter, const rect_s& rc) = 0;
     virtual void set_fill_pattern(const abstract_rendering_buffer* img, int filter, const rect_s& rc, 
                                     int xtype, int ytype, const abstract_trans_affine* mtx) = 0;
     virtual void set_fill_gradient(const abstract_gradient_adapter* g) = 0;
-	virtual void set_font_fill_color(const rgba& c) = 0;
+    virtual void set_font_fill_color(const rgba& c) = 0;
 
-	virtual void apply_stroke(abstract_raster_adapter* rs) = 0;
-	virtual void apply_fill(abstract_raster_adapter* rs) = 0;
+    virtual void apply_stroke(abstract_raster_adapter* rs) = 0;
+    virtual void apply_fill(abstract_raster_adapter* rs) = 0;
 
-	virtual void apply_text_fill(abstract_raster_adapter* rs, int t) = 0;
+    virtual void apply_text_fill(abstract_raster_adapter* rs, int t) = 0;
 
     // FIXME: own mono storage implements needed!
     virtual void apply_mono_text_fill(void * storage) = 0;
@@ -211,10 +211,10 @@ public:
     //data copy
     virtual void copy_rect_from(abstract_rendering_buffer* src, const rect& rc, int x, int y) = 0;
 protected:
-	abstract_painter() {}
+    abstract_painter() {}
 private:
-	abstract_painter(const abstract_painter&);
-	abstract_painter& operator=(const abstract_painter&);
+    abstract_painter(const abstract_painter&);
+    abstract_painter& operator=(const abstract_painter&);
 };
 
 // Font adapter interface
@@ -223,11 +223,11 @@ class abstract_font_adapter
 public:
     virtual ~abstract_font_adapter() {}
 
-	virtual scalar height(void) const = 0;
-	virtual scalar ascent(void) const = 0;
-	virtual scalar descent(void) const = 0;
-	virtual scalar leading(void) const = 0;
-	virtual unsigned int units_per_em(void) const = 0;
+    virtual scalar height(void) const = 0;
+    virtual scalar ascent(void) const = 0;
+    virtual scalar descent(void) const = 0;
+    virtual scalar leading(void) const = 0;
+    virtual unsigned int units_per_em(void) const = 0;
 
     virtual void active(void) = 0;
     virtual void deactive(void) = 0;

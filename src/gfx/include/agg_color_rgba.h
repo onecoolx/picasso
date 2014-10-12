@@ -53,7 +53,7 @@ namespace agg
     struct order_abgr { enum abgr_e { A=0, B=1, G=2, R=3, rgba_tag }; }; //----order_abgr
     struct order_bgra { enum bgra_e { B=0, G=1, R=2, A=3, rgba_tag }; }; //----order_bgra
     //packed color order
-	//packed color is bitset not index
+    //packed color is bitset not index
     struct order_rgb565 { enum rgb565_e {R=5, G=6, B=5, rgbp_tag }; }; //----order_rgb565
     struct order_rgb555 { enum rgb555_e {R=5, G=5, B=5, rgbp_tag }; }; //----order_rgb555
 
@@ -77,8 +77,8 @@ namespace agg
 
         //--------------------------------------------------------------------
         rgba(const rgba& c, float a_) : r(c.r), g(c.g), b(c.b), a(a_) {}
-		//--------------------------------------------------------------------
-		rgba(const picasso::rgba& c) : r(c.r), g(c.g), b(c.b), a(c.a) {}
+        //--------------------------------------------------------------------
+        rgba(const picasso::rgba& c) : r(c.r), g(c.g), b(c.b), a(c.a) {}
 
         //--------------------------------------------------------------------
         void clear()
@@ -166,7 +166,7 @@ namespace agg
 #if 0
         //--------------------------------------------------------------------
         static rgba from_wavelength(float wl, float gamma = 1.0);
-	
+    
         //--------------------------------------------------------------------
         explicit rgba(float wavelen, float gamma=1.0)
         {

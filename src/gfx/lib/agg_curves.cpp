@@ -305,7 +305,7 @@ namespace agg
         float pre2 = 3.0f * subdivide_step2;
         float pre4 = 6.0f * subdivide_step2;
         float pre5 = 6.0f * subdivide_step3;
-	
+    
         float tmp1x = x1 - x2 * 2.0f + x3;
         float tmp1y = y1 - y2 * 2.0f + y3;
 

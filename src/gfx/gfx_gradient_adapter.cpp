@@ -41,7 +41,7 @@ void gfx_gradient_adapter::init_linear(int spread, scalar x1, scalar y1, scalar 
         } else
             len = 2.0f; // len can not be zero
 
-	    mtx.translate(SCALAR_TO_FLT(x1), SCALAR_TO_FLT(y1));
+        mtx.translate(SCALAR_TO_FLT(x1), SCALAR_TO_FLT(y1));
 
         m_start = 0.0f;
         m_length = len;
@@ -111,8 +111,8 @@ void gfx_gradient_adapter::init_radial(int spread, scalar x1, scalar y1, scalar 
 void gfx_gradient_adapter::init_conic(int spread, scalar x, scalar y, scalar angle)
 {
     if (!m_wrapper) {
-	    // only support reflect 
-	    m_wrapper = new gradient_wrapper_adaptor<agg::gradient_conic, 
+        // only support reflect 
+        m_wrapper = new gradient_wrapper_adaptor<agg::gradient_conic, 
                                 agg::gradient_reflect_adaptor<agg::gradient_conic> >;
 
         if (!m_wrapper) 

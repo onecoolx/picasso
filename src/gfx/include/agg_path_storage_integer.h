@@ -287,10 +287,10 @@ namespace agg
             return cmd;
         }
 
-		void setX(int x) { m_dx = (float)x; }
-		void setY(int y) { m_dy = (float)y; }
-		int x() const { return (int)m_dx; }
-		int y() const { return (int)m_dy; }
+        void setX(int x) { m_dx = (float)x; }
+        void setY(int y) { m_dy = (float)y; }
+        int x() const { return (int)m_dx; }
+        int y() const { return (int)m_dy; }
     private:
         const int8u* m_data;
         const int8u* m_end;

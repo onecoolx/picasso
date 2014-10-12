@@ -128,10 +128,10 @@ namespace agg
         //--------------------------------------------------------------------
         void clear(const color_type& c)
         {
-			unsigned x = m_clip_box.x1;
+            unsigned x = m_clip_box.x1;
             unsigned y = m_clip_box.y1;
-			unsigned w = m_clip_box.x2-m_clip_box.x1+1;
-			unsigned y2 = m_clip_box.y2;
+            unsigned w = m_clip_box.x2-m_clip_box.x1+1;
+            unsigned y2 = m_clip_box.y2;
 
             if(w)
             {

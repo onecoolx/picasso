@@ -157,7 +157,7 @@ namespace agg
             unsigned cmd = v.vertex(i, &x, &y);
             add_vertex(x, y, cmd);
         }
-	    return *this;
+        return *this;
     }
 
     //------------------------------------------------------------------------
@@ -844,8 +844,8 @@ namespace agg
             }
         }
 
-		bool is_rect() const { return m_rect; }
-		void set_rect(bool b) { m_rect = b; }
+        bool is_rect() const { return m_rect; }
+        void set_rect(bool b) { m_rect = b; }
 
     private:
         unsigned perceive_polygon_orientation(unsigned start, unsigned end);
@@ -853,7 +853,7 @@ namespace agg
 
         VertexContainer m_vertices;
         unsigned        m_iterator;
-		bool            m_rect;  //it is used, I don't why?
+        bool            m_rect;  //it is used, I don't why?
     };
 
     //------------------------------------------------------------------------
@@ -1181,9 +1181,9 @@ namespace agg
  
     template<class VC> 
     inline void path_base<VC>::add_vertex(float x, float y, unsigned cmd)
-	{
-		m_vertices.add_vertex(x, y, cmd);
-	}
+    {
+        m_vertices.add_vertex(x, y, cmd);
+    }
     //------------------------------------------------------------------------
     template<class VC> 
     inline unsigned path_base<VC>::command(unsigned idx) const
@@ -1543,23 +1543,23 @@ namespace agg
     // Example of declarations path_storage with pod_bvector as a container
     //-----------------------------------------------------------------------
     //typedef path_base<vertex_stl_storage<pod_bvector<vertex_d> > > path_storage;
-	
-	inline bool operator != (const path_storage& a, const path_storage& b)
-	{
-		if (a.total_vertices() != b.total_vertices())
-			return true;  // total vertices is not same , the path is not same 
+    
+    inline bool operator != (const path_storage& a, const path_storage& b)
+    {
+        if (a.total_vertices() != b.total_vertices())
+            return true;  // total vertices is not same , the path is not same 
 
-		unsigned num = a.total_vertices(); //because a total_vertices is same to b total_vertices.
-		float x1=0, y1=0, x2=0, y2=0;
-		for (unsigned i = 0; i < num; i++) {
-			unsigned cmd1 = a.vertex(i, &x1, &y1);
-			unsigned cmd2 = b.vertex(i, &x2, &y2);
-			if ((cmd1 != cmd2) || (x1 != x2) || (y1 != y2))
-				return true; // this vertex is not same.
-		}
+        unsigned num = a.total_vertices(); //because a total_vertices is same to b total_vertices.
+        float x1=0, y1=0, x2=0, y2=0;
+        for (unsigned i = 0; i < num; i++) {
+            unsigned cmd1 = a.vertex(i, &x1, &y1);
+            unsigned cmd2 = b.vertex(i, &x2, &y2);
+            if ((cmd1 != cmd2) || (x1 != x2) || (y1 != y2))
+                return true; // this vertex is not same.
+        }
 
-		return false;
-	}
+        return false;
+    }
 
 }
 

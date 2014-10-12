@@ -13,10 +13,10 @@
 
 //common memory managers
 
-#define mem_malloc(n) 		malloc(n)
-#define mem_calloc(n, s) 	calloc(n, s)
-#define mem_realloc(p, s) 	realloc(p, s)
-#define mem_free(p)			free(p)
+#define mem_malloc(n)         malloc(n)
+#define mem_calloc(n, s)     calloc(n, s)
+#define mem_realloc(p, s)     realloc(p, s)
+#define mem_free(p)            free(p)
 
 #ifdef __cplusplus
 #undef new

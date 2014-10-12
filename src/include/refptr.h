@@ -12,73 +12,73 @@ namespace picasso {
 template <typename T> class refptr 
 {
 public:
-	refptr()
-		:m_ptr(0)
-	{
-		
-	}
+    refptr()
+        :m_ptr(0)
+    {
+        
+    }
 
-	explicit refptr(T * ptr)
-		:m_ptr(ptr)
-	{
-		if (m_ptr)
-			m_ptr->ref();
-	}
+    explicit refptr(T * ptr)
+        :m_ptr(ptr)
+    {
+        if (m_ptr)
+            m_ptr->ref();
+    }
 
-	refptr(const refptr & o)
-		:m_ptr(o.m_ptr)
-	{
-		if (m_ptr)
-			m_ptr->ref();
-	}
+    refptr(const refptr & o)
+        :m_ptr(o.m_ptr)
+    {
+        if (m_ptr)
+            m_ptr->ref();
+    }
 
-	~refptr()
-	{
-		if (m_ptr)
-			m_ptr->deref();
-	}
+    ~refptr()
+    {
+        if (m_ptr)
+            m_ptr->deref();
+    }
 
 public:
-	bool operator!() const
-	{
-		return !m_ptr;
-	}
+    bool operator!() const
+    {
+        return !m_ptr;
+    }
 
-	T* operator->() const
-	{
-		return m_ptr;
-	}
+    T* operator->() const
+    {
+        return m_ptr;
+    }
 
-	refptr& operator=(const refptr & o)
-	{
-		T* optr = o.m_ptr;
-		if (optr)
-			optr->ref();
-		T* ptr = m_ptr;
-		m_ptr = optr;
-		if (ptr)
-			ptr->deref();
-		return *this;
-	}
+    refptr& operator=(const refptr & o)
+    {
+        T* optr = o.m_ptr;
+        if (optr)
+            optr->ref();
+        T* ptr = m_ptr;
+        m_ptr = optr;
+        if (ptr)
+            ptr->deref();
+        return *this;
+    }
 
-	refptr& operator=(T * optr)
-	{
-		if (optr)
-			optr->ref();
-		T* ptr = m_ptr;
-		m_ptr = optr;
-		if (ptr)
-			ptr->deref();
-		return *this;
-	}
+    refptr& operator=(T * optr)
+    {
+        if (optr)
+            optr->ref();
+        T* ptr = m_ptr;
+        m_ptr = optr;
+        if (ptr)
+            ptr->deref();
+        return *this;
+    }
 
     T* getptr() const
-	{
-		return m_ptr;
-	}
+    {
+        return m_ptr;
+    }
 
 private:
-	T *m_ptr;
+    T *m_ptr;
 };
 
 template <typename T> inline bool operator!=(const refptr<T>& a, const refptr<T>& b)

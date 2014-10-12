@@ -30,14 +30,14 @@ static ps_rect _path_bounding_rect(const graphic_path& path)
 
 void _path_operation(conv_clipper::clip_op op, const graphic_path& a, const graphic_path& b, graphic_path& r)
 {
-	conv_clipper cliper(a, b, op);
-	cliper.rewind(0);
-	r.remove_all();
-	scalar x = 0, y = 0;
-	unsigned int cmd = 0;
-	while (!is_stop(cmd = cliper.vertex(&x, &y))) {
-		r.add_vertex(x, y, cmd);
-	}
+    conv_clipper cliper(a, b, op);
+    cliper.rewind(0);
+    r.remove_all();
+    scalar x = 0, y = 0;
+    unsigned int cmd = 0;
+    while (!is_stop(cmd = cliper.vertex(&x, &y))) {
+        r.add_vertex(x, y, cmd);
+    }
 }
 
 }
@@ -48,16 +48,16 @@ extern "C" {
 
 ps_path* PICAPI ps_path_create(void)
 {
-	if (!picasso::is_valid_system_device()) {
-		global_status = STATUS_DEVICE_ERROR;
-		return 0;
-	}
+    if (!picasso::is_valid_system_device()) {
+        global_status = STATUS_DEVICE_ERROR;
+        return 0;
+    }
 
     ps_path *p = (ps_path*)mem_malloc(sizeof(ps_path));
     if (p) {
-		p->refcount = 1;
+        p->refcount = 1;
         new ((void*)&(p->path)) picasso::graphic_path;
-		global_status = STATUS_SUCCEED;
+        global_status = STATUS_SUCCEED;
         return p;
     } else {
         global_status = STATUS_OUT_OF_MEMORY;
@@ -67,75 +67,75 @@ ps_path* PICAPI ps_path_create(void)
 
 ps_path* PICAPI ps_path_create_copy(const ps_path* path)
 {
-	if (!picasso::is_valid_system_device()) {
-		global_status = STATUS_DEVICE_ERROR;
-		return 0;
-	}
+    if (!picasso::is_valid_system_device()) {
+        global_status = STATUS_DEVICE_ERROR;
+        return 0;
+    }
 
-	if (!path) {
-		global_status = STATUS_INVALID_ARGUMENT;
-		return 0;
-	}
+    if (!path) {
+        global_status = STATUS_INVALID_ARGUMENT;
+        return 0;
+    }
 
-	ps_path *p = (ps_path*)mem_malloc(sizeof(ps_path));
-	if (p) {
-		p->refcount = 1;
+    ps_path *p = (ps_path*)mem_malloc(sizeof(ps_path));
+    if (p) {
+        p->refcount = 1;
         new ((void*)&(p->path)) picasso::graphic_path;
-		p->path = path->path;
-		global_status = STATUS_SUCCEED;
+        p->path = path->path;
+        global_status = STATUS_SUCCEED;
         return p;
-	} else {
+    } else {
         global_status = STATUS_OUT_OF_MEMORY;
         return 0;
-	}
+    }
 }
 
 ps_path* PICAPI ps_path_ref(ps_path* path)
 {
-	if (!picasso::is_valid_system_device()) {
-		global_status = STATUS_DEVICE_ERROR;
-		return 0;
-	}
+    if (!picasso::is_valid_system_device()) {
+        global_status = STATUS_DEVICE_ERROR;
+        return 0;
+    }
 
-	if (!path) {
-		global_status = STATUS_INVALID_ARGUMENT;
-		return 0;
-	}
+    if (!path) {
+        global_status = STATUS_INVALID_ARGUMENT;
+        return 0;
+    }
 
-	path->refcount++;
-	global_status = STATUS_SUCCEED;
-	return path;
+    path->refcount++;
+    global_status = STATUS_SUCCEED;
+    return path;
 }
 
 void PICAPI ps_path_unref(ps_path* path)
 {
-	if (!picasso::is_valid_system_device()) {
-		global_status = STATUS_DEVICE_ERROR;
-		return;
-	}
-
-    if (!path) {
-		global_status = STATUS_INVALID_ARGUMENT;
+    if (!picasso::is_valid_system_device()) {
+        global_status = STATUS_DEVICE_ERROR;
         return;
     }
 
-	path->refcount--;
-	if (path->refcount <= 0) {
-		(&path->path)->picasso::graphic_path::~graphic_path();
-		mem_free(path);
-	}
-	global_status = STATUS_SUCCEED;
+    if (!path) {
+        global_status = STATUS_INVALID_ARGUMENT;
+        return;
+    }
+
+    path->refcount--;
+    if (path->refcount <= 0) {
+        (&path->path)->picasso::graphic_path::~graphic_path();
+        mem_free(path);
+    }
+    global_status = STATUS_SUCCEED;
 }
 
 void PICAPI ps_path_move_to(ps_path* path, const ps_point* p)
 {
-	if (!picasso::is_valid_system_device()) {
-		global_status = STATUS_DEVICE_ERROR;
-		return;
-	}
+    if (!picasso::is_valid_system_device()) {
+        global_status = STATUS_DEVICE_ERROR;
+        return;
+    }
 
     if (!path || !p) {
-		global_status = STATUS_INVALID_ARGUMENT;
+        global_status = STATUS_INVALID_ARGUMENT;
         return;
     }
     path->path.move_to(DBL_TO_SCALAR(p->x), DBL_TO_SCALAR(p->y));
@@ -144,13 +144,13 @@ void PICAPI ps_path_move_to(ps_path* path, const ps_point* p)
 
 void PICAPI ps_path_line_to(ps_path* path, const ps_point* p)
 {
-	if (!picasso::is_valid_system_device()) {
-		global_status = STATUS_DEVICE_ERROR;
-		return;
-	}
+    if (!picasso::is_valid_system_device()) {
+        global_status = STATUS_DEVICE_ERROR;
+        return;
+    }
 
     if (!path || !p) {
-		global_status = STATUS_INVALID_ARGUMENT;
+        global_status = STATUS_INVALID_ARGUMENT;
         return;
     }
 
@@ -160,22 +160,22 @@ void PICAPI ps_path_line_to(ps_path* path, const ps_point* p)
 
 void PICAPI ps_path_tangent_arc_to(ps_path* path, double r, const ps_point* tp, const ps_point* ep)
 {
-	if (!picasso::is_valid_system_device()) {
-		global_status = STATUS_DEVICE_ERROR;
-		return;
-	}
-
-	if (!path || !tp || !ep || r<0) {
-		global_status = STATUS_INVALID_ARGUMENT;
+    if (!picasso::is_valid_system_device()) {
+        global_status = STATUS_DEVICE_ERROR;
         return;
-	}
+    }
 
-	ps_point sp;
-	sp.x = SCALAR_TO_DBL(path->path.last_x());
-	sp.y = SCALAR_TO_DBL(path->path.last_y());
+    if (!path || !tp || !ep || r<0) {
+        global_status = STATUS_INVALID_ARGUMENT;
+        return;
+    }
+
+    ps_point sp;
+    sp.x = SCALAR_TO_DBL(path->path.last_x());
+    sp.y = SCALAR_TO_DBL(path->path.last_y());
     if ((tp->x == sp.x && tp->y == sp.y) || (tp->x == ep->x && tp->y == ep->y) || r == 0.f) {
         ps_path_line_to(path, tp);
-    	global_status = STATUS_SUCCEED;
+        global_status = STATUS_SUCCEED;
         return;
     }
     ps_point p1p0 = {(sp.x - tp->x), (sp.y - tp->y)};
@@ -187,7 +187,7 @@ void PICAPI ps_path_tangent_arc_to(ps_path* path, double r, const ps_point* tp, 
     // all points on a line logic
     if (cos_phi == -1.0) {
         ps_path_line_to(path, tp);
-    	global_status = STATUS_SUCCEED;
+        global_status = STATUS_SUCCEED;
         return;
     }
 
@@ -197,7 +197,7 @@ void PICAPI ps_path_tangent_arc_to(ps_path* path, double r, const ps_point* tp, 
         double factor_max = max_length / p1p0_length;
         ps_point np  = {(sp.x + factor_max * p1p0.x), (sp.y + factor_max * p1p0.y)};
         ps_path_line_to(path, &np);
-    	global_status = STATUS_SUCCEED;
+        global_status = STATUS_SUCCEED;
         return;
     }
 
@@ -214,13 +214,13 @@ void PICAPI ps_path_tangent_arc_to(ps_path* path, double r, const ps_point* tp, 
     double cos_alpha = (orth_p1p0.x * p1p2.x + orth_p1p0.y * p1p2.y) / (orth_p1p0_length * p1p2_length);
     if (cos_alpha < 0.f)
         orth_p1p0.x = -orth_p1p0.x;
-	    orth_p1p0.y = -orth_p1p0.y;
+        orth_p1p0.y = -orth_p1p0.y;
 
     ps_point p = {(t_p1p0.x + factor_ra * orth_p1p0.x), (t_p1p0.y + factor_ra * orth_p1p0.y)};
 
     // calculate angles for addArc
     orth_p1p0.x = -orth_p1p0.x;
-	orth_p1p0.y = -orth_p1p0.y;
+    orth_p1p0.y = -orth_p1p0.y;
     double sa = acos(orth_p1p0.x / orth_p1p0_length);
     if (orth_p1p0.y < 0.f)
         sa = 2 * PI - sa;
@@ -242,28 +242,28 @@ void PICAPI ps_path_tangent_arc_to(ps_path* path, double r, const ps_point* tp, 
 
     ps_path_line_to(path, &t_p1p0);
 
-	ps_path_add_arc(path, &p, r, sa, ea, clockwise);
+    ps_path_add_arc(path, &p, r, sa, ea, clockwise);
     global_status = STATUS_SUCCEED;
 }
 
 void PICAPI ps_path_arc_to(ps_path* path, double rx, double ry, double a, ps_bool large, ps_bool cw, const ps_point* ep)
 {
-	if (!picasso::is_valid_system_device()) {
-		global_status = STATUS_DEVICE_ERROR;
-		return;
-	}
+    if (!picasso::is_valid_system_device()) {
+        global_status = STATUS_DEVICE_ERROR;
+        return;
+    }
 
     if (!path || !ep || rx <= 0.0 || ry <= 0.0) {
-		global_status = STATUS_INVALID_ARGUMENT;
+        global_status = STATUS_INVALID_ARGUMENT;
         return;
     }
 
     scalar x1 = path->path.last_x();
     scalar y1 = path->path.last_y();
 
-	picasso::bezier_arc_svg arc(x1, y1, DBL_TO_SCALAR(rx), DBL_TO_SCALAR(ry), DBL_TO_SCALAR(a), 
+    picasso::bezier_arc_svg arc(x1, y1, DBL_TO_SCALAR(rx), DBL_TO_SCALAR(ry), DBL_TO_SCALAR(a), 
                             (large ? true : false), (cw ? true : false), DBL_TO_SCALAR(ep->x), DBL_TO_SCALAR(ep->y));
-	picasso::conv_curve cr(arc);
+    picasso::conv_curve cr(arc);
     if (_is_closed_path(path->path))
         path->path.concat_path(cr, 0);
     else
@@ -273,13 +273,13 @@ void PICAPI ps_path_arc_to(ps_path* path, double rx, double ry, double a, ps_boo
 
 void PICAPI ps_path_bezier_to(ps_path* path, const ps_point* cp1, const ps_point* cp2, const ps_point* ep)
 {
-	if (!picasso::is_valid_system_device()) {
-		global_status = STATUS_DEVICE_ERROR;
-		return;
-	}
+    if (!picasso::is_valid_system_device()) {
+        global_status = STATUS_DEVICE_ERROR;
+        return;
+    }
 
     if (!path || !cp1 || !cp2 || !ep) {
-		global_status = STATUS_INVALID_ARGUMENT;
+        global_status = STATUS_INVALID_ARGUMENT;
         return;
     }
 
@@ -294,13 +294,13 @@ void PICAPI ps_path_bezier_to(ps_path* path, const ps_point* cp1, const ps_point
 
 void PICAPI ps_path_quad_to(ps_path* path, const ps_point* cp, const ps_point* ep)
 {
-	if (!picasso::is_valid_system_device()) {
-		global_status = STATUS_DEVICE_ERROR;
-		return;
-	}
+    if (!picasso::is_valid_system_device()) {
+        global_status = STATUS_DEVICE_ERROR;
+        return;
+    }
 
     if (!path || !cp || !ep) {
-		global_status = STATUS_INVALID_ARGUMENT;
+        global_status = STATUS_INVALID_ARGUMENT;
         return;
     }
 
@@ -316,13 +316,13 @@ void PICAPI ps_path_quad_to(ps_path* path, const ps_point* cp, const ps_point* e
 
 void PICAPI ps_path_sub_close(ps_path* path)
 {
-	if (!picasso::is_valid_system_device()) {
-		global_status = STATUS_DEVICE_ERROR;
-		return;
-	}
+    if (!picasso::is_valid_system_device()) {
+        global_status = STATUS_DEVICE_ERROR;
+        return;
+    }
 
     if (!path) {
-		global_status = STATUS_INVALID_ARGUMENT;
+        global_status = STATUS_INVALID_ARGUMENT;
         return;
     }
 
@@ -332,13 +332,13 @@ void PICAPI ps_path_sub_close(ps_path* path)
 
 double PICAPI ps_path_get_length(const ps_path* path)
 {
-	if (!picasso::is_valid_system_device()) {
-		global_status = STATUS_DEVICE_ERROR;
-		return (0.0);
-	}
+    if (!picasso::is_valid_system_device()) {
+        global_status = STATUS_DEVICE_ERROR;
+        return (0.0);
+    }
 
     if (!path) {
-		global_status = STATUS_INVALID_ARGUMENT;
+        global_status = STATUS_INVALID_ARGUMENT;
         return (0.0);
     }
 
@@ -348,49 +348,49 @@ double PICAPI ps_path_get_length(const ps_path* path)
 
 unsigned int PICAPI ps_path_get_vertex_count(const ps_path* path)
 {
-	if (!picasso::is_valid_system_device()) {
-		global_status = STATUS_DEVICE_ERROR;
-		return 0;
-	}
+    if (!picasso::is_valid_system_device()) {
+        global_status = STATUS_DEVICE_ERROR;
+        return 0;
+    }
 
     if (!path) {
-		global_status = STATUS_INVALID_ARGUMENT;
+        global_status = STATUS_INVALID_ARGUMENT;
         return 0;
     }
 
     global_status = STATUS_SUCCEED;
-	return path->path.total_vertices();
+    return path->path.total_vertices();
 }
 
 ps_path_cmd PICAPI ps_path_get_vertex(const ps_path* path, unsigned int index, ps_point* point)
 {
-	if (!picasso::is_valid_system_device()) {
-		global_status = STATUS_DEVICE_ERROR;
-		return PATH_CMD_STOP;
-	}
-
-    if (!path || !point || (index > path->path.total_vertices()-1)) {
-		global_status = STATUS_INVALID_ARGUMENT;
+    if (!picasso::is_valid_system_device()) {
+        global_status = STATUS_DEVICE_ERROR;
         return PATH_CMD_STOP;
     }
 
-	scalar x = 0, y = 0;
-	unsigned int cmd = path->path.vertex(index, &x, &y);
-	point->x = SCALAR_TO_DBL(x);
-	point->y = SCALAR_TO_DBL(y);
+    if (!path || !point || (index > path->path.total_vertices()-1)) {
+        global_status = STATUS_INVALID_ARGUMENT;
+        return PATH_CMD_STOP;
+    }
+
+    scalar x = 0, y = 0;
+    unsigned int cmd = path->path.vertex(index, &x, &y);
+    point->x = SCALAR_TO_DBL(x);
+    point->y = SCALAR_TO_DBL(y);
     global_status = STATUS_SUCCEED;
-	return (ps_path_cmd)cmd;
+    return (ps_path_cmd)cmd;
 }
 
 void PICAPI ps_path_clear(ps_path* path)
 {
-	if (!picasso::is_valid_system_device()) {
-		global_status = STATUS_DEVICE_ERROR;
-		return;
-	}
+    if (!picasso::is_valid_system_device()) {
+        global_status = STATUS_DEVICE_ERROR;
+        return;
+    }
 
     if (!path) {
-		global_status = STATUS_INVALID_ARGUMENT;
+        global_status = STATUS_INVALID_ARGUMENT;
         return;
     }
 
@@ -400,13 +400,13 @@ void PICAPI ps_path_clear(ps_path* path)
 
 ps_bool PICAPI ps_path_is_empty(const ps_path* path)
 {
-	if (!picasso::is_valid_system_device()) {
-		global_status = STATUS_DEVICE_ERROR;
-		return False;
-	}
+    if (!picasso::is_valid_system_device()) {
+        global_status = STATUS_DEVICE_ERROR;
+        return False;
+    }
 
     if (!path) {
-		global_status = STATUS_INVALID_ARGUMENT;
+        global_status = STATUS_INVALID_ARGUMENT;
         return False;
     }
 
@@ -417,13 +417,13 @@ ps_bool PICAPI ps_path_is_empty(const ps_path* path)
 ps_rect PICAPI ps_path_bounding_rect(const ps_path* path)
 {
     ps_rect r = {0, 0, 0, 0};
-	if (!picasso::is_valid_system_device()) {
-		global_status = STATUS_DEVICE_ERROR;
-		return r;
-	}
+    if (!picasso::is_valid_system_device()) {
+        global_status = STATUS_DEVICE_ERROR;
+        return r;
+    }
 
     if (!path) {
-		global_status = STATUS_INVALID_ARGUMENT;
+        global_status = STATUS_INVALID_ARGUMENT;
         return r;
     }
     global_status = STATUS_SUCCEED;
@@ -432,25 +432,25 @@ ps_rect PICAPI ps_path_bounding_rect(const ps_path* path)
 
 ps_bool PICAPI ps_path_contains(const ps_path* path, const ps_point* p, ps_fill_rule rule)
 {
-	if (!picasso::is_valid_system_device()) {
-		global_status = STATUS_DEVICE_ERROR;
-		return False;
-	}
+    if (!picasso::is_valid_system_device()) {
+        global_status = STATUS_DEVICE_ERROR;
+        return False;
+    }
 
     if (!path || !p) {
-		global_status = STATUS_INVALID_ARGUMENT;
+        global_status = STATUS_INVALID_ARGUMENT;
         return False;
     }
 
     if (!path->path.total_vertices()) {
-		global_status = STATUS_SUCCEED;
+        global_status = STATUS_SUCCEED;
         return False;
     }
 
     ps_rect br = _path_bounding_rect(path->path);
     if ((p->x < br.x) || (p->y < br.y) || (p->x > (br.x+br.w)) || (p->y > (br.y+br.h))) { 
-		//out of bounding rect
-		global_status = STATUS_SUCCEED;
+        //out of bounding rect
+        global_status = STATUS_SUCCEED;
         return False;
     }
 
@@ -461,13 +461,13 @@ ps_bool PICAPI ps_path_contains(const ps_path* path, const ps_point* p, ps_fill_
 
 void PICAPI ps_path_add_line(ps_path* path, const ps_point* p1, const ps_point* p2)
 {
-	if (!picasso::is_valid_system_device()) {
-		global_status = STATUS_DEVICE_ERROR;
-		return;
-	}
+    if (!picasso::is_valid_system_device()) {
+        global_status = STATUS_DEVICE_ERROR;
+        return;
+    }
 
     if (!path || !p1 || !p2) {
-		global_status = STATUS_INVALID_ARGUMENT;
+        global_status = STATUS_INVALID_ARGUMENT;
         return;
     }
 
@@ -478,18 +478,18 @@ void PICAPI ps_path_add_line(ps_path* path, const ps_point* p1, const ps_point* 
 
 void PICAPI ps_path_add_arc(ps_path* path, const ps_point* cp, double r, double sa, double ea, ps_bool cw)
 {
-	if (!picasso::is_valid_system_device()) {
-		global_status = STATUS_DEVICE_ERROR;
-		return;
-	}
+    if (!picasso::is_valid_system_device()) {
+        global_status = STATUS_DEVICE_ERROR;
+        return;
+    }
 
     if (!path || !cp) {
-		global_status = STATUS_INVALID_ARGUMENT;
+        global_status = STATUS_INVALID_ARGUMENT;
         return;
     }
 
     if (r <= 0.0) {
-    	global_status = STATUS_SUCCEED;
+        global_status = STATUS_SUCCEED;
         return;
     }
 
@@ -505,13 +505,13 @@ void PICAPI ps_path_add_arc(ps_path* path, const ps_point* cp, double r, double 
 
 void PICAPI ps_path_add_rect(ps_path* path, const ps_rect* r)
 {
-	if (!picasso::is_valid_system_device()) {
-		global_status = STATUS_DEVICE_ERROR;
-		return;
-	}
+    if (!picasso::is_valid_system_device()) {
+        global_status = STATUS_DEVICE_ERROR;
+        return;
+    }
 
     if (!path || !r) {
-		global_status = STATUS_INVALID_ARGUMENT;
+        global_status = STATUS_INVALID_ARGUMENT;
         return;
     }
 
@@ -525,13 +525,13 @@ void PICAPI ps_path_add_rect(ps_path* path, const ps_rect* r)
 
 void PICAPI ps_path_add_ellipse(ps_path* path, const ps_rect* r)
 {
-	if (!picasso::is_valid_system_device()) {
-		global_status = STATUS_DEVICE_ERROR;
-		return;
-	}
+    if (!picasso::is_valid_system_device()) {
+        global_status = STATUS_DEVICE_ERROR;
+        return;
+    }
 
     if (!path || !r) {
-		global_status = STATUS_INVALID_ARGUMENT;
+        global_status = STATUS_INVALID_ARGUMENT;
         return;
     }
 
@@ -548,21 +548,21 @@ void PICAPI ps_path_add_ellipse(ps_path* path, const ps_rect* r)
 void PICAPI ps_path_add_rounded_rect(ps_path*path, const ps_rect* r, double ltx, double lty, double rtx, double rty,
                                                                         double lbx, double lby, double rbx, double rby)
 {
-	if (!picasso::is_valid_system_device()) {
-		global_status = STATUS_DEVICE_ERROR;
-		return;
-	}
-
-    if (!path || !r) {
-		global_status = STATUS_INVALID_ARGUMENT;
+    if (!picasso::is_valid_system_device()) {
+        global_status = STATUS_DEVICE_ERROR;
         return;
     }
 
-	picasso::rounded_rect rr;
-	rr.rect(DBL_TO_SCALAR(r->x), DBL_TO_SCALAR(r->y), DBL_TO_SCALAR(r->x+r->w), DBL_TO_SCALAR(r->y+r->h));
-	rr.radius(DBL_TO_SCALAR(ltx), DBL_TO_SCALAR(lty), DBL_TO_SCALAR(rtx), DBL_TO_SCALAR(rty), 
+    if (!path || !r) {
+        global_status = STATUS_INVALID_ARGUMENT;
+        return;
+    }
+
+    picasso::rounded_rect rr;
+    rr.rect(DBL_TO_SCALAR(r->x), DBL_TO_SCALAR(r->y), DBL_TO_SCALAR(r->x+r->w), DBL_TO_SCALAR(r->y+r->h));
+    rr.radius(DBL_TO_SCALAR(ltx), DBL_TO_SCALAR(lty), DBL_TO_SCALAR(rtx), DBL_TO_SCALAR(rty), 
                 DBL_TO_SCALAR(lbx), DBL_TO_SCALAR(lby), DBL_TO_SCALAR(rbx), DBL_TO_SCALAR(rby));
-	rr.normalize_radius();
+    rr.normalize_radius();
     if (_is_closed_path(path->path))
         path->path.concat_path(rr, 0);
     else
@@ -573,29 +573,29 @@ void PICAPI ps_path_add_rounded_rect(ps_path*path, const ps_rect* r, double ltx,
 
 void PICAPI ps_path_clipping(ps_path* r, ps_path_operation op, const ps_path* a, const ps_path* b)
 {
-	if (!picasso::is_valid_system_device()) {
-		global_status = STATUS_DEVICE_ERROR;
-		return;
-	}
-
-	if (!r) {
-		global_status = STATUS_INVALID_ARGUMENT;
+    if (!picasso::is_valid_system_device()) {
+        global_status = STATUS_DEVICE_ERROR;
         return;
-	}
+    }
 
-	if (!a || !a->path.total_vertices() || !_is_closed_path(a->path)) {//invalid a 
-		r->path = b->path;
-    	global_status = STATUS_SUCCEED;
-		return;
-	}
+    if (!r) {
+        global_status = STATUS_INVALID_ARGUMENT;
+        return;
+    }
 
-	if (!b || !b->path.total_vertices() || !_is_closed_path(b->path)) {//invalid b 
-		r->path = a->path;
-    	global_status = STATUS_SUCCEED;
-		return;
-	}
+    if (!a || !a->path.total_vertices() || !_is_closed_path(a->path)) {//invalid a 
+        r->path = b->path;
+        global_status = STATUS_SUCCEED;
+        return;
+    }
 
-	_path_operation((picasso::conv_clipper::clip_op)op, a->path, b->path, r->path);
+    if (!b || !b->path.total_vertices() || !_is_closed_path(b->path)) {//invalid b 
+        r->path = a->path;
+        global_status = STATUS_SUCCEED;
+        return;
+    }
+
+    _path_operation((picasso::conv_clipper::clip_op)op, a->path, b->path, r->path);
 
     global_status = STATUS_SUCCEED;
 }

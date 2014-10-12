@@ -24,29 +24,29 @@ class abstract_font_adapter;
 class device
 {
 public:
-	virtual ~device() {}
+    virtual ~device() {}
 
-	// transform affine interface
-	virtual abstract_trans_affine* create_trans_affine(scalar sx, scalar shy, 
-											scalar shx, scalar sy, scalar tx, scalar ty) = 0;
-	virtual void destroy_trans_affine(abstract_trans_affine* m) = 0;
+    // transform affine interface
+    virtual abstract_trans_affine* create_trans_affine(scalar sx, scalar shy, 
+                                            scalar shx, scalar sy, scalar tx, scalar ty) = 0;
+    virtual void destroy_trans_affine(abstract_trans_affine* m) = 0;
 
-	// painter interface
-	virtual abstract_painter* create_painter(pix_fmt fmt) = 0;
-	virtual void destroy_painter(abstract_painter* p) = 0;
+    // painter interface
+    virtual abstract_painter* create_painter(pix_fmt fmt) = 0;
+    virtual void destroy_painter(abstract_painter* p) = 0;
 
-	// raster adapter
-	virtual abstract_raster_adapter* create_raster_adapter(void) = 0;
-	virtual void destroy_raster_adapter(abstract_raster_adapter* d) = 0;
+    // raster adapter
+    virtual abstract_raster_adapter* create_raster_adapter(void) = 0;
+    virtual void destroy_raster_adapter(abstract_raster_adapter* d) = 0;
 
-	// redering buffer
-	virtual abstract_rendering_buffer* create_rendering_buffer(byte* buf, 
-									unsigned int width, unsigned int height, int stride) = 0;
-	virtual void destroy_rendering_buffer(abstract_rendering_buffer* b) = 0;
+    // redering buffer
+    virtual abstract_rendering_buffer* create_rendering_buffer(byte* buf, 
+                                    unsigned int width, unsigned int height, int stride) = 0;
+    virtual void destroy_rendering_buffer(abstract_rendering_buffer* b) = 0;
 
     // masking layer
     virtual abstract_mask_layer* create_mask_layer(byte* buf,
-									unsigned int width, unsigned int height, int stride) = 0;
+                                    unsigned int width, unsigned int height, int stride) = 0;
     virtual void destroy_mask_layer(abstract_mask_layer* m) = 0;
 
     // gradient adapter
@@ -60,7 +60,7 @@ public:
     virtual void destroy_font_adapter(abstract_font_adapter* f) = 0;
 
 protected:
-	device(){}
+    device(){}
 };
 
 bool _init_system_device(void);

@@ -523,10 +523,10 @@ namespace agg
         int min_y() const { return m_min_y; }
         int max_x() const { return m_max_x; }
         int max_y() const { return m_max_y; }
-		int x() const { return m_dx; }
-		int y() const { return m_dy; }
-		void setX(int x) { m_dx = x; }
-		void setY(int y) { m_dy = y; }
+        int x() const { return m_dx; }
+        int y() const { return m_dy; }
+        void setX(int x) { m_dx = x; }
+        void setY(int y) { m_dy = y; }
 
         //--------------------------------------------------------------------
         template<class Scanline> bool sweep_scanline(Scanline& sl)

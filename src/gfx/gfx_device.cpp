@@ -20,7 +20,7 @@ namespace gfx {
 
 gfx_device* gfx_device::create(void)
 {
-	return new gfx_device;
+    return new gfx_device;
 }
 
 gfx_device::gfx_device()
@@ -32,81 +32,81 @@ gfx_device::~gfx_device()
 }
 
 abstract_trans_affine* gfx_device::create_trans_affine(scalar sx, scalar shy, 
-														scalar shx, scalar sy, scalar tx, scalar ty)
+                                                        scalar shx, scalar sy, scalar tx, scalar ty)
 {
-	return new gfx_trans_affine(sx, shy, shx, sy, tx, ty);
+    return new gfx_trans_affine(sx, shy, shx, sy, tx, ty);
 }
 
 void gfx_device::destroy_trans_affine(abstract_trans_affine* m)
 {
-	delete m;
+    delete m;
 }
 
 abstract_painter* gfx_device::create_painter(pix_fmt fmt)
 {
-	switch (fmt) 
-	{
+    switch (fmt) 
+    {
 #if ENABLE(FORMAT_RGBA)
-		case pix_fmt_rgba:
-			return new gfx_painter<agg::pixfmt_rgba32>;
+        case pix_fmt_rgba:
+            return new gfx_painter<agg::pixfmt_rgba32>;
 #endif
 #if ENABLE(FORMAT_ARGB)
-		case pix_fmt_argb:
-			return new gfx_painter<agg::pixfmt_argb32>;
+        case pix_fmt_argb:
+            return new gfx_painter<agg::pixfmt_argb32>;
 #endif
 #if ENABLE(FORMAT_ABGR)
-		case pix_fmt_abgr:
-			return new gfx_painter<agg::pixfmt_abgr32>;
+        case pix_fmt_abgr:
+            return new gfx_painter<agg::pixfmt_abgr32>;
 #endif
 #if ENABLE(FORMAT_BGRA)
-		case pix_fmt_bgra:
-			return new gfx_painter<agg::pixfmt_bgra32>;
+        case pix_fmt_bgra:
+            return new gfx_painter<agg::pixfmt_bgra32>;
 #endif
 #if ENABLE(FORMAT_RGB)
-		case pix_fmt_rgb:
-			return new gfx_painter<agg::pixfmt_rgb24>;
+        case pix_fmt_rgb:
+            return new gfx_painter<agg::pixfmt_rgb24>;
 #endif
 #if ENABLE(FORMAT_BGR)
-		case pix_fmt_bgr:
-			return new gfx_painter<agg::pixfmt_bgr24>;
+        case pix_fmt_bgr:
+            return new gfx_painter<agg::pixfmt_bgr24>;
 #endif
 #if ENABLE(FORMAT_RGB565)
-		case pix_fmt_rgb565:
-			return new gfx_painter<agg::pixfmt_rgb565>;
+        case pix_fmt_rgb565:
+            return new gfx_painter<agg::pixfmt_rgb565>;
 #endif
 #if ENABLE(FORMAT_RGB555)
-		case pix_fmt_rgb555:
-			return new gfx_painter<agg::pixfmt_rgb555>;
+        case pix_fmt_rgb555:
+            return new gfx_painter<agg::pixfmt_rgb555>;
 #endif
-		default:
-			return 0;
-	}
+        default:
+            return 0;
+    }
 }
 
 void gfx_device::destroy_painter(abstract_painter* p)
 {
-	delete p;
+    delete p;
 }
 
 abstract_raster_adapter* gfx_device::create_raster_adapter(void)
 {
-	return new gfx_raster_adapter;
+    return new gfx_raster_adapter;
 }
 
 void gfx_device::destroy_raster_adapter(abstract_raster_adapter* d)
 {
-	delete d;
+    delete d;
 }
 
 abstract_rendering_buffer* gfx_device::create_rendering_buffer(byte* buf, 
-										unsigned int width, unsigned int height, int stride)
+                                        unsigned int width, unsigned int height, int stride)
 {
-	return new gfx_rendering_buffer(buf, width, height, stride);
+    return new gfx_rendering_buffer(buf, width, height, stride);
 }
 
 void gfx_device::destroy_rendering_buffer(abstract_rendering_buffer* b)
 {
-	delete b;
+    delete b;
 }
 
 abstract_mask_layer* gfx_device::create_mask_layer(byte* buf,

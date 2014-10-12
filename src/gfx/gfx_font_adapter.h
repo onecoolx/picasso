@@ -24,11 +24,11 @@ public:
                     bool italic, bool hint, bool flip, bool antialias, const abstract_trans_affine* mtx);
     virtual ~gfx_font_adapter();
 
-	virtual scalar height(void) const;
-	virtual scalar ascent(void) const;
-	virtual scalar descent(void) const;
-	virtual scalar leading(void) const;
-	virtual unsigned int units_per_em(void) const;
+    virtual scalar height(void) const;
+    virtual scalar ascent(void) const;
+    virtual scalar descent(void) const;
+    virtual scalar leading(void) const;
+    virtual unsigned int units_per_em(void) const;
 
     virtual void active(void);
     virtual void deactive(void);
@@ -50,7 +50,7 @@ public:
 private:
     void load_kerning_pairs(void);
     void sort_kerning_pairs(void);
-	font_adapter_impl* m_impl;
+    font_adapter_impl* m_impl;
 };
 
 }

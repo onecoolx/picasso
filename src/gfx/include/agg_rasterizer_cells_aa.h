@@ -752,7 +752,7 @@ namespace agg
         }
         unsigned num_spans() const { return 1; }
         bool hit() const { return m_hit; }
-		int x() const { return m_x; }
+        int x() const { return m_x; }
     private:
         int  m_x;
         bool m_hit;

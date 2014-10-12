@@ -245,7 +245,7 @@ static fixed pi(3.14159265358979323846);
 
 fixed fixed::fxPI(void)
 {
-	return pi;
+    return pi;
 }
 
 // 2PI
@@ -253,7 +253,7 @@ static fixed pi2(3.14159265358979323846 * 2);
 
 fixed fixed::fxPI2(void)
 {
-	return pi2;
+    return pi2;
 }
 
 // PI/2
@@ -261,50 +261,50 @@ static fixed pid2(3.14159265358979323846 / 2);
 
 fixed fixed::fxPIdiv2(void)
 {
-	return pid2;
+    return pid2;
 }
 
 // 0
 fixed fixed::fixed_0(void)
 {
-	return fixed(0, 0);
+    return fixed(0, 0);
 }
 
 // sin
 fixed sin(fixed r)
 {
-	return cos(fixed::fxPIdiv2() - r);
+    return cos(fixed::fxPIdiv2() - r);
 }
 
 //asin
 fixed asin(fixed x)
 {
-	return fixed::fxPIdiv2() - acos(x);
+    return fixed::fxPIdiv2() - acos(x);
 }
 
 // cos
 fixed cos(fixed r)
 {
-	fixed rd = (r - fixed(((int)(r * pi12))) * fixed::fxPI2());
-	int index = (int)(rd * pi256);
-	return fixed(cos_table[index], 0);
+    fixed rd = (r - fixed(((int)(r * pi12))) * fixed::fxPI2());
+    int index = (int)(rd * pi256);
+    return fixed(cos_table[index], 0);
 }
 
 //acos
 fixed acos(fixed x)
 {
-	if (x < nav_1 || x > num_1)
-		return fixed(FIXED_MIN, 0);
+    if (x < nav_1 || x > num_1)
+        return fixed(FIXED_MIN, 0);
 
-	return fixed(acos_table[(int)((x.data()>>8) + 256)], 0) * pid128;
+    return fixed(acos_table[(int)((x.data()>>8) + 256)], 0) * pid128;
 }
 
 // tan
 fixed tan(fixed r)
 {
-	fixed rd = (r - fixed(((int)(r * pi1))) * fixed::fxPI());
-	int index = (int)(rd * pi256);
-	return fixed(tan_table[index], 0);
+    fixed rd = (r - fixed(((int)(r * pi1))) * fixed::fxPI());
+    int index = (int)(rd * pi256);
+    return fixed(tan_table[index], 0);
 }
 
 // atan
@@ -322,20 +322,20 @@ fixed atan(fixed r)
    } 
 
    do {
-	   c = (a + b) >> 1;
-	   d = fixed(r.data() - tan_table[c], 0);
+       c = (a + b) >> 1;
+       d = fixed(r.data() - tan_table[c], 0);
 
-	   if (d > fixed::fixed_0()) {
-		   a = c + 1;
-	   } else {
-		   if (d < fixed::fixed_0())
-			   b = c - 1;
-	   }
+       if (d > fixed::fixed_0()) {
+           a = c + 1;
+       } else {
+           if (d < fixed::fixed_0())
+               b = c - 1;
+       }
 
    } while ((a <= b) && (d != fixed::fixed_0()));
 
    if (r >= fixed::fixed_0())
-	   return fixed(c) * pid256;
+       return fixed(c) * pid256;
 
    return fixed(c) * pid256 - fixed::fxPI();
 }
@@ -343,18 +343,18 @@ fixed atan(fixed r)
 // atan2
 fixed atan2(fixed y, fixed x)
 {
-	if (x == fixed::fixed_0()) {
-		if (y == fixed::fixed_0())
-			return fixed::fixed_0();
-		else
-			return (y > fixed::fixed_0()) ? fixed::fxPIdiv2() : (fixed::fxPIdiv2() * nav_1);
-	} else {
-		fixed r = fxmath::atan(y / x);
-		if (x >= fixed::fixed_0())
-			return r;
-		
-		return (y >= fixed::fixed_0()) ? (r + fixed::fxPI()) : (r - fixed::fxPI());
-	}
+    if (x == fixed::fixed_0()) {
+        if (y == fixed::fixed_0())
+            return fixed::fixed_0();
+        else
+            return (y > fixed::fixed_0()) ? fixed::fxPIdiv2() : (fixed::fxPIdiv2() * nav_1);
+    } else {
+        fixed r = fxmath::atan(y / x);
+        if (x >= fixed::fixed_0())
+            return r;
+        
+        return (y >= fixed::fixed_0()) ? (r + fixed::fxPI()) : (r - fixed::fxPI());
+    }
 }
 
 //sqrt
@@ -380,7 +380,7 @@ fixed sqrt(fixed x)
     cx &= 0xFE;             /* make result even -->  %cl = 2n */
     xx = x.data() >> cx;               /* shift x to fall into range 0..255 */
 
-   	xx = sqrt_table[xx];     /* table lookup... */
+       xx = sqrt_table[xx];     /* table lookup... */
 
     cx >>= 1;               /* %cl = n */
     xx = xx << cx;               /* multiply `sqrt(x/2^(2n))' by `2^n' */
@@ -391,30 +391,30 @@ fixed sqrt(fixed x)
 //fabs
 fixed fabs(fixed x)
 {
-	// from open skia.
-	register fixed_type mask = x.data() >> (FIXED_BITS-1); 
-	return fixed(((x.data() ^ mask) - mask), 0);
+    // from open skia.
+    register fixed_type mask = x.data() >> (FIXED_BITS-1); 
+    return fixed(((x.data() ^ mask) - mask), 0);
 }
 
 //fmod
 fixed fmod(fixed x, fixed y)
 {
-	// from open skia.
-	register fixed_type x_mask = x.data() >> (FIXED_BITS-1);
-	register fixed_type y_mask = y.data() >> (FIXED_BITS-1);
+    // from open skia.
+    register fixed_type x_mask = x.data() >> (FIXED_BITS-1);
+    register fixed_type y_mask = y.data() >> (FIXED_BITS-1);
 
-	fixed_type numer = (x.data() ^ x_mask) - x_mask; 
-	fixed_type denom = (y.data() ^ y_mask) - y_mask;
+    fixed_type numer = (x.data() ^ x_mask) - x_mask; 
+    fixed_type denom = (y.data() ^ y_mask) - y_mask;
 
-	if (numer < denom) {
-		return fixed(((numer ^ x_mask) - x_mask), 0);
-	} else if (numer == denom) {
-		return fixed::fixed_0();
-	} else {
-		fixed div = fixed(numer, 0) / fixed(denom, 0);
-		fixed pot = fixed(denom, 0) * fixed(div.data() & (((fixed_type)1<<FIXED_Q)-1), 0); 
-		return fixed(((pot.data() ^ x_mask) - x_mask),0);
-	}
+    if (numer < denom) {
+        return fixed(((numer ^ x_mask) - x_mask), 0);
+    } else if (numer == denom) {
+        return fixed::fixed_0();
+    } else {
+        fixed div = fixed(numer, 0) / fixed(denom, 0);
+        fixed pot = fixed(denom, 0) * fixed(div.data() & (((fixed_type)1<<FIXED_Q)-1), 0); 
+        return fixed(((pot.data() ^ x_mask) - x_mask),0);
+    }
 }
 
 }

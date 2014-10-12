@@ -68,72 +68,72 @@ extern "C" {
 
 ps_gradient* PICAPI ps_gradient_create_linear(ps_gradient_spread sp, const ps_point* s, const ps_point* e)
 {
-	if (!picasso::is_valid_system_device()) {
-		global_status = STATUS_DEVICE_ERROR;
-		return 0;
-	}
+    if (!picasso::is_valid_system_device()) {
+        global_status = STATUS_DEVICE_ERROR;
+        return 0;
+    }
 
-	if (!s || !e) {
-		global_status = STATUS_INVALID_ARGUMENT;
-		return 0;
-	}
+    if (!s || !e) {
+        global_status = STATUS_INVALID_ARGUMENT;
+        return 0;
+    }
 
     int spread = SPREAD_PAD;
-	switch (sp) {
-	case GRADIENT_SPREAD_PAD:
+    switch (sp) {
+    case GRADIENT_SPREAD_PAD:
         spread = SPREAD_PAD;
-		break;
-	case GRADIENT_SPREAD_REPEAT:
+        break;
+    case GRADIENT_SPREAD_REPEAT:
         spread = SPREAD_REPEAT;
-		break;
-	case GRADIENT_SPREAD_REFLECT:
+        break;
+    case GRADIENT_SPREAD_REFLECT:
         spread = SPREAD_REFLECT;
-		break;
-	};
+        break;
+    };
 
     scalar x1 = DBL_TO_SCALAR(s->x);
     scalar y1 = DBL_TO_SCALAR(s->y);
     scalar x2 = DBL_TO_SCALAR(e->x);
     scalar y2 = DBL_TO_SCALAR(e->y);
 
-	ps_gradient *p = (ps_gradient*)mem_malloc(sizeof(ps_gradient));
-	if (p) {
+    ps_gradient *p = (ps_gradient*)mem_malloc(sizeof(ps_gradient));
+    if (p) {
         p->refcount = 1;
-		new ((void*)&(p->gradient))picasso::gradient_adapter;
+        new ((void*)&(p->gradient))picasso::gradient_adapter;
         p->gradient.init_linear(spread, x1, y1, x2, y2);
-		global_status = STATUS_SUCCEED;
-		return p;
-	} else {
-		global_status = STATUS_OUT_OF_MEMORY;
-		return 0;
-	}
+        global_status = STATUS_SUCCEED;
+        return p;
+    } else {
+        global_status = STATUS_OUT_OF_MEMORY;
+        return 0;
+    }
 }
 
 ps_gradient* PICAPI ps_gradient_create_radial(ps_gradient_spread sp, const ps_point* s, double sr, 
-																			const ps_point* e, double er)
+                                                                            const ps_point* e, double er)
 {
-	if (!picasso::is_valid_system_device()) {
-		global_status = STATUS_DEVICE_ERROR;
-		return 0;
-	}
+    if (!picasso::is_valid_system_device()) {
+        global_status = STATUS_DEVICE_ERROR;
+        return 0;
+    }
 
-	if (!s || !e) {
-		global_status = STATUS_INVALID_ARGUMENT;
-		return 0;
-	}
+    if (!s || !e) {
+        global_status = STATUS_INVALID_ARGUMENT;
+        return 0;
+    }
 
     int spread = SPREAD_PAD;
-	switch (sp) {
-	case GRADIENT_SPREAD_PAD:
+    switch (sp) {
+    case GRADIENT_SPREAD_PAD:
         spread = SPREAD_PAD;
-		break;
-	case GRADIENT_SPREAD_REPEAT:
+        break;
+    case GRADIENT_SPREAD_REPEAT:
         spread = SPREAD_REPEAT;
-		break;
-	case GRADIENT_SPREAD_REFLECT:
+        break;
+    case GRADIENT_SPREAD_REFLECT:
         spread = SPREAD_REFLECT;
-		break;
-	};
+        break;
+    };
 
     scalar x1 = DBL_TO_SCALAR(s->x);
     scalar y1 = DBL_TO_SCALAR(s->y);
@@ -142,150 +142,150 @@ ps_gradient* PICAPI ps_gradient_create_radial(ps_gradient_spread sp, const ps_po
     scalar y2 = DBL_TO_SCALAR(e->y);
     scalar r2 = DBL_TO_SCALAR(er); 
 
-	ps_gradient *p = (ps_gradient*)mem_malloc(sizeof(ps_gradient));
-	if (p) {
+    ps_gradient *p = (ps_gradient*)mem_malloc(sizeof(ps_gradient));
+    if (p) {
         p->refcount = 1;
-		new ((void*)&(p->gradient))picasso::gradient_adapter;;
+        new ((void*)&(p->gradient))picasso::gradient_adapter;;
         p->gradient.init_radial(spread, x1, y1, r1, x2, y2, r2);
-		global_status = STATUS_SUCCEED;
-		return p;
-	} else {
-		global_status = STATUS_OUT_OF_MEMORY;
-		return 0;
-	}
+        global_status = STATUS_SUCCEED;
+        return p;
+    } else {
+        global_status = STATUS_OUT_OF_MEMORY;
+        return 0;
+    }
 }
 
 ps_gradient* PICAPI ps_gradient_create_conic(ps_gradient_spread sp, const ps_point* o, double a)
 {
-	if (!picasso::is_valid_system_device()) {
-		global_status = STATUS_DEVICE_ERROR;
-		return 0;
-	}
+    if (!picasso::is_valid_system_device()) {
+        global_status = STATUS_DEVICE_ERROR;
+        return 0;
+    }
 
-	if (!o) {
-		global_status = STATUS_INVALID_ARGUMENT;
-		return 0;
-	}
+    if (!o) {
+        global_status = STATUS_INVALID_ARGUMENT;
+        return 0;
+    }
 
     int spread = SPREAD_PAD;
-	switch (sp) {
-	case GRADIENT_SPREAD_PAD:
+    switch (sp) {
+    case GRADIENT_SPREAD_PAD:
         spread = SPREAD_PAD;
-		break;
-	case GRADIENT_SPREAD_REPEAT:
+        break;
+    case GRADIENT_SPREAD_REPEAT:
         spread = SPREAD_REPEAT;
-		break;
-	case GRADIENT_SPREAD_REFLECT:
+        break;
+    case GRADIENT_SPREAD_REFLECT:
         spread = SPREAD_REFLECT;
-		break;
-	};
+        break;
+    };
 
     scalar x = DBL_TO_SCALAR(o->x);
     scalar y = DBL_TO_SCALAR(o->y);
     scalar ca = DBL_TO_SCALAR(a);
 
-	ps_gradient *p = (ps_gradient*)mem_malloc(sizeof(ps_gradient));
-	if (p) {
+    ps_gradient *p = (ps_gradient*)mem_malloc(sizeof(ps_gradient));
+    if (p) {
         p->refcount = 1;
-		new ((void*)&(p->gradient))picasso::gradient_adapter;
-		p->gradient.init_conic(spread, x, y, ca);
-		global_status = STATUS_SUCCEED;
-		return p;
-	} else {
-		global_status = STATUS_OUT_OF_MEMORY;
-		return 0;
-	}
+        new ((void*)&(p->gradient))picasso::gradient_adapter;
+        p->gradient.init_conic(spread, x, y, ca);
+        global_status = STATUS_SUCCEED;
+        return p;
+    } else {
+        global_status = STATUS_OUT_OF_MEMORY;
+        return 0;
+    }
 }
 
 ps_gradient* PICAPI ps_gradient_ref(ps_gradient* g)
 {
-	if (!picasso::is_valid_system_device()) {
-		global_status = STATUS_DEVICE_ERROR;
-		return 0;
-	}
+    if (!picasso::is_valid_system_device()) {
+        global_status = STATUS_DEVICE_ERROR;
+        return 0;
+    }
 
-	if (!g) {
-		global_status = STATUS_INVALID_ARGUMENT;
-		return 0;
-	}
+    if (!g) {
+        global_status = STATUS_INVALID_ARGUMENT;
+        return 0;
+    }
 
-	g->refcount++;
-	global_status = STATUS_SUCCEED;
-	return g;
+    g->refcount++;
+    global_status = STATUS_SUCCEED;
+    return g;
 }
 
 void PICAPI ps_gradient_unref(ps_gradient* g)
 {
-	if (!picasso::is_valid_system_device()) {
-		global_status = STATUS_DEVICE_ERROR;
-		return;
-	}
+    if (!picasso::is_valid_system_device()) {
+        global_status = STATUS_DEVICE_ERROR;
+        return;
+    }
 
-	if (!g) {
-		global_status = STATUS_INVALID_ARGUMENT;
-		return;
-	}
+    if (!g) {
+        global_status = STATUS_INVALID_ARGUMENT;
+        return;
+    }
 
-	g->refcount--;
-	if (g->refcount <= 0) {
-		(&g->gradient)->picasso::gradient_adapter::~gradient_adapter();
-		mem_free(g);
-	}
-	global_status = STATUS_SUCCEED;
+    g->refcount--;
+    if (g->refcount <= 0) {
+        (&g->gradient)->picasso::gradient_adapter::~gradient_adapter();
+        mem_free(g);
+    }
+    global_status = STATUS_SUCCEED;
 }
 
 void PICAPI ps_gradient_clear_color_stops(ps_gradient* g)
 {
-	if (!picasso::is_valid_system_device()) {
-		global_status = STATUS_DEVICE_ERROR;
-		return;
-	}
+    if (!picasso::is_valid_system_device()) {
+        global_status = STATUS_DEVICE_ERROR;
+        return;
+    }
 
-	if (!g) {
-		global_status = STATUS_INVALID_ARGUMENT;
-		return;
-	}
+    if (!g) {
+        global_status = STATUS_INVALID_ARGUMENT;
+        return;
+    }
 
-	g->gradient.clear_stops();
-	global_status = STATUS_SUCCEED;
+    g->gradient.clear_stops();
+    global_status = STATUS_SUCCEED;
 }
 
 void PICAPI ps_gradient_add_color_stop(ps_gradient* g, double off, const ps_color* c)
 {
-	if (!picasso::is_valid_system_device()) {
-		global_status = STATUS_DEVICE_ERROR;
-		return;
-	}
+    if (!picasso::is_valid_system_device()) {
+        global_status = STATUS_DEVICE_ERROR;
+        return;
+    }
 
-	if (!g || !c) {
-		global_status = STATUS_INVALID_ARGUMENT;
-		return;
-	}
+    if (!g || !c) {
+        global_status = STATUS_INVALID_ARGUMENT;
+        return;
+    }
 
-	if (off < 0) 
-		off = 0.0;
-	else if (off > 1)
-		off = 1.0;
+    if (off < 0) 
+        off = 0.0;
+    else if (off > 1)
+        off = 1.0;
 
-	g->gradient.add_color_stop(DBL_TO_SCALAR(off), 
+    g->gradient.add_color_stop(DBL_TO_SCALAR(off), 
                 picasso::rgba(DBL_TO_SCALAR(c->r), DBL_TO_SCALAR(c->g), DBL_TO_SCALAR(c->b), DBL_TO_SCALAR(c->a)));
-	global_status = STATUS_SUCCEED;
+    global_status = STATUS_SUCCEED;
 }
 
 void PICAPI ps_gradient_transform(ps_gradient* g, const ps_matrix* m)
 {
-	if (!picasso::is_valid_system_device()) {
-		global_status = STATUS_DEVICE_ERROR;
-		return;
-	}
+    if (!picasso::is_valid_system_device()) {
+        global_status = STATUS_DEVICE_ERROR;
+        return;
+    }
 
-	if (!g || !m) {
-		global_status = STATUS_INVALID_ARGUMENT;
-		return;
-	}
+    if (!g || !m) {
+        global_status = STATUS_INVALID_ARGUMENT;
+        return;
+    }
 
-	g->gradient.transform(m->matrix);
-	global_status = STATUS_SUCCEED;
+    g->gradient.transform(m->matrix);
+    global_status = STATUS_SUCCEED;
 }
 
 #ifdef __cplusplus

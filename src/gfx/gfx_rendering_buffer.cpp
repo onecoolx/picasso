@@ -14,12 +14,12 @@ gfx_rendering_buffer::gfx_rendering_buffer(byte* ptr, unsigned int width, unsign
     , m_has_colorkey(false)
     , m_colorkey(0,0,0,0)
 {
-	init(ptr, width, height, stride);
+    init(ptr, width, height, stride);
 }
 
 void gfx_rendering_buffer::init(byte* ptr, unsigned int width, unsigned int height, int stride)
 {
-	m_impl.attach(ptr, width, height, stride);
+    m_impl.attach(ptr, width, height, stride);
 }
 
 unsigned int gfx_rendering_buffer::width(void) const

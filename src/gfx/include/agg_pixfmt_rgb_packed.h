@@ -74,11 +74,11 @@ namespace agg
             if(cover < 255)
             {
                 cover = 255 - cover;
-				color_type c = blender_type::make_color(*p);
+                color_type c = blender_type::make_color(*p);
                 c.r = (value_type)((c.r * cover + 255) >> 8);
                 c.g = (value_type)((c.g * cover + 255) >> 8);
                 c.b = (value_type)((c.b * cover + 255) >> 8);
-				*p = blender_type::make_pix(c.r, c.g, c.b);
+                *p = blender_type::make_pix(c.r, c.g, c.b);
             }
             else
             {
@@ -103,11 +103,11 @@ namespace agg
             if(cover < 255)
             {
                 unsigned alpha = 255 - cover;
-				color_type c = blender_type::make_color(*p);
+                color_type c = blender_type::make_color(*p);
                 c.r = (value_type)(((c.r * alpha + 255) >> 8) + ((sr * cover + 255) >> 8));
                 c.g = (value_type)(((c.g * alpha + 255) >> 8) + ((sg * cover + 255) >> 8));
                 c.b = (value_type)(((c.b * alpha + 255) >> 8) + ((sb * cover + 255) >> 8));
-				*p = blender_type::make_pix(c.r, c.g, c.b);
+                *p = blender_type::make_pix(c.r, c.g, c.b);
             }
             else
             {
@@ -159,16 +159,16 @@ namespace agg
                 sb = (sb * cover + 255) >> 8;
                 sa = (sa * cover + 255) >> 8;
             }
-			if (sa < 255)  {
-				calc_type s1a = base_mask - sa;
-				color_type c = blender_type::make_color(*p);
-				c.r = (value_type)(sr + ((c.r * s1a + base_mask) >> base_shift));
-				c.g = (value_type)(sg + ((c.g * s1a + base_mask) >> base_shift));
-				c.b = (value_type)(sb + ((c.b * s1a + base_mask) >> base_shift));
-				*p = blender_type::make_pix(c.r, c.g, c.b);
-			} else { // fast for opaque
-				*p = blender_type::make_pix(sr, sg, sb);
-			}
+            if (sa < 255)  {
+                calc_type s1a = base_mask - sa;
+                color_type c = blender_type::make_color(*p);
+                c.r = (value_type)(sr + ((c.r * s1a + base_mask) >> base_shift));
+                c.g = (value_type)(sg + ((c.g * s1a + base_mask) >> base_shift));
+                c.b = (value_type)(sb + ((c.b * s1a + base_mask) >> base_shift));
+                *p = blender_type::make_pix(c.r, c.g, c.b);
+            } else { // fast for opaque
+                *p = blender_type::make_pix(sr, sg, sb);
+            }
         }
     };
 
@@ -200,11 +200,11 @@ namespace agg
                 sb = (sb * cover + 255) >> 8;
                 sa = (sa * cover + 255) >> 8;
             }
-			color_type c = blender_type::make_color(*p);
+            color_type c = blender_type::make_color(*p);
             c.r = (value_type)(c.r + (base_mask >> base_shift));
             c.g = (value_type)(c.g + (base_mask >> base_shift));
             c.b = (value_type)(c.b + (base_mask >> base_shift));
-			*p = blender_type::make_pix(c.r, c.g, c.b);
+            *p = blender_type::make_pix(c.r, c.g, c.b);
         }
     };
 
@@ -230,7 +230,7 @@ namespace agg
                                          unsigned sa, unsigned cover)
         {
             calc_type da = base_mask;
-			color_type c = blender_type::make_color(*p);
+            color_type c = blender_type::make_color(*p);
             if(cover < 255)
             {
                 unsigned alpha = 255 - cover;
@@ -244,7 +244,7 @@ namespace agg
                 c.g = (value_type)((sg * da + base_mask) >> base_shift);
                 c.b = (value_type)((sb * da + base_mask) >> base_shift);
             }
-			*p = blender_type::make_pix(c.r, c.g, c.b);
+            *p = blender_type::make_pix(c.r, c.g, c.b);
         }
     };
 
@@ -273,11 +273,11 @@ namespace agg
             {
                 sa = base_mask - ((cover * (base_mask - sa) + 255) >> 8);
             }
-			color_type c = blender_type::make_color(*p);
+            color_type c = blender_type::make_color(*p);
             c.r = (value_type)((c.r * sa + base_mask) >> base_shift);
             c.g = (value_type)((c.g * sa + base_mask) >> base_shift);
             c.b = (value_type)((c.b * sa + base_mask) >> base_shift);
-			*p = blender_type::make_pix(c.r, c.g, c.b);
+            *p = blender_type::make_pix(c.r, c.g, c.b);
         }
     };
 
@@ -303,7 +303,7 @@ namespace agg
                                          unsigned sa, unsigned cover)
         {
             calc_type da = 0;
-			color_type c = blender_type::make_color(*p);
+            color_type c = blender_type::make_color(*p);
             if(cover < 255)
             {
                 unsigned alpha = 255 - cover;
@@ -317,7 +317,7 @@ namespace agg
                 c.g = (value_type)((sg * da + base_mask) >> base_shift);
                 c.b = (value_type)((sb * da + base_mask) >> base_shift);
             }
-			*p = blender_type::make_pix(c.r, c.g, c.b);
+            *p = blender_type::make_pix(c.r, c.g, c.b);
         }
     };
 
@@ -347,11 +347,11 @@ namespace agg
                 sa = (sa * cover + 255) >> 8;
             }
             sa = base_mask - sa;
-			color_type c = blender_type::make_color(*p);
+            color_type c = blender_type::make_color(*p);
             c.r = (value_type)((c.r * sa + base_shift) >> base_shift);
             c.g = (value_type)((c.g * sa + base_shift) >> base_shift);
             c.b = (value_type)((c.b * sa + base_shift) >> base_shift);
-			*p = blender_type::make_pix(c.r, c.g, c.b);
+            *p = blender_type::make_pix(c.r, c.g, c.b);
         }
     };
 
@@ -385,11 +385,11 @@ namespace agg
             }
             calc_type da = base_mask;
             sa = base_mask - sa;
-			color_type c = blender_type::make_color(*p);
+            color_type c = blender_type::make_color(*p);
             c.r = (value_type)((sr * da + c.r * sa + base_mask) >> base_shift);
             c.g = (value_type)((sg * da + c.g * sa + base_mask) >> base_shift);
             c.b = (value_type)((sb * da + c.b * sa + base_mask) >> base_shift);
-			*p = blender_type::make_pix(c.r, c.g, c.b);
+            *p = blender_type::make_pix(c.r, c.g, c.b);
         }
     };
 
@@ -415,7 +415,7 @@ namespace agg
                                          unsigned sa, unsigned cover)
         {
             calc_type da = 0;
-			color_type c = blender_type::make_color(*p);
+            color_type c = blender_type::make_color(*p);
             if(cover < 255)
             {
                 unsigned alpha = 255 - cover;
@@ -433,7 +433,7 @@ namespace agg
                 c.g = (value_type)((c.g * sa + sg * da + base_mask) >> base_shift);
                 c.b = (value_type)((c.b * sa + sb * da + base_mask) >> base_shift);
             }
-			*p = blender_type::make_pix(c.r, c.g, c.b);
+            *p = blender_type::make_pix(c.r, c.g, c.b);
         }
     };
 
@@ -469,11 +469,11 @@ namespace agg
             {
                 calc_type s1a = base_mask - sa;
                 calc_type d1a = 0;
-				color_type c = blender_type::make_color(*p);
+                color_type c = blender_type::make_color(*p);
                 c.r = (value_type)((c.r * s1a + sr * d1a + base_mask) >> base_shift);
                 c.g = (value_type)((c.g * s1a + sg * d1a + base_mask) >> base_shift);
                 c.b = (value_type)((c.b * s1a + sb * d1a + base_mask) >> base_shift);
-				*p = blender_type::make_pix(c.r, c.g, c.b);
+                *p = blender_type::make_pix(c.r, c.g, c.b);
             }
         }
     };
@@ -508,14 +508,14 @@ namespace agg
             }
             if(sa)
             {
-				color_type c = blender_type::make_color(*p);
+                color_type c = blender_type::make_color(*p);
                 calc_type dr = c.r + sr;
                 calc_type dg = c.g + sg;
                 calc_type db = c.b + sb;
                 c.r = (dr > base_mask) ? (value_type)base_mask : dr;
                 c.g = (dg > base_mask) ? (value_type)base_mask : dg;
                 c.b = (db > base_mask) ? (value_type)base_mask : db;
-				*p = blender_type::make_pix(c.r, c.g, c.b);
+                *p = blender_type::make_pix(c.r, c.g, c.b);
             }
         }
     };
@@ -550,14 +550,14 @@ namespace agg
             }
             if(sa)
             {
-				color_type c = blender_type::make_color(*p);
+                color_type c = blender_type::make_color(*p);
                 calc_type dr = c.r - sr;
                 calc_type dg = c.g - sg;
                 calc_type db = c.b - sb;
                 c.r = (dr > base_mask) ? 0 : dr;
                 c.g = (dg > base_mask) ? 0 : dg;
                 c.b = (db > base_mask) ? 0 : db;
-				*p = blender_type::make_pix(c.r, c.g, c.b);
+                *p = blender_type::make_pix(c.r, c.g, c.b);
             }
         }
     };
@@ -592,7 +592,7 @@ namespace agg
             }
             if(sa)
             {
-				color_type c = blender_type::make_color(*p);
+                color_type c = blender_type::make_color(*p);
                 calc_type s1a = base_mask - sa;
                 calc_type d1a = 0;
                 calc_type dr = c.r;
@@ -601,7 +601,7 @@ namespace agg
                 c.r = (value_type)((sr * dr + sr * d1a + dr * s1a + base_mask) >> base_shift);
                 c.g = (value_type)((sg * dg + sg * d1a + dg * s1a + base_mask) >> base_shift);
                 c.b = (value_type)((sb * db + sb * d1a + db * s1a + base_mask) >> base_shift);
-				*p = blender_type::make_pix(c.r, c.g, c.b);
+                *p = blender_type::make_pix(c.r, c.g, c.b);
             }
         }
     };
@@ -636,14 +636,14 @@ namespace agg
             }
             if(sa)
             {
-				color_type c = blender_type::make_color(*p);
+                color_type c = blender_type::make_color(*p);
                 calc_type dr = c.r;
                 calc_type dg = c.g;
                 calc_type db = c.b;
                 c.r = (value_type)(sr + dr - ((sr * dr + base_mask) >> base_shift));
                 c.g = (value_type)(sg + dg - ((sg * dg + base_mask) >> base_shift));
                 c.b = (value_type)(sb + db - ((sb * db + base_mask) >> base_shift));
-				*p = blender_type::make_pix(c.r, c.g, c.b);
+                *p = blender_type::make_pix(c.r, c.g, c.b);
             }
         }
     };
@@ -683,7 +683,7 @@ namespace agg
 
             if(sa)
             {
-				color_type c = blender_type::make_color(*p);
+                color_type c = blender_type::make_color(*p);
                 calc_type d1a  = 0;
                 calc_type s1a  = base_mask - sa;
                 calc_type dr   = c.r;
@@ -703,7 +703,7 @@ namespace agg
                 c.b = (value_type)(((2*db < da) ? 
                     2*sb*db + sb*d1a + db*s1a : 
                     sada - 2*(da - db)*(sa - sb) + sb*d1a + db*s1a + base_mask) >> base_shift);
-				*p = blender_type::make_pix(c.r, c.g, c.b);
+                *p = blender_type::make_pix(c.r, c.g, c.b);
             }
         }
     };
@@ -738,7 +738,7 @@ namespace agg
             }
             if(sa)
             {
-				color_type c = blender_type::make_color(*p);
+                color_type c = blender_type::make_color(*p);
                 calc_type d1a = 0;
                 calc_type s1a = base_mask - sa;
                 calc_type dr  = c.r;
@@ -749,7 +749,7 @@ namespace agg
                 c.r = (value_type)((sd_min(sr * da, dr * sa) + sr * d1a + dr * s1a + base_mask) >> base_shift);
                 c.g = (value_type)((sd_min(sg * da, dg * sa) + sg * d1a + dg * s1a + base_mask) >> base_shift);
                 c.b = (value_type)((sd_min(sb * da, db * sa) + sb * d1a + db * s1a + base_mask) >> base_shift);
-				*p = blender_type::make_pix(c.r, c.g, c.b);
+                *p = blender_type::make_pix(c.r, c.g, c.b);
             }
         }
     };
@@ -784,7 +784,7 @@ namespace agg
             }
             if(sa)
             {
-				color_type c = blender_type::make_color(*p);
+                color_type c = blender_type::make_color(*p);
                 calc_type d1a = 0;
                 calc_type s1a = base_mask - sa;
                 calc_type dr  = c.r;
@@ -795,7 +795,7 @@ namespace agg
                 c.r = (value_type)((sd_max(sr * da, dr * sa) + sr * d1a + dr * s1a + base_mask) >> base_shift);
                 c.g = (value_type)((sd_max(sg * da, dg * sa) + sg * d1a + dg * s1a + base_mask) >> base_shift);
                 c.b = (value_type)((sd_max(sb * da, db * sa) + sb * d1a + db * s1a + base_mask) >> base_shift);
-				*p = blender_type::make_pix(c.r, c.g, c.b);
+                *p = blender_type::make_pix(c.r, c.g, c.b);
             }
         }
     };
@@ -835,7 +835,7 @@ namespace agg
             }
             if(sa)
             {
-				color_type c = blender_type::make_color(*p);
+                color_type c = blender_type::make_color(*p);
                 calc_type d1a  = 0;
                 calc_type s1a  = base_mask - sa;
                 calc_type dr   = c.r;
@@ -861,7 +861,7 @@ namespace agg
                 c.b = (value_type)((sbda + dbsa >= sada) ? 
                     (sada + sb * d1a + db * s1a + base_mask) >> base_shift :
                     dbsa / (base_mask - (sb << base_shift) / sa) + ((sb * d1a + db * s1a + base_mask) >> base_shift));
-				*p = blender_type::make_pix(c.r, c.g, c.b);
+                *p = blender_type::make_pix(c.r, c.g, c.b);
             }
         }
     };
@@ -901,7 +901,7 @@ namespace agg
             }
             if(sa)
             {
-				color_type c = blender_type::make_color(*p);
+                color_type c = blender_type::make_color(*p);
                 calc_type d1a  = 0;
                 calc_type s1a  = base_mask - sa;
                 calc_type dr   = c.r;
@@ -927,7 +927,7 @@ namespace agg
                 c.b = (value_type)(((sbda + dbsa <= sada) ? 
                     sb * d1a + db * s1a :
                     sa * (sbda + dbsa - sada) / sb + sb * d1a + db * s1a + base_mask) >> base_shift);
-				*p = blender_type::make_pix(c.r, c.g, c.b);
+                *p = blender_type::make_pix(c.r, c.g, c.b);
             }
         }
     };
@@ -967,7 +967,7 @@ namespace agg
             }
             if(sa)
             {
-				color_type c = blender_type::make_color(*p);
+                color_type c = blender_type::make_color(*p);
                 calc_type d1a  = 0;
                 calc_type s1a  = base_mask - sa;
                 calc_type dr   = c.r;
@@ -987,7 +987,7 @@ namespace agg
                 c.b = (value_type)(((2*sb < sa) ? 
                     2*sb*db + sb*d1a + db*s1a : 
                     sada - 2*(da - db)*(sa - sb) + sb*d1a + db*s1a + base_mask) >> base_shift);
-				*p = blender_type::make_pix(c.r, c.g, c.b);
+                *p = blender_type::make_pix(c.r, c.g, c.b);
             }
         }
     };
@@ -1027,7 +1027,7 @@ namespace agg
             float sa = float(a * cover) / (base_mask * 255);
             if(sa > 0)
             {
-				color_type c = blender_type::make_color(*p);
+                color_type c = blender_type::make_color(*p);
                 float dr = float(c.r) / base_mask;
                 float dg = float(c.g) / base_mask;
                 float db = float(c.b) / base_mask;
@@ -1052,7 +1052,7 @@ namespace agg
                 c.r = (value_type)uround(dr * base_mask);
                 c.g = (value_type)uround(dg * base_mask);
                 c.b = (value_type)uround(db * base_mask);
-				*p = blender_type::make_pix(c.r, c.g, c.b);
+                *p = blender_type::make_pix(c.r, c.g, c.b);
             }
         }
     };
@@ -1089,7 +1089,7 @@ namespace agg
             }
             if(sa)
             {
-				color_type c = blender_type::make_color(*p);
+                color_type c = blender_type::make_color(*p);
                 calc_type dr = c.r;
                 calc_type dg = c.g;
                 calc_type db = c.b;
@@ -1097,7 +1097,7 @@ namespace agg
                 c.r = (value_type)(sr + dr - ((2 * sd_min(sr*da, dr*sa) + base_mask) >> base_shift));
                 c.g = (value_type)(sg + dg - ((2 * sd_min(sg*da, dg*sa) + base_mask) >> base_shift));
                 c.b = (value_type)(sb + db - ((2 * sd_min(sb*da, db*sa) + base_mask) >> base_shift));
-				*p = blender_type::make_pix(c.r, c.g, c.b);
+                *p = blender_type::make_pix(c.r, c.g, c.b);
             }
         }
     };
@@ -1133,7 +1133,7 @@ namespace agg
             }
             if(sa)
             {
-				color_type c = blender_type::make_color(*p);
+                color_type c = blender_type::make_color(*p);
                 calc_type d1a = 0;
                 calc_type s1a = base_mask - sa;
                 calc_type dr = c.r;
@@ -1143,7 +1143,7 @@ namespace agg
                 c.r = (value_type)((sr*da + dr*sa - 2*sr*dr + sr*d1a + dr*s1a + base_mask) >> base_shift);
                 c.g = (value_type)((sg*da + dg*sa - 2*sg*dg + sg*d1a + dg*s1a + base_mask) >> base_shift);
                 c.b = (value_type)((sb*da + db*sa - 2*sb*db + sb*d1a + db*s1a + base_mask) >> base_shift);
-				*p = blender_type::make_pix(c.r, c.g, c.b);
+                *p = blender_type::make_pix(c.r, c.g, c.b);
             }
         }
     };
@@ -1176,7 +1176,7 @@ namespace agg
                 sb = (sb * cover + 255) >> 8;
                 sa = (sa * cover + 255) >> 8;
             }
-			color_type c = blender_type::make_color(*p);
+            color_type c = blender_type::make_color(*p);
             long_type dr = c.r;
             long_type dg = c.g;
             long_type db = c.b;
@@ -1195,7 +1195,7 @@ namespace agg
             c.r = (value_type)((r > da) ? da : r);
             c.g = (value_type)((g > da) ? da : g);
             c.b = (value_type)((b > da) ? da : b);
-			*p = blender_type::make_pix(c.r, c.g, c.b);
+            *p = blender_type::make_pix(c.r, c.g, c.b);
         }
     };
 
@@ -1224,7 +1224,7 @@ namespace agg
             sa = (sa * cover + 255) >> 8;
             if(sa)
             {
-				color_type c = blender_type::make_color(*p);
+                color_type c = blender_type::make_color(*p);
                 calc_type da = base_mask;
                 calc_type dr = ((da - c.r) * sa + base_mask) >> base_shift;
                 calc_type dg = ((da - c.g) * sa + base_mask) >> base_shift;
@@ -1233,7 +1233,7 @@ namespace agg
                 c.r = (value_type)(dr + ((c.r * s1a + base_mask) >> base_shift));
                 c.g = (value_type)(dg + ((c.g * s1a + base_mask) >> base_shift));
                 c.b = (value_type)(db + ((c.b * s1a + base_mask) >> base_shift));
-				*p = blender_type::make_pix(c.r, c.g, c.b);
+                *p = blender_type::make_pix(c.r, c.g, c.b);
             }
         }
     };
@@ -1269,7 +1269,7 @@ namespace agg
             }
             if(sa)
             {
-				color_type c = blender_type::make_color(*p);
+                color_type c = blender_type::make_color(*p);
                 calc_type da = base_mask;
                 calc_type dr = ((da - c.r) * sr + base_mask) >> base_shift;
                 calc_type dg = ((da - c.g) * sg + base_mask) >> base_shift;
@@ -1278,7 +1278,7 @@ namespace agg
                 c.r = (value_type)(dr + ((c.r * s1a + base_mask) >> base_shift));
                 c.g = (value_type)(dg + ((c.g * s1a + base_mask) >> base_shift));
                 c.b = (value_type)(db + ((c.b * s1a + base_mask) >> base_shift));
-				*p = blender_type::make_pix(c.r, c.g, c.b);
+                *p = blender_type::make_pix(c.r, c.g, c.b);
             }
         }
     };
@@ -1621,11 +1621,11 @@ namespace agg
         //--------------------------------------------------------------------
         pixfmt_alpha_blend_comp_rgb_packed() : m_rbuf(0), m_comp_op(comp_op_src_over), alpha_seed(base_mask) {}
         explicit pixfmt_alpha_blend_comp_rgb_packed(rbuf_type& rb,
-													unsigned comp_op=comp_op_src_over,unsigned alpha=base_mask)
-		   	: m_rbuf(&rb),
+                                                    unsigned comp_op=comp_op_src_over,unsigned alpha=base_mask)
+               : m_rbuf(&rb),
             m_comp_op(comp_op),
-			alpha_seed(alpha) 
-		{}
+            alpha_seed(alpha) 
+        {}
         void attach(rbuf_type& rb) { m_rbuf = &rb; }
 
         //--------------------------------------------------------------------
@@ -1655,12 +1655,12 @@ namespace agg
         AGG_INLINE const int8u* row_ptr(int y) const { return m_rbuf->row_ptr(y); }
         AGG_INLINE row_data     row(int y)     const { return m_rbuf->row(y); }
 
-		AGG_INLINE void alpha(float a) { alpha_seed = uround(a * base_mask); }
-		AGG_INLINE float alpha() const { return (float)alpha_seed / 255.0; }
-		AGG_INLINE unsigned alpha_mul(unsigned a, unsigned s)
-		{
-			return (s == 255) ? a : ((a * s + base_mask) >> base_shift);
-		}
+        AGG_INLINE void alpha(float a) { alpha_seed = uround(a * base_mask); }
+        AGG_INLINE float alpha() const { return (float)alpha_seed / 255.0; }
+        AGG_INLINE unsigned alpha_mul(unsigned a, unsigned s)
+        {
+            return (s == 255) ? a : ((a * s + base_mask) >> base_shift);
+        }
         //--------------------------------------------------------------------
         AGG_INLINE int8u* pix_ptr(int x, int y)
         {
@@ -2002,9 +2002,9 @@ namespace agg
                 {
                     const color_type& color = color_lut[*psrc];
                     blender_type::blend_pix(m_comp_op,
-											pdst, 
-                                        	color.r, color.g, color.b, (value_type)alpha_mul(color.a, alpha_seed),
-                                        	cover);
+                                            pdst, 
+                                            color.r, color.g, color.b, (value_type)alpha_mul(color.a, alpha_seed),
+                                            cover);
                     ++psrc;
                     ++pdst;
                 }
@@ -2015,7 +2015,7 @@ namespace agg
     private:
         rbuf_type* m_rbuf;
         unsigned m_comp_op;
-		unsigned alpha_seed;
+        unsigned alpha_seed;
     };
 
 

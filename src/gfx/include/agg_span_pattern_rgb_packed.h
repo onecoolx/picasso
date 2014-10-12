@@ -46,7 +46,7 @@ namespace agg
         typedef Source source_type;
         typedef typename source_type::color_type color_type;
         typedef typename source_type::order_type order_type;
-		typedef typename source_type::pixel_type pixel_type;
+        typedef typename source_type::pixel_type pixel_type;
         typedef typename color_type::value_type value_type;
         typedef typename color_type::calc_type calc_type;
 
@@ -81,15 +81,15 @@ namespace agg
             y += m_offset_y;
             const value_type* p = (const value_type*)m_src->span(x, y, len);
             pixel_type rgb_pixel;
-			pixel_type seed = 0;
-			pixel_type r_mask = ((~seed)>>(order_type::G + order_type::B))<<(order_type::G + order_type::B);
-			pixel_type g_mask = (((~seed)&(~r_mask))>>(order_type::B))<<(order_type::B);
-			pixel_type b_mask = ((~seed)&(~(r_mask|g_mask)));
+            pixel_type seed = 0;
+            pixel_type r_mask = ((~seed)>>(order_type::G + order_type::B))<<(order_type::G + order_type::B);
+            pixel_type g_mask = (((~seed)&(~r_mask))>>(order_type::B))<<(order_type::B);
+            pixel_type b_mask = ((~seed)&(~(r_mask|g_mask)));
             do
             {
-            	rgb_pixel = *reinterpret_cast<const pixel_type*>(p);
+                rgb_pixel = *reinterpret_cast<const pixel_type*>(p);
                 span->r = (rgb_pixel&r_mask)>>(color_type::base_shift-
-										(16-order_type::R-order_type::G-order_type::B));
+                                        (16-order_type::R-order_type::G-order_type::B));
                 span->g = (rgb_pixel&g_mask) >> (order_type::G+order_type::B-color_type::base_shift);
                 span->b = (rgb_pixel&b_mask) << (color_type::base_shift-order_type::B);
                 span->a = m_alpha;

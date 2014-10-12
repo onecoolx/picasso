@@ -101,18 +101,18 @@ namespace agg
         typedef ColorT      color_type;
         typedef CalculatorT calculator_type;
 
-		stack_blur()
-		{
-			m_shading.r = m_shading.g = m_shading.b = m_shading.a = 0;
-		}
+        stack_blur()
+        {
+            m_shading.r = m_shading.g = m_shading.b = m_shading.a = 0;
+        }
 
-		void set_shading(const color_type& c)
-		{
-			m_shading.r = c.r;
-			m_shading.g = c.g;
-			m_shading.b = c.b;
-			m_shading.a = 0;
-		}
+        void set_shading(const color_type& c)
+        {
+            m_shading.r = c.r;
+            m_shading.g = c.g;
+            m_shading.b = c.b;
+            m_shading.a = 0;
+        }
 
         //--------------------------------------------------------------------
         template<class Img> void blur_x(Img& img, unsigned radius)
@@ -187,14 +187,14 @@ namespace agg
                     if(xp > wm) xp = wm;
                     pix = img.pixel(xp, y);
 
-					if((pix.r==0) && (pix.g==0)
-					  && (pix.b==0) && (pix.a==0))
-					{
-						pix.r = m_shading.r;
-						pix.g = m_shading.g;
-						pix.b = m_shading.b;
-						pix.a = m_shading.a;
-					}
+                    if((pix.r==0) && (pix.g==0)
+                      && (pix.b==0) && (pix.a==0))
+                    {
+                        pix.r = m_shading.r;
+                        pix.g = m_shading.g;
+                        pix.b = m_shading.b;
+                        pix.a = m_shading.a;
+                    }
             
                     *stack_pix = pix;
             
@@ -228,7 +228,7 @@ namespace agg
         }
 
     private:
-		color_type m_shading;
+        color_type m_shading;
         pod_vector<color_type> m_buf;
         pod_vector<color_type> m_stack;
     };

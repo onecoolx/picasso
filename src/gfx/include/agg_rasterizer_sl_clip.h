@@ -39,7 +39,7 @@ namespace agg
     struct ras_conv_int
     {
         typedef int coord_type;
-		typedef float scale_type;
+        typedef float scale_type;
         static AGG_INLINE int mul_div(float a, float b, float c)
         {
             return iround(a * b / c);
@@ -54,7 +54,7 @@ namespace agg
     struct ras_conv_int_sat
     {
         typedef int coord_type;
-		typedef float scale_type;
+        typedef float scale_type;
         static AGG_INLINE int mul_div(float a, float b, float c)
         {
             return saturation<poly_max_coord>::iround(a * b / c);
@@ -72,7 +72,7 @@ namespace agg
     struct ras_conv_int_3x
     {
         typedef int coord_type;
-		typedef float scale_type;
+        typedef float scale_type;
         static AGG_INLINE int mul_div(float a, float b, float c)
         {
             return iround(a * b / c);
@@ -87,7 +87,7 @@ namespace agg
     struct ras_conv_dbl
     {
         typedef float coord_type;
-		typedef float scale_type;
+        typedef float scale_type;
         static AGG_INLINE float mul_div(float a, float b, float c)
         {
             return a * b / c;
@@ -102,7 +102,7 @@ namespace agg
     struct ras_conv_dbl_3x
     {
         typedef float coord_type;
-		typedef float scale_type;
+        typedef float scale_type;
         static AGG_INLINE float mul_div(float a, float b, float c)
         {
             return a * b / c;
@@ -188,28 +188,28 @@ namespace agg
                 if(f1 & 8) // y1 < clip.y1
                 {
                     tx1 = x1 + Conv::mul_div(scale_type(m_clip_box.y1-y1), 
-										scale_type(x2-x1), scale_type(y2-y1));
+                                        scale_type(x2-x1), scale_type(y2-y1));
                     ty1 = m_clip_box.y1;
                 }
 
                 if(f1 & 2) // y1 > clip.y2
                 {
                     tx1 = x1 + Conv::mul_div(scale_type(m_clip_box.y2-y1),
-						   				scale_type(x2-x1), scale_type(y2-y1));
+                                           scale_type(x2-x1), scale_type(y2-y1));
                     ty1 = m_clip_box.y2;
                 }
 
                 if(f2 & 8) // y2 < clip.y1
                 {
                     tx2 = x1 + Conv::mul_div(scale_type(m_clip_box.y1-y1),
-						   				scale_type(x2-x1), scale_type(y2-y1));
+                                           scale_type(x2-x1), scale_type(y2-y1));
                     ty2 = m_clip_box.y1;
                 }
 
                 if(f2 & 2) // y2 > clip.y2
                 {
                     tx2 = x1 + Conv::mul_div(scale_type(m_clip_box.y2-y1),
-						   				scale_type(x2-x1), scale_type(y2-y1));
+                                           scale_type(x2-x1), scale_type(y2-y1));
                     ty2 = m_clip_box.y2;
                 }
                 ras.line(Conv::xi(tx1), Conv::yi(ty1), 
@@ -250,7 +250,7 @@ namespace agg
 
                 case 1: // x2 > clip.x2
                     y3 = y1 + Conv::mul_div(scale_type(m_clip_box.x2-x1), 
-									scale_type(y2-y1), scale_type(x2-x1));
+                                    scale_type(y2-y1), scale_type(x2-x1));
                     f3 = clipping_flags_y(y3, m_clip_box);
                     line_clip_y(ras, x1, y1, m_clip_box.x2, y3, f1, f3);
                     line_clip_y(ras, m_clip_box.x2, y3, m_clip_box.x2, y2, f3, f2);
@@ -258,7 +258,7 @@ namespace agg
 
                 case 2: // x1 > clip.x2
                     y3 = y1 + Conv::mul_div(scale_type(m_clip_box.x2-x1), 
-									scale_type(y2-y1), scale_type(x2-x1));
+                                    scale_type(y2-y1), scale_type(x2-x1));
                     f3 = clipping_flags_y(y3, m_clip_box);
                     line_clip_y(ras, m_clip_box.x2, y1, m_clip_box.x2, y3, f1, f3);
                     line_clip_y(ras, m_clip_box.x2, y3, x2, y2, f3, f2);
@@ -270,7 +270,7 @@ namespace agg
 
                 case 4: // x2 < clip.x1
                     y3 = y1 + Conv::mul_div(scale_type(m_clip_box.x1-x1), 
-									scale_type(y2-y1), scale_type(x2-x1));
+                                    scale_type(y2-y1), scale_type(x2-x1));
                     f3 = clipping_flags_y(y3, m_clip_box);
                     line_clip_y(ras, x1, y1, m_clip_box.x1, y3, f1, f3);
                     line_clip_y(ras, m_clip_box.x1, y3, m_clip_box.x1, y2, f3, f2);
@@ -278,9 +278,9 @@ namespace agg
 
                 case 6: // x1 > clip.x2 && x2 < clip.x1
                     y3 = y1 + Conv::mul_div(scale_type(m_clip_box.x2-x1), 
-									scale_type(y2-y1), scale_type(x2-x1));
+                                    scale_type(y2-y1), scale_type(x2-x1));
                     y4 = y1 + Conv::mul_div(scale_type(m_clip_box.x1-x1), 
-									scale_type(y2-y1), scale_type(x2-x1));
+                                    scale_type(y2-y1), scale_type(x2-x1));
                     f3 = clipping_flags_y(y3, m_clip_box);
                     f4 = clipping_flags_y(y4, m_clip_box);
                     line_clip_y(ras, m_clip_box.x2, y1, m_clip_box.x2, y3, f1, f3);
@@ -290,7 +290,7 @@ namespace agg
 
                 case 8: // x1 < clip.x1
                     y3 = y1 + Conv::mul_div(scale_type(m_clip_box.x1-x1), 
-									scale_type(y2-y1), scale_type(x2-x1));
+                                    scale_type(y2-y1), scale_type(x2-x1));
                     f3 = clipping_flags_y(y3, m_clip_box);
                     line_clip_y(ras, m_clip_box.x1, y1, m_clip_box.x1, y3, f1, f3);
                     line_clip_y(ras, m_clip_box.x1, y3, x2, y2, f3, f2);
@@ -298,9 +298,9 @@ namespace agg
 
                 case 9:  // x1 < clip.x1 && x2 > clip.x2
                     y3 = y1 + Conv::mul_div(scale_type(m_clip_box.x1-x1), 
-									scale_type(y2-y1), scale_type(x2-x1));
+                                    scale_type(y2-y1), scale_type(x2-x1));
                     y4 = y1 + Conv::mul_div(scale_type(m_clip_box.x2-x1), 
-									scale_type(y2-y1), scale_type(x2-x1));
+                                    scale_type(y2-y1), scale_type(x2-x1));
                     f3 = clipping_flags_y(y3, m_clip_box);
                     f4 = clipping_flags_y(y4, m_clip_box);
                     line_clip_y(ras, m_clip_box.x1, y1, m_clip_box.x1, y3, f1, f3);

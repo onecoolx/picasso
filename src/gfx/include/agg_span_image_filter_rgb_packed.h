@@ -48,7 +48,7 @@ namespace agg
         typedef Source source_type;
         typedef typename source_type::color_type color_type;
         typedef typename source_type::order_type order_type;
-		typedef typename source_type::pixel_type pixel_type;
+        typedef typename source_type::pixel_type pixel_type;
         typedef Interpolator interpolator_type;
         typedef span_image_filter<source_type, interpolator_type> base_type;
         typedef typename color_type::value_type value_type;
@@ -57,10 +57,10 @@ namespace agg
         {
             base_shift = color_type::base_shift,
             base_mask  = color_type::base_mask,
-			color_mask = 0xFFFFFFFF,
-			r_mask = (color_mask >> (order_type::G + order_type::B)) << (order_type::G + order_type::B),
-			g_mask = (((color_mask) & (~r_mask)) >> (order_type::B)) << (order_type::B),
-			b_mask = ((color_mask) & (~(r_mask | g_mask)))
+            color_mask = 0xFFFFFFFF,
+            r_mask = (color_mask >> (order_type::G + order_type::B)) << (order_type::G + order_type::B),
+            g_mask = (((color_mask) & (~r_mask)) >> (order_type::B)) << (order_type::B),
+            b_mask = ((color_mask) & (~(r_mask | g_mask)))
         };
 
         //--------------------------------------------------------------------
@@ -82,7 +82,7 @@ namespace agg
                     base_type::source().span(x >> image_subpixel_shift, 
                                              y >> image_subpixel_shift, 
                                              1);
-				register pixel_type rgb = *reinterpret_cast<const pixel_type*>(fg_ptr);
+                register pixel_type rgb = *reinterpret_cast<const pixel_type*>(fg_ptr);
                 span->r = (rgb & r_mask) >> (base_shift-(16-order_type::R-order_type::G-order_type::B));
                 span->g = (rgb & g_mask) >> (order_type::G+order_type::B-base_shift);
                 span->b = (rgb & b_mask) << (base_shift-order_type::B);
@@ -105,7 +105,7 @@ namespace agg
         typedef Source source_type;
         typedef typename source_type::color_type color_type;
         typedef typename source_type::order_type order_type;
-		typedef typename source_type::pixel_type pixel_type;
+        typedef typename source_type::pixel_type pixel_type;
         typedef Interpolator interpolator_type;
         typedef span_image_filter<source_type, interpolator_type> base_type;
         typedef typename color_type::value_type value_type;
@@ -114,10 +114,10 @@ namespace agg
         {
             base_shift = color_type::base_shift,
             base_mask  = color_type::base_mask,
-			color_mask = 0xFFFFFFFF,
-			r_mask = (color_mask >> (order_type::G + order_type::B)) << (order_type::G + order_type::B),
-			g_mask = (((color_mask) & (~r_mask)) >> (order_type::B)) << (order_type::B),
-			b_mask = ((color_mask) & (~(r_mask | g_mask)))
+            color_mask = 0xFFFFFFFF,
+            r_mask = (color_mask >> (order_type::G + order_type::B)) << (order_type::G + order_type::B),
+            g_mask = (((color_mask) & (~r_mask)) >> (order_type::B)) << (order_type::B),
+            b_mask = ((color_mask) & (~(r_mask | g_mask)))
         };
 
         //--------------------------------------------------------------------
@@ -214,7 +214,7 @@ namespace agg
         typedef Source source_type;
         typedef typename source_type::color_type color_type;
         typedef typename source_type::order_type order_type;
-		typedef typename source_type::pixel_type pixel_type;
+        typedef typename source_type::pixel_type pixel_type;
         typedef Interpolator interpolator_type;
         typedef span_image_filter<source_type, interpolator_type> base_type;
         typedef typename color_type::value_type value_type;
@@ -223,10 +223,10 @@ namespace agg
         {
             base_shift = color_type::base_shift,
             base_mask  = color_type::base_mask,
-			color_mask = 0xFFFFFFFF,
-			r_mask = (color_mask >> (order_type::G + order_type::B)) << (order_type::G + order_type::B),
-			g_mask = (((color_mask) & (~r_mask)) >> (order_type::B)) << (order_type::B),
-			b_mask = ((color_mask) & (~(r_mask | g_mask)))
+            color_mask = 0xFFFFFFFF,
+            r_mask = (color_mask >> (order_type::G + order_type::B)) << (order_type::G + order_type::B),
+            g_mask = (((color_mask) & (~r_mask)) >> (order_type::B)) << (order_type::B),
+            b_mask = ((color_mask) & (~(r_mask | g_mask)))
         };
 
         //--------------------------------------------------------------------
@@ -467,7 +467,7 @@ namespace agg
         typedef Source source_type;
         typedef typename source_type::color_type color_type;
         typedef typename source_type::order_type order_type;
-		typedef typename source_type::pixel_type pixel_type;
+        typedef typename source_type::pixel_type pixel_type;
         typedef Interpolator interpolator_type;
         typedef span_image_filter<source_type, interpolator_type> base_type;
         typedef typename color_type::value_type value_type;
@@ -476,10 +476,10 @@ namespace agg
         {
             base_shift = color_type::base_shift,
             base_mask  = color_type::base_mask,
-			color_mask = 0xFFFFFFFF,
-			r_mask = (color_mask >> (order_type::G + order_type::B)) << (order_type::G + order_type::B),
-			g_mask = (((color_mask) & (~r_mask)) >> (order_type::B)) << (order_type::B),
-			b_mask = ((color_mask) & (~(r_mask | g_mask)))
+            color_mask = 0xFFFFFFFF,
+            r_mask = (color_mask >> (order_type::G + order_type::B)) << (order_type::G + order_type::B),
+            g_mask = (((color_mask) & (~r_mask)) >> (order_type::B)) << (order_type::B),
+            b_mask = ((color_mask) & (~(r_mask | g_mask)))
         };
 
         //--------------------------------------------------------------------
@@ -600,7 +600,7 @@ namespace agg
         typedef Source source_type;
         typedef typename source_type::color_type color_type;
         typedef typename source_type::order_type order_type;
-		typedef typename source_type::pixel_type pixel_type;
+        typedef typename source_type::pixel_type pixel_type;
         typedef Interpolator interpolator_type;
         typedef span_image_filter<source_type, interpolator_type> base_type;
         typedef typename color_type::value_type value_type;
@@ -609,10 +609,10 @@ namespace agg
         {
             base_shift = color_type::base_shift,
             base_mask  = color_type::base_mask,
-			color_mask = 0xFFFFFFFF,
-			r_mask = (color_mask >> (order_type::G + order_type::B)) << (order_type::G + order_type::B),
-			g_mask = (((color_mask) & (~r_mask)) >> (order_type::B)) << (order_type::B),
-			b_mask = ((color_mask) & (~(r_mask | g_mask)))
+            color_mask = 0xFFFFFFFF,
+            r_mask = (color_mask >> (order_type::G + order_type::B)) << (order_type::G + order_type::B),
+            g_mask = (((color_mask) & (~r_mask)) >> (order_type::B)) << (order_type::B),
+            b_mask = ((color_mask) & (~(r_mask | g_mask)))
         };
 
         //--------------------------------------------------------------------
@@ -729,7 +729,7 @@ namespace agg
         typedef Source source_type;
         typedef typename source_type::color_type color_type;
         typedef typename source_type::order_type order_type;
-		typedef typename source_type::pixel_type pixel_type;
+        typedef typename source_type::pixel_type pixel_type;
         typedef span_image_resample_affine<source_type> base_type;
         typedef typename base_type::interpolator_type interpolator_type;
         typedef typename color_type::value_type value_type;
@@ -739,10 +739,10 @@ namespace agg
             base_shift      = color_type::base_shift,
             base_mask       = color_type::base_mask,
             downscale_shift = image_filter_shift,
-			color_mask = 0xFFFFFFFF,
-			r_mask = (color_mask >> (order_type::G + order_type::B)) << (order_type::G + order_type::B),
-			g_mask = (((color_mask) & (~r_mask)) >> (order_type::B)) << (order_type::B),
-			b_mask = ((color_mask) & (~(r_mask | g_mask)))
+            color_mask = 0xFFFFFFFF,
+            r_mask = (color_mask >> (order_type::G + order_type::B)) << (order_type::G + order_type::B),
+            g_mask = (((color_mask) & (~r_mask)) >> (order_type::B)) << (order_type::B),
+            b_mask = ((color_mask) & (~(r_mask | g_mask)))
         };
 
         //--------------------------------------------------------------------
@@ -859,7 +859,7 @@ namespace agg
         typedef Source source_type;
         typedef typename source_type::color_type color_type;
         typedef typename source_type::order_type order_type;
-		typedef typename source_type::pixel_type pixel_type;
+        typedef typename source_type::pixel_type pixel_type;
         typedef Interpolator interpolator_type;
         typedef span_image_resample<source_type, interpolator_type> base_type;
         typedef typename color_type::value_type value_type;
@@ -869,10 +869,10 @@ namespace agg
             base_shift = color_type::base_shift,
             base_mask  = color_type::base_mask,
             downscale_shift = image_filter_shift,
-			color_mask = 0xFFFFFFFF,
-			r_mask = (color_mask >> (order_type::G + order_type::B)) << (order_type::G + order_type::B),
-			g_mask = (((color_mask) & (~r_mask)) >> (order_type::B)) << (order_type::B),
-			b_mask = ((color_mask) & (~(r_mask | g_mask)))
+            color_mask = 0xFFFFFFFF,
+            r_mask = (color_mask >> (order_type::G + order_type::B)) << (order_type::G + order_type::B),
+            g_mask = (((color_mask) & (~r_mask)) >> (order_type::B)) << (order_type::B),
+            b_mask = ((color_mask) & (~(r_mask | g_mask)))
         };
 
         //--------------------------------------------------------------------

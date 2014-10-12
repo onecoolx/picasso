@@ -18,8 +18,8 @@ typedef float scalar;
 #define SCALAR_TO_FLT(v)  ((float)(v))
 #define SCALAR_TO_INT(v)  ((int)(v))
 //math PI value
-#define PI		3.14159265358979323846f
-#define _2PI	6.28318530717958647692f	 
+#define PI        3.14159265358979323846f
+#define _2PI    6.28318530717958647692f     
 #define _PIdiv2 1.57079632679489661923f
 
 #define Fabs(x) fabsf(x)
@@ -36,23 +36,23 @@ typedef float scalar;
 // float type
 inline unsigned _uround(float v)
 {
-	return unsigned(v + 0.5f);
+    return unsigned(v + 0.5f);
 }
 
 inline int _iround(float v)
 {
-	return int((v < 0.0f) ? v - 0.5f : v + 0.5f);
+    return int((v < 0.0f) ? v - 0.5f : v + 0.5f);
 }
 
 // double type
 inline unsigned _uround(double v)
 {
-	return unsigned(v + 0.5);
+    return unsigned(v + 0.5);
 }
 
 inline int _iround(double v)
 {
-	return int((v < 0.0) ? v - 0.5 : v + 0.5);
+    return int((v < 0.0) ? v - 0.5 : v + 0.5);
 }
 
 #endif /*_MATH_TYPES_H_*/

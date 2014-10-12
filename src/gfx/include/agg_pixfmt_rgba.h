@@ -336,18 +336,18 @@ namespace agg
                 sb = (sb * cover + 255) >> 8;
                 sa = (sa * cover + 255) >> 8;
             }
-			if (sa < 255)  {
-				calc_type s1a = base_mask - sa;
-				p[Order::R] = (value_type)(sr + ((p[Order::R] * s1a + base_mask) >> base_shift));
-				p[Order::G] = (value_type)(sg + ((p[Order::G] * s1a + base_mask) >> base_shift));
-				p[Order::B] = (value_type)(sb + ((p[Order::B] * s1a + base_mask) >> base_shift));
-				p[Order::A] = (value_type)(sa + p[Order::A] - ((sa * p[Order::A] + base_mask) >> base_shift));
-			} else { // fast for opaque
-				p[Order::R] = (value_type)sr;
-				p[Order::G] = (value_type)sg;
-				p[Order::B] = (value_type)sb;
-				p[Order::A] = (value_type)sa;
-			}
+            if (sa < 255)  {
+                calc_type s1a = base_mask - sa;
+                p[Order::R] = (value_type)(sr + ((p[Order::R] * s1a + base_mask) >> base_shift));
+                p[Order::G] = (value_type)(sg + ((p[Order::G] * s1a + base_mask) >> base_shift));
+                p[Order::B] = (value_type)(sb + ((p[Order::B] * s1a + base_mask) >> base_shift));
+                p[Order::A] = (value_type)(sa + p[Order::A] - ((sa * p[Order::A] + base_mask) >> base_shift));
+            } else { // fast for opaque
+                p[Order::R] = (value_type)sr;
+                p[Order::G] = (value_type)sg;
+                p[Order::B] = (value_type)sb;
+                p[Order::A] = (value_type)sa;
+            }
         }
     };
 
@@ -1503,7 +1503,7 @@ namespace agg
 
     //================================================pixfmt_alpha_blend_comp_rgba
     template<class Blender, class RenBuf, class PixelT = int32u> 
-	class pixfmt_alpha_blend_comp_rgba
+    class pixfmt_alpha_blend_comp_rgba
     {
     public:
         typedef RenBuf   rbuf_type;
@@ -1526,9 +1526,9 @@ namespace agg
         //--------------------------------------------------------------------
         pixfmt_alpha_blend_comp_rgba() : m_rbuf(0), m_comp_op(comp_op_src_over), alpha_seed(base_mask) {}
         explicit pixfmt_alpha_blend_comp_rgba(rbuf_type& rb,unsigned comp_op=comp_op_src_over,unsigned alpha=base_mask) 
-			: m_rbuf(&rb),
+            : m_rbuf(&rb),
             m_comp_op(comp_op),
-			alpha_seed(alpha)
+            alpha_seed(alpha)
         {}
         void attach(rbuf_type& rb) { m_rbuf = &rb; }
 
@@ -1559,12 +1559,12 @@ namespace agg
         AGG_INLINE const int8u* row_ptr(int y) const { return m_rbuf->row_ptr(y); }
         AGG_INLINE row_data     row(int y)     const { return m_rbuf->row(y); }
 
-		AGG_INLINE void alpha(float a) { alpha_seed = uround(a * base_mask); }
-		AGG_INLINE float alpha() const { return (float)alpha_seed / 255.0; }
-		AGG_INLINE unsigned alpha_mul(unsigned a, unsigned s)
-		{
-			return (s == 255) ? a : ((a * s + base_mask) >> base_shift);
-		}
+        AGG_INLINE void alpha(float a) { alpha_seed = uround(a * base_mask); }
+        AGG_INLINE float alpha() const { return (float)alpha_seed / 255.0; }
+        AGG_INLINE unsigned alpha_mul(unsigned a, unsigned s)
+        {
+            return (s == 255) ? a : ((a * s + base_mask) >> base_shift);
+        }
         //--------------------------------------------------------------------
         AGG_INLINE int8u* pix_ptr(int x, int y)
         {
@@ -1849,7 +1849,7 @@ namespace agg
                 memmove(m_rbuf->row_ptr(xdst, ydst, 1) + xdst * pix_width, 
                         p + xsrc * pix_width, pix_width);
             }
-		}
+        }
         //--------------------------------------------------------------------
         template<class RenBuf2> void copy_from(const RenBuf2& from, 
                                                int xdst, int ydst,
@@ -1920,13 +1920,13 @@ namespace agg
                 value_type* pdst = 
                     (value_type*)m_rbuf->row_ptr(xdst, ydst, 1) + (xdst << 2);
 
-				blender_type::blend_pix(m_comp_op, 
-						pdst, 
-						psrc[src_order::R],
-						psrc[src_order::G],
-						psrc[src_order::B],
-						(value_type)alpha_mul(psrc[src_order::A], alpha_seed),
-						cover);
+                blender_type::blend_pix(m_comp_op, 
+                        pdst, 
+                        psrc[src_order::R],
+                        psrc[src_order::G],
+                        psrc[src_order::B],
+                        (value_type)alpha_mul(psrc[src_order::A], alpha_seed),
+                        cover);
             }
         }
 
@@ -1990,7 +1990,7 @@ namespace agg
     private:
         rbuf_type* m_rbuf;
         unsigned m_comp_op;
-		unsigned alpha_seed;
+        unsigned alpha_seed;
     };
 
 

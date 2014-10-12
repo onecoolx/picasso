@@ -165,7 +165,7 @@ namespace agg
         void clip_box(float x1, float y1, float x2, float y2);
         void filling_rule(filling_rule_e filling_rule);
         void auto_close(bool flag) { m_auto_close = flag; }
-		bool initial(void) { return m_status == status_initial; }
+        bool initial(void) { return m_status == status_initial; }
 
         //--------------------------------------------------------------------
         template<class GammaF> void gamma(const GammaF& gamma_function)
@@ -300,59 +300,59 @@ namespace agg
         //--------------------------------------------------------------------
         template<class Scanline> bool sweep_scanline_hit(Scanline& sl)
         {
-			if(m_scan_y > m_outline.max_y()) return false;
-			unsigned num_cells = m_outline.scanline_num_cells(m_scan_y);
-			const cell_aa* const* cells = m_outline.scanline_cells(m_scan_y);
-			int cover = 0;
-			int tx = sl.x();
+            if(m_scan_y > m_outline.max_y()) return false;
+            unsigned num_cells = m_outline.scanline_num_cells(m_scan_y);
+            const cell_aa* const* cells = m_outline.scanline_cells(m_scan_y);
+            int cover = 0;
+            int tx = sl.x();
 
-			while(num_cells)
-			{
-				const cell_aa* cur_cell = *cells;
-				int x    = cur_cell->x;
-				int area = cur_cell->area;
-				unsigned alpha;
+            while(num_cells)
+            {
+                const cell_aa* cur_cell = *cells;
+                int x    = cur_cell->x;
+                int area = cur_cell->area;
+                unsigned alpha;
 
-				if (tx < x) return false;
+                if (tx < x) return false;
 
-				cover += cur_cell->cover;
+                cover += cur_cell->cover;
 
-				//accumulate all cells with the same X
-				while(--num_cells)
-				{
-					cur_cell = *++cells;
-					if(cur_cell->x != x) break;
-					area  += cur_cell->area;
-					cover += cur_cell->cover;
-				}
+                //accumulate all cells with the same X
+                while(--num_cells)
+                {
+                    cur_cell = *++cells;
+                    if(cur_cell->x != x) break;
+                    area  += cur_cell->area;
+                    cover += cur_cell->cover;
+                }
 
-				if(area)
-				{
-					if (tx == x) 
-					{
-						alpha = calculate_alpha((cover << (poly_subpixel_shift + 1)) - area);
-						if(alpha)
-						{
-							sl.add_cell(x, alpha);
-							if(sl.hit()) break;
-						}
-					}
-					x++;
-				}
+                if(area)
+                {
+                    if (tx == x) 
+                    {
+                        alpha = calculate_alpha((cover << (poly_subpixel_shift + 1)) - area);
+                        if(alpha)
+                        {
+                            sl.add_cell(x, alpha);
+                            if(sl.hit()) break;
+                        }
+                    }
+                    x++;
+                }
 
-				if(num_cells && cur_cell->x > x)
-				{
-					int sx = cur_cell->x - x;
-					if ((tx >= x) && (tx < (x+sx))) {
-						alpha = calculate_alpha(cover << (poly_subpixel_shift + 1));
-						if(alpha)
-						{
-							sl.add_span(x, sx, alpha);
-							if(sl.hit()) break;
-						}
-					}
-				}
-			}
+                if(num_cells && cur_cell->x > x)
+                {
+                    int sx = cur_cell->x - x;
+                    if ((tx >= x) && (tx < (x+sx))) {
+                        alpha = calculate_alpha(cover << (poly_subpixel_shift + 1));
+                        if(alpha)
+                        {
+                            sl.add_span(x, sx, alpha);
+                            if(sl.hit()) break;
+                        }
+                    }
+                }
+            }
             return true;
         }
         //--------------------------------------------------------------------
