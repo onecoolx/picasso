@@ -7,7 +7,7 @@ INC=${INCPATH} -I../include
 CFLAGS=-DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DQT_SHARED -D_REENTRANT 
 CXXFLAGS=-DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DQT_SHARED -D_REENTRANT 
 
-SYSTEM_LIBS = -lQtGui -lQtCore -lfreetype -lpthread -lstdc++
+SYSTEM_LIBS = -lpicasso -lQtGui -lQtCore -lfreetype -lpthread -lstdc++
 
 gamma_objs = test.o gamma_func.o
 
@@ -40,46 +40,46 @@ path_objs = test.o path_func.o
 all: gamma.exe alpha.exe gradient.exe composite.exe clip.exe gcstate.exe text.exe pattern.exe shadow.exe blur.exe mask.exe part.exe bitblt.exe path.exe
 
 alpha.exe : ${alpha_objs}
-	${CC} ${alpha_objs} ../src/libpicasso.a -o $@ ${INC} ${SYSTEM_LIBS}
+	${CC} ${alpha_objs} -o $@ ${INC} ${SYSTEM_LIBS}
 
 gamma.exe : ${gamma_objs}
-	${CC} ${gamma_objs} ../src/libpicasso.a -o $@ ${INC} ${SYSTEM_LIBS}
+	${CC} ${gamma_objs} -o $@ ${INC} ${SYSTEM_LIBS}
 
 gradient.exe : ${gradient_objs}
-	${CC} ${gradient_objs} ../src/libpicasso.a -o $@ ${INC} ${SYSTEM_LIBS}
+	${CC} ${gradient_objs} -o $@ ${INC} ${SYSTEM_LIBS}
 
 composite.exe : ${composite_objs}
-	${CC} ${composite_objs} ../src/libpicasso.a -o $@ ${INC} ${SYSTEM_LIBS}
+	${CC} ${composite_objs} -o $@ ${INC} ${SYSTEM_LIBS}
 
 clip.exe : ${clip_objs}
-	${CC} ${clip_objs} ../src/libpicasso.a -o $@ ${INC} ${SYSTEM_LIBS}
+	${CC} ${clip_objs} -o $@ ${INC} ${SYSTEM_LIBS}
 
 gcstate.exe : ${gcstate_objs}
-	${CC} ${gcstate_objs} ../src/libpicasso.a -o $@ ${INC} ${SYSTEM_LIBS}
+	${CC} ${gcstate_objs} -o $@ ${INC} ${SYSTEM_LIBS}
 
 text.exe : ${text_objs}
-	${CC} ${text_objs} ../src/libpicasso.a -o $@ ${INC} ${SYSTEM_LIBS}
+	${CC} ${text_objs} -o $@ ${INC} ${SYSTEM_LIBS}
 
 pattern.exe : ${pattern_objs}
-	${CC} ${pattern_objs} ../src/libpicasso.a -o $@ ${INC} ${SYSTEM_LIBS}
+	${CC} ${pattern_objs} -o $@ ${INC} ${SYSTEM_LIBS}
 
 shadow.exe : ${shadow_objs}
-	${CC} ${shadow_objs} ../src/libpicasso.a -o $@ ${INC} ${SYSTEM_LIBS}
+	${CC} ${shadow_objs} -o $@ ${INC} ${SYSTEM_LIBS}
 
 blur.exe : ${blur_objs}
-	${CC} ${blur_objs} ../src/libpicasso.a -o $@ ${INC} ${SYSTEM_LIBS}
+	${CC} ${blur_objs} -o $@ ${INC} ${SYSTEM_LIBS}
 
 mask.exe : ${mask_objs}
-	${CC} ${mask_objs} ../src/libpicasso.a -o $@ ${INC} ${SYSTEM_LIBS}
+	${CC} ${mask_objs} -o $@ ${INC} ${SYSTEM_LIBS}
 
 part.exe : ${part_objs}
-	${CC} ${part_objs} ../src/libpicasso.a -o $@ ${INC} ${SYSTEM_LIBS}
+	${CC} ${part_objs} -o $@ ${INC} ${SYSTEM_LIBS}
 
 bitblt.exe : ${bitblt_objs}
-	${CC} ${bitblt_objs} ../src/libpicasso.a -o $@ ${INC} ${SYSTEM_LIBS}
+	${CC} ${bitblt_objs} -o $@ ${INC} ${SYSTEM_LIBS}
 
 path.exe : ${path_objs}
-	${CC} ${path_objs} ../src/libpicasso.a -o $@ ${INC} ${SYSTEM_LIBS}
+	${CC} ${path_objs} -o $@ ${INC} ${SYSTEM_LIBS}
 
 alpha_func.o : alpha_func.c
 	${CC} ${CFLAGS} -c $< -o $@ ${INC}
