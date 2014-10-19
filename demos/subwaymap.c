@@ -5,7 +5,8 @@
  */
 
 /*
- * This idea is come from AmanithVG.
+ * Conversion from the original AmanithVG's example, by Mazatech 
+ * Srl - http://www.amanithvg.com
  */
 
 #include <stdio.h>
