@@ -16,3 +16,5 @@
 2014-08-13:
     Fix crash bug for path clip.
 
+2014-10-22:
+    Fix gyp build on linux system.

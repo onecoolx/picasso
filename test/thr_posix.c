@@ -36,6 +36,8 @@ void stop_worker_threads(void)
 {
     pthread_cancel(th1);
     pthread_cancel(th2);
+    pthread_join(th1, 0);
+    pthread_join(th2, 0);
 }
 
 void loop_wait(int ms)
