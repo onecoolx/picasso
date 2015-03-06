@@ -3,7 +3,7 @@
 
 2011-12-31: Version 1.2.1
     Fix default font object mem leak bug.
-    
+
 2012-12-31: Version 1.2.5
     Add context thread safe or shared support.
 
@@ -20,4 +20,5 @@
     Fix gyp build on linux system.
 
 2015-03-04: Version 2.1.5
-	Porting to android system (version<=4.4).
+    Porting to android system (version<=4.4).
+
