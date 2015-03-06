@@ -36,11 +36,11 @@ typedef struct {
 
 #define OVG_RGB(r,g,b) {r/255.0f, g/255.0f, b/255.0f, 1.0f}
 #define NUM_PATHS 2130
-static const PathData objl_paths[NUM_PATHS];
+extern const PathData objl_paths[NUM_PATHS];
 
 #define MAP_WIDTH 645.0f
 #define MAP_HEIGHT 420.0f
-static ps_path* paths[NUM_PATHS];
+ps_path* paths[NUM_PATHS];
 float logX, logY;
 float logHW, logHH;
 
@@ -153775,7 +153775,7 @@ static const unsigned char objl_path_2129_cmds[]={
     ,12
     ,12
 };
-static const PathData objl_paths[] = {
+const PathData objl_paths[] = {
     { objl_path_0_floats, objl_path_0_cmds, 11, sizeof(objl_path_0_floats)/sizeof(float), OVG_RGB(0x08, 0x5b, 0x9e), {1.000000f, 0.000000f, 0.000000f, 0.000000f, 1.000000f, 0.000000f, 0.000000f, 0.000000f, 1.000000f} }
     ,{ objl_path_1_floats, objl_path_1_cmds, 8, sizeof(objl_path_1_floats)/sizeof(float), OVG_RGB(0x08, 0x5b, 0x9e), {1.000000f, 0.000000f, 0.000000f, 0.000000f, 1.000000f, 0.000000f, 0.000000f, 0.000000f, 1.000000f} }
     ,{ objl_path_2_floats, objl_path_2_cmds, 10, sizeof(objl_path_2_floats)/sizeof(float), OVG_RGB(0x08, 0x5b, 0x9e), {1.000000f, 0.000000f, 0.000000f, 0.000000f, 1.000000f, 0.000000f, 0.000000f, 0.000000f, 1.000000f} }

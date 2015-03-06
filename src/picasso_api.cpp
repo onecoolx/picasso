@@ -32,7 +32,7 @@ static inline void _clip_path(context_state* state, const graphic_path& p, filli
 
 }
 
-#define PICASSO_VERSION 21000     // version 2.1
+#define PICASSO_VERSION 21050     // version 2.1.5
 
 #ifdef __cplusplus
 extern "C" {
@@ -47,11 +47,14 @@ int PICAPI ps_version(void)
 
 ps_bool PICAPI ps_initialize(void)
 {
-    return (picasso::_init_system_device() && picasso::font_engine::initialize()) ? True : False;
+    return (picasso::_init_system_device()
+           && picasso::font_engine::initialize()
+           && picasso::_init_default_font()) ? True : False;
 }
 
 void PICAPI ps_shutdown(void)
 {
+    picasso::_destory_default_font();
     picasso::font_engine::shutdown();
     picasso::_destroy_system_device();
 }

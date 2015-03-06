@@ -1,10 +1,10 @@
 
 FREETYPE_LIBS=-lfreetype -lz
 
-#CC=gcc -g -pg
+CC=gcc -g -pg
 #CC=clang -O2
-CC=gcc -O2
-INC=-I../include
+#CC=gcc -O2
+INC=-I../include -I../build
 CFLAGS=${DLL} `pkg-config --cflags gtk+-2.0`
 
 SYSTEM_LIBS = `pkg-config --libs gtk+-2.0` ${FREETYPE_LIBS} -lpthread -lstdc++
@@ -37,7 +37,9 @@ bitblt_objs = test.o bitblt_func.o
 
 path_objs = test.o path_func.o
 
-all: gamma.exe alpha.exe gradient.exe composite.exe clip.exe gcstate.exe text.exe pattern.exe shadow.exe blur.exe mask.exe part.exe bitblt.exe path.exe
+thread_objs = test.o thread_func.o thr_posix.o
+
+all: gamma.exe alpha.exe gradient.exe composite.exe clip.exe gcstate.exe text.exe pattern.exe shadow.exe blur.exe mask.exe part.exe bitblt.exe path.exe thread.exe
 
 alpha.exe : ${alpha_objs}
 	${CC} ${alpha_objs} ../src/libpicasso.a -o $@ ${INC} ${SYSTEM_LIBS}
@@ -81,6 +83,9 @@ bitblt.exe : ${bitblt_objs}
 path.exe : ${path_objs}
 	${CC} ${path_objs} ../src/libpicasso.a -o $@ ${INC} ${SYSTEM_LIBS}
 
+thread.exe : ${thread_objs}
+	${CC} ${thread_objs} ../src/libpicasso.a -o $@ ${INC} ${SYSTEM_LIBS}
+
 alpha_func.o : alpha_func.c
 	${CC} ${CFLAGS} -c $< -o $@ ${INC}
 
@@ -121,6 +126,12 @@ bitblt_func.o : bitblt_func.c
 	${CC} ${CFLAGS} -c $< -o $@ ${INC}
 
 path_func.o : path_func.c
+	${CC} ${CFLAGS} -c $< -o $@ ${INC}
+
+thread_func.o : thread_func.c
+	${CC} ${CFLAGS} -c $< -o $@ ${INC}
+
+thr_posix.o : thr_posix.c
 	${CC} ${CFLAGS} -c $< -o $@ ${INC}
 
 test.o : testGtk2.c

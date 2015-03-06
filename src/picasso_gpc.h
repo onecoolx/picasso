@@ -32,9 +32,6 @@ typedef struct {
   gpc_vertex_list *contour; // contour vector pointer
 } gpc_polygon;
 
-
-void gpc_add_contour(gpc_polygon *polygon, gpc_vertex_list *contour, int hole);
-
 void gpc_polygon_clip(gpc_op set_operation, gpc_polygon *subject_polygon,
                                 gpc_polygon *clip_polygon, gpc_polygon *result_polygon);
 

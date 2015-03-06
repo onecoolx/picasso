@@ -41,9 +41,9 @@ static void size_change(GtkWidget *widget, GtkAllocation *allocation)
         height = 1;
 
     pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8, width, height);
-    gchar* buf = gdk_pixbuf_get_pixels(pixbuf);
+    gchar* buf = (gchar*)gdk_pixbuf_get_pixels(pixbuf);
     gint stride = gdk_pixbuf_get_rowstride(pixbuf);
-    canvas = ps_canvas_create_with_data(buf, fmt, width, height, stride);
+    canvas = ps_canvas_create_with_data((ps_byte*)buf, fmt, width, height, stride);
     old_canvas = ps_context_set_canvas(context, canvas);
     ps_canvas_unref(old_canvas);
     on_size(width, height);
@@ -69,6 +69,7 @@ static void destroy(GtkWidget *widget, gpointer data)
 static gboolean time_func(gpointer data)
 {
     on_timer();
+    return TRUE;
 }
 
 static void init_pixbuf()
@@ -77,9 +78,9 @@ static void init_pixbuf()
     fmt = COLOR_FORMAT_RGB;
     ps_initialize();
     pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8, width, height);
-    gchar* buf = gdk_pixbuf_get_pixels(pixbuf);
+    gchar* buf = (gchar*)gdk_pixbuf_get_pixels(pixbuf);
     gint stride = gdk_pixbuf_get_rowstride(pixbuf);
-    canvas = ps_canvas_create_with_data(buf, fmt, width, height, stride);
+    canvas = ps_canvas_create_with_data((ps_byte*)buf, fmt, width, height, stride);
     context = ps_context_create(canvas, 0);
     on_init(context, width, height);
 }
@@ -99,11 +100,11 @@ picture* load_picture(const char* name)
     sprintf(pname, "%s.png", name);
     nb = gdk_pixbuf_new_from_file(pname, &e);
     free(pname);
-    gchar* buf = gdk_pixbuf_get_pixels(nb);
+    gchar* buf = (gchar*)gdk_pixbuf_get_pixels(nb);
     gint w = gdk_pixbuf_get_width(nb);
     gint h = gdk_pixbuf_get_height(nb);
     gint r = gdk_pixbuf_get_rowstride(nb);
-    img = ps_image_create_with_data(buf, fmt, w, h, r);
+    img = ps_image_create_with_data((ps_byte*)buf, fmt, w, h, r);
 
     pic = (picture*)malloc(sizeof(picture));
     pic->width = w;

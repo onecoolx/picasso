@@ -32,7 +32,7 @@ void draw_test (int id, ps_context* gc)
     ps_fill(gc);
 }
 
-void init_context (ps_context* gc, ps_canvas* cs)
+void init_context (ps_context* gc, ps_canvas* cs, unsigned char* buf)
 {
     ps_rect rc = {20, 20, 100, 80};
     ps_rect rc2 = {80, 20, 100, 80};

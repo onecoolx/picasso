@@ -184,10 +184,7 @@ void graphic_path::remove_all(void)
 
 void graphic_path::free_all(void)
 {
-    delete m_impl;
-    m_impl = new graphic_path_impl(DEFAULT_VERTEICES);
-    m_iterator = 0;
-    m_shape = shape_polygon;
+    remove_all();
 }
 
 unsigned int graphic_path::start_new_path(void)
@@ -709,9 +706,9 @@ void graphic_path::concat_path(vertex_source& vs, unsigned int id)
 void graphic_path::serialize_to(byte* buffer)
 {
     unsigned int num = m_impl->total_vertices();
-    memcpy(buffer, m_impl->m_vertices.data(), num * sizeof(vertex_s));
+    mem_copy(buffer, m_impl->m_vertices.data(), num * sizeof(vertex_s));
     buffer += num * sizeof(vertex_s);
-    memcpy(buffer, m_impl->m_cmds.data(), num * sizeof(unsigned int));
+    mem_copy(buffer, m_impl->m_cmds.data(), num * sizeof(unsigned int));
 }
 
 void graphic_path::serialize_from(unsigned int num, byte* buffer, unsigned int buf_len)

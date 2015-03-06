@@ -17,14 +17,14 @@
 #include "interface.h"
 #include "timeuse.h"
 
-const int tigerCommandCount;
-const char tigerCommands[];
-const float tigerMinX;
-const float tigerMaxX;
-const float tigerMinY;
-const float tigerMaxY;
-const int tigerPointCount;
-const float tigerPoints[];
+extern const int tigerCommandCount;
+extern const char tigerCommands[];
+extern const float tigerMinX;
+extern const float tigerMaxX;
+extern const float tigerMinY;
+extern const float tigerMaxY;
+extern const int tigerPointCount;
+extern const float tigerPoints[];
 
 static int width;
 static int height;
@@ -233,6 +233,8 @@ void on_draw(ps_context* gc)
     int i;
 #if defined(WIN32) || defined(WINCE)
     clocktime_t t1, t2;
+#else
+    suseconds_t t1, t2;
 #endif
     PS* ps = 0;
     float scale = height/tigerMaxY;
@@ -243,6 +245,8 @@ void on_draw(ps_context* gc)
 
 #if defined(WIN32) || defined(WINCE)
     t1 = get_clock();
+#else
+    t1 = get_time();
 #endif
 
     ps_set_source_color(gc, &color);
@@ -284,11 +288,15 @@ void on_draw(ps_context* gc)
     }
 #if defined(WIN32) || defined(WINCE)
     t2 = get_clock();
+#else
+    t2 = get_time();
 #endif
     change = 0;
 
 #if defined(WIN32) || defined(WINCE)
     fprintf (stderr, "%f fps\n", 1000.0/get_clock_used_ms(t1, t2));
+#else
+    fprintf(stderr, "draw frame use %.4f ms --- %.4f fps\n", (t2-t1)/1000.0, 1000.0/((t2-t1)/1000.0));
 #endif
 }
 

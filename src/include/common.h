@@ -30,4 +30,13 @@ typedef unsigned int uint32_t;
 // special types
 typedef uint8_t byte;
 
+// aligned attribute
+#if COMPILER(MSVC)
+#define ALIGNED(x)  __declspec(align(x))
+#elif COMPILER(GCC)
+#define ALIGNED(x)  __attribute__((aligned((x))))
+#else
+#define ALIGNED(x)
+#endif
+
 #endif /*_COMMON_H_*/

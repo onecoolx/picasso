@@ -476,7 +476,7 @@ void gfx_font_adapter::write_glyph_to(byte* buffer)
     if (buffer && m_impl->cur_data_size) {
         if (m_impl->cur_data_type == glyph_type_outline) {
             unsigned int count = m_impl->cur_font_path.total_vertices();
-            memcpy(buffer, &count, sizeof(unsigned int));
+            mem_copy(buffer, &count, sizeof(unsigned int));
             buffer += sizeof(unsigned int);
             m_impl->cur_font_path.serialize_to(buffer);
         } else { // mono glyph

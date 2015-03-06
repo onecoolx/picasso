@@ -15,6 +15,8 @@ namespace picasso {
 class graphic_path;
 
 // Font
+bool _init_default_font(void);
+void _destory_default_font(void);
 ps_font* _default_font(void);
 
 // Path

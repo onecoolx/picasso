@@ -8,9 +8,7 @@
 #define _GFX_RASTERIZER_SCANLINE_H_
 
 #include "common.h"
-
 #include "gfx_rasterizer_cell.h"
-#include "gfx_rasterizer_clip.h"
 
 namespace gfx {
 
@@ -70,6 +68,40 @@ private:
     bool m_hit;
 };
 
+// scanline generator
+class scanline_generator
+{
+public:
+    typedef int coord_type;
+
+    scanline_generator()
+        : m_x1(0)
+        , m_y1(0)
+    {
+    }
+
+    void move_to(int x1, int y1)
+    {
+        m_x1 = x1;
+        m_y1 = y1;
+    }
+
+    template <typename Rasterizer>
+    void line_to(Rasterizer& ras, int x2, int y2)
+    {
+        ras.line(m_x1, m_y1, x2, y2); 
+        m_x1 = x2;
+        m_y1 = y2;
+    }
+
+    static int upscale(scalar v) { return iround(v * poly_subpixel_scale); }
+    static int downscale(int v) { return v; }
+
+private:
+    int m_x1;
+    int m_y1;
+};
+
 // rasterizer scanline antialias
 // Polygon rasterizer that is used to render filled polygons with 
 // high-quality Anti-Aliasing. Internally, by default, the class uses 
@@ -101,12 +133,12 @@ private:
 //
 // filling_rule() and gamma() can be called anytime before "sweeping".
 
-template <typename Clip=gfx_rasterizer_sl_clip>
+template <typename Gen=scanline_generator>
 class gfx_rasterizer_scanline_aa
 {
 public:
-    typedef Clip clip_type;
-    typedef typename Clip::coord_type coord_type;
+    typedef Gen gen_type;
+    typedef typename Gen::coord_type coord_type;
 
     enum {
         status_initial,
@@ -139,19 +171,6 @@ public:
     {
         m_outline.reset(); 
         m_status = status_initial;
-    }
-
-    void reset_clipping(void)
-    {
-        reset();
-        m_clipper.reset_clipping();
-    }
-
-    void clip_box(scalar x1, scalar y1, scalar x2, scalar y2)
-    {
-        reset();
-        m_clipper.clip_box(clip_type::upscale(x1), clip_type::upscale(y1), 
-                           clip_type::upscale(x2), clip_type::upscale(y2));
     }
 
     void filling(filling_rule rule)
@@ -188,15 +207,15 @@ public:
         if (m_auto_close)
             close_polygon();
 
-        m_clipper.move_to(m_start_x = clip_type::downscale(x), 
-                m_start_y = clip_type::downscale(y));
+        m_gen.move_to(m_start_x = gen_type::downscale(x), 
+                m_start_y = gen_type::downscale(y));
         m_status = status_move_to;
     }
 
     void line_to(int x, int y)
     {
-        m_clipper.line_to(m_outline, clip_type::downscale(x), 
-                                     clip_type::downscale(y));
+        m_gen.line_to(m_outline, gen_type::downscale(x), 
+                                     gen_type::downscale(y));
         m_status = status_line_to;
     }
 
@@ -207,22 +226,22 @@ public:
         if (m_auto_close)
             close_polygon();
 
-        m_clipper.move_to(m_start_x = clip_type::upscale(x), 
-                          m_start_y = clip_type::upscale(y)); 
+        m_gen.move_to(m_start_x = gen_type::upscale(x), 
+                          m_start_y = gen_type::upscale(y)); 
         m_status = status_move_to;
     }
 
     void line_to_d(scalar x, scalar y)
     {
-        m_clipper.line_to(m_outline, clip_type::upscale(x), 
-                                     clip_type::upscale(y)); 
+        m_gen.line_to(m_outline, gen_type::upscale(x), 
+                                     gen_type::upscale(y)); 
         m_status = status_line_to;
     }
 
     void close_polygon(void)
     {
         if (m_status == status_line_to) {
-            m_clipper.line_to(m_outline, m_start_x, m_start_y);
+            m_gen.line_to(m_outline, m_start_x, m_start_y);
             m_status = status_closed;
         }
     }
@@ -243,8 +262,8 @@ public:
         if (m_outline.sorted())
             reset();
 
-        m_clipper.move_to(clip_type::downscale(x1), clip_type::downscale(y1));
-        m_clipper.line_to(m_outline, clip_type::downscale(x2), clip_type::downscale(y2));
+        m_gen.move_to(gen_type::downscale(x1), gen_type::downscale(y1));
+        m_gen.line_to(m_outline, gen_type::downscale(x2), gen_type::downscale(y2));
         m_status = status_move_to;
     }
 
@@ -253,8 +272,8 @@ public:
         if (m_outline.sorted())
             reset();
 
-        m_clipper.move_to(clip_type::upscale(x1), clip_type::upscale(y1)); 
-        m_clipper.line_to(m_outline, clip_type::upscale(x2), clip_type::upscale(y2)); 
+        m_gen.move_to(gen_type::upscale(x1), gen_type::upscale(y1)); 
+        m_gen.line_to(m_outline, gen_type::upscale(x2), gen_type::upscale(y2)); 
         m_status = status_move_to;
     }
 
@@ -459,12 +478,12 @@ public:
     }
 
 private:
-    gfx_rasterizer_scanline_aa(const gfx_rasterizer_scanline_aa<Clip>&);
-    const gfx_rasterizer_scanline_aa<Clip>& operator=(const gfx_rasterizer_scanline_aa<Clip>&);
+    gfx_rasterizer_scanline_aa(const gfx_rasterizer_scanline_aa<Gen>&);
+    const gfx_rasterizer_scanline_aa<Gen>& operator=(const gfx_rasterizer_scanline_aa<Gen>&);
 
 private:
     gfx_rasterizer_cells_aa<cell> m_outline;
-    clip_type    m_clipper;
+    gen_type     m_gen;
     int          m_gamma[aa_scale];
     filling_rule m_filling_rule;
     coord_type   m_start_x;

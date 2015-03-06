@@ -14,10 +14,11 @@
 
 namespace picasso {
 
-ps_font* _default_font(void)
+static ps_font* _global_font = 0;
+
+bool _init_default_font(void)
 {
-    static ps_font* font = 0;
-    if (!font) {
+    if (!_global_font) {
         ps_font* f = (ps_font*)mem_malloc(sizeof(ps_font));
         if (f) {
             f->refcount = 1;
@@ -28,10 +29,21 @@ ps_font* _default_font(void)
             f->desc.set_italic(false);
             f->desc.set_hint(true);
             f->desc.set_flip_y(true);
-            font = f;
+            _global_font = f;
+            return true;
         }
     }
-    return font;
+    return false;
+}
+
+void _destory_default_font(void)
+{
+    ps_font_unref(_global_font);
+}
+
+ps_font* _default_font(void)
+{
+    return _global_font;
 }
 
 }
@@ -164,6 +176,7 @@ void PICAPI ps_font_unref(ps_font* f)
 
     f->refcount--;
     if (f->refcount <= 0) {
+        (&f->desc)->font_desc::~font_desc();
         mem_free(f);
     }
     global_status = STATUS_SUCCEED;

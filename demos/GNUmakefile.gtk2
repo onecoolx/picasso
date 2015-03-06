@@ -1,8 +1,8 @@
 
-CC=gcc -g -pg
-#CC=gcc -O2
-INC=-I../include
-CFLAGS= `pkg-config --cflags gtk+-2.0`
+#CC=gcc -O3 -g -pg
+CC=gcc -O3
+INC=-I../include -I../build
+CFLAGS= `pkg-config --cflags gtk+-2.0` -DLINUX
 
 SYSTEM_LIBS = `pkg-config --libs gtk+-2.0` ${FREETYPE_LIBS} -lpthread -lstdc++ -lm
 

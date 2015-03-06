@@ -7,11 +7,11 @@
 #ifndef _PAINTER_RASTER_H_
 #define _PAINTER_RASTER_H_
 
-#include "pixfmt_wrapper.h"
 #include "gfx_image_accessors.h"
 #include "gfx_pixfmt_rgb16.h"
 #include "gfx_pixfmt_rgb.h"
 #include "gfx_pixfmt_rgba.h"
+#include "gfx_pixfmt_wrapper.h"
 #include "gfx_span_image_filters.h"
 
 namespace gfx {
@@ -22,10 +22,10 @@ typedef gfx_alpha_mask_u8 mask_type;
 
 template <typename Pixfmt> struct painter_raster;
 
-//32 bit clolr bilinear
+//32 bit color bilinear
 template <> struct painter_raster<pixfmt_rgba32> 
 {
-    typedef pixfmt_wrapper<pixfmt_rgba32, mask_type> format;
+    typedef gfx_pixfmt_wrapper<pixfmt_rgba32, mask_type> format;
     typedef format::color_type color_type;
     typedef image_accessor<format> source_type;
     typedef pattern_wrapper<format> pattern_type;
@@ -42,7 +42,7 @@ template <> struct painter_raster<pixfmt_rgba32>
 
 template <> struct painter_raster<pixfmt_argb32> 
 {
-    typedef pixfmt_wrapper<pixfmt_argb32, mask_type> format;
+    typedef gfx_pixfmt_wrapper<pixfmt_argb32, mask_type> format;
     typedef format::color_type color_type;
     typedef image_accessor<format> source_type;
     typedef pattern_wrapper<format> pattern_type;
@@ -59,7 +59,7 @@ template <> struct painter_raster<pixfmt_argb32>
 
 template <> struct painter_raster<pixfmt_abgr32> 
 {
-    typedef pixfmt_wrapper<pixfmt_abgr32, mask_type> format;
+    typedef gfx_pixfmt_wrapper<pixfmt_abgr32, mask_type> format;
     typedef format::color_type color_type;
     typedef image_accessor<format> source_type;
     typedef pattern_wrapper<format> pattern_type;
@@ -76,7 +76,7 @@ template <> struct painter_raster<pixfmt_abgr32>
 
 template <> struct painter_raster<pixfmt_bgra32> 
 {
-    typedef pixfmt_wrapper<pixfmt_bgra32, mask_type> format;
+    typedef gfx_pixfmt_wrapper<pixfmt_bgra32, mask_type> format;
     typedef format::color_type color_type;
     typedef image_accessor<format> source_type;
     typedef pattern_wrapper<format> pattern_type;
@@ -91,10 +91,10 @@ template <> struct painter_raster<pixfmt_bgra32>
     typedef gfx_span_image_filter_rgba_nn<color_type, pattern_type, interpolator_type> span_canvas_pattern_type_nn;
 };
 
-//24 bit clolr bilinear
+//24 bit color bilinear
 template <> struct painter_raster<pixfmt_rgb24> 
 {
-    typedef pixfmt_wrapper<pixfmt_rgb24, mask_type> format;
+    typedef gfx_pixfmt_wrapper<pixfmt_rgb24, mask_type> format;
     typedef format::color_type color_type;
     typedef image_accessor<format> source_type;
     typedef pattern_wrapper<format> pattern_type;
@@ -111,7 +111,7 @@ template <> struct painter_raster<pixfmt_rgb24>
 
 template <> struct painter_raster<pixfmt_bgr24> 
 {
-    typedef pixfmt_wrapper<pixfmt_bgr24, mask_type> format;
+    typedef gfx_pixfmt_wrapper<pixfmt_bgr24, mask_type> format;
     typedef format::color_type color_type;
     typedef image_accessor<format> source_type;
     typedef pattern_wrapper<format> pattern_type;
@@ -129,7 +129,7 @@ template <> struct painter_raster<pixfmt_bgr24>
 //16 bit color bilinear
 template <> struct painter_raster<pixfmt_rgb565> 
 {
-    typedef pixfmt_wrapper<pixfmt_rgb565, mask_type> format;
+    typedef gfx_pixfmt_wrapper<pixfmt_rgb565, mask_type> format;
     typedef format::color_type color_type;
     typedef image_accessor<format> source_type;
     typedef pattern_wrapper<format> pattern_type;
@@ -146,7 +146,7 @@ template <> struct painter_raster<pixfmt_rgb565>
 
 template <> struct painter_raster<pixfmt_rgb555> 
 {
-    typedef pixfmt_wrapper<pixfmt_rgb555, mask_type> format;
+    typedef gfx_pixfmt_wrapper<pixfmt_rgb555, mask_type> format;
     typedef format::color_type color_type;
     typedef image_accessor<format> source_type;
     typedef pattern_wrapper<format> pattern_type;

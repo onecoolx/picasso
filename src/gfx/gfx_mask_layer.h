@@ -274,7 +274,7 @@ private:
     void init_span(unsigned int len, const cover_type* covers)
     {
         realloc_span(len);
-        memcpy(&m_span[0], covers, len * sizeof(cover_type));
+        mem_copy(&m_span[0], covers, len * sizeof(cover_type));
     }
 
 public:

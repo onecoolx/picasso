@@ -1,13 +1,13 @@
 #DLL=-DDLL_EXPORT
 FREETYPE_INC=-I/usr/include/freetype2
 #FREETYPE_INC=-I/extra/freetype2/include -I/extra/freetype2/include/freetype2
-CXX=g++ -Wall -O3 -g -fno-rtti -fno-exceptions -fno-strict-aliasing
-#CXX=g++ -Wall -O3 -g -fprofile-arcs -ftest-coverage -fno-rtti -fno-exceptions -fno-strict-aliasing
-#CXX=clang++ -Wall -O3 -g -fno-rtti -fno-exceptions -fno-strict-aliasing
-INC=-I. -I./gfx -I./gfx/include -I./include -I./../ -I./../include -I./../build ${FREETYPE_INC}
+CXX=g++ -Wall -O3 -g -fno-rtti -fno-exceptions -mfpmath=sse -msse2
+#CXX=g++ -Wall -O3 -g -fprofile-arcs -ftest-coverage -fno-rtti -fno-exceptions
+#CXX=g++ -Wall -O3 -g -pg -fno-rtti -fno-exceptions
+INC=-I. -I./gfx -I./gfx/include -I./include -I./simd -I./../ -I./../include -I./../build ${FREETYPE_INC}
 CXXFLAGS=-DEXPORT ${DLL} 
 
-VPATH=./ ./include ./core ./gfx ./gfx/include ./gfx/lib
+VPATH=./ ./include ./core ./simd ./gfx ./gfx/include ./gfx/lib
 
 objects= \
 		device.o \

@@ -151,7 +151,7 @@ public:
 
     void add_cells(int x, unsigned int len, const cover_type* covers)
     {
-        memcpy(m_cover_ptr, covers, len * sizeof(cover_type));
+        mem_copy(m_cover_ptr, covers, len * sizeof(cover_type));
         if (x == m_last_x+1 && m_cur_span->len > 0) {
             m_cur_span->len += (int16_t)len;
         } else {
@@ -264,7 +264,7 @@ public:
     void add_cells(int x, unsigned int len, const cover_type* covers)
     {
         x -= m_min_x;
-        memcpy(&m_covers[x], covers, len * sizeof(cover_type));
+        mem_copy(&m_covers[x], covers, len * sizeof(cover_type));
         if (x == m_last_x+1) {
             m_cur_span->len += (coord_type)len;
         } else {

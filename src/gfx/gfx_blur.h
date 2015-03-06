@@ -48,7 +48,7 @@ private:
 // stack blur calc
 struct stack_blur_calc_rgba
 {
-    typedef unsigned int value_type;
+    typedef uint32_t value_type;
     value_type r;
     value_type g;
     value_type b;
@@ -83,15 +83,6 @@ struct stack_blur_calc_rgba
         a -= v.a;
     }
 
-    template <typename T> void calc_pix(T& v, unsigned int div)
-    {
-        typedef typename T::value_type value_type;
-        v.r = value_type(r / div);
-        v.g = value_type(g / div);
-        v.b = value_type(b / div);
-        v.a = value_type(a / div);
-    }
-
     template <typename T> void calc_pix(T& v, unsigned int mul, unsigned int shr)
     {
         typedef typename T::value_type value_type;
@@ -102,14 +93,13 @@ struct stack_blur_calc_rgba
     }
 };
 
-
 // stack blur generator
 template <typename ColorType>
 class stack_blur
 {
 public:
     typedef ColorType color_type;
-    typedef stack_blur_calc_rgba calculator_type;
+    ALIGNED(16) typedef stack_blur_calc_rgba calculator_type;
 
     stack_blur()
     {
@@ -145,7 +135,6 @@ public:
         unsigned int wm = w - 1;
         unsigned int div = (radius << 1) + 1;
 
-        unsigned int div_sum = (radius + 1) * (radius + 1);
         unsigned int mul_sum = 0;
         unsigned int shr_sum = 0;
         unsigned int max_val = color_type::base_mask;
@@ -179,11 +168,7 @@ public:
 
             stack_ptr = radius;
             for (x = 0; x < w; x++) {
-                if (mul_sum)
-                    sum.calc_pix(m_buffer[x], mul_sum, shr_sum);
-                else
-                    sum.calc_pix(m_buffer[x], div_sum);
-
+                sum.calc_pix(m_buffer[x], mul_sum, shr_sum);
                 sum.sub(sum_out);
        
                 stack_start = stack_ptr + div - radius;
@@ -201,8 +186,8 @@ public:
                     xp = wm;
                 pix = img.pixel(xp, y);
 
-                if ((pix.r==0) && (pix.g==0)
-                  && (pix.b==0) && (pix.a==0))
+                if ((pix.r == 0) && (pix.g == 0)
+                  && (pix.b == 0) && (pix.a == 0))
                 {
                     pix.r = m_shading.r;
                     pix.g = m_shading.g;

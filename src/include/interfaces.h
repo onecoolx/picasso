@@ -180,7 +180,7 @@ public:
     virtual void apply_stroke(abstract_raster_adapter* rs) = 0;
     virtual void apply_fill(abstract_raster_adapter* rs) = 0;
 
-    virtual void apply_text_fill(abstract_raster_adapter* rs, int t) = 0;
+    virtual void apply_text_fill(abstract_raster_adapter* rs, text_style style) = 0;
 
     // FIXME: own mono storage implements needed!
     virtual void apply_mono_text_fill(void * storage) = 0;

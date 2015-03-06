@@ -83,7 +83,7 @@ ps_image* PICAPI ps_image_create_from_data(ps_byte* data, ps_color_format fmt, i
             global_status = STATUS_SUCCEED;
             return img;
         } else if ((buf = (byte*)mem_malloc(h * pitch))) {
-            memcpy(buf, data, pitch*h);
+            mem_copy(buf, data, pitch*h);
             img->flage = buffer_alloc_malloc;
             img->buffer.attach(buf, w, h, pitch);
             global_status = STATUS_SUCCEED;

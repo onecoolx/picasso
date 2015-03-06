@@ -2,7 +2,7 @@
 #CC=gcc -O3 -g -pg
 CC=gcc -O3 
 
-INC=-I../include
+INC=-I../include -I../build
 CFLAGS=${DLL} -DUNICODE -D_UNICODE
 
 SYSTEM_LIBS = -lgdi32 -lstdc++ -lfreetype

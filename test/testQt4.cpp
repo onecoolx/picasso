@@ -33,7 +33,7 @@ public:
         canvas = ps_canvas_create_with_data(buffer->bits(), COLOR_FORMAT_BGRA, 
                                                     640, 480, buffer->bytesPerLine());
         context = ps_context_create(canvas, 0);
-        init_context(context, canvas);    
+        init_context(context, canvas, buffer->bits());    
 
         set_image_data(img1->bits(), COLOR_FORMAT_BGRA, img1->width(), 
                                                 img1->height(), img1->bytesPerLine());

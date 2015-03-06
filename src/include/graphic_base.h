@@ -392,9 +392,16 @@ typedef struct _glyph {
     scalar        advance_y;
 } glyph;
 
+// text style
+typedef enum {
+    text_smooth,
+    text_mono,
+    text_stroke,
+} text_style;
+
 }
 
 using namespace picasso;
 
-#endif/*_GRAPHIC_BASE_H_*/
+#endif /*_GRAPHIC_BASE_H_*/
 

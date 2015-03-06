@@ -24,33 +24,41 @@ template <typename T> class pod_array
 public:
     pod_array()
         : m_size(0)
+        , m_capacity(0)
         , m_array(0)
     {
     }
 
     ~pod_array()
     { 
-        pod_allocator<T>::deallocate(m_array, m_size);
+        pod_allocator<T>::deallocate(m_array, m_capacity);
     }
 
     pod_array(unsigned int size)
         : m_size(size) 
-        , m_array(pod_allocator<T>::allocate(size)) 
+        , m_capacity(size)
+        , m_array(pod_allocator<T>::allocate(m_capacity)) 
     {
     }
 
     pod_array(const pod_array<T>& o)
         : m_size(o.m_size) 
+        , m_capacity(o.m_size) // copy constrcut size == capacity
         , m_array(pod_allocator<T>::allocate(o.m_size))
     {
-        memcpy(m_array, o.m_array, sizeof(T) * m_size);
+        mem_copy(m_array, o.m_array, sizeof(T) * m_size);
     }
 
     void resize(unsigned int size)
     {
-        if (size != m_size) { // resize will clean the old data.
-            pod_allocator<T>::deallocate(m_array, m_size);
-            m_array = pod_allocator<T>::allocate(size);
+        if (size > m_size) { // resize will invalid the old data.
+            if (size > m_capacity) {
+                pod_allocator<T>::deallocate(m_array, m_capacity);
+                m_array = pod_allocator<T>::allocate(size);
+                m_capacity = size;
+            }
+            m_size = size;
+        } else {
             m_size = size;
         }
     }
@@ -60,7 +68,7 @@ public:
             return *this;
 
         resize(o.size());
-        memcpy(m_array, o.m_array, sizeof(T) * m_size);
+        mem_copy(m_array, o.m_array, sizeof(T) * m_size);
         return *this;
     }
 
@@ -78,6 +86,7 @@ public:
     T* data(void) { return m_array; }
 private:
     unsigned int m_size;
+    unsigned int m_capacity;
     T*           m_array;
 };
 
@@ -86,6 +95,10 @@ private:
 template <typename T> class pod_vector
 {
 public:
+    enum {
+       max_limit = 16384,
+    };
+
     pod_vector() 
         : m_size(0)
         , m_capacity(0)
@@ -154,7 +167,8 @@ template <typename T> pod_vector<T>::pod_vector(const pod_vector<T>& v)
     , m_capacity(v.m_capacity)
     , m_array(v.m_capacity ? pod_allocator<T>::allocate(v.m_capacity) : 0)
 {
-    memcpy(m_array, v.m_array, sizeof(T) * v.m_size);
+    if (m_array)
+        mem_copy(m_array, v.m_array, sizeof(T) * v.m_size);
 }
 
 template <typename T> 
@@ -174,7 +188,7 @@ inline void pod_vector<T>::resize(unsigned int new_size)
     if (new_size > m_size) {
         if (new_size > m_capacity) {
             T* data = pod_allocator<T>::allocate(new_size);
-            memcpy(data, m_array, m_size * sizeof(T));
+            mem_copy(data, m_array, m_size * sizeof(T));
             pod_allocator<T>::deallocate(m_array, m_capacity);
             m_capacity = new_size;
             m_array = data;
@@ -192,21 +206,27 @@ inline void pod_vector<T>::allocate(unsigned int new_size)
 }
 
 template <typename T> 
-inline const pod_vector<T>& pod_vector<T>::operator = (const pod_vector<T>&v)
+inline const pod_vector<T>& pod_vector<T>::operator = (const pod_vector<T>& v)
 {
     if (this == &v)
         return *this;
 
-    pod_allocator<T>::deallocate(m_array, m_capacity);
-    m_capacity = v.m_capacity;
-    m_size = v.m_size;
-    m_array = 0;
+    if (v.m_size > m_size) {
+        if ((v.m_size > m_capacity) || (m_capacity > max_limit)) {
+            pod_allocator<T>::deallocate(m_array, m_capacity);
+            m_capacity = v.m_capacity;
+            m_array = 0;
 
-    if (m_capacity)
-        m_array = pod_allocator<T>::allocate(m_capacity);
+            if (m_capacity)
+                m_array = pod_allocator<T>::allocate(m_capacity);
+        }
+        m_size = v.m_size;
+    } else {
+        m_size = v.m_size;
+    }
 
     if (m_size) 
-        memcpy(m_array, v.m_array, sizeof(T) * v.m_size);
+        mem_copy(m_array, v.m_array, sizeof(T) * v.m_size);
 
     return *this;
 }
@@ -230,7 +250,7 @@ inline bool pod_vector<T>::insert_at(unsigned int pos, const T& val)
     if (pos >= m_size) {
         m_array[m_size] = val;
     } else {
-        memmove(m_array + pos + 1, m_array + pos, (m_size - pos) * sizeof(T));
+        mem_deep_copy(m_array + pos + 1, m_array + pos, (m_size - pos) * sizeof(T));
         m_array[pos] = val;
     }
     ++m_size;
@@ -247,10 +267,9 @@ inline bool pod_vector<T>::set_data(unsigned int num, T* data)
         return false;
 
     m_size = num;
-    memcpy(m_array, data, sizeof(T) * m_size);
+    mem_copy(m_array, data, sizeof(T) * m_size);
     return true;
 }
-
 
 
 // pod_bvector  default S = 5, mean block size 32
@@ -388,7 +407,7 @@ pod_bvector<T, S>::pod_bvector(const pod_bvector<T, S>& o)
 {
     for (unsigned int i = 0; i < o.m_num_blocks; ++i) {
         m_blocks[i] = pod_allocator<T>::allocate(block_size);
-        memcpy(m_blocks[i], o.m_blocks[i], block_size * sizeof(T));
+        mem_copy(m_blocks[i], o.m_blocks[i], block_size * sizeof(T));
     }
 }
 
@@ -408,7 +427,7 @@ const pod_bvector<T, S>& pod_bvector<T, S>::operator = (const pod_bvector<T, S>&
 
     for (unsigned int i = 0; i < o.m_num_blocks; ++i) {
         m_blocks[i] = pod_allocator<T>::allocate(block_size);
-        memcpy(m_blocks[i], o.m_blocks[i], block_size * sizeof(T));
+        mem_copy(m_blocks[i], o.m_blocks[i], block_size * sizeof(T));
     }
 
     return *this;
@@ -434,7 +453,7 @@ inline void pod_bvector<T, S>::allocate_block(unsigned int nb)
         T** new_blocks = pod_allocator<T*>::allocate(m_max_blocks + m_block_ptr_inc);
 
         if (m_blocks) {
-            memcpy(new_blocks, m_blocks, m_num_blocks * sizeof(T*));
+            mem_copy(new_blocks, m_blocks, m_num_blocks * sizeof(T*));
             pod_allocator<T*>::deallocate(m_blocks, m_max_blocks);
         }
 
@@ -571,7 +590,7 @@ private:
 #endif
 
             if (m_blocks) {
-                memcpy(new_blocks, m_blocks, m_num_blocks * sizeof(block_type));
+                mem_copy(new_blocks, m_blocks, m_num_blocks * sizeof(block_type));
                 pod_allocator<block_type>::deallocate(m_blocks, m_max_blocks);
             }
 

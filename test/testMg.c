@@ -57,7 +57,7 @@ static int LoadBmpWinProc(HWND hWnd, int message, WPARAM wParam, LPARAM lParam)
 
             canvas = ps_canvas_create_with_data(pdr, fmt, w, h, p);
             context = ps_context_create(canvas, 0);
-            init_context(context, canvas);    
+            init_context(context, canvas, pdr);    
                set_image_data(bmp.bmBits, fmt, bmp.bmWidth, bmp.bmHeight, bmp.bmPitch);
                set_pattern_data(abmp.bmBits, fmt, abmp.bmWidth, abmp.bmHeight, abmp.bmPitch);
             SetTimer(hWnd, 33, 10);

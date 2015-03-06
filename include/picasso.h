@@ -19,8 +19,6 @@
 #ifndef _PICASSO_H_
 #define _PICASSO_H_
 
-#include <stdint.h>
-
 #ifdef DLL_EXPORT
     #if defined(WIN32) || defined(WINCE)
         #ifdef EXPORT
@@ -32,7 +30,7 @@
         #endif
     #else
         #define PICAPI
-        #if defined(__GNUC__) && ((__GNUC__ >= 4) || (__GNUC__ == 3 && __GNUC_MINOR__ >= 3))
+        #if (defined(__GNUC__) && ((__GNUC__ >= 4) || (__GNUC__ == 3 && __GNUC_MINOR__ >= 3))) || (defined(__clang__))
             #define PEXPORT __attribute__((visibility("default")))
         #else
             #define PEXPORT
@@ -42,6 +40,9 @@
 #define PICAPI
 #define PEXPORT
 #endif
+
+#include "pconfig.h"
+#include <stdint.h>
 
 #ifdef __cplusplus
 extern "C" {

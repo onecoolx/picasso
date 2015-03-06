@@ -13,12 +13,6 @@
 #include "color_type.h"
 #include "interfaces.h"
 
-enum {
-    TEXT_SMOOTH,
-    TEXT_MONO,
-    TEXT_STROKE,
-};
-
 namespace picasso {
 
 struct context_state;
@@ -50,7 +44,7 @@ public:
     void render_copy(rendering_buffer& src, const rect* rect, const painter* dst, int off_x, int off_y);
 
     void render_glyph(context_state* state, raster_adapter& raster, const font_adapter* font, int type);
-    void render_glyphs_raster(context_state* state, raster_adapter& raster, int render_type);
+    void render_glyphs_raster(context_state* state, raster_adapter& raster, int style);
 private:
     void init_raster_data(context_state*, unsigned int, raster_adapter&, const vertex_source&, const trans_affine&);
     void init_source_data(context_state*, unsigned int, const graphic_path&);

@@ -81,7 +81,7 @@ bool font_engine::create_font(const font_desc& desc)
     } else {
         if (m_num_fonts >= m_max_fonts) {
             delete m_fonts[0];
-            memcpy (m_fonts, m_fonts + 1, (m_max_fonts - 1) * sizeof(font_adapter*)); 
+            mem_copy(m_fonts, m_fonts + 1, (m_max_fonts - 1) * sizeof(font_adapter*)); 
             m_num_fonts = m_max_fonts - 1;
         }
 
@@ -191,7 +191,7 @@ bool font_adapter::generate_raster(const glyph* g, scalar x, scalar y)
         } else {
             unsigned int count = 0;
             unsigned int offset = sizeof(unsigned int);
-            memcpy(&count, g->data, offset);
+            mem_copy(&count, g->data, offset);
             m_path_adaptor.serialize_from(count, g->data+offset, g->data_size-offset);
             m_path_adaptor.translate(x, y);
         }

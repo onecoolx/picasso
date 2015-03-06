@@ -36,14 +36,14 @@ public:
 
     ~gfx_renderer()
     {
-        m_clip_path.reset_clipping();
+        m_clip_path.reset();
     }
 
     void attach(pixfmt_type& fmt)
     {
         m_pixfmt = &fmt;
         m_clip_rect = rect(0, 0, fmt.width() - 1, fmt.height() - 1);
-        m_clip_path.reset_clipping();
+        m_clip_path.reset();
         m_is_path_clip = false;
     }
 
@@ -77,7 +77,7 @@ public:
     void add_clipping(vertex_source& p, filling_rule f)
     {
         m_is_path_clip = true;
-        m_clip_path.reset_clipping();
+        m_clip_path.reset();
         m_clip_path.filling(f);
         m_clip_path.add_path(p);
 
@@ -91,7 +91,7 @@ public:
     void reset_clipping(bool visibility)
     {
         m_clip_rect = rect(0, 0, width() - 1, height() - 1);
-        m_clip_path.reset_clipping();
+        m_clip_path.reset();
         m_is_path_clip = false;
     }
 
@@ -147,8 +147,7 @@ public:
                     incx = -1;
                 }
 
-                while (rc.x2 > 0)
-                {
+                while (rc.x2 > 0) {
                     while (rc.y2 > 0) {
                         if (pixel_in_path(rdst.x1, rdst.y1))
                             m_pixfmt->copy_point_from(from, rdst.x1, rdst.y1, rsrc.x1, rsrc.y1);
@@ -216,8 +215,7 @@ public:
                     incx = -1;
                 }
 
-                while (rc.x2 > 0)
-                {
+                while (rc.x2 > 0) {
                     while (rc.y2 > 0) {
                         if (pixel_in_path(rdst.x1, rdst.y1))
                             m_pixfmt->blend_point_from(from, rdst.x1, rdst.y1, rsrc.x1, rsrc.y1, cover);

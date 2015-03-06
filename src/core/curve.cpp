@@ -139,8 +139,7 @@ void curve3_div::recursive_bezier(scalar x1, scalar y1, scalar x2, scalar y2, sc
             // If the curvature doesn't exceed the distance_tolerance value
             // we tend to finish subdivisions.
             //----------------------
-            if(m_angle_tolerance < curve_angle_tolerance_epsilon)
-            {
+            if (m_angle_tolerance < curve_angle_tolerance_epsilon) {
                 m_points.add(vertex_s(x123, y123));
                 return;
             }
@@ -174,7 +173,7 @@ void curve3_div::recursive_bezier(scalar x1, scalar y1, scalar x2, scalar y2, sc
 
             if (d <= 0) 
                 d = calc_sq_distance(x2, y2, x1, y1);
-            else if(d >= 1) 
+            else if (d >= 1) 
                 d = calc_sq_distance(x2, y2, x3, y3);
             else            
                 d = calc_sq_distance(x2, y2, x1 + d*dx, y1 + d*dy);

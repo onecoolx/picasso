@@ -10,6 +10,7 @@
         ['OS=="win"', {
           'defines': [
             '_DEBUG'
+            'ENABLE_FAST_COPY=1'
           ],
           'msvs_configuration_attributes': {
             'ConfigurationType': '2',
@@ -43,6 +44,8 @@
           'defines': [
             '_DEBUG',
             'ENABLE_FREE_TYPE2=1'
+            'ENABLE_FONT_CONFIG=1'
+            'ENABLE_FAST_COPY=1'
           ],
           'cflags_cc': [
             '-O0',
@@ -51,7 +54,6 @@
             '-fPIC',
             '-fno-rtti',
             '-fno-exceptions',
-            '-fno-strict-aliasing',
             '-Wno-unused-result',
           ],
         }],
@@ -62,6 +64,7 @@
         ['OS=="win"', {
           'defines': [
             'NDEBUG'
+            'ENABLE_FAST_COPY=1'
           ],
           'msvs_configuration_attributes': {
             'ConfigurationType': '2',
@@ -102,6 +105,8 @@
           'defines': [
             'NDEBUG',
             'ENABLE_FREE_TYPE2=1'
+            'ENABLE_FONT_CONFIG=1'
+            'ENABLE_FAST_COPY=1'
           ],
           'cflags_cc': [
             '-O3',
@@ -109,7 +114,6 @@
             '-fPIC',
             '-fno-rtti',
             '-fno-exceptions',
-            '-fno-strict-aliasing',
             '-Wno-unused-result',
           ],
         }],

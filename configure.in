@@ -6,7 +6,7 @@ AC_INIT(picasso, 2.1, onecoolx@gmail.com)
 
 VERSION_MAJOR=2
 VERSION_MINOR=1
-VERSION_MICRO=0
+VERSION_MICRO=5
 VERSION=$VERSION_MAJOR.$VERSION_MINOR.$VERSION_MICRO
 AC_SUBST(VERSION_MAJOR)
 AC_SUBST(VERSION_MINOR)
@@ -27,6 +27,7 @@ AC_PREFIX_DEFAULT(/usr/local)
 
 # User define macro.
 build_freetype2="yes"
+build_fontconfig="yes"
 build_lowmem="no"
 format_rgba="yes"
 format_argb="yes"
@@ -41,6 +42,10 @@ format_rgb555="yes"
 AC_ARG_ENABLE(freetype2,
 [  --enable-freetype2     Build FreeType2 support  <default=yes>],
 build_freetype2=$enableval)
+
+AC_ARG_ENABLE(fontconfig,
+[  --enable-fontconfig     Build FontConfig support  <default=yes>],
+build_fontconfig=$enableval)
 
 AC_ARG_ENABLE(lowmem,
 [  --enable-lowmem     Build Low Memory used support  <default=no>],
@@ -104,6 +109,13 @@ else
 	LIBS="$LIBS -lgdi32"
 fi
 
+if test "x$build_fontconfig" = "xyes"; then
+    AC_DEFINE(ENABLE_FONT_CONFIG, 1, [Define if FontConfig is supported.])
+	CFLAGS="$CFLAGS `pkg-config fontconfig --cflags`"
+	CXXFLAGS="$CXXFLAGS `pkg-config fontconfig --cflags`"
+	LIBS="$LIBS `pkg-config fontconfig --libs`"
+fi
+
 if test "x$build_lowmem" = "xyes"; then
     AC_DEFINE(ENABLE_LOW_MEMORY, 1, [Define if Low memory is supported.])
 fi
@@ -142,7 +154,7 @@ fi
 
 EXTRA_FLAGS="-fvisibility=hidden -fvisibility-inlines-hidden"
 CFLAGS="$CFLAGS -Wall -DDLL_EXPORT=1 $EXTRA_FLAGS" 
-CXXFLAGS="$CXXFLAGS -Wall -fno-rtti -fno-exceptions -fno-strict-aliasing -DDLL_EXPORT=1 $EXTRA_FLAGS"
+CXXFLAGS="$CXXFLAGS -Wall -fno-rtti -fno-exceptions -DDLL_EXPORT=1 $EXTRA_FLAGS"
 
 AC_OUTPUT(
 Makefile

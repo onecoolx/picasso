@@ -12,6 +12,14 @@
 
 namespace picasso {
 
+/* 
+ * GPC  - Version 2.31 
+ * Author:    Alan Murta (email: gpc@cs.man.ac.uk)
+ * Date:      4th June 1999
+ * Copyright: (C) 1997-1999, Advanced Interfaces Group,
+ *            University of Manchester.
+ */
+
 #define LEFT               0
 #define RIGHT              1
 
@@ -20,7 +28,6 @@ namespace picasso {
 
 #define CLIP               0
 #define SUBJ               1
-
 
 /*
 ===========================================================================
@@ -912,43 +919,6 @@ void gpc_free_polygon(gpc_polygon *p)
   p->num_contours= 0;
 }
 
-
-
-void gpc_add_contour(gpc_polygon *p, gpc_vertex_list *new_contour, int hole)
-{
-  int             *extended_hole, c, v;
-  gpc_vertex_list *extended_contour;
-
-  /* Create an extended hole array */
-  extended_hole = (int*)mem_malloc((p->num_contours + 1) * sizeof(int));
-
-  /* Create an extended contour array */
-  extended_contour = (gpc_vertex_list*)mem_malloc((p->num_contours + 1) * sizeof(gpc_vertex_list));
-
-  /* Copy the old contour and hole data into the extended arrays */
-  for (c= 0; c < p->num_contours; c++)
-  {
-    extended_hole[c]= p->hole[c];
-    extended_contour[c]= p->contour[c];
-  }
-
-  /* Copy the new contour and hole onto the end of the extended arrays */
-  c= p->num_contours;
-  extended_hole[c]= hole;
-  extended_contour[c].num_vertices = new_contour->num_vertices;
-  extended_contour[c].vertex = (vertex_s*)mem_malloc(new_contour->num_vertices * sizeof(vertex_s));
-  for (v= 0; v < new_contour->num_vertices; v++)
-    extended_contour[c].vertex[v]= new_contour->vertex[v];
-
-  /* Dispose of the old contour */
-  mem_free(p->contour);
-  mem_free(p->hole);
-
-  /* Update the polygon information */
-  p->num_contours++;
-  p->hole= extended_hole;
-  p->contour= extended_contour;
-}
 
 
 void gpc_polygon_clip(gpc_op op, gpc_polygon *subj, gpc_polygon *clip,

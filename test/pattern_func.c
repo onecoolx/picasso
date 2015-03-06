@@ -37,7 +37,7 @@ void draw_test (int id, ps_context* gc)
     ps_fill(gc);
 }
 
-void init_context (ps_context* gc, ps_canvas* cs)
+void init_context (ps_context* gc, ps_canvas* cs, unsigned char* buf)
 {
     float version = (float)ps_version() / 10000;
     fprintf(stderr, "picasso version %.2f\n", version);

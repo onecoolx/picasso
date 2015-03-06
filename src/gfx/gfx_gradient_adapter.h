@@ -10,7 +10,7 @@
 #include "common.h"
 #include "interfaces.h"
 
-#include "pixfmt_wrapper.h"
+#include "gfx_pixfmt_wrapper.h"
 #include "gfx_span_generator.h"
 #include "gfx_trans_affine.h"
 

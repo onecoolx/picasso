@@ -3,10 +3,12 @@ TOP_DIR=..
 INCLUDES = -I./include \
 		   -I./gfx \
 		   -I./gfx/include \
+           -I./core \
+           -I./simd \
 		   -I../include \
 		   -I../ 
 
-VPATH=./ ./inclue ./core ./gfx ./gfx/include ./gfx/lib
+VPATH=./ ./inclue ./core ./simd ./gfx ./gfx/include ./gfx/lib
 
 lib_LTLIBRARIES = libpicasso.la
 

@@ -49,10 +49,10 @@ public:
     scalar approximation_scale(void) const { return m_scale; }
 
     void angle_tolerance(scalar) {}
-    scalar angle_tolerance() const { return FLT_TO_SCALAR(0.0f); }
+    scalar angle_tolerance(void) const { return FLT_TO_SCALAR(0.0f); }
 
     void cusp_limit(scalar) {}
-    scalar cusp_limit() const { return FLT_TO_SCALAR(0.0f); }
+    scalar cusp_limit(void) const { return FLT_TO_SCALAR(0.0f); }
 
     virtual void rewind(unsigned int id);
     virtual unsigned int vertex(scalar* x, scalar* y);
@@ -87,7 +87,8 @@ public:
         , m_distance_tolerance_square(FLT_TO_SCALAR(0.0f))
         , m_angle_tolerance(FLT_TO_SCALAR(0.0f))
         , m_count(0)
-    { }
+    {
+    }
 
     curve3_div(scalar x1, scalar y1, scalar x2, scalar y2, scalar x3, scalar y3) 
         : m_approximation_scale(FLT_TO_SCALAR(1.0f)), m_angle_tolerance(FLT_TO_SCALAR(0.0f)), m_count(0)
@@ -97,9 +98,9 @@ public:
 
     void reset(void) 
     {
-           m_points.clear(); 
+        m_points.clear(); 
         m_count = 0;
-       }
+    }
 
     void init(scalar x1, scalar y1, scalar x2, scalar y2, scalar x3, scalar y3);
 
@@ -110,10 +111,10 @@ public:
     scalar approximation_scale() const { return m_approximation_scale;  }
 
     void angle_tolerance(scalar a) { m_angle_tolerance = a; }
-    scalar angle_tolerance() const { return m_angle_tolerance;  }
+    scalar angle_tolerance(void) const { return m_angle_tolerance;  }
 
     void cusp_limit(scalar) {}
-    scalar cusp_limit() const { return FLT_TO_SCALAR(0.0f); }
+    scalar cusp_limit(void) const { return FLT_TO_SCALAR(0.0f); }
 
     virtual void rewind(unsigned int id)
     {
@@ -135,9 +136,9 @@ private:
     void recursive_bezier(scalar x1, scalar y1, scalar x2, scalar y2, 
                                         scalar x3, scalar y3, unsigned int level);
 
-    scalar               m_approximation_scale;
-    scalar               m_distance_tolerance_square;
-    scalar               m_angle_tolerance;
+    scalar m_approximation_scale;
+    scalar m_distance_tolerance_square;
+    scalar m_angle_tolerance;
     unsigned int m_count;
     pod_bvector<vertex_s> m_points;
 };
@@ -149,19 +150,20 @@ class curve4_inc : public vertex_source
 public:
     curve4_inc() 
         : m_num_steps(0), m_step(0), m_scale(FLT_TO_SCALAR(1.0f)) 
-    { }
+    {
+    }
 
     curve4_inc(scalar x1, scalar y1, scalar x2, scalar y2, scalar x3, scalar y3,scalar x4, scalar y4)
-           : m_num_steps(0), m_step(0), m_scale(FLT_TO_SCALAR(1.0f)) 
+        : m_num_steps(0), m_step(0), m_scale(FLT_TO_SCALAR(1.0f)) 
     { 
         init(x1, y1, x2, y2, x3, y3, x4, y4);
     }
 
     void reset(void) 
     {
-           m_num_steps = 0;
-           m_step = -1;
-       }
+        m_num_steps = 0;
+        m_step = -1;
+    }
 
     void init(scalar x1, scalar y1, scalar x2, scalar y2, scalar x3, scalar y3, scalar x4, scalar y4);
 
@@ -169,13 +171,13 @@ public:
     curve_approximation_method approximation_method(void) const { return curve_inc; }
 
     void approximation_scale(scalar s) { m_scale = s; }
-    scalar approximation_scale() const { return m_scale; }
+    scalar approximation_scale(void) const { return m_scale; }
 
     void angle_tolerance(scalar) {}
-    scalar angle_tolerance() const { return FLT_TO_SCALAR(0.0f); }
+    scalar angle_tolerance(void) const { return FLT_TO_SCALAR(0.0f); }
 
     void cusp_limit(scalar) {}
-    scalar cusp_limit() const { return FLT_TO_SCALAR(0.0f); }
+    scalar cusp_limit(void) const { return FLT_TO_SCALAR(0.0f); }
 
     virtual void rewind(unsigned int id);
     virtual unsigned int vertex(scalar* x, scalar* y);
@@ -214,10 +216,11 @@ public:
         , m_angle_tolerance(FLT_TO_SCALAR(0.0f))
         , m_cusp_limit(FLT_TO_SCALAR(0.0f))
         , m_count(0)
-    { }
+    {
+    }
 
     curve4_div(scalar x1, scalar y1, scalar x2, scalar y2, scalar x3, scalar y3,scalar x4, scalar y4)
-           : m_approximation_scale(FLT_TO_SCALAR(1.0f))
+        : m_approximation_scale(FLT_TO_SCALAR(1.0f))
         , m_angle_tolerance(FLT_TO_SCALAR(0.0f))
         , m_cusp_limit(FLT_TO_SCALAR(0.0f))
         , m_count(0)
@@ -227,9 +230,9 @@ public:
 
     void reset(void) 
     {
-           m_points.clear(); 
+        m_points.clear(); 
         m_count = 0;
-       }
+    }
 
     void init(scalar x1, scalar y1, scalar x2, scalar y2, scalar x3, scalar y3, scalar x4, scalar y4);
 
@@ -238,17 +241,17 @@ public:
     curve_approximation_method approximation_method() const { return curve_div; }
 
     void approximation_scale(scalar s) { m_approximation_scale = s; }
-    scalar approximation_scale() const { return m_approximation_scale;  }
+    scalar approximation_scale(void) const { return m_approximation_scale;  }
 
     void angle_tolerance(scalar a) { m_angle_tolerance = a; }
-    scalar angle_tolerance() const { return m_angle_tolerance;  }
+    scalar angle_tolerance(void) const { return m_angle_tolerance;  }
 
     void cusp_limit(scalar v) 
     { 
         m_cusp_limit = (v == FLT_TO_SCALAR(0.0f)) ? FLT_TO_SCALAR(0.0f) : PI - v; 
     }
 
-    scalar cusp_limit() const 
+    scalar cusp_limit(void) const 
     { 
         return (m_cusp_limit == FLT_TO_SCALAR(0.0f)) ? FLT_TO_SCALAR(0.0f) : PI - m_cusp_limit; 
     }
@@ -280,10 +283,10 @@ private:
                           scalar x4, scalar y4,
                           unsigned level);
 
-    scalar               m_approximation_scale;
-    scalar               m_distance_tolerance_square;
-    scalar               m_angle_tolerance;
-    scalar               m_cusp_limit;
+    scalar m_approximation_scale;
+    scalar m_distance_tolerance_square;
+    scalar m_angle_tolerance;
+    scalar m_cusp_limit;
     unsigned int m_count;
     pod_bvector<vertex_s> m_points;
 };

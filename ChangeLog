@@ -16,3 +16,6 @@
 2014-08-13:
     Fix crash bug for path clip.
 
+2015-03-04: Version 2.1.5
+	Porting to android system (version<=4.4).
+

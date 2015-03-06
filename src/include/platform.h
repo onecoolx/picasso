@@ -17,7 +17,6 @@
 #define CPU(FEATURE) (defined CPU_##FEATURE  && CPU_##FEATURE)
 
 
-
 /* COMPILER(MSVC) - Microsoft Visual C++ */
 #if defined(_MSC_VER)
 #define COMPILER_MSVC 1
@@ -36,6 +35,11 @@
 /* COMPILER(WATCOM) - Watcom C/C++ Compiler */
 #if defined(__WATCOMC__)
 #define COMPILER_WATCOM 1
+#endif
+
+/* COMPILER(CLANG) - llvm/clang C/C++ Compiler */
+#if defined(__clang__)
+#define COMPILER_CLANG 1
 #endif
 
 

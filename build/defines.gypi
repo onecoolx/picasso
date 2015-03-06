@@ -10,6 +10,7 @@
       'defines': [
         'WIN32',
         'DLL_EXPORT',
+        '__SSE2__=1',
         '_USE_MATH_DEFINES',
         '_CRT_SECURE_NO_WARNINGS' 
       ],

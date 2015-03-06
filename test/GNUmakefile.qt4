@@ -1,9 +1,10 @@
 
-CC=gcc -g -pg
-CXX=g++ -g -pg
-#CC=gcc -O2
+#CC=gcc -g -pg
+#CXX=g++ -g -pg
+CC=gcc -O2
+CXX=g++ -O2
 INCPATH=-I/usr/include/qt4/QtCore -I/usr/include/qt4/QtGui -I/usr/include/qt4
-INC=${INCPATH} -I../include
+INC=${INCPATH} -I../include -I../build
 CFLAGS=-DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DQT_SHARED -D_REENTRANT 
 CXXFLAGS=-DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DQT_SHARED -D_REENTRANT 
 

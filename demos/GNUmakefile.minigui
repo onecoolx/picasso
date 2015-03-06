@@ -1,7 +1,7 @@
 
 CC=gcc -g -pg
 #CC=gcc -O2
-INC=-I../include
+INC=-I../include -I../build
 CFLAGS=
 
 SYSTEM_LIBS = -lminigui -ljpeg -lpng -lfreetype -lz -lpthread -lstdc++

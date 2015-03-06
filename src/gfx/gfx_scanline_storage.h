@@ -67,13 +67,13 @@ public:
         int idx = m_cells.allocate_continuous_block(num_cells);
         if (idx >= 0) {
             T* ptr = &m_cells[idx];
-            memcpy(ptr, cells, sizeof(T) * num_cells);
+            mem_copy(ptr, cells, sizeof(T) * num_cells);
             return idx;
         }
         extra_span s;
         s.len = num_cells;
         s.ptr = pod_allocator<T>::allocate(num_cells);
-        memcpy(s.ptr, cells, sizeof(T) * num_cells);
+        mem_copy(s.ptr, cells, sizeof(T) * num_cells);
         m_extra_storage.add(s);
         return -(int)(m_extra_storage.size());
     }
@@ -112,7 +112,7 @@ private:
             extra_span dst;
             dst.len = src.len;
             dst.ptr = pod_allocator<T>::allocate(dst.len);
-            memcpy(dst.ptr, src.ptr, dst.len * sizeof(T));
+            mem_copy(dst.ptr, src.ptr, dst.len * sizeof(T));
             m_extra_storage.add(dst);
         }
     }
@@ -397,10 +397,10 @@ public:
                 data += sizeof(int32_t);
 
                 if (sp.len < 0) {
-                    memcpy(data, covers, sizeof(T));
+                    mem_copy(data, covers, sizeof(T));
                     data += sizeof(T);
                 } else {
-                    memcpy(data, covers, unsigned(sp.len) * sizeof(T));
+                    mem_copy(data, covers, unsigned(sp.len) * sizeof(T));
                     data += sizeof(T) * unsigned(sp.len);
                 }
             } while(--num_spans);

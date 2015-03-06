@@ -9,6 +9,8 @@
 extern void thread_func1(void* data);
 extern void thread_func2(void* data);
 
+int thr_run1;
+int thr_run2;
 
 void* linux_thread_1(void *p1)
 {
@@ -26,16 +28,20 @@ void* linux_thread_2(void *p1)
 
 static pthread_t th1, th2;
 
-void start_worker_threads(ps_canvas* cs)
+void start_worker_threads(void* cs)
 {
+    thr_run1 = 1;
+    thr_run2 = 1;
     pthread_create(&th1, NULL, linux_thread_1, cs);
     pthread_create(&th2, NULL, linux_thread_2, cs);
 }
 
 void stop_worker_threads(void)
 {
-    pthread_cancel(th1);
-    pthread_cancel(th2);
+    thr_run1 = 0;
+    thr_run2 = 0;
+    pthread_join(th1, 0);
+    pthread_join(th2, 0);
 }
 
 void loop_wait(int ms)

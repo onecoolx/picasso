@@ -17,6 +17,10 @@
 #define strncasecmp _strnicmp
 #endif
 
+#if defined(__ANDROID__)
+#include <expat.h>
+#endif
+
 #define MAX_PATH_LEN 512
 
 #define MAX_FONT_PATH_LENGTH MAX_PATH_LEN
@@ -24,6 +28,9 @@
 
 #define MAX_CONFIG_LINE    MAX_PATH_LEN 
 
+#if ENABLE(FONT_CONFIG)
+#include <fontconfig/fontconfig.h>
+#else //not fontconfig
 #if defined(WINCE)
 #include <windows.h>
 #define CONFIG_FILE GetFilePath(L"font_config.cfg")
@@ -67,6 +74,7 @@ static inline char* GetFontPath(const char* name)
 #define CONFIG_FILE "font_config.cfg"
 #define CONFIG_PATH(path) path
 #endif
+#endif //FONT_CONFIG
 
 namespace gfx {
 
@@ -85,7 +93,7 @@ static font_map g_font_map;
 
 static font_item* get_font_item(const char* name, const char* path)
 {
-    font_item* f = (font_item*)calloc(1, sizeof(font_item));
+    font_item* f = (font_item*)mem_calloc(1, sizeof(font_item));
     if (f) {
         strncpy(f->font_name, name, MAX_FONT_NAME_LENGTH-1);
         strncpy(f->font_path, path, MAX_FONT_PATH_LENGTH-1);
@@ -96,6 +104,175 @@ static font_item* get_font_item(const char* name, const char* path)
     }
 }
 
+#if ENABLE(FONT_CONFIG)
+static void load_font_from_fontconfig(void)
+{
+    FcConfig* config = FcInitLoadConfigAndFonts();
+    FcFontSet* fontset = NULL;
+    // get application fonts
+    fontset = FcConfigGetFonts(config, FcSetApplication);
+    if (fontset) {
+        FcValue fvalue, dvalue;
+        for (int i = 0; i < fontset->nfont; i++) {
+            if (FcResultMatch == FcPatternGet(fontset->fonts[i], FC_FAMILY, 0, &fvalue)) {
+                if (FcResultMatch == FcPatternGet(fontset->fonts[i], FC_FILE, 0, &dvalue)) {
+                    font_item* font = get_font_item((const char*)fvalue.u.s, (const char*)dvalue.u.s);
+                    g_font_map.add(font);
+                }
+            }
+        }
+    }
+
+    // get system fonts
+    fontset = FcConfigGetFonts(config, FcSetSystem);
+    if (fontset) {
+        FcValue fvalue, dvalue;
+        for (int i = 0; i < fontset->nfont; i++) {
+            if (FcResultMatch == FcPatternGet(fontset->fonts[i], FC_FAMILY, 0, &fvalue)) {
+                if (FcResultMatch == FcPatternGet(fontset->fonts[i], FC_FILE, 0, &dvalue)) {
+                    font_item* font = get_font_item((const char*)fvalue.u.s, (const char*)dvalue.u.s);
+                    g_font_map.add(font);
+                }
+            }
+        }
+    }
+    FcConfigDestroy(config);
+}
+#elif defined(__ANDROID__)
+// this is only work on android version <= 4.4 not support >= 5.0
+
+#define NO_TAG 0
+#define NAMESET_TAG 1
+#define FILESET_TAG 2
+
+struct ParserContext {
+    ParserContext(XML_Parser* p, font_map* m)
+        : parser(p), map(m), remaining_names(0), current_tag(NO_TAG)
+    {
+    }
+
+    XML_Parser *parser; // The expat parser doing the work
+    font_map * map;
+    int remaining_names;
+    int current_tag;
+};
+
+static void text_callback(void *data, const char *s, int len)
+{
+    ParserContext* context = (ParserContext*)data;
+
+    if (context->current_tag == NAMESET_TAG || context->current_tag == FILESET_TAG) {
+        switch (context->current_tag)
+        {
+        case NAMESET_TAG:
+            {
+                // add a new font item.
+                font_item* f = (font_item*)mem_calloc(1, sizeof(font_item));
+                strncpy(f->font_name, s, MIN(len, MAX_FONT_NAME_LENGTH-1));
+                context->map->add(f);
+                context->remaining_names++;
+            }
+            break;
+        case FILESET_TAG:
+            {
+                for (int i = 0; i < context->remaining_names; i++) {
+                    char* path = context->map->at(context->map->size()-i-1)->font_path;
+                    char buffer[MAX_FONT_PATH_LENGTH] = {0};
+                    strncpy(buffer, s, MIN(len, MAX_FONT_PATH_LENGTH-1));
+                    snprintf(path, MAX_FONT_PATH_LENGTH-1, "/system/fonts/%s", buffer);
+                }
+                context->remaining_names = 0;
+            }
+            break;
+        default:
+            // do nothing.
+            break;
+        }
+    }
+}
+
+static void start_callback(void *data, const char *tag, const char **atts)
+{
+    ParserContext* context = (ParserContext*)data;
+
+    int len = strlen(tag);
+    if (strncmp(tag, "family", len) == 0) {
+        context->current_tag = NO_TAG;
+        context->remaining_names = 0;
+    } else if (len == 7 && strncmp(tag, "nameset", len) == 0) {
+        context->current_tag = NAMESET_TAG;
+        context->remaining_names = 0;
+    } else if (len == 7 && strncmp(tag, "fileset", len) == 0) {
+        context->current_tag = FILESET_TAG;
+    } else if (strncmp(tag, "name", len) == 0 && context->current_tag == NAMESET_TAG) {
+        // add a new font_item to map and set name.
+        XML_SetCharacterDataHandler(*context->parser, text_callback);
+    } else if (strncmp(tag, "file", len) == 0 && context->current_tag == FILESET_TAG) {
+        // set the font file to all remaining items.
+        // FIXME: it is only first font file will be set for names.
+        if (context->remaining_names > 0) {
+            XML_SetCharacterDataHandler(*context->parser, text_callback);
+        }
+    }
+}
+
+static void end_callback(void *data, const char *tag)
+{
+    ParserContext* context = (ParserContext*)data;
+    int len = strlen(tag);
+    if (strncmp(tag, "family", len)== 0) {
+        context->current_tag = NO_TAG;
+        context->remaining_names = 0;
+    } else if (len == 7 && strncmp(tag, "nameset", len) == 0) {
+        context->current_tag = NO_TAG;
+    } else if (len == 7 && strncmp(tag, "fileset", len) == 0) {
+        context->current_tag = NO_TAG;
+    } else if ((strncmp(tag, "name", len) == 0 && context->current_tag == NAMESET_TAG) ||
+            (strncmp(tag, "file", len) == 0 && context->current_tag == FILESET_TAG)) {
+        // Disable the arbitrary text handler installed to load Name data
+        XML_SetCharacterDataHandler(*context->parser, NULL);
+    }
+}
+
+static void parse_config_file(const char* file, font_map& map)
+{
+    FILE* fp = NULL;
+    fp = fopen(file, "r");
+    if (!fp)
+        return; // file not found.
+
+    XML_Parser parser = XML_ParserCreate(NULL);
+    ParserContext* context = new ParserContext(&parser, &map);
+    XML_SetUserData(parser, context);
+    XML_SetElementHandler(parser, start_callback, end_callback);
+
+    char buffer[512] = {0};
+    bool done = false;
+    while (!done) {
+        fgets(buffer, sizeof(buffer), fp);
+        int len = strlen(buffer);
+        if (feof(fp) != 0) {
+            done = true;
+        }
+        XML_Parse(parser, buffer, len, done);
+    }
+    XML_ParserFree(parser);
+    delete context;
+    fclose(fp);
+}
+
+// font config files
+#define SYSTEM_FONTS_FILE "/system/etc/system_fonts.xml"
+#define FALLBACK_FONTS_FILE "/system/etc/fallback_fonts.xml"
+#define VENDOR_FONTS_FILE "/vendor/etc/fallback_fonts.xml"
+
+static void load_font_from_android(void)
+{
+    parse_config_file(SYSTEM_FONTS_FILE, g_font_map);
+    parse_config_file(FALLBACK_FONTS_FILE, g_font_map);
+    parse_config_file(VENDOR_FONTS_FILE, g_font_map);
+}
+#else
 static void write_default(void)
 {
     FILE* pf = 0;
@@ -146,11 +323,17 @@ static void load_font_from_file(FILE * f)
         }
     }
 }
+#endif //ENABLE(FONT_CONFIG)
 
 FT_Library g_library = 0;
 
 bool _load_fonts(void)
 {
+#if ENABLE(FONT_CONFIG)
+    load_font_from_fontconfig();
+#elif defined(__ANDROID__)
+    load_font_from_android();
+#else
     FILE *pf = 0;
 
     if ((pf = OPENFILE(CONFIG_FILE, F("r")))) {
@@ -163,6 +346,7 @@ bool _load_fonts(void)
         // not found config file.
         write_default();
     }
+#endif
 
     if (!g_font_map.size()) {
 
@@ -203,12 +387,18 @@ char * _font_by_name(const char* face)
 
 bool platform_font_init(void)
 {
+#if ENABLE(FONT_CONFIG)
+    FcInit();    
+#endif
     return gfx::_load_fonts();
 }
 
 void platform_font_shutdown(void)
 {
     gfx::_free_fonts();
+#if ENABLE(FONT_CONFIG)
+    FcFini();
+#endif
 }
 
 #endif /* FREE_TYPE2 */

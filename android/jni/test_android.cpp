@@ -63,7 +63,7 @@ static int engine_init_display(struct engine* engine)
     // create canvas with fake buffer bits !
     engine->canvas = ps_canvas_create_with_data((uint8_t*)buffer.bits, fmt, w, h, s);
     engine->context = ps_context_create(engine->canvas, 0);
-    init_context(engine->context, engine->canvas);    
+    init_context(engine->context, engine->canvas, (unsigned char*)buffer.bits);    
     set_image_data(selt2565.bits, COLOR_FORMAT_RGB565, selt2565.width, selt2565.height, selt2565.pitch);
     set_pattern_data(pat565.bits, COLOR_FORMAT_RGB565, pat565.width, pat565.height, pat565.pitch);
    // ps_scale(engine->context, 4, 4); // zoom 

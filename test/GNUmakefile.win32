@@ -3,7 +3,7 @@
 CC=gcc -Wall -O3
 #CC=gcc -g -fprofile-arcs -ftest-coverage
 #CC=gcc -O2
-INC=-I../include
+INC=-I../include -I../build
 CFLAGS= -DUNICODE -D_UNICODE
 
 SYSTEM_LIBS = -lgdi32 -lstdc++ -lfreetype -lm

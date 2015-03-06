@@ -14,7 +14,7 @@
 namespace gfx {
 
 template <typename T>
-static void swap_cells(T* a, T* b)
+static inline void swap_cells(T* a, T* b)
 {
     T temp = *a;
     *a = *b;
@@ -44,7 +44,7 @@ void qsort_cells(Cell** start, unsigned int num)
 
         if (len > qsort_threshold) {
             // we use base + len/2 as the pivot
-            pivot = base + len / 2;
+            pivot = base + (len >> 1);
             swap_cells(base, pivot);
 
             i = base + 1;
@@ -238,15 +238,14 @@ public:
             first = poly_subpixel_scale;
             if (dy < 0) {
                 first = 0;
-                incr  = -1;
+                incr = -1;
             }
 
             x_from = x1;
 
-            //render_hline(ey1, x_from, fy1, x_from, first);
             delta = first - fy1;
             m_curr_cell.cover += delta;
-            m_curr_cell.area  += two_fx * delta;
+            m_curr_cell.area += two_fx * delta;
 
             ey1 += incr;
             set_curr_cell(ex, ey1);
@@ -254,13 +253,11 @@ public:
             delta = first + first - poly_subpixel_scale;
             area = two_fx * delta;
             while (ey1 != ey2) {
-                //render_hline(ey1, x_from, poly_subpixel_scale - first, x_from, first);
                 m_curr_cell.cover = delta;
                 m_curr_cell.area  = area;
                 ey1 += incr;
                 set_curr_cell(ex, ey1);
             }
-            //render_hline(ey1, x_from, poly_subpixel_scale - first, x_from, fy2);
             delta = fy2 - poly_subpixel_scale + first;
             m_curr_cell.cover += delta;
             m_curr_cell.area  += two_fx * delta;
@@ -293,7 +290,7 @@ public:
         set_curr_cell(x_from >> poly_subpixel_shift, ey1);
 
         if (ey1 != ey2) {
-            p = poly_subpixel_scale * dx;
+            p = dx << poly_subpixel_shift;
             lift = p / dy;
             rem = p % dy;
 
@@ -305,7 +302,7 @@ public:
 
             while (ey1 != ey2) {
                 delta = lift;
-                mod  += rem;
+                mod += rem;
                 if (mod >= 0) {
                     mod -= dy;
                     delta++;
@@ -506,7 +503,7 @@ private:
         y1 += delta;
 
         if (ex1 != ex2) {
-            p = poly_subpixel_scale * (y2 - y1 + delta);
+            p = (y2 - y1 + delta) << poly_subpixel_shift;
             lift = p / dx;
             rem = p % dx;
 
@@ -526,7 +523,7 @@ private:
                 }
 
                 m_curr_cell.cover += delta;
-                m_curr_cell.area += poly_subpixel_scale * delta;
+                m_curr_cell.area += (delta << poly_subpixel_shift);
                 y1 += delta;
                 ex1 += incr;
                 set_curr_cell(ex1, ey);
@@ -545,7 +542,7 @@ private:
                     pod_allocator<cell_type*>::allocate(m_max_blocks + cell_block_pool);
 
                 if (m_cells) {
-                    memcpy(new_cells, m_cells, m_max_blocks * sizeof(cell_type*));
+                    mem_copy(new_cells, m_cells, m_max_blocks * sizeof(cell_type*));
                     pod_allocator<cell_type*>::deallocate(m_cells, m_max_blocks);
                 }
                 m_cells = new_cells;

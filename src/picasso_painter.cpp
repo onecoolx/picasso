@@ -279,10 +279,10 @@ void painter::render_glyph(context_state* state, raster_adapter& raster, const f
     }
 }
 
-void painter::render_glyphs_raster(context_state* state, raster_adapter& raster, int type)
+void painter::render_glyphs_raster(context_state* state, raster_adapter& raster, int style)
 {
     if (!raster.is_empty()) {
-        m_impl->apply_text_fill(raster.impl(), type);
+        m_impl->apply_text_fill(raster.impl(), (text_style)style);
         raster.reset();
     }
 }
