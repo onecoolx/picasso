@@ -593,7 +593,7 @@
           ],
           'libraries': [
             '-lfreetype',
-            '-lz `pkg-config --libs gtk+-2.0`',
+            '-lz -lpthread `pkg-config --libs gtk+-2.0`',
           ],
         }],
       ],
