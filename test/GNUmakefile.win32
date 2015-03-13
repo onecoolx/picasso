@@ -6,7 +6,7 @@ CC=gcc -Wall -O3
 INC=-I../include -I../build
 CFLAGS= -DUNICODE -D_UNICODE
 
-SYSTEM_LIBS = -lgdi32 -lstdc++ -lfreetype -lm
+SYSTEM_LIBS = -lgdi32 -lstdc++ -lm
 
 gamma_objs = test.o gamma_func.o
 
