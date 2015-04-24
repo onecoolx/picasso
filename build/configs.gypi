@@ -43,9 +43,9 @@
         ['OS=="linux"', {
           'defines': [
             '_DEBUG',
-            'ENABLE_FREE_TYPE2=1'
-            'ENABLE_FONT_CONFIG=1'
-            'ENABLE_FAST_COPY=1'
+            'ENABLE_FREE_TYPE2=1',
+            'ENABLE_FONT_CONFIG=1',
+            'ENABLE_FAST_COPY=1',
           ],
           'cflags_cc': [
             '-O0',
@@ -104,9 +104,9 @@
         ['OS=="linux"', {
           'defines': [
             'NDEBUG',
-            'ENABLE_FREE_TYPE2=1'
-            'ENABLE_FONT_CONFIG=1'
-            'ENABLE_FAST_COPY=1'
+            'ENABLE_FREE_TYPE2=1',
+            'ENABLE_FONT_CONFIG=1',
+            'ENABLE_FAST_COPY=1',
           ],
           'cflags_cc': [
             '-O3',

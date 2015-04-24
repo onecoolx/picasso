@@ -70,15 +70,15 @@ BEGIN
         BLOCK "080404b0"
         BEGIN
             VALUE "Comments", "Vector Graphic library"
-            VALUE "CompanyName", "ZNCSoft.com"
+            VALUE "CompanyName", "picasso.inc"
             VALUE "FileDescription", "picasso2 动态链接库"
-            VALUE "FileVersion", "2, 0, 0, 1"
+            VALUE "FileVersion", "2, 1, 8, 1"
             VALUE "InternalName", "picasso2"
             VALUE "LegalCopyright", "Copyright (C) 2013"
             VALUE "OriginalFilename", "picasso2.dll"
             VALUE "PrivateBuild", "2257"
             VALUE "ProductName", "picasso2 动态链接库"
-            VALUE "ProductVersion", "2, 0, 0, 1"
+            VALUE "ProductVersion", "2, 1, 8, 1"
         END
     END
     BLOCK "VarFileInfo"

@@ -19,7 +19,7 @@ struct composite_op_rgb_clear
     typedef ColorType color_type;
     typedef typename color_type::value_type value_type;
 
-    static void blend_pix(value_type* p, unsigned int, unsigned int,
+    static _FORCE_INLINE_ void blend_pix(value_type* p, unsigned int, unsigned int,
                           unsigned int, unsigned int, unsigned int cover)
     {
         if (cover < 255) {
@@ -40,7 +40,7 @@ struct composite_op_rgb_src
     typedef ColorType color_type;
     typedef typename color_type::value_type value_type;
 
-    static void blend_pix(value_type* p, unsigned int sr, unsigned int sg,
+    static _FORCE_INLINE_ void blend_pix(value_type* p, unsigned int sr, unsigned int sg,
                           unsigned int sb, unsigned int sa, unsigned int cover)
     {
         if (cover < 255) {
@@ -63,7 +63,7 @@ struct composite_op_rgb_dst
     typedef ColorType color_type;
     typedef typename color_type::value_type value_type;
 
-    static void blend_pix(value_type*, unsigned int, unsigned int,
+    static _FORCE_INLINE_ void blend_pix(value_type*, unsigned int, unsigned int,
                           unsigned int, unsigned int, unsigned int)
     {
     }
@@ -84,7 +84,7 @@ struct composite_op_rgb_src_over
 
     //   Dca' = Sca + Dca.(1 - Sa)
     //   Da'  = Sa + Da - Sa.Da 
-    static void blend_pix(value_type* p, unsigned int sr, unsigned int sg,
+    static _FORCE_INLINE_ void blend_pix(value_type* p, unsigned int sr, unsigned int sg,
                           unsigned int sb, unsigned int sa, unsigned int cover)
     {
         if (cover < 255) {
@@ -122,7 +122,7 @@ struct composite_op_rgb_dst_over
 
     // Dca' = Dca + Sca.(1 - Da)
     // Da'  = Sa + Da - Sa.Da 
-    static void blend_pix(value_type* p, unsigned int sr, unsigned int sg,
+    static _FORCE_INLINE_ void blend_pix(value_type* p, unsigned int sr, unsigned int sg,
                           unsigned int sb, unsigned int sa, unsigned int cover)
     {
         if (cover < 255) {
@@ -153,7 +153,7 @@ struct composite_op_rgb_src_in
 
     // Dca' = Sca.Da
     // Da'  = Sa.Da 
-    static void blend_pix(value_type* p, unsigned int sr, unsigned int sg,
+    static _FORCE_INLINE_ void blend_pix(value_type* p, unsigned int sr, unsigned int sg,
                           unsigned int sb, unsigned int sa, unsigned int cover)
     {
         calc_type da = base_mask;
@@ -187,7 +187,7 @@ struct composite_op_rgb_dst_in
 
     // Dca' = Dca.Sa
     // Da'  = Sa.Da 
-    static void blend_pix(value_type* p, unsigned int, unsigned int, unsigned int, 
+    static _FORCE_INLINE_ void blend_pix(value_type* p, unsigned int, unsigned int, unsigned int, 
                                          unsigned int sa, unsigned int cover)
     {
         if (cover < 255) {
@@ -215,7 +215,7 @@ struct composite_op_rgb_src_out
 
     // Dca' = Sca.(1 - Da)
     // Da'  = Sa.(1 - Da) 
-    static void blend_pix(value_type* p, unsigned int sr, unsigned int sg,
+    static _FORCE_INLINE_ void blend_pix(value_type* p, unsigned int sr, unsigned int sg,
                                          unsigned int sb, unsigned int sa, unsigned int cover)
     {
         calc_type da = 0;
@@ -249,7 +249,7 @@ struct composite_op_rgb_dst_out
 
     // Dca' = Dca.(1 - Sa) 
     // Da'  = Da.(1 - Sa) 
-    static void blend_pix(value_type* p, unsigned int, unsigned int, unsigned int, 
+    static _FORCE_INLINE_ void blend_pix(value_type* p, unsigned int, unsigned int, unsigned int, 
                                          unsigned int sa, unsigned int cover)
     {
         if (cover < 255) {
@@ -278,7 +278,7 @@ struct composite_op_rgb_src_atop
 
     // Dca' = Sca.Da + Dca.(1 - Sa)
     // Da'  = Da
-    static void blend_pix(value_type* p, unsigned int sr, unsigned int sg,
+    static _FORCE_INLINE_ void blend_pix(value_type* p, unsigned int sr, unsigned int sg,
                           unsigned int sb, unsigned int sa, unsigned int cover)
     {
         if (cover < 255) {
@@ -311,7 +311,7 @@ struct composite_op_rgb_dst_atop
 
     // Dca' = Dca.Sa + Sca.(1 - Da)
     // Da'  = Sa 
-    static void blend_pix(value_type* p, unsigned int sr, unsigned int sg,
+    static _FORCE_INLINE_ void blend_pix(value_type* p, unsigned int sr, unsigned int sg,
                           unsigned int sb, unsigned int sa, unsigned int cover)
     {
         calc_type da = 0;
@@ -347,7 +347,7 @@ struct composite_op_rgb_xor
 
     // Dca' = Sca.(1 - Da) + Dca.(1 - Sa)
     // Da'  = Sa + Da - 2.Sa.Da 
-    static void blend_pix(value_type* p, unsigned int sr, unsigned int sg,
+    static _FORCE_INLINE_ void blend_pix(value_type* p, unsigned int sr, unsigned int sg,
                           unsigned int sb, unsigned int sa, unsigned int cover)
     {
         if (cover < 255) {
@@ -382,7 +382,7 @@ struct composite_op_rgb_plus
 
     // Dca' = Sca + Dca
     // Da'  = Sa + Da 
-    static void blend_pix(value_type* p, unsigned int sr, unsigned int sg,
+    static _FORCE_INLINE_ void blend_pix(value_type* p, unsigned int sr, unsigned int sg,
                           unsigned int sb, unsigned int sa, unsigned int cover)
     {
         if (cover < 255) {
@@ -418,7 +418,7 @@ struct composite_op_rgb_minus
 
     // Dca' = Dca - Sca
     // Da' = 1 - (1 - Sa).(1 - Da)
-    static void blend_pix(value_type* p, unsigned int sr, unsigned int sg,
+    static _FORCE_INLINE_ void blend_pix(value_type* p, unsigned int sr, unsigned int sg,
                           unsigned int sb, unsigned int sa, unsigned int cover)
     {
         if (cover < 255) {
@@ -454,7 +454,7 @@ struct composite_op_rgb_multiply
 
     // Dca' = Sca.Dca + Sca.(1 - Da) + Dca.(1 - Sa)
     // Da'  = Sa + Da - Sa.Da 
-    static void blend_pix(value_type* p, unsigned int sr, unsigned int sg,
+    static _FORCE_INLINE_ void blend_pix(value_type* p, unsigned int sr, unsigned int sg,
                           unsigned int sb, unsigned int sa, unsigned int cover)
     {
         if (cover < 255) {
@@ -492,7 +492,7 @@ struct composite_op_rgb_screen
 
     // Dca' = Sca + Dca - Sca.Dca
     // Da'  = Sa + Da - Sa.Da 
-    static void blend_pix(value_type* p, unsigned int sr, unsigned int sg,
+    static _FORCE_INLINE_ void blend_pix(value_type* p, unsigned int sr, unsigned int sg,
                           unsigned int sb, unsigned int sa, unsigned int cover)
     {
         if (cover < 255) {
@@ -532,7 +532,7 @@ struct composite_op_rgb_overlay
     //   Dca' = Sa.Da - 2.(Da - Dca).(Sa - Sca) + Sca.(1 - Da) + Dca.(1 - Sa)
     // 
     // Da' = Sa + Da - Sa.Da
-    static void blend_pix(value_type* p, unsigned int sr, unsigned int sg,
+    static _FORCE_INLINE_ void blend_pix(value_type* p, unsigned int sr, unsigned int sg,
                           unsigned int sb, unsigned int sa, unsigned int cover)
     {
         if(cover < 255) {
@@ -581,7 +581,7 @@ struct composite_op_rgb_darken
 
     // Dca' = min(Sca.Da, Dca.Sa) + Sca.(1 - Da) + Dca.(1 - Sa)
     // Da'  = Sa + Da - Sa.Da 
-    static void blend_pix(value_type* p, unsigned int sr, unsigned int sg,
+    static _FORCE_INLINE_ void blend_pix(value_type* p, unsigned int sr, unsigned int sg,
                           unsigned int sb, unsigned int sa, unsigned int cover)
     {
         if (cover < 255) {
@@ -621,7 +621,7 @@ struct composite_op_rgb_lighten
 
     // Dca' = max(Sca.Da, Dca.Sa) + Sca.(1 - Da) + Dca.(1 - Sa)
     // Da'  = Sa + Da - Sa.Da 
-    static void blend_pix(value_type* p, unsigned int sr, unsigned int sg,
+    static _FORCE_INLINE_ void blend_pix(value_type* p, unsigned int sr, unsigned int sg,
                           unsigned int sb, unsigned int sa, unsigned int cover)
     {
         if (cover < 255) {
@@ -666,7 +666,7 @@ struct composite_op_rgb_color_dodge
     //   Dca' = Dca.Sa/(1-Sca/Sa) + Sca.(1 - Da) + Dca.(1 - Sa)
     //
     // Da'  = Sa + Da - Sa.Da 
-    static void blend_pix(value_type* p, unsigned int sr, unsigned int sg,
+    static _FORCE_INLINE_ void blend_pix(value_type* p, unsigned int sr, unsigned int sg,
                           unsigned int sb, unsigned int sa, unsigned int cover)
     {
         if (cover < 255) {
@@ -726,7 +726,7 @@ struct composite_op_rgb_color_burn
     //   Dca' = Sa.(Sca.Da + Dca.Sa - Sa.Da)/Sca + Sca.(1 - Da) + Dca.(1 - Sa)
     // 
     // Da'  = Sa + Da - Sa.Da 
-    static void blend_pix(value_type* p, unsigned int sr, unsigned int sg,
+    static _FORCE_INLINE_ void blend_pix(value_type* p, unsigned int sr, unsigned int sg,
                           unsigned int sb, unsigned int sa, unsigned int cover)
     {
         if (cover < 255) {
@@ -786,7 +786,7 @@ struct composite_op_rgb_hard_light
     //    Dca' = Sa.Da - 2.(Da - Dca).(Sa - Sca) + Sca.(1 - Da) + Dca.(1 - Sa)
     // 
     // Da'  = Sa + Da - Sa.Da
-    static void blend_pix(value_type* p, unsigned int sr, unsigned int sg,
+    static _FORCE_INLINE_ void blend_pix(value_type* p, unsigned int sr, unsigned int sg,
                           unsigned int sb, unsigned int sa, unsigned int cover)
     {
         if (cover < 255) {
@@ -843,7 +843,7 @@ struct composite_op_rgb_soft_light
     // 
     // Da'  = Sa + Da - Sa.Da 
 
-    static void blend_pix(value_type* p, unsigned int r, unsigned int g,
+    static _FORCE_INLINE_ void blend_pix(value_type* p, unsigned int r, unsigned int g,
                           unsigned int b, unsigned int a, unsigned int cover)
     {
         scalar sr = INT_TO_SCALAR(r * cover) / (base_mask * 255);
@@ -894,7 +894,7 @@ struct composite_op_rgb_difference
 
     // Dca' = Sca + Dca - 2.min(Sca.Da, Dca.Sa)
     // Da'  = Sa + Da - Sa.Da 
-    static void blend_pix(value_type* p, unsigned int sr, unsigned int sg,
+    static _FORCE_INLINE_ void blend_pix(value_type* p, unsigned int sr, unsigned int sg,
                           unsigned int sb, unsigned int sa, unsigned int cover)
     {
         if (cover < 255) {
@@ -932,7 +932,7 @@ struct composite_op_rgb_exclusion
 
     // Dca' = (Sca.Da + Dca.Sa - 2.Sca.Dca) + Sca.(1 - Da) + Dca.(1 - Sa)
     // Da'  = Sa + Da - Sa.Da 
-    static void blend_pix(value_type* p, unsigned int sr, unsigned int sg,
+    static _FORCE_INLINE_ void blend_pix(value_type* p, unsigned int sr, unsigned int sg,
                           unsigned int sb, unsigned int sa, unsigned int cover)
     {
         if (cover < 255) {
@@ -971,7 +971,7 @@ struct composite_op_rgb_contrast
     };
 
 
-    static void blend_pix(value_type* p, unsigned int sr, unsigned int sg,
+    static _FORCE_INLINE_ void blend_pix(value_type* p, unsigned int sr, unsigned int sg,
                           unsigned int sb, unsigned int sa, unsigned int cover)
     {
         if (cover < 255) {
@@ -1018,7 +1018,7 @@ struct composite_op_rgb_invert
 
     // Dca' = (Da - Dca) * Sa + Dca.(1 - Sa)
     // Da'  = Sa + Da - Sa.Da 
-    static void blend_pix(value_type* p, unsigned int sr, unsigned int sg,
+    static _FORCE_INLINE_ void blend_pix(value_type* p, unsigned int sr, unsigned int sg,
                           unsigned int sb, unsigned int sa, unsigned int cover)
     {
         sa = (sa * cover + 255) >> 8;
@@ -1051,7 +1051,7 @@ struct composite_op_rgb_invert_rgb
 
     // Dca' = (Da - Dca) * Sca + Dca.(1 - Sa)
     // Da'  = Sa + Da - Sa.Da 
-    static void blend_pix(value_type* p, unsigned int sr, unsigned int sg,
+    static _FORCE_INLINE_ void blend_pix(value_type* p, unsigned int sr, unsigned int sg,
                           unsigned int sb, unsigned int sa, unsigned int cover)
     {
         if (cover < 255) {
@@ -1140,7 +1140,7 @@ public:
         base_mask  = color_type::base_mask,
     };
 
-    static void blend_pix(unsigned int op, value_type* p, 
+    static _FORCE_INLINE_ void blend_pix(unsigned int op, value_type* p, 
                           unsigned int cr, unsigned int cg,
                           unsigned int cb, unsigned int ca, unsigned int cover)
     {
@@ -1255,37 +1255,52 @@ public:
     void blend_hline(int x, int y, unsigned int len, const color_type& c, uint8_t cover)
     {
         value_type* p = (value_type*)m_buffer->row_ptr(x, y, len) + x + x + x;
-        do {
-            blender_type::blend_pix(m_blend_op, p, c.r, c.g, c.b, (value_type)alpha_mul(c.a, m_alpha_factor), cover);
-            p += 3;
-        } while(--len);
+        register value_type alpha = (value_type)alpha_mul(c.a, m_alpha_factor);
+
+        if ((m_blend_op == comp_op_src_over) && (alpha == base_mask) && (cover == 255)) {
+            // optimization.
+            do {
+                p[order_type::R] = c.r; 
+                p[order_type::G] = c.g; 
+                p[order_type::B] = c.b;
+                p += 3;
+            } while(--len);
+        } else {
+            do {
+                blender_type::blend_pix(m_blend_op, p, c.r, c.g, c.b, alpha, cover);
+                p += 3;
+            } while(--len);
+        }
     }
 
     void blend_vline(int x, int y, unsigned int len, const color_type& c, uint8_t cover)
     {
+        register value_type alpha = (value_type)alpha_mul(c.a, m_alpha_factor);
         do {
             blender_type::blend_pix(m_blend_op,
                 (value_type*)m_buffer->row_ptr(x, y++, 1) + x + x + x,
-                 c.r, c.g, c.b, (value_type)alpha_mul(c.a, m_alpha_factor), cover);
+                 c.r, c.g, c.b, alpha, cover);
         } while(--len);
     }
 
     void blend_solid_hspan(int x, int y, unsigned int len, const color_type& c, const uint8_t* covers)
     {
         value_type* p = (value_type*)m_buffer->row_ptr(x, y, len) + x + x + x;
+        register value_type alpha = (value_type)alpha_mul(c.a, m_alpha_factor);
         do {
             blender_type::blend_pix(m_blend_op,
-                          p, c.r, c.g, c.b, (value_type)alpha_mul(c.a, m_alpha_factor), *covers++);
+                          p, c.r, c.g, c.b, alpha, *covers++);
             p += 3;
         } while(--len);
     }
 
     void blend_solid_vspan(int x, int y, unsigned int len, const color_type& c, const uint8_t* covers)
     {
+        register value_type alpha = (value_type)alpha_mul(c.a, m_alpha_factor);
         do {
             blender_type::blend_pix(m_blend_op,
                 (value_type*)m_buffer->row_ptr(x, y++, 1) + x + x + x,
-                 c.r, c.g, c.b, (value_type)alpha_mul(c.a, m_alpha_factor), *covers++);
+                 c.r, c.g, c.b, alpha, *covers++);
         } while(--len);
     }
 
@@ -1418,12 +1433,13 @@ public:
     {
         typedef typename SrcPixelFormatRenderer::value_type src_value_type;
         const src_value_type* psrc = (src_value_type*)from.row_ptr(ysrc);
+        register value_type alpha = (value_type)alpha_mul(color.a, m_alpha_factor);
         if (psrc) {
             value_type* pdst = (value_type*)m_buffer->row_ptr(xdst, ydst, len) + xdst * 3;
 
             do {
                 blender_type::blend_pix(m_blend_op, pdst,
-                                        color.r, color.g, color.b, alpha_mul(color.a, m_alpha_factor),
+                                        color.r, color.g, color.b, alpha,
                                         (*psrc * cover + base_mask) >> base_shift);
                 ++psrc;
                 pdst += 3;

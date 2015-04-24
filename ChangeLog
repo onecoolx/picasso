@@ -22,3 +22,5 @@
 2015-03-04: Version 2.1.5
     Porting to android system (version<=4.4).
 
+2015-04-24: Version 2.1.8
+    Optimization for android system.

@@ -65,7 +65,7 @@
         'gfx/gfx_image_filters.h',
         'gfx/gfx_line_generator.h',
         'gfx/gfx_pixfmt_rgba.h',
-        'gfx/pixfmt_wrapper.h',
+        'gfx/gfx_pixfmt_wrapper.h',
         'include/color_type.h',
         'include/common.h',
         'include/convert.h',

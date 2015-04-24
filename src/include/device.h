@@ -24,7 +24,7 @@ class abstract_font_adapter;
 class device
 {
 public:
-    virtual ~device() {}
+    virtual ~device() { }
 
     // transform affine interface
     virtual abstract_trans_affine* create_trans_affine(scalar sx, scalar shy, 
@@ -60,7 +60,7 @@ public:
     virtual void destroy_font_adapter(abstract_font_adapter* f) = 0;
 
 protected:
-    device(){}
+    device() { }
 };
 
 bool _init_system_device(void);
