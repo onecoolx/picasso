@@ -4,10 +4,10 @@ FREETYPE_INC=-I/usr/include/freetype2
 CXX=g++ -Wall -O3 -g -fno-rtti -fno-exceptions -msse2
 #CXX=g++ -Wall -O3 -g -fprofile-arcs -ftest-coverage -fno-rtti -fno-exceptions
 #CXX=g++ -Wall -O3 -g -pg -fno-rtti -fno-exceptions
-INC=-I. -I./gfx -I./gles2 -I./include -I./simd -I./../ -I./../include -I./../build ${FREETYPE_INC}
+INC=-I. -I./gfx -I./include -I./simd -I./../ -I./../include -I./../build ${FREETYPE_INC}
 CXXFLAGS=-DEXPORT ${DLL} 
 
-VPATH=./ ./include ./core ./simd ./gfx ./gles2
+VPATH=./ ./include ./core ./simd ./gfx
 
 objects= \
 		device.o \
