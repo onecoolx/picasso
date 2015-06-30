@@ -212,9 +212,10 @@ void PICAPI ps_path_tangent_arc_to(ps_path* path, float r, const ps_point* tp, c
 
     // angle between orth_p1p0 and p1p2 to get the right vector orthographic to p1p0
     float cos_alpha = (orth_p1p0.x * p1p2.x + orth_p1p0.y * p1p2.y) / (orth_p1p0_length * p1p2_length);
-    if (cos_alpha < 0.f)
+    if (cos_alpha < 0.f) {
         orth_p1p0.x = -orth_p1p0.x;
         orth_p1p0.y = -orth_p1p0.y;
+    }
 
     ps_point p = {(t_p1p0.x + factor_ra * orth_p1p0.x), (t_p1p0.y + factor_ra * orth_p1p0.y)};
 
