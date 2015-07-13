@@ -9,8 +9,8 @@
       'conditions': [
         ['OS=="win"', {
           'defines': [
-            '_DEBUG'
-            'ENABLE_FAST_COPY=1'
+            '_DEBUG',
+            'ENABLE_FAST_COPY=1',
           ],
           'msvs_configuration_attributes': {
             'ConfigurationType': '2',
@@ -63,8 +63,8 @@
       'conditions': [
         ['OS=="win"', {
           'defines': [
-            'NDEBUG'
-            'ENABLE_FAST_COPY=1'
+            'NDEBUG',
+            'ENABLE_FAST_COPY=1',
           ],
           'msvs_configuration_attributes': {
             'ConfigurationType': '2',

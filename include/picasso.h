@@ -582,19 +582,19 @@ PEXPORT ps_canvas* PICAPI ps_canvas_ref(ps_canvas* canvas);
 PEXPORT void PICAPI ps_canvas_unref(ps_canvas* canvas);
 
 /**
- * \fn ps_size ps_canvas_get_size(const ps_canvas* canvas)
+ * \fn ps_bool ps_canvas_get_size(const ps_canvas* canvas, ps_size* rsize)
  * \brief Return the size of the canvas.
  *
  * \param canvas  Pointer to an existing canvas object.
+ * \param rsize   Pointer to a buffer to receiving the size.  
  *
- * \return If the function succeeds, the return a valid width and height contain in size struct.
- *         If the function fails, the return value is (0, 0).
+ * \return  True if is success, otherwise False.
  *
  * \note To get extended error information, call \a ps_last_status.
  *
  * \sa ps_canvas_get_format
  */
-PEXPORT ps_size PICAPI ps_canvas_get_size(const ps_canvas* canvas);
+PEXPORT ps_bool PICAPI ps_canvas_get_size(const ps_canvas* canvas, ps_size* rsize);
 
 /**
  * \fn ps_color_format ps_canvas_get_format(const ps_canvas* canvas)
@@ -820,19 +820,19 @@ PEXPORT void PICAPI ps_image_set_allow_transparent(ps_image* img, ps_bool allow)
 PEXPORT void PICAPI ps_image_set_transparent_color(ps_image* img, const ps_color* color);
 
 /**
- * \fn ps_size ps_image_get_size(const ps_image* img)
+ * \fn ps_bool ps_image_get_size(const ps_image* img, ps_size* rsize)
  * \brief Return the size of the image.
  *
- * \param img  Pointer to an existing image object.
+ * \param img    Pointer to an existing image object.
+ * \param rsize  Pointer to a buffer to receiving the size.  
  *
- * \return If the function succeeds, the return a valid width and height contain in size struct.
- *         If the function fails, the return value is (0, 0).
+ * \return  True if is success, otherwise False.
  *
  * \note To get extended error information, call \a ps_last_status.
  *
  * \sa ps_image_get_format, ps_image_set_allow_transparent
  */
-PEXPORT ps_size PICAPI ps_image_get_size(const ps_image* img);
+PEXPORT ps_bool PICAPI ps_image_get_size(const ps_image* img, ps_size* rsize);
 
 /**
  * \fn ps_color_format ps_image_get_format(const ps_image* img)
@@ -1771,9 +1771,6 @@ PEXPORT void PICAPI ps_clip_rect(ps_context* ctx, const ps_rect* rect);
  */
 PEXPORT void PICAPI ps_clip_device_rect(ps_context* ctx, const ps_rect* rect);
 
-/* compatible macro for old version */
-#define ps_clip_fast_rect ps_clip_device_rect
-
 /**
  * \fn void ps_clip_rects(ps_context* ctx, const ps_rect* rects, unsigned int num_rects)
  * \brief Cliping specified area defined by an array of rectangles.
@@ -2100,21 +2097,21 @@ typedef enum _ps_text_type {
 }ps_text_type;
 
 /**
- * \fn ps_size ps_get_text_extent(ps_context* ctx, const void* text, unsigned int length)
+ * \fn ps_bool ps_get_text_extent(ps_context* ctx, const void* text, unsigned int length, ps_size* rsize)
  * \brief Get extent for text using current font which selected to graphic context.
  *
- * \param ctx       Pointer to an existing context object.
+ * \param ctx     Pointer to an existing context object.
  * \param text    Text which being tested. It can be latin-1 or unicode encoding.
  * \param length  Length of the text.
+ * \param rsize   Pointer to a buffer to receiving the size.  
  *
- * \return If the function succeeds, the return value is the size of the text.
- *         If the function fails, the return value is (0,0).
+ * \return  True if is success, otherwise False.
  *
  * \note To get extended error information, call \a ps_last_status.
  *
  * \sa ps_glyph_get_extent
  */
-PEXPORT ps_size PICAPI ps_get_text_extent(ps_context* ctx, const void* text, unsigned int length);
+PEXPORT ps_bool PICAPI ps_get_text_extent(ps_context* ctx, const void* text, unsigned int length, ps_size* rsize);
 
 /**
  * \fn void ps_set_text_color(ps_context* ctx, const ps_color * color)
@@ -2339,19 +2336,19 @@ PEXPORT ps_bool PICAPI ps_get_path_from_glyph(ps_context* ctx,
                                         const ps_glyph* glyph, ps_path* path);
 
 /**
- * \fn ps_size ps_glyph_get_extent(const ps_glyph* glyph)
+ * \fn ps_bool ps_glyph_get_extent(const ps_glyph* glyph, ps_size* rsize)
  * \brief Get extent for a glyph object.
  *
  * \param glyph  Pointer to an existing glyph object.
+ * \param rsize  Pointer to a buffer to receiving the size.  
  *
- * \return If the function succeeds, the return value is the size of the glyph.
- *         If the function fails, the return value is (0,0).
+ * \return  True if is success, otherwise False.
  *
  * \note To get extended error information, call \a ps_last_status.
  *
  * \sa ps_get_text_extent
  */
-PEXPORT ps_size PICAPI ps_glyph_get_extent(const ps_glyph* glyph);
+PEXPORT ps_bool PICAPI ps_glyph_get_extent(const ps_glyph* glyph, ps_size* rsize);
 
 /** @} end of text functions*/
 
@@ -3257,19 +3254,19 @@ PEXPORT ps_path_cmd PICAPI ps_path_get_vertex(const ps_path* path,
                                                 unsigned int index, ps_point * point);
 
 /**
- * \fn ps_rect ps_path_bounding_rect(const ps_path* path)
+ * \fn ps_bool ps_path_bounding_rect(const ps_path* path, ps_rect* rect)
  * \brief Get the bounding rectangle of the path.
  *
  * \param path   Pointer to an existing path object.
+ * \param rect   Pointer to a buffer to receiving the rect.  
  *
- * \return If the function succeeds, the return value is the bounding rectangle of the path.
- *         If the function fails, the return value is empty rectangle (0,0,0,0).
+ * \return  True if is success, otherwise False.
  *
  * \note To get extended error information, call \a ps_last_status.
  *
  * \sa ps_path_get_vertex_count, ps_path_get_vertex, ps_path_contains
  */
-PEXPORT ps_rect PICAPI ps_path_bounding_rect(const ps_path* path);
+PEXPORT ps_bool PICAPI ps_path_bounding_rect(const ps_path* path, ps_rect* rect);
 
 /**
  * \fn ps_bool ps_path_contains(const ps_path* path, const ps_point* point, ps_fill_rule rule)

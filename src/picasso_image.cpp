@@ -312,23 +312,22 @@ void PICAPI ps_image_unref(ps_image* img)
     global_status = STATUS_SUCCEED;
 }
 
-ps_size PICAPI ps_image_get_size(const ps_image* img)
+ps_bool PICAPI ps_image_get_size(const ps_image* img, ps_size* rsize)
 {
-    ps_size size = {0 , 0};
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;
-        return size;
+        return False;
     }
 
-    if (!img) {
+    if (!img || !rsize) {
         global_status = STATUS_INVALID_ARGUMENT;
-        return size;
+        return False;
     }
 
-    size.w = (float)img->buffer.width();
-    size.h = (float)img->buffer.height();
+    rsize->w = (float)img->buffer.width();
+    rsize->h = (float)img->buffer.height();
     global_status = STATUS_SUCCEED;
-    return size;
+    return True;
 }
 
 ps_color_format PICAPI ps_image_get_format(const ps_image* img)

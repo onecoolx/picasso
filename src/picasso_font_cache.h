@@ -12,12 +12,6 @@
 #include "device.h"
 #include "interfaces.h"
 
-#if ENABLE(LOW_MEMORY)
-#define MAX_CACHE 256
-#else
-#define MAX_CACHE 512
-#endif
-
 namespace picasso {
 
 class glyph_cache_manager 
@@ -65,8 +59,8 @@ public:
         unsigned int msb = (code >> 8) & 0xFF;
         if (m_glyphs[msb] == 0) { // cache row is empty.
             // alloc cache row.
-            m_glyphs[msb] = (glyph**)m_allocator.allocate(sizeof(glyph*) * MAX_CACHE, sizeof(glyph*));
-            memset(m_glyphs[msb], 0, sizeof(glyph*) * MAX_CACHE);
+            m_glyphs[msb] = (glyph**)m_allocator.allocate(sizeof(glyph*) * 256, sizeof(glyph*));
+            memset(m_glyphs[msb], 0, sizeof(glyph*) * 256);
         }
 
         unsigned int lsb = code & 0xFF;
@@ -92,7 +86,7 @@ private:
     glyph_cache_manager& operator=(const glyph_cache_manager&);
 
     block_allocator m_allocator;
-    glyph**         m_glyphs[MAX_CACHE];
+    glyph**         m_glyphs[256];
     char*           m_signature;
 };
 

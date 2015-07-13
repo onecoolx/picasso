@@ -440,23 +440,22 @@ void PICAPI ps_canvas_unref(ps_canvas* canvas)
     global_status = STATUS_SUCCEED;
 }
 
-ps_size PICAPI ps_canvas_get_size(const ps_canvas* canvas)
+ps_bool PICAPI ps_canvas_get_size(const ps_canvas* canvas, ps_size* rsize)
 {
-    ps_size size = {0 , 0};
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;
-        return size;
+        return False;
     }
 
-    if (!canvas) {
+    if (!canvas || !rsize) {
         global_status = STATUS_INVALID_ARGUMENT;
-        return size;
+        return False;
     }
 
-    size.w = (float)canvas->buffer.width();
-    size.h = (float)canvas->buffer.height();
+    rsize->w = (float)canvas->buffer.width();
+    rsize->h = (float)canvas->buffer.height();
     global_status = STATUS_SUCCEED;
-    return size;
+    return True;
 }
 
 ps_color_format PICAPI ps_canvas_get_format(const ps_canvas* canvas)

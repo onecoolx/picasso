@@ -488,24 +488,21 @@ void PICAPI ps_draw_text(ps_context* ctx, const ps_rect* area, const void* text,
     global_status = STATUS_SUCCEED;
 }
 
-ps_size PICAPI ps_get_text_extent(ps_context* ctx, const void* text, unsigned int len)
+ps_bool PICAPI ps_get_text_extent(ps_context* ctx, const void* text, unsigned int len, ps_size* rsize)
 {
-    ps_size size = {0 , 0};
-
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;
-        return size;
+        return False;
     }
 
-    if (!ctx || !text || !len) {
+    if (!ctx || !text || !len || !rsize) {
         global_status = STATUS_INVALID_ARGUMENT;
-        return size;
+        return False;
     }
 
     scalar width = 0;
 
     if (create_device_font(ctx)) {
-
         if (ctx->state->font->desc.charset() == CHARSET_ANSI) {
             const char* p = (const char*)text;
             while (*p && len) {
@@ -531,10 +528,10 @@ ps_size PICAPI ps_get_text_extent(ps_context* ctx, const void* text, unsigned in
         }
     }
 
-    size.h = SCALAR_TO_FLT(ctx->fonts->current_font()->height());
-    size.w = SCALAR_TO_FLT(width);
+    rsize->h = SCALAR_TO_FLT(ctx->fonts->current_font()->height());
+    rsize->w = SCALAR_TO_FLT(width);
     global_status = STATUS_SUCCEED;
-    return size;
+    return True;
 }
 
 void PICAPI ps_show_glyphs(ps_context* ctx, float x, float y, ps_glyph* g, unsigned int len)
@@ -639,26 +636,25 @@ ps_bool PICAPI ps_get_glyph(ps_context* ctx, int ch, ps_glyph* g)
     }
 }
 
-ps_size PICAPI ps_glyph_get_extent(const ps_glyph* g)
+ps_bool PICAPI ps_glyph_get_extent(const ps_glyph* g, ps_size* rsize)
 {
-    ps_size size = {0 , 0};
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;
-        return size;
+        return False;
     }
 
-    if (!g) {
+    if (!g || !rsize) {
         global_status = STATUS_INVALID_ARGUMENT;
-        return size;
+        return False;
     }
 
     if (g->glyph) {
         const picasso::glyph* gp = reinterpret_cast<const picasso::glyph*>(g->glyph);
-        size.w = SCALAR_TO_FLT(gp->advance_x);
-        size.h = SCALAR_TO_FLT(gp->height); //Note: advance_y is 0
+        rsize->w = SCALAR_TO_FLT(gp->advance_x);
+        rsize->h = SCALAR_TO_FLT(gp->height); //Note: advance_y is 0
     }
     global_status = STATUS_SUCCEED;
-    return size;
+    return True;
 }
 
 ps_bool PICAPI ps_get_font_info(ps_context* ctx, ps_font_info* info)

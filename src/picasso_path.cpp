@@ -415,20 +415,20 @@ ps_bool PICAPI ps_path_is_empty(const ps_path* path)
     return (!path->path.total_vertices()) ? True : False;
 }
 
-ps_rect PICAPI ps_path_bounding_rect(const ps_path* path)
+ps_bool PICAPI ps_path_bounding_rect(const ps_path* path, ps_rect* rect)
 {
-    ps_rect r = {0, 0, 0, 0};
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;
-        return r;
+        return False;
     }
 
-    if (!path) {
+    if (!path || !rect) {
         global_status = STATUS_INVALID_ARGUMENT;
-        return r;
+        return False;
     }
     global_status = STATUS_SUCCEED;
-    return picasso::_path_bounding_rect(path->path);
+    *rect = picasso::_path_bounding_rect(path->path);
+    return True;
 }
 
 ps_bool PICAPI ps_path_contains(const ps_path* path, const ps_point* p, ps_fill_rule rule)

@@ -20,7 +20,6 @@
         './include',
         './simd',
         './gfx',
-        './gfx/include'
       ],
       'sources': [
         '../build/pconfig.h',
@@ -120,6 +119,7 @@
         ['OS=="win"', {
           'sources': [
             'picasso.rc',
+            'picasso.def',
             'resource.h',
           ],
         }],

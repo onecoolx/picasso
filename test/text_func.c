@@ -84,7 +84,7 @@ void draw_test (int id, ps_context* gc)
 //    ps_wide_text_out_length(gc, 200, 100, wtext, 5);
     old = ps_set_font(gc, pf);
 
-    //ts = ps_text_extent(gc, wtext, 5);
+//    ps_get_text_extent(gc, wtext, 5, &ts);
 //fprintf(stderr, "w: %.2f - h: %.2f \n", ts.w, ts.h);
 ///    s1.x = s1.y =  150;
 //    e1.y = 150;
