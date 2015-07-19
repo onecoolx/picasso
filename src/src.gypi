@@ -11,7 +11,7 @@
       'dependencies': [
       ],
       'defines':[
-        'EXPORT'
+        'EXPORT',
       ],
       'include_dirs': [
         '../include',

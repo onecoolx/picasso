@@ -28,7 +28,7 @@
 			  'WarningLevel': '3',
 			  'WarnAsError': 'true',
 			  'SuppressStartupBanner': 'true',
-			  'DebugInformationFormat': '3'
+			  'DebugInformationFormat': '3',
             },
             'VCLinkerTool': {
 				'LinkIncremental': '1',
@@ -36,7 +36,7 @@
 				'GenerateDebugInformation': 'true',
 				'RandomizedBaseAddress': '1',
 				'DataExecutionPrevention': '0',
-				'TargetMachine': '1'
+				'TargetMachine': '1',
             },
           },
         }],
@@ -87,7 +87,7 @@
 			  'WarningLevel': '3',
 			  'WarnAsError': 'true',
 			  'SuppressStartupBanner': 'true',
-			  'DebugInformationFormat': '3'
+			  'DebugInformationFormat': '3',
             },
             'VCLinkerTool': {
 				'LinkIncremental': '1',
@@ -97,7 +97,7 @@
 				'LinkTimeCodeGeneration': '1',
 				'RandomizedBaseAddress': '1',
 				'DataExecutionPrevention': '0',
-				'TargetMachine': '1'
+				'TargetMachine': '1',
             },
           },
         }],
