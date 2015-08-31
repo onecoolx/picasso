@@ -345,7 +345,7 @@ PEXPORT ps_context* PICAPI ps_context_ref(ps_context* ctx);
 /**
  * \fn void ps_context_unref(ps_context* ctx)
  * \brief Decrements the reference count for the context object. 
- *        If the reference count on the context falls to 0, the context is freed.
+ *        If the reference count on the context falls to 0, the context will be free.
  *
  * \param ctx  Pointer to an existing context object.
  *
@@ -572,7 +572,7 @@ PEXPORT ps_canvas* PICAPI ps_canvas_ref(ps_canvas* canvas);
 /**
  * \fn void ps_canvas_unref(ps_canvas* canvas)
  * \brief Decrements the reference count for the canvas object. 
- *        If the reference count on the canvas falls to 0, the canvas is freed.
+ *        If the reference count on the canvas falls to 0, the canvas will be free.
  *
  * \param canvas  Pointer to an existing canvas object.
  *
@@ -788,7 +788,7 @@ PEXPORT ps_image* PICAPI ps_image_ref(ps_image* img);
 /**
  * \fn void ps_image_unref(ps_image* img)
  * \brief Decrements the reference count for the image object. 
- *        If the reference count on the image falls to 0, the image is freed.
+ *        If the reference count on the image falls to 0, the image will be free.
  *
  * \param img  Pointer to an existing image object.
  *
@@ -919,7 +919,7 @@ PEXPORT ps_pattern* PICAPI ps_pattern_ref(ps_pattern* pattern);
 /**
  * \fn void ps_pattern_unref(ps_pattern* pattern)
  * \brief Decrements the reference count for the pattern object. 
- *        If the reference count on the pattern falls to 0, the pattern is freed.
+ *        If the reference count on the pattern falls to 0, the pattern will be free.
  *
  * \param pattern  Pointer to an existing pattern object.
  *
@@ -1043,7 +1043,7 @@ PEXPORT ps_gradient* PICAPI ps_gradient_ref(ps_gradient* gradient);
 /**
  * \fn void ps_gradient_unref(ps_gradient* gradient)
  * \brief Decrements the reference count for the gradient object. 
- *        If the reference count on the gradient falls to 0, the gradient is freed.
+ *        If the reference count on the gradient falls to 0, the gradient will be free.
  *
  * \param gradient  Pointer to an existing gradient object.
  *
@@ -1119,7 +1119,7 @@ PEXPORT ps_mask* PICAPI ps_mask_ref(ps_mask* mask);
 /**
  * \fn void ps_mask_unref(ps_mask* mask)
  * \brief Decrements the reference count for the mask object. 
- *        If the reference count on the mask falls to 0, the mask is freed.
+ *        If the reference count on the mask falls to 0, the mask will be free.
  *
  * \param mask  Pointer to an existing mask object.
  *
@@ -1761,7 +1761,7 @@ PEXPORT void PICAPI ps_clip_rect(ps_context* ctx, const ps_rect* rect);
 
 /**
  * \fn void ps_clip_device_rect(ps_context* ctx, const ps_rect* rect)
- * \brief The fast wap to Clipping specified rectangle, the clip rect can not be rotated
+ * \brief The fast way to Clipping specified rectangle, the clip rect can not be rotated
  *           by world matrix.
  *
  * \param ctx  Pointer to an existing context object.
@@ -1936,7 +1936,7 @@ PEXPORT ps_font* PICAPI ps_font_ref(ps_font* font);
 /**
  * \fn void ps_font_unref(ps_font* font)
  * \brief Decrements the reference count for the font object. 
- *        If the reference count on the font falls to 0, the font is freed.
+ *        If the reference count on the font falls to 0, the font will be free.
  *
  * \param font  Pointer to an existing font object.
  *
@@ -2546,7 +2546,7 @@ PEXPORT ps_matrix* PICAPI ps_matrix_ref(ps_matrix* matrix);
 /**
  * \fn void ps_matrix_unref(ps_matrix* matrix)
  * \brief Decrements the reference count for the matrix object. 
- *        If the reference count on the matrix falls to 0, the matrix is freed.
+ *        If the reference count on the matrix falls to 0, the matrix will be free.
  *
  * \param matrix  Pointer to an existing matrix object.
  *
@@ -3051,7 +3051,7 @@ PEXPORT ps_path* PICAPI ps_path_ref(ps_path* path);
 /**
  * \fn void ps_path_unref(ps_path* path)
  * \brief Decrements the reference count for the path object. 
- *        If the reference count on the path falls to 0, the path is freed.
+ *        If the reference count on the path falls to 0, the path will be free.
  *
  * \param path  Pointer to an existing path object.
  *
