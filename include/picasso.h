@@ -1004,7 +1004,7 @@ PEXPORT ps_gradient* PICAPI ps_gradient_create_radial(ps_gradient_spread spread,
  * \return If the function succeeds, the return value is the pointer to a new gradient object.
  *         If the function fails, the return value is NULL.
  *
- * \note  Conic Gradient support reflect mode only, paramter spread will be ignored.
+ * \note  Conic Gradient support reflect and pad mode only, paramter spread repeat will be supposed pad.
  *           To get extended error information, call \a ps_last_status.
  *
  * \sa ps_gradient_create_linear, ps_gradient_create_radial, ps_gradient_ref, ps_gradient_unref

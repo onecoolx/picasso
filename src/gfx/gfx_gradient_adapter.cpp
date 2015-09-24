@@ -27,11 +27,24 @@ class gradient_conic
 {
 public:
     void init(scalar, scalar, scalar) { }
-    static int calculate(int x, int y, int d) 
-    { 
+    static int calculate(int x, int y, int d)
+    {
         return uround(Fabs(Atan2(INT_TO_SCALAR(y), INT_TO_SCALAR(x))) * INT_TO_SCALAR(d) * _1divPI);
     }
 };
+
+class gradient_conic_vg
+{
+public:
+    void init(scalar, scalar, scalar) { }
+    static int calculate(int x, int y, int d)
+    {
+        scalar a = Atan2(INT_TO_SCALAR(y), INT_TO_SCALAR(x));
+        if (a < 0) a = _2PI + a;
+        return round(a * INT_TO_SCALAR(d) * _1div2PI);
+    }
+};
+
 
 // gradient_radial
 class gradient_radial
@@ -380,8 +393,11 @@ void gfx_gradient_adapter::init_radial(int spread, scalar x1, scalar y1, scalar 
 void gfx_gradient_adapter::init_conic(int spread, scalar x, scalar y, scalar angle)
 {
     if (!m_wrapper) {
-        // only support reflect 
-        m_wrapper = new gfx_gradient<gradient_conic, gradient_reflect_adaptor<gradient_conic> >;
+        if (spread == SPREAD_REFLECT) {
+            m_wrapper = new gfx_gradient<gradient_conic, gradient_reflect_adaptor<gradient_conic> >;
+        } else {
+            m_wrapper = new gfx_gradient<gradient_conic_vg, gradient_pad_adaptor<gradient_conic_vg> >;
+        }
 
         if (!m_wrapper) 
             return;
