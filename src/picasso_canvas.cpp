@@ -256,7 +256,7 @@ ps_canvas* PICAPI ps_canvas_create_from_canvas(ps_canvas* c, const ps_rect* r)
         p->refcount = 1;
         p->fmt = c->fmt;
         p->p = pa;
-        p->flage = buffer_alloc_image;
+        p->flage = buffer_alloc_canvas;
         p->host = (void*)ps_canvas_ref(c);
         p->mask = 0;
         int bpp = picasso::_byte_pre_color(c->fmt);
