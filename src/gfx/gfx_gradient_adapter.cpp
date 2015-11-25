@@ -41,7 +41,7 @@ public:
     {
         scalar a = Atan2(INT_TO_SCALAR(y), INT_TO_SCALAR(x));
         if (a < 0) a = _2PI + a;
-        return round(a * INT_TO_SCALAR(d) * _1div2PI);
+        return iround(a * INT_TO_SCALAR(d) * _1div2PI);
     }
 };
 
