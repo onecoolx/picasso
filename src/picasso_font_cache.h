@@ -1,5 +1,5 @@
 /* Picasso - a vector graphics library
- * 
+ *
  * Copyright (C) 2013 Zhang Ji Peng
  * Contact: onecoolx@gmail.com
  */
@@ -14,11 +14,11 @@
 
 namespace picasso {
 
-class glyph_cache_manager 
+class glyph_cache_manager
 {
-    enum { 
+    enum {
         block_size = 16384-16
-    };  
+    };
 
 public:
     glyph_cache_manager()
@@ -39,9 +39,9 @@ public:
         strcpy(m_signature, font_signature);
     }
 
-    const char* signature(void) const 
-    { 
-        return m_signature; 
+    const char* signature(void) const
+    {
+        return m_signature;
     }
 
     const glyph* find_glyph(unsigned int code) const
@@ -64,7 +64,7 @@ public:
         }
 
         unsigned int lsb = code & 0xFF;
-        if (m_glyphs[msb][lsb]) 
+        if (m_glyphs[msb][lsb])
             return 0; // already exists.
 
         glyph* g = (glyph*)m_allocator.allocate(sizeof(glyph), sizeof(int));

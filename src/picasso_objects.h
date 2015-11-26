@@ -1,5 +1,5 @@
 /* Picasso - a vector graphics library
- * 
+ *
  * Copyright (C) 2008 Zhang Ji Peng
  * Contact: onecoolx@gmail.com
  */
@@ -59,11 +59,11 @@ struct graphic_pen
     {
         if (style == pen_style_dash) {
             ndashes = o.ndashes;
-            dstart = o.dstart;            
+            dstart = o.dstart;
             dashes = new scalar[ndashes];
             if (dashes) {
                 for(unsigned int i=0; i<ndashes; i++)
-                    dashes[i] = o.dashes[i]; 
+                    dashes[i] = o.dashes[i];
             } else {
                 //memory alloc error, ignore this dash
                 //I think it is never happen.
@@ -92,11 +92,11 @@ struct graphic_pen
 
         if (style == pen_style_dash) {
             ndashes = o.ndashes;
-            dstart = o.dstart;            
+            dstart = o.dstart;
             dashes = new scalar[ndashes];
             if (dashes) {
                 for (unsigned int i=0; i<ndashes; i++)
-                    dashes[i] = o.dashes[i]; 
+                    dashes[i] = o.dashes[i];
             } else {
                 //memory alloc error, ignore this dash
                 //I think it is never happen.
@@ -121,12 +121,12 @@ struct graphic_pen
     {
         style = pen_style_dash;
         dstart = FLT_TO_SCALAR(start);
-        ndashes = (ndash+1)&~1;  
+        ndashes = (ndash+1)&~1;
         dashes = new scalar[ndashes];
         if (dashes) {
             memset(dashes, 0, ndashes*sizeof(scalar));
             for(unsigned int i=0; i<ndash; i++)
-                dashes[i] = FLT_TO_SCALAR(da[i]); 
+                dashes[i] = FLT_TO_SCALAR(da[i]);
         } else {
             //memory alloc error, ignore this dash
             //I think it is never happen.
@@ -147,14 +147,14 @@ struct graphic_pen
         }
     }
 
-    unsigned int style; 
+    unsigned int style;
     scalar width;
     scalar miter_limit;
     line_cap cap;
     line_join join;
     inner_join inner;
-    rgba color;  
-    //dash 
+    rgba color;
+    //dash
     scalar * dashes;
     unsigned int ndashes;
     scalar dstart;
@@ -170,7 +170,7 @@ enum {
 };
 
 struct graphic_brush {
-    graphic_brush() 
+    graphic_brush()
         : style(brush_style_solid)
         , data(0)
         , rule(fill_non_zero)
@@ -278,7 +278,7 @@ struct graphic_brush {
     unsigned int style;
     void* data;
     filling_rule rule;
-    rgba color;  
+    rgba color;
 };
 
 
@@ -289,7 +289,7 @@ struct shadow_state {
         , x_offset(FLT_TO_SCALAR(0.0f))
         , y_offset(FLT_TO_SCALAR(0.0f))
         , blur(FLT_TO_SCALAR(0.375f)) /* 0 ~ 1 */
-        , color(0,0,0,FLT_TO_SCALAR(0.33f)) 
+        , color(0,0,0,FLT_TO_SCALAR(0.33f))
     {
     }
 
@@ -370,7 +370,7 @@ struct clip_area {
     }
 
     unsigned int type;
-    graphic_path path;    
+    graphic_path path;
     filling_rule rule;
     rect_s       rect;
 };
@@ -469,11 +469,11 @@ struct _ps_context {
     int refcount;
     ps_canvas* canvas;
     picasso::context_state* state;
-    ps_bool font_antialias;   
-    ps_bool font_kerning;   
+    ps_bool font_antialias;
+    ps_bool font_kerning;
     ps_text_type font_render_type;
     struct _ps_context* parent;
-    picasso::font_engine* fonts; 
+    picasso::font_engine* fonts;
     picasso::trans_affine text_matrix;
     picasso::graphic_path path;
     picasso::raster_adapter raster;

@@ -1,5 +1,5 @@
 /* Picasso - a vector graphics library
- * 
+ *
  * Copyright (C) 2008 Zhang Ji Peng
  * Contact: onecoolx@gmail.com
  */
@@ -32,7 +32,7 @@ ps_image* PICAPI ps_image_create(ps_color_format fmt, int w, int h)
         img->refcount = 1;
         img->fmt = fmt;
         img->host = 0;
-        new ((void*)&(img->buffer)) picasso::rendering_buffer; 
+        new ((void*)&(img->buffer)) picasso::rendering_buffer;
         int pitch = picasso::_byte_pre_color(fmt) * w;
         byte* buf = 0;
         if ((buf = (byte*)BufferAlloc(h * pitch))) {
@@ -73,7 +73,7 @@ ps_image* PICAPI ps_image_create_from_data(ps_byte* data, ps_color_format fmt, i
         img->refcount = 1;
         img->fmt = fmt;
         img->host = 0;
-        new ((void*)&(img->buffer)) picasso::rendering_buffer; 
+        new ((void*)&(img->buffer)) picasso::rendering_buffer;
         int pitch = picasso::_byte_pre_color(fmt) * w;
         byte* buf = 0;
         if ((buf = (byte*)BufferAlloc(h * pitch))) {
@@ -117,7 +117,7 @@ ps_image* PICAPI ps_image_create_with_data(ps_byte* data, ps_color_format fmt, i
         img->fmt = fmt;
         img->host = 0;
         img->flage = buffer_alloc_none;
-        new ((void*)&(img->buffer)) picasso::rendering_buffer; 
+        new ((void*)&(img->buffer)) picasso::rendering_buffer;
         img->buffer.attach(data, w, h, pitch);
         global_status = STATUS_SUCCEED;
         return img;
@@ -150,7 +150,7 @@ ps_image* PICAPI ps_image_create_compatible(const ps_canvas* c, int w, int h)
         img->refcount = 1;
         img->fmt = c->fmt;
         img->host = 0;
-        new ((void*)&(img->buffer)) picasso::rendering_buffer; 
+        new ((void*)&(img->buffer)) picasso::rendering_buffer;
         int pitch = picasso::_byte_pre_color(c->fmt) * w;
         byte* buf = 0;
         if ((buf = (byte*)BufferAlloc(h * pitch))) {
@@ -186,7 +186,7 @@ ps_image* PICAPI ps_image_create_from_image(ps_image* i, const ps_rect* r)
         return 0;
     }
 
-    ps_rect rc = {0, 0, (float)i->buffer.width(), (float)i->buffer.height()}; 
+    ps_rect rc = {0, 0, (float)i->buffer.width(), (float)i->buffer.height()};
     if (!r) {
         //Note: if rect is NULL, It equal reference.
         global_status = STATUS_SUCCEED;
@@ -209,8 +209,8 @@ ps_image* PICAPI ps_image_create_from_image(ps_image* i, const ps_rect* r)
         img->flage = buffer_alloc_image;
         img->host = (void*)ps_image_ref(i);
         int bpp = picasso::_byte_pre_color(i->fmt);
-        new ((void*)&(img->buffer)) picasso::rendering_buffer; 
-        img->buffer.attach(i->buffer.buffer()+_iround(rc.y*i->buffer.stride()+rc.x*bpp), 
+        new ((void*)&(img->buffer)) picasso::rendering_buffer;
+        img->buffer.attach(i->buffer.buffer()+_iround(rc.y*i->buffer.stride()+rc.x*bpp),
                                        _iround(rc.w), _iround(rc.h), i->buffer.stride());
         img->buffer.set_transparent(i->buffer.is_transparent());
         img->buffer.set_color_channel(i->buffer.get_color_channel());
@@ -234,7 +234,7 @@ ps_image* PICAPI ps_image_create_from_canvas(ps_canvas* c, const ps_rect* r)
         return 0;
     }
 
-    ps_rect rc = {0, 0, (float)c->buffer.width(), (float)c->buffer.height()}; 
+    ps_rect rc = {0, 0, (float)c->buffer.width(), (float)c->buffer.height()};
     if (r) {
         if (r->x > 0)
             rc.x = r->x;
@@ -253,8 +253,8 @@ ps_image* PICAPI ps_image_create_from_canvas(ps_canvas* c, const ps_rect* r)
         img->flage = buffer_alloc_canvas;
         img->host = (void*)ps_canvas_ref(c);
         int bpp = picasso::_byte_pre_color(c->fmt);
-        new ((void*)&(img->buffer)) picasso::rendering_buffer; 
-        img->buffer.attach(c->buffer.buffer()+_iround(rc.y*c->buffer.stride()+rc.x*bpp), 
+        new ((void*)&(img->buffer)) picasso::rendering_buffer;
+        img->buffer.attach(c->buffer.buffer()+_iround(rc.y*c->buffer.stride()+rc.x*bpp),
                                        _iround(rc.w), _iround(rc.h), c->buffer.stride());
         img->buffer.set_transparent(true);
         global_status = STATUS_SUCCEED;
@@ -372,9 +372,9 @@ void PICAPI ps_image_set_transparent_color(ps_image* img, const ps_color* c)
         global_status = STATUS_INVALID_ARGUMENT;
         return;
     }
-    
+
     if (!c) {
-        img->buffer.clear_color_channel(); 
+        img->buffer.clear_color_channel();
     } else {
         img->buffer.set_color_channel(picasso::rgba(FLT_TO_SCALAR(c->r),
                         FLT_TO_SCALAR(c->g),FLT_TO_SCALAR(c->b),FLT_TO_SCALAR(c->a)));

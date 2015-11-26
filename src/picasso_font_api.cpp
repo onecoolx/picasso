@@ -1,5 +1,5 @@
 /* Picasso - a vector graphics library
- * 
+ *
  * Copyright (C) 2013 Zhang Ji Peng
  * Contact: onecoolx@gmail.com
  */
@@ -64,7 +64,7 @@ static bool inline create_device_font(ps_context* ctx)
         return false;
 }
 
-static inline void _add_glyph_to_path(ps_context* ctx, picasso::graphic_path& path)    
+static inline void _add_glyph_to_path(ps_context* ctx, picasso::graphic_path& path)
 {
     picasso::conv_curve curve(ctx->fonts->current_font()->path_adaptor());
 
@@ -76,7 +76,7 @@ static inline void _add_glyph_to_path(ps_context* ctx, picasso::graphic_path& pa
         if (picasso::is_stop(cmd)) {
             path.add_vertex(x, y, picasso::path_cmd_end_poly|picasso::path_flags_close);
             break;
-        } else 
+        } else
             path.add_vertex(x, y, cmd);
     }
 }
@@ -193,7 +193,7 @@ void PICAPI ps_font_set_size(ps_font* f, float s)
         global_status = STATUS_INVALID_ARGUMENT;
         return;
     }
-    
+
     f->desc.set_height(FLT_TO_SCALAR(s));
     global_status = STATUS_SUCCEED;
 }
@@ -257,7 +257,7 @@ void PICAPI ps_font_set_flip(ps_font* f, ps_bool l)
         global_status = STATUS_INVALID_ARGUMENT;
         return;
     }
-    
+
     //Note: FIXME:this will change next time.
     f->desc.set_flip_y(l ? false : true);
     global_status = STATUS_SUCCEED;
@@ -304,7 +304,7 @@ void PICAPI ps_text_out_length(ps_context* ctx, float x, float y, const char* te
             if (glyph) {
                 if (ctx->font_kerning)
                     ctx->fonts->current_font()->add_kerning(&gx, &gy);
-                if (ctx->fonts->current_font()->generate_raster(glyph, gx, gy)) 
+                if (ctx->fonts->current_font()->generate_raster(glyph, gx, gy))
                    ctx->canvas->p->render_glyph(ctx->state, ctx->raster, ctx->fonts->current_font(), glyph->type);
 
                 gx += glyph->advance_x;
@@ -343,7 +343,7 @@ void PICAPI ps_wide_text_out_length(ps_context* ctx, float x, float y, const ps_
             if (glyph) {
                 if (ctx->font_kerning)
                     ctx->fonts->current_font()->add_kerning(&gx, &gy);
-                if (ctx->fonts->current_font()->generate_raster(glyph, gx, gy)) 
+                if (ctx->fonts->current_font()->generate_raster(glyph, gx, gy))
                    ctx->canvas->p->render_glyph(ctx->state, ctx->raster, ctx->fonts->current_font(), glyph->type);
 
                 gx += glyph->advance_x;
@@ -508,9 +508,9 @@ ps_bool PICAPI ps_get_text_extent(ps_context* ctx, const void* text, unsigned in
             while (*p && len) {
                 register char c = *p;
                 const picasso::glyph* glyph = ctx->fonts->current_font()->get_glyph(c);
-                if (glyph) 
+                if (glyph)
                     width += glyph->advance_x;
-                
+
                 len--;
                 p++;
             }
@@ -519,9 +519,9 @@ ps_bool PICAPI ps_get_text_extent(ps_context* ctx, const void* text, unsigned in
             while (*p && len) {
                 register ps_uchar16 c = *p;
                 const picasso::glyph* glyph = ctx->fonts->current_font()->get_glyph(c);
-                if (glyph) 
+                if (glyph)
                     width += glyph->advance_x;
-                
+
                 len--;
                 p++;
             }
@@ -556,7 +556,7 @@ void PICAPI ps_show_glyphs(ps_context* ctx, float x, float y, ps_glyph* g, unsig
             if (glyph) {
                 if (ctx->font_kerning)
                     ctx->fonts->current_font()->add_kerning(&gx, &gy);
-                if (ctx->fonts->current_font()->generate_raster(glyph, gx, gy)) 
+                if (ctx->fonts->current_font()->generate_raster(glyph, gx, gy))
                    ctx->canvas->p->render_glyph(ctx->state, ctx->raster, ctx->fonts->current_font(), glyph->type);
 
                 gx += glyph->advance_x;
@@ -729,7 +729,7 @@ void PICAPI ps_set_text_kerning(ps_context* ctx, ps_bool k)
         global_status = STATUS_INVALID_ARGUMENT;
         return;
     }
-    
+
     ctx->font_kerning = k;
     global_status = STATUS_SUCCEED;
 }

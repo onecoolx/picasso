@@ -1,5 +1,5 @@
 /* Picasso - a vector graphics library
- * 
+ *
  * Copyright (C) 2010 Zhang Ji Peng
  * Contact: onecoolx@gmail.com
  */
@@ -70,7 +70,7 @@ public:
         abstract_gradient_adapter* gradient;
     } gradient_holder;
 
-    gfx_painter() 
+    gfx_painter()
         : m_fill_type(type_solid)
         , m_draw_shadow(false)
         , m_shadow_area(0,0,0,0)
@@ -80,7 +80,7 @@ public:
 
     virtual ~gfx_painter() {}
 
-    virtual void attach(abstract_rendering_buffer*); 
+    virtual void attach(abstract_rendering_buffer*);
     virtual pix_fmt pixel_format(void) const;
 
     virtual void set_alpha(scalar a);
@@ -89,7 +89,7 @@ public:
     virtual void set_fill_color(const rgba& c);
     virtual void set_fill_image(const abstract_rendering_buffer* img, int filter, const rect_s& rc);
     virtual void set_fill_canvas(const abstract_rendering_buffer* img, int filter, const rect_s& rc);
-    virtual void set_fill_pattern(const abstract_rendering_buffer* img, int filter, const rect_s& rc, 
+    virtual void set_fill_pattern(const abstract_rendering_buffer* img, int filter, const rect_s& rc,
                                     int xtype, int ytype, const abstract_trans_affine* mtx);
     virtual void set_fill_gradient(const abstract_gradient_adapter* g);
     virtual void set_font_fill_color(const rgba& c);
@@ -109,7 +109,7 @@ public:
     virtual void apply_blur(scalar blur);
 
     virtual bool begin_shadow(const rect_s& rc);
-    virtual void apply_shadow(abstract_raster_adapter* rs, const rect_s& r, 
+    virtual void apply_shadow(abstract_raster_adapter* rs, const rect_s& r,
                                                 const rgba& c, scalar x, scalar y, scalar b);
 
     virtual void copy_rect_from(abstract_rendering_buffer* src, const rect& rc, int x, int y);
@@ -129,7 +129,7 @@ private:
         return p;
     }
     //fill
-    source_type        m_fill_type; 
+    source_type        m_fill_type;
     rgba               m_fill_color;
     image_holder       m_image_source;
     pattern_holder     m_pattern_source;
@@ -154,47 +154,47 @@ private:
     gfx_span_allocator<color_type> m_spans;
 };
 
-template<typename Pixfmt> 
+template<typename Pixfmt>
 inline void gfx_painter<Pixfmt>::attach(abstract_rendering_buffer* buffer)
 {
-    if (buffer) {   
+    if (buffer) {
         m_fmt.attach(*static_cast<gfx_rendering_buffer*>(buffer));
         m_rb.attach(m_fmt);
     }
 }
 
-template<typename Pixfmt> 
+template<typename Pixfmt>
 inline void gfx_painter<Pixfmt>::set_alpha(scalar a)
 {
     m_fmt.alpha(a);
 }
 
-template<typename Pixfmt> 
+template<typename Pixfmt>
 inline void gfx_painter<Pixfmt>::set_composite(comp_op op)
 {
     m_fmt.blend_op(op);
 }
 
-template<typename Pixfmt> 
+template<typename Pixfmt>
 inline void gfx_painter<Pixfmt>::set_fill_color(const rgba& c)
 {
     m_fill_type = type_solid;
     m_fill_color = c;
 }
 
-template<typename Pixfmt> 
+template<typename Pixfmt>
 inline void gfx_painter<Pixfmt>::set_font_fill_color(const rgba& c)
 {
     m_font_fill_color = c;
 }
 
-template<typename Pixfmt> 
+template<typename Pixfmt>
 inline void gfx_painter<Pixfmt>::set_stroke_color(const rgba& c)
 {
     m_stroke_color = c;
 }
 
-template<typename Pixfmt> 
+template<typename Pixfmt>
 inline void gfx_painter<Pixfmt>::set_fill_image(const abstract_rendering_buffer* img, int filter, const rect_s& rc)
 {
     m_fill_type = type_image;
@@ -206,7 +206,7 @@ inline void gfx_painter<Pixfmt>::set_fill_image(const abstract_rendering_buffer*
     m_image_source.colorkey = img->has_color_channel();
 }
 
-template<typename Pixfmt> 
+template<typename Pixfmt>
 inline void gfx_painter<Pixfmt>::set_fill_canvas(const abstract_rendering_buffer* img, int filter, const rect_s& rc)
 {
     m_fill_type = type_canvas;
@@ -218,7 +218,7 @@ inline void gfx_painter<Pixfmt>::set_fill_canvas(const abstract_rendering_buffer
     m_image_source.colorkey = false;
 }
 
-template<typename Pixfmt> 
+template<typename Pixfmt>
 inline void gfx_painter<Pixfmt>::set_fill_pattern(const abstract_rendering_buffer* img, int filter, const rect_s& rc,
                                         int xtype, int ytype, const abstract_trans_affine* mtx)
 {
@@ -232,14 +232,14 @@ inline void gfx_painter<Pixfmt>::set_fill_pattern(const abstract_rendering_buffe
     m_pattern_source.transparent = img->is_transparent();
 }
 
-template<typename Pixfmt> 
+template<typename Pixfmt>
 inline void gfx_painter<Pixfmt>::set_fill_gradient(const abstract_gradient_adapter* g)
 {
     m_fill_type = type_gradient;
     m_gradient_source.gradient = const_cast<abstract_gradient_adapter*>(g);
 }
 
-template<typename Pixfmt> 
+template<typename Pixfmt>
 inline void gfx_painter<Pixfmt>::apply_stroke(abstract_raster_adapter* raster)
 {
     if (raster) {
@@ -249,7 +249,7 @@ inline void gfx_painter<Pixfmt>::apply_stroke(abstract_raster_adapter* raster)
     }
 }
 
-template<typename Pixfmt> 
+template<typename Pixfmt>
 inline void gfx_painter<Pixfmt>::apply_mono_text_fill(void * storage)
 {
     gfx_serialized_scanlines_adaptor_bin* storage_bin = (gfx_serialized_scanlines_adaptor_bin*)storage;
@@ -259,7 +259,7 @@ inline void gfx_painter<Pixfmt>::apply_mono_text_fill(void * storage)
     gfx_render_scanlines(*storage_bin, sl, ren_solid);
 }
 
-template<typename Pixfmt> 
+template<typename Pixfmt>
 inline void gfx_painter<Pixfmt>::apply_text_fill(abstract_raster_adapter* raster, text_style render_type)
 {
     if (raster) {
@@ -289,7 +289,7 @@ inline void gfx_painter<Pixfmt>::apply_text_fill(abstract_raster_adapter* raster
     }
 }
 
-template<typename Pixfmt> 
+template<typename Pixfmt>
 inline void gfx_painter<Pixfmt>::apply_fill(abstract_raster_adapter* raster)
 {
     if (raster) {
@@ -338,7 +338,7 @@ inline void gfx_painter<Pixfmt>::apply_fill(abstract_raster_adapter* raster)
                 scalar xs = (scalar)dr.width() / m_image_source.buffer->width();
                 scalar ys = (scalar)dr.height() / m_image_source.buffer->height();
 
-                gfx_trans_affine mtx; 
+                gfx_trans_affine mtx;
                 mtx *= gfx_trans_affine_scaling(xs, ys);
                 mtx *= gfx_trans_affine_translation(sround(dr.x()), sround(dr.y()));
                 mtx *= stable_matrix(static_cast<gfx_raster_adapter*>(raster)->transformation());
@@ -373,7 +373,7 @@ inline void gfx_painter<Pixfmt>::apply_fill(abstract_raster_adapter* raster)
                     } else {
                         typename painter_raster<Pixfmt>::span_image_filter_type_nn
                                                 sg(img_src, interpolator);
-                        gfx_render_scanlines_aa(static_cast<gfx_raster_adapter*>(raster)->fill_impl(), 
+                        gfx_render_scanlines_aa(static_cast<gfx_raster_adapter*>(raster)->fill_impl(),
                                                 m_scanline_u, m_rb, m_spans, sg);
                     }
                 }
@@ -395,35 +395,35 @@ inline void gfx_painter<Pixfmt>::apply_fill(abstract_raster_adapter* raster)
 
                 gfx_span_interpolator_linear interpolator(mtx);
 
-                pattern_wrapper<pixfmt>* pattern = 
+                pattern_wrapper<pixfmt>* pattern =
                             pattern_wrap(m_pattern_source.xtype, m_pattern_source.ytype, pattern_fmt);
 
                 if (m_pattern_source.filter) {
                     image_filter_adapter* filter = create_image_filter(m_pattern_source.filter);
 
                     if (transparent) {
-                        typename painter_raster<Pixfmt>::span_canvas_pattern_type 
+                        typename painter_raster<Pixfmt>::span_canvas_pattern_type
                                                 sg(*pattern, interpolator, *(filter));
-                        gfx_render_scanlines_aa(static_cast<gfx_raster_adapter*>(raster)->fill_impl(), 
+                        gfx_render_scanlines_aa(static_cast<gfx_raster_adapter*>(raster)->fill_impl(),
                                                 m_scanline_u, m_rb, m_spans, sg);
                     } else {
-                        typename painter_raster<Pixfmt>::span_image_pattern_type 
+                        typename painter_raster<Pixfmt>::span_image_pattern_type
                                                 sg(*pattern, interpolator, *(filter));
-                        gfx_render_scanlines_aa(static_cast<gfx_raster_adapter*>(raster)->fill_impl(), 
+                        gfx_render_scanlines_aa(static_cast<gfx_raster_adapter*>(raster)->fill_impl(),
                                                 m_scanline_u, m_rb, m_spans, sg);
                     }
 
                     if (filter) delete filter;
                 } else {
                     if (transparent) {
-                        typename painter_raster<Pixfmt>::span_canvas_pattern_type_nn 
+                        typename painter_raster<Pixfmt>::span_canvas_pattern_type_nn
                                                 sg(*pattern, interpolator);
-                        gfx_render_scanlines_aa(static_cast<gfx_raster_adapter*>(raster)->fill_impl(), 
+                        gfx_render_scanlines_aa(static_cast<gfx_raster_adapter*>(raster)->fill_impl(),
                                                 m_scanline_u, m_rb, m_spans, sg);
                     } else {
-                        typename painter_raster<Pixfmt>::span_image_pattern_type_nn 
+                        typename painter_raster<Pixfmt>::span_image_pattern_type_nn
                                                 sg(*pattern, interpolator);
-                        gfx_render_scanlines_aa(static_cast<gfx_raster_adapter*>(raster)->fill_impl(), 
+                        gfx_render_scanlines_aa(static_cast<gfx_raster_adapter*>(raster)->fill_impl(),
                                                 m_scanline_u, m_rb, m_spans, sg);
                     }
                 }
@@ -448,13 +448,13 @@ inline void gfx_painter<Pixfmt>::apply_fill(abstract_raster_adapter* raster)
                 scalar st = gradient->start();
 
                 gfx_span_gradient<color_type> sg(inter, *pwr, gradient->colors(), st, len);
-                gfx_render_scanlines_aa(static_cast<gfx_raster_adapter*>(raster)->fill_impl(), 
+                gfx_render_scanlines_aa(static_cast<gfx_raster_adapter*>(raster)->fill_impl(),
                                         m_scanline_u, m_rb, m_spans, sg);
             }
             break;
         case type_solid: // solid fill default.
         default:
-            {   
+            {
                 renderer_solid_type ren(m_rb);
                 ren.color(m_fill_color);
                 gfx_render_scanlines(static_cast<gfx_raster_adapter*>(raster)->fill_impl(), m_scanline_p, ren);
@@ -463,10 +463,10 @@ inline void gfx_painter<Pixfmt>::apply_fill(abstract_raster_adapter* raster)
     }
 }
 
-template<typename Pixfmt> 
+template<typename Pixfmt>
 inline void gfx_painter<Pixfmt>::apply_clip_path(const vertex_source& v, int rule, const abstract_trans_affine* mtx)
 {
-    abstract_trans_affine* cm = const_cast<abstract_trans_affine*>(mtx); 
+    abstract_trans_affine* cm = const_cast<abstract_trans_affine*>(mtx);
     gfx_trans_affine* m = static_cast<gfx_trans_affine*>(cm);
     conv_transform p(const_cast<vertex_source&>(v), m);
 
@@ -477,26 +477,26 @@ inline void gfx_painter<Pixfmt>::apply_clip_path(const vertex_source& v, int rul
     }
 }
 
-template<typename Pixfmt> 
+template<typename Pixfmt>
 inline void gfx_painter<Pixfmt>::apply_clip_device(const rect_s& rc, scalar xoffset, scalar yoffset)
 {
-    rect r(iround(rc.x1+xoffset), iround(rc.y1+yoffset), 
+    rect r(iround(rc.x1+xoffset), iround(rc.y1+yoffset),
            iround(rc.x2+xoffset), iround(rc.y2+yoffset));
 
     if (m_draw_shadow) { //in shadow draw context.
-        m_shadow_base.clip_rect(r.x1, r.y1, r.x2, r.y2);    
+        m_shadow_base.clip_rect(r.x1, r.y1, r.x2, r.y2);
     } else {
-        m_rb.clip_rect(r.x1, r.y1, r.x2, r.y2);        
+        m_rb.clip_rect(r.x1, r.y1, r.x2, r.y2);
     }
 }
 
-template<typename Pixfmt> 
+template<typename Pixfmt>
 inline void gfx_painter<Pixfmt>::apply_clear(const rgba& c)
 {
     m_rb.clear(c);
 }
 
-template<typename Pixfmt> 
+template<typename Pixfmt>
 inline void gfx_painter<Pixfmt>::apply_blur(scalar blur)
 {
     if (blur > 0) {
@@ -507,7 +507,7 @@ inline void gfx_painter<Pixfmt>::apply_blur(scalar blur)
     }
 }
 
-template<typename Pixfmt> 
+template<typename Pixfmt>
 inline void gfx_painter<Pixfmt>::clear_clip(void)
 {
     if (m_draw_shadow) //in shadow draw context.
@@ -516,19 +516,19 @@ inline void gfx_painter<Pixfmt>::clear_clip(void)
         m_rb.reset_clipping(true);
 }
 
-template<typename Pixfmt> 
+template<typename Pixfmt>
 inline void gfx_painter<Pixfmt>::apply_masking(abstract_mask_layer* m)
 {
     m_fmt.attach_mask(static_cast<gfx_mask_layer*>(m));
 }
 
-template<typename Pixfmt> 
+template<typename Pixfmt>
 inline void gfx_painter<Pixfmt>::clear_masking(void)
 {
     m_fmt.clear_mask();
 }
 
-template<typename Pixfmt> 
+template<typename Pixfmt>
 inline bool gfx_painter<Pixfmt>::begin_shadow(const rect_s& rc)
 {
     m_draw_shadow = true;
@@ -550,8 +550,8 @@ inline bool gfx_painter<Pixfmt>::begin_shadow(const rect_s& rc)
     return true;
 }
 
-template<typename Pixfmt> 
-inline void gfx_painter<Pixfmt>::apply_shadow(abstract_raster_adapter* rs, 
+template<typename Pixfmt>
+inline void gfx_painter<Pixfmt>::apply_shadow(abstract_raster_adapter* rs,
                                             const rect_s& r, const rgba& c, scalar x, scalar y, scalar blur)
 {
     gfx_raster_adapter* ras = static_cast<gfx_raster_adapter*>(rs);
@@ -574,7 +574,7 @@ inline void gfx_painter<Pixfmt>::apply_shadow(abstract_raster_adapter* rs,
     }
 
     //Note: shadow need a no clip render base.
-    renderer_base_type rb(m_fmt); 
+    renderer_base_type rb(m_fmt);
     //blend shadow layer to base.
     rb.blend_from(m_shadow_fmt, 0, iround(x+r.x1), iround(y+r.y1));
 
@@ -585,14 +585,14 @@ inline void gfx_painter<Pixfmt>::apply_shadow(abstract_raster_adapter* rs,
     m_draw_shadow = false;
 }
 
-template<typename Pixfmt> 
+template<typename Pixfmt>
 inline void gfx_painter<Pixfmt>::copy_rect_from(abstract_rendering_buffer* src, const rect& rc, int x, int y)
 {
     m_rb.copy_absolute_from(*static_cast<gfx_rendering_buffer*>(src), &rc, x, y);
 }
 
 #if ENABLE(FORMAT_RGBA)
-template<> 
+template<>
 inline pix_fmt gfx_painter<pixfmt_rgba32>::pixel_format(void) const
 {
     return pix_fmt_rgba;
@@ -600,7 +600,7 @@ inline pix_fmt gfx_painter<pixfmt_rgba32>::pixel_format(void) const
 #endif
 
 #if ENABLE(FORMAT_ARGB)
-template<> 
+template<>
 inline pix_fmt gfx_painter<pixfmt_argb32>::pixel_format(void) const
 {
     return pix_fmt_argb;
@@ -608,7 +608,7 @@ inline pix_fmt gfx_painter<pixfmt_argb32>::pixel_format(void) const
 #endif
 
 #if ENABLE(FORMAT_ABGR)
-template<> 
+template<>
 inline pix_fmt gfx_painter<pixfmt_abgr32>::pixel_format(void) const
 {
     return pix_fmt_abgr;
@@ -616,7 +616,7 @@ inline pix_fmt gfx_painter<pixfmt_abgr32>::pixel_format(void) const
 #endif
 
 #if ENABLE(FORMAT_BGRA)
-template<> 
+template<>
 inline pix_fmt gfx_painter<pixfmt_bgra32>::pixel_format(void) const
 {
     return pix_fmt_bgra;
@@ -624,7 +624,7 @@ inline pix_fmt gfx_painter<pixfmt_bgra32>::pixel_format(void) const
 #endif
 
 #if ENABLE(FORMAT_RGB)
-template<> 
+template<>
 inline pix_fmt gfx_painter<pixfmt_rgb24>::pixel_format(void) const
 {
     return pix_fmt_rgb;
@@ -632,7 +632,7 @@ inline pix_fmt gfx_painter<pixfmt_rgb24>::pixel_format(void) const
 #endif
 
 #if ENABLE(FORMAT_BGR)
-template<> 
+template<>
 inline pix_fmt gfx_painter<pixfmt_bgr24>::pixel_format(void) const
 {
     return pix_fmt_bgr;
@@ -640,7 +640,7 @@ inline pix_fmt gfx_painter<pixfmt_bgr24>::pixel_format(void) const
 #endif
 
 #if ENABLE(FORMAT_RGB565)
-template<> 
+template<>
 inline pix_fmt gfx_painter<pixfmt_rgb565>::pixel_format(void) const
 {
     return pix_fmt_rgb565;
@@ -648,7 +648,7 @@ inline pix_fmt gfx_painter<pixfmt_rgb565>::pixel_format(void) const
 #endif
 
 #if ENABLE(FORMAT_RGB555)
-template<> 
+template<>
 inline pix_fmt gfx_painter<pixfmt_rgb555>::pixel_format(void) const
 {
     return pix_fmt_rgb555;

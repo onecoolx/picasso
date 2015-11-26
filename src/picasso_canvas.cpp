@@ -1,5 +1,5 @@
 /* Picasso - a vector graphics library
- * 
+ *
  * Copyright (C) 2008 Zhang Ji Peng
  * Contact: onecoolx@gmail.com
  */
@@ -20,7 +20,7 @@ namespace picasso {
 
 int _byte_pre_color(ps_color_format fmt)
 {
-    switch (fmt) 
+    switch (fmt)
     {
 #if ENABLE(FORMAT_RGBA)
         case COLOR_FORMAT_RGBA:
@@ -62,7 +62,7 @@ int _byte_pre_color(ps_color_format fmt)
 
 static inline painter* get_painter_from_format(ps_color_format fmt)
 {
-    switch (fmt) 
+    switch (fmt)
     {
 #if ENABLE(FORMAT_RGBA)
         case COLOR_FORMAT_RGBA:
@@ -132,7 +132,7 @@ ps_canvas* PICAPI ps_canvas_create(ps_color_format fmt, int w, int h)
         p->p = pa;
         p->host = 0;
         p->mask = 0;
-        new ((void*)&(p->buffer)) picasso::rendering_buffer; 
+        new ((void*)&(p->buffer)) picasso::rendering_buffer;
         int pitch = picasso::_byte_pre_color(fmt) * w;
         byte* buf = 0;
         if ((buf = (byte*)BufferAlloc(h * pitch))) {
@@ -190,7 +190,7 @@ ps_canvas* PICAPI ps_canvas_create_compatible(const ps_canvas* c, int w, int h)
         p->p = pa;
         p->host = 0;
         p->mask = 0;
-        new ((void*)&(p->buffer)) picasso::rendering_buffer; 
+        new ((void*)&(p->buffer)) picasso::rendering_buffer;
         int pitch = picasso::_byte_pre_color(c->fmt) * w;
         byte* buf = 0;
         if ((buf = (byte*)BufferAlloc(h * pitch))) {
@@ -230,7 +230,7 @@ ps_canvas* PICAPI ps_canvas_create_from_canvas(ps_canvas* c, const ps_rect* r)
         return 0;
     }
 
-    ps_rect rc = {0, 0, (float)c->buffer.width(), (float)c->buffer.height()}; 
+    ps_rect rc = {0, 0, (float)c->buffer.width(), (float)c->buffer.height()};
     if (!r) {
         //Note: if rect is NULL, It equal reference.
         global_status = STATUS_SUCCEED;
@@ -260,8 +260,8 @@ ps_canvas* PICAPI ps_canvas_create_from_canvas(ps_canvas* c, const ps_rect* r)
         p->host = (void*)ps_canvas_ref(c);
         p->mask = 0;
         int bpp = picasso::_byte_pre_color(c->fmt);
-        new ((void*)&(p->buffer)) picasso::rendering_buffer; 
-        p->buffer.attach(c->buffer.buffer()+_iround(rc.y*c->buffer.stride()+rc.x*bpp), 
+        new ((void*)&(p->buffer)) picasso::rendering_buffer;
+        p->buffer.attach(c->buffer.buffer()+_iround(rc.y*c->buffer.stride()+rc.x*bpp),
                                        _iround(rc.w), _iround(rc.h), c->buffer.stride());
         p->p->attach(p->buffer);
         global_status = STATUS_SUCCEED;
@@ -285,7 +285,7 @@ ps_canvas* PICAPI ps_canvas_create_from_image(ps_image* i, const ps_rect* r)
         return 0;
     }
 
-    ps_rect rc = {0, 0, (float)i->buffer.width(), (float)i->buffer.height()}; 
+    ps_rect rc = {0, 0, (float)i->buffer.width(), (float)i->buffer.height()};
     if (r) {
         if (r->x > 0)
             rc.x = r->x;
@@ -311,8 +311,8 @@ ps_canvas* PICAPI ps_canvas_create_from_image(ps_image* i, const ps_rect* r)
         p->host = (void*)ps_image_ref(i);
         p->mask = 0;
         int bpp = picasso::_byte_pre_color(i->fmt);
-        new ((void*)&(p->buffer)) picasso::rendering_buffer; 
-        p->buffer.attach(i->buffer.buffer()+_iround(rc.y*i->buffer.stride()+rc.x*bpp), 
+        new ((void*)&(p->buffer)) picasso::rendering_buffer;
+        p->buffer.attach(i->buffer.buffer()+_iround(rc.y*i->buffer.stride()+rc.x*bpp),
                                        _iround(rc.w), _iround(rc.h), i->buffer.stride());
         p->p->attach(p->buffer);
         global_status = STATUS_SUCCEED;
@@ -349,7 +349,7 @@ ps_canvas* PICAPI ps_canvas_create_with_data(ps_byte * addr, ps_color_format fmt
         p->flage = buffer_alloc_none;
         p->host = 0;
         p->mask = 0;
-        new ((void*)&(p->buffer)) picasso::rendering_buffer; 
+        new ((void*)&(p->buffer)) picasso::rendering_buffer;
         p->buffer.attach(addr, w, h, pitch);
         p->p->attach(p->buffer);
         global_status = STATUS_SUCCEED;
@@ -532,7 +532,7 @@ void PICAPI ps_canvas_bitblt(ps_canvas* src, const ps_rect* r, ps_canvas* dst, c
     }
 
     if (r) {
-        picasso::rect rc(_iround(r->x), _iround(r->y), 
+        picasso::rect rc(_iround(r->x), _iround(r->y),
                          _iround(r->x+r->w), _iround(r->y+r->h));
         src->p->render_copy(src->buffer, &rc, dst->p, x, y);
     } else {

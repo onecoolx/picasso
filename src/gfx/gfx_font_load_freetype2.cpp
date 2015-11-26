@@ -1,5 +1,5 @@
 /* Picasso - a vector graphics library
- * 
+ *
  * Copyright (C) 2008 Zhang Ji Peng
  * Contact: onecoolx@gmail.com
  */
@@ -26,7 +26,7 @@
 #define MAX_FONT_PATH_LENGTH MAX_PATH_LEN
 #define MAX_FONT_NAME_LENGTH MAX_PATH_LEN
 
-#define MAX_CONFIG_LINE    MAX_PATH_LEN 
+#define MAX_CONFIG_LINE    MAX_PATH_LEN
 
 #if ENABLE(FONT_CONFIG)
 #include <fontconfig/fontconfig.h>
@@ -60,17 +60,17 @@ static inline char* GetFontPath(const char* name)
 
     int len = ::WideCharToMultiByte(CP_ACP, WC_COMPOSITECHECK, g_path, -1, p_path, MAX_PATH_LEN, NULL, NULL);
 
-    if ((len + strlen(name)) > (MAX_PATH_LEN-1)) 
+    if ((len + strlen(name)) > (MAX_PATH_LEN-1))
         return 0;
-    
+
     strcat(p_path, name);
     return p_path;
 }
-#define OPENFILE   _wfopen 
+#define OPENFILE   _wfopen
 #define F(txt)    L##txt
 #else
 #define F(txt)   txt
-#define OPENFILE   fopen 
+#define OPENFILE   fopen
 #define CONFIG_FILE "font_config.cfg"
 #define CONFIG_PATH(path) path
 #endif
@@ -98,7 +98,7 @@ static font_item* get_font_item(const char* name, const char* path)
         strncpy(f->font_name, name, MAX_FONT_NAME_LENGTH-1);
         strncpy(f->font_path, path, MAX_FONT_PATH_LENGTH-1);
         return f;
-    } else { 
+    } else {
         global_status = STATUS_OUT_OF_MEMORY;
         return 0;
     }
@@ -283,7 +283,7 @@ static void write_default(void)
         fprintf(pf, "path=%s\n", "sung.ttf");
         fprintf(pf, "[%s]\n", "arial");
         fprintf(pf, "path=%s\n", "arial.ttf");
-        
+
         fclose(pf);
     }
 }
@@ -295,7 +295,7 @@ static void load_font_from_file(FILE * f)
     char* tpath = 0;
     while (!feof(f)) {
         (void)fgets(buf, MAX_CONFIG_LINE, f);
-        char* ps = strchr(buf, '[');    
+        char* ps = strchr(buf, '[');
         if (ps) {
             char* pe = strchr(buf, ']');
             if (pe) {
@@ -311,7 +311,7 @@ static void load_font_from_file(FILE * f)
                         tpath = (char*)mem_malloc(pe-ps);
                         strncpy(tpath, ps+5, pe-ps-5);
                         tpath[pe-ps-5] = '\0';
-                        
+
                         font_item* font = get_font_item(tname, CONFIG_PATH(tpath));
                         g_font_map.add(font);
 
@@ -340,7 +340,7 @@ bool _load_fonts(void)
 
         load_font_from_file(pf);
 
-        fclose(pf); 
+        fclose(pf);
 
     } else {
         // not found config file.
@@ -388,7 +388,7 @@ char * _font_by_name(const char* face)
 bool platform_font_init(void)
 {
 #if ENABLE(FONT_CONFIG)
-    FcInit();    
+    FcInit();
 #endif
     return gfx::_load_fonts();
 }

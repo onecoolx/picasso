@@ -1,5 +1,5 @@
 /* Picasso - a vector graphics library
- * 
+ *
  * Copyright (C) 2011 Zhang Ji Peng
  * Contact: onecoolx@gmail.com
  */
@@ -23,33 +23,33 @@ namespace picasso {
 class conv_curve : public vertex_source
 {
 public:
-    conv_curve(const vertex_source& v) 
-        : m_source(const_cast<vertex_source*>(&v)) 
-    { 
+    conv_curve(const vertex_source& v)
+        : m_source(const_cast<vertex_source*>(&v))
+    {
     }
 
-    void approximation_scale(scalar s) 
-    { 
-        m_curve3.approximation_scale(s); 
-        m_curve4.approximation_scale(s); 
+    void approximation_scale(scalar s)
+    {
+        m_curve3.approximation_scale(s);
+        m_curve4.approximation_scale(s);
     }
 
-    scalar approximation_scale(void) const 
-    { 
-        return m_curve4.approximation_scale();  
+    scalar approximation_scale(void) const
+    {
+        return m_curve4.approximation_scale();
     }
 
-    virtual void rewind(unsigned int id) 
-    { 
-        m_source->rewind(id); 
+    virtual void rewind(unsigned int id)
+    {
+        m_source->rewind(id);
         m_last_x = FLT_TO_SCALAR(0.0f);
         m_last_y = FLT_TO_SCALAR(0.0f);
         m_curve3.reset();
         m_curve4.reset();
     }
 
-    virtual unsigned int vertex(scalar* x, scalar* y) 
-    { 
+    virtual unsigned int vertex(scalar* x, scalar* y)
+    {
         if (!is_stop(m_curve3.vertex(x, y))) {
             m_last_x = *x;
             m_last_y = *y;
@@ -72,16 +72,16 @@ public:
             case path_cmd_curve3:
                 m_source->vertex(&end_x, &end_y);
                 m_curve3.init(m_last_x, m_last_y, *x, *y, end_x, end_y);
-                m_curve3.vertex(x, y);  
-                m_curve3.vertex(x, y);  
+                m_curve3.vertex(x, y);
+                m_curve3.vertex(x, y);
                 cmd = path_cmd_line_to;
                 break;
             case path_cmd_curve4:
                 m_source->vertex(&ct2_x, &ct2_y);
                 m_source->vertex(&end_x, &end_y);
                 m_curve4.init(m_last_x, m_last_y, *x, *y, ct2_x, ct2_y, end_x, end_y);
-                m_curve4.vertex(x, y); 
-                m_curve4.vertex(x, y); 
+                m_curve4.vertex(x, y);
+                m_curve4.vertex(x, y);
                 cmd = path_cmd_line_to;
                 break;
         }
@@ -98,7 +98,7 @@ private:
     scalar m_last_x;
     scalar m_last_y;
     curve3 m_curve3;
-    curve4 m_curve4;    
+    curve4 m_curve4;
 };
 
 // Convert transformer
@@ -107,19 +107,19 @@ class conv_transform : public vertex_source
 public:
     conv_transform(const vertex_source& v, const trans_affine& m)
         : m_source(const_cast<vertex_source*>(&v)), m_trans(m.impl())
-    { 
+    {
     }
 
     conv_transform(const vertex_source& v, const abstract_trans_affine* m)
         : m_source(const_cast<vertex_source*>(&v)), m_trans(m)
-    { 
+    {
     }
 
     void transformer(const trans_affine& t) { m_trans = t.impl(); }
 
     virtual void rewind(unsigned int id) { m_source->rewind(id); }
 
-    virtual unsigned int vertex(scalar* x, scalar* y) 
+    virtual unsigned int vertex(scalar* x, scalar* y)
     {
         unsigned int cmd = m_source->vertex(x, y);
         if (is_vertex(cmd)) {
@@ -145,7 +145,7 @@ public:
         clip_xor,
         clip_diff,
     } clip_op;
-    
+
     typedef enum {
         status_move_to,
         status_line_to,
@@ -158,7 +158,7 @@ public:
         vertex_s* vertices;
     } contour_header;
 
-    conv_clipper(const vertex_source& a, const vertex_source& b, clip_op op) 
+    conv_clipper(const vertex_source& a, const vertex_source& b, clip_op op)
         : m_src_a(const_cast<vertex_source*>(&a))
         , m_src_b(const_cast<vertex_source*>(&b))
         , m_status(status_move_to)
@@ -176,7 +176,7 @@ public:
         free_all();
     }
 
-    virtual void rewind(unsigned int id) 
+    virtual void rewind(unsigned int id)
     {
         free_result();
         m_src_a->rewind(id);
@@ -205,8 +205,8 @@ public:
         m_vertex = -1;
     }
 
-    virtual unsigned int vertex(scalar* x, scalar* y) 
-    { 
+    virtual unsigned int vertex(scalar* x, scalar* y)
+    {
         if (m_status == status_move_to) {
             if (next_contour()) {
                 if (next_vertex(x, y)) {
@@ -227,14 +227,14 @@ public:
         return path_cmd_stop;
     }
 private:
-    void free_result(void) 
+    void free_result(void)
     {
         if (m_result.contour) {
             gpc_free_polygon(&m_result);
         }
         memset(&m_result, 0, sizeof(m_result));
     }
-    
+
     void free_all(void)
     {
         free_polygon(m_poly_a);
@@ -245,7 +245,7 @@ private:
     void free_polygon(gpc_polygon& p)
     {
         for (int i = 0; i < p.num_contours; i++) {
-            pod_allocator<vertex_s>::deallocate(p.contour[i].vertex, 
+            pod_allocator<vertex_s>::deallocate(p.contour[i].vertex,
                                                   p.contour[i].num_vertices);
         }
         pod_allocator<gpc_vertex_list>::deallocate(p.contour, p.num_contours);
@@ -396,7 +396,7 @@ public:
     } status;
 
     conv_line_generator(const vertex_source& v)
-        : m_source(const_cast<vertex_source*>(&v)) 
+        : m_source(const_cast<vertex_source*>(&v))
         , m_status(status_initial)
         , m_last_cmd(path_cmd_stop)
         , m_start_x(FLT_TO_SCALAR(0.0f))
@@ -405,8 +405,8 @@ public:
     }
 
     virtual void rewind(unsigned int id)
-    { 
-        m_source->rewind(id); 
+    {
+        m_source->rewind(id);
         m_status = status_initial;
     }
 
@@ -513,7 +513,7 @@ public:
     {
         memset(m_dashes, 0, max_dashes);
     }
-    
+
     void dash_start(scalar start)
     {
         m_dash_start = start;
@@ -819,8 +819,8 @@ public:
                 break;
             case cap1:
                 calc_cap(m_out_vertices,
-                         m_src_vertices[0], 
-                         m_src_vertices[1], 
+                         m_src_vertices[0],
+                         m_src_vertices[1],
                          m_src_vertices[0].d);
 
                 m_src_vertex = 1;
@@ -830,8 +830,8 @@ public:
                 break;
             case cap2:
                 calc_cap(m_out_vertices,
-                         m_src_vertices[m_src_vertices.size() - 1], 
-                         m_src_vertices[m_src_vertices.size() - 2], 
+                         m_src_vertices[m_src_vertices.size() - 1],
+                         m_src_vertices[m_src_vertices.size() - 2],
                          m_src_vertices[m_src_vertices.size() - 2].d);
 
                 m_prev_status = outline2;
@@ -852,10 +852,10 @@ public:
                     }
                 }
 
-                calc_join(m_out_vertices, 
-                          m_src_vertices.prev(m_src_vertex), 
-                          m_src_vertices.curr(m_src_vertex), 
-                          m_src_vertices.next(m_src_vertex), 
+                calc_join(m_out_vertices,
+                          m_src_vertices.prev(m_src_vertex),
+                          m_src_vertices.curr(m_src_vertex),
+                          m_src_vertices.next(m_src_vertex),
                           m_src_vertices.prev(m_src_vertex).d,
                           m_src_vertices.curr(m_src_vertex).d);
 
@@ -877,10 +877,10 @@ public:
 
                 --m_src_vertex;
                 calc_join(m_out_vertices,
-                          m_src_vertices.next(m_src_vertex), 
-                          m_src_vertices.curr(m_src_vertex), 
-                          m_src_vertices.prev(m_src_vertex), 
-                          m_src_vertices.curr(m_src_vertex).d, 
+                          m_src_vertices.next(m_src_vertex),
+                          m_src_vertices.curr(m_src_vertex),
+                          m_src_vertices.prev(m_src_vertex),
+                          m_src_vertices.curr(m_src_vertex).d,
                           m_src_vertices.prev(m_src_vertex).d);
 
                 m_prev_status = m_status;
@@ -984,14 +984,14 @@ private:
             switch (m_inner_join)
             {
                 case inner_miter:
-                    calc_miter(cs, v0, v1, v2, dx1, dy1, dx2, dy2, 
+                    calc_miter(cs, v0, v1, v2, dx1, dy1, dx2, dy2,
                                miter_join_revert, limit, 0);
                     break;
                 case inner_jag:
                 case inner_round:
                     cp = (dx1-dx2) * (dx1-dx2) + (dy1-dy2) * (dy1-dy2);
                     if (cp < len1 * len1 && cp < len2 * len2) {
-                        calc_miter(cs, v0, v1, v2, dx1, dy1, dx2, dy2, 
+                        calc_miter(cs, v0, v1, v2, dx1, dy1, dx2, dy2,
                                    miter_join_revert, limit, 0);
                     } else {
                         if (m_inner_join == inner_jag) {
@@ -1037,7 +1037,7 @@ private:
                 case miter_join:
                 case miter_join_revert:
                 case miter_join_round:
-                    calc_miter(cs, v0, v1, v2, dx1, dy1, dx2, dy2, 
+                    calc_miter(cs, v0, v1, v2, dx1, dy1, dx2, dy2,
                                m_line_join, m_miter_limit, dbevel);
                     break;
                 case round_join:
@@ -1051,7 +1051,7 @@ private:
         }
     }
 
-    void calc_arc(coord_storage& cs, scalar x, scalar y, 
+    void calc_arc(coord_storage& cs, scalar x, scalar y,
                   scalar dx1, scalar dy1, scalar dx2, scalar dy2)
     {
         scalar a1 = Atan2(dy1 * m_width_sign, dx1 * m_width_sign);
@@ -1110,8 +1110,8 @@ private:
             intersection_failed = false;
         } else {
             // calculation of the intersection failed, most probably
-            // the three points lie one straight line. 
-            // first check if v0 and v2 lie on the opposite sides of vector: 
+            // the three points lie one straight line.
+            // first check if v0 and v2 lie on the opposite sides of vector:
             // (v1.x, v1.y) -> (v1.x+dx1, v1.y-dy1), that is, the perpendicular
             // to the line determined by vertices v0 and v1.
             // this condition determines whether the next line segments continues
@@ -1119,10 +1119,10 @@ private:
             //----------------
             scalar x2 = v1.x + dx1;
             scalar y2 = v1.y - dy1;
-            if ((cross_product(v0.x, v0.y, v1.x, v1.y, x2, y2) < 0.0) == 
+            if ((cross_product(v0.x, v0.y, v1.x, v1.y, x2, y2) < 0.0) ==
                 (cross_product(v1.x, v1.y, v2.x, v2.y, x2, y2) < 0.0))
             {
-                // this case means that the next segment continues 
+                // this case means that the next segment continues
                 // the previous one (straight line)
                 add_coord_vertex(cs, v1.x + dx1, v1.y - dy1);
                 miter_limit_exceeded = false;
@@ -1144,9 +1144,9 @@ private:
                     // if no miter-revert, calculate new dx1, dy1, dx2, dy2
                     if (intersection_failed) {
                         mlimit *= m_width_sign;
-                        add_coord_vertex(cs, v1.x + dx1 + dy1 * mlimit, 
+                        add_coord_vertex(cs, v1.x + dx1 + dy1 * mlimit,
                                                     v1.y - dy1 + dx1 * mlimit);
-                        add_coord_vertex(cs, v1.x + dx2 - dy2 * mlimit, 
+                        add_coord_vertex(cs, v1.x + dx2 - dy2 * mlimit,
                                                     v1.y - dy2 - dx2 * mlimit);
                     } else {
                         scalar x1 = v1.x + dx1;

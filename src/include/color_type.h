@@ -1,5 +1,5 @@
 /* Picasso - a vector graphics library
- * 
+ *
  * Copyright (C) 2011 Zhang Ji Peng
  * Contact: onecoolx@gmail.com
  */
@@ -45,8 +45,8 @@ struct rgba
     scalar b;
     scalar a;
 
-    rgba() 
-        : r(0), g(0), b(0), a(0)  
+    rgba()
+        : r(0), g(0), b(0), a(0)
     {
     }
 
@@ -74,21 +74,21 @@ struct rgba8
     value_type b;
     value_type a;
 
-    rgba8() 
+    rgba8()
         : r(0), g(0), b(0), a(0)
     {
     }
 
     rgba8(unsigned int _r, unsigned int _g, unsigned int _b, unsigned int _a = base_mask)
-        : r(_r), g(_g), b(_b), a(_a) 
+        : r(_r), g(_g), b(_b), a(_a)
     {
     }
 
-    rgba8(const rgba& c) 
-        : r((value_type)uround(c.r * scalar(base_mask))) 
-        , g((value_type)uround(c.g * scalar(base_mask))) 
-        , b((value_type)uround(c.b * scalar(base_mask))) 
-        , a((value_type)uround(c.a * scalar(base_mask))) 
+    rgba8(const rgba& c)
+        : r((value_type)uround(c.r * scalar(base_mask)))
+        , g((value_type)uround(c.g * scalar(base_mask)))
+        , b((value_type)uround(c.b * scalar(base_mask)))
+        , a((value_type)uround(c.a * scalar(base_mask)))
     {
     }
 

@@ -1,5 +1,5 @@
 /* Picasso - a vector graphics library
- * 
+ *
  * Copyright (C) 2013 Zhang Ji Peng
  * Contact: onecoolx@gmail.com
  */
@@ -59,7 +59,7 @@ public:
             font = 0;
         }
     }
-    
+
     FT_Face font;
     bool antialias;
     bool flip_y;
@@ -71,7 +71,7 @@ public:
     scalar descent;
     scalar leading;
     unsigned int units_per_em;
-    //font special 
+    //font special
     FT_Library library;
     //current glyph
     unsigned int cur_glyph_index;
@@ -85,7 +85,7 @@ public:
     gfx_serialized_scanlines_adaptor_bin cur_font_storage_bin;
 };
 
-gfx_font_adapter::gfx_font_adapter(const char* name, int charset, scalar height, scalar weight, 
+gfx_font_adapter::gfx_font_adapter(const char* name, int charset, scalar height, scalar weight,
                                 bool italic, bool hint, bool flip, bool a, const abstract_trans_affine* mtx)
     :m_impl(new font_adapter_impl)
 {
@@ -107,11 +107,11 @@ gfx_font_adapter::gfx_font_adapter(const char* name, int charset, scalar height,
 
     if (m_impl->font) {
         scalar top_base = FLT_TO_SCALAR(fabsf(m_impl->font->ascender * m_impl->height / m_impl->font->height));
-        scalar top_leading = FLT_TO_SCALAR((m_impl->font->height - 
+        scalar top_leading = FLT_TO_SCALAR((m_impl->font->height -
               (abs(m_impl->font->ascender) + abs(m_impl->font->descender))) * m_impl->height / m_impl->font->height);
         m_impl->ascent = top_base + top_leading;
         m_impl->descent = FLT_TO_SCALAR(fabs(m_impl->font->descender * m_impl->height / m_impl->font->height));
-        m_impl->leading = FLT_TO_SCALAR((m_impl->font->size->metrics.height - 
+        m_impl->leading = FLT_TO_SCALAR((m_impl->font->size->metrics.height -
                     m_impl->font->size->metrics.ascender+m_impl->font->size->metrics.descender)/64.0);
         m_impl->units_per_em = m_impl->font->units_per_EM;
     }
@@ -152,7 +152,7 @@ void gfx_font_adapter::add_kerning(unsigned int first, unsigned int second, scal
 
 static bool decompose_ft_outline(const FT_Outline& outline,
                               bool flip_y, const gfx_trans_affine& mtx, graphic_path& path)
-{   
+{
     FT_Vector   v_last;
     FT_Vector   v_control;
     FT_Vector   v_start;
@@ -183,7 +183,7 @@ static bool decompose_ft_outline(const FT_Outline& outline,
         tag   = FT_CURVE_TAG(tags[0]);
 
         // A contour cannot start with a cubic control point!
-        if (tag == FT_CURVE_TAG_CUBIC) 
+        if (tag == FT_CURVE_TAG_CUBIC)
             return false;
 
         // check first point to determine origin
@@ -209,7 +209,7 @@ static bool decompose_ft_outline(const FT_Outline& outline,
         x1 = int26p6_to_flt(v_start.x);
         y1 = int26p6_to_flt(v_start.y);
 
-        if (flip_y) 
+        if (flip_y)
             y1 = -y1;
 
         mtx.transform(&x1, &y1);
@@ -225,7 +225,7 @@ static bool decompose_ft_outline(const FT_Outline& outline,
                     {
                         x1 = int26p6_to_flt(point->x);
                         y1 = int26p6_to_flt(point->y);
-                        if (flip_y) 
+                        if (flip_y)
                             y1 = -y1;
                         mtx.transform(&x1, &y1);
                         path.line_to(FLT_TO_SCALAR(x1), FLT_TO_SCALAR(y1));
@@ -252,20 +252,20 @@ static bool decompose_ft_outline(const FT_Outline& outline,
                                 y1 = int26p6_to_flt(v_control.y);
                                 x2 = int26p6_to_flt(vec.x);
                                 y2 = int26p6_to_flt(vec.y);
-                                if (flip_y) { 
-                                    y1 = -y1; 
-                                    y2 = -y2; 
+                                if (flip_y) {
+                                    y1 = -y1;
+                                    y2 = -y2;
                                 }
                                 mtx.transform(&x1, &y1);
                                 mtx.transform(&x2, &y2);
-                                path.curve3(FLT_TO_SCALAR(x1), 
+                                path.curve3(FLT_TO_SCALAR(x1),
                                             FLT_TO_SCALAR(y1),
-                                            FLT_TO_SCALAR(x2), 
+                                            FLT_TO_SCALAR(x2),
                                             FLT_TO_SCALAR(y2));
                                 continue;
                             }
 
-                            if (tag != FT_CURVE_TAG_CONIC) 
+                            if (tag != FT_CURVE_TAG_CONIC)
                                 return false;
 
                             v_middle.x = (v_control.x + vec.x) / 2;
@@ -275,15 +275,15 @@ static bool decompose_ft_outline(const FT_Outline& outline,
                             y1 = int26p6_to_flt(v_control.y);
                             x2 = int26p6_to_flt(v_middle.x);
                             y2 = int26p6_to_flt(v_middle.y);
-                            if (flip_y) { 
-                                y1 = -y1; 
-                                y2 = -y2; 
+                            if (flip_y) {
+                                y1 = -y1;
+                                y2 = -y2;
                             }
                             mtx.transform(&x1, &y1);
                             mtx.transform(&x2, &y2);
-                            path.curve3(FLT_TO_SCALAR(x1), 
+                            path.curve3(FLT_TO_SCALAR(x1),
                                         FLT_TO_SCALAR(y1),
-                                        FLT_TO_SCALAR(x2), 
+                                        FLT_TO_SCALAR(x2),
                                         FLT_TO_SCALAR(y2));
                             v_control = vec;
                             goto Do_Conic;
@@ -293,15 +293,15 @@ static bool decompose_ft_outline(const FT_Outline& outline,
                         y1 = int26p6_to_flt(v_control.y);
                         x2 = int26p6_to_flt(v_start.x);
                         y2 = int26p6_to_flt(v_start.y);
-                        if (flip_y) { 
-                            y1 = -y1; 
-                            y2 = -y2; 
+                        if (flip_y) {
+                            y1 = -y1;
+                            y2 = -y2;
                         }
                         mtx.transform(&x1, &y1);
                         mtx.transform(&x2, &y2);
-                        path.curve3(FLT_TO_SCALAR(x1), 
+                        path.curve3(FLT_TO_SCALAR(x1),
                                     FLT_TO_SCALAR(y1),
-                                    FLT_TO_SCALAR(x2), 
+                                    FLT_TO_SCALAR(x2),
                                     FLT_TO_SCALAR(y2));
                         goto Close;
                     }
@@ -313,9 +313,9 @@ static bool decompose_ft_outline(const FT_Outline& outline,
                             return false;
                         }
 
-                        vec1.x = point[0].x; 
+                        vec1.x = point[0].x;
                         vec1.y = point[0].y;
-                        vec2.x = point[1].x; 
+                        vec2.x = point[1].x;
                         vec2.y = point[1].y;
 
                         point += 2;
@@ -333,19 +333,19 @@ static bool decompose_ft_outline(const FT_Outline& outline,
                             y2 = int26p6_to_flt(vec2.y);
                             x3 = int26p6_to_flt(vec.x);
                             y3 = int26p6_to_flt(vec.y);
-                            if (flip_y) { 
-                                y1 = -y1; 
-                                y2 = -y2; 
-                                y3 = -y3; 
+                            if (flip_y) {
+                                y1 = -y1;
+                                y2 = -y2;
+                                y3 = -y3;
                             }
                             mtx.transform(&x1, &y1);
                             mtx.transform(&x2, &y2);
                             mtx.transform(&x3, &y3);
-                            path.curve4(FLT_TO_SCALAR(x1), 
+                            path.curve4(FLT_TO_SCALAR(x1),
                                         FLT_TO_SCALAR(y1),
-                                        FLT_TO_SCALAR(x2), 
+                                        FLT_TO_SCALAR(x2),
                                         FLT_TO_SCALAR(y2),
-                                        FLT_TO_SCALAR(x3), 
+                                        FLT_TO_SCALAR(x3),
                                         FLT_TO_SCALAR(y3));
                             continue;
                         }
@@ -356,19 +356,19 @@ static bool decompose_ft_outline(const FT_Outline& outline,
                         y2 = int26p6_to_flt(vec2.y);
                         x3 = int26p6_to_flt(v_start.x);
                         y3 = int26p6_to_flt(v_start.y);
-                        if (flip_y) { 
-                            y1 = -y1; 
-                            y2 = -y2; 
-                            y3 = -y3; 
+                        if (flip_y) {
+                            y1 = -y1;
+                            y2 = -y2;
+                            y3 = -y3;
                         }
                         mtx.transform(&x1, &y1);
                         mtx.transform(&x2, &y2);
                         mtx.transform(&x3, &y3);
-                        path.curve4(FLT_TO_SCALAR(x1), 
+                        path.curve4(FLT_TO_SCALAR(x1),
                                     FLT_TO_SCALAR(y1),
-                                    FLT_TO_SCALAR(x2), 
+                                    FLT_TO_SCALAR(x2),
                                     FLT_TO_SCALAR(y2),
-                                    FLT_TO_SCALAR(x3), 
+                                    FLT_TO_SCALAR(x3),
                                     FLT_TO_SCALAR(y3));
                         goto Close;
                     }
@@ -377,7 +377,7 @@ static bool decompose_ft_outline(const FT_Outline& outline,
 
         path.close_polygon();
 Close:
-        first = last + 1; 
+        first = last + 1;
     }
     return true;
 }
@@ -423,7 +423,7 @@ bool gfx_font_adapter::prepare_glyph(unsigned int code)
     if (m_impl->font) {
         m_impl->cur_glyph_index = FT_Get_Char_Index(m_impl->font, code);
 
-        int error = FT_Load_Glyph(m_impl->font, m_impl->cur_glyph_index, 
+        int error = FT_Load_Glyph(m_impl->font, m_impl->cur_glyph_index,
                                  m_impl->hinting ? FT_LOAD_DEFAULT : FT_LOAD_NO_HINTING);
 
         bool is_sys_bitmap = false;
@@ -442,7 +442,7 @@ bool gfx_font_adapter::prepare_glyph(unsigned int code)
                     int strength = 1 << 7;
                     FT_Outline_Embolden(&(m_impl->font->glyph->outline), strength);
                 }
-                // outline text 
+                // outline text
                 m_impl->cur_data_type = glyph_type_outline;
                 m_impl->cur_font_path.remove_all();
 
@@ -462,15 +462,15 @@ bool gfx_font_adapter::prepare_glyph(unsigned int code)
                     gfx_scanline_bin sl;
                     error = FT_Render_Glyph(m_impl->font->glyph, FT_RENDER_MODE_MONO);
                     if (error == 0) {
-                        decompose_ft_bitmap_mono(m_impl->font->glyph->bitmap, 
-                           m_impl->font->glyph->bitmap_left, m_impl->flip_y ? -m_impl->font->glyph->bitmap_top : 
-                           m_impl->font->glyph->bitmap_top, m_impl->flip_y, sl, m_impl->cur_font_scanlines_bin); 
-                    
+                        decompose_ft_bitmap_mono(m_impl->font->glyph->bitmap,
+                           m_impl->font->glyph->bitmap_left, m_impl->flip_y ? -m_impl->font->glyph->bitmap_top :
+                           m_impl->font->glyph->bitmap_top, m_impl->flip_y, sl, m_impl->cur_font_scanlines_bin);
+
                         m_impl->cur_bound_rect = rect(m_impl->cur_font_scanlines_bin.min_x(),
                                 m_impl->cur_font_scanlines_bin.min_y(),
                                 m_impl->cur_font_scanlines_bin.max_x() + 1,
                                 m_impl->cur_font_scanlines_bin.max_y() + 1);
-                        m_impl->cur_data_size = m_impl->cur_font_scanlines_bin.byte_size(); 
+                        m_impl->cur_data_size = m_impl->cur_font_scanlines_bin.byte_size();
                         m_impl->cur_advance_x = FLT_TO_SCALAR(int26p6_to_flt(m_impl->font->glyph->advance.x));
                         m_impl->cur_advance_y = FLT_TO_SCALAR(int26p6_to_flt(m_impl->font->glyph->advance.y));
                         return true;
@@ -497,13 +497,13 @@ bool gfx_font_adapter::prepare_glyph(unsigned int code)
                         rasterizer.add_path(curves);
 
                         gfx_scanline_bin sl;
-                        m_impl->cur_font_scanlines_bin.prepare(); // Remove all 
+                        m_impl->cur_font_scanlines_bin.prepare(); // Remove all
                         gfx_render_scanlines(rasterizer, sl, m_impl->cur_font_scanlines_bin);
                         m_impl->cur_bound_rect = rect(m_impl->cur_font_scanlines_bin.min_x(),
                                 m_impl->cur_font_scanlines_bin.min_y(),
                                 m_impl->cur_font_scanlines_bin.max_x() + 1,
                                 m_impl->cur_font_scanlines_bin.max_y() + 1);
-                        m_impl->cur_data_size = m_impl->cur_font_scanlines_bin.byte_size(); 
+                        m_impl->cur_data_size = m_impl->cur_font_scanlines_bin.byte_size();
                         m_impl->cur_advance_x = FLT_TO_SCALAR(int26p6_to_flt(m_impl->font->glyph->advance.x));
                         m_impl->cur_advance_y = FLT_TO_SCALAR(int26p6_to_flt(m_impl->font->glyph->advance.y));
                         m_impl->matrix.transform(&m_impl->cur_advance_x, &m_impl->cur_advance_y);

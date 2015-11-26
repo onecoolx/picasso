@@ -1,5 +1,5 @@
 /* Picasso - a vector graphics library
- * 
+ *
  * Copyright (C) 2008 Zhang Ji Peng
  * Contact: onecoolx@gmail.com
  */
@@ -101,7 +101,7 @@ bool raster_adapter::fill_contents_point(const vertex_source& vs, scalar x, scal
         ret = rs->contains(x, y);
     }
     get_system_device()->destroy_raster_adapter(rs);
-    return ret; 
+    return ret;
 }
 
 bool raster_adapter::stroke_contents_point(const vertex_source& vs, scalar x, scalar y, scalar w)
@@ -118,7 +118,7 @@ bool raster_adapter::stroke_contents_point(const vertex_source& vs, scalar x, sc
         ret = rs->contains(x, y);
     }
     get_system_device()->destroy_raster_adapter(rs);
-    return ret; 
+    return ret;
 }
 
 }

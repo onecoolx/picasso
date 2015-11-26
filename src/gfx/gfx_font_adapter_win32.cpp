@@ -1,5 +1,5 @@
 /* Picasso - a vector graphics library
- * 
+ *
  * Copyright (C) 2013 Zhang Ji Peng
  * Contact: onecoolx@gmail.com
  */
@@ -79,7 +79,7 @@ public:
     scalar descent;
     scalar leading;
     unsigned int units_per_em;
-    //font special 
+    //font special
     HDC dc;
     HFONT old_font;
     MAT2 mat;
@@ -102,7 +102,7 @@ public:
     KERNINGPAIR* kerning_pairs;
 };
 
-gfx_font_adapter::gfx_font_adapter(const char* name, int charset, scalar height, scalar weight, 
+gfx_font_adapter::gfx_font_adapter(const char* name, int charset, scalar height, scalar weight,
                                 bool italic, bool hint, bool flip, bool a, const abstract_trans_affine* mtx)
     :m_impl(new font_adapter_impl)
 {
@@ -193,7 +193,7 @@ unsigned int gfx_font_adapter::units_per_em(void) const
 
 static int pair_less(const void* v1, const void* v2)
 {
-    if (((KERNINGPAIR*)v1)->wFirst != ((KERNINGPAIR*)v2)->wFirst) 
+    if (((KERNINGPAIR*)v1)->wFirst != ((KERNINGPAIR*)v2)->wFirst)
         return ((KERNINGPAIR*)v1)->wFirst - ((KERNINGPAIR*)v2)->wFirst;
     return ((KERNINGPAIR*)v1)->wSecond - ((KERNINGPAIR*)v2)->wSecond;
 }
@@ -207,7 +207,7 @@ void gfx_font_adapter::load_kerning_pairs(void)
             m_impl->max_kerning_pairs = 16384-16;
         }
 
-        m_impl->num_kerning_pairs = ::GetKerningPairs(m_impl->dc, 
+        m_impl->num_kerning_pairs = ::GetKerningPairs(m_impl->dc,
                                     m_impl->max_kerning_pairs, m_impl->kerning_pairs);
 
         if (m_impl->num_kerning_pairs) {
@@ -304,7 +304,7 @@ static bool decompose_win32_glyph_outline(const char* gbuf, unsigned int total_s
     const char* cur_glyph = gbuf;
     const char* end_glyph = gbuf + total_size;
     scalar x, y;
-        
+
     bool closed = true;
     while (cur_glyph < end_glyph) {
         const TTPOLYGONHEADER* th = (TTPOLYGONHEADER*)cur_glyph;
@@ -315,7 +315,7 @@ static bool decompose_win32_glyph_outline(const char* gbuf, unsigned int total_s
             x = fx_to_flt(th->pfxStart.x);
             y = fx_to_flt(th->pfxStart.y);
             //FIXME: it is needed ?
-            if (flip_y) 
+            if (flip_y)
                 y = -y;
 
             if (!closed)
@@ -332,32 +332,32 @@ static bool decompose_win32_glyph_outline(const char* gbuf, unsigned int total_s
                         x = fx_to_flt(pc->apfx[i].x);
                         y = fx_to_flt(pc->apfx[i].y);
                         //FIXME: it is needed ?
-                        if (flip_y) 
+                        if (flip_y)
                             y = -y;
                         mtx.transform(&x, &y);
                         path.line_to(x, y);
                     }
                 }
-                
+
                 if (pc->wType == TT_PRIM_QSPLINE) {
                     for (int u = 0; u < pc->cpfx - 1; u++) {  // Walk through points in spline
                         POINTFX pnt_b = pc->apfx[u];    // B is always the current point
                         POINTFX pnt_c = pc->apfx[u+1];
-                        
+
                         if (u < pc->cpfx - 2) {           // If not on last spline, compute C
                             // midpoint (x,y)
                             *(int*)&pnt_c.x = (*(int*)&pnt_b.x + *(int*)&pnt_c.x) / 2;
                             *(int*)&pnt_c.y = (*(int*)&pnt_b.y + *(int*)&pnt_c.y) / 2;
                         }
-                        
+
                         scalar x2, y2;
                         x  = fx_to_flt(pnt_b.x);
                         y  = fx_to_flt(pnt_b.y);
                         x2 = fx_to_flt(pnt_c.x);
                         y2 = fx_to_flt(pnt_c.y);
                         //FIXME: it is needed ?
-                        if (flip_y) { 
-                            y = -y; y2 = -y2; 
+                        if (flip_y) {
+                            y = -y; y2 = -y2;
                         }
                         mtx.transform(&x,  &y);
                         mtx.transform(&x2, &y2);
@@ -399,17 +399,17 @@ bool gfx_font_adapter::prepare_glyph(unsigned int code)
         if(!m_impl->hinting) format |= GGO_UNHINTED;
 
         GLYPHMETRICS gm;
-        int total_size = GetGlyphOutlineW(m_impl->dc, code, format, &gm, 
+        int total_size = GetGlyphOutlineW(m_impl->dc, code, format, &gm,
                                     m_impl->buf_size, m_impl->buf, &m_impl->mat);
         if (total_size < 0) {
             int total_size = GetGlyphOutlineW(m_impl->dc, code, GGO_METRICS, &gm,
                                         m_impl->buf_size, m_impl->buf, &m_impl->mat);
 
-            if(total_size < 0) 
+            if(total_size < 0)
                 return false;
             gm.gmBlackBoxX = gm.gmBlackBoxY = 0;
             total_size = 0;
-        } 
+        }
 
 
         m_impl->cur_glyph_index = code;
@@ -417,7 +417,7 @@ bool gfx_font_adapter::prepare_glyph(unsigned int code)
         m_impl->cur_advance_y = -INT_TO_SCALAR(gm.gmCellIncY);
 
         if (m_impl->antialias) {
-            // outline text 
+            // outline text
             m_impl->cur_data_type = glyph_type_outline;
             m_impl->matrix.transform(&m_impl->cur_advance_x, &m_impl->cur_advance_y);
             m_impl->cur_font_path.remove_all();
@@ -442,7 +442,7 @@ bool gfx_font_adapter::prepare_glyph(unsigned int code)
                         m_impl->cur_font_scanlines_bin.min_y(),
                         m_impl->cur_font_scanlines_bin.max_x() + 1,
                         m_impl->cur_font_scanlines_bin.max_y() + 1);
-                m_impl->cur_data_size = m_impl->cur_font_scanlines_bin.byte_size(); 
+                m_impl->cur_data_size = m_impl->cur_font_scanlines_bin.byte_size();
                 return true;
             } else { // bitmap create by own rastering
                 m_impl->cur_font_path.remove_all();
@@ -456,13 +456,13 @@ bool gfx_font_adapter::prepare_glyph(unsigned int code)
                     rasterizer.add_path(curves);
 
                     gfx_scanline_bin sl;
-                    m_impl->cur_font_scanlines_bin.prepare(); // Remove all 
+                    m_impl->cur_font_scanlines_bin.prepare(); // Remove all
                     gfx_render_scanlines(rasterizer, sl, m_impl->cur_font_scanlines_bin);
                     m_impl->cur_bound_rect = rect(m_impl->cur_font_scanlines_bin.min_x(),
                                                   m_impl->cur_font_scanlines_bin.min_y(),
                                                   m_impl->cur_font_scanlines_bin.max_x() + 1,
                                                   m_impl->cur_font_scanlines_bin.max_y() + 1);
-                    m_impl->cur_data_size = m_impl->cur_font_scanlines_bin.byte_size(); 
+                    m_impl->cur_data_size = m_impl->cur_font_scanlines_bin.byte_size();
                     return true;
                 }
             }

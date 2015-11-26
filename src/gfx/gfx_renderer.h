@@ -1,5 +1,5 @@
 /* Picasso - a vector graphics library
- * 
+ *
  * Copyright (C) 2008 Zhang Ji Peng
  * Contact: onecoolx@gmail.com
  */
@@ -12,7 +12,7 @@
 
 namespace gfx {
 
-// graphics renderer with clip. 
+// graphics renderer with clip.
 template <typename PixelFormat>
 class gfx_renderer
 {
@@ -121,7 +121,7 @@ public:
     {
         rect rsrc(0, 0, from.width(), from.height());
         if (rect_src_ptr) {
-            rsrc.x1 = rect_src_ptr->x1; 
+            rsrc.x1 = rect_src_ptr->x1;
             rsrc.y1 = rect_src_ptr->y1;
             rsrc.x2 = rect_src_ptr->x2 + 1;
             rsrc.y2 = rect_src_ptr->y2 + 1;
@@ -183,13 +183,13 @@ public:
     }
 
     template <typename SrcPixelFormatRenderer>
-    void blend_from(const SrcPixelFormatRenderer& from, 
+    void blend_from(const SrcPixelFormatRenderer& from,
                     const rect* rect_src_ptr = 0, int dx = 0, int dy = 0,
                     cover_type cover = cover_full)
     {
         rect rsrc(0, 0, from.width(), from.height());
         if (rect_src_ptr) {
-            rsrc.x1 = rect_src_ptr->x1; 
+            rsrc.x1 = rect_src_ptr->x1;
             rsrc.y1 = rect_src_ptr->y1;
             rsrc.x2 = rect_src_ptr->x2 + 1;
             rsrc.y2 = rect_src_ptr->y2 + 1;

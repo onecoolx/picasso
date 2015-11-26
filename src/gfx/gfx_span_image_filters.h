@@ -1,5 +1,5 @@
 /* Picasso - a vector graphics library
- * 
+ *
  * Copyright (C) 2014 Zhang Ji Peng
  * Contact: onecoolx@gmail.com
  */
@@ -34,7 +34,7 @@ public:
         , m_dy_int(image_subpixel_scale / 2)
     {
     }
-    
+
     void prepare(void) { /* do nothing, scanline raster needed. */ }
 
     void attach(source_type& v) { m_src = &v; }
@@ -71,7 +71,7 @@ private:
 
 // rgba color format filters
 // span image filter rgba
-template <typename ColorType, typename Source, typename Interpolator> 
+template <typename ColorType, typename Source, typename Interpolator>
 class gfx_span_image_filter_rgba : public gfx_span_image_filter<ColorType, Source, Interpolator>
 {
 public:
@@ -88,15 +88,15 @@ public:
         base_mask  = color_type::base_mask,
     };
 
-    explicit gfx_span_image_filter_rgba(source_type& src, 
+    explicit gfx_span_image_filter_rgba(source_type& src,
         interpolator_type& inter, const image_filter_adapter& filter)
-        : base_type(src, inter, &filter) 
+        : base_type(src, inter, &filter)
     {
     }
 
     void generate(color_type* span, int x, int y, unsigned int len)
     {
-        base_type::interpolator().begin(x + base_type::filter_dx_flt(), 
+        base_type::interpolator().begin(x + base_type::filter_dx_flt(),
                                         y + base_type::filter_dy_flt(), len);
 
         int fg[4];
@@ -106,7 +106,7 @@ public:
         int start = base_type::filter().start();
         const int16_t* weight_array = base_type::filter().weight_array();
 
-        int x_count; 
+        int x_count;
         int weight_y;
 
         do {
@@ -115,8 +115,8 @@ public:
             x -= base_type::filter_dx_int();
             y -= base_type::filter_dy_int();
 
-            int x_hr = x; 
-            int y_hr = y; 
+            int x_hr = x;
+            int y_hr = y;
 
             int x_lr = x_hr >> image_subpixel_shift;
             int y_lr = y_hr >> image_subpixel_shift;
@@ -134,8 +134,8 @@ public:
                 weight_y = weight_array[y_hr];
                 x_hr = image_subpixel_mask - x_fract;
                 for (;;) {
-                    int weight = (weight_y * weight_array[x_hr] + 
-                                 image_filter_scale / 2) >> 
+                    int weight = (weight_y * weight_array[x_hr] +
+                                 image_filter_scale / 2) >>
                                  image_filter_shift;
 
                     fg[0] += weight * *fg_ptr++;
@@ -184,7 +184,7 @@ public:
 };
 
 // span image filter rgba no blending
-template <typename ColorType, typename Source, typename Interpolator> 
+template <typename ColorType, typename Source, typename Interpolator>
 class gfx_span_image_filter_rgba_nb : public gfx_span_image_filter<ColorType, Source, Interpolator>
 {
 public:
@@ -201,15 +201,15 @@ public:
         base_mask  = color_type::base_mask,
     };
 
-    explicit gfx_span_image_filter_rgba_nb(source_type& src, 
+    explicit gfx_span_image_filter_rgba_nb(source_type& src,
         interpolator_type& inter, const image_filter_adapter& filter)
-        : base_type(src, inter, &filter) 
+        : base_type(src, inter, &filter)
     {
     }
 
     void generate(color_type* span, int x, int y, unsigned int len)
     {
-        base_type::interpolator().begin(x + base_type::filter_dx_flt(), 
+        base_type::interpolator().begin(x + base_type::filter_dx_flt(),
                                         y + base_type::filter_dy_flt(), len);
 
         int fg[4];
@@ -219,7 +219,7 @@ public:
         int start = base_type::filter().start();
         const int16_t* weight_array = base_type::filter().weight_array();
 
-        int x_count; 
+        int x_count;
         int weight_y;
 
         do {
@@ -228,8 +228,8 @@ public:
             x -= base_type::filter_dx_int();
             y -= base_type::filter_dy_int();
 
-            int x_hr = x; 
-            int y_hr = y; 
+            int x_hr = x;
+            int y_hr = y;
 
             int x_lr = x_hr >> image_subpixel_shift;
             int y_lr = y_hr >> image_subpixel_shift;
@@ -247,8 +247,8 @@ public:
                 weight_y = weight_array[y_hr];
                 x_hr = image_subpixel_mask - x_fract;
                 for (;;) {
-                    int weight = (weight_y * weight_array[x_hr] + 
-                                 image_filter_scale / 2) >> 
+                    int weight = (weight_y * weight_array[x_hr] +
+                                 image_filter_scale / 2) >>
                                  image_filter_shift;
 
                     fg[0] += weight * *fg_ptr++;
@@ -291,8 +291,8 @@ public:
 };
 
 
-//span image filter rgba nearest 
-template <typename ColorType, typename Source, typename Interpolator> 
+//span image filter rgba nearest
+template <typename ColorType, typename Source, typename Interpolator>
 class gfx_span_image_filter_rgba_nn : public gfx_span_image_filter<ColorType, Source, Interpolator>
 {
 public:
@@ -310,18 +310,18 @@ public:
     };
 
     explicit gfx_span_image_filter_rgba_nn(source_type& src, interpolator_type& inter)
-        : base_type(src, inter, 0) 
+        : base_type(src, inter, 0)
     {
     }
 
     void generate(color_type* span, int x, int y, unsigned int len)
     {
-        base_type::interpolator().begin(x + base_type::filter_dx_flt(), 
+        base_type::interpolator().begin(x + base_type::filter_dx_flt(),
                                         y + base_type::filter_dy_flt(), len);
         do {
             base_type::interpolator().coordinates(&x, &y);
             const value_type* fg_ptr = (const value_type*)
-                base_type::source().span(x >> image_subpixel_shift, 
+                base_type::source().span(x >> image_subpixel_shift,
                                          y >> image_subpixel_shift, 1);
 
             span->r = fg_ptr[order_type::R];
@@ -336,7 +336,7 @@ public:
 };
 
 //span image filter rgba nearest no blending
-template <typename ColorType, typename Source, typename Interpolator> 
+template <typename ColorType, typename Source, typename Interpolator>
 class gfx_span_image_filter_rgba_nn_nb : public gfx_span_image_filter<ColorType, Source, Interpolator>
 {
 public:
@@ -354,18 +354,18 @@ public:
     };
 
     explicit gfx_span_image_filter_rgba_nn_nb(source_type& src, interpolator_type& inter)
-        : base_type(src, inter, 0) 
+        : base_type(src, inter, 0)
     {
     }
 
     void generate(color_type* span, int x, int y, unsigned int len)
     {
-        base_type::interpolator().begin(x + base_type::filter_dx_flt(), 
+        base_type::interpolator().begin(x + base_type::filter_dx_flt(),
                                         y + base_type::filter_dy_flt(), len);
         do {
             base_type::interpolator().coordinates(&x, &y);
             const value_type* fg_ptr = (const value_type*)
-                base_type::source().span(x >> image_subpixel_shift, 
+                base_type::source().span(x >> image_subpixel_shift,
                                          y >> image_subpixel_shift, 1);
 
             span->r = fg_ptr[order_type::R];
@@ -381,7 +381,7 @@ public:
 
 
 // span image filter rgb
-template <typename ColorType, typename Source, typename Interpolator> 
+template <typename ColorType, typename Source, typename Interpolator>
 class gfx_span_image_filter_rgb : public gfx_span_image_filter<ColorType, Source, Interpolator>
 {
 public:
@@ -398,15 +398,15 @@ public:
         base_mask  = color_type::base_mask,
     };
 
-    explicit gfx_span_image_filter_rgb(source_type& src, 
+    explicit gfx_span_image_filter_rgb(source_type& src,
         interpolator_type& inter, const image_filter_adapter& filter)
-        : base_type(src, inter, &filter) 
+        : base_type(src, inter, &filter)
     {
     }
 
     void generate(color_type* span, int x, int y, unsigned int len)
     {
-        base_type::interpolator().begin(x + base_type::filter_dx_flt(), 
+        base_type::interpolator().begin(x + base_type::filter_dx_flt(),
                                         y + base_type::filter_dy_flt(), len);
 
         int fg[3];
@@ -416,7 +416,7 @@ public:
         int start = base_type::filter().start();
         const int16_t* weight_array = base_type::filter().weight_array();
 
-        int x_count; 
+        int x_count;
         int weight_y;
 
         do {
@@ -425,8 +425,8 @@ public:
             x -= base_type::filter_dx_int();
             y -= base_type::filter_dy_int();
 
-            int x_hr = x; 
-            int y_hr = y; 
+            int x_hr = x;
+            int y_hr = y;
 
             int x_lr = x_hr >> image_subpixel_shift;
             int y_lr = y_hr >> image_subpixel_shift;
@@ -445,8 +445,8 @@ public:
                 x_hr = image_subpixel_mask - x_fract;
 
                 for (;;) {
-                    int weight = (weight_y * weight_array[x_hr] + 
-                                 image_filter_scale / 2) >> 
+                    int weight = (weight_y * weight_array[x_hr] +
+                                 image_filter_scale / 2) >>
                                  image_filter_shift;
 
                     fg[0] += weight * *fg_ptr++;
@@ -492,7 +492,7 @@ public:
 };
 
 // span image filter rgb nearest
-template <typename ColorType, typename Source, typename Interpolator> 
+template <typename ColorType, typename Source, typename Interpolator>
 class gfx_span_image_filter_rgb_nn : public gfx_span_image_filter<ColorType, Source, Interpolator>
 {
 public:
@@ -510,18 +510,18 @@ public:
     };
 
     explicit gfx_span_image_filter_rgb_nn(source_type& src, interpolator_type& inter)
-        : base_type(src, inter, 0) 
+        : base_type(src, inter, 0)
     {
     }
 
     void generate(color_type* span, int x, int y, unsigned int len)
     {
-        base_type::interpolator().begin(x + base_type::filter_dx_flt(), 
+        base_type::interpolator().begin(x + base_type::filter_dx_flt(),
                                         y + base_type::filter_dy_flt(), len);
         do {
             base_type::interpolator().coordinates(&x, &y);
             const value_type* fg_ptr = (const value_type*)
-                base_type::source().span(x >> image_subpixel_shift, 
+                base_type::source().span(x >> image_subpixel_shift,
                                          y >> image_subpixel_shift, 1);
 
             span->r = fg_ptr[order_type::R];
@@ -537,7 +537,7 @@ public:
 
 
 // span image filter rgb16
-template <typename ColorType, typename Source, typename Interpolator> 
+template <typename ColorType, typename Source, typename Interpolator>
 class gfx_span_image_filter_rgb16 : public gfx_span_image_filter<ColorType, Source, Interpolator>
 {
 public:
@@ -561,13 +561,13 @@ public:
 
     explicit gfx_span_image_filter_rgb16(source_type& src,
         interpolator_type& inter, const image_filter_adapter& filter)
-        : base_type(src, inter, &filter) 
+        : base_type(src, inter, &filter)
     {
     }
 
     void generate(color_type* span, int x, int y, unsigned int len)
     {
-        base_type::interpolator().begin(x + base_type::filter_dx_flt(), 
+        base_type::interpolator().begin(x + base_type::filter_dx_flt(),
                                         y + base_type::filter_dy_flt(), len);
 
         int fg[3];
@@ -577,7 +577,7 @@ public:
         int start = base_type::filter().start();
         const int16_t* weight_array = base_type::filter().weight_array();
 
-        int x_count; 
+        int x_count;
         int weight_y;
 
         pixel_type rgb_pixel;
@@ -588,8 +588,8 @@ public:
             x -= base_type::filter_dx_int();
             y -= base_type::filter_dy_int();
 
-            int x_hr = x; 
-            int y_hr = y; 
+            int x_hr = x;
+            int y_hr = y;
 
             int x_lr = x_hr >> image_subpixel_shift;
             int y_lr = y_hr >> image_subpixel_shift;
@@ -609,8 +609,8 @@ public:
                 x_hr = image_subpixel_mask - x_fract;
 
                 for (;;) {
-                    int weight = (weight_y * weight_array[x_hr] + 
-                                 (image_filter_scale>>1)) >> 
+                    int weight = (weight_y * weight_array[x_hr] +
+                                 (image_filter_scale>>1)) >>
                                  image_filter_shift;
 
                     fg[0] += weight * ((rgb_pixel & r_mask) >> (order_type::G + order_type::B));
@@ -658,8 +658,8 @@ public:
     }
 };
 
-//span image filter rgb16 nearest 
-template <typename ColorType, typename Source, typename Interpolator> 
+//span image filter rgb16 nearest
+template <typename ColorType, typename Source, typename Interpolator>
 class gfx_span_image_filter_rgb16_nn : public gfx_span_image_filter<ColorType, Source, Interpolator>
 {
 public:
@@ -682,18 +682,18 @@ public:
     };
 
     explicit gfx_span_image_filter_rgb16_nn(source_type& src, interpolator_type& inter)
-        : base_type(src, inter, 0) 
+        : base_type(src, inter, 0)
     {
     }
 
     void generate(color_type* span, int x, int y, unsigned int len)
     {
-        base_type::interpolator().begin(x + base_type::filter_dx_flt(), 
+        base_type::interpolator().begin(x + base_type::filter_dx_flt(),
                                         y + base_type::filter_dy_flt(), len);
         do {
             base_type::interpolator().coordinates(&x, &y);
             const value_type* fg_ptr = (const value_type*)
-                base_type::source().span(x >> image_subpixel_shift, 
+                base_type::source().span(x >> image_subpixel_shift,
                                          y >> image_subpixel_shift, 1);
 
             register pixel_type rgb = *reinterpret_cast<const pixel_type*>(fg_ptr);

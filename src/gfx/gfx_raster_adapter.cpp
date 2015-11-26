@@ -1,5 +1,5 @@
 /* Picasso - a vector graphics library
- * 
+ *
  * Copyright (C) 2010 Zhang Ji Peng
  * Contact: onecoolx@gmail.com
  */
@@ -129,7 +129,7 @@ unsigned int gfx_raster_adapter::raster_method(void) const
 
 void gfx_raster_adapter::reset(void)
 {
-    m_impl->reset(); 
+    m_impl->reset();
     m_sraster.reset();
     m_fraster.reset();
 }
@@ -199,7 +199,7 @@ void gfx_raster_adapter::setup_stroke_raster(void)
 
         c.dash_start(m_impl->m_dash_start);
 
-        picasso::conv_stroke p(c); 
+        picasso::conv_stroke p(c);
 
         gfx_trans_affine adjmtx = stable_matrix(*const_cast<gfx_trans_affine*>(m_impl->m_transform));
         adjmtx *= gfx_trans_affine_translation(FLT_TO_SCALAR(0.5f), FLT_TO_SCALAR(0.5f)); //adjust edge
@@ -215,7 +215,7 @@ void gfx_raster_adapter::setup_stroke_raster(void)
         m_sraster.add_path(t);
     } else {
         picasso::conv_curve c(*const_cast<vertex_source*>(m_impl->m_source));
-        picasso::conv_stroke p(c); 
+        picasso::conv_stroke p(c);
 
         gfx_trans_affine adjmtx = stable_matrix(*const_cast<gfx_trans_affine*>(m_impl->m_transform));
         adjmtx *= gfx_trans_affine_translation(FLT_TO_SCALAR(0.5f), FLT_TO_SCALAR(0.5f)); //adjust edge

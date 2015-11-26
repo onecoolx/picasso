@@ -1,5 +1,5 @@
 /* Picasso - a vector graphics library
- * 
+ *
  * Copyright (C) 2014 Zhang Ji Peng
  * Contact: onecoolx@gmail.com
  */
@@ -20,13 +20,13 @@ public:
     typedef typename PixFmt::value_type value_type;
     typedef typename PixFmt::pixel_type pixel_type;
 
-    enum { 
+    enum {
         pix_width = PixFmt::pix_width
     };
 
     explicit image_accessor(const PixFmt& pixf)
         : m_x(0), m_y(0), m_tx(0)
-        , m_pixf(&pixf) 
+        , m_pixf(&pixf)
         , m_pix_ptr(0)
     {
     }
@@ -109,13 +109,13 @@ public:
     typedef typename PixFmt::value_type value_type;
     typedef typename PixFmt::pixel_type pixel_type;
 
-    enum { 
-        pix_width = PixFmt::pix_width 
+    enum {
+        pix_width = PixFmt::pix_width
     };
 
     explicit image_accessor_wrap(const PixFmt& pixf)
         : m_pixf(&pixf)
-        , m_row_ptr(0) 
+        , m_row_ptr(0)
         , m_x(0)
         , m_wrap_x(pixf.width())
         , m_wrap_y(pixf.height())
@@ -166,8 +166,8 @@ public:
     }
 
     unsigned int operator()(int v)
-    { 
-        return m_value = ((unsigned int)v + m_add) % m_size; 
+    {
+        return m_value = ((unsigned int)v + m_add) % m_size;
     }
 
     unsigned int operator++()
@@ -197,7 +197,7 @@ public:
     }
 
     unsigned int operator()(int v)
-    { 
+    {
         m_value = ((unsigned int)v + m_add) % m_size2;
         if (m_value >= m_size)
             return m_size2 - m_value - 1;
