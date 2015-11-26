@@ -431,6 +431,35 @@ ps_bool PICAPI ps_path_bounding_rect(const ps_path* path, ps_rect* rect)
     return True;
 }
 
+ps_bool PICAPI ps_path_stroke_contains(const ps_path* path, const ps_point* p, float width)
+{
+    if (!picasso::is_valid_system_device()) {
+        global_status = STATUS_DEVICE_ERROR;
+        return False;
+    }
+
+    if (!path || !p) {
+        global_status = STATUS_INVALID_ARGUMENT;
+        return False;
+    }
+
+    if (!path->path.total_vertices()) {
+        global_status = STATUS_SUCCEED;
+        return False;
+    }
+
+    ps_rect br = picasso::_path_bounding_rect(path->path);
+    if ((p->x < br.x) || (p->y < br.y) || (p->x > (br.x+br.w)) || (p->y > (br.y+br.h))) { 
+        //out of bounding rect
+        global_status = STATUS_SUCCEED;
+        return False;
+    }
+
+    global_status = STATUS_SUCCEED;
+    return picasso::raster_adapter::stroke_contents_point(path->path, 
+                FLT_TO_SCALAR(p->x), FLT_TO_SCALAR(p->y), FLT_TO_SCALAR(width)) ? True : False;
+}
+
 ps_bool PICAPI ps_path_contains(const ps_path* path, const ps_point* p, ps_fill_rule rule)
 {
     if (!picasso::is_valid_system_device()) {

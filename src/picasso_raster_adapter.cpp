@@ -104,4 +104,21 @@ bool raster_adapter::fill_contents_point(const vertex_source& vs, scalar x, scal
     return ret; 
 }
 
+bool raster_adapter::stroke_contents_point(const vertex_source& vs, scalar x, scalar y, scalar w)
+{
+    bool ret = false;
+    abstract_raster_adapter* rs = get_system_device()->create_raster_adapter();
+    trans_affine mtx;
+    if (rs) {
+        rs->set_raster_method(raster_stroke);
+        rs->set_stroke_attr_val(STA_WIDTH, w);
+        rs->set_transform(mtx.impl());
+        rs->add_shape(vs, 0);
+        rs->commit();
+        ret = rs->contains(x, y);
+    }
+    get_system_device()->destroy_raster_adapter(rs);
+    return ret; 
+}
+
 }

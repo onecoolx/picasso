@@ -3201,7 +3201,7 @@ PEXPORT ps_bool PICAPI ps_path_is_empty(const ps_path* path);
  *
  * \note To get extended error information, call \a ps_last_status.
  *
- * \sa ps_path_get_vertex, ps_path_bounding_rect, ps_path_contains
+ * \sa ps_path_get_vertex, ps_path_bounding_rect, ps_path_contains, ps_path_stroke_contains
  */
 PEXPORT unsigned int PICAPI ps_path_get_vertex_count(const ps_path* path);
 
@@ -3248,7 +3248,7 @@ typedef enum _ps_path_cmd {
  *
  * \note To get extended error information, call \a ps_last_status.
  *
- * \sa ps_path_get_vertex_count, ps_path_bounding_rect, ps_path_contains
+ * \sa ps_path_get_vertex_count, ps_path_bounding_rect, ps_path_contains, ps_path_stroke_contains
  */
 PEXPORT ps_path_cmd PICAPI ps_path_get_vertex(const ps_path* path,
                                                 unsigned int index, ps_point * point);
@@ -3264,13 +3264,13 @@ PEXPORT ps_path_cmd PICAPI ps_path_get_vertex(const ps_path* path,
  *
  * \note To get extended error information, call \a ps_last_status.
  *
- * \sa ps_path_get_vertex_count, ps_path_get_vertex, ps_path_contains
+ * \sa ps_path_get_vertex_count, ps_path_get_vertex, ps_path_contains, ps_path_stroke_contains
  */
 PEXPORT ps_bool PICAPI ps_path_bounding_rect(const ps_path* path, ps_rect* rect);
 
 /**
  * \fn ps_bool ps_path_contains(const ps_path* path, const ps_point* point, ps_fill_rule rule)
- * \brief Check whether a point is contained in the path.
+ * \brief Check whether a point is contained in the path by fill method.
  *
  * \param path   Pointer to an existing path object.
  * \param point  The point to be checked.
@@ -3278,10 +3278,25 @@ PEXPORT ps_bool PICAPI ps_path_bounding_rect(const ps_path* path, ps_rect* rect)
  *
  * \return  True if the point is contained, otherwise False.
  *
- * \sa ps_path_get_vertex_count, ps_path_get_vertex, ps_path_bounding_rect
+ * \sa ps_path_get_vertex_count, ps_path_get_vertex, ps_path_bounding_rect, ps_path_stroke_contains
  */
 PEXPORT ps_bool PICAPI ps_path_contains(const ps_path* path,
                                         const ps_point* point, ps_fill_rule rule);
+
+/**
+ * \fn ps_bool ps_path_stroke_contains(const ps_path* path, const ps_point* point, float width)
+ * \brief Check whether a point is contained in the path by stroke method.
+ *
+ * \param path   Pointer to an existing path object.
+ * \param point  The point to be checked.
+ * \param width  The line width to use, in pixels, must be greater than 0.
+ *
+ * \return  True if the point is contained, otherwise False.
+ *
+ * \sa ps_path_get_vertex_count, ps_path_get_vertex, ps_path_bounding_rect, ps_path_contains
+ */
+PEXPORT ps_bool PICAPI ps_path_stroke_contains(const ps_path* path,
+                                        const ps_point* point, float width);
 
 /**
  * \fn void ps_path_add_line(ps_path* path, const ps_point* p1, const ps_point* p2)
