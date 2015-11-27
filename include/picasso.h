@@ -7,7 +7,7 @@
  *
  \verbatim
 
-    Copyright (C) 2008 ~ 2014  Zhang Ji Peng
+    Copyright (C) 2008 ~ 2015  Zhang Ji Peng
 
     All rights reserved.
 

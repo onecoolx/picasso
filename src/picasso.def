@@ -181,6 +181,7 @@ EXPORTS
     ps_path_get_vertex
     ps_path_bounding_rect
     ps_path_contains
+    ps_path_stroke_contains
     ps_path_add_line
     ps_path_add_arc
     ps_path_add_rect
