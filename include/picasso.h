@@ -1736,7 +1736,7 @@ PEXPORT void PICAPI ps_clear(ps_context* ctx);
 
 /**
  * \fn void ps_clip(ps_context* ctx)
- * \brief Cliping the current path, using the current fill rule.
+ * \brief Clipping the current path, using the current fill rule.
  *           After called, the current path will be cleared from the context.
  *
  * \param ctx Pointer to an existing context object.
@@ -1747,7 +1747,7 @@ PEXPORT void PICAPI ps_clip(ps_context* ctx);
 
 /**
  * \fn void ps_clip_path(ps_context* ctx, const ps_path* path, ps_fill_rule rule)
- * \brief Cliping specified path, using the given fill rule.
+ * \brief Clipping specified path, using the given fill rule.
  *
  * \param ctx  Pointer to an existing context object.
  * \param path The path which will be clipped.
@@ -1759,7 +1759,7 @@ PEXPORT void PICAPI ps_clip_path(ps_context* ctx, const ps_path* path, ps_fill_r
 
 /**
  * \fn void ps_clip_rect(ps_context* ctx, const ps_rect* rect)
- * \brief Cliping specified rectangle.
+ * \brief Clipping specified rectangle.
  *
  * \param ctx  Pointer to an existing context object.
  * \param rect The rectangle which will be clipped.
@@ -1770,7 +1770,7 @@ PEXPORT void PICAPI ps_clip_rect(ps_context* ctx, const ps_rect* rect);
 
 /**
  * \fn void ps_clip_device_rect(ps_context* ctx, const ps_rect* rect)
- * \brief The fast way to cliping specified rectangle, the clip rect can not be rotated
+ * \brief The fast way to clipping specified rectangle, the clip rect can not be rotated
  *           by world matrix.
  *
  * \param ctx  Pointer to an existing context object.
@@ -1782,7 +1782,7 @@ PEXPORT void PICAPI ps_clip_device_rect(ps_context* ctx, const ps_rect* rect);
 
 /**
  * \fn void ps_clip_rects(ps_context* ctx, const ps_rect* rects, unsigned int num_rects)
- * \brief Cliping specified area defined by an array of rectangles.
+ * \brief Clipping specified area defined by an array of rectangles.
  *
  * \param ctx       Pointer to an existing context object.
  * \param rects     The array of rectangles which will be clipped.
@@ -1794,7 +1794,7 @@ PEXPORT void PICAPI ps_clip_rects(ps_context* ctx, const ps_rect* rects, unsigne
 
 /**
  * \fn void ps_reset_clip(ps_context* ctx)
- * \brief Clear the cliping area from the context.
+ * \brief Clear the clipping area from the context.
  *
  * \param ctx  Pointer to an existing context object.
  *
