@@ -111,8 +111,6 @@ private:
 //
 // 1. filling_rule(filling_rule ft) - optional.
 //
-// 2. gamma() - optional.
-//
 // 3. reset()
 //
 // 4. move_to(x, y) / line_to(x, y) - make the polygon. One can create
@@ -131,7 +129,7 @@ private:
 //    contours with the same vertex order will be rendered without "holes"
 //    while the intersecting contours with different orders will have "holes".
 //
-// filling_rule() and gamma() can be called anytime before "sweeping".
+// filling_rule() can be called anytime before "sweeping".
 
 template <typename Gen=scanline_generator>
 class gfx_rasterizer_scanline_aa
@@ -155,16 +153,21 @@ public:
         aa_mask2  = aa_scale2 - 1
     };
 
-    gfx_rasterizer_scanline_aa()
-        : m_filling_rule(fill_non_zero)
+    gfx_rasterizer_scanline_aa(int * gamma_table = 0)
+        : m_gamma(gamma_table)
+        , m_filling_rule(fill_non_zero)
         , m_start_x(0)
         , m_start_y(0)
         , m_status(status_initial)
         , m_scan_y(0)
         , m_auto_close(true)
     {
-        for (int i = 0; i < aa_scale; i++)
-            m_gamma[i] = i;
+        if (!m_gamma) {
+            for (int i = 0; i < aa_scale; i++)
+                m_gamma_table[i] = i;
+
+            m_gamma = m_gamma_table;
+        }
     }
 
     void reset(void)
@@ -186,13 +189,6 @@ public:
     bool initial(void)
     {
         return m_status == status_initial;
-    }
-
-    template <typename GammaFunc> void gamma(const GammaFunc& gamma_function)
-    {
-        for (int i = 0; i < aa_scale; i++) {
-            m_gamma[i] = uround(gamma_function(INT_TO_SCALAR(i) / aa_mask) * aa_mask);
-        }
     }
 
     unsigned int apply_gamma(unsigned int cover) const
@@ -484,7 +480,8 @@ private:
 private:
     gfx_rasterizer_cells_aa<cell> m_outline;
     gen_type     m_gen;
-    int          m_gamma[aa_scale];
+    int          m_gamma_table[aa_scale];
+    int*         m_gamma;
     filling_rule m_filling_rule;
     coord_type   m_start_x;
     coord_type   m_start_y;

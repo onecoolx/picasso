@@ -148,13 +148,16 @@ public:
                 }
 
                 while (rc.x2 > 0) {
-                    while (rc.y2 > 0) {
-                        if (pixel_in_path(rdst.x1, rdst.y1))
-                            m_pixfmt->copy_point_from(from, rdst.x1, rdst.y1, rsrc.x1, rsrc.y1);
-
-                        rdst.y1 += incy;
-                        rsrc.y1 += incy;
-                        --rc.y2;
+                    int y2 = rc.y2;
+                    int dy1 = rdst.y1;
+                    int sy1 = rsrc.y1;
+                    while (y2 > 0) {
+                        if (pixel_in_path(rdst.x1, dy1)) {
+                            m_pixfmt->copy_point_from(from, rdst.x1, dy1, rsrc.x1, sy1);
+                        }
+                        dy1 += incy;
+                        sy1 += incy;
+                        --y2;
                     }
                     rdst.x1 += incx;
                     rsrc.x1 += incx;
@@ -216,13 +219,16 @@ public:
                 }
 
                 while (rc.x2 > 0) {
-                    while (rc.y2 > 0) {
-                        if (pixel_in_path(rdst.x1, rdst.y1))
-                            m_pixfmt->blend_point_from(from, rdst.x1, rdst.y1, rsrc.x1, rsrc.y1, cover);
-
-                        rdst.y1 += incy;
-                        rsrc.y1 += incy;
-                        --rc.y2;
+                    int y2 = rc.y2;
+                    int dy1 = rdst.y1;
+                    int sy1 = rsrc.y1;
+                    while (y2 > 0) {
+                        if (pixel_in_path(rdst.x1, dy1)) {
+                            m_pixfmt->blend_point_from(from, rdst.x1, dy1, rsrc.x1, sy1, cover);
+                        }
+                        dy1 += incy;
+                        sy1 += incy;
+                        --y2;
                     }
                     rdst.x1 += incx;
                     rsrc.x1 += incx;

@@ -45,7 +45,6 @@
             '_DEBUG',
             'ENABLE_FREE_TYPE2=1',
             'ENABLE_FONT_CONFIG=1',
-            'ENABLE_FAST_COPY=1',
           ],
           'cflags_cc': [
             '-O0',
@@ -106,7 +105,6 @@
             'NDEBUG',
             'ENABLE_FREE_TYPE2=1',
             'ENABLE_FONT_CONFIG=1',
-            'ENABLE_FAST_COPY=1',
           ],
           'cflags_cc': [
             '-O3',

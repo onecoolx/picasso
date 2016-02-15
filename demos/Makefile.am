@@ -18,9 +18,4 @@ EXTRA_DIST = \
         GNUmakefile.minigui \
         GNUmakefile.qt4 \
         GNUmakefile.win32 \
-        clock.png \
-        flowers.png \
-        gis.png \
-        lake.bmp \
-        lake.png \
-        tiger.png
+        lake.bmp 

@@ -75,7 +75,7 @@ void painter::init_source_data(context_state* state, unsigned int methods, const
                     bounding_rect(const_cast<graphic_path&>(p), 0, &x1, &y1, &x2, &y2);
                     ps_canvas* canvas = static_cast<ps_canvas*>(state->brush.data);
                     rect_s rect(x1, y1, x2, y2);
-                    m_impl->set_fill_canvas(canvas->buffer.impl(), (int)state->filter, rect);
+                    m_impl->set_fill_canvas(canvas->buffer.impl(), (pix_fmt)(canvas->fmt), (int)state->filter, rect);
                 }
                 break;
             case brush_style_pattern:
@@ -84,8 +84,8 @@ void painter::init_source_data(context_state* state, unsigned int methods, const
                     bounding_rect(const_cast<graphic_path&>(p), 0, &x1, &y1, &x2, &y2);
                     ps_pattern* pattern = static_cast<ps_pattern*>(state->brush.data);
                     rect_s rect(x1, y1, x2, y2);
-                    m_impl->set_fill_pattern(pattern->img->buffer.impl(), (int)state->filter, rect,
-                                                pattern->xtype, pattern->ytype, pattern->matrix.impl());
+                    m_impl->set_fill_pattern(pattern->img->buffer.impl(), (pix_fmt)(pattern->img->fmt), (int)state->filter, rect,
+                                                                            pattern->xtype, pattern->ytype, pattern->matrix.impl());
                 }
                 break;
             case brush_style_image:
@@ -94,7 +94,7 @@ void painter::init_source_data(context_state* state, unsigned int methods, const
                     bounding_rect(const_cast<graphic_path&>(p), 0, &x1, &y1, &x2, &y2);
                     ps_image* img = static_cast<ps_image*>(state->brush.data);
                     rect_s rect(x1, y1, x2, y2);
-                    m_impl->set_fill_image(img->buffer.impl(), (int)state->filter, rect);
+                    m_impl->set_fill_image(img->buffer.impl(), (pix_fmt)(img->fmt),(int)state->filter, rect);
                 }
                 break;
             case brush_style_gradient:

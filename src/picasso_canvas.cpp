@@ -525,6 +525,11 @@ void PICAPI ps_canvas_bitblt(ps_canvas* src, const ps_rect* r, ps_canvas* dst, c
         return;
     }
 
+    if (src->fmt != dst->fmt) {
+        global_status = STATUS_MISMATCHING_FORMAT;
+        return;
+    }
+
     int x = 0, y = 0;
     if (l) {
         x = _iround(l->x);

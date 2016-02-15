@@ -19,6 +19,7 @@ libpicasso_la_SOURCES= \
             include/common.h \
             include/convert.h \
             include/curve.h \
+            include/clipper.h \
             include/data_vector.h \
             include/device.h \
             include/fastcopy.h \
@@ -37,6 +38,7 @@ libpicasso_la_SOURCES= \
             \
             core/device.cpp \
             core/curve.cpp \
+            core/clipper.cpp \
             core/fixedopt.cpp \
             core/graphic_path.cpp \
             \
@@ -105,7 +107,6 @@ libpicasso_la_SOURCES= \
             picasso_gradient_api.cpp \
             picasso_font.cpp \
             picasso_font_api.cpp \
-            picasso_gpc.cpp \
             picasso_mask.cpp \
             picasso_mask_api.cpp \
             picasso_api.cpp
@@ -114,5 +115,5 @@ libpicasso_la_SOURCES= \
 libpicasso_la_LDFLAGS= -no-undefined -release $(VERSION_MAJOR).$(VERSION_MINOR).$(VERSION_MICRO)
 
 EXTRA_DIST = \
-            simd/fastfill16_neon.S \
-            simd/fastfill32_neon.S
+			simd/fastfill16_neon.S \
+			simd/fastfill32_neon.S

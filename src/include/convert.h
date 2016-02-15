@@ -8,6 +8,7 @@
 #define _CONVERT_H_
 
 #include "common.h"
+#include "clipper.h"
 #include "vertex.h"
 #include "vertex_dist.h"
 #include "data_vector.h"
@@ -15,7 +16,6 @@
 #include "graphic_base.h"
 #include "interfaces.h"
 #include "picasso_matrix.h"
-#include "picasso_gpc.h"
 
 namespace picasso {
 
@@ -154,7 +154,6 @@ public:
 
     typedef struct {
         int num_vertices;
-        int hole_flag;
         vertex_s* vertices;
     } contour_header;
 
@@ -187,16 +186,16 @@ public:
         switch(m_operation)
         {
            case clip_union:
-               gpc_polygon_clip(GPC_UNION, &m_poly_a, &m_poly_b, &m_result);
+               polygon_clip(POLY_UNION, &m_poly_a, &m_poly_b, &m_result);
                break;
            case clip_intersect:
-               gpc_polygon_clip(GPC_INT, &m_poly_a, &m_poly_b, &m_result);
+               polygon_clip(POLY_INTERSECT, &m_poly_a, &m_poly_b, &m_result);
                break;
            case clip_xor:
-               gpc_polygon_clip(GPC_XOR, &m_poly_a, &m_poly_b, &m_result);
+               polygon_clip(POLY_XOR, &m_poly_a, &m_poly_b, &m_result);
                break;
            case clip_diff:
-               gpc_polygon_clip(GPC_DIFF, &m_poly_a, &m_poly_b, &m_result);
+               polygon_clip(POLY_DIFF, &m_poly_a, &m_poly_b, &m_result);
                break;
         }
 
@@ -230,26 +229,26 @@ private:
     void free_result(void)
     {
         if (m_result.contour) {
-            gpc_free_polygon(&m_result);
+            free_polygon(&m_result);
         }
         memset(&m_result, 0, sizeof(m_result));
     }
 
     void free_all(void)
     {
-        free_polygon(m_poly_a);
-        free_polygon(m_poly_b);
+        clear_polygon(m_poly_a);
+        clear_polygon(m_poly_b);
         free_result();
     }
 
-    void free_polygon(gpc_polygon& p)
+    void clear_polygon(polygon& p)
     {
         for (int i = 0; i < p.num_contours; i++) {
             pod_allocator<vertex_s>::deallocate(p.contour[i].vertex,
                                                   p.contour[i].num_vertices);
         }
-        pod_allocator<gpc_vertex_list>::deallocate(p.contour, p.num_contours);
-        memset(&p, 0, sizeof(gpc_polygon));
+        pod_allocator<vertex_list>::deallocate(p.contour, p.num_contours);
+        memset(&p, 0, sizeof(polygon));
     }
 
     bool next_contour(void)
@@ -263,7 +262,7 @@ private:
 
     bool next_vertex(scalar* x, scalar* y)
     {
-        const gpc_vertex_list& vlist = m_result.contour[m_contour];
+        const vertex_list& vlist = m_result.contour[m_contour];
         if (++m_vertex < vlist.num_vertices) {
             const vertex_s& v = vlist.vertex[m_vertex];
             *x = v.x;
@@ -273,7 +272,7 @@ private:
         return false;
     }
 
-    void add(gpc_polygon& p, vertex_source& src)
+    void add(polygon& p, vertex_source& src)
     {
         unsigned int cmd;
         scalar x, y;
@@ -336,7 +335,6 @@ private:
                 contour_header& h = m_contour_accumulator[m_contour_accumulator.size() - 1];
 
                 h.num_vertices = m_vertex_accumulator.size();
-                h.hole_flag = 0;
                 h.vertices = pod_allocator<vertex_s>::allocate(h.num_vertices);
                 vertex_s* d = h.vertices;
                 for (int i = 0; i < h.num_vertices; i++) {
@@ -351,15 +349,14 @@ private:
         }
     }
 
-    void make_polygon(gpc_polygon& p)
+    void make_polygon(polygon& p)
     {
-        free_polygon(p);
+        clear_polygon(p);
         if (m_contour_accumulator.size()) {
             p.num_contours = m_contour_accumulator.size();
-            p.hole = 0;
-            p.contour = pod_allocator<gpc_vertex_list>::allocate(p.num_contours);
+            p.contour = pod_allocator<vertex_list>::allocate(p.num_contours);
 
-            gpc_vertex_list* pv = p.contour;
+            vertex_list* pv = p.contour;
             for (int i = 0; i < p.num_contours; i++) {
                 const contour_header& h = m_contour_accumulator[i];
                 pv->num_vertices = h.num_vertices;
@@ -380,9 +377,9 @@ private:
     clip_op m_operation;
     pod_bvector<vertex_s> m_vertex_accumulator;
     pod_bvector<contour_header> m_contour_accumulator;
-    gpc_polygon m_poly_a;
-    gpc_polygon m_poly_b;
-    gpc_polygon m_result;
+    polygon m_poly_a;
+    polygon m_poly_b;
+    polygon m_result;
 };
 
 // Convert line generator abstract

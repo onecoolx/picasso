@@ -40,6 +40,7 @@ thread_objs = test.o thread_func.o thr_win32.o
 
 all: gamma.exe alpha.exe gradient.exe composite.exe clip.exe gcstate.exe text.exe pattern.exe shadow.exe blur.exe mask.exe part.exe bitblt.exe path.exe thread.exe
 
+# test 
 alpha.exe : ${alpha_objs}
 	${CC} ${alpha_objs} ../src/libpicasso.a -o $@ ${INC} ${SYSTEM_LIBS}
 

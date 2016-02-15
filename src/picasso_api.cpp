@@ -32,7 +32,7 @@ static inline void _clip_path(context_state* state, const graphic_path& p, filli
 
 }
 
-#define PICASSO_VERSION 21080     // version 2.1.8
+#define PICASSO_VERSION 22000     // version 2.2.0
 
 #ifdef __cplusplus
 extern "C" {
@@ -222,11 +222,6 @@ void PICAPI ps_set_source_pattern(ps_context* ctx, const ps_pattern* pattern)
         return;
     }
 
-    if (pattern->img->fmt != ctx->canvas->fmt) {
-        global_status = STATUS_MISMATCHING_FORMAT;
-        return;
-    }
-
     ctx->state->brush.clear(); //clear source
     ctx->state->brush.set_pattern_brush(const_cast<ps_pattern*>(pattern));
     global_status = STATUS_SUCCEED;
@@ -241,11 +236,6 @@ void PICAPI ps_set_source_image(ps_context* ctx, const ps_image* image)
 
     if (!ctx || !image) {
         global_status = STATUS_INVALID_ARGUMENT;
-        return;
-    }
-
-    if (image->fmt != ctx->canvas->fmt) {
-        global_status = STATUS_MISMATCHING_FORMAT;
         return;
     }
 
@@ -283,11 +273,6 @@ void PICAPI ps_set_source_canvas(ps_context* ctx, const ps_canvas* canvas)
 
     if (!ctx || !canvas) {
         global_status = STATUS_INVALID_ARGUMENT;
-        return;
-    }
-
-    if (canvas->fmt != ctx->canvas->fmt) {
-        global_status = STATUS_MISMATCHING_FORMAT;
         return;
     }
 
@@ -733,7 +718,7 @@ float PICAPI ps_set_miter_limit(ps_context* ctx, float limit)
     return rd;
 }
 
-void PICAPI ps_set_line_dash(ps_context* ctx, float start, float* dashes, unsigned int num_dashes)
+void PICAPI ps_set_line_dash(ps_context* ctx, float start, const float* dashes, unsigned int num_dashes)
 {
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;
@@ -1294,6 +1279,18 @@ ps_composite PICAPI ps_set_composite_operator(ps_context* ctx, ps_composite comp
             break;
         case COMPOSITE_INVERT_BLEND:
             ctx->state->composite = picasso::comp_op_invert_rgb;
+            break;
+        case COMPOSITE_HUE:
+            ctx->state->composite = picasso::comp_op_hue;
+            break;
+        case COMPOSITE_SATURATION:
+            ctx->state->composite = picasso::comp_op_saturation;
+            break;
+        case COMPOSITE_COLOR:
+            ctx->state->composite = picasso::comp_op_color;
+            break;
+        case COMPOSITE_LUMINOSITY:
+            ctx->state->composite = picasso::comp_op_luminosity;
             break;
         default:
             global_status = STATUS_UNKNOWN_ERROR;

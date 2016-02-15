@@ -1,0 +1,11 @@
+LIBRARY  psx_image
+EXPORTS
+    psx_image_init
+    psx_image_shutdown
+    psx_image_load
+    psx_image_load_from_memory
+    psx_image_save
+    psx_image_save_to_file
+    psx_image_destroy
+    psx_register_image_operator
+    psx_unregister_image_operator

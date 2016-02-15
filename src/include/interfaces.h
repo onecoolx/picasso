@@ -170,9 +170,9 @@ public:
     virtual void set_composite(comp_op op) = 0;
     virtual void set_stroke_color(const rgba& c) = 0;
     virtual void set_fill_color(const rgba& c) = 0;
-    virtual void set_fill_image(const abstract_rendering_buffer* img, int filter, const rect_s& rc) = 0;
-    virtual void set_fill_canvas(const abstract_rendering_buffer* img, int filter, const rect_s& rc) = 0;
-    virtual void set_fill_pattern(const abstract_rendering_buffer* img, int filter, const rect_s& rc,
+    virtual void set_fill_image(const abstract_rendering_buffer* img, pix_fmt format, int filter, const rect_s& rc) = 0;
+    virtual void set_fill_canvas(const abstract_rendering_buffer* img, pix_fmt format, int filter, const rect_s& rc) = 0;
+    virtual void set_fill_pattern(const abstract_rendering_buffer* img, pix_fmt format, int filter, const rect_s& rc,
                                     int xtype, int ytype, const abstract_trans_affine* mtx) = 0;
     virtual void set_fill_gradient(const abstract_gradient_adapter* g) = 0;
     virtual void set_font_fill_color(const rgba& c) = 0;

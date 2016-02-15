@@ -56,14 +56,14 @@ ps_image* PICAPI ps_image_create(ps_color_format fmt, int w, int h)
     }
 }
 
-ps_image* PICAPI ps_image_create_from_data(ps_byte* data, ps_color_format fmt, int w, int h, int pitch)
+ps_image* PICAPI ps_image_create_from_data(ps_byte* data, ps_color_format fmt, int w, int h, int p)
 {
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;
         return 0;
     }
 
-    if (!data || w <= 0 || h <= 0 || pitch <= 0) {
+    if (!data || w <= 0 || h <= 0 || p <= 0) {
         global_status = STATUS_INVALID_ARGUMENT;
         return 0;
     }
@@ -77,13 +77,17 @@ ps_image* PICAPI ps_image_create_from_data(ps_byte* data, ps_color_format fmt, i
         int pitch = picasso::_byte_pre_color(fmt) * w;
         byte* buf = 0;
         if ((buf = (byte*)BufferAlloc(h * pitch))) {
-            BufferCopy(buf, data, pitch*h);
+            for (int i = 0; i < h; i++) {
+                BufferCopy(buf + (pitch * i), data + (i * p), pitch);
+            }
             img->flage = buffer_alloc_surface;
             img->buffer.attach(buf, w, h, pitch);
             global_status = STATUS_SUCCEED;
             return img;
         } else if ((buf = (byte*)mem_malloc(h * pitch))) {
-            mem_copy(buf, data, pitch*h);
+            for (int i = 0; i < h; i++) {
+                mem_copy(buf + (pitch * i), data + (i * p), pitch);
+            }
             img->flage = buffer_alloc_malloc;
             img->buffer.attach(buf, w, h, pitch);
             global_status = STATUS_SUCCEED;

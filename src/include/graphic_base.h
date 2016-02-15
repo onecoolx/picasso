@@ -314,6 +314,10 @@ typedef enum {
     comp_op_contrast,      //comp_op_contrast
     comp_op_invert,        //comp_op_invert
     comp_op_invert_rgb,    //comp_op_invert_rgb
+    comp_op_hue,           //comp_op_hue
+    comp_op_saturation,    //comp_op_saturation
+    comp_op_color,         //comp_op_color
+    comp_op_luminosity,    //comp_op_luminosity
     end_of_comp_op,
 } comp_op;
 

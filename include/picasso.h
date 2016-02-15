@@ -7,7 +7,7 @@
  *
  \verbatim
 
-    Copyright (C) 2008 ~ 2015  Zhang Ji Peng
+    Copyright (C) 2008 ~ 2016  Zhang Ji Peng
 
     All rights reserved.
 
@@ -93,7 +93,7 @@ typedef int16_t ps_schar16;
  * \brief byte data type
  * \sa ps_bool, ps_uchar16, ps_schar16
  */
-typedef unsigned char ps_byte;
+typedef uint8_t ps_byte;
 
 /** @} end of data types*/
 
@@ -345,7 +345,7 @@ PEXPORT ps_context* PICAPI ps_context_ref(ps_context* ctx);
 /**
  * \fn void ps_context_unref(ps_context* ctx)
  * \brief Decrements the reference count for the context object.
- *        If the reference count on the context falls to 0, the context will be free.
+ *        If the reference count on the context falls to 0, the context is freed.
  *
  * \param ctx  Pointer to an existing context object.
  *
@@ -392,7 +392,7 @@ PEXPORT ps_canvas* PICAPI ps_context_get_canvas(ps_context* ctx);
  */
 
 /**
- * \brief Pixel formats of canvas.
+ * \brief Pixel formats of canvas or image.
  */
 typedef enum _ps_color_format {
     /**
@@ -533,7 +533,8 @@ PEXPORT ps_canvas* PICAPI ps_canvas_create_from_image(ps_image* img, const ps_re
 /**
  * \fn ps_canvas* PICAPI ps_canvas_replace_data(ps_canvas* canvas, ps_byte* data,
  *                                              ps_color_format fmt, int width, int height, int pitch);
- * \brief Replace a canvas target rendering buffer address in memory.
+ * \brief Replace a canvas target rendering buffer address in memory, which is only use for canvas create by
+ *        \a ps_canvas_create_with_data.
  *
  * \param canvas  Pointer to an existing canvas object.
  * \param data    A pointer to the destination in memory where the drawing is to be rendered.
@@ -572,7 +573,7 @@ PEXPORT ps_canvas* PICAPI ps_canvas_ref(ps_canvas* canvas);
 /**
  * \fn void ps_canvas_unref(ps_canvas* canvas)
  * \brief Decrements the reference count for the canvas object.
- *        If the reference count on the canvas falls to 0, the canvas will be free.
+ *        If the reference count on the canvas falls to 0, the canvas is freed.
  *
  * \param canvas  Pointer to an existing canvas object.
  *
@@ -676,7 +677,7 @@ PEXPORT ps_image* PICAPI ps_image_create(ps_color_format fmt, int width, int hei
  * \brief Create a new image using a given address in memory.
  *
  * \param data    A pointer to the destination in memory where the drawing is to be rendered.
- *                   The size of this memory block should be at least (pitch * height) bytes.
+ *                The size of this memory block should be at least (pitch * height) bytes.
  * \param fmt     The Pixel format to use for the image.
  * \param width   The width, in pixels, of the required image.
  * \param height  The height, in pixels, of the required image.
@@ -697,7 +698,7 @@ PEXPORT ps_image* PICAPI ps_image_create_with_data(ps_byte* data, ps_color_forma
  * \brief Create a new image using a copy of given address in memory.
  *
  * \param data    A pointer to the destination in memory where the drawing is to be rendered.
- *                   The size of this memory block should be at least (pitch * height) bytes.
+ *                The size of this memory block should be at least (pitch * height) bytes.
  * \param fmt     The Pixel format to use for the image.
  * \param width   The width, in pixels, of the required image.
  * \param height  The height, in pixels, of the required image.
@@ -788,7 +789,7 @@ PEXPORT ps_image* PICAPI ps_image_ref(ps_image* img);
 /**
  * \fn void ps_image_unref(ps_image* img)
  * \brief Decrements the reference count for the image object.
- *        If the reference count on the image falls to 0, the image will be free.
+ *        If the reference count on the image falls to 0, the image is freed.
  *
  * \param img  Pointer to an existing image object.
  *
@@ -919,7 +920,7 @@ PEXPORT ps_pattern* PICAPI ps_pattern_ref(ps_pattern* pattern);
 /**
  * \fn void ps_pattern_unref(ps_pattern* pattern)
  * \brief Decrements the reference count for the pattern object.
- *        If the reference count on the pattern falls to 0, the pattern will be free.
+ *        If the reference count on the pattern falls to 0, the pattern is freed.
  *
  * \param pattern  Pointer to an existing pattern object.
  *
@@ -1043,7 +1044,7 @@ PEXPORT ps_gradient* PICAPI ps_gradient_ref(ps_gradient* gradient);
 /**
  * \fn void ps_gradient_unref(ps_gradient* gradient)
  * \brief Decrements the reference count for the gradient object.
- *        If the reference count on the gradient falls to 0, the gradient will be free.
+ *        If the reference count on the gradient falls to 0, the gradient is freed.
  *
  * \param gradient  Pointer to an existing gradient object.
  *
@@ -1119,7 +1120,7 @@ PEXPORT ps_mask* PICAPI ps_mask_ref(ps_mask* mask);
 /**
  * \fn void ps_mask_unref(ps_mask* mask)
  * \brief Decrements the reference count for the mask object.
- *        If the reference count on the mask falls to 0, the mask will be free.
+ *        If the reference count on the mask falls to 0, the mask is freed.
  *
  * \param mask  Pointer to an existing mask object.
  *
@@ -1381,7 +1382,7 @@ PEXPORT float PICAPI ps_set_miter_limit(ps_context* ctx, float limit);
 PEXPORT void PICAPI ps_set_stroke_color(ps_context* ctx, const ps_color* color);
 
 /**
- * \fn void ps_set_line_dash(ps_context* ctx, float start, float* dashes, unsigned int num_dashes)
+ * \fn void ps_set_line_dash(ps_context* ctx, float start, const float* dashes, unsigned int num_dashes)
  * \brief Set the pattern for dashed lines in the context.
  *
  * \param ctx        Pointer to an existing context object.
@@ -1394,7 +1395,7 @@ PEXPORT void PICAPI ps_set_stroke_color(ps_context* ctx, const ps_color* color);
  *     ps_set_stroke_color, ps_reset_line_dash, ps_set_line_inner_join
  */
 PEXPORT void PICAPI ps_set_line_dash(ps_context* ctx, float start,
-                                        float* dashes, unsigned int num_dashes);
+                                        const float* dashes, unsigned int num_dashes);
 
 /**
  * \fn void ps_reset_line_dash(ps_context* ctx)
@@ -1514,6 +1515,14 @@ typedef enum _ps_composite {
     COMPOSITE_INVERT,
     /** Invert blend operation. */
     COMPOSITE_INVERT_BLEND,
+    /** Hue operation. */
+    COMPOSITE_HUE,
+    /** Saturation operation. */
+    COMPOSITE_SATURATION,
+    /** Color operation. */
+    COMPOSITE_COLOR,
+    /** Luminosity operation. */
+    COMPOSITE_LUMINOSITY,
     /** Error value. */
     COMPOSITE_ERROR,
 }ps_composite;
@@ -1727,7 +1736,7 @@ PEXPORT void PICAPI ps_clear(ps_context* ctx);
 
 /**
  * \fn void ps_clip(ps_context* ctx)
- * \brief Clipping the current path, using the current fill rule.
+ * \brief Cliping the current path, using the current fill rule.
  *           After called, the current path will be cleared from the context.
  *
  * \param ctx Pointer to an existing context object.
@@ -1738,7 +1747,7 @@ PEXPORT void PICAPI ps_clip(ps_context* ctx);
 
 /**
  * \fn void ps_clip_path(ps_context* ctx, const ps_path* path, ps_fill_rule rule)
- * \brief Clipping specified path, using the given fill rule.
+ * \brief Cliping specified path, using the given fill rule.
  *
  * \param ctx  Pointer to an existing context object.
  * \param path The path which will be clipped.
@@ -1750,7 +1759,7 @@ PEXPORT void PICAPI ps_clip_path(ps_context* ctx, const ps_path* path, ps_fill_r
 
 /**
  * \fn void ps_clip_rect(ps_context* ctx, const ps_rect* rect)
- * \brief Clipping specified rectangle.
+ * \brief Cliping specified rectangle.
  *
  * \param ctx  Pointer to an existing context object.
  * \param rect The rectangle which will be clipped.
@@ -1761,7 +1770,7 @@ PEXPORT void PICAPI ps_clip_rect(ps_context* ctx, const ps_rect* rect);
 
 /**
  * \fn void ps_clip_device_rect(ps_context* ctx, const ps_rect* rect)
- * \brief The fast way to Clipping specified rectangle, the clip rect can not be rotated
+ * \brief The fast way to cliping specified rectangle, the clip rect can not be rotated
  *           by world matrix.
  *
  * \param ctx  Pointer to an existing context object.
@@ -1773,7 +1782,7 @@ PEXPORT void PICAPI ps_clip_device_rect(ps_context* ctx, const ps_rect* rect);
 
 /**
  * \fn void ps_clip_rects(ps_context* ctx, const ps_rect* rects, unsigned int num_rects)
- * \brief Clipping specified area defined by an array of rectangles.
+ * \brief Cliping specified area defined by an array of rectangles.
  *
  * \param ctx       Pointer to an existing context object.
  * \param rects     The array of rectangles which will be clipped.
@@ -1785,7 +1794,7 @@ PEXPORT void PICAPI ps_clip_rects(ps_context* ctx, const ps_rect* rects, unsigne
 
 /**
  * \fn void ps_reset_clip(ps_context* ctx)
- * \brief Clear the clipping area from the context.
+ * \brief Clear the cliping area from the context.
  *
  * \param ctx  Pointer to an existing context object.
  *
@@ -1936,7 +1945,7 @@ PEXPORT ps_font* PICAPI ps_font_ref(ps_font* font);
 /**
  * \fn void ps_font_unref(ps_font* font)
  * \brief Decrements the reference count for the font object.
- *        If the reference count on the font falls to 0, the font will be free.
+ *        If the reference count on the font falls to 0, the font is freed.
  *
  * \param font  Pointer to an existing font object.
  *
@@ -2546,7 +2555,7 @@ PEXPORT ps_matrix* PICAPI ps_matrix_ref(ps_matrix* matrix);
 /**
  * \fn void ps_matrix_unref(ps_matrix* matrix)
  * \brief Decrements the reference count for the matrix object.
- *        If the reference count on the matrix falls to 0, the matrix will be free.
+ *        If the reference count on the matrix falls to 0, the matrix is freed.
  *
  * \param matrix  Pointer to an existing matrix object.
  *
@@ -3051,7 +3060,7 @@ PEXPORT ps_path* PICAPI ps_path_ref(ps_path* path);
 /**
  * \fn void ps_path_unref(ps_path* path)
  * \brief Decrements the reference count for the path object.
- *        If the reference count on the path falls to 0, the path will be free.
+ *        If the reference count on the path falls to 0, the path is freed.
  *
  * \param path  Pointer to an existing path object.
  *

@@ -1,4 +1,4 @@
-SUBDIRS = include src test demos
+SUBDIRS = include src ext test demos
 
 include_HEADERS = pconfig.h
 

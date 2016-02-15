@@ -62,7 +62,7 @@ struct graphic_pen
             dstart = o.dstart;
             dashes = new scalar[ndashes];
             if (dashes) {
-                for(unsigned int i=0; i<ndashes; i++)
+                for (unsigned int i=0; i<ndashes; i++)
                     dashes[i] = o.dashes[i];
             } else {
                 //memory alloc error, ignore this dash
@@ -117,7 +117,7 @@ struct graphic_pen
         }
     }
 
-    void set_dash(float start, float* da, unsigned int ndash)
+    void set_dash(float start, const float* da, unsigned int ndash)
     {
         style = pen_style_dash;
         dstart = FLT_TO_SCALAR(start);
@@ -125,7 +125,7 @@ struct graphic_pen
         dashes = new scalar[ndashes];
         if (dashes) {
             memset(dashes, 0, ndashes*sizeof(scalar));
-            for(unsigned int i=0; i<ndash; i++)
+            for (unsigned int i=0; i<ndash; i++)
                 dashes[i] = FLT_TO_SCALAR(da[i]);
         } else {
             //memory alloc error, ignore this dash
@@ -480,11 +480,11 @@ struct _ps_context {
 };
 
 enum {
-    buffer_alloc_none       = 0,
+    buffer_alloc_none      = 0,
     buffer_alloc_surface   = 1,
     buffer_alloc_malloc    = 2,
-    buffer_alloc_image       = 3,
-    buffer_alloc_canvas       = 4,
+    buffer_alloc_image     = 3,
+    buffer_alloc_canvas    = 4,
 };
 
 struct _ps_canvas {

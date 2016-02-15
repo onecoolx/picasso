@@ -32,8 +32,6 @@ EXTRA_DIST = \
     pat.bmp \
     pat.png \
     pat565.bmp \
-    selt.bmp \
-    selt.png \
     selt2.bmp \
     selt2.png \
     selt2565.bmp \

@@ -27,6 +27,7 @@
         'core/curve.cpp',
         'core/device.cpp',
         'core/graphic_path.cpp',
+        'core/clipper.cpp',
         'gfx/gfx_blur.cpp',
         'gfx/gfx_blur.h',
         'gfx/gfx_device.cpp',
@@ -69,6 +70,7 @@
         'include/common.h',
         'include/convert.h',
         'include/curve.h',
+        'include/clipper.h',
         'include/data_vector.h',
         'include/device.h',
         'include/fastcopy.h',
@@ -92,8 +94,6 @@
         'picasso_font.h',
         'picasso_font_cache.h',
         'picasso_global.h',
-        'picasso_gpc.cpp',
-        'picasso_gpc.h',
         'picasso_gradient_api.cpp',
         'picasso_gradient.cpp',
         'picasso_gradient.h',
@@ -123,12 +123,18 @@
             'resource.h',
           ],
         }],
+        ['OS=="linux"', {
+          'libraries': [
+            '-lfreetype',
+            '-lfontconfig',
+          ],
+        }],
       ],
       'includes':[
         '../build/configs.gypi',
         '../build/defines.gypi',
       ],
     },
-  ]
+  ],
 }
 

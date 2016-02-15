@@ -33,7 +33,7 @@ static inline bool operator != (const rgba8* a, const rgba8& b)
 }
 
 //pixfmt wrapper
-template<typename Pixfmt, typename AlphaMask>
+template <typename Pixfmt, typename AlphaMask>
 class gfx_pixfmt_wrapper
 {
 public:
@@ -384,7 +384,7 @@ public:
     }
 
     void blend_color_hspan(int x, int y, unsigned int len, const color_type* colors,
-            const cover_type* covers, cover_type cover)
+                                            const cover_type* covers, cover_type cover)
     {
         if (m_colorkey) {
             if (unlikely(use_mask)) {
@@ -428,7 +428,7 @@ public:
     }
 
     void blend_color_vspan(int x, int y, unsigned int len, const color_type* colors,
-            const cover_type* covers, cover_type cover)
+                                            const cover_type* covers, cover_type cover)
     {
         if (m_colorkey) {
             if (unlikely(use_mask)) {
@@ -471,37 +471,28 @@ public:
         }
     }
 
-    template<class RenBuf2> void copy_from(const RenBuf2& from,
-            int xdst, int ydst,
-            int xsrc, int ysrc,
-            unsigned int len)
+    template <class RenBuf2>
+    void copy_from(const RenBuf2& from, int xdst, int ydst, int xsrc, int ysrc, unsigned int len)
     {
         m_fmt.copy_from(from, xdst, ydst, xsrc, ysrc, len);
     }
 
-    template<class RenBuf2>
-        void copy_point_from(const RenBuf2& from,
-                int xdst, int ydst,
-                int xsrc, int ysrc)
+    template <class RenBuf2>
+    void copy_point_from(const RenBuf2& from, int xdst, int ydst, int xsrc, int ysrc)
     {
         m_fmt.copy_point_from(from, xdst, ydst, xsrc, ysrc);
     }
 
-    template<class SrcPixelFormatRenderer>
-        void blend_from(const SrcPixelFormatRenderer& from,
-                int xdst, int ydst,
-                int xsrc, int ysrc,
-                unsigned int len,
-                cover_type cover)
+    template <class SrcPixelFormatRenderer>
+    void blend_from(const SrcPixelFormatRenderer& from,
+                int xdst, int ydst, int xsrc, int ysrc, unsigned int len, cover_type cover)
     {
         m_fmt.blend_from(from, xdst, ydst, xsrc, ysrc, len, cover);
     }
 
-    template<class SrcPixelFormatRenderer>
-        void blend_point_from(const SrcPixelFormatRenderer& from,
-                int xdst, int ydst,
-                int xsrc, int ysrc,
-                cover_type cover)
+    template <class SrcPixelFormatRenderer>
+    void blend_point_from(const SrcPixelFormatRenderer& from,
+                int xdst, int ydst, int xsrc, int ysrc, cover_type cover)
     {
         m_fmt.blend_point_from(from, xdst, ydst, xsrc, ysrc, cover);
     }
@@ -516,7 +507,7 @@ private:
 };
 
 //pattern wrapper
-template<typename Pixfmt>
+template <typename Pixfmt>
 class pattern_wrapper
 {
 public:
@@ -534,7 +525,7 @@ public:
     virtual const byte* next_y() = 0;
 };
 
-template<typename Pixfmt, typename Wrap_X, typename Wrap_Y>
+template <typename Pixfmt, typename Wrap_X, typename Wrap_Y>
 class pattern_wrapper_adaptor : public pattern_wrapper<Pixfmt>
 {
 public:
@@ -560,7 +551,6 @@ public:
 private:
     image_accessor_wrap<Pixfmt, Wrap_X, Wrap_Y> m_wrap;
 };
-
 
 }
 #endif /*_PIXFMT_WRAPPER_H_*/

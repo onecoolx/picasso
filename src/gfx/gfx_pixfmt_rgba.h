@@ -1115,6 +1115,196 @@ struct composite_op_rgba_invert_rgb
     }
 };
 
+// composite_op_rgba_hue
+template <typename ColorType, typename Order>
+struct composite_op_rgba_hue
+{
+    typedef ColorType color_type;
+    typedef typename color_type::value_type value_type;
+    typedef typename color_type::calc_type calc_type;
+
+    enum {
+        base_shift = color_type::base_shift,
+        base_mask  = color_type::base_mask,
+    };
+
+    // B(Cb, Cs) = setLum(setSat(Cs, SAT(Cb)), LUM(Cb))
+    // Da'  = Sa + Da - Sa.Da
+    static _FORCE_INLINE_ void blend_pix(value_type* p, unsigned int r, unsigned int g,
+                          unsigned int b, unsigned int a, unsigned int cover)
+    {
+        scalar sr = INT_TO_SCALAR(r * cover) / (base_mask * 255);
+        scalar sg = INT_TO_SCALAR(g * cover) / (base_mask * 255);
+        scalar sb = INT_TO_SCALAR(b * cover) / (base_mask * 255);
+        scalar sa = INT_TO_SCALAR(a * cover) / (base_mask * 255);
+
+        if (sa > 0) {
+            scalar dr = INT_TO_SCALAR(p[Order::R]) / base_mask;
+            scalar dg = INT_TO_SCALAR(p[Order::G]) / base_mask;
+            scalar db = INT_TO_SCALAR(p[Order::B]) / base_mask;
+            scalar da = INT_TO_SCALAR(p[Order::A] ? p[Order::A] : 1) / base_mask;
+
+            if (cover < 255) {
+                a = (a * cover + 255) >> 8;
+            }
+
+            sr *= da;
+            sg *= da;
+            sb *= da;
+
+            color_set_sat(&sr, &sg, &sb, C_SAT(dr, dg, db) * sa);
+            color_set_lum(&sr, &sg, &sb, sa * da, C_LUM(dr, dg, db, scalar) * sa);
+
+            p[Order::R] = (value_type)uround(sr * base_mask);
+            p[Order::G] = (value_type)uround(sg * base_mask);
+            p[Order::B] = (value_type)uround(sb * base_mask);
+            p[Order::A] = (value_type)(a + p[Order::A] - ((a * p[Order::A] + base_mask) >> base_shift));
+        }
+    }
+};
+
+// composite_op_rgba_saturation
+template <typename ColorType, typename Order>
+struct composite_op_rgba_saturation
+{
+    typedef ColorType color_type;
+    typedef typename color_type::value_type value_type;
+    typedef typename color_type::calc_type calc_type;
+
+    enum {
+        base_shift = color_type::base_shift,
+        base_mask  = color_type::base_mask,
+    };
+
+    // B(Cb, Cs) = setLum(setSat(Cb, SAT(Cs)), LUM(Cb))
+    // Da'  = Sa + Da - Sa.Da
+    static _FORCE_INLINE_ void blend_pix(value_type* p, unsigned int r, unsigned int g,
+                          unsigned int b, unsigned int a, unsigned int cover)
+    {
+        scalar sr = INT_TO_SCALAR(r * cover) / (base_mask * 255);
+        scalar sg = INT_TO_SCALAR(g * cover) / (base_mask * 255);
+        scalar sb = INT_TO_SCALAR(b * cover) / (base_mask * 255);
+        scalar sa = INT_TO_SCALAR(a * cover) / (base_mask * 255);
+
+        if (sa > 0) {
+            scalar dr = INT_TO_SCALAR(p[Order::R]) / base_mask;
+            scalar dg = INT_TO_SCALAR(p[Order::G]) / base_mask;
+            scalar db = INT_TO_SCALAR(p[Order::B]) / base_mask;
+            scalar da = INT_TO_SCALAR(p[Order::A] ? p[Order::A] : 1) / base_mask;
+
+            if (cover < 255) {
+                a = (a * cover + 255) >> 8;
+            }
+
+            scalar sdr = dr * sa;
+            scalar sdg = dg * sa;
+            scalar sdb = db * sa;
+
+            color_set_sat(&sdr, &sdg, &sdb, C_SAT(sr, sg, sb) * da);
+            color_set_lum(&sdr, &sdg, &sdb, sa * da, C_LUM(dr, dg, db, scalar) * sa);
+
+            p[Order::R] = (value_type)uround(sdr * base_mask);
+            p[Order::G] = (value_type)uround(sdg * base_mask);
+            p[Order::B] = (value_type)uround(sdb * base_mask);
+            p[Order::A] = (value_type)(a + p[Order::A] - ((a * p[Order::A] + base_mask) >> base_shift));
+        }
+    }
+};
+
+// composite_op_rgba_color
+template <typename ColorType, typename Order>
+struct composite_op_rgba_color
+{
+    typedef ColorType color_type;
+    typedef typename color_type::value_type value_type;
+    typedef typename color_type::calc_type calc_type;
+
+    enum {
+        base_shift = color_type::base_shift,
+        base_mask  = color_type::base_mask,
+    };
+
+    // B(Cb, Cs) = setLum(Cs, LUM(Cb))
+    // Da'  = Sa + Da - Sa.Da
+    static _FORCE_INLINE_ void blend_pix(value_type* p, unsigned int r, unsigned int g,
+                          unsigned int b, unsigned int a, unsigned int cover)
+    {
+        scalar sr = INT_TO_SCALAR(r * cover) / (base_mask * 255);
+        scalar sg = INT_TO_SCALAR(g * cover) / (base_mask * 255);
+        scalar sb = INT_TO_SCALAR(b * cover) / (base_mask * 255);
+        scalar sa = INT_TO_SCALAR(a * cover) / (base_mask * 255);
+
+        if (sa > 0) {
+            scalar dr = INT_TO_SCALAR(p[Order::R]) / base_mask;
+            scalar dg = INT_TO_SCALAR(p[Order::G]) / base_mask;
+            scalar db = INT_TO_SCALAR(p[Order::B]) / base_mask;
+            scalar da = INT_TO_SCALAR(p[Order::A] ? p[Order::A] : 1) / base_mask;
+
+            if (cover < 255) {
+                a = (a * cover + 255) >> 8;
+            }
+
+            sr *= da;
+            sg *= da;
+            sb *= da;
+
+            color_set_lum(&sr, &sg, &sb, sa * da, C_LUM(dr, dg, db, scalar) * sa);
+
+            p[Order::R] = (value_type)uround(sr * base_mask);
+            p[Order::G] = (value_type)uround(sg * base_mask);
+            p[Order::B] = (value_type)uround(sb * base_mask);
+            p[Order::A] = (value_type)(a + p[Order::A] - ((a * p[Order::A] + base_mask) >> base_shift));
+        }
+    }
+};
+
+// composite_op_rgba_luminosity
+template <typename ColorType, typename Order>
+struct composite_op_rgba_luminosity
+{
+    typedef ColorType color_type;
+    typedef typename color_type::value_type value_type;
+    typedef typename color_type::calc_type calc_type;
+
+    enum {
+        base_shift = color_type::base_shift,
+        base_mask  = color_type::base_mask,
+    };
+
+    // B(Cb, Cs) = setLum(Cb, LUM(Cs))
+    // Da'  = Sa + Da - Sa.Da
+    static _FORCE_INLINE_ void blend_pix(value_type* p, unsigned int r, unsigned int g,
+                          unsigned int b, unsigned int a, unsigned int cover)
+    {
+        scalar sr = INT_TO_SCALAR(r * cover) / (base_mask * 255);
+        scalar sg = INT_TO_SCALAR(g * cover) / (base_mask * 255);
+        scalar sb = INT_TO_SCALAR(b * cover) / (base_mask * 255);
+        scalar sa = INT_TO_SCALAR(a * cover) / (base_mask * 255);
+
+        if (sa > 0) {
+            scalar dr = INT_TO_SCALAR(p[Order::R]) / base_mask;
+            scalar dg = INT_TO_SCALAR(p[Order::G]) / base_mask;
+            scalar db = INT_TO_SCALAR(p[Order::B]) / base_mask;
+            scalar da = INT_TO_SCALAR(p[Order::A] ? p[Order::A] : 1) / base_mask;
+
+            if (cover < 255) {
+                a = (a * cover + 255) >> 8;
+            }
+
+            scalar sdr = dr * sa;
+            scalar sdg = dg * sa;
+            scalar sdb = db * sa;
+
+            color_set_lum(&sdr, &sdg, &sdb, sa * da, C_LUM(sr, sg, sb, scalar) * da);
+
+            p[Order::R] = (value_type)uround(sdr * base_mask);
+            p[Order::G] = (value_type)uround(sdg * base_mask);
+            p[Order::B] = (value_type)uround(sdb * base_mask);
+            p[Order::A] = (value_type)(a + p[Order::A] - ((a * p[Order::A] + base_mask) >> base_shift));
+        }
+    }
+};
+
 
 // composite operate table for blend rgba pixel format.
 template <typename ColorType, typename Order>
@@ -1164,6 +1354,10 @@ blend_op_table_rgba<ColorType, Order>::g_rgba_blend_op_func[] =
     composite_op_rgba_contrast   <ColorType,Order>::blend_pix,
     composite_op_rgba_invert     <ColorType,Order>::blend_pix,
     composite_op_rgba_invert_rgb <ColorType,Order>::blend_pix,
+    composite_op_rgba_hue        <ColorType,Order>::blend_pix,
+    composite_op_rgba_saturation <ColorType,Order>::blend_pix,
+    composite_op_rgba_color      <ColorType,Order>::blend_pix,
+    composite_op_rgba_luminosity <ColorType,Order>::blend_pix,
     0
 };
 

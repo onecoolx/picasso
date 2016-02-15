@@ -1,9 +1,5 @@
 
 
-//#define ENABLE_FREE_TYPE2 1
-
-//#define ENABLE_FONT_CONFIG 1
-
 //#define ENABLE_LOW_MEMORY 1
 
 //#define ENABLE_SYSTEM_MALLOC 1
