@@ -14,15 +14,21 @@ Picasso is a high quality vector graphic rendering library. It has high performa
 ![](https://github.com/onecoolx/picasso/blob/master/demos/clock.png)
 
 
-HOW TO BUILD:
+
+####**HOW TO BUILD:**
 
 ------------------------------------
 linux:
 1. automake & autoconf
+
 ./autogen.sh
+
 ./configure
+
 make
+
 sudo make install;
+
 
 2. gyp build
 ./build_proj.sh
