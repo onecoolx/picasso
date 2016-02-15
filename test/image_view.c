@@ -24,7 +24,6 @@ void draw_test (int id, ps_context* gc)
     ps_rect ir;
     ps_rect sr;
     ps_size ss;
-    ps_color col = {0.24, 0.71, 0.72, 1}; // css blend mode test
 
     if (image) {
         ps_canvas * c = ps_context_get_canvas(gc);

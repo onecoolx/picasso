@@ -26,8 +26,6 @@ objects= \
         gfx_font_adapter_freetype2.o \
         gfx_font_load_freetype2.o \
         \
-        gles2_device.o \
-        \
         picasso_matrix.o \
         picasso_matrix_api.o \
         picasso_painter.o \
