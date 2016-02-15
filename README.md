@@ -19,6 +19,7 @@ Picasso is a high quality vector graphic rendering library. It has high performa
 
 ------------------------------------
 linux:
+
 1. automake & autoconf
 
 ./autogen.sh
@@ -31,16 +32,23 @@ sudo make install;
 
 
 2. gyp build
+
 ./build_proj.sh
+
 cd proj
+
 make
 
 
 ------------------------------------
 windows:
+
 1. Install Active Python 2.7 on your windows system and register path environment variables.
 
 2. Build project
+
 ./build_proj.bat
+
 cd vcproj
+
 <open "picasso.sln" with visual studio>
