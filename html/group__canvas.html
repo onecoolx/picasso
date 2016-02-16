@@ -23,7 +23,7 @@
   
   <td style="padding-left: 0.5em;">
    <div id="projectname">Picasso API
-   &#160;<span id="projectnumber">2.18</span>
+   &#160;<span id="projectnumber">2.2</span>
    </div>
    
   </td>
@@ -60,7 +60,7 @@
 Typedefs</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga79f9abf66c44773958bf7a91519e4163"></a><!-- doxytag: member="canvas::ps_color_format" ref="ga79f9abf66c44773958bf7a91519e4163" args="" -->
 typedef enum <a class="el" href="group__canvas.html#ga5bdaa5d6c1e23f6f8f3200b424301665">_ps_color_format</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__canvas.html#ga79f9abf66c44773958bf7a91519e4163">ps_color_format</a></td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Pixel formats of canvas. <br/></td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Pixel formats of canvas or image. <br/></td></tr>
 <tr><td colspan="2"><h2><a name="enum-members"></a>
 Enumerations</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__canvas.html#ga5bdaa5d6c1e23f6f8f3200b424301665">_ps_color_format</a> { <br/>
@@ -77,7 +77,7 @@ Enumerations</h2></td></tr>
 &#160;&#160;<a class="el" href="group__canvas.html#gga5bdaa5d6c1e23f6f8f3200b424301665ab58141bf00d632ba06094d3c4b6446c2">COLOR_FORMAT_UNKNOWN</a>
 <br/>
  }</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Pixel formats of canvas.  <a href="group__canvas.html#ga5bdaa5d6c1e23f6f8f3200b424301665">More...</a><br/></td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Pixel formats of canvas or image.  <a href="group__canvas.html#ga5bdaa5d6c1e23f6f8f3200b424301665">More...</a><br/></td></tr>
 <tr><td colspan="2"><h2><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">PEXPORT <a class="el" href="group__objects.html#ga3bfe40359f5735c28409d200e20f1d5d">ps_canvas</a> *PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__canvas.html#ga422a8fc62631fb6447e92924c78bc3b7">ps_canvas_create</a> (<a class="el" href="group__canvas.html#ga79f9abf66c44773958bf7a91519e4163">ps_color_format</a> fmt, int width, int height)</td></tr>
@@ -91,7 +91,7 @@ Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">PEXPORT <a class="el" href="group__objects.html#ga3bfe40359f5735c28409d200e20f1d5d">ps_canvas</a> *PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__canvas.html#gaf877dddf73ecc30ccbe87c31f5c5bf75">ps_canvas_create_from_image</a> (<a class="el" href="group__objects.html#ga29ff73b2e4d6395ac53d9a203ad7f5ca">ps_image</a> *img, const <a class="el" href="group__objects.html#ga6acefae8e0866450753775eb9424dea7">ps_rect</a> *rect)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a new canvas using part of an existing ps_image object in same pixel buffer.  <a href="#gaf877dddf73ecc30ccbe87c31f5c5bf75"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">PEXPORT <a class="el" href="group__objects.html#ga3bfe40359f5735c28409d200e20f1d5d">ps_canvas</a> *PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__canvas.html#ga5ffc739d55c6d314ad645df4916fec73">ps_canvas_replace_data</a> (<a class="el" href="group__objects.html#ga3bfe40359f5735c28409d200e20f1d5d">ps_canvas</a> *canvas, <a class="el" href="group__data.html#gab4d32618dcac1b191ee7db92ef475ed0">ps_byte</a> *data, <a class="el" href="group__canvas.html#ga79f9abf66c44773958bf7a91519e4163">ps_color_format</a> fmt, int width, int height, int pitch)</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Replace a canvas target rendering buffer address in memory.  <a href="#ga5ffc739d55c6d314ad645df4916fec73"></a><br/></td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Replace a canvas target rendering buffer address in memory, which is only use for canvas create by <em>ps_canvas_create_with_data</em>.  <a href="#ga5ffc739d55c6d314ad645df4916fec73"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">PEXPORT <a class="el" href="group__objects.html#ga3bfe40359f5735c28409d200e20f1d5d">ps_canvas</a> *PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__canvas.html#gaee1cef3d1e04d2a85cf5f3c19e94a69f">ps_canvas_ref</a> (<a class="el" href="group__objects.html#ga3bfe40359f5735c28409d200e20f1d5d">ps_canvas</a> *canvas)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Increases the reference count of the canvas by 1.  <a href="#gaee1cef3d1e04d2a85cf5f3c19e94a69f"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">PEXPORT void PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__canvas.html#ga474f482e71cd737d2110168768c6a3d5">ps_canvas_unref</a> (<a class="el" href="group__objects.html#ga3bfe40359f5735c28409d200e20f1d5d">ps_canvas</a> *canvas)</td></tr>
@@ -119,7 +119,7 @@ Functions</h2></td></tr>
 </div>
 <div class="memdoc">
 
-<p>Pixel formats of canvas. </p>
+<p>Pixel formats of canvas or image. </p>
 <dl><dt><b>Enumerator: </b></dt><dd><table border="0" cellspacing="2" cellpadding="0">
 <tr><td valign="top"><em><a class="anchor" id="gga5bdaa5d6c1e23f6f8f3200b424301665aee6b4d617bcbf36911dd6ffce53a8b72"></a><!-- doxytag: member="COLOR_FORMAT_RGBA" ref="gga5bdaa5d6c1e23f6f8f3200b424301665aee6b4d617bcbf36911dd6ffce53a8b72" args="" -->COLOR_FORMAT_RGBA</em>&nbsp;</td><td>
 <p>32bpp, 8bpc, RGBA color space. </p>
@@ -434,7 +434,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd>If the function succeeds, the return value is the pointer to a new canvas object. If the function fails, the return value is NULL.</dd></dl>
 <dl class="note"><dt><b>Note:</b></dt><dd>To get extended error information, call <em>ps_last_status</em>.</dd></dl>
-<dl class="see"><dt><b>See also:</b></dt><dd><a class="el" href="group__canvas.html#ga422a8fc62631fb6447e92924c78bc3b7" title="Create a new canvas using the given parameters.">ps_canvas_create</a>, <a class="el" href="group__canvas.html#ga2ea69fce3ac80798a1372fb4eb6fe374" title="Create a new canvas to compatible with an existing canvas.">ps_canvas_create_compatible</a>, <a class="el" href="group__canvas.html#gadcd073449c2570fd165cfd51836a5e86" title="Create a new canvas using part of an existing canvas in same pixel buffer.">ps_canvas_create_from_canvas</a>, <a class="el" href="group__canvas.html#gaf877dddf73ecc30ccbe87c31f5c5bf75" title="Create a new canvas using part of an existing ps_image object in same pixel buffer.">ps_canvas_create_from_image</a>, <a class="el" href="group__canvas.html#gaee1cef3d1e04d2a85cf5f3c19e94a69f" title="Increases the reference count of the canvas by 1.">ps_canvas_ref</a>, <a class="el" href="group__canvas.html#ga474f482e71cd737d2110168768c6a3d5" title="Decrements the reference count for the canvas object. If the reference count on the canvas falls to 0...">ps_canvas_unref</a>, <a class="el" href="group__canvas.html#ga5ffc739d55c6d314ad645df4916fec73" title="Replace a canvas target rendering buffer address in memory.">ps_canvas_replace_data</a> </dd></dl>
+<dl class="see"><dt><b>See also:</b></dt><dd><a class="el" href="group__canvas.html#ga422a8fc62631fb6447e92924c78bc3b7" title="Create a new canvas using the given parameters.">ps_canvas_create</a>, <a class="el" href="group__canvas.html#ga2ea69fce3ac80798a1372fb4eb6fe374" title="Create a new canvas to compatible with an existing canvas.">ps_canvas_create_compatible</a>, <a class="el" href="group__canvas.html#gadcd073449c2570fd165cfd51836a5e86" title="Create a new canvas using part of an existing canvas in same pixel buffer.">ps_canvas_create_from_canvas</a>, <a class="el" href="group__canvas.html#gaf877dddf73ecc30ccbe87c31f5c5bf75" title="Create a new canvas using part of an existing ps_image object in same pixel buffer.">ps_canvas_create_from_image</a>, <a class="el" href="group__canvas.html#gaee1cef3d1e04d2a85cf5f3c19e94a69f" title="Increases the reference count of the canvas by 1.">ps_canvas_ref</a>, <a class="el" href="group__canvas.html#ga474f482e71cd737d2110168768c6a3d5" title="Decrements the reference count for the canvas object. If the reference count on the canvas falls to 0...">ps_canvas_unref</a>, <a class="el" href="group__canvas.html#ga5ffc739d55c6d314ad645df4916fec73" title="Replace a canvas target rendering buffer address in memory, which is only use for canvas create by ps...">ps_canvas_replace_data</a> </dd></dl>
 
 </div>
 </div>
@@ -582,7 +582,7 @@ Functions</h2></td></tr>
 </div>
 <div class="memdoc">
 
-<p>Replace a canvas target rendering buffer address in memory. </p>
+<p>Replace a canvas target rendering buffer address in memory, which is only use for canvas create by <em>ps_canvas_create_with_data</em>. </p>
 <dl class="params"><dt><b>Parameters:</b></dt><dd>
   <table class="params">
     <tr><td class="paramname">canvas</td><td>Pointer to an existing canvas object. </td></tr>
@@ -693,7 +693,7 @@ Functions</h2></td></tr>
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Aug 21 2015 15:33:20 for Picasso API by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Feb 16 2016 10:48:13 for Picasso API by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>

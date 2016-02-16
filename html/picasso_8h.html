@@ -23,7 +23,7 @@
   
   <td style="padding-left: 0.5em;">
    <div id="projectname">Picasso API
-   &#160;<span id="projectnumber">2.18</span>
+   &#160;<span id="projectnumber">2.2</span>
    </div>
    
   </td>
@@ -101,7 +101,7 @@ Typedefs</h2></td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">16 bit unsigned unicode character  <a href="group__data.html#gaa5272625f3e613e58c9a5ce148b752bc"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">typedef int16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__data.html#ga8a8560ea16c7b1340f7700e3cfb9e927">ps_schar16</a></td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">16 bit signed unicode character  <a href="group__data.html#ga8a8560ea16c7b1340f7700e3cfb9e927"></a><br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">typedef unsigned char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__data.html#gab4d32618dcac1b191ee7db92ef475ed0">ps_byte</a></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">typedef uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__data.html#gab4d32618dcac1b191ee7db92ef475ed0">ps_byte</a></td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">byte data type  <a href="group__data.html#gab4d32618dcac1b191ee7db92ef475ed0"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">typedef struct _ps_context&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__objects.html#ga4a70d4a51cfa38485adf65620e5a0ec9">ps_context</a></td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">An opaque type represents a Picasso drawing environment.  <a href="group__objects.html#ga4a70d4a51cfa38485adf65620e5a0ec9"></a><br/></td></tr>
@@ -141,7 +141,7 @@ typedef enum <a class="el" href="group__common.html#gaa0326a5d1401e410f5a5d306ff
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Status code return by call ps_last_status function. <br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga79f9abf66c44773958bf7a91519e4163"></a><!-- doxytag: member="picasso.h::ps_color_format" ref="ga79f9abf66c44773958bf7a91519e4163" args="" -->
 typedef enum <a class="el" href="group__canvas.html#ga5bdaa5d6c1e23f6f8f3200b424301665">_ps_color_format</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__canvas.html#ga79f9abf66c44773958bf7a91519e4163">ps_color_format</a></td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Pixel formats of canvas. <br/></td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Pixel formats of canvas or image. <br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gacfdf5c50e09ee1aef9694e78fbde961b"></a><!-- doxytag: member="picasso.h::ps_wrap_type" ref="gacfdf5c50e09ee1aef9694e78fbde961b" args="" -->
 typedef enum <a class="el" href="group__pattern.html#gafdbe8821163a2902b7fa19558a01efef">_ps_wrap_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__pattern.html#gacfdf5c50e09ee1aef9694e78fbde961b">ps_wrap_type</a></td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Fill type of pattern. <br/></td></tr>
@@ -218,7 +218,7 @@ Enumerations</h2></td></tr>
 &#160;&#160;<a class="el" href="group__canvas.html#gga5bdaa5d6c1e23f6f8f3200b424301665ab58141bf00d632ba06094d3c4b6446c2">COLOR_FORMAT_UNKNOWN</a>
 <br/>
  }</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Pixel formats of canvas.  <a href="group__canvas.html#ga5bdaa5d6c1e23f6f8f3200b424301665">More...</a><br/></td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Pixel formats of canvas or image.  <a href="group__canvas.html#ga5bdaa5d6c1e23f6f8f3200b424301665">More...</a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__pattern.html#gafdbe8821163a2902b7fa19558a01efef">_ps_wrap_type</a> { <a class="el" href="group__pattern.html#ggafdbe8821163a2902b7fa19558a01efefa33a3825c4a4bedf87e8043ba0769fdb5">WRAP_TYPE_REPEAT</a>, 
 <a class="el" href="group__pattern.html#ggafdbe8821163a2902b7fa19558a01efefaa6a5ad01dde236ba1847d1af2e3cb6cd">WRAP_TYPE_REFLECT</a>
  }</td></tr>
@@ -284,6 +284,11 @@ Enumerations</h2></td></tr>
 <a class="el" href="group__attr.html#ggafd7a876bb41fb13485fc6b27696df1d1a55218ca957db20584a9279d271449bd9">COMPOSITE_CONTRAST</a>, 
 <a class="el" href="group__attr.html#ggafd7a876bb41fb13485fc6b27696df1d1a79ad8320211c18b10011b1072e28a772">COMPOSITE_INVERT</a>, 
 <a class="el" href="group__attr.html#ggafd7a876bb41fb13485fc6b27696df1d1abb0ab6a9e9a2a9aaf5857df0fd11ab66">COMPOSITE_INVERT_BLEND</a>, 
+<br/>
+&#160;&#160;<a class="el" href="group__attr.html#ggafd7a876bb41fb13485fc6b27696df1d1a7e761aa71b473f854b2a2a4d486b8211">COMPOSITE_HUE</a>, 
+<a class="el" href="group__attr.html#ggafd7a876bb41fb13485fc6b27696df1d1a08b4485d38d22bd9f8b87d2da1c390fe">COMPOSITE_SATURATION</a>, 
+<a class="el" href="group__attr.html#ggafd7a876bb41fb13485fc6b27696df1d1a12d0675be10e0565176c1b50ca183681">COMPOSITE_COLOR</a>, 
+<a class="el" href="group__attr.html#ggafd7a876bb41fb13485fc6b27696df1d1af356b16d08219e0e03c254387575b097">COMPOSITE_LUMINOSITY</a>, 
 <br/>
 &#160;&#160;<a class="el" href="group__attr.html#ggafd7a876bb41fb13485fc6b27696df1d1ad10c60119343eb9e22397012e5ccb242">COMPOSITE_ERROR</a>
 <br/>
@@ -378,7 +383,7 @@ Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">PEXPORT <a class="el" href="group__objects.html#ga3bfe40359f5735c28409d200e20f1d5d">ps_canvas</a> *PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__canvas.html#gaf877dddf73ecc30ccbe87c31f5c5bf75">ps_canvas_create_from_image</a> (<a class="el" href="group__objects.html#ga29ff73b2e4d6395ac53d9a203ad7f5ca">ps_image</a> *img, const <a class="el" href="group__objects.html#ga6acefae8e0866450753775eb9424dea7">ps_rect</a> *rect)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a new canvas using part of an existing ps_image object in same pixel buffer.  <a href="group__canvas.html#gaf877dddf73ecc30ccbe87c31f5c5bf75"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">PEXPORT <a class="el" href="group__objects.html#ga3bfe40359f5735c28409d200e20f1d5d">ps_canvas</a> *PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__canvas.html#ga5ffc739d55c6d314ad645df4916fec73">ps_canvas_replace_data</a> (<a class="el" href="group__objects.html#ga3bfe40359f5735c28409d200e20f1d5d">ps_canvas</a> *canvas, <a class="el" href="group__data.html#gab4d32618dcac1b191ee7db92ef475ed0">ps_byte</a> *data, <a class="el" href="group__canvas.html#ga79f9abf66c44773958bf7a91519e4163">ps_color_format</a> fmt, int width, int height, int pitch)</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Replace a canvas target rendering buffer address in memory.  <a href="group__canvas.html#ga5ffc739d55c6d314ad645df4916fec73"></a><br/></td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Replace a canvas target rendering buffer address in memory, which is only use for canvas create by <em>ps_canvas_create_with_data</em>.  <a href="group__canvas.html#ga5ffc739d55c6d314ad645df4916fec73"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">PEXPORT <a class="el" href="group__objects.html#ga3bfe40359f5735c28409d200e20f1d5d">ps_canvas</a> *PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__canvas.html#gaee1cef3d1e04d2a85cf5f3c19e94a69f">ps_canvas_ref</a> (<a class="el" href="group__objects.html#ga3bfe40359f5735c28409d200e20f1d5d">ps_canvas</a> *canvas)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Increases the reference count of the canvas by 1.  <a href="group__canvas.html#gaee1cef3d1e04d2a85cf5f3c19e94a69f"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">PEXPORT void PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__canvas.html#ga474f482e71cd737d2110168768c6a3d5">ps_canvas_unref</a> (<a class="el" href="group__objects.html#ga3bfe40359f5735c28409d200e20f1d5d">ps_canvas</a> *canvas)</td></tr>
@@ -473,8 +478,8 @@ Functions</h2></td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the miter limit for the joins of connected lines in a graphics context.  <a href="group__stroke.html#ga83568c0d29c26a834d05c93e48909328"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">PEXPORT void PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__stroke.html#gacc37293e8d7ceda573a0a3625b169076">ps_set_stroke_color</a> (<a class="el" href="group__objects.html#ga4a70d4a51cfa38485adf65620e5a0ec9">ps_context</a> *ctx, const <a class="el" href="group__objects.html#gacdacc8fa6a9c402bf92de370d723ade6">ps_color</a> *color)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Set a color to the context, it is used to stroke a graphic object.  <a href="group__stroke.html#gacc37293e8d7ceda573a0a3625b169076"></a><br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">PEXPORT void PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__stroke.html#gafdd9b658935955e1008b362f1487ca24">ps_set_line_dash</a> (<a class="el" href="group__objects.html#ga4a70d4a51cfa38485adf65620e5a0ec9">ps_context</a> *ctx, float start, float *dashes, unsigned int num_dashes)</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the pattern for dashed lines in the context.  <a href="group__stroke.html#gafdd9b658935955e1008b362f1487ca24"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">PEXPORT void PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__stroke.html#ga14690c35aae12a4262af1bfb2fbdd96e">ps_set_line_dash</a> (<a class="el" href="group__objects.html#ga4a70d4a51cfa38485adf65620e5a0ec9">ps_context</a> *ctx, float start, const float *dashes, unsigned int num_dashes)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the pattern for dashed lines in the context.  <a href="group__stroke.html#ga14690c35aae12a4262af1bfb2fbdd96e"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">PEXPORT void PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__stroke.html#ga6d9522c011d21ff17a4c5f6e5ef7f914">ps_reset_line_dash</a> (<a class="el" href="group__objects.html#ga4a70d4a51cfa38485adf65620e5a0ec9">ps_context</a> *ctx)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear the dashs from the context, and set to solid.  <a href="group__stroke.html#ga6d9522c011d21ff17a4c5f6e5ef7f914"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">PEXPORT void PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__shadow.html#ga6c83e2dd73888bea4f478ea8af2e5df9">ps_set_shadow</a> (<a class="el" href="group__objects.html#ga4a70d4a51cfa38485adf65620e5a0ec9">ps_context</a> *ctx, float x_offset, float y_offset, float blur)</td></tr>
@@ -512,11 +517,11 @@ Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">PEXPORT void PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__clip.html#ga5a2b68ffc66c43b4036779644cd394ab">ps_clip_rect</a> (<a class="el" href="group__objects.html#ga4a70d4a51cfa38485adf65620e5a0ec9">ps_context</a> *ctx, const <a class="el" href="group__objects.html#ga6acefae8e0866450753775eb9424dea7">ps_rect</a> *rect)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Clipping specified rectangle.  <a href="group__clip.html#ga5a2b68ffc66c43b4036779644cd394ab"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">PEXPORT void PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__clip.html#gaef7925bbc400819ef043b681404c4fef">ps_clip_device_rect</a> (<a class="el" href="group__objects.html#ga4a70d4a51cfa38485adf65620e5a0ec9">ps_context</a> *ctx, const <a class="el" href="group__objects.html#ga6acefae8e0866450753775eb9424dea7">ps_rect</a> *rect)</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">The fast wap to Clipping specified rectangle, the clip rect can not be rotated by world matrix.  <a href="group__clip.html#gaef7925bbc400819ef043b681404c4fef"></a><br/></td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">The fast way to clipping specified rectangle, the clip rect can not be rotated by world matrix.  <a href="group__clip.html#gaef7925bbc400819ef043b681404c4fef"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">PEXPORT void PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__clip.html#gacfe347f9cecab66847e0319cd9d9b50f">ps_clip_rects</a> (<a class="el" href="group__objects.html#ga4a70d4a51cfa38485adf65620e5a0ec9">ps_context</a> *ctx, const <a class="el" href="group__objects.html#ga6acefae8e0866450753775eb9424dea7">ps_rect</a> *rects, unsigned int num_rects)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Clipping specified area defined by an array of rectangles.  <a href="group__clip.html#gacfe347f9cecab66847e0319cd9d9b50f"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">PEXPORT void PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__clip.html#gab2d284432435b712e1f2327b6d66a080">ps_reset_clip</a> (<a class="el" href="group__objects.html#ga4a70d4a51cfa38485adf65620e5a0ec9">ps_context</a> *ctx)</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear the cliping area from the context.  <a href="group__clip.html#gab2d284432435b712e1f2327b6d66a080"></a><br/></td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear the clipping area from the context.  <a href="group__clip.html#gab2d284432435b712e1f2327b6d66a080"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">PEXPORT void PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__state.html#gaf1ad684e2ab0ec406357af6900d10854">ps_save</a> (<a class="el" href="group__objects.html#ga4a70d4a51cfa38485adf65620e5a0ec9">ps_context</a> *ctx)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Pushes a copy of the current graphics state on to stack for context.  <a href="group__state.html#gaf1ad684e2ab0ec406357af6900d10854"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">PEXPORT void PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__state.html#gaf3b7528409d5bd0fc83b6609adea1d1a">ps_restore</a> (<a class="el" href="group__objects.html#ga4a70d4a51cfa38485adf65620e5a0ec9">ps_context</a> *ctx)</td></tr>
@@ -710,7 +715,9 @@ Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">PEXPORT <a class="el" href="group__data.html#gac6a012d4a34bcc846e7ae03790c0af4b">ps_bool</a> PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__path.html#gad73761a49225721353dbf33ddac8f09b">ps_path_bounding_rect</a> (const <a class="el" href="group__objects.html#ga0dad506d890c9cd5f8753ccc4da67c0d">ps_path</a> *path, <a class="el" href="group__objects.html#ga6acefae8e0866450753775eb9424dea7">ps_rect</a> *rect)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the bounding rectangle of the path.  <a href="group__path.html#gad73761a49225721353dbf33ddac8f09b"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">PEXPORT <a class="el" href="group__data.html#gac6a012d4a34bcc846e7ae03790c0af4b">ps_bool</a> PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__path.html#gaf026a4a1760f350873c1a8a9e3a7e8f2">ps_path_contains</a> (const <a class="el" href="group__objects.html#ga0dad506d890c9cd5f8753ccc4da67c0d">ps_path</a> *path, const <a class="el" href="group__objects.html#ga5b009b12407769aca1bc58223deeda7f">ps_point</a> *point, <a class="el" href="group__attr.html#gaba85cf17ab39df549c492afc7f72ac33">ps_fill_rule</a> rule)</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Check whether a point is contained in the path.  <a href="group__path.html#gaf026a4a1760f350873c1a8a9e3a7e8f2"></a><br/></td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Check whether a point is contained in the path by fill method.  <a href="group__path.html#gaf026a4a1760f350873c1a8a9e3a7e8f2"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">PEXPORT <a class="el" href="group__data.html#gac6a012d4a34bcc846e7ae03790c0af4b">ps_bool</a> PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__path.html#gaca11c82acc68f1a5cdf886727b3f50d9">ps_path_stroke_contains</a> (const <a class="el" href="group__objects.html#ga0dad506d890c9cd5f8753ccc4da67c0d">ps_path</a> *path, const <a class="el" href="group__objects.html#ga5b009b12407769aca1bc58223deeda7f">ps_point</a> *point, float width)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Check whether a point is contained in the path by stroke method.  <a href="group__path.html#gaca11c82acc68f1a5cdf886727b3f50d9"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">PEXPORT void PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__path.html#gae05db304c5c79f243d4827206f0a61b4">ps_path_add_line</a> (<a class="el" href="group__objects.html#ga0dad506d890c9cd5f8753ccc4da67c0d">ps_path</a> *path, const <a class="el" href="group__objects.html#ga5b009b12407769aca1bc58223deeda7f">ps_point</a> *p1, const <a class="el" href="group__objects.html#ga5b009b12407769aca1bc58223deeda7f">ps_point</a> *p2)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a line to the path.  <a href="group__path.html#gae05db304c5c79f243d4827206f0a61b4"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">PEXPORT void PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__path.html#ga4a80afa36939fa41a0d288adaead0067">ps_path_add_arc</a> (<a class="el" href="group__objects.html#ga0dad506d890c9cd5f8753ccc4da67c0d">ps_path</a> *path, const <a class="el" href="group__objects.html#ga5b009b12407769aca1bc58223deeda7f">ps_point</a> *cp, float radius, float sangle, float eangle, <a class="el" href="group__data.html#gac6a012d4a34bcc846e7ae03790c0af4b">ps_bool</a> clockwise)</td></tr>
@@ -730,7 +737,7 @@ Functions</h2></td></tr>
 <p>This file includes all interfaces of Picasso</p>
 <div class="fragment"><pre class="fragment">
 
-    Copyright (C) 2008 ~ 2014  Zhang Ji Peng
+    Copyright (C) 2008 ~ 2016  Zhang Ji Peng
 
     All rights reserved.
 
@@ -742,7 +749,7 @@ Functions</h2></td></tr>
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Aug 21 2015 15:33:20 for Picasso API by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Feb 16 2016 10:48:13 for Picasso API by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>

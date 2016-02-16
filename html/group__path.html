@@ -23,7 +23,7 @@
   
   <td style="padding-left: 0.5em;">
    <div id="projectname">Picasso API
-   &#160;<span id="projectnumber">2.18</span>
+   &#160;<span id="projectnumber">2.2</span>
    </div>
    
   </td>
@@ -120,7 +120,9 @@ Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">PEXPORT <a class="el" href="group__data.html#gac6a012d4a34bcc846e7ae03790c0af4b">ps_bool</a> PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__path.html#gad73761a49225721353dbf33ddac8f09b">ps_path_bounding_rect</a> (const <a class="el" href="group__objects.html#ga0dad506d890c9cd5f8753ccc4da67c0d">ps_path</a> *path, <a class="el" href="group__objects.html#ga6acefae8e0866450753775eb9424dea7">ps_rect</a> *rect)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the bounding rectangle of the path.  <a href="#gad73761a49225721353dbf33ddac8f09b"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">PEXPORT <a class="el" href="group__data.html#gac6a012d4a34bcc846e7ae03790c0af4b">ps_bool</a> PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__path.html#gaf026a4a1760f350873c1a8a9e3a7e8f2">ps_path_contains</a> (const <a class="el" href="group__objects.html#ga0dad506d890c9cd5f8753ccc4da67c0d">ps_path</a> *path, const <a class="el" href="group__objects.html#ga5b009b12407769aca1bc58223deeda7f">ps_point</a> *point, <a class="el" href="group__attr.html#gaba85cf17ab39df549c492afc7f72ac33">ps_fill_rule</a> rule)</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Check whether a point is contained in the path.  <a href="#gaf026a4a1760f350873c1a8a9e3a7e8f2"></a><br/></td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Check whether a point is contained in the path by fill method.  <a href="#gaf026a4a1760f350873c1a8a9e3a7e8f2"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">PEXPORT <a class="el" href="group__data.html#gac6a012d4a34bcc846e7ae03790c0af4b">ps_bool</a> PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__path.html#gaca11c82acc68f1a5cdf886727b3f50d9">ps_path_stroke_contains</a> (const <a class="el" href="group__objects.html#ga0dad506d890c9cd5f8753ccc4da67c0d">ps_path</a> *path, const <a class="el" href="group__objects.html#ga5b009b12407769aca1bc58223deeda7f">ps_point</a> *point, float width)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Check whether a point is contained in the path by stroke method.  <a href="#gaca11c82acc68f1a5cdf886727b3f50d9"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">PEXPORT void PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__path.html#gae05db304c5c79f243d4827206f0a61b4">ps_path_add_line</a> (<a class="el" href="group__objects.html#ga0dad506d890c9cd5f8753ccc4da67c0d">ps_path</a> *path, const <a class="el" href="group__objects.html#ga5b009b12407769aca1bc58223deeda7f">ps_point</a> *p1, const <a class="el" href="group__objects.html#ga5b009b12407769aca1bc58223deeda7f">ps_point</a> *p2)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a line to the path.  <a href="#gae05db304c5c79f243d4827206f0a61b4"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">PEXPORT void PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__path.html#ga4a80afa36939fa41a0d288adaead0067">ps_path_add_arc</a> (<a class="el" href="group__objects.html#ga0dad506d890c9cd5f8753ccc4da67c0d">ps_path</a> *path, const <a class="el" href="group__objects.html#ga5b009b12407769aca1bc58223deeda7f">ps_point</a> *cp, float radius, float sangle, float eangle, <a class="el" href="group__data.html#gac6a012d4a34bcc846e7ae03790c0af4b">ps_bool</a> clockwise)</td></tr>
@@ -170,7 +172,7 @@ Functions</h2></td></tr>
 </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="picasso_8h_source.html#l03211">3211</a> of file <a class="el" href="picasso_8h_source.html">picasso.h</a>.</p>
+<p>Definition at line <a class="el" href="picasso_8h_source.html#l03220">3220</a> of file <a class="el" href="picasso_8h_source.html">picasso.h</a>.</p>
 
 </div>
 </div>
@@ -203,7 +205,7 @@ Functions</h2></td></tr>
 </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="picasso_8h_source.html#l03360">3360</a> of file <a class="el" href="picasso_8h_source.html">picasso.h</a>.</p>
+<p>Definition at line <a class="el" href="picasso_8h_source.html#l03384">3384</a> of file <a class="el" href="picasso_8h_source.html">picasso.h</a>.</p>
 
 </div>
 </div>
@@ -642,7 +644,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd>True if is success, otherwise False.</dd></dl>
 <dl class="note"><dt><b>Note:</b></dt><dd>To get extended error information, call <em>ps_last_status</em>.</dd></dl>
-<dl class="see"><dt><b>See also:</b></dt><dd><a class="el" href="group__path.html#ga5f38d7b21720e6ce0d233eccf352d8e0" title="Return the count of vertices in the path.">ps_path_get_vertex_count</a>, <a class="el" href="group__path.html#ga420531dae755417305bb4092659bab53" title="Get a vertex from the path by index, and return the vertex command.">ps_path_get_vertex</a>, <a class="el" href="group__path.html#gaf026a4a1760f350873c1a8a9e3a7e8f2" title="Check whether a point is contained in the path.">ps_path_contains</a> </dd></dl>
+<dl class="see"><dt><b>See also:</b></dt><dd><a class="el" href="group__path.html#ga5f38d7b21720e6ce0d233eccf352d8e0" title="Return the count of vertices in the path.">ps_path_get_vertex_count</a>, <a class="el" href="group__path.html#ga420531dae755417305bb4092659bab53" title="Get a vertex from the path by index, and return the vertex command.">ps_path_get_vertex</a>, <a class="el" href="group__path.html#gaf026a4a1760f350873c1a8a9e3a7e8f2" title="Check whether a point is contained in the path by fill method.">ps_path_contains</a>, <a class="el" href="group__path.html#gaca11c82acc68f1a5cdf886727b3f50d9" title="Check whether a point is contained in the path by stroke method.">ps_path_stroke_contains</a> </dd></dl>
 
 </div>
 </div>
@@ -754,7 +756,7 @@ Functions</h2></td></tr>
 </div>
 <div class="memdoc">
 
-<p>Check whether a point is contained in the path. </p>
+<p>Check whether a point is contained in the path by fill method. </p>
 <dl class="params"><dt><b>Parameters:</b></dt><dd>
   <table class="params">
     <tr><td class="paramname">path</td><td>Pointer to an existing path object. </td></tr>
@@ -764,7 +766,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd>True if the point is contained, otherwise False.</dd></dl>
-<dl class="see"><dt><b>See also:</b></dt><dd><a class="el" href="group__path.html#ga5f38d7b21720e6ce0d233eccf352d8e0" title="Return the count of vertices in the path.">ps_path_get_vertex_count</a>, <a class="el" href="group__path.html#ga420531dae755417305bb4092659bab53" title="Get a vertex from the path by index, and return the vertex command.">ps_path_get_vertex</a>, <a class="el" href="group__path.html#gad73761a49225721353dbf33ddac8f09b" title="Get the bounding rectangle of the path.">ps_path_bounding_rect</a> </dd></dl>
+<dl class="see"><dt><b>See also:</b></dt><dd><a class="el" href="group__path.html#ga5f38d7b21720e6ce0d233eccf352d8e0" title="Return the count of vertices in the path.">ps_path_get_vertex_count</a>, <a class="el" href="group__path.html#ga420531dae755417305bb4092659bab53" title="Get a vertex from the path by index, and return the vertex command.">ps_path_get_vertex</a>, <a class="el" href="group__path.html#gad73761a49225721353dbf33ddac8f09b" title="Get the bounding rectangle of the path.">ps_path_bounding_rect</a>, <a class="el" href="group__path.html#gaca11c82acc68f1a5cdf886727b3f50d9" title="Check whether a point is contained in the path by stroke method.">ps_path_stroke_contains</a> </dd></dl>
 
 </div>
 </div>
@@ -888,7 +890,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd>If the function succeeds, the return value is the command of the vertex. If the function fails, the return value is PATH_CMD_STOP.</dd></dl>
 <dl class="note"><dt><b>Note:</b></dt><dd>To get extended error information, call <em>ps_last_status</em>.</dd></dl>
-<dl class="see"><dt><b>See also:</b></dt><dd><a class="el" href="group__path.html#ga5f38d7b21720e6ce0d233eccf352d8e0" title="Return the count of vertices in the path.">ps_path_get_vertex_count</a>, <a class="el" href="group__path.html#gad73761a49225721353dbf33ddac8f09b" title="Get the bounding rectangle of the path.">ps_path_bounding_rect</a>, <a class="el" href="group__path.html#gaf026a4a1760f350873c1a8a9e3a7e8f2" title="Check whether a point is contained in the path.">ps_path_contains</a> </dd></dl>
+<dl class="see"><dt><b>See also:</b></dt><dd><a class="el" href="group__path.html#ga5f38d7b21720e6ce0d233eccf352d8e0" title="Return the count of vertices in the path.">ps_path_get_vertex_count</a>, <a class="el" href="group__path.html#gad73761a49225721353dbf33ddac8f09b" title="Get the bounding rectangle of the path.">ps_path_bounding_rect</a>, <a class="el" href="group__path.html#gaf026a4a1760f350873c1a8a9e3a7e8f2" title="Check whether a point is contained in the path by fill method.">ps_path_contains</a>, <a class="el" href="group__path.html#gaca11c82acc68f1a5cdf886727b3f50d9" title="Check whether a point is contained in the path by stroke method.">ps_path_stroke_contains</a> </dd></dl>
 
 </div>
 </div>
@@ -916,7 +918,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd>If the function succeeds, the return value is the vertices count in the path object. If the function fails, the return value is 0.</dd></dl>
 <dl class="note"><dt><b>Note:</b></dt><dd>To get extended error information, call <em>ps_last_status</em>.</dd></dl>
-<dl class="see"><dt><b>See also:</b></dt><dd><a class="el" href="group__path.html#ga420531dae755417305bb4092659bab53" title="Get a vertex from the path by index, and return the vertex command.">ps_path_get_vertex</a>, <a class="el" href="group__path.html#gad73761a49225721353dbf33ddac8f09b" title="Get the bounding rectangle of the path.">ps_path_bounding_rect</a>, <a class="el" href="group__path.html#gaf026a4a1760f350873c1a8a9e3a7e8f2" title="Check whether a point is contained in the path.">ps_path_contains</a> </dd></dl>
+<dl class="see"><dt><b>See also:</b></dt><dd><a class="el" href="group__path.html#ga420531dae755417305bb4092659bab53" title="Get a vertex from the path by index, and return the vertex command.">ps_path_get_vertex</a>, <a class="el" href="group__path.html#gad73761a49225721353dbf33ddac8f09b" title="Get the bounding rectangle of the path.">ps_path_bounding_rect</a>, <a class="el" href="group__path.html#gaf026a4a1760f350873c1a8a9e3a7e8f2" title="Check whether a point is contained in the path by fill method.">ps_path_contains</a>, <a class="el" href="group__path.html#gaca11c82acc68f1a5cdf886727b3f50d9" title="Check whether a point is contained in the path by stroke method.">ps_path_stroke_contains</a> </dd></dl>
 
 </div>
 </div>
@@ -1092,6 +1094,51 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="gaca11c82acc68f1a5cdf886727b3f50d9"></a><!-- doxytag: member="picasso.h::ps_path_stroke_contains" ref="gaca11c82acc68f1a5cdf886727b3f50d9" args="(const ps_path *path, const ps_point *point, float width)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__data.html#gac6a012d4a34bcc846e7ae03790c0af4b">ps_bool</a> <a class="el" href="group__path.html#gaca11c82acc68f1a5cdf886727b3f50d9">ps_path_stroke_contains</a> </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__objects.html#ga0dad506d890c9cd5f8753ccc4da67c0d">ps_path</a> *&#160;</td>
+          <td class="paramname"><em>path</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="group__objects.html#ga5b009b12407769aca1bc58223deeda7f">ps_point</a> *&#160;</td>
+          <td class="paramname"><em>point</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>width</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Check whether a point is contained in the path by stroke method. </p>
+<dl class="params"><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramname">path</td><td>Pointer to an existing path object. </td></tr>
+    <tr><td class="paramname">point</td><td>The point to be checked. </td></tr>
+    <tr><td class="paramname">width</td><td>The line width to use, in pixels, must be greater than 0.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd>True if the point is contained, otherwise False.</dd></dl>
+<dl class="see"><dt><b>See also:</b></dt><dd><a class="el" href="group__path.html#ga5f38d7b21720e6ce0d233eccf352d8e0" title="Return the count of vertices in the path.">ps_path_get_vertex_count</a>, <a class="el" href="group__path.html#ga420531dae755417305bb4092659bab53" title="Get a vertex from the path by index, and return the vertex command.">ps_path_get_vertex</a>, <a class="el" href="group__path.html#gad73761a49225721353dbf33ddac8f09b" title="Get the bounding rectangle of the path.">ps_path_bounding_rect</a>, <a class="el" href="group__path.html#gaf026a4a1760f350873c1a8a9e3a7e8f2" title="Check whether a point is contained in the path by fill method.">ps_path_contains</a> </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="gac19ea77b0228e57be93ebc43e7ed2fad"></a><!-- doxytag: member="picasso.h::ps_path_sub_close" ref="gac19ea77b0228e57be93ebc43e7ed2fad" args="(ps_path *path)" -->
 <div class="memitem">
 <div class="memproto">
@@ -1199,7 +1246,7 @@ Functions</h2></td></tr>
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Aug 21 2015 15:33:20 for Picasso API by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Feb 16 2016 10:48:13 for Picasso API by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>

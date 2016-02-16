@@ -23,7 +23,7 @@
   
   <td style="padding-left: 0.5em;">
    <div id="projectname">Picasso API
-   &#160;<span id="projectnumber">2.18</span>
+   &#160;<span id="projectnumber">2.2</span>
    </div>
    
   </td>
@@ -63,11 +63,11 @@ Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">PEXPORT void PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__clip.html#ga5a2b68ffc66c43b4036779644cd394ab">ps_clip_rect</a> (<a class="el" href="group__objects.html#ga4a70d4a51cfa38485adf65620e5a0ec9">ps_context</a> *ctx, const <a class="el" href="group__objects.html#ga6acefae8e0866450753775eb9424dea7">ps_rect</a> *rect)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Clipping specified rectangle.  <a href="#ga5a2b68ffc66c43b4036779644cd394ab"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">PEXPORT void PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__clip.html#gaef7925bbc400819ef043b681404c4fef">ps_clip_device_rect</a> (<a class="el" href="group__objects.html#ga4a70d4a51cfa38485adf65620e5a0ec9">ps_context</a> *ctx, const <a class="el" href="group__objects.html#ga6acefae8e0866450753775eb9424dea7">ps_rect</a> *rect)</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">The fast wap to Clipping specified rectangle, the clip rect can not be rotated by world matrix.  <a href="#gaef7925bbc400819ef043b681404c4fef"></a><br/></td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">The fast way to clipping specified rectangle, the clip rect can not be rotated by world matrix.  <a href="#gaef7925bbc400819ef043b681404c4fef"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">PEXPORT void PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__clip.html#gacfe347f9cecab66847e0319cd9d9b50f">ps_clip_rects</a> (<a class="el" href="group__objects.html#ga4a70d4a51cfa38485adf65620e5a0ec9">ps_context</a> *ctx, const <a class="el" href="group__objects.html#ga6acefae8e0866450753775eb9424dea7">ps_rect</a> *rects, unsigned int num_rects)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Clipping specified area defined by an array of rectangles.  <a href="#gacfe347f9cecab66847e0319cd9d9b50f"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">PEXPORT void PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__clip.html#gab2d284432435b712e1f2327b6d66a080">ps_reset_clip</a> (<a class="el" href="group__objects.html#ga4a70d4a51cfa38485adf65620e5a0ec9">ps_context</a> *ctx)</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear the cliping area from the context.  <a href="#gab2d284432435b712e1f2327b6d66a080"></a><br/></td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear the clipping area from the context.  <a href="#gab2d284432435b712e1f2327b6d66a080"></a><br/></td></tr>
 </table>
 <hr/><h2>Function Documentation</h2>
 <a class="anchor" id="ga79550990154227f8377971b1a07f7efc"></a><!-- doxytag: member="picasso.h::ps_clip" ref="ga79550990154227f8377971b1a07f7efc" args="(ps_context *ctx)" -->
@@ -92,7 +92,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="see"><dt><b>See also:</b></dt><dd><a class="el" href="group__clip.html#ga570281d1fa52523e9dc4803db1c4fa85" title="Clipping specified path, using the given fill rule.">ps_clip_path</a>, <a class="el" href="group__clip.html#ga5a2b68ffc66c43b4036779644cd394ab" title="Clipping specified rectangle.">ps_clip_rect</a>, <a class="el" href="group__clip.html#gacfe347f9cecab66847e0319cd9d9b50f" title="Clipping specified area defined by an array of rectangles.">ps_clip_rects</a>, <a class="el" href="group__clip.html#gab2d284432435b712e1f2327b6d66a080" title="Clear the cliping area from the context.">ps_reset_clip</a> </dd></dl>
+<dl class="see"><dt><b>See also:</b></dt><dd><a class="el" href="group__clip.html#ga570281d1fa52523e9dc4803db1c4fa85" title="Clipping specified path, using the given fill rule.">ps_clip_path</a>, <a class="el" href="group__clip.html#ga5a2b68ffc66c43b4036779644cd394ab" title="Clipping specified rectangle.">ps_clip_rect</a>, <a class="el" href="group__clip.html#gacfe347f9cecab66847e0319cd9d9b50f" title="Clipping specified area defined by an array of rectangles.">ps_clip_rects</a>, <a class="el" href="group__clip.html#gab2d284432435b712e1f2327b6d66a080" title="Clear the clipping area from the context.">ps_reset_clip</a> </dd></dl>
 
 </div>
 </div>
@@ -121,7 +121,7 @@ Functions</h2></td></tr>
 </div>
 <div class="memdoc">
 
-<p>The fast wap to Clipping specified rectangle, the clip rect can not be rotated by world matrix. </p>
+<p>The fast way to clipping specified rectangle, the clip rect can not be rotated by world matrix. </p>
 <dl class="params"><dt><b>Parameters:</b></dt><dd>
   <table class="params">
     <tr><td class="paramname">ctx</td><td>Pointer to an existing context object. </td></tr>
@@ -129,7 +129,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="see"><dt><b>See also:</b></dt><dd><a class="el" href="group__clip.html#ga79550990154227f8377971b1a07f7efc" title="Clipping the current path, using the current fill rule. After called, the current path will be cleare...">ps_clip</a>, <a class="el" href="group__clip.html#ga570281d1fa52523e9dc4803db1c4fa85" title="Clipping specified path, using the given fill rule.">ps_clip_path</a>, <a class="el" href="group__clip.html#gacfe347f9cecab66847e0319cd9d9b50f" title="Clipping specified area defined by an array of rectangles.">ps_clip_rects</a>, <a class="el" href="group__clip.html#gab2d284432435b712e1f2327b6d66a080" title="Clear the cliping area from the context.">ps_reset_clip</a>, <a class="el" href="group__clip.html#ga5a2b68ffc66c43b4036779644cd394ab" title="Clipping specified rectangle.">ps_clip_rect</a> </dd></dl>
+<dl class="see"><dt><b>See also:</b></dt><dd><a class="el" href="group__clip.html#ga79550990154227f8377971b1a07f7efc" title="Clipping the current path, using the current fill rule. After called, the current path will be cleare...">ps_clip</a>, <a class="el" href="group__clip.html#ga570281d1fa52523e9dc4803db1c4fa85" title="Clipping specified path, using the given fill rule.">ps_clip_path</a>, <a class="el" href="group__clip.html#gacfe347f9cecab66847e0319cd9d9b50f" title="Clipping specified area defined by an array of rectangles.">ps_clip_rects</a>, <a class="el" href="group__clip.html#gab2d284432435b712e1f2327b6d66a080" title="Clear the clipping area from the context.">ps_reset_clip</a>, <a class="el" href="group__clip.html#ga5a2b68ffc66c43b4036779644cd394ab" title="Clipping specified rectangle.">ps_clip_rect</a> </dd></dl>
 
 </div>
 </div>
@@ -173,7 +173,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="see"><dt><b>See also:</b></dt><dd><a class="el" href="group__clip.html#ga79550990154227f8377971b1a07f7efc" title="Clipping the current path, using the current fill rule. After called, the current path will be cleare...">ps_clip</a>, <a class="el" href="group__clip.html#ga5a2b68ffc66c43b4036779644cd394ab" title="Clipping specified rectangle.">ps_clip_rect</a>, <a class="el" href="group__clip.html#gacfe347f9cecab66847e0319cd9d9b50f" title="Clipping specified area defined by an array of rectangles.">ps_clip_rects</a>, <a class="el" href="group__clip.html#gab2d284432435b712e1f2327b6d66a080" title="Clear the cliping area from the context.">ps_reset_clip</a> </dd></dl>
+<dl class="see"><dt><b>See also:</b></dt><dd><a class="el" href="group__clip.html#ga79550990154227f8377971b1a07f7efc" title="Clipping the current path, using the current fill rule. After called, the current path will be cleare...">ps_clip</a>, <a class="el" href="group__clip.html#ga5a2b68ffc66c43b4036779644cd394ab" title="Clipping specified rectangle.">ps_clip_rect</a>, <a class="el" href="group__clip.html#gacfe347f9cecab66847e0319cd9d9b50f" title="Clipping specified area defined by an array of rectangles.">ps_clip_rects</a>, <a class="el" href="group__clip.html#gab2d284432435b712e1f2327b6d66a080" title="Clear the clipping area from the context.">ps_reset_clip</a> </dd></dl>
 
 </div>
 </div>
@@ -210,7 +210,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="see"><dt><b>See also:</b></dt><dd><a class="el" href="group__clip.html#ga79550990154227f8377971b1a07f7efc" title="Clipping the current path, using the current fill rule. After called, the current path will be cleare...">ps_clip</a>, <a class="el" href="group__clip.html#ga570281d1fa52523e9dc4803db1c4fa85" title="Clipping specified path, using the given fill rule.">ps_clip_path</a>, <a class="el" href="group__clip.html#gacfe347f9cecab66847e0319cd9d9b50f" title="Clipping specified area defined by an array of rectangles.">ps_clip_rects</a>, <a class="el" href="group__clip.html#gab2d284432435b712e1f2327b6d66a080" title="Clear the cliping area from the context.">ps_reset_clip</a>, <a class="el" href="group__clip.html#gaef7925bbc400819ef043b681404c4fef" title="The fast wap to Clipping specified rectangle, the clip rect can not be rotated by world matrix...">ps_clip_device_rect</a> </dd></dl>
+<dl class="see"><dt><b>See also:</b></dt><dd><a class="el" href="group__clip.html#ga79550990154227f8377971b1a07f7efc" title="Clipping the current path, using the current fill rule. After called, the current path will be cleare...">ps_clip</a>, <a class="el" href="group__clip.html#ga570281d1fa52523e9dc4803db1c4fa85" title="Clipping specified path, using the given fill rule.">ps_clip_path</a>, <a class="el" href="group__clip.html#gacfe347f9cecab66847e0319cd9d9b50f" title="Clipping specified area defined by an array of rectangles.">ps_clip_rects</a>, <a class="el" href="group__clip.html#gab2d284432435b712e1f2327b6d66a080" title="Clear the clipping area from the context.">ps_reset_clip</a>, <a class="el" href="group__clip.html#gaef7925bbc400819ef043b681404c4fef" title="The fast way to clipping specified rectangle, the clip rect can not be rotated by world matrix...">ps_clip_device_rect</a> </dd></dl>
 
 </div>
 </div>
@@ -254,7 +254,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="see"><dt><b>See also:</b></dt><dd><a class="el" href="group__clip.html#ga79550990154227f8377971b1a07f7efc" title="Clipping the current path, using the current fill rule. After called, the current path will be cleare...">ps_clip</a>, <a class="el" href="group__clip.html#ga570281d1fa52523e9dc4803db1c4fa85" title="Clipping specified path, using the given fill rule.">ps_clip_path</a>, <a class="el" href="group__clip.html#ga5a2b68ffc66c43b4036779644cd394ab" title="Clipping specified rectangle.">ps_clip_rect</a>, <a class="el" href="group__clip.html#gab2d284432435b712e1f2327b6d66a080" title="Clear the cliping area from the context.">ps_reset_clip</a> </dd></dl>
+<dl class="see"><dt><b>See also:</b></dt><dd><a class="el" href="group__clip.html#ga79550990154227f8377971b1a07f7efc" title="Clipping the current path, using the current fill rule. After called, the current path will be cleare...">ps_clip</a>, <a class="el" href="group__clip.html#ga570281d1fa52523e9dc4803db1c4fa85" title="Clipping specified path, using the given fill rule.">ps_clip_path</a>, <a class="el" href="group__clip.html#ga5a2b68ffc66c43b4036779644cd394ab" title="Clipping specified rectangle.">ps_clip_rect</a>, <a class="el" href="group__clip.html#gab2d284432435b712e1f2327b6d66a080" title="Clear the clipping area from the context.">ps_reset_clip</a> </dd></dl>
 
 </div>
 </div>
@@ -273,7 +273,7 @@ Functions</h2></td></tr>
 </div>
 <div class="memdoc">
 
-<p>Clear the cliping area from the context. </p>
+<p>Clear the clipping area from the context. </p>
 <dl class="params"><dt><b>Parameters:</b></dt><dd>
   <table class="params">
     <tr><td class="paramname">ctx</td><td>Pointer to an existing context object.</td></tr>
@@ -288,7 +288,7 @@ Functions</h2></td></tr>
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Aug 21 2015 15:33:20 for Picasso API by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Feb 16 2016 10:48:13 for Picasso API by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>
