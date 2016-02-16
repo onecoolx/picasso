@@ -162,6 +162,19 @@ static void engine_handle_cmd(struct android_app* app, int32_t cmd)
 
 }
 
+static int __argc = 0;
+static const char** __argv = NULL;
+
+int argc(void)
+{
+    return __argc;
+}
+
+const char** argv(void)
+{
+    return __argv;
+}
+
 /**
  * This is the main entry point of a native application that is using
  * android_native_app_glue.  It runs in its own thread, with its own
