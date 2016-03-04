@@ -89,7 +89,11 @@ static int read_png_info(const ps_byte* data, size_t len, psx_image_header* head
     if (color_type == PNG_COLOR_TYPE_PALETTE)
       png_set_palette_to_rgb(ctx->png_ptr);
     if (color_type == PNG_COLOR_TYPE_GRAY && bit_depth < 8)
+#if PNG_LIBPNG_VER >= 10209
       png_set_expand_gray_1_2_4_to_8(ctx->png_ptr);
+#else
+      png_set_gray_1_2_4_to_8(ctx->png_ptr);
+#endif
     if (png_get_valid(ctx->png_ptr, ctx->info_ptr,PNG_INFO_tRNS))
       png_set_tRNS_to_alpha(ctx->png_ptr);
     if (bit_depth == 16)
