@@ -600,6 +600,25 @@ void PICAPI ps_path_add_rounded_rect(ps_path*path, const ps_rect* r, float ltx, 
     global_status = STATUS_SUCCEED;
 }
 
+void PICAPI ps_path_add_sub_path(ps_path* path, const ps_path* p)
+{
+    if (!picasso::is_valid_system_device()) {
+        global_status = STATUS_DEVICE_ERROR;
+        return;
+    }
+
+    if (!path || !p) {
+        global_status = STATUS_INVALID_ARGUMENT;
+        return;
+    }
+
+    if (picasso::_is_closed_path(path->path))
+        path->path.concat_path(const_cast<ps_path*>(p)->path, 0);
+    else
+        path->path.join_path(const_cast<ps_path*>(p)->path, 0);
+
+    global_status = STATUS_SUCCEED;
+}
 
 void PICAPI ps_path_clipping(ps_path* r, ps_path_operation op, const ps_path* a, const ps_path* b)
 {

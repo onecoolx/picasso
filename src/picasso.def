@@ -152,7 +152,9 @@ EXPORTS
     ps_matrix_transform_path
     ps_new_path
     ps_new_sub_path
+    ps_add_sub_path
     ps_set_path
+    ps_get_path
     ps_close_path
     ps_move_to
     ps_line_to
@@ -187,5 +189,6 @@ EXPORTS
     ps_path_add_rect
     ps_path_add_ellipse
     ps_path_add_rounded_rect
+    ps_path_add_sub_path
     ps_path_clipping
 

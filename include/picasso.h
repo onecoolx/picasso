@@ -2841,7 +2841,7 @@ PEXPORT void PICAPI ps_matrix_transform_path(const ps_matrix* matrix, ps_path* p
  *
  * \param ctx  Pointer to an existing context object.
  *
- * \sa ps_new_sub_path, ps_set_path, ps_close_path
+ * \sa ps_new_sub_path, ps_set_path, ps_get_path, ps_close_path, ps_add_sub_path
  */
 PEXPORT void PICAPI ps_new_path(ps_context* ctx);
 
@@ -2851,9 +2851,20 @@ PEXPORT void PICAPI ps_new_path(ps_context* ctx);
  *
  * \param ctx  Pointer to an existing context object.
  *
- * \sa ps_new_path, ps_set_path, ps_close_path
+ * \sa ps_new_path, ps_set_path, ps_get_path, ps_close_path, ps_add_sub_path
  */
 PEXPORT void PICAPI ps_new_sub_path(ps_context* ctx);
+
+/**
+ * \fn void ps_add_sub_path(ps_context* ctx, const ps_path* path)
+ * \brief Add a new sub path to current path in the graphic context.
+ *
+ * \param ctx  Pointer to an existing context object.
+ * \param path The path will be add to graphic context.
+ *
+ * \sa ps_new_path, ps_new_sub_path, ps_set_path, ps_get_path, ps_close_path
+ */
+PEXPORT void PICAPI ps_add_sub_path(ps_context* ctx, const ps_path* path);
 
 /**
  * \fn void ps_set_path(ps_context* ctx, const ps_path* path)
@@ -2862,9 +2873,22 @@ PEXPORT void PICAPI ps_new_sub_path(ps_context* ctx);
  * \param ctx   Pointer to an existing context object.
  * \param path  The path will be set to graphic context.
  *
- * \sa ps_new_path, ps_new_sub_path, ps_close_path
+ * \sa ps_new_path, ps_new_sub_path, ps_get_path, ps_close_path, ps_add_sub_path
  */
 PEXPORT void PICAPI ps_set_path(ps_context* ctx, const ps_path* path);
+
+/**
+ * \fn ps_bool ps_get_path(ps_context* ctx, ps_path* path)
+ * \brief Get the current path in the graphic context.
+ *
+ * \param ctx   Pointer to an existing context object.
+ * \param path  Pointer to a object to receiving the path.
+ *
+ * \return  True if is success, otherwise False.
+ *
+ * \sa ps_new_path, ps_new_sub_path, ps_close_path, ps_set_path, ps_add_sub_path
+ */
+PEXPORT ps_bool PICAPI ps_get_path(ps_context* ctx, ps_path* path);
 
 /**
  * \fn void ps_close_path(ps_context* ctx)
@@ -2872,7 +2896,7 @@ PEXPORT void PICAPI ps_set_path(ps_context* ctx, const ps_path* path);
  *
  * \param ctx  Pointer to an existing context object.
  *
- * \sa ps_new_path, ps_new_sub_path, ps_set_path
+ * \sa ps_new_path, ps_new_sub_path, ps_set_path, ps_get_path, ps_add_sub_path
  */
 PEXPORT void PICAPI ps_close_path(ps_context* ctx);
 
@@ -3315,7 +3339,7 @@ PEXPORT ps_bool PICAPI ps_path_stroke_contains(const ps_path* path,
  * \param p1    The start point for the line.
  * \param p2    The end point for the line.
  *
- * \sa ps_path_add_arc, ps_path_add_rect, ps_path_add_ellipse, ps_path_add_rounded_rect
+ * \sa ps_path_add_arc, ps_path_add_rect, ps_path_add_ellipse, ps_path_add_rounded_rect, ps_path_add_sub_path
  */
 PEXPORT void PICAPI ps_path_add_line(ps_path* path, const ps_point* p1, const ps_point* p2);
 
@@ -3331,7 +3355,7 @@ PEXPORT void PICAPI ps_path_add_line(ps_path* path, const ps_point* p1, const ps
  * \param eangle    The end angle, in radians.
  * \param clockwise True is clockwise, False is counter clockwise.
  *
- * \sa ps_path_add_line, ps_path_add_rect, ps_path_add_ellipse, ps_path_add_rounded_rect
+ * \sa ps_path_add_line, ps_path_add_rect, ps_path_add_ellipse, ps_path_add_rounded_rect, ps_path_add_sub_path
  */
 PEXPORT void PICAPI ps_path_add_arc(ps_path* path, const ps_point* cp, float radius,
                                             float sangle, float eangle, ps_bool clockwise);
@@ -3343,7 +3367,7 @@ PEXPORT void PICAPI ps_path_add_arc(ps_path* path, const ps_point* cp, float rad
  * \param path  Pointer to an existing path object.
  * \param rect  The rectangle to be added.
  *
- * \sa ps_path_add_arc, ps_path_add_line, ps_path_add_ellipse, ps_path_add_rounded_rect
+ * \sa ps_path_add_arc, ps_path_add_line, ps_path_add_ellipse, ps_path_add_rounded_rect, ps_path_add_sub_path
  */
 PEXPORT void PICAPI ps_path_add_rect(ps_path* path, const ps_rect* rect);
 
@@ -3354,7 +3378,7 @@ PEXPORT void PICAPI ps_path_add_rect(ps_path* path, const ps_rect* rect);
  * \param path  Pointer to an existing path object.
  * \param rect  The rectangle to enclose the ellipse.
  *
- * \sa ps_path_add_arc, ps_path_add_line, ps_path_add_rect, ps_path_add_rounded_rect
+ * \sa ps_path_add_arc, ps_path_add_line, ps_path_add_rect, ps_path_add_rounded_rect, ps_path_add_sub_path
  */
 PEXPORT void PICAPI ps_path_add_ellipse(ps_path* path, const ps_rect* rect);
 
@@ -3374,10 +3398,22 @@ PEXPORT void PICAPI ps_path_add_ellipse(ps_path* path, const ps_rect* rect);
  * \param rbx   The right bottom horizontal radius.
  * \param rby   The right bottom vertical radius.
  *
- * \sa ps_path_add_arc, ps_path_add_line, ps_path_add_rect, ps_path_add_ellipse
+ * \sa ps_path_add_arc, ps_path_add_line, ps_path_add_rect, ps_path_add_ellipse, ps_path_add_sub_path
  */
 PEXPORT void PICAPI ps_path_add_rounded_rect(ps_path* path, const ps_rect* rect, float ltx,
                       float lty, float rtx, float rty, float lbx, float lby, float rbx, float rby);
+
+/**
+ * \fn void ps_path_add_sub_path(ps_path* path, const ps_path* spath)
+ * \brief Add an sub path to the path.
+ *
+ * \param path  Pointer to an existing path object.
+ * \param spath  The path will be added.
+ *
+ * \sa ps_path_add_arc, ps_path_add_line, ps_path_add_rect, ps_path_add_rounded_rect, ps_path_add_ellipse
+ */
+PEXPORT void PICAPI ps_path_add_sub_path(ps_path* path, const ps_path* spath);
+
 /**
  * \brief Path clipping operations.
  */

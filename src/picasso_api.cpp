@@ -771,6 +771,26 @@ void PICAPI ps_new_path(ps_context* ctx)
     global_status = STATUS_SUCCEED;
 }
 
+void PICAPI ps_add_sub_path(ps_context* ctx, const ps_path* path)
+{
+    if (!picasso::is_valid_system_device()) {
+        global_status = STATUS_DEVICE_ERROR;
+        return;
+    }
+
+    if (!ctx || !path) {
+        global_status = STATUS_INVALID_ARGUMENT;
+        return;
+    }
+
+    if (picasso::_is_closed_path(ctx->path))
+        ctx->path.concat_path(const_cast<ps_path*>(path)->path, 0);
+    else
+        ctx->path.join_path(const_cast<ps_path*>(path)->path, 0);
+
+    global_status = STATUS_SUCCEED;
+}
+
 void PICAPI ps_new_sub_path(ps_context* ctx)
 {
     if (!picasso::is_valid_system_device()) {
@@ -1016,6 +1036,23 @@ void PICAPI ps_set_path(ps_context* ctx, const ps_path* path)
 
     ctx->path = path->path;
     global_status = STATUS_SUCCEED;
+}
+
+ps_bool PICAPI ps_get_path(ps_context* ctx, ps_path* path)
+{
+    if (!picasso::is_valid_system_device()) {
+        global_status = STATUS_DEVICE_ERROR;
+        return False;
+    }
+
+    if (!ctx || !path) {
+        global_status = STATUS_INVALID_ARGUMENT;
+        return False;
+    }
+
+    path->path = ctx->path;
+    global_status = STATUS_SUCCEED;
+    return True;
 }
 
 // transform world
