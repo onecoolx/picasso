@@ -27,4 +27,5 @@
 
 2016-02-16: Version 2.2.0
     Update code version 2.2.0.
+    Support image encode and decode api at external modules. 
 
