@@ -62,6 +62,10 @@ EXPORTS
     ps_set_line_width
     ps_set_miter_limit
     ps_set_stroke_color
+    ps_set_stroke_image
+    ps_set_stroke_pattern
+    ps_set_stroke_gradient
+    ps_set_stroke_canvas
     ps_set_line_dash
     ps_reset_line_dash
     ps_set_shadow

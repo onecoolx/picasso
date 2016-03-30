@@ -74,6 +74,7 @@ public:
 
     gfx_painter()
         : m_fill_type(type_solid)
+        , m_stroke_type(type_solid)
         , m_draw_shadow(false)
         , m_shadow_area(0,0,0,0)
         , m_shadow_buffer(0)
@@ -88,6 +89,11 @@ public:
     virtual void set_alpha(scalar a);
     virtual void set_composite(comp_op op);
     virtual void set_stroke_color(const rgba& c);
+    virtual void set_stroke_image(const abstract_rendering_buffer* img, pix_fmt format, int filter, const rect_s& rc);
+    virtual void set_stroke_canvas(const abstract_rendering_buffer* img, pix_fmt format, int filter, const rect_s& rc);
+    virtual void set_stroke_pattern(const abstract_rendering_buffer* img, pix_fmt format, int filter, const rect_s& rc,
+                                    int xtype, int ytype, const abstract_trans_affine* mtx);
+    virtual void set_stroke_gradient(const abstract_gradient_adapter* g);
     virtual void set_fill_color(const rgba& c);
     virtual void set_fill_image(const abstract_rendering_buffer* img, pix_fmt format, int filter, const rect_s& rc);
     virtual void set_fill_canvas(const abstract_rendering_buffer* img, pix_fmt format, int filter, const rect_s& rc);
@@ -150,8 +156,45 @@ private:
         }
     }
 
+    void apply_stroke_source(abstract_raster_adapter* raster, pix_fmt src_fmt)
+    {
+        switch (src_fmt) {
+            case pix_fmt_rgba:
+                apply_stroke_impl<pixfmt_rgba32>(raster);
+                break;
+            case pix_fmt_argb:
+                apply_stroke_impl<pixfmt_argb32>(raster);
+                break;
+            case pix_fmt_abgr:
+                apply_stroke_impl<pixfmt_abgr32>(raster);
+                break;
+            case pix_fmt_bgra:
+                apply_stroke_impl<pixfmt_bgra32>(raster);
+                break;
+            case pix_fmt_rgb:
+                apply_stroke_impl<pixfmt_rgb24>(raster);
+                break;
+            case pix_fmt_bgr:
+                apply_stroke_impl<pixfmt_bgr24>(raster);
+                break;
+            case pix_fmt_rgb565:
+                apply_stroke_impl<pixfmt_rgb565>(raster);
+                break;
+            case pix_fmt_rgb555:
+                apply_stroke_impl<pixfmt_rgb555>(raster);
+                break;
+            case pix_fmt_unknown:
+            default:
+                // do nothing
+                break;
+        }
+    }
+
     template <typename Pixfmt2>
     void apply_fill_impl(abstract_raster_adapter* raster);
+
+    template <typename Pixfmt2>
+    void apply_stroke_impl(abstract_raster_adapter* raster);
 
     template <typename PixfmtWrapper>
     pattern_wrapper<PixfmtWrapper>* pattern_wrap(int xtype, int ytype, PixfmtWrapper& fmt)
@@ -175,8 +218,14 @@ private:
     pattern_holder     m_pattern_source;
     gradient_holder    m_gradient_source;
     //stroke
-    rgba               m_stroke_color; //FIXME: need stroke type feature.
-    rgba               m_font_fill_color; //FIXME: need stroke type feature.
+    source_type        m_stroke_type;
+    rgba               m_stroke_color;
+    image_holder       m_image_stroke;
+    pattern_holder     m_pattern_stroke;
+    gradient_holder    m_gradient_stroke;
+    //text
+    rgba               m_font_fill_color;
+    //target
     pixfmt             m_fmt;
     renderer_base_type m_rb;
     //shadow
@@ -231,7 +280,56 @@ inline void gfx_painter<Pixfmt>::set_font_fill_color(const rgba& c)
 template <typename Pixfmt>
 inline void gfx_painter<Pixfmt>::set_stroke_color(const rgba& c)
 {
+    m_stroke_type = type_solid;
     m_stroke_color = c;
+}
+
+template <typename Pixfmt>
+inline void gfx_painter<Pixfmt>::set_stroke_image(const abstract_rendering_buffer* img, pix_fmt format, int filter, const rect_s& rc)
+{
+    m_stroke_type = type_image;
+    m_image_stroke.buffer = const_cast<abstract_rendering_buffer*>(img);
+    m_image_stroke.filter = filter;
+    m_image_stroke.rect = rc;
+    m_image_stroke.format = format;
+    m_image_stroke.key = rgba8(img->get_color_channel());
+    m_image_stroke.transparent = img->is_transparent();
+    m_image_stroke.colorkey = img->has_color_channel();
+}
+
+template <typename Pixfmt>
+inline void gfx_painter<Pixfmt>::set_stroke_canvas(const abstract_rendering_buffer* img, pix_fmt format, int filter, const rect_s& rc)
+{
+    m_stroke_type = type_canvas;
+    m_image_stroke.buffer = const_cast<abstract_rendering_buffer*>(img);
+    m_image_stroke.filter = filter;
+    m_image_stroke.rect = rc;
+    m_image_stroke.format = format;
+    m_image_stroke.key = rgba8(0,0,0,0);
+    m_image_stroke.transparent = true; // canvas default transpaent.
+    m_image_stroke.colorkey = false;
+}
+
+template <typename Pixfmt>
+inline void gfx_painter<Pixfmt>::set_stroke_pattern(const abstract_rendering_buffer* img, pix_fmt format, int filter, const rect_s& rc,
+                                        int xtype, int ytype, const abstract_trans_affine* mtx)
+{
+    m_stroke_type = type_pattern;
+    m_pattern_stroke.buffer = const_cast<abstract_rendering_buffer*>(img);
+    m_pattern_stroke.filter = filter;
+    m_pattern_stroke.rect = rc;
+    m_pattern_stroke.format = format;
+    m_pattern_stroke.xtype = xtype;
+    m_pattern_stroke.ytype = ytype;
+    m_pattern_stroke.matrix = const_cast<abstract_trans_affine*>(mtx);
+    m_pattern_stroke.transparent = img->is_transparent();
+}
+
+template <typename Pixfmt>
+inline void gfx_painter<Pixfmt>::set_stroke_gradient(const abstract_gradient_adapter* g)
+{
+    m_stroke_type = type_gradient;
+    m_gradient_stroke.gradient = const_cast<abstract_gradient_adapter*>(g);
 }
 
 template <typename Pixfmt>
@@ -286,9 +384,45 @@ template <typename Pixfmt>
 inline void gfx_painter<Pixfmt>::apply_stroke(abstract_raster_adapter* raster)
 {
     if (raster) {
-        renderer_solid_type ren(m_rb);
-        ren.color(m_stroke_color);
-        gfx_render_scanlines(static_cast<gfx_raster_adapter*>(raster)->stroke_impl(), m_scanline_p, ren);
+        switch (m_stroke_type) {
+        case type_canvas:
+            apply_stroke_source(raster, m_image_stroke.format);
+            break;
+        case type_image:
+            apply_stroke_source(raster, m_image_stroke.format);
+            break;
+        case type_pattern:
+            apply_stroke_source(raster, m_pattern_stroke.format);
+            break;
+        case type_gradient:
+            {
+                gfx_gradient_adapter* gradient = static_cast<gfx_gradient_adapter*>(m_gradient_stroke.gradient);
+                gradient->build();
+
+                gfx_trans_affine mtx;
+                mtx = gradient->matrix();
+                mtx *= stable_matrix(static_cast<gfx_raster_adapter*>(raster)->transformation());
+                mtx.invert();
+
+                gfx_span_interpolator_linear inter(mtx);
+
+                gfx_gradient_wrapper* pwr = gradient->wrapper();
+                scalar len = gradient->length();
+                scalar st = gradient->start();
+
+                gfx_span_gradient<color_type> sg(inter, *pwr, gradient->colors(), st, len);
+                gfx_render_scanlines_aa(static_cast<gfx_raster_adapter*>(raster)->stroke_impl(),
+                                        m_scanline_u, m_rb, m_spans, sg);
+            }
+            break;
+        case type_solid: // solid stroke default.
+        default:
+            {
+                renderer_solid_type ren(m_rb);
+                ren.color(m_stroke_color);
+                gfx_render_scanlines(static_cast<gfx_raster_adapter*>(raster)->stroke_impl(), m_scanline_p, ren);
+            }
+        }
     }
 }
 
@@ -329,6 +463,157 @@ inline void gfx_painter<Pixfmt>::apply_text_fill(abstract_raster_adapter* raster
                 }
                 break;
         }
+    }
+}
+
+template <typename Pixfmt> template <typename Pixfmt2>
+inline void gfx_painter<Pixfmt>::apply_stroke_impl(abstract_raster_adapter* raster)
+{
+    typedef gfx_pixfmt_wrapper<Pixfmt2, mask_type> pixfmt2;
+
+    switch (m_stroke_type) {
+        case type_canvas:
+            {
+                pixfmt2 canvas_fmt(*static_cast<gfx_rendering_buffer*>(m_image_stroke.buffer));
+
+                rect_s dr = m_image_stroke.rect;
+                gfx_trans_affine mtx;
+                mtx *= gfx_trans_affine_translation(sround(dr.x()), sround(dr.y()));
+                mtx *= stable_matrix(static_cast<gfx_raster_adapter*>(raster)->transformation());
+                mtx.invert();
+
+                gfx_span_interpolator_linear interpolator(mtx);
+
+                typename painter_raster<Pixfmt2>::source_type img_src(canvas_fmt);
+
+                if (m_image_stroke.filter) {
+                    image_filter_adapter* filter = create_image_filter(m_image_stroke.filter);
+
+                    typename painter_raster<Pixfmt2>::span_canvas_filter_type
+                        sg(img_src, interpolator, *(filter));
+                    gfx_render_scanlines_aa(static_cast<gfx_raster_adapter*>(raster)->stroke_impl(),
+                                            m_scanline_u, m_rb, m_spans, sg);
+
+                    if (filter) delete filter;
+                } else {
+                    typename painter_raster<Pixfmt2>::span_canvas_filter_type_nn
+                        sg(img_src, interpolator);
+                    gfx_render_scanlines_aa(static_cast<gfx_raster_adapter*>(raster)->stroke_impl(),
+                                            m_scanline_u, m_rb, m_spans, sg);
+                }
+            }
+            break;
+        case type_image:
+            {
+                pixfmt2 img_fmt(*static_cast<gfx_rendering_buffer*>(m_image_stroke.buffer));
+
+                if (m_image_stroke.colorkey)
+                    m_fmt.set_transparent_color(&m_image_stroke.key);
+
+                rect_s dr = m_image_stroke.rect;
+                bool transparent = m_image_stroke.transparent;
+
+                scalar xs = (scalar)dr.width() / m_image_stroke.buffer->width();
+                scalar ys = (scalar)dr.height() / m_image_stroke.buffer->height();
+
+                gfx_trans_affine mtx;
+                mtx *= gfx_trans_affine_scaling(xs, ys);
+                mtx *= gfx_trans_affine_translation(sround(dr.x()), sround(dr.y()));
+                mtx *= stable_matrix(static_cast<gfx_raster_adapter*>(raster)->transformation());
+                mtx.invert();
+
+                gfx_span_interpolator_linear interpolator(mtx);
+
+                typename painter_raster<Pixfmt2>::source_type img_src(img_fmt);
+
+                if (m_image_stroke.filter) {
+                    image_filter_adapter* filter = create_image_filter(m_image_stroke.filter);
+
+                    if (transparent) {
+                        typename painter_raster<Pixfmt2>::span_canvas_filter_type
+                                                sg(img_src, interpolator, *(filter));
+                        gfx_render_scanlines_aa(static_cast<gfx_raster_adapter*>(raster)->stroke_impl(),
+                                                m_scanline_u, m_rb, m_spans, sg);
+                    } else {
+                        typename painter_raster<Pixfmt2>::span_image_filter_type
+                                                sg(img_src, interpolator, *(filter));
+                        gfx_render_scanlines_aa(static_cast<gfx_raster_adapter*>(raster)->stroke_impl(),
+                                                m_scanline_u, m_rb, m_spans, sg);
+                    }
+
+                    if (filter) delete filter;
+                } else {
+                    if (transparent) {
+                        typename painter_raster<Pixfmt2>::span_canvas_filter_type_nn
+                                                sg(img_src, interpolator);
+                        gfx_render_scanlines_aa(static_cast<gfx_raster_adapter*>(raster)->stroke_impl(),
+                                                m_scanline_u, m_rb, m_spans, sg);
+                    } else {
+                        typename painter_raster<Pixfmt2>::span_image_filter_type_nn
+                                                sg(img_src, interpolator);
+                        gfx_render_scanlines_aa(static_cast<gfx_raster_adapter*>(raster)->stroke_impl(),
+                                                m_scanline_u, m_rb, m_spans, sg);
+                    }
+                }
+
+                m_fmt.clear_key();
+            }
+            break;
+        case type_pattern:
+            {
+                pixfmt2 pattern_fmt(*static_cast<gfx_rendering_buffer*>(m_pattern_stroke.buffer));
+
+                rect_s dr = m_pattern_stroke.rect;
+                bool transparent = m_pattern_stroke.transparent;
+                gfx_trans_affine mtx;
+                mtx = *static_cast<gfx_trans_affine*>(m_pattern_stroke.matrix);
+                mtx *= gfx_trans_affine_translation(sround(dr.x()), sround(dr.y()));
+                mtx *= stable_matrix(static_cast<gfx_raster_adapter*>(raster)->transformation());
+                mtx.invert();
+
+                gfx_span_interpolator_linear interpolator(mtx);
+
+                pattern_wrapper<pixfmt2>* pattern =
+                            pattern_wrap(m_pattern_stroke.xtype, m_pattern_stroke.ytype, pattern_fmt);
+
+                if (m_pattern_stroke.filter) {
+                    image_filter_adapter* filter = create_image_filter(m_pattern_stroke.filter);
+
+                    if (transparent) {
+                        typename painter_raster<Pixfmt2>::span_canvas_pattern_type
+                                                sg(*pattern, interpolator, *(filter));
+                        gfx_render_scanlines_aa(static_cast<gfx_raster_adapter*>(raster)->stroke_impl(),
+                                                m_scanline_u, m_rb, m_spans, sg);
+                    } else {
+                        typename painter_raster<Pixfmt2>::span_image_pattern_type
+                                                sg(*pattern, interpolator, *(filter));
+                        gfx_render_scanlines_aa(static_cast<gfx_raster_adapter*>(raster)->stroke_impl(),
+                                                m_scanline_u, m_rb, m_spans, sg);
+                    }
+
+                    if (filter) delete filter;
+                } else {
+                    if (transparent) {
+                        typename painter_raster<Pixfmt2>::span_canvas_pattern_type_nn
+                                                sg(*pattern, interpolator);
+                        gfx_render_scanlines_aa(static_cast<gfx_raster_adapter*>(raster)->stroke_impl(),
+                                                m_scanline_u, m_rb, m_spans, sg);
+                    } else {
+                        typename painter_raster<Pixfmt2>::span_image_pattern_type_nn
+                                                sg(*pattern, interpolator);
+                        gfx_render_scanlines_aa(static_cast<gfx_raster_adapter*>(raster)->stroke_impl(),
+                                                m_scanline_u, m_rb, m_spans, sg);
+                    }
+                }
+
+                delete pattern;
+            }
+            break;
+        case type_gradient:
+        case type_solid:
+        default:
+            // impossible here.
+            break;
     }
 }
 

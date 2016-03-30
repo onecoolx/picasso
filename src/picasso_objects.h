@@ -25,8 +25,11 @@ namespace picasso {
 
 // pen object
 enum {
-    pen_style_solid  = 0,
-    pen_style_dash   = 1,
+    pen_style_solid    = 0,
+    pen_style_image    = 1,
+    pen_style_pattern  = 2,
+    pen_style_gradient = 3,
+    pen_style_canvas   = 4,
 };
 
 struct graphic_pen
@@ -39,6 +42,8 @@ struct graphic_pen
         , join(miter_join)
         , inner(inner_miter)
         , color(0,0,0)
+        , data(0)
+        , is_dash(false)
         , dashes(0)
         , ndashes(0)
         , dstart(0)
@@ -53,23 +58,35 @@ struct graphic_pen
         , join(o.join)
         , inner(o.inner)
         , color(o.color)
+        , data(0)
+        , is_dash(o.is_dash)
         , dashes(0)
         , ndashes(0)
         , dstart(0)
     {
-        if (style == pen_style_dash) {
+        if (style == pen_style_image)
+            data = static_cast<void*>(ps_image_ref(static_cast<ps_image*>(o.data)));
+        else if (style == pen_style_pattern)
+            data = static_cast<void*>(ps_pattern_ref(static_cast<ps_pattern*>(o.data)));
+        else if (style == pen_style_gradient)
+            data = static_cast<void*>(ps_gradient_ref(static_cast<ps_gradient*>(o.data)));
+        else if (style == pen_style_canvas)
+            data = static_cast<void*>(ps_canvas_ref(static_cast<ps_canvas*>(o.data)));
+
+        // set dashes
+        if (is_dash) {
             ndashes = o.ndashes;
             dstart = o.dstart;
             dashes = new scalar[ndashes];
             if (dashes) {
-                for (unsigned int i=0; i<ndashes; i++)
+                for (unsigned int i = 0; i < ndashes; i++)
                     dashes[i] = o.dashes[i];
             } else {
                 //memory alloc error, ignore this dash
                 //I think it is never happen.
                 ndashes = 0;
                 dstart = 0;
-                style = pen_style_solid;
+                is_dash = false;
             }
         }
 
@@ -81,6 +98,7 @@ struct graphic_pen
             return *this;
 
         clear_dash();
+        clear(); // free old data
 
         style = o.style;
         width = o.width;
@@ -89,20 +107,31 @@ struct graphic_pen
         join = o.join;
         inner = o.inner;
         color = o.color;
+        is_dash = o.is_dash;
 
-        if (style == pen_style_dash) {
+        if (style == pen_style_image)
+            data = static_cast<void*>(ps_image_ref(static_cast<ps_image*>(o.data)));
+        else if (style == pen_style_pattern)
+            data = static_cast<void*>(ps_pattern_ref(static_cast<ps_pattern*>(o.data)));
+        else if (style == pen_style_gradient)
+            data = static_cast<void*>(ps_gradient_ref(static_cast<ps_gradient*>(o.data)));
+        else if (style == pen_style_canvas)
+            data = static_cast<void*>(ps_canvas_ref(static_cast<ps_canvas*>(o.data)));
+
+        // set dashes
+        if (is_dash) {
             ndashes = o.ndashes;
             dstart = o.dstart;
             dashes = new scalar[ndashes];
             if (dashes) {
-                for (unsigned int i=0; i<ndashes; i++)
+                for (unsigned int i = 0; i < ndashes; i++)
                     dashes[i] = o.dashes[i];
             } else {
                 //memory alloc error, ignore this dash
                 //I think it is never happen.
                 ndashes = 0;
                 dstart = 0;
-                style = pen_style_solid;
+                is_dash = false;
             }
         }
 
@@ -111,6 +140,19 @@ struct graphic_pen
 
     ~graphic_pen()
     {
+        if (data) {
+            if (style == pen_style_image)
+                ps_image_unref(static_cast<ps_image*>(data));
+            else if (style == pen_style_pattern)
+                ps_pattern_unref(static_cast<ps_pattern*>(data));
+            else if (style == pen_style_gradient)
+                ps_gradient_unref(static_cast<ps_gradient*>(data));
+            else if (style == pen_style_canvas)
+                ps_canvas_unref(static_cast<ps_canvas*>(data));
+            //add more..
+            data = 0;
+        }
+
         if (dashes) {
             delete [] dashes;
             dashes = 0;
@@ -119,32 +161,73 @@ struct graphic_pen
 
     void set_dash(float start, const float* da, unsigned int ndash)
     {
-        style = pen_style_dash;
+        is_dash = true;
         dstart = FLT_TO_SCALAR(start);
         ndashes = (ndash+1)&~1;
         dashes = new scalar[ndashes];
         if (dashes) {
-            memset(dashes, 0, ndashes*sizeof(scalar));
-            for (unsigned int i=0; i<ndash; i++)
+            memset(dashes, 0, ndashes * sizeof(scalar));
+            for (unsigned int i = 0; i < ndash; i++)
                 dashes[i] = FLT_TO_SCALAR(da[i]);
         } else {
             //memory alloc error, ignore this dash
             //I think it is never happen.
             ndashes = 0;
             dstart = 0;
-            style = pen_style_solid;
+            is_dash = false;
         }
     }
 
     void clear_dash()
     {
-        style = pen_style_solid;
         dstart = 0;
         ndashes = 0;
+        is_dash = false;
         if (dashes) {
             delete [] dashes;
             dashes = 0;
         }
+    }
+
+    void clear()
+    {
+        if (data) {
+            if (style == pen_style_image)
+                ps_image_unref(static_cast<ps_image*>(data));
+            else if (style == pen_style_pattern)
+                ps_pattern_unref(static_cast<ps_pattern*>(data));
+            else if (style == pen_style_gradient)
+                ps_gradient_unref(static_cast<ps_gradient*>(data));
+            else if (style == pen_style_canvas)
+                ps_canvas_unref(static_cast<ps_canvas*>(data));
+            //add more..
+            data = 0;
+        }
+        style = pen_style_solid;
+    }
+
+    void set_image_pen(ps_image * p)
+    {
+        style = pen_style_image;
+        data = ps_image_ref(p);
+    }
+
+    void set_pattern_pen(ps_pattern * p)
+    {
+        style = pen_style_pattern;
+        data = ps_pattern_ref(p);
+    }
+
+    void set_gradient_pen(ps_gradient * p)
+    {
+        style = pen_style_gradient;
+        data = ps_gradient_ref(p);
+    }
+
+    void set_canvas_pen(ps_canvas * p)
+    {
+        style = pen_style_canvas;
+        data = ps_canvas_ref(p);
     }
 
     unsigned int style;
@@ -154,7 +237,9 @@ struct graphic_pen
     line_join join;
     inner_join inner;
     rgba color;
+    void* data;
     //dash
+    bool is_dash;
     scalar * dashes;
     unsigned int ndashes;
     scalar dstart;

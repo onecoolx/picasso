@@ -547,7 +547,8 @@ PEXPORT ps_canvas* PICAPI ps_canvas_create_from_image(ps_image* img, const ps_re
  * \return If the function succeeds, the return value is the pointer to a new canvas object.
  *         If the function fails, the return value is NULL.
  *
- * \note To get extended error information, call \a ps_last_status.
+ * \note The data's color format must be equal with target canvas, otherwish will
+ *       be failed and \a STATUS_MISMATCHING_FORMAT will be set.
  *
  * \sa ps_canvas_create_with_data
  */
@@ -638,10 +639,13 @@ PEXPORT void PICAPI ps_canvas_reset_mask(ps_canvas* canvas);
  *                                     ps_canvas* dst, const ps_point* location)
  * \brief Copy raster data between two canvas objects.
  *
- * \param src          The pointer to source canvas object.
- * \param rect         The rectangle area will be copied in source canvas, NULL mean the whole area.
- * \param dst          The pointer to destination canvas object.
+ * \param src       The pointer to source canvas object.
+ * \param rect      The rectangle area will be copied in source canvas, NULL mean the whole area.
+ * \param dst       The pointer to destination canvas object.
  * \param location  The location of the start point at destination canvas object.
+ *
+ * \note The two canvas's color format must be equal, otherwish will
+ *       be failed and \a STATUS_MISMATCHING_FORMAT will be set.
  *
  * \sa ps_canvas_get_size, ps_canvas_get_format
  */
@@ -1180,9 +1184,6 @@ PEXPORT void PICAPI ps_set_source_color(ps_context* ctx, const ps_color* color);
  * \param ctx     Pointer to an existing context object.
  * \param image   The image to be set.
  *
- * \note The image's color format must be equal with target canvas, otherwish will
- *       be failed and \a STATUS_MISMATCHING_FORMAT will be set.
- *
  * \sa ps_set_source_color, ps_set_source_pattern, ps_set_source_gradient, ps_set_source_canvas
  */
 PEXPORT void PICAPI ps_set_source_image(ps_context* ctx, const ps_image* image);
@@ -1193,9 +1194,6 @@ PEXPORT void PICAPI ps_set_source_image(ps_context* ctx, const ps_image* image);
  *
  * \param ctx     Pointer to an existing context object.
  * \param pattern The pattern to be set.
- *
- * \note The pattern's image color format must be equal with target canvas, otherwish will
- *       be failed and \a STATUS_MISMATCHING_FORMAT will be set.
  *
  * \sa ps_set_source_color, ps_set_source_image, ps_set_source_gradient, ps_set_source_canvas
  */
@@ -1218,9 +1216,6 @@ PEXPORT void PICAPI ps_set_source_gradient(ps_context* ctx, const ps_gradient* g
  *
  * \param ctx      Pointer to an existing context object.
  * \param canvas   The canvas to be set.
- *
- * \note The source canvas's color format must be equal with target canvas, otherwish will
- *       be failed and \a STATUS_MISMATCHING_FORMAT will be set.
  *
  * \sa ps_set_source_color, ps_set_source_image, ps_set_source_pattern, ps_set_source_gradient
  */
@@ -1377,9 +1372,62 @@ PEXPORT float PICAPI ps_set_miter_limit(ps_context* ctx, float limit);
  * \param color   The color to be set.
  *
  * \sa ps_set_line_cap, ps_set_line_join, ps_set_line_width, ps_set_miter_limit,
- *     ps_set_line_dash, ps_reset_line_dash, ps_set_line_inner_join
+ *     ps_set_line_dash, ps_reset_line_dash, ps_set_line_inner_join, ps_set_stroke_image
+ *     ps_set_stroke_pattern, ps_set_stroke_gradient, ps_set_stroke_canvas
  */
 PEXPORT void PICAPI ps_set_stroke_color(ps_context* ctx, const ps_color* color);
+
+/**
+ * \fn void ps_set_stroke_image(ps_context* ctx, const ps_image* image)
+ * \brief Set a image to the context, it is used to stroke a graphic object.
+ *
+ * \param ctx     Pointer to an existing context object.
+ * \param image   The image to be set.
+ *
+ * \sa ps_set_line_cap, ps_set_line_join, ps_set_line_width, ps_set_miter_limit,
+ *     ps_set_line_dash, ps_reset_line_dash, ps_set_line_inner_join, ps_set_stroke_color
+ *     ps_set_stroke_pattern, ps_set_stroke_gradient, ps_set_stroke_canvas
+ */
+PEXPORT void PICAPI ps_set_stroke_image(ps_context* ctx, const ps_image* image);
+
+/**
+ * \fn void ps_set_stroke_pattern(ps_context* ctx, const ps_pattern* pattern)
+ * \brief Set a pattern to the context, it is used to stroke a graphic object.
+ *
+ * \param ctx     Pointer to an existing context object.
+ * \param pattern The pattern to be set.
+ *
+ * \sa ps_set_line_cap, ps_set_line_join, ps_set_line_width, ps_set_miter_limit,
+ *     ps_set_line_dash, ps_reset_line_dash, ps_set_line_inner_join, ps_set_stroke_color
+ *     ps_set_stroke_image, ps_set_stroke_gradient, ps_set_stroke_canvas
+ */
+PEXPORT void PICAPI ps_set_stroke_pattern(ps_context* ctx, const ps_pattern* pattern);
+
+/**
+ * \fn void ps_set_stroke_gradient(ps_context* ctx, const ps_gradient* gradient)
+ * \brief Set a gradient to the context, it is used to stroke a graphic object.
+ *
+ * \param ctx      Pointer to an existing context object.
+ * \param gradient The gradient to be set.
+ *
+ * \sa ps_set_line_cap, ps_set_line_join, ps_set_line_width, ps_set_miter_limit,
+ *     ps_set_line_dash, ps_reset_line_dash, ps_set_line_inner_join, ps_set_stroke_color
+ *     ps_set_stroke_image, ps_set_stroke_pattern, ps_set_stroke_canvas
+ */
+PEXPORT void PICAPI ps_set_stroke_gradient(ps_context* ctx, const ps_gradient* gradient);
+
+/**
+ * \fn void ps_set_stroke_canvas(ps_context* ctx, const ps_canvas* canvas)
+ * \brief Set a canvas to the context, it is used to stroke a graphic object.
+ *
+ * \param ctx      Pointer to an existing context object.
+ * \param canvas   The canvas to be set.
+ *
+ * \sa ps_set_line_cap, ps_set_line_join, ps_set_line_width, ps_set_miter_limit,
+ *     ps_set_line_dash, ps_reset_line_dash, ps_set_line_inner_join, ps_set_stroke_color
+ *     ps_set_stroke_image, ps_set_stroke_pattern, ps_set_stroke_gradient
+ */
+PEXPORT void PICAPI ps_set_stroke_canvas(ps_context* ctx, const ps_canvas* canvas);
 
 /**
  * \fn void ps_set_line_dash(ps_context* ctx, float start, const float* dashes, unsigned int num_dashes)
@@ -1771,10 +1819,12 @@ PEXPORT void PICAPI ps_clip_rect(ps_context* ctx, const ps_rect* rect);
 /**
  * \fn void ps_clip_device_rect(ps_context* ctx, const ps_rect* rect)
  * \brief The fast way to clipping specified rectangle, the clip rect can not be rotated
- *           by world matrix.
+ *           by world matrix. (Deprecated)
  *
  * \param ctx  Pointer to an existing context object.
  * \param rect The rectangle which will be clipped.
+ *
+ * \note This function is deprecated, will be remove feature.
  *
  * \sa ps_clip, ps_clip_path, ps_clip_rects, ps_reset_clip, ps_clip_rect
  */
@@ -1827,7 +1877,7 @@ PEXPORT void PICAPI ps_reset_clip(ps_context* ctx);
  *                - Line cap
  *                - Line join
  *                - Line dash
- *                - Stroke color
+ *                - Stroke object
  *                - Source object
  *                - Fill color
  *                - Fill rule

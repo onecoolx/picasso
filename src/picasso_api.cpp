@@ -300,6 +300,73 @@ void PICAPI ps_set_stroke_color(ps_context* ctx, const ps_color* color)
     global_status = STATUS_SUCCEED;
 }
 
+void PICAPI ps_set_stroke_image(ps_context* ctx, const ps_image* image)
+{
+    if (!picasso::is_valid_system_device()) {
+        global_status = STATUS_DEVICE_ERROR;
+        return;
+    }
+
+    if (!ctx || !image) {
+        global_status = STATUS_INVALID_ARGUMENT;
+        return;
+    }
+
+    ctx->state->pen.clear(); //clear source
+    ctx->state->pen.set_image_pen(const_cast<ps_image*>(image));
+    global_status = STATUS_SUCCEED;
+}
+
+void PICAPI ps_set_stroke_pattern(ps_context* ctx, const ps_pattern* pattern)
+{
+    if (!picasso::is_valid_system_device()) {
+        global_status = STATUS_DEVICE_ERROR;
+        return;
+    }
+
+    if (!ctx || !pattern) {
+        global_status = STATUS_INVALID_ARGUMENT;
+        return;
+    }
+
+    ctx->state->pen.clear(); //clear source
+    ctx->state->pen.set_pattern_pen(const_cast<ps_pattern*>(pattern));
+    global_status = STATUS_SUCCEED;
+}
+
+void PICAPI ps_set_stroke_gradient(ps_context* ctx, const ps_gradient* gradient)
+{
+    if (!picasso::is_valid_system_device()) {
+        global_status = STATUS_DEVICE_ERROR;
+        return;
+    }
+
+    if (!ctx || !gradient) {
+        global_status = STATUS_INVALID_ARGUMENT;
+        return;
+    }
+    ctx->state->pen.clear(); //clear source
+    ctx->state->pen.set_gradient_pen(const_cast<ps_gradient*>(gradient));
+    global_status = STATUS_SUCCEED;
+}
+
+void PICAPI ps_set_stroke_canvas(ps_context* ctx, const ps_canvas* canvas)
+{
+    if (!picasso::is_valid_system_device()) {
+        global_status = STATUS_DEVICE_ERROR;
+        return;
+    }
+
+    if (!ctx || !canvas) {
+        global_status = STATUS_INVALID_ARGUMENT;
+        return;
+    }
+
+    ctx->state->pen.clear(); //clear source
+    ctx->state->pen.set_canvas_pen(const_cast<ps_canvas*>(canvas));
+    global_status = STATUS_SUCCEED;
+}
+
 ps_filter PICAPI ps_set_filter(ps_context* ctx, ps_filter filter)
 {
     if (!picasso::is_valid_system_device()) {

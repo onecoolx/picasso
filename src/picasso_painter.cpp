@@ -40,8 +40,9 @@ void painter::init_raster_data(context_state* state, unsigned int methods,
     raster.set_raster_method(methods);
 
     if (methods & raster_stroke) {
-        if (state->pen.style == pen_style_dash)
+        if (state->pen.is_dash) {
             raster.set_stroke_dashes(state->pen.dstart, state->pen.dashes, state->pen.ndashes); //dash line
+        }
 
         raster.set_stroke_attr_val(STA_WIDTH, state->pen.width);
         raster.set_stroke_attr_val(STA_MITER_LIMIT, state->pen.miter_limit);
@@ -64,7 +65,48 @@ void painter::init_source_data(context_state* state, unsigned int methods, const
     m_impl->set_composite(state->composite);
 
     if (methods & raster_stroke) {
-        m_impl->set_stroke_color(state->pen.color); //FIXME: need implement stroke pattern and gradient support.
+        switch (state->pen.style) {
+            case pen_style_canvas:
+                {
+                    scalar x1 = 1, y1 = 1, x2 = 0 ,y2 = 0;
+                    bounding_rect(const_cast<graphic_path&>(p), 0, &x1, &y1, &x2, &y2);
+                    ps_canvas* canvas = static_cast<ps_canvas*>(state->pen.data);
+                    rect_s rect(x1, y1, x2, y2);
+                    m_impl->set_stroke_canvas(canvas->buffer.impl(), (pix_fmt)(canvas->fmt), (int)state->filter, rect);
+                }
+                break;
+            case pen_style_pattern:
+                {
+                    scalar x1 = 1, y1 = 1, x2 = 0 ,y2 = 0;
+                    bounding_rect(const_cast<graphic_path&>(p), 0, &x1, &y1, &x2, &y2);
+                    ps_pattern* pattern = static_cast<ps_pattern*>(state->pen.data);
+                    rect_s rect(x1, y1, x2, y2);
+                    m_impl->set_stroke_pattern(pattern->img->buffer.impl(), (pix_fmt)(pattern->img->fmt), (int)state->filter, rect,
+                                                                            pattern->xtype, pattern->ytype, pattern->matrix.impl());
+                }
+                break;
+            case pen_style_image:
+                {
+                    scalar x1 = 1, y1 = 1, x2 = 0 ,y2 = 0;
+                    bounding_rect(const_cast<graphic_path&>(p), 0, &x1, &y1, &x2, &y2);
+                    ps_image* img = static_cast<ps_image*>(state->pen.data);
+                    rect_s rect(x1, y1, x2, y2);
+                    m_impl->set_stroke_image(img->buffer.impl(), (pix_fmt)(img->fmt),(int)state->filter, rect);
+                }
+                break;
+            case pen_style_gradient:
+                {
+                    ps_gradient* gradient = static_cast<ps_gradient*>(state->pen.data);
+                    m_impl->set_stroke_gradient(gradient->gradient.impl());
+                }
+                break;
+            case pen_style_solid:
+                m_impl->set_stroke_color(state->pen.color); //solid color pen.
+                break;
+            default:
+                //make compiler happy only.
+                break;
+        }
     }
 
     if (methods & raster_fill) {
