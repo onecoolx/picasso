@@ -17,6 +17,7 @@
 static psx_image * image = NULL;
 static char full_path[1024];
 static const char * path = NULL;
+static int idx = 0;
 
 void draw_test (int id, ps_context* gc)
 {
@@ -43,7 +44,7 @@ void draw_test (int id, ps_context* gc)
         
         ps_save(gc);
         ps_rectangle(gc, &cr);
-        ps_set_source_image(gc, IMG_OBJ(image));
+        ps_set_source_image(gc, IMG_OBJ_AT_INDEX(image, idx));
         ps_fill(gc);
         ps_restore(gc);
     }
@@ -84,4 +85,8 @@ void set_pattern_data(unsigned char* data, ps_color_format fmt, int w, int h, in
 
 void timer_action(ps_context* gc)
 {
+    fprintf (stderr, "current frame delay %d ms\n", image->frames[idx].duration);
+    idx++;
+    if (idx == image->num_frames)
+        idx = 0;
 }

@@ -4,7 +4,7 @@ INCLUDES = -I../ \
            -I../../../ \
 	       -I../../../include
 
-# picasso external system image module png.
+# picasso external system image module jpeg.
 modules_LTLIBRARIES = libpsxm_image_jpeg.la
 
 libpsxm_image_jpeg_la_SOURCES = \

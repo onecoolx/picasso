@@ -39,6 +39,8 @@ typedef struct _psx_image_frame {
     ps_byte* data;
     /** sizeof image data in bytes */
     size_t size;
+    /** current frame duration (in milliseconds, 0 ignore) */
+    int duration;
 }psx_image_frame;
 
 /**

@@ -183,6 +183,7 @@ ext/Makefile
 ext/image_loader/Makefile
 ext/image_loader/png/Makefile
 ext/image_loader/jpeg/Makefile
+ext/image_loader/gif/Makefile
 test/Makefile
 demos/Makefile
 )

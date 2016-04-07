@@ -1,4 +1,4 @@
-SUBDIRS = png jpeg
+SUBDIRS = png jpeg gif
 
 INCLUDES = -I./ \
            -I../../ \

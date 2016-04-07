@@ -3,7 +3,7 @@ CC=gcc -Wall -O3 -g -msse2
 INC=-I. -I../../ -I../../include -I../../build
 CFLAGS=-DEXPORT -DUINCODE ${DLL} 
 
-VPATH=./ ./png
+VPATH=./ ./png ./jpeg ./gif
 
 objects= \
 		 psx_image_io.o \

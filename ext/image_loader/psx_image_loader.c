@@ -128,6 +128,7 @@ psx_image* PICAPI psx_image_create_from_data(ps_byte* data, ps_color_format fmt,
         size = image->pitch * image->height;
         image->frames[0].size = size;
         image->frames[0].data = (ps_byte*)calloc(1, size);
+        image->frames[0].duration = 0;
 
         if (!image->frames[0].data) {
             if (err_code)
@@ -253,10 +254,11 @@ static psx_image* load_psx_image(psx_image_operator* op, const ps_byte* data, si
             size_t size = image->pitch * image->height;
             image->frames[i].size = size;
             image->frames[i].data = (ps_byte*)calloc(1, size);
+            image->frames[i].duration = 0;
             if (!image->frames[i].data)
                 goto error;
 
-            if (op->decode_image_data(&header, i, image->frames[i].data, size) != 0)
+            if (op->decode_image_data(&header, &image->frames[i], i, image->frames[i].data, size) != 0)
                 goto error;
 
             // create ps_image object.
@@ -306,7 +308,7 @@ static int save_psx_image(psx_image_operator* op, const psx_image* image,
         return S_NOT_SUPPORT;
 
     for (i = 0; i < image->num_frames; i++) {
-        if (op->encode_image_data(&header, i, image->frames[i].data, image->frames[i].size, &ret) != 0)
+        if (op->encode_image_data(&header, &image->frames[i], i, image->frames[i].data, image->frames[i].size, &ret) != 0)
             break;
     }
 

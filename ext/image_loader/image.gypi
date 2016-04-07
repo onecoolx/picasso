@@ -8,5 +8,6 @@
     './psx_image.gypi',
     './png/png.gypi',
     './jpeg/jpeg.gypi',
+    './gif/gif.gypi',
   ],
 }

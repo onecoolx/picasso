@@ -62,14 +62,14 @@ typedef struct _psx_image_operator {
     /** Create a image reader header. */
     int (*read_header_info)(const ps_byte* data, size_t data_len, psx_image_header* header);
     /** Read a frame of raw data. */
-    int (*decode_image_data)(psx_image_header* header, int idx, ps_byte* buffer, size_t buffer_len);
+    int (*decode_image_data)(psx_image_header* header, psx_image_frame* frame, int idx, ps_byte* buffer, size_t buffer_len);
     /** Release reader resources. */
     int (*release_read_header_info)(psx_image_header* header);
     /** Create a image writer header. */ 
     int (*write_header_info)(const psx_image* image, image_writer_fn func,
                                          void* param, float quality, psx_image_header* header);
     /** Write image data frames. */ 
-    int (*encode_image_data)(psx_image_header* header, int idx, const ps_byte* buffer, size_t buffer_len, int* ret);
+    int (*encode_image_data)(psx_image_header* header, psx_image_frame* frame, int idx, const ps_byte* buffer, size_t buffer_len, int* ret);
     /** Release writer resources. */ 
     int (*release_write_header_info)(psx_image_header* header);
 }psx_image_operator;
