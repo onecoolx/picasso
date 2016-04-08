@@ -298,7 +298,7 @@ error:
 static int save_psx_image(psx_image_operator* op, const psx_image* image,
                                                   image_writer_fn func, void* param, float quality)
 {
-    size_t i;
+    int i;
     int ret = S_OK;
     psx_image_header header;
     if (!op->write_header_info || !op->encode_image_data)
@@ -307,7 +307,7 @@ static int save_psx_image(psx_image_operator* op, const psx_image* image,
     if (op->write_header_info(image, func, param, quality, &header) != 0)
         return S_NOT_SUPPORT;
 
-    for (i = 0; i < image->num_frames; i++) {
+    for (i = 0; i < header.frames; i++) {
         if (op->encode_image_data(&header, &image->frames[i], i, image->frames[i].data, image->frames[i].size, &ret) != 0)
             break;
     }

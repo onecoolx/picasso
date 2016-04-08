@@ -85,8 +85,10 @@ void set_pattern_data(unsigned char* data, ps_color_format fmt, int w, int h, in
 
 void timer_action(ps_context* gc)
 {
-    fprintf (stderr, "current frame delay %d ms\n", image->frames[idx].duration);
-    idx++;
-    if (idx == image->num_frames)
-        idx = 0;
+    if (image) {
+        fprintf (stderr, "current frame delay %d ms\n", image->frames[idx].duration);
+        idx++;
+        if (idx == image->num_frames)
+            idx = 0;
+    }
 }

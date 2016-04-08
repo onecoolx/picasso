@@ -8,7 +8,9 @@ two modules will be linked.  Preserve this property!
 
 *****************************************************************************/
 
+#if !defined(WIN32)
 #include <unistd.h>
+#endif
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -39,10 +41,11 @@ static int EGifCompressLine(GifFileType * GifFile, GifPixelType * Line,
 static int EGifCompressOutput(GifFileType * GifFile, int Code);
 static int EGifBufferedOutput(GifFileType * GifFile, GifByteType * Buf,
                               int c);
-
+#if !defined(WIN32)
 /* extract bytes from an unsigned word */
 #define LOBYTE(x)	((x) & 0xff)
 #define HIBYTE(x)	(((x) >> 8) & 0xff)
+#endif
 
 /******************************************************************************
  Open a new GIF file for write, specified by name. If TestExistance then
@@ -878,7 +881,7 @@ EGifSetupCompress(GifFileType *GifFile)
 static int
 EGifCompressLine(GifFileType *GifFile,
                  GifPixelType *Line,
-                 const int LineLen)
+                 int LineLen)
 {
     int i = 0, CrntCode, NewCode;
     unsigned long NewKey;
@@ -965,8 +968,7 @@ EGifCompressLine(GifFileType *GifFile,
  Returns GIF_OK if written successfully.
 ******************************************************************************/
 static int
-EGifCompressOutput(GifFileType *GifFile,
-                   const int Code)
+EGifCompressOutput(GifFileType *GifFile, int Code)
 {
     GifFilePrivateType *Private = (GifFilePrivateType *) GifFile->Private;
     int retval = GIF_OK;

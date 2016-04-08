@@ -33,6 +33,9 @@
   ],
   'conditions': [
     ['OS=="win"', {
+      'sources': [
+      '<(lib_dir)/gif_lib.def',
+      ],
       'defines': [
       ],
       'actions': [

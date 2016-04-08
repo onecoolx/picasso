@@ -12,7 +12,9 @@ two modules will be linked.  Preserve this property!
 #include <limits.h>
 #include <stdint.h>
 #include <fcntl.h>
+#if !defined(WIN32)
 #include <unistd.h>
+#endif
 #include <stdio.h>
 #include <string.h>
 
@@ -380,7 +382,7 @@ DGifGetImageDesc(GifFileType *GifFile)
         }
 
         /* Get the image local color map: */
-        for (i = 0; i < GifFile->Image.ColorMap->ColorCount; i++) {
+        for (i = 0; i < (unsigned int)GifFile->Image.ColorMap->ColorCount; i++) {
 	    /* coverity[check_return] */
             if (READ(GifFile, Buf, 3) != 3) {
                 GifFreeMapObject(GifFile->Image.ColorMap);
