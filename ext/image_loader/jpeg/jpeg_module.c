@@ -378,7 +378,7 @@ void psx_image_module_init(void)
     if (lib_image == INVALID_HANDLE)
         return;
 
-    func = _module_get_symbol(lib_image, "psx_register_image_operator");
+    func = _module_get_symbol(lib_image, "psx_image_register_operator");
     if (!func)
         return;
 
@@ -402,7 +402,7 @@ void psx_image_module_shutdown(void)
 {
     unregister_func func = NULL;
 
-    func = _module_get_symbol(lib_image, "psx_unregister_image_operator");
+    func = _module_get_symbol(lib_image, "psx_image_unregister_operator");
     if (func) {
         if (jpg_coder) {
             func(jpg_coder); // free jpg type coder.

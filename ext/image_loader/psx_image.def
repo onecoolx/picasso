@@ -7,5 +7,5 @@ EXPORTS
     psx_image_save
     psx_image_save_to_file
     psx_image_destroy
-    psx_register_image_operator
-    psx_unregister_image_operator
+    psx_image_register_operator
+    psx_image_unregister_operator

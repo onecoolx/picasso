@@ -64,7 +64,7 @@ typedef struct _psx_image_header {
 
 /**
  * \brief The image operator define.
- * \sa psx_register_image_operator psx_unregister_image_operator
+ * \sa psx_image_register_operator psx_image_unregister_operator
  */
 typedef struct _psx_image_operator {
     /** Create a image reader header. */
@@ -84,7 +84,7 @@ typedef struct _psx_image_operator {
 
 /**
  * \brief Priority level for image_operator.
- * \sa psx_register_image_operator
+ * \sa psx_image_register_operator
  */
 typedef enum _psx_priority_level {
     /** Low level operator. */
@@ -103,7 +103,7 @@ typedef enum _psx_priority_level {
  */
 
 /**
- * \fn int psx_register_image_operator(const char* type, const ps_byte* signature, size_t sig_len,
+ * \fn int psx_image_register_operator(const char* type, const ps_byte* signature, size_t sig_len,
  *                                                   psx_priority_level level, psx_image_operator* coder)
  * \brief Register the image operator.
  *
@@ -115,22 +115,22 @@ typedef enum _psx_priority_level {
  *
  * \return Result code returned.
  *
- * \sa psx_unregister_image_operator
+ * \sa psx_image_unregister_operator
  */
-PEXPORT int psx_register_image_operator(const char* type, const ps_byte* signature, size_t sig_len,
+PEXPORT int psx_image_register_operator(const char* type, const ps_byte* signature, size_t sig_len,
                                                      psx_priority_level level, psx_image_operator* coder);
 
 /**
- * \fn int psx_unregister_image_operator(psx_image_operator* coder)
+ * \fn int psx_image_unregister_operator(psx_image_operator* coder)
  * \brief Unregister the image operator. 
  *
  * \param coder The image operator which will be unregister.
  *
  * \return Result code returned.
  *
- * \sa psx_register_image_operator
+ * \sa psx_image_register_operator
  */
-PEXPORT int psx_unregister_image_operator(psx_image_operator* coder);
+PEXPORT int psx_image_unregister_operator(psx_image_operator* coder);
 
 /** @} end of image register functions */
 
