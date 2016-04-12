@@ -26,7 +26,15 @@ extern "C" {
 #endif
 
 /**
- * \defgroup plugin Image Plugin Data Types
+ * \defgroup extension Extensions
+ * @{
+ */
+/**
+ * \defgroup extimg XImage Extension
+ * @{
+ */
+/**
+ * \defgroup types XImage Coder Plugin Data Types
  * @{
  */
 
@@ -90,7 +98,7 @@ typedef enum _psx_priority_level {
 /** @} end of plugin types */
 
 /**
- * \defgroup extimgs Extension Image side functions
+ * \defgroup interface XImage Coders Register functions
  * @{
  */
 
@@ -124,10 +132,10 @@ PEXPORT int psx_register_image_operator(const char* type, const ps_byte* signatu
  */
 PEXPORT int psx_unregister_image_operator(psx_image_operator* coder);
 
-/** @} end of image side functions */
+/** @} end of image register functions */
 
 /**
- * \defgroup coder Image Coders Plugin side functions
+ * \defgroup coder XImage Coders Plugin side functions
  * @{
  */
 
@@ -167,6 +175,8 @@ PEXPORT void psx_image_module_shutdown(void);
 PEXPORT const char* psx_image_module_get_string(int id);
 
 /** @} end of plugin side functions */
+/** @} end of extimg */
+/** @} end of extensions */
 
 #ifdef __cplusplus
 }

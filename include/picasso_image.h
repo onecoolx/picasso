@@ -25,7 +25,15 @@ extern "C" {
 #endif
 
 /**
- * \defgroup extobj Extension Image Object Types
+ * \defgroup extension Extensions
+ * @{
+ */
+/**
+ * \defgroup extimg XImage Extension
+ * @{
+ */
+/**
+ * \defgroup types XImage Object Types
  * @{
  */
 
@@ -104,6 +112,13 @@ typedef struct _psx_image {
 #define IMG_DATA_SIZE_AT_INDEX(img, idx) (img->frames[idx].size)
 
 /**
+ * \def IMG_DURATION_AT_INDEX
+ * \brief Get image frame duration at index.
+ * \sa IMG_DATA_SIZE, IMG_DATA
+ */
+#define IMG_DURATION_AT_INDEX(img, idx) (img->frames[idx].duration)
+
+/**
  * \brief Status code return by call APIs.
  */
 enum {
@@ -121,10 +136,10 @@ enum {
     S_FAILURE       = 5,
 };
 
-/** @} end of ext image object types */
+/** @} end of extimg types */
 
 /**
- * \defgroup extimg Extension Image Functions
+ * \defgroup functions XImage Functions
  * @{
  */
 
@@ -247,7 +262,9 @@ PEXPORT int PICAPI psx_image_save_to_file(const psx_image* image, const char* fi
  * \sa psx_image_load psx_image_load_from_memory
  */
 PEXPORT int PICAPI psx_image_destroy(psx_image* image);
-/** @} end of extension image functions */
+/** @} end of extimg functions */
+/** @} end of extimg */
+/** @} end of extensions */
 
 #ifdef __cplusplus
 }
