@@ -101,10 +101,10 @@
 <a name="l00095"></a><a class="code" href="group__types.html#gga57d2d84e226ccbbbd2a1d9b593f7a4d9a6243765615c4bde8b09e02fe0364d3f1">00095</a>     <a class="code" href="group__types.html#gga57d2d84e226ccbbbd2a1d9b593f7a4d9a6243765615c4bde8b09e02fe0364d3f1">PRIORITY_MASTER</a>   = 1,
 <a name="l00096"></a>00096 }<a class="code" href="group__types.html#ga56bd2eeea302e1c420d7e7b09fa1b75c" title="Priority level for image_operator.">psx_priority_level</a>;
 <a name="l00097"></a>00097 
-<a name="l00120"></a>00120 PEXPORT <span class="keywordtype">int</span> <a class="code" href="group__interface.html#ga9330f5cefad1ea3745f6f03406378de8" title="Register the image operator.">psx_register_image_operator</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* type, <span class="keyword">const</span> <a class="code" href="group__data.html#gab4d32618dcac1b191ee7db92ef475ed0" title="byte data type">ps_byte</a>* signature, <span class="keywordtype">size_t</span> sig_len,
+<a name="l00120"></a>00120 PEXPORT <span class="keywordtype">int</span> <a class="code" href="group__interface.html#ga74e4869f1d1d9a91013ae537ec01b8b9" title="Register the image operator.">psx_image_register_operator</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* type, <span class="keyword">const</span> <a class="code" href="group__data.html#gab4d32618dcac1b191ee7db92ef475ed0" title="byte data type">ps_byte</a>* signature, <span class="keywordtype">size_t</span> sig_len,
 <a name="l00121"></a>00121                                                      <a class="code" href="group__types.html#ga56bd2eeea302e1c420d7e7b09fa1b75c" title="Priority level for image_operator.">psx_priority_level</a> level, <a class="code" href="struct__psx__image__operator.html" title="The image operator define.">psx_image_operator</a>* coder);
 <a name="l00122"></a>00122 
-<a name="l00133"></a>00133 PEXPORT <span class="keywordtype">int</span> <a class="code" href="group__interface.html#ga348bc0538ff52d0545f15bdda684ed2b" title="Unregister the image operator.">psx_unregister_image_operator</a>(<a class="code" href="struct__psx__image__operator.html" title="The image operator define.">psx_image_operator</a>* coder);
+<a name="l00133"></a>00133 PEXPORT <span class="keywordtype">int</span> <a class="code" href="group__interface.html#gaeeecacc8a3318e0977d3fd7a949ba240" title="Unregister the image operator.">psx_image_unregister_operator</a>(<a class="code" href="struct__psx__image__operator.html" title="The image operator define.">psx_image_operator</a>* coder);
 <a name="l00134"></a>00134 
 <a name="l00148"></a>00148 PEXPORT <span class="keywordtype">void</span> <a class="code" href="group__coder.html#gab79a1526ed3284dae85ad73be7e7eb97" title="Initialze the image module.">psx_image_module_init</a>(<span class="keywordtype">void</span>);
 <a name="l00149"></a>00149 
@@ -124,7 +124,7 @@
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Apr 12 2016 17:28:23 for Picasso API by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Apr 12 2016 18:17:08 for Picasso API by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>
