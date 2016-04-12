@@ -60,8 +60,12 @@ Functions</h2></td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a new empty path in the graphic context, clear the old one.  <a href="#ga1dd5a2457bbc70bb4aab514c71657d47"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">PEXPORT void PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__geometry.html#gabc1395130cd155b9e7540d9c66423edd">ps_new_sub_path</a> (<a class="el" href="group__objects.html#ga4a70d4a51cfa38485adf65620e5a0ec9">ps_context</a> *ctx)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Close the current path, and add a new empty sub path in the graphic context.  <a href="#gabc1395130cd155b9e7540d9c66423edd"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">PEXPORT void PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__geometry.html#gaccc48dc1075994d7ac6154676eb5641f">ps_add_sub_path</a> (<a class="el" href="group__objects.html#ga4a70d4a51cfa38485adf65620e5a0ec9">ps_context</a> *ctx, const <a class="el" href="group__objects.html#ga0dad506d890c9cd5f8753ccc4da67c0d">ps_path</a> *path)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a new sub path to current path in the graphic context.  <a href="#gaccc48dc1075994d7ac6154676eb5641f"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">PEXPORT void PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__geometry.html#gad29671ee13659f93f1ed9f04e2fef33f">ps_set_path</a> (<a class="el" href="group__objects.html#ga4a70d4a51cfa38485adf65620e5a0ec9">ps_context</a> *ctx, const <a class="el" href="group__objects.html#ga0dad506d890c9cd5f8753ccc4da67c0d">ps_path</a> *path)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Replace the current path in the graphic context.  <a href="#gad29671ee13659f93f1ed9f04e2fef33f"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">PEXPORT <a class="el" href="group__data.html#gac6a012d4a34bcc846e7ae03790c0af4b">ps_bool</a> PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__geometry.html#ga12919bbac3b448c53c1b8200a464fe01">ps_get_path</a> (<a class="el" href="group__objects.html#ga4a70d4a51cfa38485adf65620e5a0ec9">ps_context</a> *ctx, <a class="el" href="group__objects.html#ga0dad506d890c9cd5f8753ccc4da67c0d">ps_path</a> *path)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the current path in the graphic context.  <a href="#ga12919bbac3b448c53c1b8200a464fe01"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">PEXPORT void PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__geometry.html#ga7ddb8dc9dd946b85960c2e220d309131">ps_close_path</a> (<a class="el" href="group__objects.html#ga4a70d4a51cfa38485adf65620e5a0ec9">ps_context</a> *ctx)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Close the current path in the graphic context.  <a href="#ga7ddb8dc9dd946b85960c2e220d309131"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">PEXPORT void PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__geometry.html#ga6afa05defe9e5e6bec2ba59395b9ff13">ps_move_to</a> (<a class="el" href="group__objects.html#ga4a70d4a51cfa38485adf65620e5a0ec9">ps_context</a> *ctx, const <a class="el" href="group__objects.html#ga5b009b12407769aca1bc58223deeda7f">ps_point</a> *point)</td></tr>
@@ -84,6 +88,43 @@ Functions</h2></td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds an ellipse to the current path which fits inside the specified rectangle.  <a href="#ga5a24c9a87485571696f9a560e5c8afc8"></a><br/></td></tr>
 </table>
 <hr/><h2>Function Documentation</h2>
+<a class="anchor" id="gaccc48dc1075994d7ac6154676eb5641f"></a><!-- doxytag: member="picasso.h::ps_add_sub_path" ref="gaccc48dc1075994d7ac6154676eb5641f" args="(ps_context *ctx, const ps_path *path)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="group__geometry.html#gaccc48dc1075994d7ac6154676eb5641f">ps_add_sub_path</a> </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__objects.html#ga4a70d4a51cfa38485adf65620e5a0ec9">ps_context</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="group__objects.html#ga0dad506d890c9cd5f8753ccc4da67c0d">ps_path</a> *&#160;</td>
+          <td class="paramname"><em>path</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Add a new sub path to current path in the graphic context. </p>
+<dl class="params"><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ctx</td><td>Pointer to an existing context object. </td></tr>
+    <tr><td class="paramname">path</td><td>The path will be add to graphic context.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="see"><dt><b>See also:</b></dt><dd><a class="el" href="group__geometry.html#ga1dd5a2457bbc70bb4aab514c71657d47" title="Create a new empty path in the graphic context, clear the old one.">ps_new_path</a>, <a class="el" href="group__geometry.html#gabc1395130cd155b9e7540d9c66423edd" title="Close the current path, and add a new empty sub path in the graphic context.">ps_new_sub_path</a>, <a class="el" href="group__geometry.html#gad29671ee13659f93f1ed9f04e2fef33f" title="Replace the current path in the graphic context.">ps_set_path</a>, <a class="el" href="group__geometry.html#ga12919bbac3b448c53c1b8200a464fe01" title="Get the current path in the graphic context.">ps_get_path</a>, <a class="el" href="group__geometry.html#ga7ddb8dc9dd946b85960c2e220d309131" title="Close the current path in the graphic context.">ps_close_path</a> </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="ga221af9d23e478b7609b20dc0e780c206"></a><!-- doxytag: member="picasso.h::ps_arc" ref="ga221af9d23e478b7609b20dc0e780c206" args="(ps_context *ctx, const ps_point *cp, float radius, float sangle, float eangle, ps_bool clockwise)" -->
 <div class="memitem">
 <div class="memproto">
@@ -222,7 +263,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="see"><dt><b>See also:</b></dt><dd><a class="el" href="group__geometry.html#ga1dd5a2457bbc70bb4aab514c71657d47" title="Create a new empty path in the graphic context, clear the old one.">ps_new_path</a>, <a class="el" href="group__geometry.html#gabc1395130cd155b9e7540d9c66423edd" title="Close the current path, and add a new empty sub path in the graphic context.">ps_new_sub_path</a>, <a class="el" href="group__geometry.html#gad29671ee13659f93f1ed9f04e2fef33f" title="Replace the current path in the graphic context.">ps_set_path</a> </dd></dl>
+<dl class="see"><dt><b>See also:</b></dt><dd><a class="el" href="group__geometry.html#ga1dd5a2457bbc70bb4aab514c71657d47" title="Create a new empty path in the graphic context, clear the old one.">ps_new_path</a>, <a class="el" href="group__geometry.html#gabc1395130cd155b9e7540d9c66423edd" title="Close the current path, and add a new empty sub path in the graphic context.">ps_new_sub_path</a>, <a class="el" href="group__geometry.html#gad29671ee13659f93f1ed9f04e2fef33f" title="Replace the current path in the graphic context.">ps_set_path</a>, <a class="el" href="group__geometry.html#ga12919bbac3b448c53c1b8200a464fe01" title="Get the current path in the graphic context.">ps_get_path</a>, <a class="el" href="group__geometry.html#gaccc48dc1075994d7ac6154676eb5641f" title="Add a new sub path to current path in the graphic context.">ps_add_sub_path</a> </dd></dl>
 
 </div>
 </div>
@@ -260,6 +301,44 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="see"><dt><b>See also:</b></dt><dd><a class="el" href="group__geometry.html#ga6afa05defe9e5e6bec2ba59395b9ff13" title="Begin a new sub path, and set the current point.">ps_move_to</a>, <a class="el" href="group__geometry.html#ga33144a05340d81d57be43ec15572288c" title="Add a line to the current path from the current point to given point.">ps_line_to</a>, <a class="el" href="group__geometry.html#gab8f032269b7bffbe13d65aab01dfdb22" title="Add a cubic bezier spline to the current path from current point to end point.">ps_bezier_curve_to</a>, <a class="el" href="group__geometry.html#ga1423d2871e7c875312ebd931953d4948" title="Add a quadratic bezier spline to the current path from current point to end point.">ps_quad_curve_to</a>, <a class="el" href="group__geometry.html#ga221af9d23e478b7609b20dc0e780c206" title="Add a circular arc to the current path.">ps_arc</a>, <a class="el" href="group__geometry.html#ga8f17dcbbfb34fb62862141e22b6040a2" title="Add a circular arc which is inner tangent from a rectangle.">ps_tangent_arc</a>, <a class="el" href="group__geometry.html#ga5011a18fa50227967380b08956ceec0f" title="Add a rectangle to the current path.">ps_rectangle</a>, <a class="el" href="group__geometry.html#gabee81bb4bac4a8de1bccbd3475b52d9b" title="Add a rounded rectangle to the current path.">ps_rounded_rect</a> </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga12919bbac3b448c53c1b8200a464fe01"></a><!-- doxytag: member="picasso.h::ps_get_path" ref="ga12919bbac3b448c53c1b8200a464fe01" args="(ps_context *ctx, ps_path *path)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__data.html#gac6a012d4a34bcc846e7ae03790c0af4b">ps_bool</a> <a class="el" href="group__geometry.html#ga12919bbac3b448c53c1b8200a464fe01">ps_get_path</a> </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__objects.html#ga4a70d4a51cfa38485adf65620e5a0ec9">ps_context</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__objects.html#ga0dad506d890c9cd5f8753ccc4da67c0d">ps_path</a> *&#160;</td>
+          <td class="paramname"><em>path</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Get the current path in the graphic context. </p>
+<dl class="params"><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ctx</td><td>Pointer to an existing context object. </td></tr>
+    <tr><td class="paramname">path</td><td>Pointer to a object to receiving the path.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd>True if is success, otherwise False.</dd></dl>
+<dl class="see"><dt><b>See also:</b></dt><dd><a class="el" href="group__geometry.html#ga1dd5a2457bbc70bb4aab514c71657d47" title="Create a new empty path in the graphic context, clear the old one.">ps_new_path</a>, <a class="el" href="group__geometry.html#gabc1395130cd155b9e7540d9c66423edd" title="Close the current path, and add a new empty sub path in the graphic context.">ps_new_sub_path</a>, <a class="el" href="group__geometry.html#ga7ddb8dc9dd946b85960c2e220d309131" title="Close the current path in the graphic context.">ps_close_path</a>, <a class="el" href="group__geometry.html#gad29671ee13659f93f1ed9f04e2fef33f" title="Replace the current path in the graphic context.">ps_set_path</a>, <a class="el" href="group__geometry.html#gaccc48dc1075994d7ac6154676eb5641f" title="Add a new sub path to current path in the graphic context.">ps_add_sub_path</a> </dd></dl>
 
 </div>
 </div>
@@ -359,7 +438,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="see"><dt><b>See also:</b></dt><dd><a class="el" href="group__geometry.html#gabc1395130cd155b9e7540d9c66423edd" title="Close the current path, and add a new empty sub path in the graphic context.">ps_new_sub_path</a>, <a class="el" href="group__geometry.html#gad29671ee13659f93f1ed9f04e2fef33f" title="Replace the current path in the graphic context.">ps_set_path</a>, <a class="el" href="group__geometry.html#ga7ddb8dc9dd946b85960c2e220d309131" title="Close the current path in the graphic context.">ps_close_path</a> </dd></dl>
+<dl class="see"><dt><b>See also:</b></dt><dd><a class="el" href="group__geometry.html#gabc1395130cd155b9e7540d9c66423edd" title="Close the current path, and add a new empty sub path in the graphic context.">ps_new_sub_path</a>, <a class="el" href="group__geometry.html#gad29671ee13659f93f1ed9f04e2fef33f" title="Replace the current path in the graphic context.">ps_set_path</a>, <a class="el" href="group__geometry.html#ga12919bbac3b448c53c1b8200a464fe01" title="Get the current path in the graphic context.">ps_get_path</a>, <a class="el" href="group__geometry.html#ga7ddb8dc9dd946b85960c2e220d309131" title="Close the current path in the graphic context.">ps_close_path</a>, <a class="el" href="group__geometry.html#gaccc48dc1075994d7ac6154676eb5641f" title="Add a new sub path to current path in the graphic context.">ps_add_sub_path</a> </dd></dl>
 
 </div>
 </div>
@@ -385,7 +464,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="see"><dt><b>See also:</b></dt><dd><a class="el" href="group__geometry.html#ga1dd5a2457bbc70bb4aab514c71657d47" title="Create a new empty path in the graphic context, clear the old one.">ps_new_path</a>, <a class="el" href="group__geometry.html#gad29671ee13659f93f1ed9f04e2fef33f" title="Replace the current path in the graphic context.">ps_set_path</a>, <a class="el" href="group__geometry.html#ga7ddb8dc9dd946b85960c2e220d309131" title="Close the current path in the graphic context.">ps_close_path</a> </dd></dl>
+<dl class="see"><dt><b>See also:</b></dt><dd><a class="el" href="group__geometry.html#ga1dd5a2457bbc70bb4aab514c71657d47" title="Create a new empty path in the graphic context, clear the old one.">ps_new_path</a>, <a class="el" href="group__geometry.html#gad29671ee13659f93f1ed9f04e2fef33f" title="Replace the current path in the graphic context.">ps_set_path</a>, <a class="el" href="group__geometry.html#ga12919bbac3b448c53c1b8200a464fe01" title="Get the current path in the graphic context.">ps_get_path</a>, <a class="el" href="group__geometry.html#ga7ddb8dc9dd946b85960c2e220d309131" title="Close the current path in the graphic context.">ps_close_path</a>, <a class="el" href="group__geometry.html#gaccc48dc1075994d7ac6154676eb5641f" title="Add a new sub path to current path in the graphic context.">ps_add_sub_path</a> </dd></dl>
 
 </div>
 </div>
@@ -596,7 +675,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="see"><dt><b>See also:</b></dt><dd><a class="el" href="group__geometry.html#ga1dd5a2457bbc70bb4aab514c71657d47" title="Create a new empty path in the graphic context, clear the old one.">ps_new_path</a>, <a class="el" href="group__geometry.html#gabc1395130cd155b9e7540d9c66423edd" title="Close the current path, and add a new empty sub path in the graphic context.">ps_new_sub_path</a>, <a class="el" href="group__geometry.html#ga7ddb8dc9dd946b85960c2e220d309131" title="Close the current path in the graphic context.">ps_close_path</a> </dd></dl>
+<dl class="see"><dt><b>See also:</b></dt><dd><a class="el" href="group__geometry.html#ga1dd5a2457bbc70bb4aab514c71657d47" title="Create a new empty path in the graphic context, clear the old one.">ps_new_path</a>, <a class="el" href="group__geometry.html#gabc1395130cd155b9e7540d9c66423edd" title="Close the current path, and add a new empty sub path in the graphic context.">ps_new_sub_path</a>, <a class="el" href="group__geometry.html#ga12919bbac3b448c53c1b8200a464fe01" title="Get the current path in the graphic context.">ps_get_path</a>, <a class="el" href="group__geometry.html#ga7ddb8dc9dd946b85960c2e220d309131" title="Close the current path in the graphic context.">ps_close_path</a>, <a class="el" href="group__geometry.html#gaccc48dc1075994d7ac6154676eb5641f" title="Add a new sub path to current path in the graphic context.">ps_add_sub_path</a> </dd></dl>
 
 </div>
 </div>
@@ -655,7 +734,7 @@ Functions</h2></td></tr>
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Feb 16 2016 10:48:13 for Picasso API by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Apr 12 2016 17:28:23 for Picasso API by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>

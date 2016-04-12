@@ -204,6 +204,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
+<dl class="note"><dt><b>Note:</b></dt><dd>The two canvas's color format must be equal, otherwish will be failed and <em>STATUS_MISMATCHING_FORMAT</em> will be set.</dd></dl>
 <dl class="see"><dt><b>See also:</b></dt><dd><a class="el" href="group__canvas.html#gafa96f6f1f7093eb690da471db3d1221b" title="Return the size of the canvas.">ps_canvas_get_size</a>, <a class="el" href="group__canvas.html#ga82f236a9d166347f3b1a8779e1af32b0" title="Return the pixel format of the canvas.">ps_canvas_get_format</a> </dd></dl>
 
 </div>
@@ -595,7 +596,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd>If the function succeeds, the return value is the pointer to a new canvas object. If the function fails, the return value is NULL.</dd></dl>
-<dl class="note"><dt><b>Note:</b></dt><dd>To get extended error information, call <em>ps_last_status</em>.</dd></dl>
+<dl class="note"><dt><b>Note:</b></dt><dd>The data's color format must be equal with target canvas, otherwish will be failed and <em>STATUS_MISMATCHING_FORMAT</em> will be set.</dd></dl>
 <dl class="see"><dt><b>See also:</b></dt><dd><a class="el" href="group__canvas.html#ga5764ae1f5e2ed6fd1dae2c01018651e2" title="Create a new canvas using a given address in memory.">ps_canvas_create_with_data</a> </dd></dl>
 
 </div>
@@ -693,7 +694,7 @@ Functions</h2></td></tr>
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Feb 16 2016 10:48:13 for Picasso API by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Apr 12 2016 17:28:23 for Picasso API by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>

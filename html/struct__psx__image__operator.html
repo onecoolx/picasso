@@ -56,7 +56,7 @@
   <div class="summary">
 <a href="#pub-attribs">Data Fields</a>  </div>
   <div class="headertitle">
-<div class="title">_psx_image_operator Struct Reference<div class="ingroups"><a class="el" href="group__plugin.html">Image Plugin Data Types</a></div></div>  </div>
+<div class="title">_psx_image_operator Struct Reference<div class="ingroups"><a class="el" href="group__types.html">XImage Object Types</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
 <!-- doxytag: class="_psx_image_operator" -->
@@ -67,48 +67,48 @@
 <table class="memberdecls">
 <tr><td colspan="2"><h2><a name="pub-attribs"></a>
 Data Fields</h2></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct__psx__image__operator.html#aeb5c2d5e7f55724090ba9e3a7cac635a">read_header_info</a> )(const <a class="el" href="group__data.html#gab4d32618dcac1b191ee7db92ef475ed0">ps_byte</a> *data, size_t data_len, <a class="el" href="group__plugin.html#ga2a329fae95e995b3152f5794f40577c8">psx_image_header</a> *header)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct__psx__image__operator.html#a440d01331e5508c1b5cb4f7f479e6a00">decode_image_data</a> )(<a class="el" href="group__plugin.html#ga2a329fae95e995b3152f5794f40577c8">psx_image_header</a> *header, int idx, <a class="el" href="group__data.html#gab4d32618dcac1b191ee7db92ef475ed0">ps_byte</a> *buffer, size_t buffer_len)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct__psx__image__operator.html#a79ee75be9a020f35f5ceae475a4a0259">release_read_header_info</a> )(<a class="el" href="group__plugin.html#ga2a329fae95e995b3152f5794f40577c8">psx_image_header</a> *header)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct__psx__image__operator.html#a88035503b27290544fa2dd7db516d926">write_header_info</a> )(const <a class="el" href="group__extobj.html#gadf288af52cc3e0bcd015ad1d5cb34555">psx_image</a> *image, <a class="el" href="group__extimg.html#ga6763305e42672358afd7b53b2fd05cad">image_writer_fn</a> func, void *param, float quality, <a class="el" href="group__plugin.html#ga2a329fae95e995b3152f5794f40577c8">psx_image_header</a> *header)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct__psx__image__operator.html#a15718a2e51f02e18c6b5c642d1fb1128">encode_image_data</a> )(<a class="el" href="group__plugin.html#ga2a329fae95e995b3152f5794f40577c8">psx_image_header</a> *header, int idx, const <a class="el" href="group__data.html#gab4d32618dcac1b191ee7db92ef475ed0">ps_byte</a> *buffer, size_t buffer_len, int *ret)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct__psx__image__operator.html#afda2e14175eed25db2c72dbd23301a50">release_write_header_info</a> )(<a class="el" href="group__plugin.html#ga2a329fae95e995b3152f5794f40577c8">psx_image_header</a> *header)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct__psx__image__operator.html#aeb5c2d5e7f55724090ba9e3a7cac635a">read_header_info</a> )(const <a class="el" href="group__data.html#gab4d32618dcac1b191ee7db92ef475ed0">ps_byte</a> *data, size_t data_len, <a class="el" href="group__types.html#ga2a329fae95e995b3152f5794f40577c8">psx_image_header</a> *header)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct__psx__image__operator.html#a7f5843bfc7981ca86027b5b45971f988">decode_image_data</a> )(<a class="el" href="group__types.html#ga2a329fae95e995b3152f5794f40577c8">psx_image_header</a> *header, <a class="el" href="group__types.html#ga9c73a9e18c3dbe35627caf3ca2576e9d">psx_image_frame</a> *frame, int idx, <a class="el" href="group__data.html#gab4d32618dcac1b191ee7db92ef475ed0">ps_byte</a> *buffer, size_t buffer_len)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct__psx__image__operator.html#a79ee75be9a020f35f5ceae475a4a0259">release_read_header_info</a> )(<a class="el" href="group__types.html#ga2a329fae95e995b3152f5794f40577c8">psx_image_header</a> *header)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct__psx__image__operator.html#a88035503b27290544fa2dd7db516d926">write_header_info</a> )(const <a class="el" href="group__types.html#gadf288af52cc3e0bcd015ad1d5cb34555">psx_image</a> *image, <a class="el" href="group__functions.html#ga6763305e42672358afd7b53b2fd05cad">image_writer_fn</a> func, void *param, float quality, <a class="el" href="group__types.html#ga2a329fae95e995b3152f5794f40577c8">psx_image_header</a> *header)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct__psx__image__operator.html#adf64cbb6ef5ab01bf50902aa73504360">encode_image_data</a> )(<a class="el" href="group__types.html#ga2a329fae95e995b3152f5794f40577c8">psx_image_header</a> *header, <a class="el" href="group__types.html#ga9c73a9e18c3dbe35627caf3ca2576e9d">psx_image_frame</a> *frame, int idx, const <a class="el" href="group__data.html#gab4d32618dcac1b191ee7db92ef475ed0">ps_byte</a> *buffer, size_t buffer_len, int *ret)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct__psx__image__operator.html#afda2e14175eed25db2c72dbd23301a50">release_write_header_info</a> )(<a class="el" href="group__types.html#ga2a329fae95e995b3152f5794f40577c8">psx_image_header</a> *header)</td></tr>
 </table>
 <hr/><a name="details" id="details"></a><h2>Detailed Description</h2>
 <div class="textblock"><p>The image operator define. </p>
-<dl class="see"><dt><b>See also:</b></dt><dd><a class="el" href="group__extimgs.html#ga9330f5cefad1ea3745f6f03406378de8" title="Register the image operator.">psx_register_image_operator</a> <a class="el" href="group__extimgs.html#ga348bc0538ff52d0545f15bdda684ed2b" title="Unregister the image operator.">psx_unregister_image_operator</a> </dd></dl>
+<dl class="see"><dt><b>See also:</b></dt><dd><a class="el" href="group__interface.html#ga9330f5cefad1ea3745f6f03406378de8" title="Register the image operator.">psx_register_image_operator</a> <a class="el" href="group__interface.html#ga348bc0538ff52d0545f15bdda684ed2b" title="Unregister the image operator.">psx_unregister_image_operator</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="picasso__image__plugin_8h_source.html#l00061">61</a> of file <a class="el" href="picasso__image__plugin_8h_source.html">picasso_image_plugin.h</a>.</p>
+<p>Definition at line <a class="el" href="picasso__image__plugin_8h_source.html#l00069">69</a> of file <a class="el" href="picasso__image__plugin_8h_source.html">picasso_image_plugin.h</a>.</p>
 </div><hr/><h2>Field Documentation</h2>
-<a class="anchor" id="a440d01331e5508c1b5cb4f7f479e6a00"></a><!-- doxytag: member="_psx_image_operator::decode_image_data" ref="a440d01331e5508c1b5cb4f7f479e6a00" args=")(psx_image_header *header, int idx, ps_byte *buffer, size_t buffer_len)" -->
+<a class="anchor" id="a7f5843bfc7981ca86027b5b45971f988"></a><!-- doxytag: member="_psx_image_operator::decode_image_data" ref="a7f5843bfc7981ca86027b5b45971f988" args=")(psx_image_header *header, psx_image_frame *frame, int idx, ps_byte *buffer, size_t buffer_len)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int(* <a class="el" href="struct__psx__image__operator.html#a440d01331e5508c1b5cb4f7f479e6a00">_psx_image_operator::decode_image_data</a>)(<a class="el" href="group__plugin.html#ga2a329fae95e995b3152f5794f40577c8">psx_image_header</a> *header, int idx, <a class="el" href="group__data.html#gab4d32618dcac1b191ee7db92ef475ed0">ps_byte</a> *buffer, size_t buffer_len)</td>
+          <td class="memname">int(* <a class="el" href="struct__psx__image__operator.html#a7f5843bfc7981ca86027b5b45971f988">_psx_image_operator::decode_image_data</a>)(<a class="el" href="group__types.html#ga2a329fae95e995b3152f5794f40577c8">psx_image_header</a> *header, <a class="el" href="group__types.html#ga9c73a9e18c3dbe35627caf3ca2576e9d">psx_image_frame</a> *frame, int idx, <a class="el" href="group__data.html#gab4d32618dcac1b191ee7db92ef475ed0">ps_byte</a> *buffer, size_t buffer_len)</td>
         </tr>
       </table>
 </div>
 <div class="memdoc">
 <p>Read a frame of raw data. </p>
 
-<p>Definition at line <a class="el" href="picasso__image__plugin_8h_source.html#l00065">65</a> of file <a class="el" href="picasso__image__plugin_8h_source.html">picasso_image_plugin.h</a>.</p>
+<p>Definition at line <a class="el" href="picasso__image__plugin_8h_source.html#l00073">73</a> of file <a class="el" href="picasso__image__plugin_8h_source.html">picasso_image_plugin.h</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a15718a2e51f02e18c6b5c642d1fb1128"></a><!-- doxytag: member="_psx_image_operator::encode_image_data" ref="a15718a2e51f02e18c6b5c642d1fb1128" args=")(psx_image_header *header, int idx, const ps_byte *buffer, size_t buffer_len, int *ret)" -->
+<a class="anchor" id="adf64cbb6ef5ab01bf50902aa73504360"></a><!-- doxytag: member="_psx_image_operator::encode_image_data" ref="adf64cbb6ef5ab01bf50902aa73504360" args=")(psx_image_header *header, psx_image_frame *frame, int idx, const ps_byte *buffer, size_t buffer_len, int *ret)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int(* <a class="el" href="struct__psx__image__operator.html#a15718a2e51f02e18c6b5c642d1fb1128">_psx_image_operator::encode_image_data</a>)(<a class="el" href="group__plugin.html#ga2a329fae95e995b3152f5794f40577c8">psx_image_header</a> *header, int idx, const <a class="el" href="group__data.html#gab4d32618dcac1b191ee7db92ef475ed0">ps_byte</a> *buffer, size_t buffer_len, int *ret)</td>
+          <td class="memname">int(* <a class="el" href="struct__psx__image__operator.html#adf64cbb6ef5ab01bf50902aa73504360">_psx_image_operator::encode_image_data</a>)(<a class="el" href="group__types.html#ga2a329fae95e995b3152f5794f40577c8">psx_image_header</a> *header, <a class="el" href="group__types.html#ga9c73a9e18c3dbe35627caf3ca2576e9d">psx_image_frame</a> *frame, int idx, const <a class="el" href="group__data.html#gab4d32618dcac1b191ee7db92ef475ed0">ps_byte</a> *buffer, size_t buffer_len, int *ret)</td>
         </tr>
       </table>
 </div>
 <div class="memdoc">
 <p>Write image data frames. </p>
 
-<p>Definition at line <a class="el" href="picasso__image__plugin_8h_source.html#l00072">72</a> of file <a class="el" href="picasso__image__plugin_8h_source.html">picasso_image_plugin.h</a>.</p>
+<p>Definition at line <a class="el" href="picasso__image__plugin_8h_source.html#l00080">80</a> of file <a class="el" href="picasso__image__plugin_8h_source.html">picasso_image_plugin.h</a>.</p>
 
 </div>
 </div>
@@ -117,14 +117,14 @@ Data Fields</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int(* <a class="el" href="struct__psx__image__operator.html#aeb5c2d5e7f55724090ba9e3a7cac635a">_psx_image_operator::read_header_info</a>)(const <a class="el" href="group__data.html#gab4d32618dcac1b191ee7db92ef475ed0">ps_byte</a> *data, size_t data_len, <a class="el" href="group__plugin.html#ga2a329fae95e995b3152f5794f40577c8">psx_image_header</a> *header)</td>
+          <td class="memname">int(* <a class="el" href="struct__psx__image__operator.html#aeb5c2d5e7f55724090ba9e3a7cac635a">_psx_image_operator::read_header_info</a>)(const <a class="el" href="group__data.html#gab4d32618dcac1b191ee7db92ef475ed0">ps_byte</a> *data, size_t data_len, <a class="el" href="group__types.html#ga2a329fae95e995b3152f5794f40577c8">psx_image_header</a> *header)</td>
         </tr>
       </table>
 </div>
 <div class="memdoc">
 <p>Create a image reader header. </p>
 
-<p>Definition at line <a class="el" href="picasso__image__plugin_8h_source.html#l00063">63</a> of file <a class="el" href="picasso__image__plugin_8h_source.html">picasso_image_plugin.h</a>.</p>
+<p>Definition at line <a class="el" href="picasso__image__plugin_8h_source.html#l00071">71</a> of file <a class="el" href="picasso__image__plugin_8h_source.html">picasso_image_plugin.h</a>.</p>
 
 </div>
 </div>
@@ -133,14 +133,14 @@ Data Fields</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int(* <a class="el" href="struct__psx__image__operator.html#a79ee75be9a020f35f5ceae475a4a0259">_psx_image_operator::release_read_header_info</a>)(<a class="el" href="group__plugin.html#ga2a329fae95e995b3152f5794f40577c8">psx_image_header</a> *header)</td>
+          <td class="memname">int(* <a class="el" href="struct__psx__image__operator.html#a79ee75be9a020f35f5ceae475a4a0259">_psx_image_operator::release_read_header_info</a>)(<a class="el" href="group__types.html#ga2a329fae95e995b3152f5794f40577c8">psx_image_header</a> *header)</td>
         </tr>
       </table>
 </div>
 <div class="memdoc">
 <p>Release reader resources. </p>
 
-<p>Definition at line <a class="el" href="picasso__image__plugin_8h_source.html#l00067">67</a> of file <a class="el" href="picasso__image__plugin_8h_source.html">picasso_image_plugin.h</a>.</p>
+<p>Definition at line <a class="el" href="picasso__image__plugin_8h_source.html#l00075">75</a> of file <a class="el" href="picasso__image__plugin_8h_source.html">picasso_image_plugin.h</a>.</p>
 
 </div>
 </div>
@@ -149,14 +149,14 @@ Data Fields</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int(* <a class="el" href="struct__psx__image__operator.html#afda2e14175eed25db2c72dbd23301a50">_psx_image_operator::release_write_header_info</a>)(<a class="el" href="group__plugin.html#ga2a329fae95e995b3152f5794f40577c8">psx_image_header</a> *header)</td>
+          <td class="memname">int(* <a class="el" href="struct__psx__image__operator.html#afda2e14175eed25db2c72dbd23301a50">_psx_image_operator::release_write_header_info</a>)(<a class="el" href="group__types.html#ga2a329fae95e995b3152f5794f40577c8">psx_image_header</a> *header)</td>
         </tr>
       </table>
 </div>
 <div class="memdoc">
 <p>Release writer resources. </p>
 
-<p>Definition at line <a class="el" href="picasso__image__plugin_8h_source.html#l00074">74</a> of file <a class="el" href="picasso__image__plugin_8h_source.html">picasso_image_plugin.h</a>.</p>
+<p>Definition at line <a class="el" href="picasso__image__plugin_8h_source.html#l00082">82</a> of file <a class="el" href="picasso__image__plugin_8h_source.html">picasso_image_plugin.h</a>.</p>
 
 </div>
 </div>
@@ -165,14 +165,14 @@ Data Fields</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int(* <a class="el" href="struct__psx__image__operator.html#a88035503b27290544fa2dd7db516d926">_psx_image_operator::write_header_info</a>)(const <a class="el" href="group__extobj.html#gadf288af52cc3e0bcd015ad1d5cb34555">psx_image</a> *image, <a class="el" href="group__extimg.html#ga6763305e42672358afd7b53b2fd05cad">image_writer_fn</a> func, void *param, float quality, <a class="el" href="group__plugin.html#ga2a329fae95e995b3152f5794f40577c8">psx_image_header</a> *header)</td>
+          <td class="memname">int(* <a class="el" href="struct__psx__image__operator.html#a88035503b27290544fa2dd7db516d926">_psx_image_operator::write_header_info</a>)(const <a class="el" href="group__types.html#gadf288af52cc3e0bcd015ad1d5cb34555">psx_image</a> *image, <a class="el" href="group__functions.html#ga6763305e42672358afd7b53b2fd05cad">image_writer_fn</a> func, void *param, float quality, <a class="el" href="group__types.html#ga2a329fae95e995b3152f5794f40577c8">psx_image_header</a> *header)</td>
         </tr>
       </table>
 </div>
 <div class="memdoc">
 <p>Create a image writer header. </p>
 
-<p>Definition at line <a class="el" href="picasso__image__plugin_8h_source.html#l00069">69</a> of file <a class="el" href="picasso__image__plugin_8h_source.html">picasso_image_plugin.h</a>.</p>
+<p>Definition at line <a class="el" href="picasso__image__plugin_8h_source.html#l00077">77</a> of file <a class="el" href="picasso__image__plugin_8h_source.html">picasso_image_plugin.h</a>.</p>
 
 </div>
 </div>
@@ -183,7 +183,7 @@ Data Fields</h2></td></tr>
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Feb 16 2016 10:48:13 for Picasso API by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Apr 12 2016 17:28:23 for Picasso API by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>
