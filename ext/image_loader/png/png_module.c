@@ -114,8 +114,6 @@ static int read_png_info(const ps_byte* data, size_t len, psx_image_header* head
     rowbytes = (int)png_get_rowbytes(ctx->png_ptr, ctx->info_ptr);
     bpp = rowbytes / width;
 
-    rowbytes = (int)png_get_rowbytes(ctx->png_ptr, ctx->info_ptr);
-
     header->priv = ctx;
     header->width = width;
     header->height = height;
