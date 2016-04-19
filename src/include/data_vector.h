@@ -525,7 +525,7 @@ public:
         if (size <= m_remain_size) {
             byte* ptr = m_buf_ptr;
             if (alignment > 1) {
-                unsigned int align = (alignment - ((unsigned int)(ptr)) % alignment) % alignment;
+                unsigned int align = (unsigned int)((alignment - ((intptr_t)(ptr)) % alignment) % alignment);
 
                 size += align;
                 ptr += align;

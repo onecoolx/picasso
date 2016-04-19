@@ -43,7 +43,7 @@ int main(int argc, char* argv[])
     }
 
     fprintf (stderr, "Load picture: %s \nSize: %d x %d \nBytes per scanline %d \nFormat: %d\nFrames: %d \n", 
-             path, data->width, data->height, data->pitch, data->format, data->num_frames);
+             path, data->width, data->height, data->pitch, data->format, (int)data->num_frames);
 
     if ((ret = psx_image_save_to_file(data, argv[2], argv[3], q)) != S_OK)
         fprintf(stderr,"Save image faild : %d\n", ret);

@@ -258,7 +258,7 @@ static psx_image* load_psx_image(psx_image_operator* op, const ps_byte* data, si
             if (!image->frames[i].data)
                 goto error;
 
-            if (op->decode_image_data(&header, &image->frames[i], i, image->frames[i].data, size) != 0)
+            if (op->decode_image_data(&header, &image->frames[i], (int)i, image->frames[i].data, size) != 0)
                 goto error;
 
             // create ps_image object.

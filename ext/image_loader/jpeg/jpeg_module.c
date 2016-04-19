@@ -68,7 +68,7 @@ static int read_jpg_info(const ps_byte* data, size_t len, psx_image_header* head
 
     jpeg_create_decompress(&ctx->dinfo);
     // set decode source.
-    jpeg_mem_src(&ctx->dinfo, (unsigned char*)data, len);
+    jpeg_mem_src(&ctx->dinfo, (unsigned char*)data, (unsigned long)len);
     jpeg_read_header(&ctx->dinfo, (unsigned char)TRUE);
 
     if (ctx->dinfo.num_components == 3 && ctx->dinfo.out_color_space == JCS_RGB) {

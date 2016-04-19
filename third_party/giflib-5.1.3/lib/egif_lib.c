@@ -253,9 +253,9 @@ static int InternalWrite(GifFileType *GifFileOut,
 {
     GifFilePrivateType *Private = (GifFilePrivateType*)GifFileOut->Private;
     if (Private->Write)
-	return Private->Write(GifFileOut,buf,len);
+	return Private->Write(GifFileOut,buf,(int)len);
     else
-	return fwrite(buf, 1, len, Private->File);
+	return (int)fwrite(buf, 1, len, Private->File);
 }
 
 /******************************************************************************
@@ -508,7 +508,7 @@ EGifPutComment(GifFileType *GifFile, const char *Comment)
     unsigned int length;
     char *buf;
 
-    length = strlen(Comment);
+    length = (unsigned int)strlen(Comment);
     if (length <= 255) {
         return EGifPutExtension(GifFile, COMMENT_EXT_FUNC_CODE,
                                 length, Comment);
@@ -689,7 +689,7 @@ int EGifGCBToSavedExtension(const GraphicsControlBlock *GCB,
     if (GifAddExtensionBlock(&GifFile->SavedImages[ImageIndex].ExtensionBlockCount,
 			     &GifFile->SavedImages[ImageIndex].ExtensionBlocks,
 			     GRAPHICS_EXT_FUNC_CODE,
-			     Len,
+			     (unsigned int)Len,
 			     (unsigned char *)buf) == GIF_ERROR)
 	return (GIF_ERROR);
 

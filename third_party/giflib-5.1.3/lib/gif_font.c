@@ -242,7 +242,7 @@ GifDrawBoxedText8x8(SavedImage *Image,
 	    int leadspace = 0;
 
 	    if (cp[0] == '\t')
-		leadspace = (TextWidth - strlen(++cp)) / 2;
+		leadspace = (TextWidth - (int)strlen(++cp)) / 2;
 
 	    GifDrawText8x8(Image, x + border + (leadspace * GIF_FONT_WIDTH),
 			   y + border + (GIF_FONT_HEIGHT * i++), cp, fg);

@@ -32,7 +32,7 @@ wchar_t* pstring_create(const char* str, size_t * rlen)
 
     ustr = (wchar_t*)malloc((len+1) * sizeof(wchar_t));
     memset(ustr, 0, sizeof(wchar_t) * (len+1));
-    MultiByteToWideChar(CP_UTF8, 0, str, -1, ustr, len);
+    MultiByteToWideChar(CP_UTF8, 0, str, -1, ustr, (int)len);
 
     if (rlen) *rlen = len;
     return ustr;
@@ -85,7 +85,7 @@ void _module_unload(module_handle module)
 static wchar_t* _get_current_path(wchar_t* buffer, size_t len, size_t* rlen)
 {
     wchar_t *p = 0;
-    *rlen = GetModuleFileName(NULL, buffer, len);
+    *rlen = (size_t)GetModuleFileName(NULL, buffer, (DWORD)len);
     p = wcsrchr(buffer, '\\');
     p++; *p = 0;
     return buffer;

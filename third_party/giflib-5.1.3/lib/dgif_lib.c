@@ -1137,7 +1137,7 @@ DGifSlurp(GifFileType *GifFile)
 		      }
 	      }
 	      else {
-		  if (DGifGetLine(GifFile,sp->RasterBits,ImageSize)==GIF_ERROR)
+		  if (DGifGetLine(GifFile,sp->RasterBits,(int)ImageSize)==GIF_ERROR)
 		      return (GIF_ERROR);
 	      }
 

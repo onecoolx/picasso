@@ -62,7 +62,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,
         TranslateMessage(&msg);
         DispatchMessage(&msg);
     }
-    return msg.wParam;
+    return (int)msg.wParam;
 }
 
 ATOM MyRegisterClass(HINSTANCE hInstance)

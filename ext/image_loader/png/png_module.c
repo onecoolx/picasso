@@ -111,10 +111,10 @@ static int read_png_info(const ps_byte* data, size_t len, psx_image_header* head
 
     // update info after applying transformations
     png_read_update_info(ctx->png_ptr, ctx->info_ptr);
-    rowbytes = png_get_rowbytes(ctx->png_ptr, ctx->info_ptr);
+    rowbytes = (int)png_get_rowbytes(ctx->png_ptr, ctx->info_ptr);
     bpp = rowbytes / width;
 
-    rowbytes = png_get_rowbytes(ctx->png_ptr, ctx->info_ptr);
+    rowbytes = (int)png_get_rowbytes(ctx->png_ptr, ctx->info_ptr);
 
     header->priv = ctx;
     header->width = width;

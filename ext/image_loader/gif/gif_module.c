@@ -77,7 +77,7 @@ static int read_gif_info(const ps_byte* data, size_t len, psx_image_header* head
     }
 
     ctx->buf = (uint8_t*)data;
-    ctx->len = len;
+    ctx->len = (uint32_t)len;
     ctx->pos = 0;
 
 #if GIFLIB_MAJOR >= 5

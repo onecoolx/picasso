@@ -59,7 +59,7 @@ void draw_test (int id, ps_context* gc)
 
   //  ps_set_text_render_type(gc, TEXT_TYPE_MONO);
     ps_set_text_matrix(gc, pn);
-    ps_text_out_length(gc, 100, 100, text, strlen(text));
+    ps_text_out_length(gc, 100, 100, text, (int)strlen(text));
 
 
 /*    

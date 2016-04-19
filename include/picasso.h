@@ -22,10 +22,10 @@
 #ifdef DLL_EXPORT
     #if defined(WIN32) || defined(WINCE)
         #ifdef EXPORT
-            #define PICAPI  __stdcall
+            #define PICAPI
             #define PEXPORT __declspec(dllexport)
         #else
-            #define PICAPI  __stdcall
+            #define PICAPI
             #define PEXPORT __declspec(dllimport)
         #endif
     #else

@@ -35,7 +35,7 @@ public:
 
     void set_signature(const char* font_signature)
     {
-        m_signature = (char*)m_allocator.allocate(strlen(font_signature)+1);
+        m_signature = (char*)m_allocator.allocate((unsigned int)strlen(font_signature)+1);
         strcpy(m_signature, font_signature);
     }
 
