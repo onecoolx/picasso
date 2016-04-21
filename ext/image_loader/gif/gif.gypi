@@ -35,7 +35,7 @@
           ],
           'msvs_settings': {
             'VCLinkerTool' : {
-                'OutputFile': '$(OutDir)modules\\$(ProjectName)$(TargetExt)',
+                'OutputFile': '$(OutDir)modules\\$(ProjectName).dll',
             },
           },
         }],

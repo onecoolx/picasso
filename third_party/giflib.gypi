@@ -16,6 +16,7 @@
   ],
   'include_dirs': [
     '<(lib_dir)',
+    '<(lib_dir)/../../build',
     '<(lib_dir)/lib',
   ],
   'sources': [

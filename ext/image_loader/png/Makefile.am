@@ -2,7 +2,8 @@ modulesdir=$(prefix)/lib/modules/
 
 INCLUDES = -I../ \
            -I../../../ \
-	       -I../../../include
+           -I../../../build \
+           -I../../../include
 
 # picasso external system image module png.
 modules_LTLIBRARIES = libpsxm_image_png.la
