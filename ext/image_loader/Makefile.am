@@ -18,5 +18,5 @@ libpsx_image_la_SOURCES = \
 
 libpsx_image_la_LDFLAGS = -no-undefined -release $(VERSION_MAJOR).$(VERSION_MINOR).$(VERSION_MICRO)
 
-libpsx_image_la_LIBADD = -lpicasso -ldl
+libpsx_image_la_LIBADD = ../../src/libpicasso.la -ldl
 

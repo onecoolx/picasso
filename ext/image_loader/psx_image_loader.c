@@ -102,7 +102,7 @@ psx_image* PICAPI psx_image_create_from_data(ps_byte* data, ps_color_format fmt,
         return NULL;
     }
 
-    if (fmt < 0 || fmt >= COLOR_FORMAT_UNKNOWN) {
+    if ((int)fmt < 0 || fmt >= COLOR_FORMAT_UNKNOWN) {
         if (err_code)
             *err_code = S_BAD_PARAMS;
         return NULL;

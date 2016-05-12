@@ -129,7 +129,7 @@ static int get_gif_delay_time(GifFileType *gif, int frame)
     ExtensionBlock *ext = gif->SavedImages[frame].ExtensionBlocks;
     int len = gif->SavedImages[frame].ExtensionBlockCount;
     for (x = 0; x < len; ++x, ++ext) {
-        if ((ext->Function == GRAPHICS_EXT_FUNC_CODE)) {
+        if (ext->Function == GRAPHICS_EXT_FUNC_CODE) {
             return ((ext->Bytes[2] << 8) | (ext->Bytes[1])) * 10; // ms
         }
     }
