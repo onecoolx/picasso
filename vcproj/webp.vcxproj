@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{6400ECB2-D9A2-EF84-05B4-6818E090CD40}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>webp</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props"/>
+  <PropertyGroup Label="Configuration">
+    <CharacterSet>Unicode</CharacterSet>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props"/>
+  <ImportGroup Label="ExtensionSettings"/>
+  <ImportGroup Label="PropertySheets">
+    <Import Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props"/>
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros"/>
+  <PropertyGroup>
+    <ExecutablePath>$(ExecutablePath);$(MSBuildProjectDirectory)\..\bin\;$(MSBuildProjectDirectory)\..\bin\</ExecutablePath>
+    <IntDir>$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <TargetName>$(ProjectName)</TargetName>
+    <TargetPath>$(OutDir)\$(ProjectName)$(TargetExt)</TargetPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\third_party\libwebp-0.5.1;$(OutDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>false</ExceptionHandling>
+      <MinimalRebuild>true</MinimalRebuild>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32_EXPORT;WEBP_USE_THREAD;HAVE_WINCODEC_H;WIN32;DLL_EXPORT;__SSE2__=1;_HAS_EXCEPTIONS=0;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;_DEBUG;ENABLE_FAST_COPY=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <WarningLevel>Level3</WarningLevel>
+    </ClCompile>
+    <Link>
+      <DataExecutionPrevention></DataExecutionPrevention>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <OutputFile>$(OutDir)$(ProjectName)$(TargetExt)</OutputFile>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>..\third_party\libwebp-0.5.1;$(OutDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32_EXPORT;WEBP_USE_THREAD;HAVE_WINCODEC_H;WIN32;DLL_EXPORT;__SSE2__=1;_HAS_EXCEPTIONS=0;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;_DEBUG;ENABLE_FAST_COPY=1;%(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\third_party\libwebp-0.5.1;$(OutDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <ExceptionHandling>false</ExceptionHandling>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <Optimization>Full</Optimization>
+      <PreprocessorDefinitions>WIN32_EXPORT;WEBP_USE_THREAD;HAVE_WINCODEC_H;WIN32;DLL_EXPORT;__SSE2__=1;_HAS_EXCEPTIONS=0;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;NDEBUG;ENABLE_FAST_COPY=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <StringPooling>true</StringPooling>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <WarningLevel>Level3</WarningLevel>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+    </ClCompile>
+    <Link>
+      <DataExecutionPrevention></DataExecutionPrevention>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <GenerateMapFile>true</GenerateMapFile>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <OutputFile>$(OutDir)$(ProjectName)$(TargetExt)</OutputFile>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>..\third_party\libwebp-0.5.1;$(OutDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32_EXPORT;WEBP_USE_THREAD;HAVE_WINCODEC_H;WIN32;DLL_EXPORT;__SSE2__=1;_HAS_EXCEPTIONS=0;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;NDEBUG;ENABLE_FAST_COPY=1;%(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="..\picasso.gyp"/>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\third_party\libwebp-0.5.1\src\enc\vp8li.h"/>
+    <ClInclude Include="..\third_party\libwebp-0.5.1\src\enc\backward_references.h"/>
+    <ClInclude Include="..\third_party\libwebp-0.5.1\src\enc\delta_palettization.h"/>
+    <ClInclude Include="..\third_party\libwebp-0.5.1\src\enc\vp8enci.h"/>
+    <ClInclude Include="..\third_party\libwebp-0.5.1\src\enc\cost.h"/>
+    <ClInclude Include="..\third_party\libwebp-0.5.1\src\enc\histogram.h"/>
+    <ClInclude Include="..\third_party\libwebp-0.5.1\src\utils\bit_writer.h"/>
+    <ClInclude Include="..\third_party\libwebp-0.5.1\src\utils\huffman_encode.h"/>
+    <ClInclude Include="..\third_party\libwebp-0.5.1\src\utils\thread.h"/>
+    <ClInclude Include="..\third_party\libwebp-0.5.1\src\utils\endian_inl.h"/>
+    <ClInclude Include="..\third_party\libwebp-0.5.1\src\utils\filters.h"/>
+    <ClInclude Include="..\third_party\libwebp-0.5.1\src\utils\quant_levels.h"/>
+    <ClInclude Include="..\third_party\libwebp-0.5.1\src\utils\bit_reader_inl.h"/>
+    <ClInclude Include="..\third_party\libwebp-0.5.1\src\utils\bit_reader.h"/>
+    <ClInclude Include="..\third_party\libwebp-0.5.1\src\utils\random.h"/>
+    <ClInclude Include="..\third_party\libwebp-0.5.1\src\utils\utils.h"/>
+    <ClInclude Include="..\third_party\libwebp-0.5.1\src\utils\color_cache.h"/>
+    <ClInclude Include="..\third_party\libwebp-0.5.1\src\utils\quant_levels_dec.h"/>
+    <ClInclude Include="..\third_party\libwebp-0.5.1\src\utils\rescaler.h"/>
+    <ClInclude Include="..\third_party\libwebp-0.5.1\src\utils\huffman.h"/>
+    <ClInclude Include="..\third_party\libwebp-0.5.1\src\mux\muxi.h"/>
+    <ClInclude Include="..\third_party\libwebp-0.5.1\src\dsp\yuv.h"/>
+    <ClInclude Include="..\third_party\libwebp-0.5.1\src\dsp\dsp.h"/>
+    <ClInclude Include="..\third_party\libwebp-0.5.1\src\dsp\neon.h"/>
+    <ClInclude Include="..\third_party\libwebp-0.5.1\src\dsp\mips_macro.h"/>
+    <ClInclude Include="..\third_party\libwebp-0.5.1\src\dsp\common_sse2.h"/>
+    <ClInclude Include="..\third_party\libwebp-0.5.1\src\dsp\lossless.h"/>
+    <ClInclude Include="..\third_party\libwebp-0.5.1\src\dsp\msa_macro.h"/>
+    <ClInclude Include="..\third_party\libwebp-0.5.1\src\webp\demux.h"/>
+    <ClInclude Include="..\third_party\libwebp-0.5.1\src\webp\encode.h"/>
+    <ClInclude Include="..\third_party\libwebp-0.5.1\src\webp\format_constants.h"/>
+    <ClInclude Include="..\third_party\libwebp-0.5.1\src\webp\mux.h"/>
+    <ClInclude Include="..\third_party\libwebp-0.5.1\src\webp\decode.h"/>
+    <ClInclude Include="..\third_party\libwebp-0.5.1\src\webp\types.h"/>
+    <ClInclude Include="..\third_party\libwebp-0.5.1\src\webp\mux_types.h"/>
+    <ClInclude Include="..\third_party\libwebp-0.5.1\src\dec\vp8i.h"/>
+    <ClInclude Include="..\third_party\libwebp-0.5.1\src\dec\common.h"/>
+    <ClInclude Include="..\third_party\libwebp-0.5.1\src\dec\vp8li.h"/>
+    <ClInclude Include="..\third_party\libwebp-0.5.1\src\dec\alphai.h"/>
+    <ClInclude Include="..\third_party\libwebp-0.5.1\src\dec\webpi.h"/>
+    <ClInclude Include="..\third_party\libwebp-0.5.1\src\dec\decode_vp8.h"/>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\enc\analysis.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\enc\picture_psnr.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\enc\webpenc.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\enc\config.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\enc\backward_references.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\enc\filter.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\enc\picture_tools.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\enc\syntax.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\enc\ealpha.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\enc\picture_rescale.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\enc\histogram.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\enc\iterator.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\enc\delta_palettization.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\enc\evp8l.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\enc\picture.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\enc\near_lossless.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\enc\token.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\enc\cost.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\enc\eframe.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\enc\picture_csp.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\enc\etree.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\enc\equant.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\utils\bit_writer.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\utils\rescaler.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\utils\huffman_encode.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\utils\utils.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\utils\bit_reader.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\utils\thread.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\utils\filters.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\utils\quant_levels.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\utils\random.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\utils\color_cache.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\utils\quant_levels_dec.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\utils\huffman.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\mux\muxread.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\mux\muxinternal.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\mux\muxedit.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\mux\anim_encode.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dsp\lossless_enc_sse41.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dsp\yuv_sse2.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dsp\enc_sse41.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dsp\cpu.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dsp\dec_sse41.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dsp\upsampling_sse2.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dsp\dec_sse2.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dsp\enc_mips32.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dsp\lossless_neon.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dsp\enc_sse2.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dsp\cost_mips32.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dsp\lossless_enc_neon.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dsp\dcost.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dsp\enc.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dsp\lossless_mips_dsp_r2.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dsp\lossless_enc.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dsp\cost_sse2.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dsp\yuv.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dsp\dec_clip_tables.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dsp\upsampling_mips_dsp_r2.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dsp\lossless_enc_sse2.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dsp\argb_sse2.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dsp\dec_neon.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dsp\rescaler_mips32.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dsp\filters_mips_dsp_r2.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dsp\rescaler_neon.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dsp\dec_mips32.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dsp\enc_neon.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dsp\upsampling.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dsp\cost_mips_dsp_r2.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dsp\yuv_mips32.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dsp\alpha_processing.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dsp\drescaler.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dsp\lossless.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dsp\dec_mips_dsp_r2.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dsp\dfilters.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dsp\yuv_mips_dsp_r2.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dsp\rescaler_mips_dsp_r2.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dsp\lossless_enc_mips32.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dsp\lossless_sse2.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dsp\dec.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dsp\alpha_processing_mips_dsp_r2.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dsp\argb_mips_dsp_r2.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dsp\alpha_processing_sse2.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dsp\argb.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dsp\filters_sse2.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dsp\upsampling_neon.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dsp\lossless_enc_mips_dsp_r2.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dsp\enc_mips_dsp_r2.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dsp\alpha_processing_sse41.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dsp\dec_msa.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dsp\rescaler_sse2.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dsp\enc_avx2.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\extras\extras.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\demux\anim_decode.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\demux\demux.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dec\vp8l.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dec\frame.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dec\vp8.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dec\idec.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dec\alpha.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dec\webp.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dec\io.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dec\buffer.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dec\quant.c"/>
+    <ClCompile Include="..\third_party\libwebp-0.5.1\src\dec\tree.c"/>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\third_party\libwebp-0.5.1\src\webp">
+      <FileType>Document</FileType>
+      <Command>call call python &quot;..\tools\cp.py&quot; &quot;..\third_party\libwebp-0.5.1\src\webp&quot; &quot;$(OutDir)include\webp&quot;</Command>
+      <Message>install_header</Message>
+      <Outputs>$(OutDir)\include\webp</Outputs>
+    </CustomBuild>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets"/>
+  <ImportGroup Label="ExtensionTargets"/>
+</Project>
