@@ -430,6 +430,7 @@ static int encode_gif_data(psx_image_header* header, psx_image_frame* frame, int
     struct gif_image_ctx* ctx = (struct gif_image_ctx*)header->priv;
 
     if ((output_map = MakeMapObject(map_size, NULL)) == NULL) {
+        if (ret) *ret = S_FAILURE;
         return -1;
     }
 
@@ -447,6 +448,7 @@ static int encode_gif_data(psx_image_header* header, psx_image_frame* frame, int
     if (QuantizeBuffer(header->width, header->height, &map_size,
 		ctx->red_buf, ctx->green_buf, ctx->blue_buf, ctx->output_buffer, output_map->Colors) == GIF_ERROR) {
         FreeMapObject(output_map);
+        if (ret) *ret = S_FAILURE;
         return -1;
     }
 
@@ -469,12 +471,14 @@ static int encode_gif_data(psx_image_header* header, psx_image_frame* frame, int
 #endif
         if (EGifPutExtension(ctx->gif, GRAPHICS_EXT_FUNC_CODE, 4, extension) == GIF_ERROR) {
             FreeMapObject(output_map);
+            if (ret) *ret = S_FAILURE;
             return -1;
         }
     }
 
     if (EGifPutImageDesc(ctx->gif, 0, 0, header->width, header->height, FALSE, output_map) == GIF_ERROR) {
         FreeMapObject(output_map);
+        if (ret) *ret = S_FAILURE;
         return -1;
     }
 
@@ -507,7 +511,7 @@ static int release_write_gif_info(psx_image_header* header)
 psx_image_operator * gif_coder = NULL;
 static module_handle lib_image = INVALID_HANDLE;
 
-typedef int (*register_func)(const char*, const ps_byte*, size_t, psx_priority_level, psx_image_operator*);
+typedef int (*register_func)(const char*, const ps_byte*, size_t, size_t, psx_priority_level, psx_image_operator*);
 typedef int (*unregister_func)(psx_image_operator*);
 
 #if defined(WIN32) && defined(_MSC_VER)
@@ -552,7 +556,7 @@ void psx_image_module_init(void)
     gif_coder->encode_image_data = encode_gif_data;
     gif_coder->release_write_header_info = release_write_gif_info;
 
-    func("gif", (ps_byte*)"GIF", 3, PRIORITY_DEFAULT, gif_coder);
+    func("gif", (ps_byte*)"GIF", 0, 3, PRIORITY_DEFAULT, gif_coder);
 }
 
 void psx_image_module_shutdown(void)

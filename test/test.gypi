@@ -608,6 +608,7 @@
       'target_name': 'image_info',
       'type': 'executable',
       'dependencies': [
+        'picasso2_sw',
         'psx_image',
       ],
       'include_dirs': [

@@ -92,7 +92,7 @@ struct image_coder_node* get_first_operator(struct image_modules_mgr* mgr, const
 
     list_for_each(&(mgr->coders), ptr) {
         entry = (struct image_coder_node*)ptr;
-        if (memcmp(data, entry->magic_hdr, entry->magic_len) == 0)
+        if (memcmp(data + entry->magic_offset, entry->magic_hdr, entry->magic_len) == 0)
             break;
         entry = NULL;
     }
@@ -122,7 +122,7 @@ struct image_coder_node* get_next_operator(struct image_modules_mgr* mgr, struct
 
     list_for_each_start_with(&(mgr->coders), node, ptr) {
         entry = (struct image_coder_node*)ptr;
-        if (memcmp(data, entry->magic_hdr, entry->magic_len) == 0)
+        if (memcmp(data + entry->magic_offset, entry->magic_hdr, entry->magic_len) == 0)
             break;
         entry = NULL;
     }
@@ -152,8 +152,8 @@ static char* copy_magic(const char* str, size_t len)
     return dst;
 }
 
-int psx_image_register_operator(const char* type, const ps_byte* header_magic, size_t magic_len,
-        psx_priority_level level, psx_image_operator* coder)
+int psx_image_register_operator(const char* type, const ps_byte* header_magic,
+                                size_t magic_offset, size_t magic_len, psx_priority_level level, psx_image_operator* coder)
 {
     size_t len = 0;
     struct image_modules_mgr* mgr = NULL;
@@ -170,7 +170,7 @@ int psx_image_register_operator(const char* type, const ps_byte* header_magic, s
     list_for_each(&(mgr->coders), ptr) {
         entry = (struct image_coder_node*)ptr;
         len = entry->magic_len > magic_len ? entry->magic_len : magic_len;
-        if (entry && (memcmp(entry->magic_hdr, header_magic, len) == 0))
+        if (entry && (memcmp(entry->magic_hdr, header_magic, len) == 0) && (magic_offset == entry->magic_offset))
             break;
         entry = NULL;
     }
@@ -178,6 +178,7 @@ int psx_image_register_operator(const char* type, const ps_byte* header_magic, s
     if (entry) {
         struct image_coder_node * new_entry = (struct image_coder_node*)calloc(1, sizeof(struct image_coder_node));
         new_entry->magic_hdr = copy_magic((const char*)header_magic, magic_len);
+        new_entry->magic_offset = magic_offset;
         new_entry->magic_len = magic_len;
         new_entry->level = (int)level;
         new_entry->type_name = strdup(type);
@@ -193,6 +194,7 @@ int psx_image_register_operator(const char* type, const ps_byte* header_magic, s
     } else {
         entry = (struct image_coder_node*)calloc(1, sizeof(struct image_coder_node));
         entry->magic_hdr = copy_magic((const char*)header_magic, magic_len);
+        entry->magic_offset = magic_offset;
         entry->magic_len = magic_len;
         entry->level = (int)level;
         entry->type_name = strdup(type);

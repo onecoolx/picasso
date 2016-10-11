@@ -13,23 +13,24 @@
 
 struct image_coder_node {
     struct list_hdr head;
-    char*       magic_hdr;
-    size_t      magic_len;
-    int         level;
-    char*       type_name;
+    char*  magic_hdr;
+    size_t magic_offset;
+    size_t magic_len;
+    int    level;
+    char*  type_name;
     psx_image_operator* op;
 };
 
 struct image_module_node {
     module_handle handle;
-    pchar*         path;
+    pchar*        path;
 };
 
 struct image_modules_mgr {
-    struct list_hdr     coders;
-    size_t          num_coders;
+    struct list_hdr coders;
+    size_t num_coders;
     struct image_module_node* modules;
-    size_t          num_modules;
+    size_t num_modules;
 };
 
 

@@ -349,7 +349,7 @@ static int release_write_jpg_info(psx_image_header* header)
 psx_image_operator * jpg_coder = NULL;
 static module_handle lib_image = INVALID_HANDLE;
 
-typedef int (*register_func)(const char*, const ps_byte*, size_t, psx_priority_level, psx_image_operator*);
+typedef int (*register_func)(const char*, const ps_byte*, size_t, size_t, psx_priority_level, psx_image_operator*);
 typedef int (*unregister_func)(psx_image_operator*);
 
 #if defined(WIN32) && defined(_MSC_VER)
@@ -394,8 +394,8 @@ void psx_image_module_init(void)
     jpg_coder->encode_image_data = encode_jpg_data;
     jpg_coder->release_write_header_info = release_write_jpg_info;
 
-    func("jpg", (ps_byte*)"\xFF\xD8\xFF", 3, PRIORITY_DEFAULT, jpg_coder);
-    func("jpeg", (ps_byte*)"\xFF\xD8\xFF", 3, PRIORITY_DEFAULT, jpg_coder);
+    func("jpg", (ps_byte*)"\xFF\xD8\xFF", 0, 3, PRIORITY_DEFAULT, jpg_coder);
+    func("jpeg", (ps_byte*)"\xFF\xD8\xFF", 0, 3, PRIORITY_DEFAULT, jpg_coder);
 }
 
 void psx_image_module_shutdown(void)

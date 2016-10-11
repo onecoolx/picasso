@@ -184,6 +184,7 @@ ext/image_loader/Makefile
 ext/image_loader/png/Makefile
 ext/image_loader/jpeg/Makefile
 ext/image_loader/gif/Makefile
+ext/image_loader/webp/Makefile
 test/Makefile
 demos/Makefile
 )

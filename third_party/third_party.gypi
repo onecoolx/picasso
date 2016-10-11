@@ -25,6 +25,11 @@
           './giflib.gypi'
         ],
      },
+     {
+        'includes': [
+          './libwebp.gypi'
+        ],
+     },
   ],
 }
 

@@ -1,4 +1,4 @@
-SUBDIRS = png jpeg gif
+SUBDIRS = png jpeg gif webp
 
 INCLUDES = -I./ \
            -I../../ \

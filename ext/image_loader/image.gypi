@@ -9,5 +9,6 @@
     './png/png.gypi',
     './jpeg/jpeg.gypi',
     './gif/gif.gypi',
+    './webp/webp.gypi',
   ],
 }

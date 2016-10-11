@@ -192,8 +192,7 @@ static int get_depth(ps_color_format fmt)
     }
 }
 
-static int write_png_info(const psx_image* image, image_writer_fn func, void* param,
-                                                     float quality, psx_image_header* header)
+static int write_png_info(const psx_image* image, image_writer_fn func, void* param, float quality, psx_image_header* header)
 {
     unsigned int fmt;
     struct png_image_ctx* ctx = (struct png_image_ctx*)calloc(1, sizeof(struct png_image_ctx));
@@ -342,7 +341,7 @@ static int encode_png_data(psx_image_header* header, psx_image_frame* frame, int
 psx_image_operator * png_coder = NULL;
 static module_handle lib_image = INVALID_HANDLE;
 
-typedef int (*register_func)(const char*, const ps_byte*, size_t, psx_priority_level, psx_image_operator*);
+typedef int (*register_func)(const char*, const ps_byte*, size_t, size_t, psx_priority_level, psx_image_operator*);
 typedef int (*unregister_func)(psx_image_operator*);
 
 #if defined(WIN32) && defined(_MSC_VER)
@@ -387,7 +386,7 @@ void psx_image_module_init(void)
     png_coder->encode_image_data = encode_png_data;
     png_coder->release_write_header_info = release_write_png_info;
 
-    func("png", (ps_byte*)"\x89\x50\x4E\x47\x0D\x0A\x1A\x0A", 8, PRIORITY_DEFAULT, png_coder);
+    func("png", (ps_byte*)"\x89\x50\x4E\x47\x0D\x0A\x1A\x0A", 0, 8, PRIORITY_DEFAULT, png_coder);
 }
 
 void psx_image_module_shutdown(void)

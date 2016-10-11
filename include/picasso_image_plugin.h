@@ -103,12 +103,13 @@ typedef enum _psx_priority_level {
  */
 
 /**
- * \fn int psx_image_register_operator(const char* type, const ps_byte* signature, size_t sig_len,
+ * \fn int psx_image_register_operator(const char* type, const ps_byte* signature, size_t sig_offset, size_t sig_len,
  *                                                   psx_priority_level level, psx_image_operator* coder)
  * \brief Register the image operator.
  *
- * \param type           The image operator short name. (i.e "png" "jpg" "bmp")
+ * \param type           The image operator short name. (i.e "png" "jpg" "gif" "bmp")
  * \param signature      The image signature.
+ * \param sig_offset     The image signature offset from the beginning of the image data. (usually is 0)
  * \param sig_len        The image signature length.
  * \param level          The image operator priority level.
  * \param coder          The pointer to a image_operator object.
@@ -117,8 +118,8 @@ typedef enum _psx_priority_level {
  *
  * \sa psx_image_unregister_operator
  */
-PEXPORT int psx_image_register_operator(const char* type, const ps_byte* signature, size_t sig_len,
-                                                     psx_priority_level level, psx_image_operator* coder);
+PEXPORT int psx_image_register_operator(const char* type, const ps_byte* signature, size_t sig_offset, size_t sig_len,
+                                                                    psx_priority_level level, psx_image_operator* coder);
 
 /**
  * \fn int psx_image_unregister_operator(psx_image_operator* coder)
