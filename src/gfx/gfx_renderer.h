@@ -41,8 +41,8 @@ public:
 
     virtual void buffer_notify(void)
     {
-		// reset clip_rect
-        m_clip_rect = rect(0, 0, m_pixfmt->width() - 1, m_pixfmt->height() - 1);
+        // reset clip_rect
+        reset_clipping(true);
     }
 
     void attach(pixfmt_type& fmt)
