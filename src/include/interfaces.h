@@ -70,6 +70,7 @@ public:
     virtual ~abstract_rendering_buffer() {}
 
     virtual void init(byte* ptr, unsigned int width, unsigned int height, int stride) = 0;
+    virtual void replace(byte* ptr, unsigned int width, unsigned int height, int stride) = 0;
 
     virtual unsigned int width(void) const = 0;
     virtual unsigned int height(void) const = 0;

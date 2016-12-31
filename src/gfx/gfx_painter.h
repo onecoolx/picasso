@@ -249,6 +249,7 @@ inline void gfx_painter<Pixfmt>::attach(abstract_rendering_buffer* buffer)
     if (buffer) {
         m_fmt.attach(*static_cast<gfx_rendering_buffer*>(buffer));
         m_rb.attach(m_fmt);
+        static_cast<gfx_rendering_buffer*>(buffer)->set_buffer_observer(&m_rb);
     }
 }
 

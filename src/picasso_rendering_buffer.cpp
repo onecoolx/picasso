@@ -43,7 +43,7 @@ void rendering_buffer::attach(byte* buf, unsigned int width, unsigned int height
 
 void rendering_buffer::replace(byte* buf, unsigned int width, unsigned int height, int stride)
 {
-    m_impl->init(buf, width, height, stride);
+    m_impl->replace(buf, width, height, stride);
 }
 
 bool rendering_buffer::is_empty(void)

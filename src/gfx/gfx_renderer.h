@@ -14,7 +14,7 @@ namespace gfx {
 
 // graphics renderer with clip.
 template <typename PixelFormat>
-class gfx_renderer
+class gfx_renderer : public gfx_rendering_buffer::gfx_buffer_observer
 {
 public:
     typedef PixelFormat pixfmt_type;
@@ -34,9 +34,15 @@ public:
     {
     }
 
-    ~gfx_renderer()
+    virtual ~gfx_renderer()
     {
         m_clip_path.reset();
+    }
+
+    virtual void buffer_notify(void)
+    {
+		// reset clip_rect
+        m_clip_rect = rect(0, 0, m_pixfmt->width() - 1, m_pixfmt->height() - 1);
     }
 
     void attach(pixfmt_type& fmt)
