@@ -42,7 +42,7 @@
       <ExceptionHandling>false</ExceptionHandling>
       <MinimalRebuild>true</MinimalRebuild>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>EXPORT;WIN32;DLL_EXPORT;__SSE2__=1;_HAS_EXCEPTIONS=0;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;_DEBUG;ENABLE_FAST_COPY=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>EXPORT;WIN32;DLL_EXPORT;__SSE2__=1;_HAS_EXCEPTIONS=0;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;_DEBUG;ENABLE_FAST_COPY=1;ENABLE_SYSTEM_MALLOC=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -61,7 +61,7 @@
     </Link>
     <ResourceCompile>
       <AdditionalIncludeDirectories>..\include;..\build;..\ext\image_loader;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>EXPORT;WIN32;DLL_EXPORT;__SSE2__=1;_HAS_EXCEPTIONS=0;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;_DEBUG;ENABLE_FAST_COPY=1;%(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>EXPORT;WIN32;DLL_EXPORT;__SSE2__=1;_HAS_EXCEPTIONS=0;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;_DEBUG;ENABLE_FAST_COPY=1;ENABLE_SYSTEM_MALLOC=1;%(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -75,7 +75,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <Optimization>Full</Optimization>
-      <PreprocessorDefinitions>EXPORT;WIN32;DLL_EXPORT;__SSE2__=1;_HAS_EXCEPTIONS=0;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;NDEBUG;ENABLE_FAST_COPY=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>EXPORT;WIN32;DLL_EXPORT;__SSE2__=1;_HAS_EXCEPTIONS=0;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;NDEBUG;ENABLE_FAST_COPY=1;ENABLE_SYSTEM_MALLOC=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <StringPooling>true</StringPooling>
@@ -98,7 +98,7 @@
     </Link>
     <ResourceCompile>
       <AdditionalIncludeDirectories>..\include;..\build;..\ext\image_loader;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>EXPORT;WIN32;DLL_EXPORT;__SSE2__=1;_HAS_EXCEPTIONS=0;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;NDEBUG;ENABLE_FAST_COPY=1;%(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>EXPORT;WIN32;DLL_EXPORT;__SSE2__=1;_HAS_EXCEPTIONS=0;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;NDEBUG;ENABLE_FAST_COPY=1;ENABLE_SYSTEM_MALLOC=1;%(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>

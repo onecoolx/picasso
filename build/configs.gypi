@@ -11,6 +11,7 @@
           'defines': [
             '_DEBUG',
             'ENABLE_FAST_COPY=1',
+            'ENABLE_SYSTEM_MALLOC=1',
           ],
           'msvs_configuration_attributes': {
             'ConfigurationType': '2',
@@ -64,6 +65,7 @@
           'defines': [
             'NDEBUG',
             'ENABLE_FAST_COPY=1',
+            'ENABLE_SYSTEM_MALLOC=1',
           ],
           'msvs_configuration_attributes': {
             'ConfigurationType': '2',
