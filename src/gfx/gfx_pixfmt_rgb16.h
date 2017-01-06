@@ -1559,6 +1559,12 @@ public:
     void alpha(scalar a) { m_alpha_factor = uround(a * base_mask); }
     scalar alpha(void) const { return INT_TO_SCALAR(m_alpha_factor) / FLT_TO_SCALAR(255.0f); }
 
+    byte* pix_zero(void) const
+    {
+        static pixel_type zero = 0;
+        return (byte*)&zero;
+    }
+
     byte* pix_ptr(int x, int y) const
     {
         return m_buffer->row_ptr(y) + x * pix_width;

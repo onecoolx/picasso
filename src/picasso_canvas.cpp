@@ -149,6 +149,7 @@ ps_canvas* PICAPI ps_canvas_create(ps_color_format fmt, int w, int h)
             return p;
         } else {
             delete pa;
+            (&p->buffer)->picasso::rendering_buffer::~rendering_buffer();
             mem_free(p);
             global_status = STATUS_OUT_OF_MEMORY;
             return 0;
@@ -207,6 +208,7 @@ ps_canvas* PICAPI ps_canvas_create_compatible(const ps_canvas* c, int w, int h)
             return p;
         } else {
             delete pa;
+            (&p->buffer)->picasso::rendering_buffer::~rendering_buffer();
             mem_free(p);
             global_status = STATUS_OUT_OF_MEMORY;
             return 0;

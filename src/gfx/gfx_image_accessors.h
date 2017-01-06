@@ -78,15 +78,8 @@ private:
         register int x = m_x;
         register int y = m_y;
 
-        if (x < 0)
-            x = 0;
-        if (y < 0)
-            y = 0;
-
-        if (x >= (int)m_pixf->width())
-            x = m_pixf->width() - 1;
-        if (y >= (int)m_pixf->height())
-            y = m_pixf->height() - 1;
+        if (x < 0 || y < 0 || x >= (int)m_pixf->width() || y >= (int)m_pixf->height())
+            return m_pixf->pix_zero();
 
         return m_pixf->pix_ptr(x, y);
     }

@@ -117,6 +117,11 @@ public:
     const byte* row_ptr(int y) const { return m_fmt.row_ptr(y); }
     row_data row(int y) const { return m_fmt.row(y); }
 
+    byte* pix_zero(void) const
+    {
+        return m_fmt.pix_zero();
+    }
+
     byte* pix_ptr(int x, int y)
     {
         return m_fmt.pix_ptr(x, y);
