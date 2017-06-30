@@ -193,10 +193,9 @@ static int decode_gif_data(psx_image_header* header, psx_image_frame* frame, int
                             | colormap->Colors[*src_data].Blue << 16
                             | colormap->Colors[*src_data].Green << 8
                             | colormap->Colors[*src_data].Red;
+                        src_data++;
                     }
-
                     dst_data++;
-                    src_data++;
                 }
             }
         }
