@@ -134,7 +134,7 @@ static int release_read_png_info(psx_image_header* header)
     return 0;
 }
 
-static int decode_png_data(psx_image_header* header, psx_image_frame* frame, int idx, ps_byte* buffer, size_t buffer_len)
+static int decode_png_data(psx_image_header* header, const psx_image* image, psx_image_frame* frame, int idx, ps_byte* buffer, size_t buffer_len)
 {
     int y;
     struct png_image_ctx* ctx = (struct png_image_ctx*)header->priv;
@@ -312,7 +312,7 @@ static void png_convert_24bit(psx_image_header* header, const ps_byte* buffer, s
     free(cbuf);
 }
 
-static int encode_png_data(psx_image_header* header, psx_image_frame* frame, int idx, const ps_byte* buffer, size_t buffer_len, int* ret)
+static int encode_png_data(psx_image_header* header, const psx_image* image, psx_image_frame* frame, int idx, const ps_byte* buffer, size_t buffer_len, int* ret)
 {
     int y;
     struct png_image_ctx* ctx = (struct png_image_ctx*)header->priv;

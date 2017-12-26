@@ -258,7 +258,7 @@ static psx_image* load_psx_image(psx_image_operator* op, const ps_byte* data, si
             if (!image->frames[i].data)
                 goto error;
 
-            if (op->decode_image_data(&header, &image->frames[i], (int)i, image->frames[i].data, size) != 0)
+            if (op->decode_image_data(&header, image, &image->frames[i], (int)i, image->frames[i].data, size) != 0)
                 goto error;
 
             // create ps_image object.
@@ -308,7 +308,7 @@ static int save_psx_image(psx_image_operator* op, const psx_image* image,
         return S_NOT_SUPPORT;
 
     for (i = 0; i < header.frames; i++) {
-        if (op->encode_image_data(&header, &image->frames[i], i, image->frames[i].data, image->frames[i].size, &ret) != 0)
+        if (op->encode_image_data(&header, image, &image->frames[i], i, image->frames[i].data, image->frames[i].size, &ret) != 0)
             break;
     }
 

@@ -136,7 +136,20 @@ static int get_gif_delay_time(GifFileType *gif, int frame)
     return 0;
 }
 
-static int decode_gif_data(psx_image_header* header, psx_image_frame* frame, int idx, ps_byte* buffer, size_t buffer_len)
+static int get_gif_disposal_method(GifFileType *gif, int frame)
+{
+    int x;
+    ExtensionBlock *ext = gif->SavedImages[frame].ExtensionBlocks;
+    int len = gif->SavedImages[frame].ExtensionBlockCount;
+    for (x = 0; x < len; ++x, ++ext) {
+        if (ext->Function == GRAPHICS_EXT_FUNC_CODE) {
+            return (ext->Bytes[0] >> 2);
+        }
+    }
+    return 0;
+}
+
+static int decode_gif_data(psx_image_header* header, const psx_image* image, psx_image_frame* frame, int idx, ps_byte* buffer, size_t buffer_len)
 {
     int x, y, z;
     int bg_color = 0;
@@ -158,25 +171,66 @@ static int decode_gif_data(psx_image_header* header, psx_image_frame* frame, int
         bg_color = alpha_color;
     }
 
-    frame->duration = get_gif_delay_time(ctx->gif, idx); 
+    frame->duration = get_gif_delay_time(ctx->gif, idx);
+    int disposal = get_gif_disposal_method(ctx->gif, idx);
 
     src_data = (uint8_t*)ctx->gif->SavedImages[idx].RasterBits;
     dst_data = (uint32_t*)buffer;
 
     if (!ctx->gif->Image.Interlace) {
         if (header->width == img->Width && header->height == img->Height) {
-            for (y = 0; y < header->height; ++y) {
-                for (x = 0; x < header->width; ++x) {
-                    *dst_data = ((*src_data == alpha_color) ? 0 : 255) << 24
-                        | colormap->Colors[*src_data].Blue << 16
-                        | colormap->Colors[*src_data].Green << 8
-                        | colormap->Colors[*src_data].Red;
-
-                    dst_data++;
-                    src_data++;
+            if (disposal == 2) { // bg_color
+                for (y = 0; y < header->height; ++y) {
+                    for (x = 0; x < header->width; ++x) {
+                        if (*src_data != alpha_color) {
+                            *dst_data = 255 << 24
+                                | colormap->Colors[*src_data].Blue << 16
+                                | colormap->Colors[*src_data].Green << 8
+                                | colormap->Colors[*src_data].Red;
+                        } else {
+                            *dst_data = ((*src_data == alpha_color) ? 0 : 255) << 24
+                                | colormap->Colors[*src_data].Blue << 16
+                                | colormap->Colors[*src_data].Green << 8
+                                | colormap->Colors[*src_data].Red;
+                        }
+                        dst_data++;
+                        src_data++;
+                    }
+                }
+            } else {
+                if (idx > 0) { // copy previous frame data
+                    psx_image_frame* prevFrame = &image->frames[idx - 1];
+                    uint8_t* prev_data = prevFrame->data;
+                    uint8_t* new_data = (uint8_t*)dst_data;
+                    memcpy(new_data, prev_data, image->pitch * image->height);
+                }
+                for (y = 0; y < header->height; ++y) {
+                    for (x = 0; x < header->width; ++x) {
+                        if (idx == 0) {
+                            *dst_data = ((*src_data == alpha_color) ? 0 : 255) << 24
+                                | colormap->Colors[*src_data].Blue << 16
+                                | colormap->Colors[*src_data].Green << 8
+                                | colormap->Colors[*src_data].Red;
+                        } else {
+                            if (*src_data != alpha_color) {
+                                *dst_data = 255 << 24
+                                    | colormap->Colors[*src_data].Blue << 16
+                                    | colormap->Colors[*src_data].Green << 8
+                                    | colormap->Colors[*src_data].Red;
+                            }
+                        }
+                        dst_data++;
+                        src_data++;
+                    }
                 }
             }
         } else {
+            if (idx > 0) { // copy previous frame data
+                psx_image_frame* prevFrame = &image->frames[idx - 1];
+                uint8_t* prev_data = prevFrame->data;
+                uint8_t* new_data = (uint8_t*)dst_data;
+                memcpy(new_data, prev_data, image->pitch * image->height);
+            }
             // Image does not take up whole "screen" so we need to fill-in the background
             int bottom = img->Top + img->Height;
             int right = img->Left + img->Width;
@@ -184,15 +238,33 @@ static int decode_gif_data(psx_image_header* header, psx_image_frame* frame, int
             for (y = 0; y < header->height; ++y) {
                 for (x = 0; x < header->width; ++x) {
                     if (y < img->Top || y >= bottom || x < img->Left || x >= right) {
-                        *dst_data = ((bg_color == alpha_color) ? 0 : 255) << 24
-                            | colormap->Colors[bg_color].Blue << 16
-                            | colormap->Colors[bg_color].Green << 8
-                            | colormap->Colors[bg_color].Red;
+                        if (idx == 0) {
+                            *dst_data = ((bg_color == alpha_color) ? 0 : 255) << 24
+                                | colormap->Colors[bg_color].Blue << 16
+                                | colormap->Colors[bg_color].Green << 8
+                                | colormap->Colors[bg_color].Red;
+                        }
                     } else {
-                        *dst_data = ((*src_data == alpha_color) ? 0 : 255) << 24
-                            | colormap->Colors[*src_data].Blue << 16
-                            | colormap->Colors[*src_data].Green << 8
-                            | colormap->Colors[*src_data].Red;
+                        if (disposal == 2) { // bg_color
+                            if (*src_data != alpha_color) {
+                                *dst_data = 255 << 24
+                                    | colormap->Colors[*src_data].Blue << 16
+                                    | colormap->Colors[*src_data].Green << 8
+                                    | colormap->Colors[*src_data].Red;
+                            } else {
+                                *dst_data = ((*src_data == alpha_color) ? 0 : 255) << 24
+                                    | colormap->Colors[*src_data].Blue << 16
+                                    | colormap->Colors[*src_data].Green << 8
+                                    | colormap->Colors[*src_data].Red;
+                            }
+                        } else {
+                            if (*src_data != alpha_color) {
+                                *dst_data = 255 << 24
+                                    | colormap->Colors[*src_data].Blue << 16
+                                    | colormap->Colors[*src_data].Green << 8
+                                    | colormap->Colors[*src_data].Red;
+                            } 
+                        }
                         src_data++;
                     }
                     dst_data++;
@@ -420,7 +492,7 @@ static void gif_get_pixel_rgba_premultiply(int format, ps_byte* input_buffer, ui
     rgba[3] = (uint32_t)color[3];
 }
 
-static int encode_gif_data(psx_image_header* header, psx_image_frame* frame, int idx, const ps_byte* buffer, size_t buffer_len, int* ret)
+static int encode_gif_data(psx_image_header* header, const psx_image* image, psx_image_frame* frame, int idx, const ps_byte* buffer, size_t buffer_len, int* ret)
 {
     int x, y;
     ColorMapObject *output_map = NULL;

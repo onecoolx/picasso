@@ -95,7 +95,7 @@ static int read_jpg_info(const ps_byte* data, size_t len, psx_image_header* head
     return 0;
 }
 
-static int decode_jpg_data(psx_image_header* header, psx_image_frame* frame, int idx, ps_byte* buffer, size_t buffer_len)
+static int decode_jpg_data(psx_image_header* header, const psx_image* image, psx_image_frame* frame, int idx, ps_byte* buffer, size_t buffer_len)
 {
     int y; size_t i;
     struct jpeg_image_ctx* ctx = (struct jpeg_image_ctx*)header->priv;
@@ -309,7 +309,7 @@ static void jpeg_convert_24bit(psx_image_header* header, const ps_byte* buffer, 
     free(cbuf);
 }
 
-static int encode_jpg_data(psx_image_header* header, psx_image_frame* frame, int idx, const ps_byte* buffer, size_t buffer_len, int* ret)
+static int encode_jpg_data(psx_image_header* header, const psx_image* image, psx_image_frame* frame, int idx, const ps_byte* buffer, size_t buffer_len, int* ret)
 {
     int y;
     struct jpeg_image_ctx* ctx = (struct jpeg_image_ctx*)header->priv;

@@ -82,7 +82,7 @@ static int read_webp_info(const ps_byte* data, size_t len, psx_image_header* hea
     return 0;
 }
 
-static int decode_webp_data(psx_image_header* header, psx_image_frame* frame, int idx, ps_byte* buffer, size_t buffer_len)
+static int decode_webp_data(psx_image_header* header, const psx_image* image, psx_image_frame* frame, int idx, ps_byte* buffer, size_t buffer_len)
 {
     int y, stride;
     VP8StatusCode status = VP8_STATUS_OK;
@@ -268,7 +268,7 @@ static int webp_convert_16bit(psx_image_header* header, const ps_byte* buffer, s
     return 1;
 }
 
-static int encode_webp_data(psx_image_header* header, psx_image_frame* frame, int idx, const ps_byte* buffer, size_t buffer_len, int* ret)
+static int encode_webp_data(psx_image_header* header, const psx_image* image, psx_image_frame* frame, int idx, const ps_byte* buffer, size_t buffer_len, int* ret)
 {
     int ok;
 
