@@ -32,7 +32,7 @@ static inline void _clip_path(context_state* state, const graphic_path& p, filli
 
 }
 
-#define PICASSO_VERSION 22000     // version 2.2.0
+#define PICASSO_VERSION 23000     // version 2.3.0
 
 #ifdef __cplusplus
 extern "C" {
