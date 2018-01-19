@@ -154,7 +154,7 @@ static int decode_gif_data(psx_image_header* header, const psx_image* image, psx
     int x, y, z;
     int bg_color = 0;
     int alpha_color = 0;
-	int disposal = 0;
+    int disposal = 0;
     struct GifImageDesc *img = NULL;
     struct ColorMapObject *colormap = NULL;
     uint8_t *src_data = NULL;
@@ -226,7 +226,7 @@ static int decode_gif_data(psx_image_header* header, const psx_image* image, psx
                 }
             }
         } else {
-			// Image does not take up whole "screen" so we need to fill-in the background
+            // Image does not take up whole "screen" so we need to fill-in the background
             int bottom = img->Top + img->Height;
             int right = img->Left + img->Width;
 
