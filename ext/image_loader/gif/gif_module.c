@@ -154,6 +154,7 @@ static int decode_gif_data(psx_image_header* header, const psx_image* image, psx
     int x, y, z;
     int bg_color = 0;
     int alpha_color = 0;
+    int disposal = 0;
     struct GifImageDesc *img = NULL;
     struct ColorMapObject *colormap = NULL;
     uint8_t *src_data = NULL;
@@ -172,7 +173,7 @@ static int decode_gif_data(psx_image_header* header, const psx_image* image, psx
     }
 
     frame->duration = get_gif_delay_time(ctx->gif, idx);
-    int disposal = get_gif_disposal_method(ctx->gif, idx);
+    disposal = get_gif_disposal_method(ctx->gif, idx);
 
     src_data = (uint8_t*)ctx->gif->SavedImages[idx].RasterBits;
     dst_data = (uint32_t*)buffer;
@@ -225,15 +226,16 @@ static int decode_gif_data(psx_image_header* header, const psx_image* image, psx
                 }
             }
         } else {
+            // Image does not take up whole "screen" so we need to fill-in the background
+            int bottom = img->Top + img->Height;
+            int right = img->Left + img->Width;
+
             if (idx > 0) { // copy previous frame data
                 psx_image_frame* prevFrame = &image->frames[idx - 1];
                 uint8_t* prev_data = prevFrame->data;
                 uint8_t* new_data = (uint8_t*)dst_data;
                 memcpy(new_data, prev_data, image->pitch * image->height);
             }
-            // Image does not take up whole "screen" so we need to fill-in the background
-            int bottom = img->Top + img->Height;
-            int right = img->Left + img->Width;
 
             for (y = 0; y < header->height; ++y) {
                 for (x = 0; x < header->width; ++x) {
