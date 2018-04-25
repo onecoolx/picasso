@@ -7,17 +7,7 @@
 #ifndef _FIXED_MATH_H_
 #define _FIXED_MATH_H_
 
-//32 bit system value define
-typedef int int32_t;
-#if defined(__GNUC__)
-typedef long long int64_t;
-#elif defined(_MSC_VER)
-typedef __int64 int64_t;
-#elif defined(__WATCOMC__)
-typedef __int64 int64_t;
-#else
-#error no define 64 bit integer.
-#endif
+#include "common.h"
 
 namespace fxmath {
 
