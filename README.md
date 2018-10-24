@@ -1,3 +1,5 @@
+Copyright (C) 2008 ~ 2018 Zhang Ji Peng  (onecoolx@gmail.com)
+
 Picasso is a high quality vector graphic rendering library. It has high performance and low footprint. Picasso provides a set of high level 2D graphics API, which can be used to a GUI system, rendering postscript, rendering svg images and so on. It support path, matrix, gradient, pattern, image and truetype font. 
 
 =================================================
