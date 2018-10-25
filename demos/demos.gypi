@@ -30,6 +30,9 @@
           'sources': [
             'platform_gtk2.c',
           ],
+          'defines':[
+            'LINUX',
+          ],
           'cflags': [
             '`pkg-config --cflags gtk+-2.0`',
           ],
@@ -68,6 +71,9 @@
         ['OS=="linux"', {
           'sources': [
             'platform_gtk2.c',
+          ],
+          'defines':[
+            'LINUX',
           ],
           'cflags': [
             '`pkg-config --cflags gtk+-2.0`',
@@ -108,6 +114,9 @@
           'sources': [
             'platform_gtk2.c',
           ],
+          'defines':[
+            'LINUX',
+          ],
           'cflags': [
             '`pkg-config --cflags gtk+-2.0`',
           ],
@@ -146,6 +155,9 @@
         ['OS=="linux"', {
           'sources': [
             'platform_gtk2.c',
+          ],
+          'defines':[
+            'LINUX',
           ],
           'cflags': [
             '`pkg-config --cflags gtk+-2.0`',

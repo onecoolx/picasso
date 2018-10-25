@@ -30,6 +30,9 @@
           'sources': [
             'testGtk2.c',
           ],
+          'defines':[
+            'LINUX',
+          ],
           'cflags': [
             '`pkg-config --cflags gtk+-2.0`',
           ],
@@ -69,6 +72,9 @@
         ['OS=="linux"', {
           'sources': [
             'testGtk2.c',
+          ],
+          'defines':[
+            'LINUX',
           ],
           'cflags': [
             '`pkg-config --cflags gtk+-2.0`',
@@ -110,6 +116,9 @@
           'sources': [
             'testGtk2.c',
           ],
+          'defines':[
+            'LINUX',
+          ],
           'cflags': [
             '`pkg-config --cflags gtk+-2.0`',
           ],
@@ -149,6 +158,9 @@
         ['OS=="linux"', {
           'sources': [
             'testGtk2.c',
+          ],
+          'defines':[
+            'LINUX',
           ],
           'cflags': [
             '`pkg-config --cflags gtk+-2.0`',
@@ -190,6 +202,9 @@
           'sources': [
             'testGtk2.c',
           ],
+          'defines':[
+            'LINUX',
+          ],
           'cflags': [
             '`pkg-config --cflags gtk+-2.0`',
           ],
@@ -229,6 +244,9 @@
           'sources': [
             'testGtk2.c',
           ],
+          'defines':[
+            'LINUX',
+          ],
           'cflags': [
             '`pkg-config --cflags gtk+-2.0`',
           ],
@@ -267,6 +285,9 @@
         ['OS=="linux"', {
           'sources': [
             'testGtk2.c',
+          ],
+          'defines':[
+            'LINUX',
           ],
           'cflags': [
             '`pkg-config --cflags gtk+-2.0`',
@@ -308,6 +329,9 @@
           'sources': [
             'testGtk2.c',
           ],
+          'defines':[
+            'LINUX',
+          ],
           'cflags': [
             '`pkg-config --cflags gtk+-2.0`',
           ],
@@ -346,6 +370,9 @@
         ['OS=="linux"', {
           'sources': [
             'testGtk2.c',
+          ],
+          'defines':[
+            'LINUX',
           ],
           'cflags': [
             '`pkg-config --cflags gtk+-2.0`',
@@ -387,6 +414,9 @@
           'sources': [
             'testGtk2.c',
           ],
+          'defines':[
+            'LINUX',
+          ],
           'cflags': [
             '`pkg-config --cflags gtk+-2.0`',
           ],
@@ -427,6 +457,9 @@
           'sources': [
             'testGtk2.c',
           ],
+          'defines':[
+            'LINUX',
+          ],
           'cflags': [
             '`pkg-config --cflags gtk+-2.0`',
           ],
@@ -465,6 +498,9 @@
         ['OS=="linux"', {
           'sources': [
             'testGtk2.c',
+          ],
+          'defines':[
+            'LINUX',
           ],
           'cflags': [
             '`pkg-config --cflags gtk+-2.0`',
@@ -506,6 +542,9 @@
           'sources': [
             'testGtk2.c',
           ],
+          'defines':[
+            'LINUX',
+          ],
           'cflags': [
             '`pkg-config --cflags gtk+-2.0`',
           ],
@@ -545,6 +584,9 @@
         ['OS=="linux"', {
           'sources': [
             'testGtk2.c',
+          ],
+          'defines':[
+            'LINUX',
           ],
           'cflags': [
             '`pkg-config --cflags gtk+-2.0`',
@@ -587,6 +629,9 @@
           'sources': [
             'thr_posix.c',
             'testGtk2.c',
+          ],
+          'defines':[
+            'LINUX',
           ],
           'cflags': [
             '`pkg-config --cflags gtk+-2.0`',
@@ -663,6 +708,9 @@
         ['OS=="linux"', {
           'sources': [
             'testGtk2.c',
+          ],
+          'defines':[
+            'LINUX',
           ],
           'cflags': [
             '`pkg-config --cflags gtk+-2.0`',

@@ -74,7 +74,6 @@ static gboolean time_func(gpointer data)
 
 static void init_pixbuf()
 {
-    GError * e = 0;
     fmt = COLOR_FORMAT_RGB;
     ps_initialize();
     pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8, width, height);
