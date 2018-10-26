@@ -16,3 +16,7 @@ Picasso is a high quality vector graphic rendering library. It has high performa
 ![](https://github.com/onecoolx/picasso/blob/master/demos/clock.png)
 
 
+### **Donate:**
+
+**alipay:**
+![](http://onecoolx.github.io/picasso/res/a6x07748rhie8ibdvjly423.png)
