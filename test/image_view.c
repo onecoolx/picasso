@@ -23,7 +23,6 @@ void draw_test (int id, ps_context* gc)
 {
     ps_rect cr;
     ps_rect ir;
-    ps_rect sr;
     ps_size ss;
 
     if (image) {
@@ -33,9 +32,6 @@ void draw_test (int id, ps_context* gc)
         ir.w = (float)image->width;
         ir.h = (float)image->height;
 
-        sr.x = 0; sr.y = 0;
-        sr.w = ss.w; sr.h = ss.h;
-        
         cr.w = ss.w > ir.w ? ir.w : ss.w;
         cr.h = ss.h > ir.h ? ir.h : ss.h;
 

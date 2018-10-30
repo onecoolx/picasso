@@ -87,8 +87,8 @@ int main(int argc, char* argv[])
     GtkWidget *window;
     GtkWidget *drawarea;
 
-    __argc = argc;
-    __argv = argv;
+    __argc = (int)argc;
+    __argv = (const char**)argv;
 
     gtk_init(&argc, &argv);
 

@@ -48,9 +48,6 @@ public:
     virtual bool is_identity(void) const = 0;
     virtual scalar determinant(void) const = 0;
     virtual scalar rotation(void) const = 0;
-    virtual void translation(scalar* dx, scalar* dy) const = 0;
-    virtual void scaling(scalar* x, scalar* y) const = 0;
-    virtual void shearing(scalar* x, scalar* y) const = 0;
 
     virtual bool is_equal(const abstract_trans_affine* o) = 0;
     virtual void transform(scalar* x, scalar* y) const = 0;
