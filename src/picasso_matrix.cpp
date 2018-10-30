@@ -190,21 +190,6 @@ scalar trans_affine::rotation(void) const
     return m_impl->rotation();
 }
 
-void trans_affine::translation(scalar* dx, scalar* dy) const
-{
-    m_impl->translation(dx, dy);
-}
-
-void trans_affine::scaling(scalar* x, scalar* y) const
-{
-    m_impl->scaling(x, y);
-}
-
-void trans_affine::shearing(scalar* x, scalar* y) const
-{
-    m_impl->shearing(x, y);
-}
-
 void trans_affine::store_to(scalar* m) const
 {
     m_impl->store_to(m);

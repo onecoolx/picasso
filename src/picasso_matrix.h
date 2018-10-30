@@ -51,10 +51,6 @@ public:
     bool is_identity(void) const;
     scalar determinant(void) const;
     scalar rotation(void) const;
-    void translation(scalar* dx, scalar* dy) const;
-    void scaling(scalar* x, scalar* y) const;
-    void shearing(scalar* x, scalar* y) const;
-
     void transform(scalar* x, scalar* y) const;
     void transform_2x2(scalar* x, scalar* y) const;
     void inverse_transform(scalar* x, scalar* y) const;

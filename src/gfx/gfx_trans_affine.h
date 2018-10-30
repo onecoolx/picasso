@@ -169,31 +169,6 @@ public:
         return Atan2(y2-y1, x2-x1);
     }
 
-    virtual void translation(scalar* dx, scalar* dy) const
-    {
-        *dx = m_tx;
-        *dy = m_ty;
-    }
-
-    virtual void scaling(scalar* x, scalar* y) const
-    {
-        scalar x1 = FLT_TO_SCALAR(0.0f);
-        scalar y1 = FLT_TO_SCALAR(0.0f);
-        scalar x2 = FLT_TO_SCALAR(1.0f);
-        scalar y2 = FLT_TO_SCALAR(1.0f);
-        gfx_trans_affine t(*this);
-        t.rotate(-rotation());
-        t.transform(&x1, &y1);
-        t.transform(&x2, &y2);
-        *x = x2 - x1;
-        *y = y2 - y1;
-    }
-
-    virtual void shearing(scalar* x, scalar* y) const
-    {
-        //FIXME: need be implements.
-    }
-
     virtual bool is_equal(const abstract_trans_affine* o)
     {
         return is_equal_eps(m_sx,  o->sx(),  affine_epsilon) &&
