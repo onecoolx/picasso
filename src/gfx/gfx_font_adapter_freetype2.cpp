@@ -119,7 +119,6 @@ gfx_font_adapter::gfx_font_adapter(const char* name, int charset, scalar height,
 
 gfx_font_adapter::~gfx_font_adapter()
 {
-
     delete m_impl;
 }
 
