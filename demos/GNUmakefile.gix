@@ -4,9 +4,7 @@ CC=gcc -g -pg
 INC=-I../include -I../build
 CFLAGS= `pkg-config --cflags gix`
 
-
-#SYSTEM_LIBS = -L../src/.libs/ -lpicasso `pkg-config --libs gix` ${FREETYPE_LIBS} -lpthread -lstdc++ -lm
-SYSTEM_LIBS = ../src/.libs/libpicasso.a `pkg-config --libs gix` ${FREETYPE_LIBS} -lpthread -lstdc++ -lm
+SYSTEM_LIBS = ../src/.libs/libpicasso.a `pkg-config --libs gix` ${FREETYPE_LIBS} -lpicasso -lpthread -lstdc++ -lm
 
 flowers_objs = platform.o flowers.o
 
