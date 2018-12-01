@@ -17,7 +17,6 @@ EXTRA_DIST = \
     pattern_func.c \
     shadow_func.c \
     testGtk2.c \
-    testMg.c \
     testWin.c \
     text_func.c \
     thr_posix.c \
@@ -25,7 +24,6 @@ EXTRA_DIST = \
     thread_func.c \
     testQt4.cpp \
     GNUmakefile.gtk2 \
-    GNUmakefile.minigui \
     GNUmakefile.qt4 \
     GNUmakefile.win32 \
     font_config.cfg \

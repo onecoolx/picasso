@@ -6,7 +6,7 @@
  * This file includes all interfaces of picasso extended image decoders.
  \verbatim
 
-    Copyright (C) 2008 ~ 2016  Zhang Ji Peng
+    Copyright (C) 2008 ~ 2018  Zhang Ji Peng
 
     All rights reserved.
 

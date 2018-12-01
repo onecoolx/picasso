@@ -6,7 +6,7 @@ AC_INIT(picasso, 2.3, onecoolx@gmail.com)
 
 VERSION_MAJOR=2
 VERSION_MINOR=3
-VERSION_MICRO=0
+VERSION_MICRO=2
 VERSION=$VERSION_MAJOR.$VERSION_MINOR.$VERSION_MICRO
 AC_SUBST(VERSION_MAJOR)
 AC_SUBST(VERSION_MINOR)
@@ -113,20 +113,35 @@ AC_FUNC_MALLOC
 AC_CHECK_FUNCS(floor memmove memset pow sqrt strncpy strncasecmp)
 
 # Checks for User define macro.
+have_freetype2="no"
 if test "x$build_freetype2" = "xyes"; then
-    AC_DEFINE(ENABLE_FREE_TYPE2, 1, [Define if FreeType2 is supported.])
-	CFLAGS="$CFLAGS `freetype-config --cflags`"
-	CXXFLAGS="$CXXFLAGS `freetype-config --cflags`"
-	LIBS="$LIBS `freetype-config --libs`"
+    AC_CHECK_LIB(freetype, FT_New_Face, [
+        CFLAGS="$CFLAGS `freetype-config --cflags`"
+        CPPFLAGS="$CPPFLAGS `freetype-config --cflags`"
+        CXXFLAGS="$CXXFLAGS `freetype-config --cflags`"
+        LIBS="$LIBS `freetype-config --libs`"
+        AC_CHECK_HEADERS(ft2build.h, [
+            have_freetype2="yes"
+            AC_DEFINE(ENABLE_FREE_TYPE2, 1, [Define if FreeType2 is supported.])
+       ])
+    ])
+    if test "x$have_freetype2" = "xno"; then
+        AC_MSG_ERROR([freetype2-headers and/or libs where not found, install them or build with --disable-freetype2 on Windows])
+    fi
 else
 	LIBS="$LIBS -lgdi32"
 fi
 
 if test "x$build_fontconfig" = "xyes"; then
-    AC_DEFINE(ENABLE_FONT_CONFIG, 1, [Define if FontConfig is supported.])
-	CFLAGS="$CFLAGS `pkg-config fontconfig --cflags`"
-	CXXFLAGS="$CXXFLAGS `pkg-config fontconfig --cflags`"
-	LIBS="$LIBS `pkg-config fontconfig --libs`"
+    AC_CHECK_LIB(fontconfig, FcInit, [
+        CFLAGS="$CFLAGS `pkg-config fontconfig --cflags`"
+        CPPFLAGS="$CPPFLAGS `pkg-config fontconfig --cflags`"
+        CXXFLAGS="$CXXFLAGS `pkg-config fontconfig --cflags`"
+        LIBS="$LIBS `pkg-config fontconfig --libs`"
+        AC_CHECK_HEADERS(fontconfig/fontconfig.h, [
+            AC_DEFINE(ENABLE_FONT_CONFIG, 1, [Define if FontConfig is supported.])
+        ])
+    ])
 fi
 
 if test "x$build_lowmem" = "xyes"; then
