@@ -32,3 +32,7 @@
 2017-12-30: Version 2.3.0
     Update code version 2.3.0.
     Fix gif transparent frame bug.
+
+2018-12-1: Version 2.3.2
+    Update code version 2.3.2
+    Fix build script and fontconfig code.

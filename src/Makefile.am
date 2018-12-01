@@ -85,7 +85,6 @@ libpicasso_la_SOURCES= \
             picasso_font.h \
             picasso_font_cache.h \
             picasso_global.h \
-            picasso_gpc.h \
             picasso_gradient.h \
             picasso_mask.h \
             picasso_matrix.h \

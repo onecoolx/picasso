@@ -42,6 +42,12 @@ format_bgr="yes"
 format_rgb565="yes"
 format_rgb555="yes"
 
+build_image="yes"
+build_gif_support="yes"
+build_jpg_support="yes"
+build_png_support="yes"
+build_webp_support="yes"
+
 # Check user define macro.
 AC_ARG_ENABLE(freetype2,
 [  --enable-freetype2     Build FreeType2 support  <default=yes>],
@@ -96,6 +102,26 @@ AC_ARG_ENABLE(rgb555,
 [  --enable-rgb555     Pixel format RGB555 support  <default=yes>],
 format_rgb555=$enableval)
 
+AC_ARG_ENABLE(image,
+[  --enable-image     Image encoder and decoder support  <default=yes>],
+build_image=$enableval)
+
+AC_ARG_ENABLE(gif,
+[  --enable-gif     Gif Image support  <default=yes>],
+build_gif_support=$enableval)
+
+AC_ARG_ENABLE(png,
+[  --enable-png     Png Image support  <default=yes>],
+build_png_support=$enableval)
+
+AC_ARG_ENABLE(jpg,
+[  --enable-jpg     Jpeg Image support  <default=yes>],
+build_jpg_support=$enableval)
+
+AC_ARG_ENABLE(webp,
+[  --enable-webp     WebP Image support  <default=yes>],
+build_webp_support=$enableval)
+
 # Checks for libraries.
 
 # Checks for header files.
@@ -126,7 +152,7 @@ if test "x$build_freetype2" = "xyes"; then
        ])
     ])
     if test "x$have_freetype2" = "xno"; then
-        AC_MSG_ERROR([freetype2-headers and/or libs where not found, install them or build with --disable-freetype2 on Windows])
+        AC_MSG_ERROR([freetype2 headers and/or libs where not found, install them or build with --disable-freetype2 on Windows])
     fi
 else
 	LIBS="$LIBS -lgdi32"
@@ -187,6 +213,62 @@ fi
 if test "x$format_rgb555" = "xyes"; then
     AC_DEFINE(ENABLE_FORMAT_RGB555, 1, [Define if RGB555 color format is supported.])
 fi
+
+if test "x$build_image" = "xyes"; then
+    if test "x$build_gif_support" = "xyes"; then
+        build_gif_support="no"
+        AC_CHECK_LIB(gif, DGifOpenFileName, [
+            AC_CHECK_HEADERS(gif_lib.h, [
+                build_gif_support="yes"
+            ])
+        ])
+        if test "x$build_gif_support" = "xno"; then
+            AC_MSG_WARN([giflib headers and/or libs where not found, gif support disabled!])
+        fi
+    fi
+
+    if test "x$build_png_support" = "xyes"; then
+        build_png_support="no"
+        AC_CHECK_LIB(png, png_get_copyright, [
+            AC_CHECK_HEADERS(png.h, [
+                build_png_support="yes"
+            ])
+        ])
+        if test "x$build_png_support" = "xno"; then
+            AC_MSG_WARN([libpng headers and/or libs where not found, png support disabled!])
+        fi
+    fi
+
+    if test "x$build_jpg_support" = "xyes"; then
+        build_jpg_support="no"
+        AC_CHECK_LIB(jpeg, jpeg_read_header, [
+            AC_CHECK_HEADERS(jpeglib.h, [
+                build_jpg_support="yes"
+            ])
+        ])
+        if test "x$build_jpg_support" = "xno"; then
+            AC_MSG_WARN([libjpeg headers and/or libs where not found, jpg support disabled!])
+        fi
+    fi
+
+    if test "x$build_webp_support" = "xyes"; then
+        build_webp_support="no"
+        AC_CHECK_LIB(webp, WebPGetDecoderVersion, [
+            AC_CHECK_HEADERS(webp/decode.h, [
+                build_webp_support="yes"
+            ])
+        ])
+        if test "x$build_webp_support" = "xno"; then
+            AC_MSG_WARN([libwebp headers and/or libs where not found, webp support disabled!])
+        fi
+    fi
+fi
+
+AM_CONDITIONAL(PSX_IMAGE_SUPPORT, test "x$build_image" = "xyes")
+AM_CONDITIONAL(PSX_IMAGE_GIF_SUPPORT, test "x$build_gif_support" = "xyes")
+AM_CONDITIONAL(PSX_IMAGE_PNG_SUPPORT, test "x$build_png_support" = "xyes")
+AM_CONDITIONAL(PSX_IMAGE_JPG_SUPPORT, test "x$build_jpg_support" = "xyes")
+AM_CONDITIONAL(PSX_IMAGE_WEBP_SUPPORT, test "x$build_webp_support" = "xyes")
 
 CFLAGS="$CFLAGS -Wall -DDLL_EXPORT=1 -DEXPORT=1 -fvisibility=hidden" 
 CXXFLAGS="$CXXFLAGS -Wall -fno-rtti -fno-exceptions -DDLL_EXPORT=1 -DEXPORT=1 -fvisibility=hidden -fvisibility-inlines-hidden"

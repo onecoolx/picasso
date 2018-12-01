@@ -1,4 +1,20 @@
-SUBDIRS = png jpeg gif webp
+SUBDIRS =
+
+if PSX_IMAGE_GIF_SUPPORT
+SUBDIRS += gif
+endif
+
+if PSX_IMAGE_PNG_SUPPORT
+SUBDIRS += png
+endif
+
+if PSX_IMAGE_JPG_SUPPORT
+SUBDIRS += jpeg
+endif
+
+if PSX_IMAGE_WEBP_SUPPORT
+SUBDIRS += webp
+endif
 
 INCLUDES = -I./ \
            -I../../ \

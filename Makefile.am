@@ -1,5 +1,9 @@
 ACLOCAL_AMFLAGS = -I m4
-SUBDIRS = include src ext test demos
+SUBDIRS = include src test demos
+
+if PSX_IMAGE_SUPPORT
+SUBDIRS += ext
+endif
 
 include_HEADERS = pconfig.h
 
