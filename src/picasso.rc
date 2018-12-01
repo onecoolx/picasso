@@ -13,7 +13,7 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// ä¸­æ–‡(ä¸­åäººæ°‘å…±å’Œå›½) resources
+// ÖĞÎÄ(ÖĞ»ªÈËÃñ¹²ºÍ¹ú) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
 #ifdef _WIN32
@@ -71,13 +71,13 @@ BEGIN
         BEGIN
             VALUE "Comments", "Vector Graphic library"
             VALUE "CompanyName", "picasso.inc"
-            VALUE "FileDescription", "picasso2 åŠ¨æ€é“¾æ¥åº“"
+            VALUE "FileDescription", "picasso2 ¶¯Ì¬Á´½Ó¿â"
             VALUE "FileVersion", "2, 3, 2, 1"
             VALUE "InternalName", "picasso2"
             VALUE "LegalCopyright", "Copyright (C) 2018"
             VALUE "OriginalFilename", "picasso2_sw.dll"
             VALUE "PrivateBuild", "2257"
-            VALUE "ProductName", "picasso2 åŠ¨æ€é“¾æ¥åº“"
+            VALUE "ProductName", "picasso2 ¶¯Ì¬Á´½Ó¿â"
             VALUE "ProductVersion", "2, 3, 2, 1"
         END
     END
@@ -87,7 +87,7 @@ BEGIN
     END
 END
 
-#endif    // ä¸­æ–‡(ä¸­åäººæ°‘å…±å’Œå›½) resources
+#endif    // ÖĞÎÄ(ÖĞ»ªÈËÃñ¹²ºÍ¹ú) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
