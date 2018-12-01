@@ -24,6 +24,7 @@ INCLUDES = -I./ \
 lib_LTLIBRARIES = libpsx_image.la
 
 libpsx_image_la_SOURCES = \
+            psx_color_convert.h \
             psx_list.h \
             psx_image_io.h \
             psx_image_io.c \
