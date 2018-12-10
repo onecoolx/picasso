@@ -25,7 +25,7 @@
 namespace gfx {
 
 extern FT_Library g_library;
-extern char * _font_by_name(const char* face);
+extern char * _font_by_name(const char* face, float size, float weight, bool italic);
 
 class font_adapter_impl
 {
@@ -85,7 +85,7 @@ public:
     gfx_serialized_scanlines_adaptor_bin cur_font_storage_bin;
 };
 
-gfx_font_adapter::gfx_font_adapter(const char* name, int charset, scalar height, scalar weight,
+gfx_font_adapter::gfx_font_adapter(const char* name, int charset, scalar size, scalar weight,
                                 bool italic, bool hint, bool flip, bool a, const abstract_trans_affine* mtx)
     :m_impl(new font_adapter_impl)
 {
@@ -94,25 +94,21 @@ gfx_font_adapter::gfx_font_adapter(const char* name, int charset, scalar height,
     m_impl->flip_y = flip;
     m_impl->hinting = hint;
     m_impl->weight = weight;
-    int error = FT_New_Face(m_impl->library, _font_by_name(name), 0, &m_impl->font);
+    int error = FT_New_Face(m_impl->library, _font_by_name(name, size, weight, italic), 0, &m_impl->font);
     if ((error == 0) && m_impl->font) {
-        FT_Set_Pixel_Sizes(m_impl->font, 0, uround(height*FLT_TO_SCALAR(64.0f))>>6);
+        FT_Set_Pixel_Sizes(m_impl->font, 0, uround(size));
         FT_Select_Charmap(m_impl->font, char_set);
     }
     m_impl->matrix = *static_cast<gfx_trans_affine*>(const_cast<abstract_trans_affine*>(mtx));
     if (italic)
         m_impl->matrix.shear(-0.4f, 0.0f);
 
-    m_impl->height = height;
-
     if (m_impl->font) {
-        scalar top_base = FLT_TO_SCALAR(fabsf(m_impl->font->ascender * m_impl->height / m_impl->font->height));
-        scalar top_leading = FLT_TO_SCALAR((m_impl->font->height -
-              (abs(m_impl->font->ascender) + abs(m_impl->font->descender))) * m_impl->height / m_impl->font->height);
-        m_impl->ascent = top_base + top_leading;
-        m_impl->descent = FLT_TO_SCALAR(fabs(m_impl->font->descender * m_impl->height / m_impl->font->height));
-        m_impl->leading = FLT_TO_SCALAR((m_impl->font->size->metrics.height -
-                    m_impl->font->size->metrics.ascender+m_impl->font->size->metrics.descender)/64.0);
+        scalar height = INT_TO_SCALAR((m_impl->font->size->metrics.ascender - m_impl->font->size->metrics.descender) >> 6);
+        m_impl->leading = fabs(height - INT_TO_SCALAR(m_impl->font->size->metrics.height >> 6));
+        m_impl->ascent = INT_TO_SCALAR(m_impl->font->size->metrics.ascender >> 6) - m_impl->leading;
+        m_impl->descent = INT_TO_SCALAR(fabs(m_impl->font->descender >> 6));
+        m_impl->height = m_impl->ascent + m_impl->descent;
         m_impl->units_per_em = m_impl->font->units_per_EM;
     }
 }

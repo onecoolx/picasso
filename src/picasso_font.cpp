@@ -114,7 +114,7 @@ bool font_adapter::create_signature(const font_desc& desc, const trans_affine& m
     recv_sig[0] = 0;
 
     sprintf(recv_sig,
-            "%s,%d,%d,%d,%d,%d,%d,%d-",
+            "%s,%d,%3d,%3d,%d,%d,%d,%d-",
             desc.name(),
             desc.charset(),
             (int)desc.height(),

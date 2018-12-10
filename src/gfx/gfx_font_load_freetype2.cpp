@@ -105,38 +105,36 @@ static font_item* get_font_item(const char* name, const char* path)
 }
 
 #if ENABLE(FONT_CONFIG)
+static FcConfig* g_FcConfig = 0;
+
 static void load_font_from_fontconfig(void)
 {
-    FcConfig* config = FcInitLoadConfigAndFonts();
+    g_FcConfig = FcInitLoadConfigAndFonts();
+    // load default font
     FcFontSet* fontset = NULL;
-    // get application fonts
-    fontset = FcConfigGetFonts(config, FcSetApplication);
+    // get first application font as default
+    fontset = FcConfigGetFonts(g_FcConfig, FcSetApplication);
     if (fontset) {
         FcValue fvalue, dvalue;
-        for (int i = 0; i < fontset->nfont; i++) {
-            if (FcResultMatch == FcPatternGet(fontset->fonts[i], FC_FAMILY, 0, &fvalue)) {
-                if (FcResultMatch == FcPatternGet(fontset->fonts[i], FC_FILE, 0, &dvalue)) {
-                    font_item* font = get_font_item((const char*)fvalue.u.s, (const char*)dvalue.u.s);
-                    g_font_map.add(font);
-                }
+        if (FcResultMatch == FcPatternGet(fontset->fonts[0], FC_FAMILY, 0, &fvalue)) {
+            if (FcResultMatch == FcPatternGet(fontset->fonts[0], FC_FILE, 0, &dvalue)) {
+                font_item* font = get_font_item((const char*)fvalue.u.s, (const char*)dvalue.u.s);
+                g_font_map.add(font);
             }
         }
     }
 
-    // get system fonts
-    fontset = FcConfigGetFonts(config, FcSetSystem);
+    // get first system font as default
+    fontset = FcConfigGetFonts(g_FcConfig, FcSetSystem);
     if (fontset) {
         FcValue fvalue, dvalue;
-        for (int i = 0; i < fontset->nfont; i++) {
-            if (FcResultMatch == FcPatternGet(fontset->fonts[i], FC_FAMILY, 0, &fvalue)) {
-                if (FcResultMatch == FcPatternGet(fontset->fonts[i], FC_FILE, 0, &dvalue)) {
-                    font_item* font = get_font_item((const char*)fvalue.u.s, (const char*)dvalue.u.s);
-                    g_font_map.add(font);
-                }
+        if (FcResultMatch == FcPatternGet(fontset->fonts[0], FC_FAMILY, 0, &fvalue)) {
+            if (FcResultMatch == FcPatternGet(fontset->fonts[0], FC_FILE, 0, &dvalue)) {
+                font_item* font = get_font_item((const char*)fvalue.u.s, (const char*)dvalue.u.s);
+                g_font_map.add(font);
             }
         }
     }
-    FcConfigDestroy(config);
 }
 #elif defined(__ANDROID__)
 // this is only work on android version <= 4.4 not support >= 5.0
@@ -374,7 +372,63 @@ void _free_fonts(void)
     g_font_map.remove_all();
 }
 
-char * _font_by_name(const char* face)
+#if ENABLE(FONT_CONFIG)
+char * _font_by_name(const char* face, float size, float weight, bool italic)
+{
+    // find from cache
+    char tname[64] = {0};
+    strncpy(tname, face, 64);
+    char font_key[128] = {0};
+    sprintf(font_key, "%s-%4.0f-%4.0f-%d", tname, size, weight, italic ? 1 : 0);
+
+    for (unsigned int i = 0; i < g_font_map.size(); i++) {
+        if (strncmp(font_key, g_font_map[i]->font_name, MAX_FONT_NAME_LENGTH-1) == 0)
+            return g_font_map[i]->font_path;
+    }
+
+    FcPattern* pattern = FcPatternCreate();
+    FcPatternAddString(pattern, FC_FAMILY, (FcChar8*)face);
+    if (italic) {
+        FcPatternAddInteger(pattern, FC_SLANT, FC_SLANT_ITALIC);
+    } else {
+        FcPatternAddInteger(pattern, FC_SLANT, FC_SLANT_ROMAN);
+    }
+
+    if ((int)round(weight) == 400) {
+        FcPatternAddInteger(pattern, FC_WEIGHT, FC_WEIGHT_REGULAR);
+    } else if ((int)round(weight) == 500) {
+        FcPatternAddInteger(pattern, FC_WEIGHT, FC_WEIGHT_DEMIBOLD);
+    } else if ((int)round(weight) == 700) {
+        FcPatternAddInteger(pattern, FC_WEIGHT, FC_WEIGHT_BOLD);
+    } else if ((int)round(weight) == 900) {
+        FcPatternAddInteger(pattern, FC_WEIGHT, FC_WEIGHT_BLACK);
+    } else {
+        FcPatternAddInteger(pattern, FC_WEIGHT, FC_WEIGHT_REGULAR);
+    }
+    FcPatternAddDouble(pattern, FC_PIXEL_SIZE, size);
+
+    FcConfigSubstitute(g_FcConfig, pattern, FcMatchPattern);
+    FcDefaultSubstitute(pattern);
+
+    FcResult result;
+    font_item* font = 0;
+    FcPattern* p = FcFontMatch(g_FcConfig, pattern, &result);
+    if (p) {
+        FcChar8* filePath = 0;
+        if (FcPatternGetString(p, FC_FILE, 0, &filePath) != FcResultMatch) {
+            FcPatternDestroy(p);
+            FcPatternDestroy(pattern);
+            return g_font_map[0]->font_path;
+        }
+        font = get_font_item(font_key, (const char*)filePath);
+        g_font_map.add(font);
+    }
+    FcPatternDestroy(p);
+    FcPatternDestroy(pattern);
+    return font ? font->font_path : g_font_map[0]->font_path;
+}
+#else
+char * _font_by_name(const char* face, float size, float weight, bool italic)
 {
     for (unsigned int i = 0; i < g_font_map.size(); i++)
         if (strncasecmp(face, g_font_map[i]->font_name, MAX_FONT_NAME_LENGTH-1) == 0)
@@ -382,6 +436,7 @@ char * _font_by_name(const char* face)
 
     return g_font_map[0]->font_path;
 }
+#endif
 
 }
 
@@ -397,6 +452,9 @@ void platform_font_shutdown(void)
 {
     gfx::_free_fonts();
 #if ENABLE(FONT_CONFIG)
+    if (gfx::g_FcConfig)
+        FcConfigDestroy(gfx::g_FcConfig);
+
     FcFini();
 #endif
 }

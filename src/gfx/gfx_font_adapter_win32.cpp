@@ -126,7 +126,6 @@ gfx_font_adapter::gfx_font_adapter(const char* name, int charset, scalar height,
                                 name);              // typeface name
 
     m_impl->matrix = *static_cast<gfx_trans_affine*>(const_cast<abstract_trans_affine*>(mtx));
-    m_impl->height = height;
 
     OUTLINETEXTMETRIC omt;
     HDC dc = ::GetDC(0);
@@ -134,6 +133,7 @@ gfx_font_adapter::gfx_font_adapter(const char* name, int charset, scalar height,
 
     ::GetOutlineTextMetrics(dc, sizeof(omt), &omt);
     TEXTMETRIC& mt = omt.otmTextMetrics;
+    m_impl->height = INT_TO_SCALAR(mt.tmHeight);
     m_impl->ascent = INT_TO_SCALAR(mt.tmAscent);
     m_impl->descent = INT_TO_SCALAR(mt.tmDescent);
     m_impl->leading = INT_TO_SCALAR(mt.tmExternalLeading);
