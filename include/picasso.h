@@ -760,7 +760,7 @@ PEXPORT ps_image* PICAPI ps_image_create_from_canvas(ps_canvas* canvas, const ps
  * \fn ps_image* ps_image_create_from_image(ps_image* img, const ps_rect* rect)
  * \brief Create a new image using part of an existing ps_image object in same pixel buffer.
  *
- * \param img        A pointer to an existing ps_image object.
+ * \param img     A pointer to an existing ps_image object.
  * \param rect    The rectangle area of the image from the parent image.
  *                   If it is NULL, the image's width and height will be equal to parent image object.
  *
@@ -1701,7 +1701,7 @@ PEXPORT float PICAPI ps_set_gamma(ps_context* ctx, float gamma);
  * \fn void ps_set_antialias(ps_context* ctx, ps_bool antialias)
  * \brief Set whether the Anti-aliasing should be turn on.
  *
- * \param ctx          Pointer to an existing context object.
+ * \param ctx        Pointer to an existing context object.
  * \param antialias  Boolean value whether the anti-aliasing is turn on. (True default)
  *
  * \sa ps_set_alpha, ps_set_blur, ps_set_gamma
@@ -2056,7 +2056,7 @@ PEXPORT void PICAPI ps_font_set_charset(ps_font* font, ps_charset charset);
  * \brief Set hiting for a font object.
  *
  * \param font  Pointer to an existing font object.
- * \param hint     Whether or not auto hiting for the font. (True default)
+ * \param hint  Whether or not auto hiting for the font. (True default)
  *
  * \sa ps_font_set_size, ps_font_set_weight, ps_font_set_italic,
  *        ps_font_set_charset, ps_font_set_flip
@@ -2068,7 +2068,7 @@ PEXPORT void PICAPI ps_font_set_hint(ps_font* font, ps_bool hint);
  * \brief Set flip for a font object.
  *
  * \param font  Pointer to an existing font object.
- * \param flip     Whether or not flip y for the font. (False default)
+ * \param flip  Whether or not flip y for the font. (False default)
  *
  * \sa ps_font_set_size, ps_font_set_weight, ps_font_set_italic,
  *        ps_font_set_charset, ps_font_set_hint
@@ -2105,7 +2105,7 @@ typedef struct _ps_font_info {
  * \fn ps_bool ps_get_font_info(ps_context* ctx, ps_font_info* info)
  * \brief Return the font information from the graphics context.
  *
- * \param ctx     Pointer to an existing context object.
+ * \param ctx   Pointer to an existing context object.
  * \param info  Pointer to a structure to receiving the font information.
  *
  * \return  True if is success, otherwise False.
@@ -2118,7 +2118,7 @@ PEXPORT ps_bool PICAPI ps_get_font_info(ps_context* ctx, ps_font_info* info);
  * \fn ps_font* ps_set_font(ps_context* ctx, const ps_font* font)
  * \brief Set a new font to graphics context.
  *
- * \param ctx     Pointer to an existing context object.
+ * \param ctx   Pointer to an existing context object.
  * \param font  The new font to be set.
  *
  * \return If the function succeeds, the return value is the pointer to old font object.
@@ -2177,7 +2177,7 @@ PEXPORT ps_bool PICAPI ps_get_text_extent(ps_context* ctx, const void* text, uns
  * \brief Set the text fill color for the graphic context.
  *
  * \param ctx     Pointer to an existing context object.
- * \param color    The text fill color.
+ * \param color   The text fill color.
  *
  * \sa ps_transform, ps_set_text_matrix, ps_set_text_antialias,
  *     ps_set_text_stroke_color, ps_set_text_render_type, ps_set_text_kerning
@@ -2189,7 +2189,7 @@ PEXPORT void PICAPI ps_set_text_color(ps_context* ctx, const ps_color * color);
  * \brief Set the text stroke color for the graphic context.
  *
  * \param ctx     Pointer to an existing context object.
- * \param color    The text stroke color.
+ * \param color   The text stroke color.
  *
  * \sa ps_set_text_color, ps_set_text_matrix, ps_set_text_antialias,
  *     ps_text_transform, ps_set_text_render_type, ps_set_text_kerning
@@ -2202,7 +2202,7 @@ PEXPORT void PICAPI ps_set_text_stroke_color(ps_context* ctx, const ps_color * c
  *           The text matrix is not a part of graphic state -- saving and restoring has no
  *           effect on the text matrix. The text matrix is an attribute of graphic context.
  *
- * \param ctx       Pointer to an existing context object.
+ * \param ctx     Pointer to an existing context object.
  * \param matrix  Pointer to an existing matrix object.
  *
  * \sa ps_set_text_matrix, ps_set_text_antialias, ps_set_text_color,
@@ -2216,7 +2216,7 @@ PEXPORT void PICAPI ps_text_transform(ps_context* ctx, const ps_matrix* matrix);
  *           The text matrix is not a part of graphic state -- saving and restoring has no
  *           effect on the text matrix. The text matrix is an attribute of graphic context.
  *
- * \param ctx       Pointer to an existing context object.
+ * \param ctx     Pointer to an existing context object.
  * \param matrix  Pointer to an existing matrix object.
  *
  * \sa ps_text_transform, ps_set_text_antialias, ps_set_text_color,
@@ -2229,7 +2229,7 @@ PEXPORT void PICAPI ps_set_text_matrix(ps_context* ctx, const ps_matrix* matrix)
  * \brief Set rendering type for text.
  *
  * \param ctx       Pointer to an existing context object.
- * \param type       Rendering type for the text.
+ * \param type      Rendering type for the text.
  *
  * \sa ps_set_text_matrix, ps_set_text_color, ps_set_text_stroke_color,
  *     ps_set_text_antialias, ps_text_transform, ps_set_text_kerning
@@ -2240,7 +2240,7 @@ PEXPORT void PICAPI ps_set_text_render_type(ps_context* ctx, ps_text_type type);
  * \fn void ps_set_text_antialias(ps_context* ctx, ps_bool antialias)
  * \brief Set whether the font allowed be anti-aliasing.
  *
- * \param ctx         Pointer to an existing context object.
+ * \param ctx       Pointer to an existing context object.
  * \param antialias Boolean value whether anti-aliasing is allowed. (True default)
  *
  * \sa ps_set_text_matrix, ps_set_text_color, ps_set_text_stroke_color,
@@ -2252,7 +2252,7 @@ PEXPORT void PICAPI ps_set_text_antialias(ps_context* ctx, ps_bool antialias);
  * \fn void ps_set_text_kerning(ps_context* ctx, ps_bool kerning)
  * \brief Set whether the font auto kerning is allowed.
  *
- * \param ctx         Pointer to an existing context object.
+ * \param ctx       Pointer to an existing context object.
  * \param kerning   Boolean value whether auto kerning is allowed. (True default)
  *
  * \sa ps_set_text_matrix, ps_set_text_color, ps_set_text_stroke_color,
@@ -2264,10 +2264,10 @@ PEXPORT void PICAPI ps_set_text_kerning(ps_context* ctx, ps_bool kerning);
  * \fn void ps_text_out_length(ps_context* ctx, float x, float y, const char* text, unsigned int length)
  * \brief Draw single byte characters (latin-1) at location in user space.
  *
- * \param ctx       Pointer to an existing context object.
+ * \param ctx     Pointer to an existing context object.
  * \param x       The X-coordinate at which to draw the text.
  * \param y       The Y-coordinate at which to draw the text.
- * \param text       The text string to be draw.
+ * \param text    The text string to be draw.
  * \param length  The length of the text string.
  *
  * \sa ps_wide_text_out_length, ps_draw_text
@@ -2279,10 +2279,10 @@ PEXPORT void PICAPI ps_text_out_length(ps_context* ctx, float x, float y,
  * \fn void ps_wide_text_out_length(ps_context* ctx, float x, float y, const ps_uchar16* text, unsigned int length)
  * \brief Draw unicode characters (ucs-2) at location in user space.
  *
- * \param ctx       Pointer to an existing context object.
+ * \param ctx     Pointer to an existing context object.
  * \param x       The X-coordinate at which to draw the text.
  * \param y       The Y-coordinate at which to draw the text.
- * \param text       The unicode text string to be draw.
+ * \param text    The unicode text string to be draw.
  * \param length  The length of the text string.
  *
  * \sa ps_text_out_length, ps_draw_text
@@ -2318,7 +2318,7 @@ typedef enum _ps_text_align {
     /**
      * Justifies the text to the top of the rectangle.
      */
-    TEXT_ALIGN_TOP       = 1,
+    TEXT_ALIGN_TOP    = 1,
     /**
      * Justifies the text to the bottom of the rectangle.
      */
@@ -2338,9 +2338,9 @@ typedef enum _ps_text_align {
  *                                                                         ps_draw_text_type type, ps_text_align align)
  * \brief Draw text in a rectangle area, using font object which is selected in graphic context.
  *
- * \param ctx       Pointer to an existing context object.
+ * \param ctx     Pointer to an existing context object.
  * \param area    The rectangle area which text to be drawn.
- * \param text       The unicode text string to be draw.
+ * \param text    The unicode text string to be draw.
  * \param length  The length of the text string.
  * \param type    The rending type of text.
  * \param align   The text align mode.
@@ -2354,7 +2354,7 @@ PEXPORT void PICAPI ps_draw_text(ps_context* ctx, const ps_rect* area, const voi
  * \fn ps_bool ps_get_glyph(ps_context* ctx, int ch, ps_glyph* glyph)
  * \brief Get the glyph from a given character, using font object which is selected in graphic context.
  *
- * \param ctx       Pointer to an existing context object.
+ * \param ctx     Pointer to an existing context object.
  * \param ch      The character value.
  * \param glyph   Pointer to a structure to receiving the glyph.
  *
@@ -2368,7 +2368,7 @@ PEXPORT ps_bool PICAPI ps_get_glyph(ps_context* ctx, int ch, ps_glyph* glyph);
  * \fn void ps_show_glyphs(ps_context* ctx, float x, float y, ps_glyph* glyphs, unsigned int length)
  * \brief Draw an array of glyphs at location in user space.
  *
- * \param ctx       Pointer to an existing context object.
+ * \param ctx     Pointer to an existing context object.
  * \param x       The X-coordinate at which to draw the glyphs.
  * \param y       The Y-coordinate at which to draw the glyphs.
  * \param glyphs  The array of glyphs.
@@ -2383,7 +2383,7 @@ PEXPORT void PICAPI ps_show_glyphs(ps_context* ctx, float x, float y,
  * \fn ps_bool ps_get_path_from_glyph(ps_context* ctx, const ps_glyph* glyph, ps_path* path)
  * \brief Get the path from a given glyph object.
  *
- * \param ctx       Pointer to an existing context object.
+ * \param ctx     Pointer to an existing context object.
  * \param glyph   The glyph object.
  * \param path    Pointer to a structure to receiving the path.
  *
@@ -2477,7 +2477,7 @@ PEXPORT void PICAPI ps_identity(ps_context* ctx);
  * \fn void ps_transform(ps_context* ctx, const ps_matrix* matrix)
  * \brief Transforms the user coordinate system in graphic context using a specified matrix.
  *
- * \param ctx        Pointer to an existing context object.
+ * \param ctx     Pointer to an existing context object.
  * \param matrix  The matrix to apply to the specified context's current transformation matrix.
  *
  * \sa ps_translate, ps_scale, ps_shear, ps_rotate, ps_identity
@@ -2488,7 +2488,7 @@ PEXPORT void PICAPI ps_transform(ps_context* ctx, const ps_matrix* matrix);
  * \fn void ps_set_matrix(ps_context* ctx, const ps_matrix* matrix)
  * \brief Modifies the current transformation matrix to the given matrix.
  *
- * \param ctx        Pointer to an existing context object.
+ * \param ctx     Pointer to an existing context object.
  * \param matrix  The transformation matrix to be set.
  *
  * \sa ps_get_matrix
@@ -2499,7 +2499,7 @@ PEXPORT void PICAPI ps_set_matrix(ps_context* ctx, const ps_matrix* matrix);
  * \fn ps_bool ps_get_matrix(ps_context* ctx, ps_matrix* matrix)
  * \brief Get the current transformation matrix from graphic context.
  *
- * \param ctx        Pointer to an existing context object.
+ * \param ctx     Pointer to an existing context object.
  * \param matrix  Pointer to a matrix object to receiving the current transformation.
  *
  * \return  True if is success, otherwise False.
@@ -2512,7 +2512,7 @@ PEXPORT ps_bool PICAPI ps_get_matrix(ps_context* ctx, ps_matrix* matrix);
  * \fn void ps_world_to_viewport(ps_context* ctx, ps_point* point)
  * \brief Transform a coordinate from device space to user space.
  *
- * \param ctx       Pointer to an existing context object.
+ * \param ctx    Pointer to an existing context object.
  * \param point  The point which to be transformed.
  *
  * \sa ps_viewport_to_world
@@ -2523,7 +2523,7 @@ PEXPORT void PICAPI ps_world_to_viewport(ps_context* ctx, ps_point* point);
  * \fn void ps_viewport_to_world(ps_context* ctx, ps_point* point)
  * \brief Transform a coordinate from user space to device space.
  *
- * \param ctx       Pointer to an existing context object.
+ * \param ctx    Pointer to an existing context object.
  * \param point  The point which to be transformed.
  *
  * \sa ps_world_to_viewport
@@ -2636,7 +2636,7 @@ PEXPORT void PICAPI ps_matrix_init(ps_matrix* matrix, float sx, float shy,
  * \brief Modify a matrix by translating.
  *
  * \param matrix  Pointer to an existing matrix object.
- * \param tx         The amount, in pixels, which to translate in x direction.
+ * \param tx      The amount, in pixels, which to translate in x direction.
  * \param ty      The amount, in pixels, which to translate in y direction.
  *
  * \sa ps_matrix_scale, ps_matrix_shear, ps_matrix_rotate
@@ -2648,8 +2648,8 @@ PEXPORT void PICAPI ps_matrix_translate(ps_matrix* matrix, float tx, float ty);
  * \brief Modify a matrix by scaling.
  *
  * \param matrix  Pointer to an existing matrix object.
- * \param sx         The scale factor for the X dimension.
- * \param sy         The scale factor for the Y dimension.
+ * \param sx      The scale factor for the X dimension.
+ * \param sy      The scale factor for the Y dimension.
  *
  * \sa ps_matrix_translate, ps_matrix_shear, ps_matrix_rotate
  */
@@ -2660,7 +2660,7 @@ PEXPORT void PICAPI ps_matrix_scale(ps_matrix* matrix, float sx, float sy);
  * \brief Modify a matrix by rotating.
  *
  * \param matrix  Pointer to an existing matrix object.
- * \param angle      The angle, in radians, which to rotate the specified matrix.
+ * \param angle   The angle, in radians, which to rotate the specified matrix.
  *
  * \sa ps_matrix_translate, ps_matrix_shear, ps_matrix_scale
  */
@@ -2772,7 +2772,7 @@ PEXPORT float PICAPI ps_matrix_get_determinant(const ps_matrix* matrix);
  * \brief Set the translate factors to the matrix.
  *
  * \param matrix  Pointer to an existing matrix object.
- * \param tx         The amount, in pixels, which the translate factor in x direction.
+ * \param tx      The amount, in pixels, which the translate factor in x direction.
  * \param ty      The amount, in pixels, which the translate factor in y direction.
  *
  * \sa ps_matrix_get_translate_factor
@@ -2784,7 +2784,7 @@ PEXPORT void PICAPI ps_matrix_set_translate_factor(ps_matrix* matrix, float tx, 
  * \brief Get the translate factors from the matrix.
  *
  * \param matrix  Pointer to an existing matrix object.
- * \param tx         Pointer to a buffer to receiving the translate factor in x direction.
+ * \param tx      Pointer to a buffer to receiving the translate factor in x direction.
  * \param ty      Pointer to a buffer to receiving the translate factor in y direction.
  *
  * \return  True if is success, otherwise False.
@@ -2799,7 +2799,7 @@ PEXPORT ps_bool PICAPI ps_matrix_get_translate_factor(ps_matrix* matrix, float *
  *
  * \param matrix  Pointer to an existing matrix object.
  * \param sx      The scale factor in x dimension.
- * \param sy       The scale factor in y dimension.
+ * \param sy      The scale factor in y dimension.
  *
  * \sa ps_matrix_get_scale_factor
  */
@@ -2810,7 +2810,7 @@ PEXPORT void PICAPI ps_matrix_set_scale_factor(ps_matrix* matrix, float sx, floa
  * \brief Get the scale factors from the matrix.
  *
  * \param matrix  Pointer to an existing matrix object.
- * \param sx         Pointer to a buffer to receiving the scale factor in x dimension.
+ * \param sx      Pointer to a buffer to receiving the scale factor in x dimension.
  * \param sy      Pointer to a buffer to receiving the scale factor in y dimension.
  *
  * \return  True if is success, otherwise False.
@@ -2825,7 +2825,7 @@ PEXPORT ps_bool PICAPI ps_matrix_get_scale_factor(ps_matrix* matrix, float *sx, 
  *
  * \param matrix  Pointer to an existing matrix object.
  * \param shx     The shear factor for the horizontal.
- * \param shy       The shear factor for the vertical.
+ * \param shy     The shear factor for the vertical.
  *
  * \sa ps_matrix_get_shear_factor
  */
@@ -3205,9 +3205,9 @@ PEXPORT void PICAPI ps_path_arc_to(ps_path* path, float radiusX, float radiusY, 
  * \brief Add a cubic bezier spline to the path from current point to end point.
  *
  * \param path  Pointer to an existing path object.
- * \param fcp      The first control point of the curve.
- * \param scp      The second control point of the curve.
- * \param ep       The end point of the curve.
+ * \param fcp   The first control point of the curve.
+ * \param scp   The second control point of the curve.
+ * \param ep    The end point of the curve.
  *
  * \sa ps_path_move_to, ps_path_arc_to, ps_path_quad_to
  *     ps_path_tangent_arc_to, ps_path_line_to
@@ -3220,8 +3220,8 @@ PEXPORT void PICAPI ps_path_bezier_to(ps_path* path, const ps_point* fcp,
  * \brief Add a quadratic bezier spline to the path from current point to end point.
  *
  * \param path  Pointer to an existing path object.
- * \param cp      The control point of the curve.
- * \param ep       The end point of the curve.
+ * \param cp    The control point of the curve.
+ * \param ep    The end point of the curve.
  *
  * \sa ps_path_move_to, ps_path_arc_to, ps_path_bezier_to
  *     ps_path_tangent_arc_to, ps_path_line_to
@@ -3493,8 +3493,8 @@ typedef enum _ps_path_op {
  *
  * \param result  Pointer to an existing path object for result.
  * \param op      The specified operation for clipping.
- * \param a          The source path for clipping.
- * \param b          The path which will be clipping.
+ * \param a       The source path for clipping.
+ * \param b       The path which will be clipping.
  *
  * \sa ps_path_get_vertex, ps_path_get_vertex_count
  */
