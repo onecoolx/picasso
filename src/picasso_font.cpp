@@ -16,6 +16,8 @@
 #include "picasso_painter.h"
 #include "picasso_font.h"
 
+#define MAX_SIGNATURE_BUFFER_LEN (MAX_FONT_NAME_LENGTH + 128)
+
 namespace picasso {
 
 font_engine::font_engine(unsigned int max_fonts)
@@ -28,7 +30,7 @@ font_engine::font_engine(unsigned int max_fonts)
     , m_antialias(false)
 {
     memset(m_fonts, 0, sizeof(font_adapter*) * max_fonts);
-    m_signature = (char*)mem_calloc(1, MAX_FONT_NAME_LENGTH + 128);
+    m_signature = (char*)mem_calloc(1, MAX_SIGNATURE_BUFFER_LEN);
 }
 
 font_engine::~font_engine()
@@ -113,7 +115,7 @@ bool font_adapter::create_signature(const font_desc& desc, const trans_affine& m
 
     recv_sig[0] = 0;
 
-    sprintf(recv_sig,
+    snprintf(recv_sig, MAX_SIGNATURE_BUFFER_LEN-1,
             "%s,%d,%3d,%3d,%d,%d,%d,%d-",
             desc.name(),
             desc.charset(),
@@ -125,7 +127,7 @@ bool font_adapter::create_signature(const font_desc& desc, const trans_affine& m
             (int)anti);
 
     char mbuf[64] = {0};
-    sprintf(mbuf,
+    snprintf(mbuf, 64,
             "%08X%08X%08X%08X%08X%08X",
             fxmath::flt_to_fixed(SCALAR_TO_FLT(mtx.sx())),
             fxmath::flt_to_fixed(SCALAR_TO_FLT(mtx.sy())),
