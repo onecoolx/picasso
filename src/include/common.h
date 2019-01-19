@@ -25,6 +25,8 @@ typedef signed   int int32_t;
 typedef unsigned int uint32_t;
 typedef unsigned long long int uint64_t;
 typedef long long int int64_t;
+// snprintf 
+#define snprintf _snprintf
 #endif  /* _MSC_VER */
 
 // special types
