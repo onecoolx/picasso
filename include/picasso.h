@@ -1608,6 +1608,14 @@ typedef enum _ps_filter {
      */
     FILTER_GAUSSIAN,
     /**
+     * Bicubic interpolation filter.
+     */
+    FILTER_BICUBIC,
+    /**
+     * Quadric interpolation filter.
+     */
+    FILTER_QUADRIC,
+    /**
      * Error value.
      */
     FILTER_UNKNOWN,
