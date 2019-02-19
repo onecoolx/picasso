@@ -45,11 +45,12 @@ static int read_webp_info(const ps_byte* data, size_t len, psx_image_header* hea
     }
     
     if (!WebPInitDecoderConfig(&ctx->dconfig)) {
+        free(ctx);
         return -1;
     }
     
     if (ctx->dconfig.input.has_animation) {
-        // not support animation
+        free(ctx);// not support animation
         return -1;
     }
 
@@ -58,6 +59,7 @@ static int read_webp_info(const ps_byte* data, size_t len, psx_image_header* hea
 
     status = WebPGetFeatures(data, len, bitstream);
     if (status != VP8_STATUS_OK) {
+        free(ctx);
         return -1;
     }
     
