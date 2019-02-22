@@ -171,10 +171,12 @@ static int write_webp_info(const psx_image* image, image_writer_fn func, void* p
     ctx->writer_param = param;
 
     if (!WebPConfigPreset(&ctx->econfig, WEBP_PRESET_DEFAULT, quality * 100)) {
+        free(ctx);
         return -1;
     }
 
     if (!WebPPictureInit(&ctx->pic)) {
+        free(ctx);
         return -1;
     }
 
