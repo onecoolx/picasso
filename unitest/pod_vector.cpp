@@ -1,6 +1,5 @@
 
 #include "test.h"
-#include "include/agg_array.h"
 #include "src/include/data_vector.h"
 #include "timeuse.h"
 
@@ -356,50 +355,3 @@ TEST(Pod_Array, CreateAndInitialize)
     EXPECT_EQ(10, (int)dv.size());
 }
 
-TEST(Pod_Array, SpeedCompareWithAgg)
-{
-    clocktime_t t1, t2;
-    double u1, u2;
-    pod_array<unsigned int> pv;
-
-    printf("pod_array speed testing...\n");
-    clear_cache();
-
-    t1 = get_clock();
-
-    for (int i = 1; i < 10000000; i++) {
-        int s = (i%10) * 1024;
-        pv.resize(s);
-        pv[s-1] = i;
-    }
-
-    t2 = get_clock();
-    u1 = get_clock_used_ms(t1, t2);
-    fprintf (stderr, "picasso pod_array use %f ms\n", u1);
-
-
-    agg::pod_array<unsigned int> av;
-    clear_cache();
-
-    t1 = get_clock();
-
-    for (int i = 1; i < 10000000; i++) {
-        int s = (i%10) * 1024;
-        av.resize(s);
-        av[s-1] = i;
-    }
-
-    t2 = get_clock();
-    u2 = get_clock_used_ms(t1, t2);
-    fprintf (stderr, "agg pod_array use %f ms\n", u1);
-
-
-
-    clear_cache();
-
-    EXPECT_EQ(true, u1<=u2);
-    if (u1 <= u2)
-        fprintf (stderr, "picasso is faster!\n");
-    else
-        fprintf (stderr, "agg is faster!\n");
-}
