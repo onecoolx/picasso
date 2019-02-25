@@ -33,7 +33,7 @@ ps_image* PICAPI ps_image_create(ps_color_format fmt, int w, int h)
         img->fmt = fmt;
         img->host = 0;
         new ((void*)&(img->buffer)) picasso::rendering_buffer;
-        int pitch = picasso::_byte_pre_color(fmt) * w;
+        int pitch = picasso::_bytes_per_color(fmt) * w;
         byte* buf = 0;
         if ((buf = (byte*)BufferAlloc(h * pitch))) {
             img->flage = buffer_alloc_surface;
@@ -75,7 +75,7 @@ ps_image* PICAPI ps_image_create_from_data(ps_byte* data, ps_color_format fmt, i
         img->fmt = fmt;
         img->host = 0;
         new ((void*)&(img->buffer)) picasso::rendering_buffer;
-        int pitch = picasso::_byte_pre_color(fmt) * w;
+        int pitch = picasso::_bytes_per_color(fmt) * w;
         byte* buf = 0;
         if ((buf = (byte*)BufferAlloc(h * pitch))) {
             for (int i = 0; i < h; i++) {
@@ -157,7 +157,7 @@ ps_image* PICAPI ps_image_create_compatible(const ps_canvas* c, int w, int h)
         img->fmt = c->fmt;
         img->host = 0;
         new ((void*)&(img->buffer)) picasso::rendering_buffer;
-        int pitch = picasso::_byte_pre_color(c->fmt) * w;
+        int pitch = picasso::_bytes_per_color(c->fmt) * w;
         byte* buf = 0;
         if ((buf = (byte*)BufferAlloc(h * pitch))) {
             img->flage = buffer_alloc_surface;
@@ -215,7 +215,7 @@ ps_image* PICAPI ps_image_create_from_image(ps_image* i, const ps_rect* r)
         img->fmt = i->fmt;
         img->flage = buffer_alloc_image;
         img->host = (void*)ps_image_ref(i);
-        int bpp = picasso::_byte_pre_color(i->fmt);
+        int bpp = picasso::_bytes_per_color(i->fmt);
         new ((void*)&(img->buffer)) picasso::rendering_buffer;
         img->buffer.attach(i->buffer.buffer()+_iround(rc.y*i->buffer.stride()+rc.x*bpp),
                                        _iround(rc.w), _iround(rc.h), i->buffer.stride());
@@ -259,7 +259,7 @@ ps_image* PICAPI ps_image_create_from_canvas(ps_canvas* c, const ps_rect* r)
         img->fmt = c->fmt;
         img->flage = buffer_alloc_canvas;
         img->host = (void*)ps_canvas_ref(c);
-        int bpp = picasso::_byte_pre_color(c->fmt);
+        int bpp = picasso::_bytes_per_color(c->fmt);
         new ((void*)&(img->buffer)) picasso::rendering_buffer;
         img->buffer.attach(c->buffer.buffer()+_iround(rc.y*c->buffer.stride()+rc.x*bpp),
                                        _iround(rc.w), _iround(rc.h), c->buffer.stride());

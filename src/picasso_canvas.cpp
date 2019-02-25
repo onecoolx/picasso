@@ -18,7 +18,7 @@
 
 namespace picasso {
 
-int _byte_pre_color(ps_color_format fmt)
+int _bytes_per_color(ps_color_format fmt)
 {
     switch (fmt)
     {
@@ -133,7 +133,7 @@ ps_canvas* PICAPI ps_canvas_create(ps_color_format fmt, int w, int h)
         p->host = 0;
         p->mask = 0;
         new ((void*)&(p->buffer)) picasso::rendering_buffer;
-        int pitch = picasso::_byte_pre_color(fmt) * w;
+        int pitch = picasso::_bytes_per_color(fmt) * w;
         byte* buf = 0;
         if ((buf = (byte*)BufferAlloc(h * pitch))) {
             p->flage = buffer_alloc_surface;
@@ -192,7 +192,7 @@ ps_canvas* PICAPI ps_canvas_create_compatible(const ps_canvas* c, int w, int h)
         p->host = 0;
         p->mask = 0;
         new ((void*)&(p->buffer)) picasso::rendering_buffer;
-        int pitch = picasso::_byte_pre_color(c->fmt) * w;
+        int pitch = picasso::_bytes_per_color(c->fmt) * w;
         byte* buf = 0;
         if ((buf = (byte*)BufferAlloc(h * pitch))) {
             p->flage = buffer_alloc_surface;
@@ -261,7 +261,7 @@ ps_canvas* PICAPI ps_canvas_create_from_canvas(ps_canvas* c, const ps_rect* r)
         p->flage = buffer_alloc_canvas;
         p->host = (void*)ps_canvas_ref(c);
         p->mask = 0;
-        int bpp = picasso::_byte_pre_color(c->fmt);
+        int bpp = picasso::_bytes_per_color(c->fmt);
         new ((void*)&(p->buffer)) picasso::rendering_buffer;
         p->buffer.attach(c->buffer.buffer()+_iround(rc.y*c->buffer.stride()+rc.x*bpp),
                                        _iround(rc.w), _iround(rc.h), c->buffer.stride());
@@ -312,7 +312,7 @@ ps_canvas* PICAPI ps_canvas_create_from_image(ps_image* i, const ps_rect* r)
         p->flage = buffer_alloc_image;
         p->host = (void*)ps_image_ref(i);
         p->mask = 0;
-        int bpp = picasso::_byte_pre_color(i->fmt);
+        int bpp = picasso::_bytes_per_color(i->fmt);
         new ((void*)&(p->buffer)) picasso::rendering_buffer;
         p->buffer.attach(i->buffer.buffer()+_iround(rc.y*i->buffer.stride()+rc.x*bpp),
                                        _iround(rc.w), _iround(rc.h), i->buffer.stride());
