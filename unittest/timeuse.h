@@ -15,7 +15,7 @@
 #endif
 
 #if defined(WIN32) || defined(WINCE)
-typedef long suseconds_t;
+typedef long long suseconds_t;
 #define inline __inline
 #endif
 
@@ -26,7 +26,7 @@ static inline suseconds_t get_time()
 #else
     struct timeval t;
     gettimeofday(&t, 0);
-    suseconds_t t1 = t.tv_usec;
+    suseconds_t t1 = t.tv_sec * 1000  + t.tv_usec/1000;
 #endif
     return t1;
 }

@@ -73,7 +73,6 @@ TEST(Pod_Vector, PushAndInsert)
     b = iv.push_back(13);
     EXPECT_EQ(false, b);
 
-
     for(unsigned int i = 0; i < iv.size(); i++)
         printf("iv: integer vector[%d] = %d\n",i, iv[i]);
 
@@ -83,7 +82,7 @@ TEST(Pod_Vector, PushAndInsert)
     EXPECT_EQ(3, (int)sv.size());
     EXPECT_EQ(5, (int)sv.capacity());
 
-    EXPECT_EQ(true, sv.is_full());
+    EXPECT_EQ(false, sv.is_full());
     EXPECT_EQ(true, iv.is_full());
 
     for(unsigned int i = 0; i < sv.size(); i++)
@@ -153,127 +152,11 @@ TEST(Pod_Vector, PushAndInsert)
     for(unsigned int i = 0; i < iv.size(); i++)
         printf("iv: integer vector[%d] = %d\n",i, iv[i]);
 
-
     printf("clear iv\n");
     iv.clear();
 
     EXPECT_EQ(0, (int)iv.size());
     EXPECT_EQ(8, (int)iv.capacity());
-}
-
-
-TEST(Pod_Vector, SpeedCompareWithAgg)
-{
-    clocktime_t t1, t2;
-    double u1, u2;
-
-    pod_vector<unsigned int> pv;
-    pod_vector<data_test> pdv;
-    data_test d = {1,1,1};
-
-    printf("pod_vector speed testing...\n");
-    clear_cache();
-    // picasso data vector speed.
-    t1 = get_clock();
-
-    pv.resize(10000);
-    for(unsigned int i = 0; i < pv.size(); i++)
-        pv.push_back(i);
-    pv.clear();
-
-    pdv.resize(10000);
-    for(unsigned int i = 0; i < pdv.size(); i++)
-        pdv.push_back(d);
-    pdv.clear();
-    t2 = get_clock();
-    u1 = get_clock_used_ms(t1, t2);
-    fprintf (stderr, "picasso pod_vector use %f ms\n", u1);
-
-    clear_cache();
-
-    agg::pod_vector<unsigned int> av;
-    agg::pod_vector<data_test> adv;
-    // agg data vector speed.
-    t1 = get_clock();
-
-    av.resize(10000);
-    for(unsigned int i = 0; i < av.size(); i++)
-        av.push_back(i);
-    av.clear();
-
-    adv.resize(10000);
-    for(unsigned int i = 0; i < adv.size(); i++)
-        adv.push_back(d);
-    adv.clear();
-
-    t2 = get_clock();
-    u2 = get_clock_used_ms(t1, t2);
-    fprintf (stderr, "agg pod_vector use %f ms\n", u2);
-
-    clear_cache();
-
-    EXPECT_EQ(true, u1<=u2);
-    if (u1 <= u2)
-        fprintf (stderr, "picasso is faster!\n");
-    else
-        fprintf (stderr, "agg is faster!\n");
-
-}
-
-
-TEST(Pod_BVector, SpeedCompareWithAgg)
-{
-    clocktime_t t1, t2;
-    double u1, u2;
-
-    clear_cache();
-
-    pod_bvector<unsigned int> pv;
-    pod_bvector<data_test> pdv;
-    data_test d = {1,1,1};
-
-    printf("pod_bvector speed testing...\n");
-    // picasso data vector speed.
-    t1 = get_clock();
-
-    for(unsigned int i = 0; i < 1000; i++)
-        pv.add(i);
-    pv.clear();
-
-    for(unsigned int i = 0; i < 1000; i++)
-        pdv.add(d);
-    pdv.clear();
-
-    t2 = get_clock();
-    u1 = get_clock_used_ms(t1, t2);
-    fprintf (stderr, "picasso pod_bvector use %f ms\n", u1);
-
-    clear_cache();
-
-    agg::pod_bvector<unsigned int> av;
-    agg::pod_bvector<data_test> pav;
-    // agg data vector speed.
-    t1 = get_clock();
-
-    for(unsigned int i = 0; i < 1000; i++)
-        av.add(i);
-    av.remove_all();
-
-    for(unsigned int i = 0; i < 1000; i++)
-        pav.add(d);
-    pav.remove_all();
-
-    t2 = get_clock();
-    u2 = get_clock_used_ms(t1, t2);
-    fprintf (stderr, "agg pod_bvector use %f ms\n", u2);
-
-    clear_cache();
-
-    EXPECT_EQ(true, u1<=u2);
-    if (u1 <= u2)
-        fprintf (stderr, "picasso is faster!\n");
-    else
-        fprintf (stderr, "agg is faster!\n");
 }
 
 TEST(Pod_BVector, BlockAndAutoSizeVector)
