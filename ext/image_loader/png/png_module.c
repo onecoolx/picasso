@@ -22,6 +22,7 @@
 struct png_image_ctx {
     png_structp png_ptr;
     png_infop info_ptr;
+    int interlace_pass;
     // read
     uint8_t* pos;
     uint8_t* end;
@@ -109,6 +110,11 @@ static int read_png_info(const ps_byte* data, size_t len, psx_image_header* head
     else
         png_set_gamma(ctx->png_ptr, screen_gamma, 0.45455);
 
+    if (interlace_type != PNG_INTERLACE_NONE)
+        ctx->interlace_pass = png_set_interlace_handling(ctx->png_ptr);
+    else
+        ctx->interlace_pass = 1;
+
     // update info after applying transformations
     png_read_update_info(ctx->png_ptr, ctx->info_ptr);
     rowbytes = (int)png_get_rowbytes(ctx->png_ptr, ctx->info_ptr);
@@ -136,12 +142,14 @@ static int release_read_png_info(psx_image_header* header)
 
 static int decode_png_data(psx_image_header* header, const psx_image* image, psx_image_frame* frame, int idx, ps_byte* buffer, size_t buffer_len)
 {
-    int y;
+    int y, p;
     struct png_image_ctx* ctx = (struct png_image_ctx*)header->priv;
 
-    for (y = 0; y < header->height; y++) {
-        ps_byte* row = buffer + header->pitch * y;
-        png_read_row(ctx->png_ptr, row, NULL);
+    for (p = 0; p < ctx->interlace_pass; p++) {
+        for (y = 0; y < header->height; y++) {
+            ps_byte* row = buffer + header->pitch * y;
+            png_read_row(ctx->png_ptr, row, NULL);
+        }
     }
 
     png_read_end(ctx->png_ptr, ctx->info_ptr);

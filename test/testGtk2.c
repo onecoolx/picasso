@@ -25,7 +25,7 @@ gboolean expose (GtkWidget *widget, GdkEventExpose *event)
     t1 = get_time();
     draw_test(0, context);
     t2 = get_time();
-    fprintf(stderr, "draw frame use %.4f ms --- %.4f fps\n", (t2-t1)/1000.0, 1000.0/((t2-t1)/1000.0));
+    fprintf(stderr, "draw frame use %.6f ms --- %.6f fps\n", (double)(t2-t1), 1000.0/(t2-t1 ? t2-t1 : 1));
     gdk_draw_pixbuf(widget->window, widget->style->white_gc, pixbuf, 0, 0, 0, 0, 640, 480, 0,0,0);
     return FALSE;
 }

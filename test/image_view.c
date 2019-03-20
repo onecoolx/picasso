@@ -59,7 +59,7 @@ void init_context (ps_context* gc, ps_canvas* cs, unsigned char* buf)
             getcwd(full_path, 1024);
             strcat(full_path, DIRPREFIX);
             strcat(full_path, path);
-
+            fprintf(stderr, "load image %s\n", full_path);
             image = psx_image_load(full_path, NULL);
         }
     }
