@@ -22,6 +22,8 @@ typedef struct {
     EGLContext eglContext;
 } GLES2_CONTEXT;
 
+static ps_context *pcontext;
+static ps_canvas *pcanvas;
 
 static int initEGL(GLES2_CONTEXT* ctx)
 {
@@ -37,10 +39,10 @@ static int initEGL(GLES2_CONTEXT* ctx)
 
     EGLint numConfigs;
     EGLint cfg_attribs[] = { EGL_BUFFER_SIZE,  EGL_DONT_CARE,
-                             EGL_DEPTH_SIZE,   16,
-                             EGL_RED_SIZE,     5,
-                             EGL_GREEN_SIZE,   6,
-                             EGL_BLUE_SIZE,    5,
+                             EGL_DEPTH_SIZE,   32,
+                             EGL_RED_SIZE,     8,
+                             EGL_GREEN_SIZE,   8,
+                             EGL_BLUE_SIZE,    8,
                              EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
                              EGL_NONE };
 
@@ -108,12 +110,10 @@ static int initEGL(GLES2_CONTEXT* ctx)
 static void drawFrame(GLES2_CONTEXT* ctx)
 {
     suseconds_t t1, t2;
-    glClearColor(1.0, 1.0, 1.0, 1.0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     t1 = get_time();
-    //draw_test(0, context);
+    draw_test(0, pcontext);
     t2 = get_time();
-    fprintf(stderr, "draw frame use %.4f ms --- %.4f fps\n", (t2-t1)/1000.0, 1000.0/((t2-t1)/1000.0));
+    fprintf(stderr, "draw frame use %.4f ms --- %.4f fps\n", (double)(t2-t1), 1000.0/((t2-t1) ? (t2-t1) : 1.0));
 }
 
 static void reshape(int width, int height)
