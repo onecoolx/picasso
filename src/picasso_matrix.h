@@ -20,7 +20,7 @@ public:
     trans_affine(scalar sx, scalar shy, scalar shx, scalar sy, scalar tx, scalar ty);
 
     trans_affine(const trans_affine& o);
-    trans_affine& operator=(const trans_affine& o);
+    trans_affine& operator = (const trans_affine& o);
 
     ~trans_affine();
 public:

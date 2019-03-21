@@ -41,7 +41,7 @@ void raster_adapter::reset(void)
     m_impl->reset();
 }
 
-bool raster_adapter::is_empty(void)
+bool raster_adapter::is_empty(void) const
 {
     return m_impl->is_empty();
 }

@@ -46,7 +46,7 @@ void rendering_buffer::replace(byte* buf, unsigned int width, unsigned int heigh
     m_impl->replace(buf, width, height, stride);
 }
 
-bool rendering_buffer::is_empty(void)
+bool rendering_buffer::is_empty(void) const
 {
     return !m_impl;
 }

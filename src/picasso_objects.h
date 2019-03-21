@@ -32,8 +32,9 @@ enum {
     pen_style_canvas   = 4,
 };
 
-struct graphic_pen
+class graphic_pen
 {
+public:
     graphic_pen()
         : style(pen_style_solid)
         , width(FLT_TO_SCALAR(1.0f))
@@ -42,9 +43,9 @@ struct graphic_pen
         , join(miter_join)
         , inner(inner_miter)
         , color(0,0,0)
-        , data(0)
+        , data(NULL)
         , is_dash(false)
-        , dashes(0)
+        , dashes(NULL)
         , ndashes(0)
         , dstart(0)
     {
@@ -58,20 +59,21 @@ struct graphic_pen
         , join(o.join)
         , inner(o.inner)
         , color(o.color)
-        , data(0)
+        , data(NULL)
         , is_dash(o.is_dash)
-        , dashes(0)
+        , dashes(NULL)
         , ndashes(0)
         , dstart(0)
     {
-        if (style == pen_style_image)
+        if (style == pen_style_image) {
             data = static_cast<void*>(ps_image_ref(static_cast<ps_image*>(o.data)));
-        else if (style == pen_style_pattern)
+        } else if (style == pen_style_pattern) {
             data = static_cast<void*>(ps_pattern_ref(static_cast<ps_pattern*>(o.data)));
-        else if (style == pen_style_gradient)
+        } else if (style == pen_style_gradient) {
             data = static_cast<void*>(ps_gradient_ref(static_cast<ps_gradient*>(o.data)));
-        else if (style == pen_style_canvas)
+        } else if (style == pen_style_canvas) {
             data = static_cast<void*>(ps_canvas_ref(static_cast<ps_canvas*>(o.data)));
+        }
 
         // set dashes
         if (is_dash) {
@@ -79,8 +81,9 @@ struct graphic_pen
             dstart = o.dstart;
             dashes = new scalar[ndashes];
             if (dashes) {
-                for (unsigned int i = 0; i < ndashes; i++)
+                for (unsigned int i = 0; i < ndashes; i++) {
                     dashes[i] = o.dashes[i];
+                }
             } else {
                 //memory alloc error, ignore this dash
                 //I think it is never happen.
@@ -94,8 +97,9 @@ struct graphic_pen
 
     graphic_pen& operator = (const graphic_pen& o)
     {
-        if (this == &o)
+        if (this == &o) {
             return *this;
+        }
 
         clear_dash();
         clear(); // free old data
@@ -109,14 +113,15 @@ struct graphic_pen
         color = o.color;
         is_dash = o.is_dash;
 
-        if (style == pen_style_image)
+        if (style == pen_style_image) {
             data = static_cast<void*>(ps_image_ref(static_cast<ps_image*>(o.data)));
-        else if (style == pen_style_pattern)
+        } else if (style == pen_style_pattern) {
             data = static_cast<void*>(ps_pattern_ref(static_cast<ps_pattern*>(o.data)));
-        else if (style == pen_style_gradient)
+        } else if (style == pen_style_gradient) {
             data = static_cast<void*>(ps_gradient_ref(static_cast<ps_gradient*>(o.data)));
-        else if (style == pen_style_canvas)
+        } else if (style == pen_style_canvas) {
             data = static_cast<void*>(ps_canvas_ref(static_cast<ps_canvas*>(o.data)));
+        }
 
         // set dashes
         if (is_dash) {
@@ -124,8 +129,9 @@ struct graphic_pen
             dstart = o.dstart;
             dashes = new scalar[ndashes];
             if (dashes) {
-                for (unsigned int i = 0; i < ndashes; i++)
+                for (unsigned int i = 0; i < ndashes; i++) {
                     dashes[i] = o.dashes[i];
+                }
             } else {
                 //memory alloc error, ignore this dash
                 //I think it is never happen.
@@ -141,21 +147,22 @@ struct graphic_pen
     ~graphic_pen()
     {
         if (data) {
-            if (style == pen_style_image)
+            if (style == pen_style_image) {
                 ps_image_unref(static_cast<ps_image*>(data));
-            else if (style == pen_style_pattern)
+            } else if (style == pen_style_pattern) {
                 ps_pattern_unref(static_cast<ps_pattern*>(data));
-            else if (style == pen_style_gradient)
+            } else if (style == pen_style_gradient) {
                 ps_gradient_unref(static_cast<ps_gradient*>(data));
-            else if (style == pen_style_canvas)
+            } else if (style == pen_style_canvas) {
                 ps_canvas_unref(static_cast<ps_canvas*>(data));
+            }
             //add more..
-            data = 0;
+            data = NULL;
         }
 
         if (dashes) {
             delete [] dashes;
-            dashes = 0;
+            dashes = NULL;
         }
     }
 
@@ -167,8 +174,9 @@ struct graphic_pen
         dashes = new scalar[ndashes];
         if (dashes) {
             memset(dashes, 0, ndashes * sizeof(scalar));
-            for (unsigned int i = 0; i < ndash; i++)
+            for (unsigned int i = 0; i < ndash; i++) {
                 dashes[i] = FLT_TO_SCALAR(da[i]);
+            }
         } else {
             //memory alloc error, ignore this dash
             //I think it is never happen.
@@ -178,53 +186,54 @@ struct graphic_pen
         }
     }
 
-    void clear_dash()
+    void clear_dash(void)
     {
         dstart = 0;
         ndashes = 0;
         is_dash = false;
         if (dashes) {
             delete [] dashes;
-            dashes = 0;
+            dashes = NULL;
         }
     }
 
-    void clear()
+    void clear(void)
     {
         if (data) {
-            if (style == pen_style_image)
+            if (style == pen_style_image) {
                 ps_image_unref(static_cast<ps_image*>(data));
-            else if (style == pen_style_pattern)
+            } else if (style == pen_style_pattern) {
                 ps_pattern_unref(static_cast<ps_pattern*>(data));
-            else if (style == pen_style_gradient)
+            } else if (style == pen_style_gradient) {
                 ps_gradient_unref(static_cast<ps_gradient*>(data));
-            else if (style == pen_style_canvas)
+            } else if (style == pen_style_canvas) {
                 ps_canvas_unref(static_cast<ps_canvas*>(data));
+            }
             //add more..
-            data = 0;
+            data = NULL;
         }
         style = pen_style_solid;
     }
 
-    void set_image_pen(ps_image * p)
+    void set_image_pen(ps_image* p)
     {
         style = pen_style_image;
         data = ps_image_ref(p);
     }
 
-    void set_pattern_pen(ps_pattern * p)
+    void set_pattern_pen(ps_pattern* p)
     {
         style = pen_style_pattern;
         data = ps_pattern_ref(p);
     }
 
-    void set_gradient_pen(ps_gradient * p)
+    void set_gradient_pen(ps_gradient* p)
     {
         style = pen_style_gradient;
         data = ps_gradient_ref(p);
     }
 
-    void set_canvas_pen(ps_canvas * p)
+    void set_canvas_pen(ps_canvas* p)
     {
         style = pen_style_canvas;
         data = ps_canvas_ref(p);
@@ -240,7 +249,7 @@ struct graphic_pen
     void* data;
     //dash
     bool is_dash;
-    scalar * dashes;
+    scalar* dashes;
     unsigned int ndashes;
     scalar dstart;
 };
@@ -254,10 +263,12 @@ enum {
     brush_style_canvas   = 4,
 };
 
-struct graphic_brush {
+class graphic_brush
+{
+public:
     graphic_brush()
         : style(brush_style_solid)
-        , data(0)
+        , data(NULL)
         , rule(fill_non_zero)
         , color(0,0,0)
     {
@@ -265,18 +276,19 @@ struct graphic_brush {
 
     graphic_brush(const graphic_brush& o)
         : style(o.style)
-        , data(0)
+        , data(NULL)
         , rule(o.rule)
         , color(o.color)
     {
-        if (style == brush_style_image)
+        if (style == brush_style_image) {
             data = static_cast<void*>(ps_image_ref(static_cast<ps_image*>(o.data)));
-        else if (style == brush_style_pattern)
+        } else if (style == brush_style_pattern) {
             data = static_cast<void*>(ps_pattern_ref(static_cast<ps_pattern*>(o.data)));
-        else if (style == brush_style_gradient)
+        } else if (style == brush_style_gradient) {
             data = static_cast<void*>(ps_gradient_ref(static_cast<ps_gradient*>(o.data)));
-        else if (style == brush_style_canvas)
+        } else if (style == brush_style_canvas) {
             data = static_cast<void*>(ps_canvas_ref(static_cast<ps_canvas*>(o.data)));
+        }
     }
 
     graphic_brush& operator = (const graphic_brush& o)
@@ -288,14 +300,15 @@ struct graphic_brush {
 
         style = o.style;
 
-        if (style == brush_style_image)
+        if (style == brush_style_image) {
             data = static_cast<void*>(ps_image_ref(static_cast<ps_image*>(o.data)));
-        else if (style == brush_style_pattern)
+        } else if (style == brush_style_pattern) {
             data = static_cast<void*>(ps_pattern_ref(static_cast<ps_pattern*>(o.data)));
-        else if (style == brush_style_gradient)
+        } else if (style == brush_style_gradient) {
             data = static_cast<void*>(ps_gradient_ref(static_cast<ps_gradient*>(o.data)));
-        else if (style == brush_style_canvas)
+        } else if (style == brush_style_canvas) {
             data = static_cast<void*>(ps_canvas_ref(static_cast<ps_canvas*>(o.data)));
+        }
 
         rule = o.rule;
         color = o.color;
@@ -306,55 +319,57 @@ struct graphic_brush {
     ~graphic_brush()
     {
         if (data) {
-            if (style == brush_style_image)
+            if (style == brush_style_image) {
                 ps_image_unref(static_cast<ps_image*>(data));
-            else if (style == brush_style_pattern)
+            } else if (style == brush_style_pattern) {
                 ps_pattern_unref(static_cast<ps_pattern*>(data));
-            else if (style == brush_style_gradient)
+            } else if (style == brush_style_gradient) {
                 ps_gradient_unref(static_cast<ps_gradient*>(data));
-            else if (style == brush_style_canvas)
+            } else if (style == brush_style_canvas) {
                 ps_canvas_unref(static_cast<ps_canvas*>(data));
+            }
             //add more..
-            data = 0;
+            data = NULL;
         }
     }
 
-    void clear()
+    void clear(void)
     {
         if (data) {
-            if (style == brush_style_image)
+            if (style == brush_style_image) {
                 ps_image_unref(static_cast<ps_image*>(data));
-            else if (style == brush_style_pattern)
+            } else if (style == brush_style_pattern) {
                 ps_pattern_unref(static_cast<ps_pattern*>(data));
-            else if (style == brush_style_gradient)
+            } else if (style == brush_style_gradient) {
                 ps_gradient_unref(static_cast<ps_gradient*>(data));
-            else if (style == brush_style_canvas)
+            } else if (style == brush_style_canvas) {
                 ps_canvas_unref(static_cast<ps_canvas*>(data));
+            }
             //add more..
-            data = 0;
+            data = NULL;
         }
         style = brush_style_solid;
     }
 
-    void set_image_brush(ps_image * p)
+    void set_image_brush(ps_image* p)
     {
         style = brush_style_image;
         data = ps_image_ref(p);
     }
 
-    void set_pattern_brush(ps_pattern * p)
+    void set_pattern_brush(ps_pattern* p)
     {
         style = brush_style_pattern;
         data = ps_pattern_ref(p);
     }
 
-    void set_gradient_brush(ps_gradient * p)
+    void set_gradient_brush(ps_gradient* p)
     {
         style = brush_style_gradient;
         data = ps_gradient_ref(p);
     }
 
-    void set_canvas_brush(ps_canvas * p)
+    void set_canvas_brush(ps_canvas* p)
     {
         style = brush_style_canvas;
         data = ps_canvas_ref(p);
@@ -368,7 +383,9 @@ struct graphic_brush {
 
 
 //shadow object
-struct shadow_state {
+class shadow_state
+{
+public:
     shadow_state()
         : use_shadow(false)
         , x_offset(FLT_TO_SCALAR(0.0f))
@@ -414,7 +431,9 @@ enum  {
     clip_device  = 2,
 };
 
-struct clip_area {
+class clip_area
+{
+public:
     clip_area()
         : type(clip_none)
         , rule(fill_non_zero)
@@ -443,7 +462,7 @@ struct clip_area {
         return *this;
     }
 
-    bool is_not_same(const clip_area& o)
+    bool is_not_same(const clip_area& o) const
     {
         return (type != o.type) ||
                (path != o.path) ||
@@ -462,7 +481,9 @@ struct clip_area {
 
 
 // context state object
-struct context_state {
+class context_state
+{
+public:
     context_state()
         : next(0)
         , filter(FILTER_BILINEAR)
@@ -509,7 +530,7 @@ struct context_state {
         next = 0;
         filter = o.filter;
         ps_font_unref(font); //free old font
-        font = ps_font_ref(o.font);//reference new one
+        font = ps_font_ref(o.font); //reference new one
         antialias = o.antialias;
         gamma = o.gamma;
         alpha = o.alpha;
@@ -526,10 +547,10 @@ struct context_state {
         return *this;
     }
 
-    struct context_state * next;
+    struct context_state* next;
 
     ps_filter filter;
-    ps_font * font;
+    ps_font* font;
     bool antialias;
     scalar gamma;
     scalar alpha;
@@ -575,9 +596,9 @@ enum {
 struct _ps_canvas {
     int refcount;
     ps_color_format fmt;
-    picasso::painter *p;
+    picasso::painter* p;
     unsigned int flage;
-    void      *host;
+    void* host;
     ps_mask* mask;
     picasso::rendering_buffer buffer;
 };
@@ -586,7 +607,7 @@ struct _ps_image {
     int refcount;
     ps_color_format fmt;
     unsigned int flage;
-    void      *host;
+    void* host;
     picasso::rendering_buffer buffer;
 };
 
@@ -595,7 +616,7 @@ struct _ps_pattern {
     picasso::trans_affine matrix;
     ps_wrap_type xtype;
     ps_wrap_type ytype;
-    ps_image *img;
+    ps_image* img;
 };
 
 struct _ps_gradient {

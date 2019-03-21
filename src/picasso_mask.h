@@ -33,7 +33,7 @@ public:
     abstract_mask_layer* impl(void) const { return m_impl; }
 private:
     mask_layer(const mask_layer&);
-    mask_layer& operator=(const mask_layer&);
+    mask_layer& operator = (const mask_layer&);
     abstract_mask_layer* m_impl;
 };
 

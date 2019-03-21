@@ -51,7 +51,7 @@ private:
 private:
     painter(const painter& o);
     painter& operator=(const painter& o);
-    abstract_painter * m_impl;
+    abstract_painter* m_impl;
 };
 
 }

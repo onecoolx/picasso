@@ -64,8 +64,9 @@ public:
         }
 
         unsigned int lsb = code & 0xFF;
-        if (m_glyphs[msb][lsb])
+        if (m_glyphs[msb][lsb]) {
             return 0; // already exists.
+        }
 
         glyph* g = (glyph*)m_allocator.allocate(sizeof(glyph), sizeof(int));
 

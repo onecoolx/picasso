@@ -45,7 +45,7 @@ public:
     void reset(void);
     void commit(void);
 
-    bool is_empty(void);
+    bool is_empty(void) const;
 public:
     static bool fill_contents_point(const vertex_source& vs, scalar x, scalar y, filling_rule rule);
     static bool stroke_contents_point(const vertex_source& vs, scalar x, scalar y, scalar w);
@@ -53,8 +53,8 @@ public:
     abstract_raster_adapter* impl(void) const { return m_impl; }
 private:
     raster_adapter(const raster_adapter& o);
-    raster_adapter& operator=(const raster_adapter& o);
-    abstract_raster_adapter * m_impl;
+    raster_adapter& operator = (const raster_adapter& o);
+    abstract_raster_adapter* m_impl;
 };
 
 }

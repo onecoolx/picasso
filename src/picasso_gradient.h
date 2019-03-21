@@ -39,7 +39,7 @@ public:
     abstract_gradient_adapter* impl(void) const { return m_impl; }
 private:
     gradient_adapter(const gradient_adapter&);
-    gradient_adapter& operator=(const gradient_adapter&);
+    gradient_adapter& operator = (const gradient_adapter&);
     abstract_gradient_adapter* m_impl;
 };
 

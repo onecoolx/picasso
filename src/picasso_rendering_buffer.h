@@ -23,9 +23,9 @@ public:
 public:
     void attach(byte* buf, unsigned int width, unsigned int height, int stride);
     void replace(byte* buf, unsigned int width, unsigned int height, int stride);
-    bool is_empty(void);
+    bool is_empty(void) const;
 
-    byte * buffer(void) const;
+    byte* buffer(void) const;
     unsigned int width(void) const;
     unsigned int height(void) const;
     int stride(void) const;
@@ -42,8 +42,8 @@ public:
 private:
     friend class painter;
     rendering_buffer(const rendering_buffer& o);
-    rendering_buffer& operator=(const rendering_buffer& o);
-    abstract_rendering_buffer * m_impl;
+    rendering_buffer& operator = (const rendering_buffer& o);
+    abstract_rendering_buffer* m_impl;
 };
 
 }

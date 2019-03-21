@@ -52,8 +52,9 @@ public:
 
     ~font_desc()
     {
-        if (m_name)
+        if (m_name) {
             mem_free(m_name);
+        }
     }
 
     font_desc(const font_desc& o)
@@ -75,8 +76,9 @@ public:
         if (this == &o)
             return *this;
 
-        if (m_name)
+        if (m_name) {
             mem_free(m_name);
+        }
 
         size_t len = strlen(o.m_name)+1;
         m_name = (char*)mem_malloc(len);
@@ -146,8 +148,9 @@ public:
 
     void clear(void)
     {
-        if (storage && font)
+        if (storage && font) {
             font->destroy_storage(storage);
+        }
 
         storage = font = 0;
     }
@@ -160,8 +163,9 @@ public:
     void serialize_from(byte* data, unsigned int size, scalar x, scalar y)
     {
         if (font) {
-            if (storage)
+            if (storage) {
                 font->destroy_storage(storage);
+            }
 
             storage = font->create_storage(data, size, x, y);
         }
@@ -169,11 +173,12 @@ public:
 
     void translate(scalar x, scalar y)
     {
-        if (font && storage)
+        if (font && storage) {
             font->translate_storage(storage, x, y);
+        }
     }
 
-    void* get_storage(void) { return storage; }
+    void* get_storage(void) const { return storage; }
 private:
     abstract_font_adapter* font;
     void* storage;
@@ -232,8 +237,8 @@ private:
     font_adapter& operator=(const font_adapter&);
 
     font_desc m_desc;
-    glyph_cache_manager * m_cache;
-    abstract_font_adapter * m_impl;
+    glyph_cache_manager* m_cache;
+    abstract_font_adapter* m_impl;
     graphic_path m_path_adaptor;
     mono_storage m_mono_storage;
     const glyph* m_prev_glyph;

@@ -24,7 +24,6 @@
 #define MIN(x, y)    (((x) < (y))?(x):(y))
 #define ABS(x)       (((x) < 0)?(-(x)):(x))
 
-
 // global error code
 extern "C" ps_status global_status;
 
