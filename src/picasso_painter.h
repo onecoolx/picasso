@@ -15,7 +15,7 @@
 
 namespace picasso {
 
-struct context_state;
+class context_state;
 
 class rendering_buffer;
 class raster_adapter;

@@ -68,21 +68,21 @@ ps_context* PICAPI ps_context_create(ps_canvas* canvas, ps_context* ctx)
 {
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;
-        return 0;
+        return NULL;
     }
 
     if (!canvas) {
         global_status = STATUS_INVALID_ARGUMENT;
-        return 0;
+        return NULL;
     }
 
-    picasso::context_state * state = new picasso::context_state;
+    picasso::context_state* state = new picasso::context_state;
     if (!state) {
         global_status = STATUS_OUT_OF_MEMORY;
-        return 0;
+        return NULL;
     }
 
-    ps_context *c = (ps_context*)mem_malloc(sizeof(ps_context));
+    ps_context* c = (ps_context*)mem_malloc(sizeof(ps_context));
     if (c) {
         c->refcount = 1;
         c->canvas = ps_canvas_ref(canvas);
@@ -94,7 +94,7 @@ ps_context* PICAPI ps_context_create(ps_canvas* canvas, ps_context* ctx)
             c->parent = ps_context_ref(ctx);
             c->fonts = ctx->fonts;
         } else {
-            c->parent = 0;
+            c->parent = NULL;
             c->fonts = new picasso::font_engine;
         }
         new ((void*)&(c->text_matrix)) picasso::trans_affine;
@@ -105,7 +105,7 @@ ps_context* PICAPI ps_context_create(ps_canvas* canvas, ps_context* ctx)
     } else {
         delete state;     // free state on error
         global_status = STATUS_OUT_OF_MEMORY;
-        return 0;
+        return NULL;
     }
 }
 
@@ -113,12 +113,12 @@ ps_canvas* PICAPI ps_context_set_canvas(ps_context* ctx, ps_canvas* canvas)
 {
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;
-        return 0;
+        return NULL;
     }
 
     if (!ctx || !canvas) {
         global_status = STATUS_INVALID_ARGUMENT;
-        return 0;
+        return NULL;
     }
     ps_canvas* old = ctx->canvas; // context's canvas must more than 2
     ctx->canvas = ps_canvas_ref(canvas);
@@ -131,12 +131,12 @@ ps_canvas* PICAPI ps_context_get_canvas(ps_context* ctx)
 {
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;
-        return 0;
+        return NULL;
     }
 
     if (!ctx) {
         global_status = STATUS_INVALID_ARGUMENT;
-        return 0;
+        return NULL;
     }
 
     ps_canvas* canvas= ctx->canvas;
@@ -148,12 +148,12 @@ ps_context* PICAPI ps_context_ref(ps_context* ctx)
 {
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;
-        return 0;
+        return NULL;
     }
 
     if (!ctx) {
         global_status = STATUS_INVALID_ARGUMENT;
-        return 0;
+        return NULL;
     }
 
     ctx->refcount++;
@@ -177,7 +177,7 @@ void PICAPI ps_context_unref(ps_context* ctx)
     if (ctx->refcount <= 0) {
         ps_canvas_unref(ctx->canvas);
         while (ctx->state) {
-            picasso::context_state * p = ctx->state;
+            picasso::context_state* p = ctx->state;
             ctx->state = ctx->state->next;
             delete p;
         }
@@ -381,7 +381,7 @@ ps_filter PICAPI ps_set_filter(ps_context* ctx, ps_filter filter)
 
     ps_filter old = ctx->state->filter;
     ctx->state->filter = filter;
-       global_status = STATUS_SUCCEED;
+    global_status = STATUS_SUCCEED;
     return old;
 }
 
@@ -475,10 +475,11 @@ float PICAPI ps_set_alpha(ps_context* ctx, float a)
     }
 
     //alpha range 0 ~ 1
-    if (a < 0.0f)
+    if (a < 0.0f) {
         a = 0.0f;
-    else if (a > 1.0f)
+    } else if (a > 1.0f) {
         a = 1.0f;
+    }
 
     float rd = SCALAR_TO_FLT(ctx->state->alpha);
     ctx->state->alpha = FLT_TO_SCALAR(a);
@@ -499,10 +500,11 @@ float PICAPI ps_set_blur(ps_context* ctx, float b)
     }
 
     //blur range 0 ~ 1
-    if (b < 0.0f)
+    if (b < 0.0f) {
         b = 0.0f;
-    else if (b > 1.0f)
+    } else if (b > 1.0f) {
         b = 1.0f;
+    }
 
     float rd = SCALAR_TO_FLT(ctx->state->blur);
     ctx->state->blur = FLT_TO_SCALAR(b);
@@ -523,10 +525,11 @@ float PICAPI ps_set_gamma(ps_context* ctx, float g)
     }
 
     //gamma range 0.6 ~ 3.0
-    if (g < 0.6f)
+    if (g < 0.6f) {
         g = 0.6f;
-    else if (g > 3.0f)
+    } else if (g > 3.0f) {
         g = 3.0f;
+    }
 
     float rd = SCALAR_TO_FLT(ctx->state->gamma);
     if (rd != g) {
@@ -570,10 +573,11 @@ void PICAPI ps_set_shadow(ps_context* ctx, float x, float y, float b)
     }
 
     //blur range 0 ~ 1
-    if (b < 0.0f)
+    if (b < 0.0f) {
         b = 0.0f;
-    else if (b > 1.0f)
+    } else if (b > 1.0f) {
         b = 1.0f;
+    }
 
     ctx->state->shadow.use_shadow = true;
     ctx->state->shadow.x_offset = FLT_TO_SCALAR(x);
@@ -755,8 +759,9 @@ float PICAPI ps_set_line_width(ps_context* ctx, float width)
         return 0.0f;
     }
 
-    if (width < 0.0f)
+    if (width < 0.0f) {
         width = 0.0f;
+    }
 
     float rw = SCALAR_TO_FLT(ctx->state->pen.width);
     ctx->state->pen.width = FLT_TO_SCALAR(width);
@@ -776,8 +781,9 @@ float PICAPI ps_set_miter_limit(ps_context* ctx, float limit)
         return 0.0f;
     }
 
-    if (limit < 0.0f)
+    if (limit < 0.0f) {
         limit = 0.0f;
+    }
 
     float rd = SCALAR_TO_FLT(ctx->state->pen.miter_limit);
     ctx->state->pen.miter_limit = FLT_TO_SCALAR(limit);
@@ -797,8 +803,9 @@ void PICAPI ps_set_line_dash(ps_context* ctx, float start, const float* dashes, 
         return;
     }
 
-    if (start < 0.0f)
+    if (start < 0.0f) {
         start = 0.0f;
+    }
 
     ctx->state->pen.clear_dash();
     ctx->state->pen.set_dash(start, dashes, num_dashes);
@@ -850,10 +857,11 @@ void PICAPI ps_add_sub_path(ps_context* ctx, const ps_path* path)
         return;
     }
 
-    if (picasso::_is_closed_path(ctx->path))
+    if (picasso::_is_closed_path(ctx->path)) {
         ctx->path.concat_path(const_cast<ps_path*>(path)->path, 0);
-    else
+    } else {
         ctx->path.join_path(const_cast<ps_path*>(path)->path, 0);
+    }
 
     global_status = STATUS_SUCCEED;
 }
@@ -915,10 +923,11 @@ void PICAPI ps_rounded_rect(ps_context* ctx, const ps_rect* r, float ltx, float 
     rr.radius(FLT_TO_SCALAR(ltx), FLT_TO_SCALAR(lty), FLT_TO_SCALAR(rtx), FLT_TO_SCALAR(rty),
                     FLT_TO_SCALAR(rbx), FLT_TO_SCALAR(rby), FLT_TO_SCALAR(lbx), FLT_TO_SCALAR(lby));
     rr.normalize_radius();
-    if (picasso::_is_closed_path(ctx->path))
+    if (picasso::_is_closed_path(ctx->path)) {
         ctx->path.concat_path(rr, 0);
-    else
+    } else {
         ctx->path.join_path(rr, 0);
+    }
     global_status = STATUS_SUCCEED;
 }
 
@@ -936,10 +945,11 @@ void PICAPI ps_ellipse(ps_context* ctx, const ps_rect* r)
 
     picasso::ellipse e(FLT_TO_SCALAR(floor(r->x)+r->w/2), FLT_TO_SCALAR(floor(r->y)+r->h/2),
                                                 FLT_TO_SCALAR(r->w/2), FLT_TO_SCALAR(r->h/2));
-    if (picasso::_is_closed_path(ctx->path))
+    if (picasso::_is_closed_path(ctx->path)) {
         ctx->path.concat_path(e, 0);
-    else
+    } else {
         ctx->path.join_path(e, 0);
+    }
     global_status = STATUS_SUCCEED;
 }
 
@@ -1009,10 +1019,11 @@ void PICAPI ps_bezier_curve_to(ps_context* ctx, const ps_point* fcp,
             FLT_TO_SCALAR(floor(fcp->x)), FLT_TO_SCALAR(floor(fcp->y)), FLT_TO_SCALAR(floor(scp->x)),
             FLT_TO_SCALAR(floor(scp->y)), FLT_TO_SCALAR(floor(ep->x)), FLT_TO_SCALAR(floor(ep->y)));
 
-    if (picasso::_is_closed_path(ctx->path))
+    if (picasso::_is_closed_path(ctx->path)) {
         ctx->path.concat_path(c, 0);
-    else
+    } else {
         ctx->path.join_path(c, 0);
+    }
     global_status = STATUS_SUCCEED;
 }
 
@@ -1032,10 +1043,11 @@ void PICAPI ps_quad_curve_to(ps_context* ctx, const ps_point* cp, const ps_point
                                         FLT_TO_SCALAR(floor(cp->x)), FLT_TO_SCALAR(floor(cp->y)),
                                         FLT_TO_SCALAR(floor(ep->x)), FLT_TO_SCALAR(floor(ep->y)));
 
-    if (picasso::_is_closed_path(ctx->path))
+    if (picasso::_is_closed_path(ctx->path)) {
         ctx->path.concat_path(c, 0);
-    else
+    } else {
         ctx->path.join_path(c, 0);
+    }
     global_status = STATUS_SUCCEED;
 }
 
@@ -1047,7 +1059,7 @@ void PICAPI ps_arc(ps_context* ctx, const ps_point* cp, float r,
         return;
     }
 
-    if (!ctx || !cp || r <=0.0f ) {
+    if (!ctx || !cp || r <= 0.0f ) {
         global_status = STATUS_INVALID_ARGUMENT;
         return;
     }
@@ -1055,10 +1067,11 @@ void PICAPI ps_arc(ps_context* ctx, const ps_point* cp, float r,
     picasso::arc a(FLT_TO_SCALAR(floor(cp->x)), FLT_TO_SCALAR(floor(cp->y)),
             FLT_TO_SCALAR(r), FLT_TO_SCALAR(r), FLT_TO_SCALAR(sa), FLT_TO_SCALAR(ea), (clockwise ? true : false));
 
-    if (picasso::_is_closed_path(ctx->path))
+    if (picasso::_is_closed_path(ctx->path)) {
         ctx->path.concat_path(a, 0);
-    else
+    } else {
         ctx->path.join_path(a, 0);
+    }
     global_status = STATUS_SUCCEED;
 }
 
@@ -1082,10 +1095,11 @@ void PICAPI ps_tangent_arc(ps_context* ctx, const ps_rect* r, float sa, float sw
     picasso::bezier_arc ba(Floor(cx), Floor(cy), xr, yr, FLT_TO_SCALAR(sa), FLT_TO_SCALAR(sw));
     picasso::conv_curve cr(ba);
 
-    if (picasso::_is_closed_path(ctx->path))
+    if (picasso::_is_closed_path(ctx->path)) {
         ctx->path.concat_path(cr, 0);
-    else
+    } else {
         ctx->path.join_path(cr, 0);
+    }
     global_status = STATUS_SUCCEED;
 }
 
@@ -1565,7 +1579,7 @@ void PICAPI ps_save(ps_context* ctx)
          return;
     }
 
-    picasso::context_state * new_state = new picasso::context_state(*ctx->state); //copy constructor
+    picasso::context_state* new_state = new picasso::context_state(*ctx->state); //copy constructor
     if (!new_state) {
         global_status = STATUS_OUT_OF_MEMORY;
         return;
@@ -1588,7 +1602,7 @@ void PICAPI ps_restore(ps_context* ctx)
         return;
     }
 
-    picasso::context_state * old_state = ctx->state;
+    picasso::context_state* old_state = ctx->state;
 
     ctx->state = ctx->state->next;
 

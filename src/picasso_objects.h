@@ -547,7 +547,7 @@ public:
         return *this;
     }
 
-    struct context_state* next;
+    context_state* next;
 
     ps_filter filter;
     ps_font* font;
