@@ -3,6 +3,8 @@ FREETYPE_LIBS=-lfreetype -lz
 
 #CC=clang -O2
 CC=gcc -O2
+#CC=gcc -fprofile-arcs -ftest-coverage
+
 INC=-I../include -I../build
 CFLAGS=${DLL} `pkg-config --cflags gtk+-2.0`
 

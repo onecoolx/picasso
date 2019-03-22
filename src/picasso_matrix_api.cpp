@@ -23,11 +23,11 @@ static void _matrix_transform_rect(const trans_affine & matrix, ps_rect* rect)
         scalar y = matrix.sy() * FLT_TO_SCALAR(rect->y) + matrix.ty();
         scalar w = matrix.sx() * FLT_TO_SCALAR(rect->w);
         scalar h = matrix.sy() * FLT_TO_SCALAR(rect->h);
-        if ( w < 0 ) {
+        if (w < 0) {
             w = -w;
             x -= w-1;
         }
-        if ( h < 0 ) {
+        if (h < 0) {
             h = -h;
             y -= h-1;
         }
@@ -87,7 +87,7 @@ ps_matrix* PICAPI ps_matrix_create_init(float xx, float yx, float xy, float yy, 
 {
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;
-        return 0;
+        return NULL;
     }
 
     ps_matrix *p = (ps_matrix*)mem_malloc(sizeof(ps_matrix));
@@ -99,7 +99,7 @@ ps_matrix* PICAPI ps_matrix_create_init(float xx, float yx, float xy, float yy, 
         return p;
     } else {
         global_status = STATUS_OUT_OF_MEMORY;
-        return 0;
+        return NULL;
     }
 }
 
@@ -107,7 +107,7 @@ ps_matrix* PICAPI ps_matrix_create(void)
 {
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;
-        return 0;
+        return NULL;
     }
 
     ps_matrix *p = (ps_matrix*)mem_malloc(sizeof(ps_matrix));
@@ -118,7 +118,7 @@ ps_matrix* PICAPI ps_matrix_create(void)
         return p;
     } else {
         global_status = STATUS_OUT_OF_MEMORY;
-        return 0;
+        return NULL;
     }
 }
 
@@ -126,12 +126,12 @@ ps_matrix* PICAPI ps_matrix_create_copy(const ps_matrix* matrix)
 {
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;
-        return 0;
+        return NULL;
     }
 
     if (!matrix) {
         global_status = STATUS_INVALID_ARGUMENT;
-        return 0;
+        return NULL;
     }
 
     ps_matrix *p = (ps_matrix*)mem_malloc(sizeof(ps_matrix));
@@ -142,7 +142,7 @@ ps_matrix* PICAPI ps_matrix_create_copy(const ps_matrix* matrix)
         return p;
     } else {
         global_status = STATUS_OUT_OF_MEMORY;
-        return 0;
+        return NULL;
     }
 }
 
@@ -150,12 +150,12 @@ ps_matrix* PICAPI ps_matrix_ref(ps_matrix* matrix)
 {
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;
-        return 0;
+        return NULL;
     }
 
     if (!matrix) {
         global_status = STATUS_INVALID_ARGUMENT;
-        return 0;
+        return NULL;
     }
     matrix->refcount++;
     global_status = STATUS_SUCCEED;
@@ -398,12 +398,12 @@ float PICAPI ps_matrix_get_determinant(const ps_matrix* matrix)
 {
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;
-        return 0;
+        return NULL;
     }
 
     if (!matrix) {
         global_status = STATUS_INVALID_ARGUMENT;
-        return 0;
+        return NULL;
     }
 
     global_status = STATUS_SUCCEED;

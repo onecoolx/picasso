@@ -18,15 +18,15 @@ ps_pattern* PICAPI ps_pattern_create_image(const ps_image* img, ps_wrap_type xp,
 {
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;
-        return 0;
+        return NULL;
     }
 
     if (!img) {
         global_status = STATUS_INVALID_ARGUMENT;
-        return 0;
+        return NULL;
     }
 
-    ps_pattern *p = (ps_pattern*)mem_malloc(sizeof(ps_pattern));
+    ps_pattern* p = (ps_pattern*)mem_malloc(sizeof(ps_pattern));
     if (p) {
         p->refcount = 1;
         if (m) {
@@ -41,7 +41,7 @@ ps_pattern* PICAPI ps_pattern_create_image(const ps_image* img, ps_wrap_type xp,
         return p;
     } else {
         global_status = STATUS_OUT_OF_MEMORY;
-        return 0;
+        return NULL;
     }
 }
 
@@ -49,12 +49,12 @@ ps_pattern* PICAPI ps_pattern_ref(ps_pattern* pattern)
 {
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;
-        return 0;
+        return NULL;
     }
 
     if (!pattern) {
         global_status = STATUS_INVALID_ARGUMENT;
-        return 0;
+        return NULL;
     }
 
     pattern->refcount++;

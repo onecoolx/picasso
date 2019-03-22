@@ -14,7 +14,7 @@
 
 namespace picasso {
 
-static ps_font* _global_font = 0;
+static ps_font* _global_font = NULL;
 
 bool _init_default_font(void)
 {
@@ -60,8 +60,9 @@ static bool inline create_device_font(ps_context* ctx)
 
     if (ctx->fonts->create_font(ctx->state->font->desc)) {
         return true;
-    } else
+    } else {
         return false;
+    }
 }
 
 static inline void _add_glyph_to_path(ps_context* ctx, picasso::graphic_path& path)
@@ -89,12 +90,12 @@ ps_font* PICAPI ps_font_create_copy(const ps_font* font)
 {
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;
-        return 0;
+        return NULL;
     }
 
     if (!font) {
         global_status = STATUS_INVALID_ARGUMENT;
-        return 0;
+        return NULL;
     }
 
     ps_font* f = (ps_font*)mem_malloc(sizeof(ps_font));
@@ -111,7 +112,7 @@ ps_font* PICAPI ps_font_create_copy(const ps_font* font)
         return f;
     } else {
         global_status = STATUS_OUT_OF_MEMORY;
-        return 0;
+        return NULL;
     }
 }
 
@@ -119,12 +120,12 @@ ps_font* PICAPI ps_font_create(const char* name, ps_charset c, float s, int w, p
 {
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;
-        return 0;
+        return NULL;
     }
 
     if (!name) {
         global_status = STATUS_INVALID_ARGUMENT;
-        return 0;
+        return NULL;
     }
 
     ps_font* f = (ps_font*)mem_malloc(sizeof(ps_font));
@@ -141,7 +142,7 @@ ps_font* PICAPI ps_font_create(const char* name, ps_charset c, float s, int w, p
         return f;
     } else {
         global_status = STATUS_OUT_OF_MEMORY;
-        return 0;
+        return NULL;
     }
 }
 
@@ -149,12 +150,12 @@ ps_font* PICAPI ps_font_ref(ps_font* f)
 {
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;
-        return 0;
+        return NULL;
     }
 
     if (!f) {
         global_status = STATUS_INVALID_ARGUMENT;
-        return 0;
+        return NULL;
     }
 
     f->refcount++;
@@ -302,10 +303,12 @@ void PICAPI ps_text_out_length(ps_context* ctx, float x, float y, const char* te
             register char c = *p;
             const picasso::glyph* glyph = ctx->fonts->current_font()->get_glyph(c);
             if (glyph) {
-                if (ctx->font_kerning)
+                if (ctx->font_kerning) {
                     ctx->fonts->current_font()->add_kerning(&gx, &gy);
-                if (ctx->fonts->current_font()->generate_raster(glyph, gx, gy))
+                }
+                if (ctx->fonts->current_font()->generate_raster(glyph, gx, gy)) {
                    ctx->canvas->p->render_glyph(ctx->state, ctx->raster, ctx->fonts->current_font(), glyph->type);
+                }
 
                 gx += glyph->advance_x;
                 gy += glyph->advance_y;
@@ -341,10 +344,12 @@ void PICAPI ps_wide_text_out_length(ps_context* ctx, float x, float y, const ps_
             register ps_uchar16 c = *p;
             const picasso::glyph* glyph = ctx->fonts->current_font()->get_glyph(c);
             if (glyph) {
-                if (ctx->font_kerning)
+                if (ctx->font_kerning) {
                     ctx->fonts->current_font()->add_kerning(&gx, &gy);
-                if (ctx->fonts->current_font()->generate_raster(glyph, gx, gy))
+                }
+                if (ctx->fonts->current_font()->generate_raster(glyph, gx, gy)) {
                    ctx->canvas->p->render_glyph(ctx->state, ctx->raster, ctx->fonts->current_font(), glyph->type);
+                }
 
                 gx += glyph->advance_x;
                 gy += glyph->advance_y;
@@ -381,7 +386,7 @@ void PICAPI ps_draw_text(ps_context* ctx, const ps_rect* area, const void* text,
 
         // align layout
         scalar w = 0, h = 0;
-        const picasso::glyph* glyph_test = 0;
+        const picasso::glyph* glyph_test = NULL;
 
         if (ctx->state->font->desc.charset() == CHARSET_ANSI) {
             const char* p = (const char*)text;
@@ -398,12 +403,13 @@ void PICAPI ps_draw_text(ps_context* ctx, const ps_rect* area, const void* text,
 
         w *= len; //FIXME: estimate!
 
-        if (align & TEXT_ALIGN_LEFT)
+        if (align & TEXT_ALIGN_LEFT) {
             x = FLT_TO_SCALAR(area->x);
-        else if (align & TEXT_ALIGN_RIGHT)
+        } else if (align & TEXT_ALIGN_RIGHT) {
             x = FLT_TO_SCALAR(area->x + (area->w - w));
-        else
+        } else {
             x = FLT_TO_SCALAR(area->x + (area->w - w)/2);
+        }
 
         if (align & TEXT_ALIGN_TOP) {
             y = FLT_TO_SCALAR(area->y);
@@ -423,10 +429,12 @@ void PICAPI ps_draw_text(ps_context* ctx, const ps_rect* area, const void* text,
                 register char c = *p;
                 const picasso::glyph* glyph = ctx->fonts->current_font()->get_glyph(c);
                 if (glyph) {
-                    if (ctx->font_kerning)
+                    if (ctx->font_kerning) {
                         ctx->fonts->current_font()->add_kerning(&x, &y);
-                    if (ctx->fonts->current_font()->generate_raster(glyph, x, y))
+                    }
+                    if (ctx->fonts->current_font()->generate_raster(glyph, x, y)) {
                         _add_glyph_to_path(ctx, text_path);
+                    }
 
                     x += glyph->advance_x;
                     y += glyph->advance_y;
@@ -440,10 +448,12 @@ void PICAPI ps_draw_text(ps_context* ctx, const ps_rect* area, const void* text,
                 register ps_uchar16 c = *p;
                 const picasso::glyph* glyph = ctx->fonts->current_font()->get_glyph(c);
                 if (glyph) {
-                    if (ctx->font_kerning)
+                    if (ctx->font_kerning) {
                         ctx->fonts->current_font()->add_kerning(&x, &y);
-                    if (ctx->fonts->current_font()->generate_raster(glyph, x, y))
+                    }
+                    if (ctx->fonts->current_font()->generate_raster(glyph, x, y)) {
                         _add_glyph_to_path(ctx, text_path);
+                    }
 
                     x += glyph->advance_x;
                     y += glyph->advance_y;
@@ -508,8 +518,9 @@ ps_bool PICAPI ps_get_text_extent(ps_context* ctx, const void* text, unsigned in
             while (*p && len) {
                 register char c = *p;
                 const picasso::glyph* glyph = ctx->fonts->current_font()->get_glyph(c);
-                if (glyph)
+                if (glyph) {
                     width += glyph->advance_x;
+                }
 
                 len--;
                 p++;
@@ -519,8 +530,9 @@ ps_bool PICAPI ps_get_text_extent(ps_context* ctx, const void* text, unsigned in
             while (*p && len) {
                 register ps_uchar16 c = *p;
                 const picasso::glyph* glyph = ctx->fonts->current_font()->get_glyph(c);
-                if (glyph)
+                if (glyph) {
                     width += glyph->advance_x;
+                }
 
                 len--;
                 p++;
@@ -554,10 +566,12 @@ void PICAPI ps_show_glyphs(ps_context* ctx, float x, float y, ps_glyph* g, unsig
         for (unsigned int i = 0; i < len; i++) {
             const picasso::glyph* glyph = (const picasso::glyph*)g[i].glyph;
             if (glyph) {
-                if (ctx->font_kerning)
+                if (ctx->font_kerning) {
                     ctx->fonts->current_font()->add_kerning(&gx, &gy);
-                if (ctx->fonts->current_font()->generate_raster(glyph, gx, gy))
+                }
+                if (ctx->fonts->current_font()->generate_raster(glyph, gx, gy)) {
                    ctx->canvas->p->render_glyph(ctx->state, ctx->raster, ctx->fonts->current_font(), glyph->type);
+                }
 
                 gx += glyph->advance_x;
                 gy += glyph->advance_y;
@@ -590,13 +604,15 @@ ps_bool PICAPI ps_get_path_from_glyph(ps_context* ctx, const ps_glyph* g, ps_pat
     if (create_device_font(ctx)) {
         const picasso::glyph* gly = (const picasso::glyph*)g->glyph;
         if (gly) {
-            if (gly->type != picasso::glyph_type_outline)
+            if (gly->type != picasso::glyph_type_outline) {
                 gly = ctx->fonts->current_font()->get_glyph(gly->code);
+            }
 
             if (gly) { // Must be outline glyph for path.
                 y += ctx->fonts->current_font()->ascent();
-                if (ctx->fonts->current_font()->generate_raster(gly, x, y))
+                if (ctx->fonts->current_font()->generate_raster(gly, x, y)) {
                     _add_glyph_to_path(ctx, p->path);
+                }
             }
         }
     }
@@ -687,12 +703,12 @@ ps_font* PICAPI ps_set_font(ps_context* ctx, const ps_font* f)
 {
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;
-        return 0;
+        return NULL;
     }
 
     if (!ctx || !f) {
         global_status = STATUS_INVALID_ARGUMENT;
-        return 0;
+        return NULL;
     }
 
     ps_font* old = ctx->state->font;

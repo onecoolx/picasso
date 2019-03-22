@@ -26,3 +26,4 @@ rm -rf   missing
 rm -rf   pconfig.h.in
 rm -rf   src/Makefile.in
 rm -rf   test/Makefile.in
+find . -name "*.gcno"|xargs rm -rf

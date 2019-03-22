@@ -20,15 +20,15 @@ ps_mask* PICAPI ps_mask_create_with_data(ps_byte* data, int w, int h)
 {
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;
-        return 0;
+        return NULL;
     }
 
     if (!data || w <= 0 || h <= 0) {
         global_status = STATUS_INVALID_ARGUMENT;
-        return 0;
+        return NULL;
     }
 
-    ps_mask *p = (ps_mask*)mem_malloc(sizeof(ps_mask));
+    ps_mask* p = (ps_mask*)mem_malloc(sizeof(ps_mask));
     if (p) {
         p->refcount = 1;
         new ((void*)&(p->mask))picasso::mask_layer(data, w, h, w); //gray color format for alpha
@@ -36,7 +36,7 @@ ps_mask* PICAPI ps_mask_create_with_data(ps_byte* data, int w, int h)
         return p;
     } else {
         global_status = STATUS_OUT_OF_MEMORY;
-        return 0;
+        return NULL;
     }
 }
 
@@ -44,12 +44,12 @@ ps_mask* PICAPI ps_mask_ref(ps_mask* mask)
 {
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;
-        return 0;
+        return NULL;
     }
 
     if (!mask) {
         global_status = STATUS_INVALID_ARGUMENT;
-        return 0;
+        return NULL;
     }
 
     mask->refcount++;

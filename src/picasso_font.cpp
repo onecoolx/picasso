@@ -35,11 +35,13 @@ font_engine::font_engine(unsigned int max_fonts)
 
 font_engine::~font_engine()
 {
-    if (m_signature)
+    if (m_signature) {
         mem_free(m_signature);
+    }
 
-    for (unsigned int i = 0; i < m_num_fonts; ++i)
+    for (unsigned int i = 0; i < m_num_fonts; ++i) {
         delete m_fonts[i];
+    }
 
     pod_allocator<font_adapter*>::deallocate(m_fonts, m_max_fonts);
 }
@@ -63,8 +65,9 @@ void font_engine::set_transform(const trans_affine& mtx)
 int font_engine::find_font(const char* font_signature)
 {
     for (unsigned int i = 0; i < m_num_fonts; i++) {
-        if(strcmp(m_fonts[i]->signature(), font_signature) == 0)
+        if (strcmp(m_fonts[i]->signature(), font_signature) == 0) {
             return (int)i;
+        }
     }
     return -1;
 }
@@ -74,8 +77,9 @@ bool font_engine::create_font(const font_desc& desc)
     if (!font_adapter::create_signature(desc, m_affine, m_antialias, m_signature))
         return false;
 
-    if (m_current)
+    if (m_current) {
         m_current->deactive();
+    }
 
     int idx = find_font(m_signature);
     if (idx >= 0) {

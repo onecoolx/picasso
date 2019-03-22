@@ -50,10 +50,10 @@ ps_path* PICAPI ps_path_create(void)
 {
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;
-        return 0;
+        return NULL;
     }
 
-    ps_path *p = (ps_path*)mem_malloc(sizeof(ps_path));
+    ps_path* p = (ps_path*)mem_malloc(sizeof(ps_path));
     if (p) {
         p->refcount = 1;
         new ((void*)&(p->path)) picasso::graphic_path;
@@ -61,7 +61,7 @@ ps_path* PICAPI ps_path_create(void)
         return p;
     } else {
         global_status = STATUS_OUT_OF_MEMORY;
-        return 0;
+        return NULL;
     }
 }
 
@@ -69,15 +69,15 @@ ps_path* PICAPI ps_path_create_copy(const ps_path* path)
 {
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;
-        return 0;
+        return NULL;
     }
 
     if (!path) {
         global_status = STATUS_INVALID_ARGUMENT;
-        return 0;
+        return NULL;
     }
 
-    ps_path *p = (ps_path*)mem_malloc(sizeof(ps_path));
+    ps_path* p = (ps_path*)mem_malloc(sizeof(ps_path));
     if (p) {
         p->refcount = 1;
         new ((void*)&(p->path)) picasso::graphic_path;
@@ -86,7 +86,7 @@ ps_path* PICAPI ps_path_create_copy(const ps_path* path)
         return p;
     } else {
         global_status = STATUS_OUT_OF_MEMORY;
-        return 0;
+        return NULL;
     }
 }
 
@@ -94,12 +94,12 @@ ps_path* PICAPI ps_path_ref(ps_path* path)
 {
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;
-        return 0;
+        return NULL;
     }
 
     if (!path) {
         global_status = STATUS_INVALID_ARGUMENT;
-        return 0;
+        return NULL;
     }
 
     path->refcount++;
@@ -223,8 +223,9 @@ void PICAPI ps_path_tangent_arc_to(ps_path* path, float r, const ps_point* tp, c
     orth_p1p0.x = -orth_p1p0.x;
     orth_p1p0.y = -orth_p1p0.y;
     float sa = acosf(orth_p1p0.x / orth_p1p0_length);
-    if (orth_p1p0.y < 0.f)
+    if (orth_p1p0.y < 0.f) {
         sa = 2 * PI - sa;
+    }
 
     // clockwise logic
     ps_bool clockwise = True;
@@ -234,12 +235,16 @@ void PICAPI ps_path_tangent_arc_to(ps_path* path, float r, const ps_point* tp, c
     ps_point orth_p1p2 = {(t_p1p2.x - p.x),(t_p1p2.y - p.y)};
     float orth_p1p2_length = sqrtf(orth_p1p2.x * orth_p1p2.x + orth_p1p2.y * orth_p1p2.y);
     float ea = acosf(orth_p1p2.x / orth_p1p2_length);
-    if (orth_p1p2.y < 0)
+
+    if (orth_p1p2.y < 0.f) {
         ea = 2 * PI - ea;
-    if ((sa > ea) && ((sa - ea) < PI))
+    }
+    if ((sa > ea) && ((sa - ea) < PI)) {
         clockwise = False;
-    if ((sa < ea) && ((ea - sa) > PI))
+    }
+    if ((sa < ea) && ((ea - sa) > PI)) {
         clockwise = False;
+    }
 
     ps_path_line_to(path, &t_p1p0);
 
@@ -265,10 +270,11 @@ void PICAPI ps_path_arc_to(ps_path* path, float rx, float ry, float a, ps_bool l
     picasso::bezier_arc_svg arc(x1, y1, FLT_TO_SCALAR(rx), FLT_TO_SCALAR(ry), FLT_TO_SCALAR(a),
                             (large ? true : false), (cw ? true : false), FLT_TO_SCALAR(ep->x), FLT_TO_SCALAR(ep->y));
     picasso::conv_curve cr(arc);
-    if (picasso::_is_closed_path(path->path))
+    if (picasso::_is_closed_path(path->path)) {
         path->path.concat_path(cr, 0);
-    else
+    } else {
         path->path.join_path(cr, 0);
+    }
     global_status = STATUS_SUCCEED;
 }
 
@@ -286,10 +292,11 @@ void PICAPI ps_path_bezier_to(ps_path* path, const ps_point* cp1, const ps_point
 
     picasso::curve4 c(path->path.last_x(), path->path.last_y(), FLT_TO_SCALAR(cp1->x), FLT_TO_SCALAR(cp1->y),
                     FLT_TO_SCALAR(cp2->x), FLT_TO_SCALAR(cp2->y), FLT_TO_SCALAR(ep->x), FLT_TO_SCALAR(ep->y));
-    if (picasso::_is_closed_path(path->path))
+    if (picasso::_is_closed_path(path->path)) {
         path->path.concat_path(c, 0);
-    else
+    } else {
         path->path.join_path(c, 0);
+    }
     global_status = STATUS_SUCCEED;
 }
 
@@ -308,10 +315,11 @@ void PICAPI ps_path_quad_to(ps_path* path, const ps_point* cp, const ps_point* e
     picasso::curve3 c(path->path.last_x(), path->path.last_y(), FLT_TO_SCALAR(cp->x),
                     FLT_TO_SCALAR(cp->y), FLT_TO_SCALAR(ep->x), FLT_TO_SCALAR(ep->y));
 
-    if (picasso::_is_closed_path(path->path))
+    if (picasso::_is_closed_path(path->path)) {
         path->path.concat_path(c, 0);
-    else
+    } else {
         path->path.join_path(c, 0);
+    }
     global_status = STATUS_SUCCEED;
 }
 
@@ -335,12 +343,12 @@ float PICAPI ps_path_get_length(const ps_path* path)
 {
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;
-        return (0.0);
+        return (0.0f);
     }
 
     if (!path) {
         global_status = STATUS_INVALID_ARGUMENT;
-        return (0.0);
+        return (0.0f);
     }
 
     global_status = STATUS_SUCCEED;
@@ -526,10 +534,11 @@ void PICAPI ps_path_add_arc(ps_path* path, const ps_point* cp, float r, float sa
     picasso::arc a(FLT_TO_SCALAR(cp->x), FLT_TO_SCALAR(cp->y), FLT_TO_SCALAR(r), FLT_TO_SCALAR(r),
                 FLT_TO_SCALAR(sa), FLT_TO_SCALAR(ea), (cw ? true : false));
 
-    if (picasso::_is_closed_path(path->path))
+    if (picasso::_is_closed_path(path->path)) {
         path->path.concat_path(a, 0);
-    else
+    } else {
         path->path.join_path(a, 0);
+    }
     global_status = STATUS_SUCCEED;
 }
 
@@ -567,10 +576,11 @@ void PICAPI ps_path_add_ellipse(ps_path* path, const ps_rect* r)
 
     picasso::ellipse e(FLT_TO_SCALAR(r->x+r->w/2), FLT_TO_SCALAR(r->y+r->h/2),
                             FLT_TO_SCALAR(r->w/2), FLT_TO_SCALAR(r->h/2));
-    if (picasso::_is_closed_path(path->path))
+    if (picasso::_is_closed_path(path->path)) {
         path->path.concat_path(e, 0);
-    else
+    } else {
         path->path.join_path(e, 0);
+    }
     global_status = STATUS_SUCCEED;
 }
 
@@ -593,10 +603,11 @@ void PICAPI ps_path_add_rounded_rect(ps_path*path, const ps_rect* r, float ltx, 
     rr.radius(FLT_TO_SCALAR(ltx), FLT_TO_SCALAR(lty), FLT_TO_SCALAR(rtx), FLT_TO_SCALAR(rty),
                 FLT_TO_SCALAR(lbx), FLT_TO_SCALAR(lby), FLT_TO_SCALAR(rbx), FLT_TO_SCALAR(rby));
     rr.normalize_radius();
-    if (picasso::_is_closed_path(path->path))
+    if (picasso::_is_closed_path(path->path)) {
         path->path.concat_path(rr, 0);
-    else
+    } else {
         path->path.join_path(rr, 0);
+    }
     global_status = STATUS_SUCCEED;
 }
 
@@ -612,10 +623,11 @@ void PICAPI ps_path_add_sub_path(ps_path* path, const ps_path* p)
         return;
     }
 
-    if (picasso::_is_closed_path(path->path))
+    if (picasso::_is_closed_path(path->path)) {
         path->path.concat_path(const_cast<ps_path*>(p)->path, 0);
-    else
+    } else {
         path->path.join_path(const_cast<ps_path*>(p)->path, 0);
+    }
 
     global_status = STATUS_SUCCEED;
 }

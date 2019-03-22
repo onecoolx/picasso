@@ -22,4 +22,4 @@ internal_test : ${internal_test_objs}
 	${CC} ${CFLAGS} -c $< -o $@ ${INC}
 
 clean:
-	rm *.o *.out
+	rm *.o *.out api_test internal_test

@@ -231,10 +231,12 @@ void painter::render_shadow(context_state* state, const graphic_path& p, bool fi
     if (state->shadow.use_shadow) {
 
         unsigned int method = 0;
-        if (fill)
+        if (fill) {
             method |= raster_fill;
-        if (stroke)
+        }
+        if (stroke) {
             method |= raster_stroke;
+        }
 
         scalar x1 = 1, y1 = 1, x2 = 0 ,y2 = 0;
         conv_transform tp(p, state->world_matrix);
@@ -263,10 +265,11 @@ void painter::render_shadow(context_state* state, const graphic_path& p, bool fi
             if (state->clip.type != clip_none) { // need clip
                 m_impl->clear_clip(); // clear old clip.
 
-                if (state->clip.type == clip_content)
+                if (state->clip.type == clip_content) {
                     m_impl->apply_clip_path(state->clip.path, state->clip.rule, mtx.impl());
-                else if (state->clip.type == clip_device)
+                } else if (state->clip.type == clip_device) {
                     m_impl->apply_clip_device(state->clip.rect, -x1, -y1);
+                }
             }
 
             shadow_raster.commit();
