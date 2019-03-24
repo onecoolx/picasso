@@ -16,12 +16,12 @@
 #include "picasso.h"
 
 inline void* ZeroBufferAlloc(size_t bytes) {
-	void *buffer = mem_malloc(bytes);
+    void *buffer = mem_malloc(bytes);
     return buffer?memset(buffer, 0, bytes):NULL;
 }
 inline void* ZeroBuffersAlloc(size_t num, size_t size) {
-	void *buffer = mem_calloc(num, size);
-    return buffer?memset(buffer, 0, bytes):NULL;
+    void *buffer = mem_calloc(num, size);
+    return buffer?memset(buffer, 0, size*num):NULL;
 }
 
 //this can be replace by hw buffer!
