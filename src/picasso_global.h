@@ -11,12 +11,22 @@
 #include "math_type.h"
 #include "data_vector.h"
 #include "fixedopt.h"
+#include <string.h>
 
 #include "picasso.h"
 
+inline void* ZeroBufferAlloc(size_t bytes) {
+	void *buffer = mem_malloc(bytes);
+    return buffer?memset(buffer, 0, bytes):NULL;
+}
+inline void* ZeroBuffersAlloc(size_t num, size_t size) {
+	void *buffer = mem_calloc(num, size);
+    return buffer?memset(buffer, 0, bytes):NULL;
+}
+
 //this can be replace by hw buffer!
-#define BufferAlloc(n)         mem_malloc(n)
-#define BuffersAlloc(n, s)     mem_calloc(n, s)
+#define BufferAlloc(n)         ZeroBufferAlloc(n)
+#define BuffersAlloc(n, s)     ZeroBuffersAlloc(n, s)
 #define BufferFree(p)          mem_free(p)
 #define BufferCopy(d, s, n)    mem_copy(d, s, n)
 
