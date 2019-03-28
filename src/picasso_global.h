@@ -15,7 +15,7 @@
 #include "picasso.h"
 
 //this can be replace by hw buffer!
-#define BufferAlloc(n)         mem_malloc(n)
+#define BufferAlloc(n)         mem_calloc(n, 1)
 #define BuffersAlloc(n, s)     mem_calloc(n, s)
 #define BufferFree(p)          mem_free(p)
 #define BufferCopy(d, s, n)    mem_copy(d, s, n)
