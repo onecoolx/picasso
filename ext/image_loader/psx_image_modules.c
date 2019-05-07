@@ -169,14 +169,16 @@ int psx_image_register_operator(const char* type, const ps_byte* header_magic,
 
     list_for_each(&(mgr->coders), ptr) {
         entry = (struct image_coder_node*)ptr;
-        len = entry->magic_len > magic_len ? entry->magic_len : magic_len;
-        if (entry && (memcmp(entry->magic_hdr, header_magic, len) == 0) && (magic_offset == entry->magic_offset))
-            break;
+        if (entry && entry->magic_len == magic_len) {
+            if ((memcmp(entry->magic_hdr, header_magic, magic_len) == 0) && (magic_offset == entry->magic_offset)) {
+                break;
+            }
+        }
         entry = NULL;
     }
 
     if (entry) {
-        struct image_coder_node * new_entry = (struct image_coder_node*)calloc(1, sizeof(struct image_coder_node));
+        struct image_coder_node* new_entry = (struct image_coder_node*)calloc(1, sizeof(struct image_coder_node));
         new_entry->magic_hdr = copy_magic((const char*)header_magic, magic_len);
         new_entry->magic_offset = magic_offset;
         new_entry->magic_len = magic_len;
