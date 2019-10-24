@@ -42,7 +42,6 @@
 #define COMPILER_CLANG 1
 #endif
 
-
 /* CPU(X86) - i386 / x86 32-bit */
 #if   defined(__i386__) \
     || defined(i386)     \
@@ -101,6 +100,32 @@
 #else
 #define likely(X)  (X)
 #define unlikely(X)  (X)
+#endif
+
+// aligned attribute
+#if COMPILER(MSVC)
+#define ALIGNED(x)  __declspec(align(x))
+#elif COMPILER(GCC)
+#define ALIGNED(x)  __attribute__((aligned((x))))
+#else
+#define ALIGNED(x)
+#endif
+
+// force inline
+#if COMPILER(MSVC)
+#define _FORCE_INLINE_  __forceinline
+#elif COMPILER(GCC)
+#if __GNUC__ == 2 && __GNUC_MINOR__ < 96
+#define _FORCE_INLINE_  inline
+#else
+#define _FORCE_INLINE_  __attribute__((always_inline))
+#endif
+#endif
+
+#if COMPILER(CLANG)
+#define MAYBE_INLINE
+#else
+#define MAYBE_INLINE  inline
 #endif
 
 #endif /*_PLATFORM_H_*/

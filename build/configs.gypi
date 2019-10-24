@@ -6,13 +6,11 @@
 {
   'configurations': {
     'Debug': {
+      'defines': [
+        '_DEBUG',
+      ],
       'conditions': [
         ['OS=="win"', {
-          'defines': [
-            '_DEBUG',
-            'ENABLE_FAST_COPY=1',
-            'ENABLE_SYSTEM_MALLOC=1',
-          ],
           'msvs_configuration_attributes': {
             'ConfigurationType': '2',
             'CharacterSet': '1',
@@ -41,12 +39,19 @@
             },
           },
         }],
+        ['OS=="macosx"', {
+          'xcode_settings': {
+            'ALWAYS_SEARCH_USER_PATHS': 'NO',
+            'CLANG_ENABLE_OBJC_WEAK': 'YES',
+            'CLANG_ADDRESS_SANITIZER_CONTAINER_OVERFLOW': 'YES',
+            'DEAD_CODE_STRIPPING': 'NO',
+			'ONLY_ACTIVE_ARCH': 'YES',
+			'ENABLE_TESTABILITY': 'YES',
+            'GCC_UNROLL_LOOPS': 'NO',
+            'GCC_OPTIMIZATION_LEVEL': '0',
+          },
+        }],
         ['OS=="linux"', {
-          'defines': [
-            '_DEBUG',
-            'ENABLE_FREE_TYPE2=1',
-            'ENABLE_FONT_CONFIG=1',
-          ],
           'cflags_cc': [
             '-O0',
             '-Wall',
@@ -67,13 +72,11 @@
       ],
     },
     'Release': {
+      'defines': [
+        'NDEBUG',
+      ],
       'conditions': [
         ['OS=="win"', {
-          'defines': [
-            'NDEBUG',
-            'ENABLE_FAST_COPY=1',
-            'ENABLE_SYSTEM_MALLOC=1',
-          ],
           'msvs_configuration_attributes': {
             'ConfigurationType': '2',
             'CharacterSet': '1',
@@ -109,12 +112,23 @@
             },
           },
         }],
+        ['OS=="macosx"', {
+          'xcode_settings': {
+            'ALWAYS_SEARCH_USER_PATHS': 'NO',
+			'CLANG_ENABLE_CODE_COVERAGE': 'NO',
+			'GCC_GENERATE_DEBUGGING_SYMBOLS': 'NO',
+			'GCC_INLINES_ARE_PRIVATE_EXTERN': 'YES',
+            'CLANG_ENABLE_OBJC_WEAK': 'YES',
+            'CLANG_ADDRESS_SANITIZER_CONTAINER_OVERFLOW': 'NO',
+            'DEAD_CODE_STRIPPING': 'YES',
+			'ONLY_ACTIVE_ARCH': 'NO',
+			'LLVM_LTO': 'YES',
+			'ENABLE_TESTABILITY': 'NO',
+            'GCC_UNROLL_LOOPS': 'YES',
+            'GCC_OPTIMIZATION_LEVEL': '3',
+          },
+        }],
         ['OS=="linux"', {
-          'defines': [
-            'NDEBUG',
-            'ENABLE_FREE_TYPE2=1',
-            'ENABLE_FONT_CONFIG=1',
-          ],
           'cflags_cc': [
             '-O3',
             '-Wall',

@@ -35,6 +35,7 @@
         'gfx/gfx_font_adapter.h',
         'gfx/gfx_font_adapter_freetype2.cpp',
         'gfx/gfx_font_adapter_win32.cpp',
+        'gfx/gfx_font_adapter_dummy.cpp',
         'gfx/gfx_font_load_freetype2.cpp',
         'gfx/gfx_gamma_function.h',
         'gfx/gfx_gradient_adapter.cpp',

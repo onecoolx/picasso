@@ -10,7 +10,6 @@
 
 namespace picasso {
 
-const scalar curve_distance_epsilon          = FLT_TO_SCALAR(1e-30f);
 const scalar curve_collinearity_epsilon      = FLT_TO_SCALAR(1e-30f);
 const scalar curve_angle_tolerance_epsilon   = FLT_TO_SCALAR(0.01f);
 
