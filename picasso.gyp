@@ -11,7 +11,7 @@
     './src/src.gypi',
     './ext/ext.gypi',
     './test/test.gypi',
-#    './demos/demos.gypi'
+    './demos/demos.gypi'
   ]
 }
 
