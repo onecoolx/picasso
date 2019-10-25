@@ -24,7 +24,7 @@ void draw_test (int id, ps_context* gc)
     ps_fill(gc);
 
     ps_canvas_bitblt(cv, &r2, cv, &p);
-    p.x = 160, p.y=100;
+    p.x = 160; p.y = 100;
     ps_canvas_bitblt(cv, &r2, cv, &p);
 }
 

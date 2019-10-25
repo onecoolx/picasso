@@ -46,6 +46,11 @@
             '$(builddir)/include',
           ],
         }],
+        ['OS=="macosx" or OS=="ios"', {
+          'include_dirs': [
+            '$(INTERMEDIATE_DIR)/include',
+          ],
+        }],
       ],
       'includes': [
         '../../../build/configs.gypi',

@@ -17,8 +17,8 @@
 #if defined(WIN32) && defined(_MSC_VER)
 #include <windows.h>
 #endif
-#include <webp/decode.h>
-#include <webp/encode.h>
+#include "webp/decode.h"
+#include "webp/encode.h"
 
 struct webp_image_ctx {
     // read

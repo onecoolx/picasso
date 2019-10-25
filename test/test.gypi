@@ -48,6 +48,12 @@
           'defines':[
             'UNIX',
           ],
+          'link_settings': {
+            'libraries': [
+              '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
+              '$(SDKROOT)/System/Library/Frameworks/Carbon.framework',
+            ],
+          },
         }],
       ],
       'includes':[
@@ -99,6 +105,12 @@
           'defines':[
             'UNIX',
           ],
+          'link_settings': {
+            'libraries': [
+              '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
+              '$(SDKROOT)/System/Library/Frameworks/Carbon.framework',
+            ],
+          },
         }],
       ],
       'includes':[
@@ -150,6 +162,12 @@
           'defines':[
             'UNIX',
           ],
+          'link_settings': {
+            'libraries': [
+              '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
+              '$(SDKROOT)/System/Library/Frameworks/Carbon.framework',
+            ],
+          },
         }],
       ],
       'includes':[
@@ -201,6 +219,12 @@
           'defines':[
             'UNIX',
           ],
+          'link_settings': {
+            'libraries': [
+              '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
+              '$(SDKROOT)/System/Library/Frameworks/Carbon.framework',
+            ],
+          },
         }],
       ],
       'includes':[
@@ -252,6 +276,12 @@
           'defines':[
             'UNIX',
           ],
+          'link_settings': {
+            'libraries': [
+              '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
+              '$(SDKROOT)/System/Library/Frameworks/Carbon.framework',
+            ],
+          },
         }],
       ],
       'includes':[
@@ -302,6 +332,12 @@
           'defines':[
             'UNIX',
           ],
+          'link_settings': {
+            'libraries': [
+              '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
+              '$(SDKROOT)/System/Library/Frameworks/Carbon.framework',
+            ],
+          },
         }],
       ],
       'includes':[
@@ -352,6 +388,12 @@
           'defines':[
             'UNIX',
           ],
+          'link_settings': {
+            'libraries': [
+              '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
+              '$(SDKROOT)/System/Library/Frameworks/Carbon.framework',
+            ],
+          },
         }],
       ],
       'includes':[
@@ -403,6 +445,12 @@
           'defines':[
             'UNIX',
           ],
+          'link_settings': {
+            'libraries': [
+              '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
+              '$(SDKROOT)/System/Library/Frameworks/Carbon.framework',
+            ],
+          },
         }],
       ],
       'includes':[
@@ -453,6 +501,12 @@
           'defines':[
             'UNIX',
           ],
+          'link_settings': {
+            'libraries': [
+              '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
+              '$(SDKROOT)/System/Library/Frameworks/Carbon.framework',
+            ],
+          },
         }],
       ],
       'includes':[
@@ -504,6 +558,12 @@
           'defines':[
             'UNIX',
           ],
+          'link_settings': {
+            'libraries': [
+              '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
+              '$(SDKROOT)/System/Library/Frameworks/Carbon.framework',
+            ],
+          },
         }],
       ],
       'includes':[
@@ -555,6 +615,12 @@
           'defines':[
             'UNIX',
           ],
+          'link_settings': {
+            'libraries': [
+              '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
+              '$(SDKROOT)/System/Library/Frameworks/Carbon.framework',
+            ],
+          },
         }],
       ],
       'includes':[
@@ -605,6 +671,12 @@
           'defines':[
             'UNIX',
           ],
+          'link_settings': {
+            'libraries': [
+              '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
+              '$(SDKROOT)/System/Library/Frameworks/Carbon.framework',
+            ],
+          },
         }],
       ],
       'includes':[
@@ -656,6 +728,12 @@
           'defines':[
             'UNIX',
           ],
+          'link_settings': {
+            'libraries': [
+              '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
+              '$(SDKROOT)/System/Library/Frameworks/Carbon.framework',
+            ],
+          },
         }],
       ],
       'includes':[
@@ -707,6 +785,12 @@
           'defines':[
             'UNIX',
           ],
+          'link_settings': {
+            'libraries': [
+              '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
+              '$(SDKROOT)/System/Library/Frameworks/Carbon.framework',
+            ],
+          },
         }],
       ],
       'includes':[
@@ -756,10 +840,17 @@
         ['OS=="macosx" or OS=="ios"', {
           'sources': [
             'testMac.m',
+            'thr_posix.c',
           ],
           'defines':[
             'UNIX',
           ],
+          'link_settings': {
+            'libraries': [
+              '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
+              '$(SDKROOT)/System/Library/Frameworks/Carbon.framework',
+            ],
+          },
         }],
       ],
       'includes':[
@@ -847,6 +938,12 @@
           'defines':[
             'UNIX',
           ],
+          'link_settings': {
+            'libraries': [
+              '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
+              '$(SDKROOT)/System/Library/Frameworks/Carbon.framework',
+            ],
+          },
         }],
       ],
       'includes':[
