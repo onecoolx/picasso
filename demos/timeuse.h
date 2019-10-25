@@ -6,7 +6,7 @@
 #include "stdlib.h"
 #include "stdio.h"
 #include "time.h"
-#ifdef LINUX
+#if defined(LINUX) || defined(UNIX)
 #include "unistd.h"
 #include "sys/time.h"
 #endif

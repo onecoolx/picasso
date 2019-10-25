@@ -17,7 +17,7 @@
 #if defined(WIN32) && defined(_MSC_VER)
 #include <windows.h>
 #endif
-#include <jpeglib.h>
+#include "jpeglib.h"
 #include <setjmp.h>
 
 struct jpeg_error_pub {

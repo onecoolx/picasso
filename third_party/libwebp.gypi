@@ -232,6 +232,31 @@
        },
       ],
     }],
+    ['OS=="macosx" or OS=="ios"', {
+      'include_dirs': [
+        '$(INTERMEDIATE_DIR)/include',
+      ],
+      'actions': [
+       {
+        'action_name': 'install_header',
+        'inputs': [
+          '<(lib_dir)/src/webp/decode.h',
+        ],
+        'inputs_dir': [
+          '<(lib_dir)/src/webp', # gyp macosx issue
+        ],
+        'outputs': [
+          '$(INTERMEDIATE_DIR)/include/webp',
+        ],
+        'action': [
+        'python',
+        'tools/cp.py',
+        '<(_inputs_dir)',
+        '$(INTERMEDIATE_DIR)/include/webp',
+        ],
+       },
+      ],
+    }],
   ],
   'includes': [
     '../build/configs.gypi',

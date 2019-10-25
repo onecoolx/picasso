@@ -184,6 +184,55 @@
        },
       ],
     }],
+    ['OS=="macosx" or OS=="ios"', {
+      'actions': [
+       {
+        'action_name': 'install_header1',
+        'inputs': [
+          '<(lib_dir)/jpeglib.h',
+        ],
+        'outputs': [
+          '$(INTERMEDIATE_DIR)/include/jpeglib.h',
+        ],
+        'action': [
+        'python',
+        'tools/cp.py',
+        '<(_inputs)',
+        '$(INTERMEDIATE_DIR)/include/jpeglib.h',
+        ],
+       },
+       {
+        'action_name': 'install_header2',
+        'inputs': [
+          '<(lib_dir)/build/jconfig.h',
+        ],
+        'outputs': [
+          '$(INTERMEDIATE_DIR)/include/jconfig.h',
+        ],
+        'action': [
+        'python',
+        'tools/cp.py',
+        '<(_inputs)',
+        '$(INTERMEDIATE_DIR)/include/jconfig.h',
+        ],
+       },
+       {
+        'action_name': 'install_header3',
+        'inputs': [
+          '<(lib_dir)/jmorecfg.h',
+        ],
+        'outputs': [
+          '$(INTERMEDIATE_DIR)/include/jmorecfg.h',
+        ],
+        'action': [
+        'python',
+        'tools/cp.py',
+        '<(_inputs)',
+        '$(INTERMEDIATE_DIR)/include/jmorecfg.h',
+        ],
+       },
+      ],
+    }],
   ],
   'includes': [
     '../build/configs.gypi',

@@ -57,10 +57,10 @@
        {
         'action_name': 'prebuild',
         'inputs': [
-          '<(lib_dir)/scripts/pnglibconf.h.prebuilt', 
+          '<(lib_dir)/scripts/pnglibconf.h.prebuilt',
          ],
         'outputs': [
-          '$(OutDir)/include/pnglibconf.h' 
+          '$(OutDir)/include/pnglibconf.h',
          ],
         'action': [
           'python',
@@ -112,10 +112,10 @@
        {
         'action_name': 'prebuild',
         'inputs': [
-          '<(lib_dir)/scripts/pnglibconf.h.prebuilt', 
+          '<(lib_dir)/scripts/pnglibconf.h.prebuilt',
         ],
         'outputs': [
-          '$(builddir)/include/pnglibconf.h', 
+          '$(builddir)/include/pnglibconf.h',
         ],
         'action': [
         'python',
@@ -152,6 +152,58 @@
         'tools/cp.py',
         '<(_inputs)',
         '$(builddir)/include/pngconf.h',
+        ],
+       },
+      ],
+    }],
+    ['OS=="macosx" or OS=="ios"', {
+      'include_dirs': [
+        '$(INTERMEDIATE_DIR)/include',
+      ],
+      'actions': [
+       {
+        'action_name': 'prebuild',
+        'inputs': [
+          '<(lib_dir)/scripts/pnglibconf.h.prebuilt',
+        ],
+        'outputs': [
+          '$(INTERMEDIATE_DIR)/include/pnglibconf.h',
+        ],
+        'action': [
+        'python',
+        'tools/cp.py',
+        '<(_inputs)',
+        '$(INTERMEDIATE_DIR)/include/pnglibconf.h',
+        ],
+       },
+       {
+        'action_name': 'install_header',
+        'inputs': [
+          '<(lib_dir)/png.h',
+        ],
+        'outputs': [
+          '$(INTERMEDIATE_DIR)/include/png.h',
+        ],
+        'action': [
+        'python',
+        'tools/cp.py',
+        '<(_inputs)',
+        '$(INTERMEDIATE_DIR)/include/png.h',
+        ],
+       },
+       {
+        'action_name': 'install_header1',
+        'inputs': [
+          '<(lib_dir)/pngconf.h',
+        ],
+        'outputs': [
+          '$(INTERMEDIATE_DIR)/include/pngconf.h',
+        ],
+        'action': [
+        'python',
+        'tools/cp.py',
+        '<(_inputs)',
+        '$(INTERMEDIATE_DIR)/include/pngconf.h',
         ],
        },
       ],

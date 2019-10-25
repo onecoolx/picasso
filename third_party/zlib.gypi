@@ -120,6 +120,43 @@
        },
       ],
     }],
+    ['OS=="macosx" or OS=="ios"', {
+      'include_dirs': [
+        '$(INTERMEDIATE_DIR)/include',
+      ],
+      'actions': [
+       {
+        'action_name': 'install_header1',
+        'inputs': [
+          '<(lib_dir)/zconf.h',
+        ],
+        'outputs': [
+          '$(INTERMEDIATE_DIR)/include/zconf.h',
+        ],
+        'action': [
+        'python',
+        'tools/cp.py',
+        '<(_inputs)',
+        '$(INTERMEDIATE_DIR)/include/zconf.h',
+        ],
+       },
+       {
+        'action_name': 'install_header2',
+        'inputs': [
+          '<(lib_dir)/zlib.h',
+        ],
+        'outputs': [
+          '$(INTERMEDIATE_DIR)/include/zlib.h',
+        ],
+        'action': [
+        'python',
+        'tools/cp.py',
+        '<(_inputs)',
+        '$(INTERMEDIATE_DIR)/include/zlib.h',
+        ],
+       },
+      ],
+    }],
   ],
   'includes': [
     '../build/configs.gypi',

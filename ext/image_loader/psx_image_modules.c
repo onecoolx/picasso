@@ -155,7 +155,6 @@ static char* copy_magic(const char* str, size_t len)
 int psx_image_register_operator(const char* type, const ps_byte* header_magic,
                                 size_t magic_offset, size_t magic_len, psx_priority_level level, psx_image_operator* coder)
 {
-    size_t len = 0;
     struct image_modules_mgr* mgr = NULL;
     struct list_hdr* ptr = NULL;
     struct image_coder_node* entry = NULL;

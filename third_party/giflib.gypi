@@ -77,6 +77,25 @@
        },
       ],
     }],
+    ['OS=="macosx" or OS=="ios"', {
+      'actions': [
+       {
+        'action_name': 'install_header1',
+        'inputs': [
+          '<(lib_dir)/lib/gif_lib.h',
+        ],
+        'outputs': [
+          '$(INTERMEDIATE_DIR)/include/gif_lib.h',
+        ],
+        'action': [
+        'python',
+        'tools/cp.py',
+        '<(_inputs)',
+        '$(INTERMEDIATE_DIR)/include/gif_lib.h',
+        ],
+       },
+      ],
+    }],
   ],
   'includes': [
     '../build/configs.gypi',

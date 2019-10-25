@@ -41,6 +41,14 @@
             '-lz `pkg-config --libs gtk+-2.0`',
           ],
         }],
+        ['OS=="macosx" or OS=="ios"', {
+          'sources': [
+            'testMac.m',
+          ],
+          'defines':[
+            'UNIX',
+          ],
+        }],
       ],
       'includes':[
         '../build/configs.gypi',
@@ -82,6 +90,14 @@
           'libraries': [
             '-lfreetype',
             '-lz `pkg-config --libs gtk+-2.0`',
+          ],
+        }],
+        ['OS=="macosx" or OS=="ios"', {
+          'sources': [
+            'testMac.m',
+          ],
+          'defines':[
+            'UNIX',
           ],
         }],
       ],
@@ -127,6 +143,14 @@
             '-lz `pkg-config --libs gtk+-2.0`',
           ],
         }],
+        ['OS=="macosx" or OS=="ios"', {
+          'sources': [
+            'testMac.m',
+          ],
+          'defines':[
+            'UNIX',
+          ],
+        }],
       ],
       'includes':[
         '../build/configs.gypi',
@@ -168,6 +192,14 @@
           'libraries': [
             '-lfreetype',
             '-lz `pkg-config --libs gtk+-2.0`',
+          ],
+        }],
+        ['OS=="macosx" or OS=="ios"', {
+          'sources': [
+            'testMac.m',
+          ],
+          'defines':[
+            'UNIX',
           ],
         }],
       ],
@@ -213,6 +245,14 @@
             '-lz `pkg-config --libs gtk+-2.0`',
           ],
         }],
+        ['OS=="macosx" or OS=="ios"', {
+          'sources': [
+            'testMac.m',
+          ],
+          'defines':[
+            'UNIX',
+          ],
+        }],
       ],
       'includes':[
         '../build/configs.gypi',
@@ -255,6 +295,14 @@
             '-lz `pkg-config --libs gtk+-2.0`',
           ],
         }],
+        ['OS=="macosx" or OS=="ios"', {
+          'sources': [
+            'testMac.m',
+          ],
+          'defines':[
+            'UNIX',
+          ],
+        }],
       ],
       'includes':[
         '../build/configs.gypi',
@@ -295,6 +343,14 @@
           'libraries': [
             '-lfreetype',
             '-lz `pkg-config --libs gtk+-2.0`',
+          ],
+        }],
+        ['OS=="macosx" or OS=="ios"', {
+          'sources': [
+            'testMac.m',
+          ],
+          'defines':[
+            'UNIX',
           ],
         }],
       ],
@@ -340,6 +396,14 @@
             '-lz `pkg-config --libs gtk+-2.0`',
           ],
         }],
+        ['OS=="macosx" or OS=="ios"', {
+          'sources': [
+            'testMac.m',
+          ],
+          'defines':[
+            'UNIX',
+          ],
+        }],
       ],
       'includes':[
         '../build/configs.gypi',
@@ -380,6 +444,14 @@
           'libraries': [
             '-lfreetype',
             '-lz `pkg-config --libs gtk+-2.0`',
+          ],
+        }],
+        ['OS=="macosx" or OS=="ios"', {
+          'sources': [
+            'testMac.m',
+          ],
+          'defines':[
+            'UNIX',
           ],
         }],
       ],
@@ -425,6 +497,14 @@
             '-lz `pkg-config --libs gtk+-2.0`',
           ],
         }],
+        ['OS=="macosx" or OS=="ios"', {
+          'sources': [
+            'testMac.m',
+          ],
+          'defines':[
+            'UNIX',
+          ],
+        }],
       ],
       'includes':[
         '../build/configs.gypi',
@@ -468,6 +548,14 @@
             '-lz `pkg-config --libs gtk+-2.0`',
           ],
         }],
+        ['OS=="macosx" or OS=="ios"', {
+          'sources': [
+            'testMac.m',
+          ],
+          'defines':[
+            'UNIX',
+          ],
+        }],
       ],
       'includes':[
         '../build/configs.gypi',
@@ -508,6 +596,14 @@
           'libraries': [
             '-lfreetype',
             '-lz `pkg-config --libs gtk+-2.0`',
+          ],
+        }],
+        ['OS=="macosx" or OS=="ios"', {
+          'sources': [
+            'testMac.m',
+          ],
+          'defines':[
+            'UNIX',
           ],
         }],
       ],
@@ -553,6 +649,14 @@
             '-lz `pkg-config --libs gtk+-2.0`',
           ],
         }],
+        ['OS=="macosx" or OS=="ios"', {
+          'sources': [
+            'testMac.m',
+          ],
+          'defines':[
+            'UNIX',
+          ],
+        }],
       ],
       'includes':[
         '../build/configs.gypi',
@@ -594,6 +698,14 @@
           'libraries': [
             '-lfreetype',
             '-lz `pkg-config --libs gtk+-2.0`',
+          ],
+        }],
+        ['OS=="macosx" or OS=="ios"', {
+          'sources': [
+            'testMac.m',
+          ],
+          'defines':[
+            'UNIX',
           ],
         }],
       ],
@@ -639,6 +751,14 @@
           'libraries': [
             '-lfreetype',
             '-lz `pkg-config --libs gtk+-2.0`',
+          ],
+        }],
+        ['OS=="macosx" or OS=="ios"', {
+          'sources': [
+            'testMac.m',
+          ],
+          'defines':[
+            'UNIX',
           ],
         }],
       ],
@@ -718,6 +838,14 @@
           'libraries': [
             '-lfreetype',
             '-lz `pkg-config --libs gtk+-2.0`',
+          ],
+        }],
+        ['OS=="macosx" or OS=="ios"', {
+          'sources': [
+            'testMac.m',
+          ],
+          'defines':[
+            'UNIX',
           ],
         }],
       ],
