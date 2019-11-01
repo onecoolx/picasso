@@ -44,10 +44,18 @@
         ['OS=="macosx" or OS=="ios"', {
           'sources': [
             'platform_apple.m',
+            'Info.plist',
+            'Main.storyboard',
           ],
           'defines':[
             'UNIX',
           ],
+          'link_settings': {
+            'libraries': [
+              '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
+              '$(SDKROOT)/System/Library/Frameworks/Carbon.framework',
+            ],
+          },
         }],
       ],
       'includes':[
@@ -94,10 +102,18 @@
         ['OS=="macosx" or OS=="ios"', {
           'sources': [
             'platform_apple.m',
+            'Info.plist',
+            'Main.storyboard',
           ],
           'defines':[
             'UNIX',
           ],
+          'link_settings': {
+            'libraries': [
+              '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
+              '$(SDKROOT)/System/Library/Frameworks/Carbon.framework',
+            ],
+          },
         }],
       ],
       'includes':[
@@ -144,10 +160,18 @@
         ['OS=="macosx" or OS=="ios"', {
           'sources': [
             'platform_apple.m',
+            'Info.plist',
+            'Main.storyboard',
           ],
           'defines':[
             'UNIX',
           ],
+          'link_settings': {
+            'libraries': [
+              '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
+              '$(SDKROOT)/System/Library/Frameworks/Carbon.framework',
+            ],
+          },
         }],
       ],
       'includes':[
@@ -194,10 +218,18 @@
         ['OS=="macosx" or OS=="ios"', {
           'sources': [
             'platform_apple.m',
+            'Info.plist',
+            'Main.storyboard',
           ],
           'defines':[
             'UNIX',
           ],
+          'link_settings': {
+            'libraries': [
+              '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
+              '$(SDKROOT)/System/Library/Frameworks/Carbon.framework',
+            ],
+          },
         }],
       ],
       'includes':[
