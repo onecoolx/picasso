@@ -6,9 +6,15 @@
 {
   'includes': [
     './psx_image.gypi',
-    './png/png.gypi',
-    './jpeg/jpeg.gypi',
-    './gif/gif.gypi',
-    './webp/webp.gypi',
+  ],
+  'conditions': [
+    ['OS!="macosx" and OS!="ios"', {
+      'includes': [
+        './png/png.gypi',
+        './jpeg/jpeg.gypi',
+        './gif/gif.gypi',
+        './webp/webp.gypi',
+      ],
+    }],
   ],
 }
