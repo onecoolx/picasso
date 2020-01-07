@@ -654,7 +654,7 @@ const char* psx_image_module_get_string(int idx)
         case MODULE_NAME:
             return "gif";
         default:
-            return "unknow";
+            return "unknown";
     }
 }
 
