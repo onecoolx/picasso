@@ -126,7 +126,7 @@
         }],
         ['OS=="linux"', {
           'cflags': [
-            '`freetype-config --cflags` `pkg-config fontconfig --cflags`',
+            '`pkg-config freetype2 --cflags` `pkg-config fontconfig --cflags`',
           ],
           'libraries': [
             '-lfreetype',

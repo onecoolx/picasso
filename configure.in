@@ -153,10 +153,10 @@ AC_CHECK_FUNCS(floor memmove memset pow sqrt strncpy strncasecmp)
 have_freetype2="no"
 if test "x$build_freetype2" = "xyes"; then
     AC_CHECK_LIB(freetype, FT_New_Face, [
-        CFLAGS="$CFLAGS `freetype-config --cflags`"
-        CPPFLAGS="$CPPFLAGS `freetype-config --cflags`"
-        CXXFLAGS="$CXXFLAGS `freetype-config --cflags`"
-        LIBS="$LIBS `freetype-config --libs`"
+        CFLAGS="$CFLAGS `pkg-config freetype2 --cflags`"
+        CPPFLAGS="$CPPFLAGS `pkg-config freetype2 --cflags`"
+        CXXFLAGS="$CXXFLAGS `pkg-config freetype2 --cflags`"
+        LIBS="$LIBS `pkg-config freetype2 --libs`"
         AC_CHECK_HEADERS(ft2build.h, [
             have_freetype2="yes"
             AC_DEFINE(ENABLE_FREE_TYPE2, 1, [Define if FreeType2 is supported.])
