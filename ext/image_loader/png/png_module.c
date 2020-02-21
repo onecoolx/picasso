@@ -145,6 +145,10 @@ static int decode_png_data(psx_image_header* header, const psx_image* image, psx
     int y, p;
     struct png_image_ctx* ctx = (struct png_image_ctx*)header->priv;
 
+    if (setjmp(png_jmpbuf(ctx->png_ptr))) { // error occurred
+        return -1;
+    }
+
     for (p = 0; p < ctx->interlace_pass; p++) {
         for (y = 0; y < header->height; y++) {
             ps_byte* row = buffer + header->pitch * y;
@@ -276,12 +280,10 @@ static int release_write_png_info(psx_image_header* header)
     return 0;
 }
 
-static void png_convert_32bit(psx_image_header* header, const ps_byte* buffer, size_t buffer_len)
+static void png_convert_32bit(psx_image_header* header, const ps_byte* buffer, size_t buffer_len, ps_byte* cbuf)
 {
     int y;
     struct png_image_ctx* ctx = (struct png_image_ctx*)header->priv;
-
-    ps_byte* cbuf = (ps_byte*)calloc(1, header->pitch);
 
     for (y = 0; y < header->height; y++) {
         ps_byte* row = (ps_byte*)(buffer + header->pitch * y);
@@ -294,16 +296,12 @@ static void png_convert_32bit(psx_image_header* header, const ps_byte* buffer, s
 
         png_write_row(ctx->png_ptr, cbuf);
     }
-
-    free(cbuf);
 }
 
-static void png_convert_24bit(psx_image_header* header, const ps_byte* buffer, size_t buffer_len)
+static void png_convert_24bit(psx_image_header* header, const ps_byte* buffer, size_t buffer_len, ps_byte* cbuf)
 {
     int y;
     struct png_image_ctx* ctx = (struct png_image_ctx*)header->priv;
-
-    ps_byte* cbuf = (ps_byte*)calloc(1, header->width * 3);
 
     for (y = 0; y < header->height; y++) {
         ps_byte* row = (ps_byte*)(buffer + header->pitch * y);
@@ -316,14 +314,22 @@ static void png_convert_24bit(psx_image_header* header, const ps_byte* buffer, s
 
         png_write_row(ctx->png_ptr, cbuf);
     }
-
-    free(cbuf);
 }
 
 static int encode_png_data(psx_image_header* header, const psx_image* image, psx_image_frame* frame, int idx, const ps_byte* buffer, size_t buffer_len, int* ret)
 {
     int y;
     struct png_image_ctx* ctx = (struct png_image_ctx*)header->priv;
+
+    ps_byte* cbuf = (ps_byte*)calloc(1, header->pitch);
+    if (!cbuf) {
+        return -1;
+    }
+
+    if (setjmp(png_jmpbuf(ctx->png_ptr))) { // error occurred
+        free(cbuf);
+        return -1;
+    }
 
     if (header->format == (int)COLOR_FORMAT_RGBA || header->format == (int)COLOR_FORMAT_RGB) {
         for (y = 0; y < header->height; y++) {
@@ -335,14 +341,15 @@ static int encode_png_data(psx_image_header* header, const psx_image* image, psx
           || header->format == (int)COLOR_FORMAT_ABGR
           || header->format == (int)COLOR_FORMAT_ARGB) {
           // convert to 32bit
-          png_convert_32bit(header, buffer, buffer_len);
+          png_convert_32bit(header, buffer, buffer_len, cbuf);
         } else {
           // convert to 24bit
-          png_convert_24bit(header, buffer, buffer_len);
+          png_convert_24bit(header, buffer, buffer_len, cbuf);
         }
     }
 
     png_write_end(ctx->png_ptr, ctx->info_ptr);
+    free(cbuf);
     return 0;
 }
 

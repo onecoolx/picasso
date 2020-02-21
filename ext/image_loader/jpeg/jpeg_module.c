@@ -104,6 +104,11 @@ static int decode_jpg_data(psx_image_header* header, const psx_image* image, psx
     if (!row_buffer)
         return -1;
 
+    if (setjmp(ctx->err.jmp_buffer)) {
+        free(row_buffer);
+        return -1;
+    }
+
     jpeg_start_decompress(&ctx->dinfo);
 
     if (ctx->graycolor == 1) { // gray color
@@ -263,12 +268,10 @@ static int write_jpg_info(const psx_image* image, image_writer_fn func, void* pa
     return 0;
 }
 
-static void jpeg_convert_32bit(psx_image_header* header, const ps_byte* buffer, size_t buffer_len)
+static void jpeg_convert_32bit(psx_image_header* header, const ps_byte* buffer, size_t buffer_len, ps_byte* cbuf)
 {
     int y;
     struct jpeg_image_ctx* ctx = (struct jpeg_image_ctx*)header->priv;
-
-    ps_byte* cbuf = (ps_byte*)calloc(1, header->pitch);
 
     for (y = 0; y < header->height; y++) {
         ps_byte* row = (ps_byte*)(buffer + header->pitch * y);
@@ -282,16 +285,12 @@ static void jpeg_convert_32bit(psx_image_header* header, const ps_byte* buffer, 
         ctx->rowp[0] = cbuf;
         jpeg_write_scanlines(&ctx->cinfo, ctx->rowp, 1);
     }
-
-    free(cbuf);
 }
 
-static void jpeg_convert_24bit(psx_image_header* header, const ps_byte* buffer, size_t buffer_len)
+static void jpeg_convert_24bit(psx_image_header* header, const ps_byte* buffer, size_t buffer_len, ps_byte* cbuf)
 {
     int y;
     struct jpeg_image_ctx* ctx = (struct jpeg_image_ctx*)header->priv;
-
-    ps_byte* cbuf = (ps_byte*)calloc(1, header->width * 3);
 
     for (y = 0; y < header->height; y++) {
         ps_byte* row = (ps_byte*)(buffer + header->pitch * y);
@@ -305,14 +304,22 @@ static void jpeg_convert_24bit(psx_image_header* header, const ps_byte* buffer, 
         ctx->rowp[0] = cbuf;
         jpeg_write_scanlines(&ctx->cinfo, ctx->rowp, 1);
     }
-
-    free(cbuf);
 }
 
 static int encode_jpg_data(psx_image_header* header, const psx_image* image, psx_image_frame* frame, int idx, const ps_byte* buffer, size_t buffer_len, int* ret)
 {
     int y;
     struct jpeg_image_ctx* ctx = (struct jpeg_image_ctx*)header->priv;
+
+    ps_byte* cbuf = (ps_byte*)calloc(1, header->pitch);
+    if (!cbuf) {
+        return -1;
+    }
+
+    if (setjmp(ctx->err.jmp_buffer)) {
+        free(cbuf);
+        return -1;
+    }
 
     jpeg_start_compress(&ctx->cinfo, TRUE);
 
@@ -327,14 +334,15 @@ static int encode_jpg_data(psx_image_header* header, const psx_image* image, psx
           || header->format == (int)COLOR_FORMAT_ABGR
           || header->format == (int)COLOR_FORMAT_ARGB) {
           // convert to 32bit
-          jpeg_convert_32bit(header, buffer, buffer_len);
+          jpeg_convert_32bit(header, buffer, buffer_len, cbuf);
         } else {
           // convert to 24bit
-          jpeg_convert_24bit(header, buffer, buffer_len);
+          jpeg_convert_24bit(header, buffer, buffer_len, cbuf);
         }
     }
 
     jpeg_finish_compress(&ctx->cinfo);
+    free(cbuf);
     return 0;
 }
 
