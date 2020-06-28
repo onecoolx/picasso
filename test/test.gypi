@@ -42,12 +42,16 @@
           ],
         }],
         ['OS=="macosx" or OS=="ios"', {
+          'mac_bundle': 1,
           'sources': [
             'testMac.m',
           ],
           'defines':[
             'UNIX',
           ],
+          'xcode_settings': {
+              'INFOPLIST_FILE': 'test/Info.plist',
+          },
           'link_settings': {
             'libraries': [
               '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
@@ -99,12 +103,16 @@
           ],
         }],
         ['OS=="macosx" or OS=="ios"', {
+          'mac_bundle': 1,
           'sources': [
             'testMac.m',
           ],
           'defines':[
             'UNIX',
           ],
+          'xcode_settings': {
+              'INFOPLIST_FILE': 'test/Info.plist',
+          },
           'link_settings': {
             'libraries': [
               '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
@@ -156,12 +164,16 @@
           ],
         }],
         ['OS=="macosx" or OS=="ios"', {
+          'mac_bundle': 1,
           'sources': [
             'testMac.m',
           ],
           'defines':[
             'UNIX',
           ],
+          'xcode_settings': {
+              'INFOPLIST_FILE': 'test/Info.plist',
+          },
           'link_settings': {
             'libraries': [
               '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
@@ -213,12 +225,16 @@
           ],
         }],
         ['OS=="macosx" or OS=="ios"', {
+          'mac_bundle': 1,
           'sources': [
             'testMac.m',
           ],
           'defines':[
             'UNIX',
           ],
+          'xcode_settings': {
+              'INFOPLIST_FILE': 'test/Info.plist',
+          },
           'link_settings': {
             'libraries': [
               '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
@@ -270,12 +286,16 @@
           ],
         }],
         ['OS=="macosx" or OS=="ios"', {
+          'mac_bundle': 1,
           'sources': [
             'testMac.m',
           ],
           'defines':[
             'UNIX',
           ],
+          'xcode_settings': {
+              'INFOPLIST_FILE': 'test/Info.plist',
+          },
           'link_settings': {
             'libraries': [
               '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
@@ -326,12 +346,16 @@
           ],
         }],
         ['OS=="macosx" or OS=="ios"', {
+          'mac_bundle': 1,
           'sources': [
             'testMac.m',
           ],
           'defines':[
             'UNIX',
           ],
+          'xcode_settings': {
+              'INFOPLIST_FILE': 'test/Info.plist',
+          },
           'link_settings': {
             'libraries': [
               '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
@@ -382,12 +406,16 @@
           ],
         }],
         ['OS=="macosx" or OS=="ios"', {
+          'mac_bundle': 1,
           'sources': [
             'testMac.m',
           ],
           'defines':[
             'UNIX',
           ],
+          'xcode_settings': {
+              'INFOPLIST_FILE': 'test/Info.plist',
+          },
           'link_settings': {
             'libraries': [
               '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
@@ -439,12 +467,16 @@
           ],
         }],
         ['OS=="macosx" or OS=="ios"', {
+          'mac_bundle': 1,
           'sources': [
             'testMac.m',
           ],
           'defines':[
             'UNIX',
           ],
+          'xcode_settings': {
+              'INFOPLIST_FILE': 'test/Info.plist',
+          },
           'link_settings': {
             'libraries': [
               '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
@@ -495,12 +527,16 @@
           ],
         }],
         ['OS=="macosx" or OS=="ios"', {
+          'mac_bundle': 1,
           'sources': [
             'testMac.m',
           ],
           'defines':[
             'UNIX',
           ],
+          'xcode_settings': {
+              'INFOPLIST_FILE': 'test/Info.plist',
+          },
           'link_settings': {
             'libraries': [
               '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
@@ -552,12 +588,16 @@
           ],
         }],
         ['OS=="macosx" or OS=="ios"', {
+          'mac_bundle': 1,
           'sources': [
             'testMac.m',
           ],
           'defines':[
             'UNIX',
           ],
+          'xcode_settings': {
+              'INFOPLIST_FILE': 'test/Info.plist',
+          },
           'link_settings': {
             'libraries': [
               '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
@@ -609,12 +649,16 @@
           ],
         }],
         ['OS=="macosx" or OS=="ios"', {
+          'mac_bundle': 1,
           'sources': [
             'testMac.m',
           ],
           'defines':[
             'UNIX',
           ],
+          'xcode_settings': {
+              'INFOPLIST_FILE': 'test/Info.plist',
+          },
           'link_settings': {
             'libraries': [
               '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
@@ -665,12 +709,16 @@
           ],
         }],
         ['OS=="macosx" or OS=="ios"', {
+          'mac_bundle': 1,
           'sources': [
             'testMac.m',
           ],
           'defines':[
             'UNIX',
           ],
+          'xcode_settings': {
+              'INFOPLIST_FILE': 'test/Info.plist',
+          },
           'link_settings': {
             'libraries': [
               '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
@@ -722,12 +770,16 @@
           ],
         }],
         ['OS=="macosx" or OS=="ios"', {
+          'mac_bundle': 1,
           'sources': [
             'testMac.m',
           ],
           'defines':[
             'UNIX',
           ],
+          'xcode_settings': {
+              'INFOPLIST_FILE': 'test/Info.plist',
+          },
           'link_settings': {
             'libraries': [
               '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
@@ -779,12 +831,16 @@
           ],
         }],
         ['OS=="macosx" or OS=="ios"', {
+          'mac_bundle': 1,
           'sources': [
             'testMac.m',
           ],
           'defines':[
             'UNIX',
           ],
+          'xcode_settings': {
+              'INFOPLIST_FILE': 'test/Info.plist',
+          },
           'link_settings': {
             'libraries': [
               '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
@@ -838,6 +894,7 @@
           ],
         }],
         ['OS=="macosx" or OS=="ios"', {
+          'mac_bundle': 1,
           'sources': [
             'testMac.m',
             'thr_posix.c',
@@ -845,6 +902,9 @@
           'defines':[
             'UNIX',
           ],
+          'xcode_settings': {
+              'INFOPLIST_FILE': 'test/Info.plist',
+          },
           'link_settings': {
             'libraries': [
               '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
@@ -932,12 +992,16 @@
           ],
         }],
         ['OS=="macosx" or OS=="ios"', {
+          'mac_bundle': 1,
           'sources': [
             'testMac.m',
           ],
-          'defines':[
+          'defines': [
             'UNIX',
           ],
+          'xcode_settings': {
+              'INFOPLIST_FILE': 'test/Info.plist',
+          },
           'link_settings': {
             'libraries': [
               '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',

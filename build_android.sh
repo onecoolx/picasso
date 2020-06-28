@@ -1,5 +1,6 @@
 #!/bin/sh
 
+# change to real android NDK path
 export NDK_ROOT=/d/android-ndk-r10b
 
 export PROJECT_ROOT=`pwd`

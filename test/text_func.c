@@ -129,7 +129,7 @@ void init_context (ps_context* gc, ps_canvas* cs, unsigned char* buf)
     pm = ps_matrix_create();
     pn = ps_matrix_create();
 
-    pf = ps_font_create("ËÎÌו", CHARSET_UNICODE,48, FONT_WEIGHT_BOLD, False);
+    pf = ps_font_create("sans-serif", CHARSET_UNICODE,48, FONT_WEIGHT_BOLD, False);
 
     p[0].x = 150;
     p[0].y = 100;

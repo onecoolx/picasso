@@ -42,14 +42,16 @@
           ],
         }],
         ['OS=="macosx" or OS=="ios"', {
+          'mac_bundle': 1,
           'sources': [
             'platform_apple.m',
-            'Info.plist',
-            'Main.storyboard',
           ],
           'defines':[
             'UNIX',
           ],
+          'xcode_settings': {
+              'INFOPLIST_FILE': 'demos/Info.plist',
+          },
           'link_settings': {
             'libraries': [
               '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
@@ -100,14 +102,16 @@
           ],
         }],
         ['OS=="macosx" or OS=="ios"', {
+          'mac_bundle': 1,
           'sources': [
             'platform_apple.m',
-            'Info.plist',
-            'Main.storyboard',
           ],
           'defines':[
             'UNIX',
           ],
+          'xcode_settings': {
+              'INFOPLIST_FILE': 'demos/Info.plist',
+          },
           'link_settings': {
             'libraries': [
               '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
@@ -158,14 +162,16 @@
           ],
         }],
         ['OS=="macosx" or OS=="ios"', {
+          'mac_bundle': 1,
           'sources': [
             'platform_apple.m',
-            'Info.plist',
-            'Main.storyboard',
           ],
           'defines':[
             'UNIX',
           ],
+          'xcode_settings': {
+              'INFOPLIST_FILE': 'demos/Info.plist',
+          },
           'link_settings': {
             'libraries': [
               '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
@@ -216,14 +222,16 @@
           ],
         }],
         ['OS=="macosx" or OS=="ios"', {
+          'mac_bundle': 1,
           'sources': [
             'platform_apple.m',
-            'Info.plist',
-            'Main.storyboard',
           ],
           'defines':[
             'UNIX',
           ],
+          'xcode_settings': {
+              'INFOPLIST_FILE': 'demos/Info.plist',
+          },
           'link_settings': {
             'libraries': [
               '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
