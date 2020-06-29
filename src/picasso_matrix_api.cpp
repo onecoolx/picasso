@@ -398,12 +398,12 @@ float PICAPI ps_matrix_get_determinant(const ps_matrix* matrix)
 {
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;
-        return NULL;
+        return 0.0f;
     }
 
     if (!matrix) {
         global_status = STATUS_INVALID_ARGUMENT;
-        return NULL;
+        return 0.0f;
     }
 
     global_status = STATUS_SUCCEED;

@@ -56,7 +56,7 @@ int _bytes_per_color(ps_color_format fmt)
 #endif
         default:
             global_status = STATUS_NOT_SUPPORT;
-            return NULL;
+            return 0;
     }
 }
 

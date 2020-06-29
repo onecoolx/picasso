@@ -890,6 +890,7 @@
           ],
           'libraries': [
             '-lfreetype',
+            '-lpthread',
             '-lz `pkg-config --libs gtk+-2.0`',
           ],
         }],
