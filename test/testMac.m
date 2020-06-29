@@ -8,7 +8,7 @@
 @end
 
 @interface AppDelegate ()
-@property NSWindow* mainWindow;
+@property (nonatomic,strong) NSWindow* mainWindow;
 @end
 
 @implementation AppDelegate
@@ -21,10 +21,15 @@
     [_mainWindow setTitle:@"Picasso test"];
     [_mainWindow makeKeyAndOrderFront:_mainWindow];
     [_mainWindow makeKeyWindow];
+    [_mainWindow center];
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
     // Insert code here to tear down your application
+}
+
+- (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)aNottification {
+    return YES;
 }
 
 @end
