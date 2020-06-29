@@ -39,7 +39,7 @@
             },
           },
         }],
-        ['OS=="macosx"', {
+        ['OS=="macosx" or OS=="ios"', {
           'xcode_settings': {
             'ALWAYS_SEARCH_USER_PATHS': 'NO',
             'CLANG_ENABLE_OBJC_WEAK': 'YES',
@@ -50,6 +50,8 @@
             'CODE_SIGN_IDENTITY': "-",
             'GCC_UNROLL_LOOPS': 'NO',
             'GCC_OPTIMIZATION_LEVEL': '0',
+            'GCC_ENABLE_CPP_EXCEPTIONS': "NO",
+            'GCC_ENABLE_CPP_RTTI': "NO",
           },
         }],
         ['OS=="linux"', {
@@ -113,7 +115,7 @@
             },
           },
         }],
-        ['OS=="macosx"', {
+        ['OS=="macosx" or OS=="ios"', {
           'xcode_settings': {
             'ALWAYS_SEARCH_USER_PATHS': 'NO',
             'CLANG_ENABLE_CODE_COVERAGE': 'NO',
@@ -128,6 +130,8 @@
             'ENABLE_TESTABILITY': 'NO',
             'GCC_UNROLL_LOOPS': 'YES',
             'GCC_OPTIMIZATION_LEVEL': '3',
+            'GCC_ENABLE_CPP_EXCEPTIONS': "NO",
+            'GCC_ENABLE_CPP_RTTI': "NO",
           },
         }],
         ['OS=="linux"', {
