@@ -13,11 +13,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: generate_proj
-      run: ./build_linux.sh
-    - name: change_dir
-      run: cd proj
+    - name: configure
+      run: ./configure
     - name: make
-      run: make 
-    - name: make_release
-      run: make BUILDTYPE=Release
+      run: make
+    - name: make check
+      run: make check
