@@ -25,7 +25,6 @@ EXTRA_DIST = \
     testQt4.cpp \
     GNUmakefile.gtk2 \
     GNUmakefile.qt4 \
-    GNUmakefile.win32 \
     font_config.cfg \
     pat.bmp \
     pat.png \

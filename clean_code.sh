@@ -12,6 +12,7 @@ rm -rf   config.sub
 rm -rf   configure
 rm -rf   demos/Makefile.in
 rm -rf   depcomp
+rm -rf   compile
 rm -rf   ext/Makefile.in
 rm -rf   ext/image_loader/Makefile.in
 rm -rf   ext/image_loader/gif/Makefile.in

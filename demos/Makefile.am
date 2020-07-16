@@ -17,5 +17,4 @@ EXTRA_DIST = \
         GNUmakefile.gtk2 \
         GNUmakefile.minigui \
         GNUmakefile.qt4 \
-        GNUmakefile.win32 \
         lake.bmp 
