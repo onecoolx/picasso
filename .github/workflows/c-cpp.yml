@@ -1,0 +1,23 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: generate_proj
+      run: ./build_linux.sh
+    - name: change_dir
+      run: cd proj
+    - name: make
+      run: make 
+    - name: make_release
+      run: make BUILDTYPE=Release
