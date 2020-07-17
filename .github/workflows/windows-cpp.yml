@@ -30,8 +30,10 @@ jobs:
 
     - name: Generate Project
       run: ./build_win.bat
+      
+    - name: Upgrade Project
+      run: devenv /Upgrade ./vcproj/picasso.sln
 
     - name: Build Solution
-      run: msbuild ./vcproj/picasso.sln /p:Configuration=$env:Configuration
-      env:
-        Configuration: ${{ matrix.configuration }}
+      run: devenv ./vcproj/picasso.sln /build "Debug|x64" /build "Release|x64"
+
