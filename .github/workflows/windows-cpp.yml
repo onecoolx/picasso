@@ -25,9 +25,9 @@ jobs:
        
     - name: Setup MSBuild.exe
       uses: microsoft/setup-msbuild@2008f912f56e61277eefaac6d1888b750582aa16
-      
+
     - name: Generate Project
-      uses: build_win.bat
+      run: ./build_win.bat
 
     - name: Build Solution
       run: msbuild $env:Solution_Name /p:Configuration=$env:Configuration
