@@ -1,3 +1,4 @@
+#define ENABLE_SYSTEM_MALLOC 1
 
 #define ENABLE_FREE_TYPE2 1
 
