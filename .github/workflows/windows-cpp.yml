@@ -29,7 +29,7 @@ jobs:
         python-version: 2.7
 
     - name: Generate Project
-      run: ./build_win.bat
+      run: ./build_windows.bat
     
     - name: Restore Project
       run: msbuild ./vcproj/picasso.sln /t:Restore /p:Configuration=$env:Configuration
