@@ -9,6 +9,10 @@ on:
 jobs:
 
   build:
+    
+    strategy:
+      matrix:
+        configuration: [Debug, Release]
 
     runs-on: windows-latest
     
@@ -26,7 +30,14 @@ jobs:
 
     - name: Generate Project
       run: ./build_win.bat
-      
+    
+    - name: Restore Project
+      run: msbuild ./vcproj/picasso.sln /t:Restore /p:Configuration=$env:Configuration
+      env:
+        Configuration: ${{ matrix.configuration }}
+     
     - name: Build Solution
-      run: devenv ./vcproj/picasso.sln /build "Debug|x64" /build "Release|x64"
+      run: msbuild ./vcproj/picasso.sln /p:Configuration=$env:Configuration
+      env:
+        Configuration: ${{ matrix.configuration }}   
 
