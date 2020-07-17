@@ -10,10 +10,6 @@ jobs:
 
   build:
 
-    strategy:
-      matrix:
-        configuration: [Debug, Release]
-
     runs-on: windows-latest
     
     steps:
@@ -31,9 +27,6 @@ jobs:
     - name: Generate Project
       run: ./build_win.bat
       
-    - name: Upgrade Project
-      run: devenv /Upgrade ./vcproj/picasso.sln
-
     - name: Build Solution
       run: devenv ./vcproj/picasso.sln /build "Debug|x64" /build "Release|x64"
 
