@@ -17,16 +17,5 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
-    - shell: bash
-      run: mkdir toolchains
-    - name: specify NDK
-      uses: ravinderjangra/android-ndk-toolchain-setup@0.2
-      with:
-        api: '21'
-        arch: 'x86'
-        install-location: 'toolchains'
-        force: true
-    - shell: bash
-      run: cd ./android
     - name: build
-      run: /usr/local/lib/android/sdk/ndk-bundle/ndk-build
+      run: /usr/local/lib/android/sdk/ndk-bundle/ndk-build NDK_PROJECT_PATH=./android/
