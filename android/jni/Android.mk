@@ -58,8 +58,8 @@ LOCAL_CPPFLAGS := -DEXPORT=1 -DNDEBUG=1 -D__ANDROID__=1 \
 LOCAL_CFLAGS := $(LOCAL_CPPFLAGS)
 
 LOCAL_STATIC_LIBRARIES := \
-	$(LOCAL_PATH)/$(SOURCE_PATH)/android/freetype/obj/local/armeabi/libft2.a \
-	$(LOCAL_PATH)/$(SOURCE_PATH)/android/expat/obj/local/armeabi/libexpat.a
+	$(LOCAL_PATH)/$(SOURCE_PATH)/android/freetype/obj/local/armeabi-v7a/libft2.a \
+	$(LOCAL_PATH)/$(SOURCE_PATH)/android/expat/obj/local/armeabi-v7a/libexpat.a
 
 
 include $(BUILD_STATIC_LIBRARY)
@@ -90,9 +90,9 @@ LOCAL_LDLIBS := -llog -landroid -lEGL -lGLESv1_CM
 LOCAL_STATIC_LIBRARIES := android_native_app_glue
 
 LOCAL_LDFLAGS := \
-	$(LOCAL_PATH)/$(SOURCE_PATH)/android/obj/local/armeabi/libpicasso.a \
-	$(LOCAL_PATH)/$(SOURCE_PATH)/android/freetype/obj/local/armeabi/libft2.a \
-	$(LOCAL_PATH)/$(SOURCE_PATH)/android/expat/obj/local/armeabi/libexpat.a
+	$(LOCAL_PATH)/$(SOURCE_PATH)/android/obj/local/armeabi-v7a/libpicasso.a \
+	$(LOCAL_PATH)/$(SOURCE_PATH)/android/freetype/obj/local/armeabi-v7a/libft2.a \
+	$(LOCAL_PATH)/$(SOURCE_PATH)/android/expat/obj/local/armeabi-v7a/libexpat.a
 
 include $(BUILD_SHARED_LIBRARY)
 
