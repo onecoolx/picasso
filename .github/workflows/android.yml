@@ -26,3 +26,5 @@ jobs:
         arch: 'x86'
         install-location: 'toolchains'
         force: true
+    - name: build
+       run: ndk-build
