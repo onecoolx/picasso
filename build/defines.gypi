@@ -16,6 +16,10 @@
         '_USE_MATH_DEFINES',
         '_CRT_SECURE_NO_WARNINGS',
       ],
+      'libraries': [
+        '-lgdi32',
+        '-luser32',
+      ],
     }],
     ['OS=="linux"', {
       'defines': [
