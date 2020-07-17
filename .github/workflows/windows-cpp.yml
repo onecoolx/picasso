@@ -16,9 +16,6 @@ jobs:
 
     runs-on: windows-latest
     
-    env:
-      Solution_Name: vcproj/picasso.sln
-   
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -35,6 +32,6 @@ jobs:
       run: ./build_win.bat
 
     - name: Build Solution
-      run: msbuild $env:Solution_Name /p:Configuration=$env:Configuration
+      run: msbuild ./vcproj/picasso.sln /p:Configuration=$env:Configuration
       env:
         Configuration: ${{ matrix.configuration }}
