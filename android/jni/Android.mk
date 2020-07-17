@@ -10,6 +10,8 @@ LOCAL_MODULE := picasso
 
 LOCAL_C_INCLUDES := \
 	$(LOCAL_PATH) \
+	$(LOCAL_PATH)/../freetype/include/ \
+	$(LOCAL_PATH)/../expat/lib/ \
 	$(LOCAL_PATH)/$(SOURCE_PATH)/include/ \
 	$(LOCAL_PATH)/$(SOURCE_PATH)/src/ \
 	$(LOCAL_PATH)/$(SOURCE_PATH)/src/include/ \
