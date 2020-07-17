@@ -26,5 +26,7 @@ jobs:
         arch: 'x86'
         install-location: 'toolchains'
         force: true
-      run: export NDK_PROJECT_PATH=./android/
-      run: $NDK/ndk-build
+    - shell: bash
+      run: cd ./android
+    - name: build
+      run: ./toolchains/ndk-build
