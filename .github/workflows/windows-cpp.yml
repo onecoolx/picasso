@@ -25,6 +25,9 @@ jobs:
        
     - name: Setup MSBuild.exe
       uses: microsoft/setup-msbuild@2008f912f56e61277eefaac6d1888b750582aa16
+      
+    - name: Generate Project
+      uses: ./tools/gyp/gyp --depth=./ picasso.gyp --generator-output=vcproj
 
     - name: Build Solution
       run: msbuild $env:Solution_Name /p:Configuration=$env:Configuration
