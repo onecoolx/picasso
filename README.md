@@ -1,5 +1,4 @@
-![Windows Build](https://github.com/onecoolx/picasso/workflows/Windows%20CI/badge.svg?branch=master&event=push) ![Linux Build](https://github.com/onecoolx/picasso/workflows/Linux%20CI/badge.svg?branch=master&event=push) ![MacOSX CI](https://github.com/onecoolx/picasso/workflows/MacOSX%20CI/badge.svg?branch=master&event=push) ![Android CI](https://github.com/onecoolx/picasso/workflows/Android%20CI/badge.svg?branch=master&event=push)
-
+![Windows Build](https://github.com/onecoolx/picasso/workflows/Windows%20Build/badge.svg) ![Linux Build](https://github.com/onecoolx/picasso/workflows/Linux%20Build/badge.svg) ![MacOSX Build](https://github.com/onecoolx/picasso/workflows/MacOSX%20Build/badge.svg) ![Android Build](https://github.com/onecoolx/picasso/workflows/Android%20Build/badge.svg)
 
 Copyright (C) 2008 ~ 2020 Zhang Ji Peng  (onecoolx@gmail.com)
 
