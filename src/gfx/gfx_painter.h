@@ -47,7 +47,8 @@ public:
         type_canvas     = 4,
     } source_type;
 
-    typedef struct {
+    struct image_holder {
+        image_holder() : buffer(NULL) { }
         abstract_rendering_buffer* buffer;
         int filter;
         rect_s rect;
@@ -55,9 +56,10 @@ public:
         rgba8 key;
         bool transparent;
         bool colorkey;
-    } image_holder;
+    };
 
-    typedef struct {
+    struct pattern_holder {
+        pattern_holder() : buffer(NULL) { }
         abstract_rendering_buffer* buffer;
         int filter;
         rect_s rect;
@@ -66,11 +68,12 @@ public:
         int ytype;
         abstract_trans_affine* matrix;
         bool transparent;
-    } pattern_holder;
+    };
 
-    typedef struct {
+    struct gradient_holder {
+        gradient_holder() : gradient(NULL) { }
         abstract_gradient_adapter* gradient;
-    } gradient_holder;
+    };
 
     gfx_painter()
         : m_fill_type(type_solid)
@@ -490,12 +493,19 @@ inline void gfx_painter<Pixfmt>::apply_stroke_impl(abstract_raster_adapter* rast
                 if (m_image_stroke.filter) {
                     image_filter_adapter* filter = create_image_filter(m_image_stroke.filter);
 
-                    typename painter_raster<Pixfmt2>::span_canvas_filter_type
-                        sg(img_src, interpolator, *(filter));
-                    gfx_render_scanlines_aa(static_cast<gfx_raster_adapter*>(raster)->stroke_impl(),
-                                            m_scanline_u, m_rb, m_spans, sg);
+                    if (filter) {
+                        typename painter_raster<Pixfmt2>::span_canvas_filter_type
+                            sg(img_src, interpolator, *(filter));
+                        gfx_render_scanlines_aa(static_cast<gfx_raster_adapter*>(raster)->stroke_impl(),
+                                                m_scanline_u, m_rb, m_spans, sg);
 
-                    if (filter) delete filter;
+                        delete filter;
+                    } else {
+                        typename painter_raster<Pixfmt2>::span_canvas_filter_type_nn
+                            sg(img_src, interpolator);
+                        gfx_render_scanlines_aa(static_cast<gfx_raster_adapter*>(raster)->stroke_impl(),
+                                                m_scanline_u, m_rb, m_spans, sg);
+                    }
                 } else {
                     typename painter_raster<Pixfmt2>::span_canvas_filter_type_nn
                         sg(img_src, interpolator);
@@ -530,19 +540,33 @@ inline void gfx_painter<Pixfmt>::apply_stroke_impl(abstract_raster_adapter* rast
                 if (m_image_stroke.filter) {
                     image_filter_adapter* filter = create_image_filter(m_image_stroke.filter);
 
-                    if (transparent) {
-                        typename painter_raster<Pixfmt2>::span_canvas_filter_type
-                                                sg(img_src, interpolator, *(filter));
-                        gfx_render_scanlines_aa(static_cast<gfx_raster_adapter*>(raster)->stroke_impl(),
-                                                m_scanline_u, m_rb, m_spans, sg);
-                    } else {
-                        typename painter_raster<Pixfmt2>::span_image_filter_type
-                                                sg(img_src, interpolator, *(filter));
-                        gfx_render_scanlines_aa(static_cast<gfx_raster_adapter*>(raster)->stroke_impl(),
-                                                m_scanline_u, m_rb, m_spans, sg);
-                    }
+                    if (filter) {
+                        if (transparent) {
+                            typename painter_raster<Pixfmt2>::span_canvas_filter_type
+                                                    sg(img_src, interpolator, *(filter));
+                            gfx_render_scanlines_aa(static_cast<gfx_raster_adapter*>(raster)->stroke_impl(),
+                                                    m_scanline_u, m_rb, m_spans, sg);
+                        } else {
+                            typename painter_raster<Pixfmt2>::span_image_filter_type
+                                                    sg(img_src, interpolator, *(filter));
+                            gfx_render_scanlines_aa(static_cast<gfx_raster_adapter*>(raster)->stroke_impl(),
+                                                    m_scanline_u, m_rb, m_spans, sg);
+                        }
 
-                    if (filter) delete filter;
+                        delete filter;
+                    } else {
+                        if (transparent) {
+                            typename painter_raster<Pixfmt2>::span_canvas_filter_type_nn
+                                                    sg(img_src, interpolator);
+                            gfx_render_scanlines_aa(static_cast<gfx_raster_adapter*>(raster)->stroke_impl(),
+                                                    m_scanline_u, m_rb, m_spans, sg);
+                        } else {
+                            typename painter_raster<Pixfmt2>::span_image_filter_type_nn
+                                                    sg(img_src, interpolator);
+                            gfx_render_scanlines_aa(static_cast<gfx_raster_adapter*>(raster)->stroke_impl(),
+                                                    m_scanline_u, m_rb, m_spans, sg);
+                        }
+                    }
                 } else {
                     if (transparent) {
                         typename painter_raster<Pixfmt2>::span_canvas_filter_type_nn
@@ -580,19 +604,33 @@ inline void gfx_painter<Pixfmt>::apply_stroke_impl(abstract_raster_adapter* rast
                 if (m_pattern_stroke.filter) {
                     image_filter_adapter* filter = create_image_filter(m_pattern_stroke.filter);
 
-                    if (transparent) {
-                        typename painter_raster<Pixfmt2>::span_canvas_pattern_type
-                                                sg(*pattern, interpolator, *(filter));
-                        gfx_render_scanlines_aa(static_cast<gfx_raster_adapter*>(raster)->stroke_impl(),
-                                                m_scanline_u, m_rb, m_spans, sg);
-                    } else {
-                        typename painter_raster<Pixfmt2>::span_image_pattern_type
-                                                sg(*pattern, interpolator, *(filter));
-                        gfx_render_scanlines_aa(static_cast<gfx_raster_adapter*>(raster)->stroke_impl(),
-                                                m_scanline_u, m_rb, m_spans, sg);
-                    }
+                    if (filter) {
+                        if (transparent) {
+                            typename painter_raster<Pixfmt2>::span_canvas_pattern_type
+                                                    sg(*pattern, interpolator, *(filter));
+                            gfx_render_scanlines_aa(static_cast<gfx_raster_adapter*>(raster)->stroke_impl(),
+                                                    m_scanline_u, m_rb, m_spans, sg);
+                        } else {
+                            typename painter_raster<Pixfmt2>::span_image_pattern_type
+                                                    sg(*pattern, interpolator, *(filter));
+                            gfx_render_scanlines_aa(static_cast<gfx_raster_adapter*>(raster)->stroke_impl(),
+                                                    m_scanline_u, m_rb, m_spans, sg);
+                        }
 
-                    if (filter) delete filter;
+                        delete filter;
+                    } else {
+                        if (transparent) {
+                            typename painter_raster<Pixfmt2>::span_canvas_pattern_type_nn
+                                                    sg(*pattern, interpolator);
+                            gfx_render_scanlines_aa(static_cast<gfx_raster_adapter*>(raster)->stroke_impl(),
+                                                    m_scanline_u, m_rb, m_spans, sg);
+                        } else {
+                            typename painter_raster<Pixfmt2>::span_image_pattern_type_nn
+                                                    sg(*pattern, interpolator);
+                            gfx_render_scanlines_aa(static_cast<gfx_raster_adapter*>(raster)->stroke_impl(),
+                                                    m_scanline_u, m_rb, m_spans, sg);
+                        }
+                    }
                 } else {
                     if (transparent) {
                         typename painter_raster<Pixfmt2>::span_canvas_pattern_type_nn
@@ -641,12 +679,19 @@ inline void gfx_painter<Pixfmt>::apply_fill_impl(abstract_raster_adapter* raster
                 if (m_image_source.filter) {
                     image_filter_adapter* filter = create_image_filter(m_image_source.filter);
 
-                    typename painter_raster<Pixfmt2>::span_canvas_filter_type
-                        sg(img_src, interpolator, *(filter));
-                    gfx_render_scanlines_aa(static_cast<gfx_raster_adapter*>(raster)->fill_impl(),
-                                            m_scanline_u, m_rb, m_spans, sg);
+                    if (filter) {
+                        typename painter_raster<Pixfmt2>::span_canvas_filter_type
+                            sg(img_src, interpolator, *(filter));
+                        gfx_render_scanlines_aa(static_cast<gfx_raster_adapter*>(raster)->fill_impl(),
+                                                m_scanline_u, m_rb, m_spans, sg);
 
-                    if (filter) delete filter;
+                        delete filter;
+                    } else {
+                        typename painter_raster<Pixfmt2>::span_canvas_filter_type_nn
+                            sg(img_src, interpolator);
+                        gfx_render_scanlines_aa(static_cast<gfx_raster_adapter*>(raster)->fill_impl(),
+                                                m_scanline_u, m_rb, m_spans, sg);
+                    }
                 } else {
                     typename painter_raster<Pixfmt2>::span_canvas_filter_type_nn
                         sg(img_src, interpolator);
@@ -681,19 +726,33 @@ inline void gfx_painter<Pixfmt>::apply_fill_impl(abstract_raster_adapter* raster
                 if (m_image_source.filter) {
                     image_filter_adapter* filter = create_image_filter(m_image_source.filter);
 
-                    if (transparent) {
-                        typename painter_raster<Pixfmt2>::span_canvas_filter_type
-                                                sg(img_src, interpolator, *(filter));
-                        gfx_render_scanlines_aa(static_cast<gfx_raster_adapter*>(raster)->fill_impl(),
-                                                m_scanline_u, m_rb, m_spans, sg);
-                    } else {
-                        typename painter_raster<Pixfmt2>::span_image_filter_type
-                                                sg(img_src, interpolator, *(filter));
-                        gfx_render_scanlines_aa(static_cast<gfx_raster_adapter*>(raster)->fill_impl(),
-                                                m_scanline_u, m_rb, m_spans, sg);
-                    }
+                    if (filter) {
+                        if (transparent) {
+                            typename painter_raster<Pixfmt2>::span_canvas_filter_type
+                                                    sg(img_src, interpolator, *(filter));
+                            gfx_render_scanlines_aa(static_cast<gfx_raster_adapter*>(raster)->fill_impl(),
+                                                    m_scanline_u, m_rb, m_spans, sg);
+                        } else {
+                            typename painter_raster<Pixfmt2>::span_image_filter_type
+                                                    sg(img_src, interpolator, *(filter));
+                            gfx_render_scanlines_aa(static_cast<gfx_raster_adapter*>(raster)->fill_impl(),
+                                                    m_scanline_u, m_rb, m_spans, sg);
+                        }
 
-                    if (filter) delete filter;
+                        delete filter;
+                    } else {
+                        if (transparent) {
+                            typename painter_raster<Pixfmt2>::span_canvas_filter_type_nn
+                                                    sg(img_src, interpolator);
+                            gfx_render_scanlines_aa(static_cast<gfx_raster_adapter*>(raster)->fill_impl(),
+                                                    m_scanline_u, m_rb, m_spans, sg);
+                        } else {
+                            typename painter_raster<Pixfmt2>::span_image_filter_type_nn
+                                                    sg(img_src, interpolator);
+                            gfx_render_scanlines_aa(static_cast<gfx_raster_adapter*>(raster)->fill_impl(),
+                                                    m_scanline_u, m_rb, m_spans, sg);
+                        }
+                    }
                 } else {
                     if (transparent) {
                         typename painter_raster<Pixfmt2>::span_canvas_filter_type_nn
@@ -731,19 +790,33 @@ inline void gfx_painter<Pixfmt>::apply_fill_impl(abstract_raster_adapter* raster
                 if (m_pattern_source.filter) {
                     image_filter_adapter* filter = create_image_filter(m_pattern_source.filter);
 
-                    if (transparent) {
-                        typename painter_raster<Pixfmt2>::span_canvas_pattern_type
-                                                sg(*pattern, interpolator, *(filter));
-                        gfx_render_scanlines_aa(static_cast<gfx_raster_adapter*>(raster)->fill_impl(),
-                                                m_scanline_u, m_rb, m_spans, sg);
-                    } else {
-                        typename painter_raster<Pixfmt2>::span_image_pattern_type
-                                                sg(*pattern, interpolator, *(filter));
-                        gfx_render_scanlines_aa(static_cast<gfx_raster_adapter*>(raster)->fill_impl(),
-                                                m_scanline_u, m_rb, m_spans, sg);
-                    }
+                    if (filter) {
+                        if (transparent) {
+                            typename painter_raster<Pixfmt2>::span_canvas_pattern_type
+                                                    sg(*pattern, interpolator, *(filter));
+                            gfx_render_scanlines_aa(static_cast<gfx_raster_adapter*>(raster)->fill_impl(),
+                                                    m_scanline_u, m_rb, m_spans, sg);
+                        } else {
+                            typename painter_raster<Pixfmt2>::span_image_pattern_type
+                                                    sg(*pattern, interpolator, *(filter));
+                            gfx_render_scanlines_aa(static_cast<gfx_raster_adapter*>(raster)->fill_impl(),
+                                                    m_scanline_u, m_rb, m_spans, sg);
+                        }
 
-                    if (filter) delete filter;
+                        delete filter;
+                    } else {
+                        if (transparent) {
+                            typename painter_raster<Pixfmt2>::span_canvas_pattern_type_nn
+                                                    sg(*pattern, interpolator);
+                            gfx_render_scanlines_aa(static_cast<gfx_raster_adapter*>(raster)->fill_impl(),
+                                                    m_scanline_u, m_rb, m_spans, sg);
+                        } else {
+                            typename painter_raster<Pixfmt2>::span_image_pattern_type_nn
+                                                    sg(*pattern, interpolator);
+                            gfx_render_scanlines_aa(static_cast<gfx_raster_adapter*>(raster)->fill_impl(),
+                                                    m_scanline_u, m_rb, m_spans, sg);
+                        }
+                    }
                 } else {
                     if (transparent) {
                         typename painter_raster<Pixfmt2>::span_canvas_pattern_type_nn

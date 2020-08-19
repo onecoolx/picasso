@@ -443,10 +443,10 @@ public:
 
     clip_area(const clip_area& o)
         : type(o.type)
+        , path(o.path)
+        , rule(o.rule)
+        , rect(o.rect)
     {
-        path = o.path;
-        rule = o.rule;
-        rect = o.rect;
     }
 
     clip_area& operator = (const clip_area& o)
