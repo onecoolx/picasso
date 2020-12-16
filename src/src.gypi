@@ -24,6 +24,7 @@
       'sources': [
         '../build/pconfig.h',
         '../include/picasso.h',
+        '../include/picasso_gpu.h',
         'core/curve.cpp',
         'core/device.cpp',
         'core/graphic_path.cpp',

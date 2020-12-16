@@ -7,7 +7,7 @@
  *
  \verbatim
 
-    Copyright (C) 2008 ~ 2018  Zhang Ji Peng
+    Copyright (C) 2008 ~ 2020  Zhang Ji Peng
 
     All rights reserved.
 
@@ -43,6 +43,8 @@
 
 #include "pconfig.h"
 #include <stdint.h>
+
+#include "picasso_gpu.h"
 
 #ifdef __cplusplus
 extern "C" {
