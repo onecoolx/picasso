@@ -21,3 +21,7 @@
 #define ENABLE_FORMAT_RGB565 1
 
 #define ENABLE_FORMAT_RGB555 1
+
+#define ENABLE_EGL 1
+
+#define ENABLE_GLES2 1

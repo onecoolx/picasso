@@ -104,6 +104,7 @@ libpicasso_la_SOURCES= \
             picasso_path.cpp \
             picasso_gradient.cpp \
             picasso_gradient_api.cpp \
+            picasso_gpu.cpp \
             picasso_font.cpp \
             picasso_font_api.cpp \
             picasso_mask.cpp \

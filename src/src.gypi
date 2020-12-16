@@ -24,6 +24,7 @@
       'sources': [
         '../build/pconfig.h',
         '../include/picasso.h',
+        '../include/picasso_gpu.h',
         'core/curve.cpp',
         'core/device.cpp',
         'core/graphic_path.cpp',
@@ -98,6 +99,7 @@
         'picasso_gradient_api.cpp',
         'picasso_gradient.cpp',
         'picasso_gradient.h',
+        'picasso_gpu.cpp',
         'picasso_image.cpp',
         'picasso_mask_api.cpp',
         'picasso_mask.cpp',
