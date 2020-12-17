@@ -44,6 +44,8 @@
 #include "pconfig.h"
 #include <stdint.h>
 
+#include "picasso_gpu.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
