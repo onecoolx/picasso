@@ -33,6 +33,30 @@ typedef void* ps_gr_surface;
 typedef void* ps_gr_context;
 #endif
 
+/**
+ * \defgroup canvas Canvas
+ * @{
+ */
+
+/**
+ * \fn ps_canvas* PICAPI ps_canvas_create_for_gpu_surface(ps_gr_surface surface, ps_gr_context context)
+ * \brief Create a new canvas with a GPU rendering surface for hardware acceleration.
+ *
+ * \param surface Handle for gpu rendering surface.
+ * \param context Handle for gpu rendering context.
+ *
+ * \return If the function succeeds, the return value is the pointer to a new canvas object.
+ *         If the function fails, the return value is NULL.
+ *
+ * \note To get extended error information, call \a ps_last_status.
+ *
+ * \sa ps_canvas_create, ps_canvas_create_with_data, ps_canvas_create_compatible,
+ *     ps_canvas_create_from_image, ps_canvas_ref, ps_canvas_unref
+ */
+PEXPORT ps_canvas* PICAPI ps_canvas_create_for_gpu_surface(ps_gr_surface surface, ps_gr_context context);
+
+/** @} end of canvas functions*/
+
 #ifdef __cplusplus
 }
 #endif
