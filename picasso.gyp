@@ -12,6 +12,6 @@
     './ext/ext.gypi',
     './test/test.gypi',
     './demos/demos.gypi'
-  ]
+    ],
 }
 

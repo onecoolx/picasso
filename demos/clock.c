@@ -23,7 +23,6 @@ static int width;
 static int height;
 static unsigned tid;
 static float scale;
-static float zoomFactor = 1;
 static unsigned millsecons = 0;
 
 static ps_path* shadowPath;

@@ -26,7 +26,7 @@ static inline suseconds_t get_time()
 #else
     struct timeval t;
     gettimeofday(&t, 0);
-    suseconds_t t1 = t.tv_sec * 1000  + t.tv_usec/1000;
+    suseconds_t t1 = (suseconds_t)(t.tv_sec * 1000  + t.tv_usec/1000);
 #endif
     return t1;
 }

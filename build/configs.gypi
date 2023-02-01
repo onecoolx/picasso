@@ -52,6 +52,7 @@
             'GCC_OPTIMIZATION_LEVEL': '0',
             'GCC_ENABLE_CPP_EXCEPTIONS': "NO",
             'GCC_ENABLE_CPP_RTTI': "NO",
+            'MACOSX_DEPLOYMENT_TARGET': '10.9',
           },
         }],
         ['OS=="linux"', {
@@ -130,8 +131,9 @@
             'ENABLE_TESTABILITY': 'NO',
             'GCC_UNROLL_LOOPS': 'YES',
             'GCC_OPTIMIZATION_LEVEL': '3',
-            'GCC_ENABLE_CPP_EXCEPTIONS': "NO",
-            'GCC_ENABLE_CPP_RTTI': "NO",
+            'GCC_ENABLE_CPP_EXCEPTIONS': 'NO',
+            'GCC_ENABLE_CPP_RTTI': 'NO',
+            'MACOSX_DEPLOYMENT_TARGET': '10.9',
           },
         }],
         ['OS=="linux"', {

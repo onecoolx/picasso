@@ -83,8 +83,6 @@
         'include/math_type.h',
         'include/memory_manager.h',
         'include/platform.h',
-        'include/refptr.h',
-        'include/shared.h',
         'include/vertex.h',
         'include/vertex_dist.h',
         'simd/fastcopy_sse.h',
@@ -131,6 +129,11 @@
           'libraries': [
             '-lfreetype',
             '-lfontconfig',
+          ],
+        }],
+        ['OS=="macosx" or OS=="ios"', {
+          'sources': [
+            'gfx/gfx_font_adapter_apple.m',
           ],
         }],
       ],

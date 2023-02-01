@@ -330,7 +330,7 @@ void on_mouse_event(mouse_event_type evt, unsigned key, int x, int y)
     refresh(NULL);
 }
 
-void on_timer()
+void on_timer(void)
 {
 }
 
