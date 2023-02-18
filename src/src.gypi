@@ -133,8 +133,14 @@
         }],
         ['OS=="macosx" or OS=="ios"', {
           'sources': [
-            'gfx/gfx_font_adapter_apple.m',
+            'gfx/gfx_font_adapter_apple.mm',
           ],
+          'link_settings': {
+            'libraries': [
+              '$(SDKROOT)/System/Library/Frameworks/CoreText.framework',
+              '$(SDKROOT)/System/Library/Frameworks/CoreGraphics.framework',
+            ],
+          },
         }],
       ],
       'includes':[

@@ -44,6 +44,12 @@ const char** argv(void)
     return (const char**)__argv;
 }
 
+const char* getSysFontName(void)
+{
+    return "Arial";
+}
+
+
 int APIENTRY WinMain(HINSTANCE hInstance,
                      HINSTANCE hPrevInstance,
                      LPSTR     lpCmdLine,

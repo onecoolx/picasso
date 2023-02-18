@@ -144,6 +144,10 @@ const char** argv(void)
     return __argv;
 }
 
+const char* getSysFontName(void) {
+    return "sans-serif";
+}
+
 int main(int argc, char*argv[])
 {
     GLES2_CONTEXT ctx;

@@ -112,6 +112,11 @@ const char** argv(void)
     return __argv;
 }
 
+
+const char* getSysFontName(void) {
+    return "STHeitiSC-Light";
+}
+
 int main(int argc, const char * argv[])
 {
     __argc = (int)argc;

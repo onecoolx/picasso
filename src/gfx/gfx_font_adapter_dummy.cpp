@@ -10,7 +10,7 @@
 #include "gfx_font_adapter.h"
 #include "gfx_trans_affine.h"
 
-#if !defined(WIN32) && !ENABLE(FREE_TYPE2)
+#if !defined(WIN32) && !ENABLE(FREE_TYPE2) && !defined(__APPLE__)
 
 // dummy font interface
 namespace gfx {

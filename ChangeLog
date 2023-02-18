@@ -36,3 +36,7 @@
 2018-12-1: Version 2.3.2
     Update code version 2.3.2
     Fix build script and fontconfig code.
+
+2023-2-17: Version 2.5.0
+    Update code version 2.5.0
+    Full support macosx system.

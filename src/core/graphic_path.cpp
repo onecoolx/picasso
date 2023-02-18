@@ -530,7 +530,7 @@ unsigned int graphic_path::perceive_polygon_orientation(unsigned int start, unsi
     unsigned int i;
     for (i = 0; i < np; i++) {
         scalar x1, y1, x2, y2;
-        m_impl->vertex(start + i,            &x1, &y1);
+        m_impl->vertex(start + i, &x1, &y1);
         m_impl->vertex(start + (i + 1) % np, &x2, &y2);
         area += x1 * y2 - y1 * x2;
     }
