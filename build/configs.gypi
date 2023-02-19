@@ -64,6 +64,8 @@
             '-fno-rtti',
             '-fno-exceptions',
             '-Wno-unused-result',
+            '-Wno-register',
+            '-Wno-attributes',
           ],
           'cflags': [
             '-O0',
@@ -144,6 +146,8 @@
             '-fno-rtti',
             '-fno-exceptions',
             '-Wno-unused-result',
+            '-Wno-register',
+            '-Wno-attributes',
           ],
           'cflags': [
             '-O3',
