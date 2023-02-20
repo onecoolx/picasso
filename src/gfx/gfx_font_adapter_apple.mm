@@ -50,7 +50,7 @@ public:
         }
         font = 0;
     }
-    
+
     CTFontRef font;
     CGAffineTransform matrix;
     CGGlyph cur_glyph_index;
@@ -62,7 +62,6 @@ public:
     scalar descent;
     scalar leading;
     unsigned int units_per_em;
-    
     picasso::graphic_path cur_font_path;
     rect cur_bound_rect;
     scalar cur_advance_x;
@@ -233,12 +232,7 @@ scalar gfx_font_adapter::advance_y(void) const
     return m_impl->cur_advance_y;
 }
 
-void gfx_font_adapter::add_kerning(unsigned int first, unsigned int second, scalar* x, scalar* y)
-{
-    //FIXME：implement
-}
-
-
+void gfx_font_adapter::add_kerning(unsigned int first, unsigned int second, scalar* x, scalar* y) { }
 void gfx_font_adapter::active(void) { }
 void gfx_font_adapter::deactive(void) { }
 void* gfx_font_adapter::create_storage(byte* buf, unsigned int len, scalar x, scalar y) { return NULL; }
