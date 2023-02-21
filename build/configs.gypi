@@ -18,7 +18,6 @@
           'msvs_settings': {
             'VCCLCompilerTool': {
               'Optimization': '0',
-              'MinimalRebuild': 'true',
               'ExceptionHandling': '0',
               'BasicRuntimeChecks': '3',
               'RuntimeLibrary': '1',
