@@ -13,13 +13,11 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// 中文(中华人民共和国) resources
+// 中文(简体，中国) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
-#ifdef _WIN32
 LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
 #pragma code_page(936)
-#endif //_WIN32
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -53,8 +51,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2,3,2,1
- PRODUCTVERSION 2,3,2,1
+ FILEVERSION 2,5,0,1
+ PRODUCTVERSION 2,5,0,1
  FILEFLAGSMASK 0x1fL
 #ifdef _DEBUG
  FILEFLAGS 0x9L
@@ -69,16 +67,16 @@ BEGIN
     BEGIN
         BLOCK "080404b0"
         BEGIN
-            VALUE "Comments", "Vector Graphic library"
+            VALUE "Comments", "Vector 2D Graphic library"
             VALUE "CompanyName", "picasso.inc"
             VALUE "FileDescription", "picasso2 动态链接库"
-            VALUE "FileVersion", "2, 3, 2, 1"
+            VALUE "FileVersion", "2.5.0.1"
             VALUE "InternalName", "picasso2"
-            VALUE "LegalCopyright", "Copyright (C) 2018"
+            VALUE "LegalCopyright", "Copyright (C) 2023"
             VALUE "OriginalFilename", "picasso2_sw.dll"
             VALUE "PrivateBuild", "2257"
             VALUE "ProductName", "picasso2 动态链接库"
-            VALUE "ProductVersion", "2, 3, 2, 1"
+            VALUE "ProductVersion", "2.5.0.1"
         END
     END
     BLOCK "VarFileInfo"
@@ -87,7 +85,7 @@ BEGIN
     END
 END
 
-#endif    // 中文(中华人民共和国) resources
+#endif    // 中文(简体，中国) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
