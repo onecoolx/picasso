@@ -10,6 +10,7 @@
 #include "common.h"
 #include "vertex.h"
 #include "graphic_base.h"
+#include "data_vector.h"
 
 namespace picasso {
 
@@ -123,7 +124,25 @@ public:
 private:
     unsigned int perceive_polygon_orientation(unsigned int start, unsigned int end);
     void invert_polygon(unsigned int start, unsigned int end);
-    graphic_path_impl *m_impl;
+
+    void remove_all_impl(void);
+    void add_vertex_impl(scalar x, scalar y, unsigned int cmd);
+    void modify_vertex_impl(unsigned int idx, scalar x, scalar y);
+    void modify_vertex_impl(unsigned int idx, scalar x, scalar y, unsigned int cmd);
+    void modify_command_impl(unsigned int idx, unsigned int cmd);
+    void swap_vertices_impl(unsigned int v1, unsigned int v2);
+    unsigned int last_command_impl(void) const;
+    unsigned int last_vertex_impl(scalar* x, scalar* y) const;
+    unsigned int prev_vertex_impl(scalar* x, scalar* y) const;
+    scalar last_x_impl(void) const;
+    scalar last_y_impl(void) const;
+    unsigned int total_vertices_impl(void) const;
+    unsigned int total_byte_size_impl(void) const;
+    unsigned int vertex_impl(unsigned int idx, scalar* x, scalar* y) const;
+    unsigned int command_impl(unsigned int idx) const;
+
+    pod_vector<vertex_s> m_vertices;
+    pod_vector<unsigned int> m_cmds;
     unsigned int m_iterator;
     unsigned int m_shape;
 };
