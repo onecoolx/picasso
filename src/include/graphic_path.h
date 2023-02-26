@@ -15,7 +15,6 @@
 namespace picasso {
 
 class trans_affine;
-class graphic_path_impl;
 
 class graphic_path : public vertex_container
 {
