@@ -2,17 +2,20 @@
 #ifndef _GLUT_XWIN_H_
 #define _GLUT_XWIN_H_
 
-inline NativeDisplayType CreateNativeDisplay(void)
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+
+static NativeDisplayType CreateNativeDisplay(void)
 {
     return XOpenDisplay(NULL);
 }
 
-inline void DestroyNativeDisplay(NativeDisplayType dpy)
+static void DestroyNativeDisplay(NativeDisplayType dpy)
 {
     XCloseDisplay(dpy);
 }
 
-inline NativeWindowType CreateNativeWindow(EGLDisplay dpy, NativeDisplayType display, EGLConfig config, GLint width, GLint height)
+static NativeWindowType CreateNativeWindow(EGLDisplay dpy, NativeDisplayType display, EGLConfig config, GLint width, GLint height)
 {
     XVisualInfo *visInfo, visTemplate;
     int num_visuals;
@@ -57,12 +60,12 @@ inline NativeWindowType CreateNativeWindow(EGLDisplay dpy, NativeDisplayType dis
     return xwin;
 }
 
-inline void DestroyNativeWindow(NativeDisplayType display, NativeWindowType window)
+static void DestroyNativeWindow(NativeDisplayType display, NativeWindowType window)
 {
     XDestroyWindow(display, window);
 }
 
-inline void DispatchNativeEvent(NativeDisplayType display, NativeWindowType window, void (*callback)(int, void*))
+static void DispatchNativeEvent(NativeDisplayType display, NativeWindowType window, void (*callback)(int, void*))
 {
     XEvent event;
     if (!XPending(display)) {

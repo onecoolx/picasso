@@ -6,7 +6,7 @@ CC=gcc -O2 -g
 INC=-I../include -I../build
 CFLAGS=`pkg-config --cflags fontconfig`
 
-SYSTEM_LIBS = `pkg-config --libs fontconfig` -lEGL -lGLESv2 ${FREETYPE_LIBS} -lpicasso -lpthread -lstdc++
+SYSTEM_LIBS = `pkg-config --libs fontconfig` -lEGL -lGLESv2 ${FREETYPE_LIBS} -lpicasso  -lX11 -lpthread -lstdc++
 
 gamma_objs = test.o gamma_func.o
 

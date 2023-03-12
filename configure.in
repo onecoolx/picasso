@@ -2,11 +2,11 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT(picasso, 2.3, onecoolx@gmail.com)
+AC_INIT(picasso, 2.5, onecoolx@gmail.com)
 
 VERSION_MAJOR=2
-VERSION_MINOR=3
-VERSION_MICRO=2
+VERSION_MINOR=5
+VERSION_MICRO=0
 VERSION=$VERSION_MAJOR.$VERSION_MINOR.$VERSION_MICRO
 AC_SUBST(VERSION_MAJOR)
 AC_SUBST(VERSION_MINOR)
@@ -50,6 +50,7 @@ build_png_support="yes"
 build_webp_support="yes"
 
 build_gles2_backend="yes"
+build_egl_backend="yes"
 
 # Check user define macro.
 AC_ARG_ENABLE(freetype2,
@@ -133,6 +134,10 @@ AC_ARG_ENABLE(gles2,
 [  --enable-gles2   OpenGL ES 2.0 Backend support <default=yes>],
 build_gles2_backend=$enableval)
 
+AC_ARG_ENABLE(egl,
+[  --enable-egl  EGL 1.0 Backend support <default=yes>],
+build_egl_backend=$enableval)
+
 # Checks for libraries.
 
 # Checks for header files.
@@ -185,7 +190,16 @@ if test "x$build_gles2_backend" = "xyes"; then
     AC_CHECK_LIB(GLESv2, glGetString, [
         LIBS="$LIBS -lGLESv2"
         AC_CHECK_HEADERS(GLES2/gl2.h, [
-            AC_DEFINE(ENABLE_GLES2_SUPPORT, 1, [Define if gles 2.0 backend is supported.])
+            AC_DEFINE(ENABLE_GLES2, 1, [Define if gles 2.0 backend is supported.])
+        ])
+    ])
+fi
+
+if test "x$build_egl_backend" = "xyes"; then
+    AC_CHECK_LIB(EGL, eglGetError, [
+        LIBS="$LIBS -lEGL"
+        AC_CHECK_HEADERS(EGL/egl.h, [
+            AC_DEFINE(ENABLE_EGL, 1, [Define if egl 1.0 backend is supported.])
         ])
     ])
 fi

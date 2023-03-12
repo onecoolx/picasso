@@ -111,6 +111,8 @@ static void drawFrame(GLES2_CONTEXT* ctx)
 {
     suseconds_t t1, t2;
     t1 = get_time();
+    glClearColor(1.0f,1.0f,1.0f,1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
     draw_test(0, pcontext);
     t2 = get_time();
     fprintf(stderr, "draw frame use %.4f ms --- %.4f fps\n", (double)(t2-t1), 1000.0/((t2-t1) ? (t2-t1) : 1.0));
@@ -123,9 +125,9 @@ static void reshape(int width, int height)
 
 static void onMessage(int message, void* data)
 {
-   // if (message == msg_idle)
+    if (message == msg_idle) {
 
-    if (message == msg_size) {
+    } else if (message == msg_size) {
         size* s = (size*)data;
         reshape(s->width, s->height);
     }
