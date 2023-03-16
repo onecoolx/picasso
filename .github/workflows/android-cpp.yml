@@ -17,9 +17,13 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
+    - name: set up NDK
+      uses: nttld/setup-ndk@v1.2.0
+      with:
+        ndk-version: r25b
     - name: build freetype
-      run: /usr/local/lib/android/sdk/ndk-bundle/ndk-build NDK_PROJECT_PATH=./android/freetype
+      run: ndk-build NDK_PROJECT_PATH=./android/freetype
     - name: build expat
-      run: /usr/local/lib/android/sdk/ndk-bundle/ndk-build NDK_PROJECT_PATH=./android/expat
+      run: ndk-build NDK_PROJECT_PATH=./android/expat
     - name: build
-      run: /usr/local/lib/android/sdk/ndk-bundle/ndk-build NDK_PROJECT_PATH=./android/
+      run: ndk-build NDK_PROJECT_PATH=./android/

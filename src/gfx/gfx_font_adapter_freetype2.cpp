@@ -48,7 +48,6 @@ public:
         , cur_bound_rect(0,0,0,0)
         , cur_advance_x(0)
         , cur_advance_y(0)
-
     {
     }
 

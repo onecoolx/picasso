@@ -14,6 +14,8 @@
     <ProjectGuid>{80425EFA-E895-E525-7FDC-3A98D864C488}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>jpeg</RootNamespace>
+    <IgnoreWarnCompileDuplicatedFilename>true</IgnoreWarnCompileDuplicatedFilename>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props"/>
   <PropertyGroup Label="Configuration">
@@ -21,6 +23,7 @@
     <ConfigurationType>DynamicLibrary</ConfigurationType>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props"/>
+  <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.props"/>
   <ImportGroup Label="ExtensionSettings"/>
   <ImportGroup Label="PropertySheets">
     <Import Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props"/>
@@ -40,8 +43,8 @@
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <ExceptionHandling>false</ExceptionHandling>
-      <MinimalRebuild>true</MinimalRebuild>
       <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PreprocessorDefinitions>HAVE_BOOLEAN;XMD_H;WIN32;DLL_EXPORT;ENABLE_FAST_COPY=1;ENABLE_SYSTEM_MALLOC=1;__SSE2__=1;_HAS_EXCEPTIONS=0;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
@@ -51,6 +54,7 @@
       <WarningLevel>Level3</WarningLevel>
     </ClCompile>
     <Link>
+      <AdditionalDependencies>gdi32.lib;user32.lib</AdditionalDependencies>
       <DataExecutionPrevention></DataExecutionPrevention>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ModuleDefinitionFile>..\third_party\libjpeg-turbo-1.4.1\win\jpeg8.def</ModuleDefinitionFile>
@@ -75,6 +79,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <Optimization>Full</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PreprocessorDefinitions>HAVE_BOOLEAN;XMD_H;WIN32;DLL_EXPORT;ENABLE_FAST_COPY=1;ENABLE_SYSTEM_MALLOC=1;__SSE2__=1;_HAS_EXCEPTIONS=0;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
@@ -86,6 +91,7 @@
       <WholeProgramOptimization>true</WholeProgramOptimization>
     </ClCompile>
     <Link>
+      <AdditionalDependencies>gdi32.lib;user32.lib</AdditionalDependencies>
       <DataExecutionPrevention></DataExecutionPrevention>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <GenerateMapFile>true</GenerateMapFile>
@@ -102,85 +108,86 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="..\picasso.gyp"/>
     <None Include="..\third_party\libjpeg-turbo-1.4.1\win\jpeg8.def"/>
+    <None Include="..\picasso.gyp"/>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jdatasrc.c"/>
-    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jdpostct.c"/>
-    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jidctflt.c"/>
-    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jdatadst-tj.c"/>
-    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jcinit.c"/>
-    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jdmarker.c"/>
-    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jcparam.c"/>
-    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jcdctmgr.c"/>
-    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jcsample.c"/>
-    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jfdctint.c"/>
-    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jdapistd.c"/>
-    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jcmarker.c"/>
-    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jfdctflt.c"/>
-    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jcomapi.c"/>
-    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jddctmgr.c"/>
-    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jdmainct.c"/>
-    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jdcolor.c"/>
-    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jdmerge.c"/>
-    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jdhuff.c"/>
-    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jidctint.c"/>
-    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jmemnobs.c"/>
-    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jcmainct.c"/>
-    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jquant1.c"/>
-    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jdphuff.c"/>
-    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jutils.c"/>
-    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jcarith.c"/>
-    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jquant2.c"/>
-    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jmemmgr.c"/>
-    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jdarith.c"/>
-    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jdinput.c"/>
-    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jdapimin.c"/>
-    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jctrans.c"/>
-    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jcmaster.c"/>
-    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jdtrans.c"/>
-    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jdmaster.c"/>
-    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jidctfst.c"/>
-    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jccoefct.c"/>
-    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\turbojpeg.c"/>
-    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jchuff.c"/>
-    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jfdctfst.c"/>
-    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jdsample.c"/>
-    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jdatadst.c"/>
-    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jcprepct.c"/>
     <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jcapimin.c"/>
-    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jsimd_none.c"/>
-    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jdatasrc-tj.c"/>
-    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jdcoefct.c"/>
-    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jaricom.c"/>
-    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\transupp.c"/>
-    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jerror.c"/>
-    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jcphuff.c"/>
-    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jidctred.c"/>
     <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jcapistd.c"/>
+    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jccoefct.c"/>
     <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jccolor.c"/>
+    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jcdctmgr.c"/>
+    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jchuff.c"/>
+    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jcinit.c"/>
+    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jcmainct.c"/>
+    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jcmarker.c"/>
+    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jcmaster.c"/>
+    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jcomapi.c"/>
+    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jcparam.c"/>
+    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jcphuff.c"/>
+    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jcprepct.c"/>
+    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jcsample.c"/>
+    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jctrans.c"/>
+    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jdapimin.c"/>
+    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jdapistd.c"/>
+    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jdatadst.c"/>
+    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jdatasrc.c"/>
+    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jdcoefct.c"/>
+    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jdcolor.c"/>
+    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jddctmgr.c"/>
+    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jdhuff.c"/>
+    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jdinput.c"/>
+    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jdmainct.c"/>
+    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jdmarker.c"/>
+    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jdmaster.c"/>
+    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jdmerge.c"/>
+    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jdphuff.c"/>
+    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jdpostct.c"/>
+    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jdsample.c"/>
+    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jdtrans.c"/>
+    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jerror.c"/>
+    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jfdctflt.c"/>
+    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jfdctfst.c"/>
+    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jfdctint.c"/>
+    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jidctflt.c"/>
+    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jidctfst.c"/>
+    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jidctint.c"/>
+    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jidctred.c"/>
+    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jquant1.c"/>
+    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jquant2.c"/>
+    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jutils.c"/>
+    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jmemmgr.c"/>
+    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jmemnobs.c"/>
+    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jaricom.c"/>
+    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jcarith.c"/>
+    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jdarith.c"/>
+    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\turbojpeg.c"/>
+    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\transupp.c"/>
+    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jdatadst-tj.c"/>
+    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jdatasrc-tj.c"/>
+    <ClCompile Include="..\third_party\libjpeg-turbo-1.4.1\jsimd_none.c"/>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="..\third_party\libjpeg-turbo-1.4.1\jpeglib.h">
       <FileType>Document</FileType>
-      <Command>call call python &quot;..\tools\cp.py&quot; &quot;..\third_party\libjpeg-turbo-1.4.1\jpeglib.h&quot; &quot;$(OutDir)include\jpeglib.h&quot;</Command>
+      <Command>call call python &quot;..\tools\cp.py&quot; &quot;..\third_party\libjpeg-turbo-1.4.1\jpeglib.h&quot; &quot;$(OutDir)include\jpeglib.h&quot;&#xD;&#xA;if %errorlevel% neq 0 exit /b %errorlevel%</Command>
       <Message>install_header1</Message>
       <Outputs>$(OutDir)\include\jpeglib.h</Outputs>
     </CustomBuild>
     <CustomBuild Include="..\third_party\libjpeg-turbo-1.4.1\build\jconfig.h">
       <FileType>Document</FileType>
-      <Command>call call python &quot;..\tools\cp.py&quot; &quot;..\third_party\libjpeg-turbo-1.4.1\build\jconfig.h&quot; &quot;$(OutDir)include\jconfig.h&quot;</Command>
+      <Command>call call python &quot;..\tools\cp.py&quot; &quot;..\third_party\libjpeg-turbo-1.4.1\build\jconfig.h&quot; &quot;$(OutDir)include\jconfig.h&quot;&#xD;&#xA;if %errorlevel% neq 0 exit /b %errorlevel%</Command>
       <Message>install_header2</Message>
       <Outputs>$(OutDir)\include\jconfig.h</Outputs>
     </CustomBuild>
     <CustomBuild Include="..\third_party\libjpeg-turbo-1.4.1\jmorecfg.h">
       <FileType>Document</FileType>
-      <Command>call call python &quot;..\tools\cp.py&quot; &quot;..\third_party\libjpeg-turbo-1.4.1\jmorecfg.h&quot; &quot;$(OutDir)include\jmorecfg.h&quot;</Command>
+      <Command>call call python &quot;..\tools\cp.py&quot; &quot;..\third_party\libjpeg-turbo-1.4.1\jmorecfg.h&quot; &quot;$(OutDir)include\jmorecfg.h&quot;&#xD;&#xA;if %errorlevel% neq 0 exit /b %errorlevel%</Command>
       <Message>install_header3</Message>
       <Outputs>$(OutDir)\include\jmorecfg.h</Outputs>
     </CustomBuild>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets"/>
+  <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.targets"/>
   <ImportGroup Label="ExtensionTargets"/>
 </Project>

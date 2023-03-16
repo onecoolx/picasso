@@ -18,7 +18,6 @@
           'msvs_settings': {
             'VCCLCompilerTool': {
               'Optimization': '0',
-              'MinimalRebuild': 'true',
               'ExceptionHandling': '0',
               'BasicRuntimeChecks': '3',
               'RuntimeLibrary': '1',
@@ -39,7 +38,7 @@
             },
           },
         }],
-        ['OS=="macosx" or OS=="ios"', {
+        ['OS=="macosx"', {
           'xcode_settings': {
             'ALWAYS_SEARCH_USER_PATHS': 'NO',
             'CLANG_ENABLE_OBJC_WEAK': 'YES',
@@ -52,6 +51,24 @@
             'GCC_OPTIMIZATION_LEVEL': '0',
             'GCC_ENABLE_CPP_EXCEPTIONS': "NO",
             'GCC_ENABLE_CPP_RTTI': "NO",
+            'MACOSX_DEPLOYMENT_TARGET': '10.9',
+          },
+        }],
+        ['OS=="ios"', {
+          'xcode_settings': {
+            'SDKROOT': 'iphoneos',
+            'ALWAYS_SEARCH_USER_PATHS': 'NO',
+            'CLANG_ENABLE_OBJC_WEAK': 'YES',
+            'CLANG_ADDRESS_SANITIZER_CONTAINER_OVERFLOW': 'YES',
+            'DEAD_CODE_STRIPPING': 'NO',
+            'ONLY_ACTIVE_ARCH': 'YES',
+            'ENABLE_TESTABILITY': 'YES',
+            'CODE_SIGN_IDENTITY': "-",
+            'GCC_UNROLL_LOOPS': 'NO',
+            'GCC_OPTIMIZATION_LEVEL': '0',
+            'GCC_ENABLE_CPP_EXCEPTIONS': "NO",
+            'GCC_ENABLE_CPP_RTTI': "NO",
+            'IPHONEOS_DEPLOYMENT_TARGET': '12.0',
           },
         }],
         ['OS=="linux"', {
@@ -60,9 +77,12 @@
             '-Wall',
             '-g',
             '-fPIC',
+            '-std=c++11',
             '-fno-rtti',
             '-fno-exceptions',
             '-Wno-unused-result',
+            '-Wno-register',
+            '-Wno-attributes',
           ],
           'cflags': [
             '-O0',
@@ -115,7 +135,7 @@
             },
           },
         }],
-        ['OS=="macosx" or OS=="ios"', {
+        ['OS=="macosx"', {
           'xcode_settings': {
             'ALWAYS_SEARCH_USER_PATHS': 'NO',
             'CLANG_ENABLE_CODE_COVERAGE': 'NO',
@@ -130,8 +150,30 @@
             'ENABLE_TESTABILITY': 'NO',
             'GCC_UNROLL_LOOPS': 'YES',
             'GCC_OPTIMIZATION_LEVEL': '3',
-            'GCC_ENABLE_CPP_EXCEPTIONS': "NO",
-            'GCC_ENABLE_CPP_RTTI': "NO",
+            'GCC_ENABLE_CPP_EXCEPTIONS': 'NO',
+            'GCC_ENABLE_CPP_RTTI': 'NO',
+            'MACOSX_DEPLOYMENT_TARGET': '10.9',
+          },
+        }],
+        ['OS=="ios"', {
+          'xcode_settings': {
+            'SDKROOT': 'iphoneos',
+            'ALWAYS_SEARCH_USER_PATHS': 'NO',
+            'CLANG_ENABLE_CODE_COVERAGE': 'NO',
+            'GCC_GENERATE_DEBUGGING_SYMBOLS': 'NO',
+            'GCC_INLINES_ARE_PRIVATE_EXTERN': 'YES',
+            'CLANG_ENABLE_OBJC_WEAK': 'YES',
+            'CLANG_ADDRESS_SANITIZER_CONTAINER_OVERFLOW': 'NO',
+            'DEAD_CODE_STRIPPING': 'YES',
+            'ONLY_ACTIVE_ARCH': 'NO',
+            'CODE_SIGN_IDENTITY': "-",
+            'LLVM_LTO': 'YES',
+            'ENABLE_TESTABILITY': 'NO',
+            'GCC_UNROLL_LOOPS': 'YES',
+            'GCC_OPTIMIZATION_LEVEL': '3',
+            'GCC_ENABLE_CPP_EXCEPTIONS': 'NO',
+            'GCC_ENABLE_CPP_RTTI': 'NO',
+            'IPHONEOS_DEPLOYMENT_TARGET': '12.0',
           },
         }],
         ['OS=="linux"', {
@@ -139,9 +181,12 @@
             '-O3',
             '-Wall',
             '-fPIC',
+            '-std=c++11',
             '-fno-rtti',
             '-fno-exceptions',
             '-Wno-unused-result',
+            '-Wno-register',
+            '-Wno-attributes',
           ],
           'cflags': [
             '-O3',

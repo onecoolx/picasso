@@ -1,5 +1,5 @@
 Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+# Visual C++ Express 2010
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "alpha", "alpha.vcxproj", "{992EE1C8-A1F5-9FF6-5ABB-CF0A8422FDE5}"
 	ProjectSection(ProjectDependencies) = postProject
 		{D76D2325-CDDA-3A00-A705-7EFFD069C6D8} = {D76D2325-CDDA-3A00-A705-7EFFD069C6D8}
@@ -288,7 +288,5 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection
 EndGlobal

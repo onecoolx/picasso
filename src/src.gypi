@@ -84,8 +84,6 @@
         'include/math_type.h',
         'include/memory_manager.h',
         'include/platform.h',
-        'include/refptr.h',
-        'include/shared.h',
         'include/vertex.h',
         'include/vertex_dist.h',
         'simd/fastcopy_sse.h',
@@ -134,6 +132,17 @@
             '-lfreetype',
             '-lfontconfig',
           ],
+        }],
+        ['OS=="macosx" or OS=="ios"', {
+          'sources': [
+            'gfx/gfx_font_adapter_apple.mm',
+          ],
+          'link_settings': {
+            'libraries': [
+              '$(SDKROOT)/System/Library/Frameworks/CoreText.framework',
+              '$(SDKROOT)/System/Library/Frameworks/CoreGraphics.framework',
+            ],
+          },
         }],
       ],
       'includes':[

@@ -47,8 +47,6 @@ public:
     virtual void destroy_storage(void*);
     virtual void translate_storage(void*, scalar x, scalar y);
 private:
-    void load_kerning_pairs(void);
-    void sort_kerning_pairs(void);
     font_adapter_impl* m_impl;
 };
 

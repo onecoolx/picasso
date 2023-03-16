@@ -14,6 +14,8 @@
     <ProjectGuid>{F2B4EC4A-E7B2-D122-6725-1FE4931BC05C}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>gcstate</RootNamespace>
+    <IgnoreWarnCompileDuplicatedFilename>true</IgnoreWarnCompileDuplicatedFilename>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props"/>
   <PropertyGroup Label="Configuration">
@@ -21,6 +23,7 @@
     <ConfigurationType>Application</ConfigurationType>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props"/>
+  <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.props"/>
   <ImportGroup Label="ExtensionSettings"/>
   <ImportGroup Label="PropertySheets">
     <Import Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props"/>
@@ -40,8 +43,8 @@
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <ExceptionHandling>false</ExceptionHandling>
-      <MinimalRebuild>true</MinimalRebuild>
       <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PreprocessorDefinitions>WIN32;DLL_EXPORT;ENABLE_FAST_COPY=1;ENABLE_SYSTEM_MALLOC=1;__SSE2__=1;_HAS_EXCEPTIONS=0;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
@@ -51,6 +54,7 @@
       <WarningLevel>Level3</WarningLevel>
     </ClCompile>
     <Link>
+      <AdditionalDependencies>gdi32.lib;user32.lib</AdditionalDependencies>
       <DataExecutionPrevention></DataExecutionPrevention>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <OutputFile>$(OutDir)$(ProjectName)$(TargetExt)</OutputFile>
@@ -74,6 +78,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <Optimization>Full</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PreprocessorDefinitions>WIN32;DLL_EXPORT;ENABLE_FAST_COPY=1;ENABLE_SYSTEM_MALLOC=1;__SSE2__=1;_HAS_EXCEPTIONS=0;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
@@ -85,6 +90,7 @@
       <WholeProgramOptimization>true</WholeProgramOptimization>
     </ClCompile>
     <Link>
+      <AdditionalDependencies>gdi32.lib;user32.lib</AdditionalDependencies>
       <DataExecutionPrevention></DataExecutionPrevention>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <GenerateMapFile>true</GenerateMapFile>
@@ -109,13 +115,13 @@
   <ItemGroup>
     <CustomBuild Include="..\test\pat.bmp">
       <FileType>Document</FileType>
-      <Command>call call python &quot;..\tools\cp.py&quot; &quot;..\test\pat.bmp&quot; &quot;$(OutDir)pat.bmp&quot;</Command>
+      <Command>call call python &quot;..\tools\cp.py&quot; &quot;..\test\pat.bmp&quot; &quot;$(OutDir)pat.bmp&quot;&#xD;&#xA;if %errorlevel% neq 0 exit /b %errorlevel%</Command>
       <Message>copy_img1</Message>
       <Outputs>$(OutDir)\pat.bmp</Outputs>
     </CustomBuild>
     <CustomBuild Include="..\test\selt2.bmp">
       <FileType>Document</FileType>
-      <Command>call call python &quot;..\tools\cp.py&quot; &quot;..\test\selt2.bmp&quot; &quot;$(OutDir)selt2.bmp&quot;</Command>
+      <Command>call call python &quot;..\tools\cp.py&quot; &quot;..\test\selt2.bmp&quot; &quot;$(OutDir)selt2.bmp&quot;&#xD;&#xA;if %errorlevel% neq 0 exit /b %errorlevel%</Command>
       <Message>copy_img2</Message>
       <Outputs>$(OutDir)\selt2.bmp</Outputs>
     </CustomBuild>
@@ -127,5 +133,6 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets"/>
+  <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.targets"/>
   <ImportGroup Label="ExtensionTargets"/>
 </Project>

@@ -90,6 +90,11 @@ extern "C" const char** argv(void)
     return __argv;
 }
 
+extern "C" const char* getSysFontName(void)
+{
+    return "sans-serif";
+}
+
 int main(int argc, char* argv[])
 {
     __argc = argc;

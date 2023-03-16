@@ -52,12 +52,23 @@
           'xcode_settings': {
               'INFOPLIST_FILE': 'test/Info.plist',
           },
-          'link_settings': {
-            'libraries': [
-              '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
-              '$(SDKROOT)/System/Library/Frameworks/Carbon.framework',
-            ],
-          },
+          'conditions': [
+            ['OS=="macosx"', {
+              'link_settings': {
+                'libraries': [
+                  '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
+                  '$(SDKROOT)/System/Library/Frameworks/Carbon.framework',
+                ],
+              },
+            }],
+            ['OS=="ios"', {
+              'link_settings': {
+                'libraries': [
+                  '$(SDKROOT)/System/Library/Frameworks/UIKit.framework',
+                ],
+              },
+            }],
+          ],
         }],
       ],
       'includes':[
@@ -113,12 +124,23 @@
           'xcode_settings': {
               'INFOPLIST_FILE': 'test/Info.plist',
           },
-          'link_settings': {
-            'libraries': [
-              '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
-              '$(SDKROOT)/System/Library/Frameworks/Carbon.framework',
-            ],
-          },
+          'conditions': [
+            ['OS=="macosx"', {
+              'link_settings': {
+                'libraries': [
+                  '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
+                  '$(SDKROOT)/System/Library/Frameworks/Carbon.framework',
+                ],
+              },
+            }],
+            ['OS=="ios"', {
+              'link_settings': {
+                'libraries': [
+                  '$(SDKROOT)/System/Library/Frameworks/UIKit.framework',
+                ],
+              },
+            }],
+          ],
         }],
       ],
       'includes':[
@@ -174,12 +196,23 @@
           'xcode_settings': {
               'INFOPLIST_FILE': 'test/Info.plist',
           },
-          'link_settings': {
-            'libraries': [
-              '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
-              '$(SDKROOT)/System/Library/Frameworks/Carbon.framework',
-            ],
-          },
+          'conditions': [
+            ['OS=="macosx"', {
+              'link_settings': {
+                'libraries': [
+                  '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
+                  '$(SDKROOT)/System/Library/Frameworks/Carbon.framework',
+                ],
+              },
+            }],
+            ['OS=="ios"', {
+              'link_settings': {
+                'libraries': [
+                  '$(SDKROOT)/System/Library/Frameworks/UIKit.framework',
+                ],
+              },
+            }],
+          ],
         }],
       ],
       'includes':[
@@ -235,12 +268,23 @@
           'xcode_settings': {
               'INFOPLIST_FILE': 'test/Info.plist',
           },
-          'link_settings': {
-            'libraries': [
-              '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
-              '$(SDKROOT)/System/Library/Frameworks/Carbon.framework',
-            ],
-          },
+          'conditions': [
+            ['OS=="macosx"', {
+              'link_settings': {
+                'libraries': [
+                  '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
+                  '$(SDKROOT)/System/Library/Frameworks/Carbon.framework',
+                ],
+              },
+            }],
+            ['OS=="ios"', {
+              'link_settings': {
+                'libraries': [
+                  '$(SDKROOT)/System/Library/Frameworks/UIKit.framework',
+                ],
+              },
+            }],
+          ],
         }],
       ],
       'includes':[
@@ -296,12 +340,23 @@
           'xcode_settings': {
               'INFOPLIST_FILE': 'test/Info.plist',
           },
-          'link_settings': {
-            'libraries': [
-              '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
-              '$(SDKROOT)/System/Library/Frameworks/Carbon.framework',
-            ],
-          },
+          'conditions': [
+            ['OS=="macosx"', {
+              'link_settings': {
+                'libraries': [
+                  '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
+                  '$(SDKROOT)/System/Library/Frameworks/Carbon.framework',
+                ],
+              },
+            }],
+            ['OS=="ios"', {
+              'link_settings': {
+                'libraries': [
+                  '$(SDKROOT)/System/Library/Frameworks/UIKit.framework',
+                ],
+              },
+            }],
+          ],
         }],
       ],
       'includes':[
@@ -356,12 +411,23 @@
           'xcode_settings': {
               'INFOPLIST_FILE': 'test/Info.plist',
           },
-          'link_settings': {
-            'libraries': [
-              '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
-              '$(SDKROOT)/System/Library/Frameworks/Carbon.framework',
-            ],
-          },
+          'conditions': [
+            ['OS=="macosx"', {
+              'link_settings': {
+                'libraries': [
+                  '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
+                  '$(SDKROOT)/System/Library/Frameworks/Carbon.framework',
+                ],
+              },
+            }],
+            ['OS=="ios"', {
+              'link_settings': {
+                'libraries': [
+                  '$(SDKROOT)/System/Library/Frameworks/UIKit.framework',
+                ],
+              },
+            }],
+          ],
         }],
       ],
       'includes':[
@@ -416,12 +482,23 @@
           'xcode_settings': {
               'INFOPLIST_FILE': 'test/Info.plist',
           },
-          'link_settings': {
-            'libraries': [
-              '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
-              '$(SDKROOT)/System/Library/Frameworks/Carbon.framework',
-            ],
-          },
+          'conditions': [
+            ['OS=="macosx"', {
+              'link_settings': {
+                'libraries': [
+                  '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
+                  '$(SDKROOT)/System/Library/Frameworks/Carbon.framework',
+                ],
+              },
+            }],
+            ['OS=="ios"', {
+              'link_settings': {
+                'libraries': [
+                  '$(SDKROOT)/System/Library/Frameworks/UIKit.framework',
+                ],
+              },
+            }],
+          ],
         }],
       ],
       'includes':[
@@ -477,12 +554,23 @@
           'xcode_settings': {
               'INFOPLIST_FILE': 'test/Info.plist',
           },
-          'link_settings': {
-            'libraries': [
-              '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
-              '$(SDKROOT)/System/Library/Frameworks/Carbon.framework',
-            ],
-          },
+          'conditions': [
+            ['OS=="macosx"', {
+              'link_settings': {
+                'libraries': [
+                  '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
+                  '$(SDKROOT)/System/Library/Frameworks/Carbon.framework',
+                ],
+              },
+            }],
+            ['OS=="ios"', {
+              'link_settings': {
+                'libraries': [
+                  '$(SDKROOT)/System/Library/Frameworks/UIKit.framework',
+                ],
+              },
+            }],
+          ],
         }],
       ],
       'includes':[
@@ -537,12 +625,23 @@
           'xcode_settings': {
               'INFOPLIST_FILE': 'test/Info.plist',
           },
-          'link_settings': {
-            'libraries': [
-              '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
-              '$(SDKROOT)/System/Library/Frameworks/Carbon.framework',
-            ],
-          },
+          'conditions': [
+            ['OS=="macosx"', {
+              'link_settings': {
+                'libraries': [
+                  '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
+                  '$(SDKROOT)/System/Library/Frameworks/Carbon.framework',
+                ],
+              },
+            }],
+            ['OS=="ios"', {
+              'link_settings': {
+                'libraries': [
+                  '$(SDKROOT)/System/Library/Frameworks/UIKit.framework',
+                ],
+              },
+            }],
+          ],
         }],
       ],
       'includes':[
@@ -598,12 +697,23 @@
           'xcode_settings': {
               'INFOPLIST_FILE': 'test/Info.plist',
           },
-          'link_settings': {
-            'libraries': [
-              '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
-              '$(SDKROOT)/System/Library/Frameworks/Carbon.framework',
-            ],
-          },
+          'conditions': [
+            ['OS=="macosx"', {
+              'link_settings': {
+                'libraries': [
+                  '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
+                  '$(SDKROOT)/System/Library/Frameworks/Carbon.framework',
+                ],
+              },
+            }],
+            ['OS=="ios"', {
+              'link_settings': {
+                'libraries': [
+                  '$(SDKROOT)/System/Library/Frameworks/UIKit.framework',
+                ],
+              },
+            }],
+          ],
         }],
       ],
       'includes':[
@@ -659,12 +769,23 @@
           'xcode_settings': {
               'INFOPLIST_FILE': 'test/Info.plist',
           },
-          'link_settings': {
-            'libraries': [
-              '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
-              '$(SDKROOT)/System/Library/Frameworks/Carbon.framework',
-            ],
-          },
+          'conditions': [
+            ['OS=="macosx"', {
+              'link_settings': {
+                'libraries': [
+                  '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
+                  '$(SDKROOT)/System/Library/Frameworks/Carbon.framework',
+                ],
+              },
+            }],
+            ['OS=="ios"', {
+              'link_settings': {
+                'libraries': [
+                  '$(SDKROOT)/System/Library/Frameworks/UIKit.framework',
+                ],
+              },
+            }],
+          ],
         }],
       ],
       'includes':[
@@ -719,12 +840,23 @@
           'xcode_settings': {
               'INFOPLIST_FILE': 'test/Info.plist',
           },
-          'link_settings': {
-            'libraries': [
-              '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
-              '$(SDKROOT)/System/Library/Frameworks/Carbon.framework',
-            ],
-          },
+          'conditions': [
+            ['OS=="macosx"', {
+              'link_settings': {
+                'libraries': [
+                  '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
+                  '$(SDKROOT)/System/Library/Frameworks/Carbon.framework',
+                ],
+              },
+            }],
+            ['OS=="ios"', {
+              'link_settings': {
+                'libraries': [
+                  '$(SDKROOT)/System/Library/Frameworks/UIKit.framework',
+                ],
+              },
+            }],
+          ],
         }],
       ],
       'includes':[
@@ -780,12 +912,23 @@
           'xcode_settings': {
               'INFOPLIST_FILE': 'test/Info.plist',
           },
-          'link_settings': {
-            'libraries': [
-              '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
-              '$(SDKROOT)/System/Library/Frameworks/Carbon.framework',
-            ],
-          },
+          'conditions': [
+            ['OS=="macosx"', {
+              'link_settings': {
+                'libraries': [
+                  '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
+                  '$(SDKROOT)/System/Library/Frameworks/Carbon.framework',
+                ],
+              },
+            }],
+            ['OS=="ios"', {
+              'link_settings': {
+                'libraries': [
+                  '$(SDKROOT)/System/Library/Frameworks/UIKit.framework',
+                ],
+              },
+            }],
+          ],
         }],
       ],
       'includes':[
@@ -841,12 +984,23 @@
           'xcode_settings': {
               'INFOPLIST_FILE': 'test/Info.plist',
           },
-          'link_settings': {
-            'libraries': [
-              '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
-              '$(SDKROOT)/System/Library/Frameworks/Carbon.framework',
-            ],
-          },
+          'conditions': [
+            ['OS=="macosx"', {
+              'link_settings': {
+                'libraries': [
+                  '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
+                  '$(SDKROOT)/System/Library/Frameworks/Carbon.framework',
+                ],
+              },
+            }],
+            ['OS=="ios"', {
+              'link_settings': {
+                'libraries': [
+                  '$(SDKROOT)/System/Library/Frameworks/UIKit.framework',
+                ],
+              },
+            }],
+          ],
         }],
       ],
       'includes':[
@@ -906,12 +1060,23 @@
           'xcode_settings': {
               'INFOPLIST_FILE': 'test/Info.plist',
           },
-          'link_settings': {
-            'libraries': [
-              '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
-              '$(SDKROOT)/System/Library/Frameworks/Carbon.framework',
-            ],
-          },
+          'conditions': [
+            ['OS=="macosx"', {
+              'link_settings': {
+                'libraries': [
+                  '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
+                  '$(SDKROOT)/System/Library/Frameworks/Carbon.framework',
+                ],
+              },
+            }],
+            ['OS=="ios"', {
+              'link_settings': {
+                'libraries': [
+                  '$(SDKROOT)/System/Library/Frameworks/UIKit.framework',
+                ],
+              },
+            }],
+          ],
         }],
       ],
       'includes':[
@@ -1003,12 +1168,23 @@
           'xcode_settings': {
               'INFOPLIST_FILE': 'test/Info.plist',
           },
-          'link_settings': {
-            'libraries': [
-              '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
-              '$(SDKROOT)/System/Library/Frameworks/Carbon.framework',
-            ],
-          },
+          'conditions': [
+            ['OS=="macosx"', {
+              'link_settings': {
+                'libraries': [
+                  '$(SDKROOT)/System/Library/Frameworks/AppKit.framework',
+                  '$(SDKROOT)/System/Library/Frameworks/Carbon.framework',
+                ],
+              },
+            }],
+            ['OS=="ios"', {
+              'link_settings': {
+                'libraries': [
+                  '$(SDKROOT)/System/Library/Frameworks/UIKit.framework',
+                ],
+              },
+            }],
+          ],
         }],
       ],
       'includes':[

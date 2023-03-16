@@ -69,6 +69,9 @@ public:
         delete [] buf;
     }
 
+    void load_kerning_pairs(void);
+    void sort_kerning_pairs(void);
+
     HFONT font;
     bool antialias;
     bool flip_y;
@@ -199,39 +202,38 @@ static int pair_less(const void* v1, const void* v2)
 }
 
 
-void gfx_font_adapter::load_kerning_pairs(void)
+void font_adapter_impl::load_kerning_pairs(void)
 {
-    if (m_impl->dc) {
-        if (!m_impl->kerning_pairs) {
-            m_impl->kerning_pairs = new KERNINGPAIR [16384-16];
-            m_impl->max_kerning_pairs = 16384-16;
+    if (dc) {
+        if (!kerning_pairs) {
+            kerning_pairs = new KERNINGPAIR [16384-16];
+            max_kerning_pairs = 16384-16;
         }
 
-        m_impl->num_kerning_pairs = ::GetKerningPairs(m_impl->dc,
-                                    m_impl->max_kerning_pairs, m_impl->kerning_pairs);
+        num_kerning_pairs = ::GetKerningPairs(dc, max_kerning_pairs, kerning_pairs);
 
-        if (m_impl->num_kerning_pairs) {
-            for (unsigned int i = 1; i < m_impl->num_kerning_pairs; ++i) {
-                if (pair_less(&m_impl->kerning_pairs[i - 1], &m_impl->kerning_pairs[i]) >= 0) {
+        if (num_kerning_pairs) {
+            for (unsigned int i = 1; i < num_kerning_pairs; ++i) {
+                if (pair_less(&kerning_pairs[i - 1], &kerning_pairs[i]) >= 0) {
                     sort_kerning_pairs();
                     break;
                 }
             }
         }
-        m_impl->kerning_loaded = true;
+        kerning_loaded = true;
     }
 }
 
-void gfx_font_adapter::sort_kerning_pairs(void)
+void font_adapter_impl::sort_kerning_pairs(void)
 {
-    qsort(m_impl->kerning_pairs, m_impl->num_kerning_pairs, sizeof(KERNINGPAIR), pair_less);
+    qsort(kerning_pairs, num_kerning_pairs, sizeof(KERNINGPAIR), pair_less);
 }
 
 void gfx_font_adapter::add_kerning(unsigned int first, unsigned int second, scalar* x, scalar* y)
 {
     if (m_impl->dc) {
         if (!m_impl->kerning_loaded) {
-            load_kerning_pairs();
+            m_impl->load_kerning_pairs();
         }
 
         int end = m_impl->num_kerning_pairs - 1;

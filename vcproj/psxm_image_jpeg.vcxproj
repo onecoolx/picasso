@@ -14,6 +14,8 @@
     <ProjectGuid>{6CB023CC-1037-3931-4F6B-A4ED9134BB0F}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>psxm_image_jpeg</RootNamespace>
+    <IgnoreWarnCompileDuplicatedFilename>true</IgnoreWarnCompileDuplicatedFilename>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props"/>
   <PropertyGroup Label="Configuration">
@@ -21,6 +23,7 @@
     <ConfigurationType>DynamicLibrary</ConfigurationType>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props"/>
+  <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.props"/>
   <ImportGroup Label="ExtensionSettings"/>
   <ImportGroup Label="PropertySheets">
     <Import Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props"/>
@@ -41,8 +44,8 @@
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <ExceptionHandling>false</ExceptionHandling>
-      <MinimalRebuild>true</MinimalRebuild>
       <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PreprocessorDefinitions>EXPORT;HAVE_BOOLEAN;XMD_H;WIN32;DLL_EXPORT;ENABLE_FAST_COPY=1;ENABLE_SYSTEM_MALLOC=1;__SSE2__=1;_HAS_EXCEPTIONS=0;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
@@ -52,6 +55,7 @@
       <WarningLevel>Level3</WarningLevel>
     </ClCompile>
     <Link>
+      <AdditionalDependencies>gdi32.lib;user32.lib</AdditionalDependencies>
       <DataExecutionPrevention></DataExecutionPrevention>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <OutputFile>$(OutDir)modules\$(ProjectName).dll</OutputFile>
@@ -75,6 +79,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <Optimization>Full</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PreprocessorDefinitions>EXPORT;HAVE_BOOLEAN;XMD_H;WIN32;DLL_EXPORT;ENABLE_FAST_COPY=1;ENABLE_SYSTEM_MALLOC=1;__SSE2__=1;_HAS_EXCEPTIONS=0;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
@@ -86,6 +91,7 @@
       <WholeProgramOptimization>true</WholeProgramOptimization>
     </ClCompile>
     <Link>
+      <AdditionalDependencies>gdi32.lib;user32.lib</AdditionalDependencies>
       <DataExecutionPrevention></DataExecutionPrevention>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <GenerateMapFile>true</GenerateMapFile>
@@ -121,5 +127,6 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets"/>
+  <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.targets"/>
   <ImportGroup Label="ExtensionTargets"/>
 </Project>

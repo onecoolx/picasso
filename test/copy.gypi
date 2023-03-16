@@ -75,5 +75,11 @@
        },
      ],
    }],
+   ['OS=="macosx" or OS=="ios"', {
+     'mac_bundle_resources': [
+       'pat.png',
+       'selt2.png',
+     ],
+   }],
  ],
 }

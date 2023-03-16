@@ -18,6 +18,9 @@ const char* text = "Hello World! this is the first words picasso out put!";
 const ps_uchar16 wtext[] = {0x77e2,0x91cf,0x56fe,0x5f62,0x5e93};
 const char gtext[] = "ASDFG";
 static int step = 0;
+
+extern const char* getSysFontName(void);
+
 void draw_test (int id, ps_context* gc)
 {
 //    int i;
@@ -129,8 +132,7 @@ void init_context (ps_context* gc, ps_canvas* cs, unsigned char* buf)
     pm = ps_matrix_create();
     pn = ps_matrix_create();
 
-    pf = ps_font_create("sans-serif", CHARSET_UNICODE,48, FONT_WEIGHT_BOLD, False);
-
+    pf = ps_font_create(getSysFontName(), CHARSET_UNICODE, 48, FONT_WEIGHT_BOLD, False);
     p[0].x = 150;
     p[0].y = 100;
 

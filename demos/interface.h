@@ -214,7 +214,7 @@ void on_mouse_event(mouse_event_type, unsigned, int, int);
 
 void on_key_event(key_event_type, int);
 
-void on_timer();
+void on_timer(void);
 
 void on_size(int, int);
 

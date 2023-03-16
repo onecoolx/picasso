@@ -1,6 +1,7 @@
 HOW TO BUILD:
 ------------------------------------
 linux:
+
 1. automake & autoconf
 ./autogen.sh
 ./configure
@@ -9,7 +10,7 @@ sudo make install;
 
 
 2. gyp build
-./build_proj.sh
+./build_linux.sh
 cd proj
 make
 
@@ -20,7 +21,17 @@ windows:
 1. Install Active Python 2.7 on your windows system and register path environment variables.
 
 2. Build project
-./build_proj.bat
+./build_windows.bat
 cd vcproj
 <open "picasso.sln" with visual studio>
 
+
+-------------------------------------
+macosx:
+
+1. Install python 2.7 on your shell environment.
+
+2. Build project
+./build_macosx.sh
+cd proj
+<open "picasso.xcodeproj" with Xcode>
