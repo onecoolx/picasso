@@ -53,9 +53,6 @@ public:
     virtual void transform(scalar* x, scalar* y) const = 0;
     virtual void transform_2x2(scalar* x, scalar* y) const = 0;
     virtual void inverse_transform(scalar* x, scalar* y) const = 0;
-
-    virtual void store_to(scalar* m) const = 0;
-    virtual void load_from(const scalar* m) = 0;
 protected:
     abstract_trans_affine() {}
 };

@@ -190,14 +190,4 @@ scalar trans_affine::rotation(void) const
     return m_impl->rotation();
 }
 
-void trans_affine::store_to(scalar* m) const
-{
-    m_impl->store_to(m);
-}
-
-void trans_affine::load_from(const scalar* m)
-{
-    m_impl->load_from(m);
-}
-
 }

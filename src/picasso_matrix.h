@@ -55,8 +55,6 @@ public:
     void transform_2x2(scalar* x, scalar* y) const;
     void inverse_transform(scalar* x, scalar* y) const;
 
-    void store_to(scalar* m) const;
-    void load_from(const scalar* m);
 public:
     const trans_affine& operator *= (const trans_affine& o) { return multiply(o); }
     abstract_trans_affine* impl(void) const { return m_impl; }

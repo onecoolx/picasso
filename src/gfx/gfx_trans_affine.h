@@ -202,18 +202,6 @@ public:
         *y = b * m_sx - a * m_shy;
     }
 
-    // Store matrix to an array [6] of scalar
-    virtual void store_to(scalar* m) const
-    {
-        *m++ = m_sx; *m++ = m_shy; *m++ = m_shx; *m++ = m_sy; *m++ = m_tx; *m++ = m_ty;
-    }
-
-    // Load matrix from an array [6] of float
-    virtual void load_from(const scalar* m)
-    {
-        m_sx = *m++; m_shy = *m++; m_shx = *m++; m_sy = *m++; m_tx = *m++; m_ty = *m++;
-    }
-
 public:
     // Multiply the matrix by another one
     const gfx_trans_affine& operator *= (const gfx_trans_affine& o)
