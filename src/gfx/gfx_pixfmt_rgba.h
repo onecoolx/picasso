@@ -1506,7 +1506,7 @@ public:
     void blend_hline(int x, int y, unsigned int len, const color_type& c, uint8_t cover)
     {
         value_type* p = (value_type*)m_buffer->row_ptr(x, y, len) + (x << 2);
-        register value_type alpha = (value_type)alpha_mul(c.a, m_alpha_factor);
+        _REGISTER_ value_type alpha = (value_type)alpha_mul(c.a, m_alpha_factor);
 
         if ((m_blend_op == comp_op_src_over) && (alpha == base_mask) && (cover == 255)) {
             // optimization.
@@ -1530,7 +1530,7 @@ public:
 
     void blend_vline(int x, int y, unsigned int len, const color_type& c, uint8_t cover)
     {
-        register value_type alpha = (value_type)alpha_mul(c.a, m_alpha_factor);
+        _REGISTER_ value_type alpha = (value_type)alpha_mul(c.a, m_alpha_factor);
         do {
             blender_type::blend_pix(m_blend_op,
                     (value_type*)m_buffer->row_ptr(x, y++, 1) + (x << 2),
@@ -1541,7 +1541,7 @@ public:
     void blend_solid_hspan(int x, int y, unsigned int len, const color_type& c, const uint8_t* covers)
     {
         value_type* p = (value_type*)m_buffer->row_ptr(x, y, len) + (x << 2);
-        register value_type alpha = (value_type)alpha_mul(c.a, m_alpha_factor);
+        _REGISTER_ value_type alpha = (value_type)alpha_mul(c.a, m_alpha_factor);
         do {
             blender_type::blend_pix(m_blend_op,
                           p, c.r, c.g, c.b, alpha, *covers++);
@@ -1551,7 +1551,7 @@ public:
 
     void blend_solid_vspan(int x, int y, unsigned int len, const color_type& c, const uint8_t* covers)
     {
-        register value_type alpha = (value_type)alpha_mul(c.a, m_alpha_factor);
+        _REGISTER_ value_type alpha = (value_type)alpha_mul(c.a, m_alpha_factor);
         do {
             blender_type::blend_pix(m_blend_op,
                     (value_type*)m_buffer->row_ptr(x, y++, 1) + (x << 2),
@@ -1697,7 +1697,7 @@ public:
     {
         typedef typename SrcPixelFormatRenderer::value_type src_value_type;
         const src_value_type* psrc = (src_value_type*)from.row_ptr(ysrc);
-        register value_type alpha = (value_type)alpha_mul(color.a, m_alpha_factor);
+        _REGISTER_ value_type alpha = (value_type)alpha_mul(color.a, m_alpha_factor);
         if (psrc) {
             value_type* pdst = (value_type*)m_buffer->row_ptr(xdst, ydst, len) + (xdst << 2);
 

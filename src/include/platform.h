@@ -128,4 +128,10 @@
 #define MAYBE_INLINE  inline
 #endif
 
+#if __cplusplus >= 201103L
+#define _REGISTER_
+#else
+#define _REGISTER_ register
+#endif
+
 #endif /*_PLATFORM_H_*/

@@ -201,7 +201,7 @@ public:
 
     virtual void transform(const abstract_trans_affine* mtx)
     {
-        register const gfx_trans_affine* m = static_cast<const gfx_trans_affine*>(mtx);
+        _REGISTER_ const gfx_trans_affine* m = static_cast<const gfx_trans_affine*>(mtx);
         m_matrix *= (*const_cast<gfx_trans_affine*>(m));
     }
 

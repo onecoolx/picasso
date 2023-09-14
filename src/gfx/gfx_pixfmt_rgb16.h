@@ -1442,7 +1442,7 @@ public:
     static _FORCE_INLINE_ void blend_pix(pixel_type* p, unsigned int cr, unsigned int cg,
                                          unsigned int cb, unsigned int ca, unsigned int)
     {
-        register pixel_type rgb = *p;
+        _REGISTER_ pixel_type rgb = *p;
         calc_type r = (rgb >> 7) & 0xF8;
         calc_type g = (rgb >> 2) & 0xF8;
         calc_type b = (rgb << 3) & 0xF8;
@@ -1491,7 +1491,7 @@ public:
     static _FORCE_INLINE_ void blend_pix(pixel_type* p, unsigned int cr, unsigned int cg,
                                          unsigned int cb, unsigned int ca, unsigned int)
     {
-        register pixel_type rgb = *p;
+        _REGISTER_ pixel_type rgb = *p;
         calc_type r = (rgb >> 8) & 0xF8;
         calc_type g = (rgb >> 3) & 0xFC;
         calc_type b = (rgb << 3) & 0xF8;
@@ -1611,7 +1611,7 @@ public:
     void blend_hline(int x, int y, unsigned int len, const color_type& c, uint8_t cover)
     {
         pixel_type* p = (pixel_type*)m_buffer->row_ptr(x, y, len) + x;
-        register value_type alpha = (value_type)alpha_mul(c.a, m_alpha_factor);
+        _REGISTER_ value_type alpha = (value_type)alpha_mul(c.a, m_alpha_factor);
 
         if ((m_blend_op == comp_op_src_over) && (alpha == base_mask) && (cover == 255)) {
             // optimization.
@@ -1629,7 +1629,7 @@ public:
 
     void blend_vline(int x, int y, unsigned int len, const color_type& c, uint8_t cover)
     {
-        register value_type alpha = (value_type)alpha_mul(c.a, m_alpha_factor);
+        _REGISTER_ value_type alpha = (value_type)alpha_mul(c.a, m_alpha_factor);
         do {
             blender_type::blend_pix(m_blend_op,
                 (pixel_type*)m_buffer->row_ptr(x, y++, 1) + x,
@@ -1640,7 +1640,7 @@ public:
     void blend_solid_hspan(int x, int y, unsigned int len, const color_type& c, const uint8_t* covers)
     {
         pixel_type* p = (pixel_type*)m_buffer->row_ptr(x, y, len) + x;
-        register value_type alpha = (value_type)alpha_mul(c.a, m_alpha_factor);
+        _REGISTER_ value_type alpha = (value_type)alpha_mul(c.a, m_alpha_factor);
         do {
             blender_type::blend_pix(m_blend_op,
                           p, c.r, c.g, c.b, alpha, *covers++);
@@ -1650,7 +1650,7 @@ public:
 
     void blend_solid_vspan(int x, int y, unsigned int len, const color_type& c, const uint8_t* covers)
     {
-        register value_type alpha = (value_type)alpha_mul(c.a, m_alpha_factor);
+        _REGISTER_ value_type alpha = (value_type)alpha_mul(c.a, m_alpha_factor);
         do {
             blender_type::blend_pix(m_blend_op,
                 (pixel_type*)m_buffer->row_ptr(x, y++, 1) + x,
@@ -1779,7 +1779,7 @@ public:
     {
         typedef typename SrcPixelFormatRenderer::value_type src_value_type;
         const src_value_type* psrc = (src_value_type*)from.row_ptr(ysrc);
-        register value_type alpha = (value_type)alpha_mul(color.a, m_alpha_factor);
+        _REGISTER_ value_type alpha = (value_type)alpha_mul(color.a, m_alpha_factor);
         if (psrc) {
             pixel_type* pdst = (pixel_type*)m_buffer->row_ptr(xdst, ydst, len) + xdst;
 

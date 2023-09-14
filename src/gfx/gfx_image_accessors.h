@@ -75,8 +75,8 @@ private:
 
     const byte* pixel(void) const
     {
-        register int x = m_x;
-        register int y = m_y;
+        _REGISTER_ int x = m_x;
+        _REGISTER_ int y = m_y;
 
         if (x < 0 || y < 0 || x >= (int)m_pixf->width() || y >= (int)m_pixf->height())
             return m_pixf->pix_zero();

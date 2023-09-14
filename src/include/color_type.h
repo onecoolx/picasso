@@ -138,7 +138,7 @@ static _FORCE_INLINE_ void color_set_sat(T * sr, T * sg, T * sb, T sat)
 template <typename T>
 static _FORCE_INLINE_ void _clip_color(T * sr, T * sg, T * sb, T sa)
 {
-    register T L = C_LUM(*sr, *sg, *sb, T);
+    _REGISTER_ T L = C_LUM(*sr, *sg, *sb, T);
     T n = C_MIN(*sr, *sg, *sb);
     T x = C_MAX(*sr, *sg, *sb);
 
@@ -160,7 +160,7 @@ static _FORCE_INLINE_ void _clip_color(T * sr, T * sg, T * sb, T sa)
 template <typename T>
 static _FORCE_INLINE_ void color_set_lum(T * sr, T * sg, T * sb, T sa, T lum)
 {
-    register T d = lum - C_LUM(*sr, *sg, *sb, T);
+    _REGISTER_ T d = lum - C_LUM(*sr, *sg, *sb, T);
     *sr += d; *sg += d; *sb += d;
     _clip_color(sr, sg, sb, sa);
 }

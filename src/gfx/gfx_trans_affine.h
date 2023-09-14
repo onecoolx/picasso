@@ -181,23 +181,23 @@ public:
 
     virtual void transform(scalar* x, scalar* y) const
     {
-        register scalar tmp = *x;
+        _REGISTER_ scalar tmp = *x;
         *x = tmp * m_sx  + *y * m_shx + m_tx;
         *y = tmp * m_shy + *y * m_sy  + m_ty;
     }
 
     virtual void transform_2x2(scalar* x, scalar* y) const
     {
-        register scalar tmp = *x;
+        _REGISTER_ scalar tmp = *x;
         *x = tmp * m_sx  + *y * m_shx;
         *y = tmp * m_shy + *y * m_sy;
     }
 
     virtual void inverse_transform(scalar* x, scalar* y) const
     {
-        register scalar d = determinant_reciprocal();
-        register scalar a = (*x - m_tx) * d;
-        register scalar b = (*y - m_ty) * d;
+        _REGISTER_ scalar d = determinant_reciprocal();
+        _REGISTER_ scalar a = (*x - m_tx) * d;
+        _REGISTER_ scalar b = (*y - m_ty) * d;
         *x = a * m_sy - b * m_shx;
         *y = b * m_sx - a * m_shy;
     }

@@ -17,7 +17,7 @@
 #else
 inline void fastcopy4(uint8_t* __restrict dest, const uint8_t* __restrict src, int n)
 {
-    register int i;
+    _REGISTER_ int i;
     for (i = 0; i < (n&3); i++){
         *dest++ = *src++;
     }

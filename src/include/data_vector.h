@@ -12,14 +12,16 @@
 
 namespace picasso {
 
-template <typename T> struct pod_allocator
+template <typename T>
+struct pod_allocator
 {
     static T*   allocate(unsigned int num)       { return new T [num]; }
     static void deallocate(T* ptr, unsigned int) { delete [] ptr;      }
 };
 
 // pod array
-template <typename T> class pod_array
+template <typename T>
+class pod_array
 {
 public:
     pod_array()
@@ -436,7 +438,7 @@ const pod_bvector<T, S>& pod_bvector<T, S>::operator = (const pod_bvector<T, S>&
 template <typename T, unsigned int S>
 inline void pod_bvector<T, S>::add(const T& v)
 {
-    register unsigned int nb = m_size >> block_shift;
+    _REGISTER_ unsigned int nb = m_size >> block_shift;
     if (unlikely(nb >= m_num_blocks)) {
         allocate_block(nb);
     }
@@ -467,7 +469,7 @@ inline void pod_bvector<T, S>::allocate_block(unsigned int nb)
 template <typename T, unsigned int S>
 inline void pod_bvector<T, S>::modify_last(const T& v)
 {
-    register unsigned int idx = m_size - 1;
+    _REGISTER_ unsigned int idx = m_size - 1;
     T& val = m_blocks[idx >> block_shift][idx & block_mask];
     val = v;
 }

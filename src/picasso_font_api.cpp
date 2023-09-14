@@ -300,7 +300,7 @@ void PICAPI ps_text_out_length(ps_context* ctx, float x, float y, const char* te
 
         const char* p = text;
         while (*p && len) {
-            register char c = *p;
+            _REGISTER_ char c = *p;
             const picasso::glyph* glyph = ctx->fonts->current_font()->get_glyph(c);
             if (glyph) {
                 if (ctx->font_kerning) {
@@ -341,7 +341,7 @@ void PICAPI ps_wide_text_out_length(ps_context* ctx, float x, float y, const ps_
 
         const ps_uchar16* p = text;
         while (*p && len) {
-            register ps_uchar16 c = *p;
+            _REGISTER_ ps_uchar16 c = *p;
             const picasso::glyph* glyph = ctx->fonts->current_font()->get_glyph(c);
             if (glyph) {
                 if (ctx->font_kerning) {
@@ -426,7 +426,7 @@ void PICAPI ps_draw_text(ps_context* ctx, const ps_rect* area, const void* text,
         if (ctx->state->font->desc.charset() == CHARSET_ANSI) {
             const char* p = (const char*)text;
             while (*p && len) {
-                register char c = *p;
+                _REGISTER_ char c = *p;
                 const picasso::glyph* glyph = ctx->fonts->current_font()->get_glyph(c);
                 if (glyph) {
                     if (ctx->font_kerning) {
@@ -445,7 +445,7 @@ void PICAPI ps_draw_text(ps_context* ctx, const ps_rect* area, const void* text,
         } else {
             const ps_uchar16* p = (const ps_uchar16*)text;
             while (*p && len) {
-                register ps_uchar16 c = *p;
+                _REGISTER_ ps_uchar16 c = *p;
                 const picasso::glyph* glyph = ctx->fonts->current_font()->get_glyph(c);
                 if (glyph) {
                     if (ctx->font_kerning) {
@@ -516,7 +516,7 @@ ps_bool PICAPI ps_get_text_extent(ps_context* ctx, const void* text, unsigned in
         if (ctx->state->font->desc.charset() == CHARSET_ANSI) {
             const char* p = (const char*)text;
             while (*p && len) {
-                register char c = *p;
+                _REGISTER_ char c = *p;
                 const picasso::glyph* glyph = ctx->fonts->current_font()->get_glyph(c);
                 if (glyph) {
                     width += glyph->advance_x;
@@ -528,7 +528,7 @@ ps_bool PICAPI ps_get_text_extent(ps_context* ctx, const void* text, unsigned in
         } else {
             const ps_uchar16* p = (const ps_uchar16*)text;
             while (*p && len) {
-                register ps_uchar16 c = *p;
+                _REGISTER_ ps_uchar16 c = *p;
                 const picasso::glyph* glyph = ctx->fonts->current_font()->get_glyph(c);
                 if (glyph) {
                     width += glyph->advance_x;

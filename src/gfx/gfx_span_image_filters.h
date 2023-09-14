@@ -696,7 +696,7 @@ public:
                 base_type::source().span(x >> image_subpixel_shift,
                                          y >> image_subpixel_shift, 1);
 
-            register pixel_type rgb = *reinterpret_cast<const pixel_type*>(fg_ptr);
+            _REGISTER_ pixel_type rgb = *reinterpret_cast<const pixel_type*>(fg_ptr);
             span->r = (rgb & r_mask) >> (base_shift-(16-order_type::R-order_type::G-order_type::B));
             span->g = (rgb & g_mask) >> (order_type::G+order_type::B-base_shift);
             span->b = (rgb & b_mask) << (base_shift-order_type::B);
