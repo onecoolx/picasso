@@ -123,14 +123,14 @@ inline bool operator != (const fixed& a, const fixed& b)
 // r = a + b;
 inline fixed operator + (const fixed& a, const fixed& b)
 {
-    register fixed_type r = a.m_data + b.m_data;
+    _REGISTER_ fixed_type r = a.m_data + b.m_data;
     return fixed(r, 0);
 }
 
 // r = a - b;
 inline fixed operator - (const fixed& a, const fixed& b)
 {
-    register fixed_type r = a.m_data - b.m_data;
+    _REGISTER_ fixed_type r = a.m_data - b.m_data;
     return fixed(r, 0);
 }
 
