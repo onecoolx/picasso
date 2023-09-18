@@ -75,6 +75,7 @@
         'include/data_vector.h',
         'include/device.h',
         'include/fastcopy.h',
+        'include/fixedopt.h',
         'include/geometry.h',
         'include/graphic_base.h',
         'include/graphic_helper.h',

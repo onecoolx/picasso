@@ -40,7 +40,6 @@ libpicasso_la_SOURCES= \
             core/device.cpp \
             core/curve.cpp \
             core/clipper.cpp \
-            core/fixedopt.cpp \
             core/graphic_path.cpp \
             core/matrix.cpp \
             \

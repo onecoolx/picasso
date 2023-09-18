@@ -76,17 +76,6 @@ public:
     friend fixed operator - (const fixed &a, const fixed &b);
     friend fixed operator * (const fixed &a, const fixed &b);
     friend fixed operator / (const fixed &a, const fixed &b);
-public:
-    //special values
-    // pi = 3.14159265358979323846
-    static fixed fxPI(void);
-    // pi * 2
-    static fixed fxPI2(void);
-    // pi / 2
-    static fixed fxPIdiv2(void);
-    // 0
-    static fixed fixed_0(void);
-public:
     // math functions
     friend int floor(fixed x);
     friend int ceil(fixed x);
@@ -206,36 +195,6 @@ inline fixed_type flt_to_fixed(float f)
 {
     return (fixed_type)(f * (float)FIXED_1);
 }
-
-// double fabs (double x)
-fixed fabs(fixed x);
-
-// double sin(double x)
-fixed sin(fixed radian);
-
-// double asin(double x)
-fixed asin(fixed x);
-
-// double cos(double x)
-fixed cos(fixed radian);
-
-// double acos(double x)
-fixed acos(fixed x);
-
-// double tan(double x)
-fixed tan(fixed radian);
-
-// double atan(double x)
-fixed atan(fixed value);
-
-// double atan2(double y, double x)
-fixed atan2(fixed y, fixed x);
-
-// double sqrt(double x)
-fixed sqrt(fixed x);
-
-// double fmod(double x, double y)
-fixed fmod(fixed x, fixed y);
 
 }
 #endif /*_FIXED_MATH_H_*/
