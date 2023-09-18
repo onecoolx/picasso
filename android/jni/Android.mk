@@ -23,6 +23,7 @@ LOCAL_SRC_FILES := \
 	$(SOURCE_PATH)/src/core/clipper.cpp \
 	$(SOURCE_PATH)/src/core/device.cpp \
 	$(SOURCE_PATH)/src/core/graphic_path.cpp \
+	$(SOURCE_PATH)/src/core/matrix.cpp \
 	$(SOURCE_PATH)/src/gfx/gfx_device.cpp \
 	$(SOURCE_PATH)/src/gfx/gfx_font_adapter_freetype2.cpp \
 	$(SOURCE_PATH)/src/gfx/gfx_font_load_freetype2.cpp \
@@ -42,7 +43,6 @@ LOCAL_SRC_FILES := \
 	$(SOURCE_PATH)/src/picasso_mask_api.cpp \
 	$(SOURCE_PATH)/src/picasso_mask.cpp \
 	$(SOURCE_PATH)/src/picasso_matrix_api.cpp \
-	$(SOURCE_PATH)/src/picasso_matrix.cpp \
 	$(SOURCE_PATH)/src/picasso_painter.cpp \
 	$(SOURCE_PATH)/src/picasso_path.cpp \
 	$(SOURCE_PATH)/src/picasso_pattern.cpp \
