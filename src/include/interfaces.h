@@ -9,53 +9,12 @@
 
 #include "common.h"
 #include "math_type.h"
+#include "matrix.h"
 #include "vertex.h"
 #include "color_type.h"
 #include "graphic_base.h"
 
 namespace picasso {
-
-// Trans affine interface
-class abstract_trans_affine
-{
-public:
-    virtual ~abstract_trans_affine() {}
-
-    virtual void sx(scalar v) = 0;
-    virtual void sy(scalar v) = 0;
-    virtual scalar sx(void) const = 0;
-    virtual scalar sy(void) const = 0;
-    virtual void shx(scalar v) = 0;
-    virtual void shy(scalar v) = 0;
-    virtual scalar shx(void) const = 0;
-    virtual scalar shy(void) const = 0;
-    virtual void tx(scalar v) = 0;
-    virtual void ty(scalar v) = 0;
-    virtual scalar tx(void) const = 0;
-    virtual scalar ty(void) const = 0;
-
-    virtual void translate(scalar x, scalar y) = 0;
-    virtual void scale(scalar x, scalar y) = 0;
-    virtual void rotate(scalar a) = 0;
-    virtual void shear(scalar x, scalar y) = 0;
-
-    virtual void invert(void) = 0;
-    virtual void flip_x(void) = 0;
-    virtual void flip_y(void) = 0;
-    virtual void reset(void) = 0;
-    virtual void multiply(const abstract_trans_affine* o) = 0;
-
-    virtual bool is_identity(void) const = 0;
-    virtual scalar determinant(void) const = 0;
-    virtual scalar rotation(void) const = 0;
-
-    virtual bool is_equal(const abstract_trans_affine* o) = 0;
-    virtual void transform(scalar* x, scalar* y) const = 0;
-    virtual void transform_2x2(scalar* x, scalar* y) const = 0;
-    virtual void inverse_transform(scalar* x, scalar* y) const = 0;
-protected:
-    abstract_trans_affine() {}
-};
 
 // Rendering buffer interface
 class abstract_rendering_buffer
@@ -93,7 +52,7 @@ public:
 
     virtual void set_gamma_power(scalar) = 0;
     virtual void set_antialias(bool) = 0;
-    virtual void set_transform(const abstract_trans_affine* mtx) = 0;
+    virtual void set_transform(const trans_affine* mtx) = 0;
     virtual void set_raster_method(unsigned int methods) = 0;
     virtual void set_stroke_dashes(scalar start, const scalar* dashes, unsigned int num) = 0;
     virtual void set_stroke_attr(int idx, int val) = 0;
@@ -144,7 +103,7 @@ public:
     virtual void add_color_stop(scalar offset, const rgba& c) = 0;
     virtual void clear_stops(void) = 0;
 
-    virtual void transform(const abstract_trans_affine* mtx) = 0;
+    virtual void transform(const trans_affine* mtx) = 0;
 protected:
     abstract_gradient_adapter() {}
 private:
@@ -168,14 +127,14 @@ public:
     virtual void set_stroke_image(const abstract_rendering_buffer* img, pix_fmt format, int filter, const rect_s& rc) = 0;
     virtual void set_stroke_canvas(const abstract_rendering_buffer* img, pix_fmt format, int filter, const rect_s& rc) = 0;
     virtual void set_stroke_pattern(const abstract_rendering_buffer* img, pix_fmt format, int filter, const rect_s& rc,
-                                    int xtype, int ytype, const abstract_trans_affine* mtx) = 0;
+                                    int xtype, int ytype, const trans_affine* mtx) = 0;
     virtual void set_stroke_gradient(const abstract_gradient_adapter* g) = 0;
     // fill
     virtual void set_fill_color(const rgba& c) = 0;
     virtual void set_fill_image(const abstract_rendering_buffer* img, pix_fmt format, int filter, const rect_s& rc) = 0;
     virtual void set_fill_canvas(const abstract_rendering_buffer* img, pix_fmt format, int filter, const rect_s& rc) = 0;
     virtual void set_fill_pattern(const abstract_rendering_buffer* img, pix_fmt format, int filter, const rect_s& rc,
-                                    int xtype, int ytype, const abstract_trans_affine* mtx) = 0;
+                                    int xtype, int ytype, const trans_affine* mtx) = 0;
     virtual void set_fill_gradient(const abstract_gradient_adapter* g) = 0;
     virtual void set_font_fill_color(const rgba& c) = 0;
 
@@ -194,7 +153,7 @@ public:
     virtual void apply_blur(scalar blur) = 0;
 
     // clipping
-    virtual void apply_clip_path(const vertex_source& v, int rule, const abstract_trans_affine* mtx) = 0;
+    virtual void apply_clip_path(const vertex_source& v, int rule, const trans_affine* mtx) = 0;
     virtual void apply_clip_device(const rect_s& rc, scalar xoffset, scalar yoffset) = 0;
     virtual void clear_clip(void) = 0;
 
@@ -257,7 +216,6 @@ private:
 
 }
 
-using picasso::abstract_trans_affine;
 using picasso::abstract_rendering_buffer;
 using picasso::abstract_raster_adapter;
 using picasso::abstract_painter;

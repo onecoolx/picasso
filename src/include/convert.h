@@ -15,7 +15,7 @@
 #include "geometry.h"
 #include "graphic_base.h"
 #include "interfaces.h"
-#include "picasso_matrix.h"
+#include "matrix.h"
 
 namespace picasso {
 
@@ -106,16 +106,16 @@ class conv_transform : public vertex_source
 {
 public:
     conv_transform(const vertex_source& v, const trans_affine& m)
-        : m_source(const_cast<vertex_source*>(&v)), m_trans(m.impl())
+        : m_source(const_cast<vertex_source*>(&v)), m_trans(&m)
     {
     }
 
-    conv_transform(const vertex_source& v, const abstract_trans_affine* m)
+    conv_transform(const vertex_source& v, const trans_affine* m)
         : m_source(const_cast<vertex_source*>(&v)), m_trans(m)
     {
     }
 
-    void transformer(const trans_affine& t) { m_trans = t.impl(); }
+    void transformer(const trans_affine& t) { m_trans = &t; }
 
     virtual void rewind(unsigned int id) { m_source->rewind(id); }
 
@@ -132,7 +132,7 @@ private:
     conv_transform& operator=(const conv_transform&);
 
     vertex_source* m_source;
-    const abstract_trans_affine* m_trans;
+    const trans_affine* m_trans;
 };
 
 // Convert clipper

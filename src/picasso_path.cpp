@@ -8,12 +8,12 @@
 #include "device.h"
 #include "geometry.h"
 #include "convert.h"
+#include "matrix.h"
 #include "graphic_path.h"
 #include "graphic_helper.h"
 
 #include "picasso.h"
 #include "picasso_global.h"
-#include "picasso_matrix.h"
 #include "picasso_objects.h"
 
 namespace picasso {

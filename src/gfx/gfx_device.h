@@ -19,10 +19,6 @@ public:
     static gfx_device* create(void);
     virtual ~gfx_device();
 
-    virtual abstract_trans_affine* create_trans_affine(scalar sx, scalar shy,
-                                        scalar shx, scalar sy, scalar tx, scalar ty);
-    virtual void destroy_trans_affine(abstract_trans_affine* m);
-
     virtual abstract_painter* create_painter(pix_fmt fmt);
     virtual void destroy_painter(abstract_painter* p);
 
@@ -43,7 +39,7 @@ public:
 
     virtual abstract_font_adapter* create_font_adapter(const char* name, int charset,
                                     scalar height, scalar weight, bool italic, bool hint, bool flip,
-                                    bool antialias, const abstract_trans_affine* mtx);
+                                    bool antialias, const trans_affine* mtx);
     virtual void destroy_font_adapter(abstract_font_adapter* f);
 protected:
     gfx_device();

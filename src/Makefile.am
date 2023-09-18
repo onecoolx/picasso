@@ -35,12 +35,14 @@ libpicasso_la_SOURCES= \
             include/platform.h \
             include/vertex.h \
             include/vertex_dist.h \
+            include/matrix.h \
             \
             core/device.cpp \
             core/curve.cpp \
             core/clipper.cpp \
             core/fixedopt.cpp \
             core/graphic_path.cpp \
+            core/matrix.cpp \
             \
             simd/fastcopy_sse.h \
             \
@@ -70,7 +72,6 @@ libpicasso_la_SOURCES= \
             gfx/gfx_scanline_storage.h \
             gfx/gfx_span_generator.h \
             gfx/gfx_span_image_filters.h \
-            gfx/gfx_trans_affine.h \
             gfx/gfx_device.cpp \
             gfx/gfx_raster_adapter.cpp \
             gfx/gfx_gradient_adapter.cpp \
@@ -87,13 +88,11 @@ libpicasso_la_SOURCES= \
             picasso_global.h \
             picasso_gradient.h \
             picasso_mask.h \
-            picasso_matrix.h \
             picasso_objects.h \
             picasso_painter.h \
             picasso_private.h \
             picasso_raster_adapter.h \
             picasso_rendering_buffer.h \
-            picasso_matrix.cpp \
             picasso_matrix_api.cpp \
             picasso_painter.cpp \
             picasso_rendering_buffer.cpp \

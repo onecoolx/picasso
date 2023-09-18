@@ -7,12 +7,12 @@
 #include <stdio.h>
 #include "common.h"
 #include "convert.h"
+#include "matrix.h"
 #include "gfx_font_adapter.h"
 #include "gfx_rasterizer_scanline.h"
 #include "gfx_scanline.h"
 #include "gfx_scanline_renderer.h"
 #include "gfx_scanline_storage.h"
-#include "gfx_trans_affine.h"
 
 #if defined(WIN32) && !ENABLE(FREE_TYPE2)
 #include <windows.h>
@@ -76,7 +76,7 @@ public:
     bool antialias;
     bool flip_y;
     bool hinting;
-    gfx_trans_affine matrix;
+    trans_affine matrix;
     scalar height;
     scalar ascent;
     scalar descent;
@@ -106,7 +106,7 @@ public:
 };
 
 gfx_font_adapter::gfx_font_adapter(const char* name, int charset, scalar height, scalar weight,
-                                bool italic, bool hint, bool flip, bool a, const abstract_trans_affine* mtx)
+                                bool italic, bool hint, bool flip, bool a, const trans_affine* mtx)
     :m_impl(new font_adapter_impl)
 {
     int char_set = (charset == charset_latin) ? ANSI_CHARSET : DEFAULT_CHARSET;
@@ -128,7 +128,7 @@ gfx_font_adapter::gfx_font_adapter(const char* name, int charset, scalar height,
                                 FF_DONTCARE,            // pitch and family
                                 name);              // typeface name
 
-    m_impl->matrix = *static_cast<gfx_trans_affine*>(const_cast<abstract_trans_affine*>(mtx));
+    m_impl->matrix = *mtx;
 
     OUTLINETEXTMETRIC omt;
     HDC dc = ::GetDC(0);
@@ -301,7 +301,7 @@ static void decompose_win32_glyph_bitmap_mono(const char* gbuf, int w, int h, in
 }
 
 static bool decompose_win32_glyph_outline(const char* gbuf, unsigned int total_size,
-                                     bool flip_y, const gfx_trans_affine& mtx, graphic_path& path)
+                                     bool flip_y, const trans_affine& mtx, graphic_path& path)
 {
     const char* cur_glyph = gbuf;
     const char* end_glyph = gbuf + total_size;

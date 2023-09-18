@@ -5,9 +5,9 @@
  */
 
 #include "common.h"
+#include "matrix.h"
 #include "picasso.h"
 #include "picasso_global.h"
-#include "picasso_matrix.h"
 #include "picasso_objects.h"
 
 #ifdef __cplusplus

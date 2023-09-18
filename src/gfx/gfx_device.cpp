@@ -14,7 +14,6 @@
 #include "gfx_gradient_adapter.h"
 #include "gfx_font_adapter.h"
 #include "gfx_mask_layer.h"
-#include "gfx_trans_affine.h"
 #include "gfx_pixfmt_rgba.h"
 #include "gfx_pixfmt_rgb.h"
 #include "gfx_pixfmt_rgb16.h"
@@ -32,17 +31,6 @@ gfx_device::gfx_device()
 
 gfx_device::~gfx_device()
 {
-}
-
-abstract_trans_affine* gfx_device::create_trans_affine(scalar sx, scalar shy,
-                                                        scalar shx, scalar sy, scalar tx, scalar ty)
-{
-    return new gfx_trans_affine(sx, shy, shx, sy, tx, ty);
-}
-
-void gfx_device::destroy_trans_affine(abstract_trans_affine* m)
-{
-    delete m;
 }
 
 abstract_painter* gfx_device::create_painter(pix_fmt fmt)
@@ -134,7 +122,7 @@ void gfx_device::destroy_gradient_adapter(abstract_gradient_adapter* g)
 }
 
 abstract_font_adapter* gfx_device::create_font_adapter(const char* name, int charset, scalar height, scalar weight,
-                                bool italic, bool hint, bool flip, bool antialias, const abstract_trans_affine* mtx)
+                                bool italic, bool hint, bool flip, bool antialias, const trans_affine* mtx)
 {
     return new gfx_font_adapter(name, charset, height, weight, italic, hint, flip, antialias, mtx);
 }

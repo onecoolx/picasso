@@ -6,10 +6,10 @@
 
 #include "common.h"
 #include "convert.h"
+#include "matrix.h"
 
 #include "gfx_gamma_function.h"
 #include "gfx_raster_adapter.h"
-#include "gfx_trans_affine.h"
 
 #include "picasso_raster_adapter.h"
 
@@ -76,7 +76,7 @@ public:
     }
 
     const vertex_source* m_source;
-    const gfx_trans_affine* m_transform;
+    const trans_affine* m_transform;
     unsigned int m_method;
     bool m_antialias;
     bool m_dashline;
@@ -121,17 +121,18 @@ void gfx_raster_adapter::set_antialias(bool b)
     m_impl->m_antialias = b;
 }
 
-void gfx_raster_adapter::set_transform(const abstract_trans_affine* mtx)
+void gfx_raster_adapter::set_transform(const trans_affine* mtx)
 {
-    m_impl->m_transform = static_cast<const gfx_trans_affine*>(mtx);
+    m_impl->m_transform = mtx;
 }
 
-gfx_trans_affine gfx_raster_adapter::transformation(void) const
+trans_affine gfx_raster_adapter::transformation(void) const
 {
-    if (m_impl->m_transform)
-        return *const_cast<gfx_trans_affine*>(m_impl->m_transform);
-    else
-        return gfx_trans_affine();
+    if (m_impl->m_transform) {
+        return *(m_impl->m_transform);
+    } else {
+        return trans_affine();
+    }
 }
 
 void gfx_raster_adapter::set_raster_method(unsigned int m)
@@ -218,8 +219,8 @@ void gfx_raster_adapter::setup_stroke_raster(void)
 
         picasso::conv_stroke p(c);
 
-        gfx_trans_affine adjmtx = stable_matrix(*const_cast<gfx_trans_affine*>(m_impl->m_transform));
-        adjmtx *= gfx_trans_affine_translation(FLT_TO_SCALAR(0.5f), FLT_TO_SCALAR(0.5f)); //adjust edge
+        trans_affine adjmtx = stable_matrix(*const_cast<trans_affine*>(m_impl->m_transform));
+        adjmtx *= trans_affine_translation(FLT_TO_SCALAR(0.5f), FLT_TO_SCALAR(0.5f)); //adjust edge
 
         picasso::conv_transform t(p, &adjmtx);
 
@@ -234,8 +235,8 @@ void gfx_raster_adapter::setup_stroke_raster(void)
         picasso::conv_curve c(*const_cast<vertex_source*>(m_impl->m_source));
         picasso::conv_stroke p(c);
 
-        gfx_trans_affine adjmtx = stable_matrix(*const_cast<gfx_trans_affine*>(m_impl->m_transform));
-        adjmtx *= gfx_trans_affine_translation(FLT_TO_SCALAR(0.5f), FLT_TO_SCALAR(0.5f)); //adjust edge
+        trans_affine adjmtx = stable_matrix(*const_cast<trans_affine*>(m_impl->m_transform));
+        adjmtx *= trans_affine_translation(FLT_TO_SCALAR(0.5f), FLT_TO_SCALAR(0.5f)); //adjust edge
 
         picasso::conv_transform t(p, &adjmtx);
 
@@ -252,7 +253,7 @@ void gfx_raster_adapter::setup_stroke_raster(void)
 void gfx_raster_adapter::setup_fill_raster(void)
 {
     m_fraster.filling(m_impl->m_filling_rule);
-    gfx_trans_affine adjmtx = stable_matrix(*const_cast<gfx_trans_affine*>(m_impl->m_transform));
+    trans_affine adjmtx = stable_matrix(*const_cast<trans_affine*>(m_impl->m_transform));
 
     conv_transform mt(*const_cast<vertex_source*>(m_impl->m_source), &adjmtx);
     m_fraster.add_path(mt);

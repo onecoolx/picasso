@@ -82,7 +82,7 @@ void painter::init_source_data(context_state* state, unsigned int methods, const
                     ps_pattern* pattern = static_cast<ps_pattern*>(state->pen.data);
                     rect_s rect(x1, y1, x2, y2);
                     m_impl->set_stroke_pattern(pattern->img->buffer.impl(), (pix_fmt)(pattern->img->fmt), (int)state->filter, rect,
-                                                                            pattern->xtype, pattern->ytype, pattern->matrix.impl());
+                                                                            pattern->xtype, pattern->ytype, &(pattern->matrix));
                 }
                 break;
             case pen_style_image:
@@ -127,7 +127,7 @@ void painter::init_source_data(context_state* state, unsigned int methods, const
                     ps_pattern* pattern = static_cast<ps_pattern*>(state->brush.data);
                     rect_s rect(x1, y1, x2, y2);
                     m_impl->set_fill_pattern(pattern->img->buffer.impl(), (pix_fmt)(pattern->img->fmt), (int)state->filter, rect,
-                                                                            pattern->xtype, pattern->ytype, pattern->matrix.impl());
+                                                                            pattern->xtype, pattern->ytype, &(pattern->matrix));
                 }
                 break;
             case brush_style_image:
@@ -217,7 +217,7 @@ void painter::render_clip(context_state* state, bool clip)
             m_impl->clear_clip(); // clear old clip.
 
             if (state->clip.type == clip_content)
-                m_impl->apply_clip_path(state->clip.path, state->clip.rule, state->world_matrix.impl());
+                m_impl->apply_clip_path(state->clip.path, state->clip.rule, &(state->world_matrix));
             else if (state->clip.type == clip_device)
                 m_impl->apply_clip_device(state->clip.rect, 0, 0);
         }
@@ -266,7 +266,7 @@ void painter::render_shadow(context_state* state, const graphic_path& p, bool fi
                 m_impl->clear_clip(); // clear old clip.
 
                 if (state->clip.type == clip_content) {
-                    m_impl->apply_clip_path(state->clip.path, state->clip.rule, mtx.impl());
+                    m_impl->apply_clip_path(state->clip.path, state->clip.rule, &mtx);
                 } else if (state->clip.type == clip_device) {
                     m_impl->apply_clip_device(state->clip.rect, -x1, -y1);
                 }

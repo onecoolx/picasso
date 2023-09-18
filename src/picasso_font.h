@@ -9,11 +9,11 @@
 
 #include "common.h"
 #include "device.h"
+#include "matrix.h"
 #include "interfaces.h"
 
 #include "graphic_path.h"
 #include "picasso_global.h"
-#include "picasso_matrix.h"
 #include "picasso_font_cache.h"
 
 #if ENABLE(LOW_MEMORY)
@@ -197,7 +197,7 @@ public:
     {
         m_cache->set_signature(signature);
         m_impl = get_system_device()->create_font_adapter(desc.name(), desc.charset(), desc.height(),
-                                    desc.weight(), desc.italic(), desc.hint(), desc.flip_y(), antialias, mtx.impl());
+                                    desc.weight(), desc.italic(), desc.hint(), desc.flip_y(), antialias, &mtx);
 
         // for mono font
         m_mono_storage.set_font(m_impl);

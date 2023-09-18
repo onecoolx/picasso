@@ -9,10 +9,10 @@
 
 #include "common.h"
 #include "math_type.h"
+#include "matrix.h"
 #include "data_vector.h"
 #include "graphic_base.h"
 #include "graphic_path.h"
-#include "picasso_matrix.h"
 #include "picasso_mask.h"
 #include "picasso_font.h"
 #include "picasso_gradient.h"

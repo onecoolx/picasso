@@ -309,19 +309,22 @@ void gfx_gradient_adapter::init_linear(int spread, scalar x1, scalar y1, scalar 
                 break;
         };
 
-        if (!m_wrapper)
+        if (!m_wrapper) {
             return;
+        }
 
         scalar len = calc_distance(x1, y1, x2, y2);
 
-        gfx_trans_affine mtx;
+        trans_affine mtx;
         if (len) {
-            if (x2 < x1)
+            if (x2 < x1) {
                 mtx.rotate(PI - Asin((y2 - y1) / len));
-            else
+            } else {
                 mtx.rotate(Asin((y2 - y1) / len));
-        } else
+            }
+        } else {
             len = FLT_TO_SCALAR(2.0f); // len can not be zero
+        }
 
         mtx.translate(x1, y1);
 
@@ -368,8 +371,9 @@ void gfx_gradient_adapter::init_radial(int spread, scalar x1, scalar y1, scalar 
 
         }
 
-        if (!m_wrapper)
+        if (!m_wrapper) {
             return;
+        }
 
         scalar len = Fabs(radius2);
         scalar fx = x1 - x2;
@@ -377,12 +381,12 @@ void gfx_gradient_adapter::init_radial(int spread, scalar x1, scalar y1, scalar 
 
         m_wrapper->init(len, fx, fy);
 
-        if (!len)
+        if (!len) {
             len = FLT_TO_SCALAR(2.0f); // len can not be zero
+        }
 
-        gfx_trans_affine mtx;
+        trans_affine mtx;
         mtx.translate(x1 - fx, y1 - fy);
-
 
         m_start = Fabs(radius1);
         m_length = len;
@@ -399,10 +403,11 @@ void gfx_gradient_adapter::init_conic(int spread, scalar x, scalar y, scalar ang
             m_wrapper = new gfx_gradient<gradient_conic_vg, gradient_pad_adaptor<gradient_conic_vg> >;
         }
 
-        if (!m_wrapper)
+        if (!m_wrapper) {
             return;
+        }
 
-        gfx_trans_affine mtx;
+        trans_affine mtx;
         mtx.translate(x, y);
         mtx.translate(-x, -y);
         mtx.rotate(angle);

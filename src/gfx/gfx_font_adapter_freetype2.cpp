@@ -7,12 +7,12 @@
 #include <stdio.h>
 #include "common.h"
 #include "convert.h"
+#include "matrix.h"
 #include "gfx_font_adapter.h"
 #include "gfx_rasterizer_scanline.h"
 #include "gfx_scanline.h"
 #include "gfx_scanline_renderer.h"
 #include "gfx_scanline_storage.h"
-#include "gfx_trans_affine.h"
 
 #if ENABLE(FREE_TYPE2)
 #include <ft2build.h>
@@ -64,7 +64,7 @@ public:
     bool flip_y;
     bool hinting;
     scalar weight;
-    gfx_trans_affine matrix;
+    trans_affine matrix;
     scalar height;
     scalar ascent;
     scalar descent;
@@ -85,7 +85,7 @@ public:
 };
 
 gfx_font_adapter::gfx_font_adapter(const char* name, int charset, scalar size, scalar weight,
-                                bool italic, bool hint, bool flip, bool a, const abstract_trans_affine* mtx)
+                                bool italic, bool hint, bool flip, bool a, const trans_affine* mtx)
     :m_impl(new font_adapter_impl)
 {
     FT_Encoding char_set = (charset == charset_latin) ? FT_ENCODING_NONE : FT_ENCODING_UNICODE;
@@ -98,7 +98,7 @@ gfx_font_adapter::gfx_font_adapter(const char* name, int charset, scalar size, s
         FT_Set_Pixel_Sizes(m_impl->font, 0, uround(size));
         FT_Select_Charmap(m_impl->font, char_set);
     }
-    m_impl->matrix = *static_cast<gfx_trans_affine*>(const_cast<abstract_trans_affine*>(mtx));
+    m_impl->matrix = *mtx;
     if (italic)
         m_impl->matrix.shear(-0.4f, 0.0f);
 
@@ -145,7 +145,7 @@ void gfx_font_adapter::add_kerning(unsigned int first, unsigned int second, scal
 }
 
 static bool decompose_ft_outline(const FT_Outline& outline,
-                              bool flip_y, const gfx_trans_affine& mtx, graphic_path& path)
+                              bool flip_y, const trans_affine& mtx, graphic_path& path)
 {
     FT_Vector   v_last;
     FT_Vector   v_control;

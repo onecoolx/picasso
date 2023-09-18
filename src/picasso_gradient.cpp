@@ -6,10 +6,10 @@
 
 #include "common.h"
 #include "device.h"
+#include "matrix.h"
 #include "interfaces.h"
 
 #include "picasso_global.h"
-#include "picasso_matrix.h"
 #include "picasso_gradient.h"
 
 namespace picasso {
@@ -59,7 +59,7 @@ void gradient_adapter::clear_stops(void)
 void gradient_adapter::transform(const trans_affine& mtx)
 {
     if (m_impl)
-        m_impl->transform(mtx.impl());
+        m_impl->transform(&mtx);
 }
 
 }

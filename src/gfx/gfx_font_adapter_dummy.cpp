@@ -8,7 +8,6 @@
 #include "common.h"
 #include "convert.h"
 #include "gfx_font_adapter.h"
-#include "gfx_trans_affine.h"
 
 #if !defined(WIN32) && !ENABLE(FREE_TYPE2) && !defined(__APPLE__)
 
@@ -16,7 +15,7 @@
 namespace gfx {
 
 gfx_font_adapter::gfx_font_adapter(const char* name, int charset, scalar size, scalar weight,
-                                bool italic, bool hint, bool flip, bool a, const abstract_trans_affine* mtx) { }
+                                bool italic, bool hint, bool flip, bool a, const trans_affine* mtx) { }
 gfx_font_adapter::~gfx_font_adapter() { }
 void gfx_font_adapter::active(void) { }
 void gfx_font_adapter::deactive(void) { }

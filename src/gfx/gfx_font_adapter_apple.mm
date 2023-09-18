@@ -7,12 +7,12 @@
 #include <stdio.h>
 #include "common.h"
 #include "convert.h"
+#include "matrix.h"
 #include "gfx_font_adapter.h"
 #include "gfx_rasterizer_scanline.h"
 #include "gfx_scanline.h"
 #include "gfx_scanline_renderer.h"
 #include "gfx_scanline_storage.h"
-#include "gfx_trans_affine.h"
 
 #import <CoreText/CTFont.h>
 #import <CoreGraphics/CGPath.h>
@@ -69,7 +69,7 @@ public:
 };
 
 gfx_font_adapter::gfx_font_adapter(const char* name, int charset, scalar size, scalar weight,
-                                bool italic, bool hint, bool flip, bool a, const abstract_trans_affine* mtx)
+                                bool italic, bool hint, bool flip, bool a, const trans_affine* mtx)
     :m_impl(new font_adapter_impl)
 {
     CFStringRef fName = CFStringCreateWithCString(NULL, name, kCFStringEncodingUTF8);

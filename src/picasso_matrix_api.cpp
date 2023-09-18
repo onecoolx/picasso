@@ -6,12 +6,12 @@
 
 #include "common.h"
 #include "device.h"
+#include "matrix.h"
 #include "graphic_path.h"
 
 #include "picasso.h"
 #include "picasso_global.h"
 #include "picasso_objects.h"
-#include "picasso_matrix.h"
 
 namespace picasso {
 

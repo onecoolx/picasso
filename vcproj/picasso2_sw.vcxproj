@@ -136,7 +136,6 @@
     <ClInclude Include="..\src\gfx\gfx_scanline_storage.h"/>
     <ClInclude Include="..\src\gfx\gfx_span_generator.h"/>
     <ClInclude Include="..\src\gfx\gfx_span_image_filters.h"/>
-    <ClInclude Include="..\src\gfx\gfx_trans_affine.h"/>
     <ClInclude Include="..\src\gfx\gfx_image_accessors.h"/>
     <ClInclude Include="..\src\gfx\gfx_image_filters.h"/>
     <ClInclude Include="..\src\gfx\gfx_line_generator.h"/>
@@ -159,13 +158,13 @@
     <ClInclude Include="..\src\include\platform.h"/>
     <ClInclude Include="..\src\include\vertex.h"/>
     <ClInclude Include="..\src\include\vertex_dist.h"/>
+    <ClInclude Include="..\src\include\matrix.h"/>
     <ClInclude Include="..\src\simd\fastcopy_sse.h"/>
     <ClInclude Include="..\src\picasso_font.h"/>
     <ClInclude Include="..\src\picasso_font_cache.h"/>
     <ClInclude Include="..\src\picasso_global.h"/>
     <ClInclude Include="..\src\picasso_gradient.h"/>
     <ClInclude Include="..\src\picasso_mask.h"/>
-    <ClInclude Include="..\src\picasso_matrix.h"/>
     <ClInclude Include="..\src\picasso_objects.h"/>
     <ClInclude Include="..\src\picasso_painter.h"/>
     <ClInclude Include="..\src\picasso_private.h"/>
@@ -178,6 +177,7 @@
     <ClCompile Include="..\src\core\device.cpp"/>
     <ClCompile Include="..\src\core\graphic_path.cpp"/>
     <ClCompile Include="..\src\core\clipper.cpp"/>
+    <ClCompile Include="..\src\core\matrix.cpp"/>
     <ClCompile Include="..\src\gfx\gfx_blur.cpp"/>
     <ClCompile Include="..\src\gfx\gfx_device.cpp"/>
     <ClCompile Include="..\src\gfx\gfx_font_adapter_freetype2.cpp"/>
@@ -199,7 +199,6 @@
     <ClCompile Include="..\src\picasso_mask_api.cpp"/>
     <ClCompile Include="..\src\picasso_mask.cpp"/>
     <ClCompile Include="..\src\picasso_matrix_api.cpp"/>
-    <ClCompile Include="..\src\picasso_matrix.cpp"/>
     <ClCompile Include="..\src\picasso_painter.cpp"/>
     <ClCompile Include="..\src\picasso_path.cpp"/>
     <ClCompile Include="..\src\picasso_pattern.cpp"/>

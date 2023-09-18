@@ -7,10 +7,10 @@
 #include "common.h"
 #include "math_type.h"
 #include "geometry.h"
+#include "matrix.h"
 #include "graphic_base.h"
 #include "graphic_path.h"
 
-#include "picasso_matrix.h"
 
 namespace picasso {
 

@@ -10,6 +10,7 @@
 #include "common.h"
 #include "interfaces.h"
 #include "convert.h"
+#include "matrix.h"
 
 #include "picasso.h"
 #include "picasso_painter.h"
@@ -26,7 +27,6 @@
 #include "gfx_scanline_renderer.h"
 #include "gfx_scanline_storage.h"
 #include "gfx_span_generator.h"
-#include "gfx_trans_affine.h"
 
 namespace gfx {
 
@@ -66,7 +66,7 @@ public:
         pix_fmt format;
         int xtype;
         int ytype;
-        abstract_trans_affine* matrix;
+        trans_affine* matrix;
         bool transparent;
     };
 
@@ -95,13 +95,13 @@ public:
     virtual void set_stroke_image(const abstract_rendering_buffer* img, pix_fmt format, int filter, const rect_s& rc);
     virtual void set_stroke_canvas(const abstract_rendering_buffer* img, pix_fmt format, int filter, const rect_s& rc);
     virtual void set_stroke_pattern(const abstract_rendering_buffer* img, pix_fmt format, int filter, const rect_s& rc,
-                                    int xtype, int ytype, const abstract_trans_affine* mtx);
+                                    int xtype, int ytype, const trans_affine* mtx);
     virtual void set_stroke_gradient(const abstract_gradient_adapter* g);
     virtual void set_fill_color(const rgba& c);
     virtual void set_fill_image(const abstract_rendering_buffer* img, pix_fmt format, int filter, const rect_s& rc);
     virtual void set_fill_canvas(const abstract_rendering_buffer* img, pix_fmt format, int filter, const rect_s& rc);
     virtual void set_fill_pattern(const abstract_rendering_buffer* img, pix_fmt format, int filter, const rect_s& rc,
-                                    int xtype, int ytype, const abstract_trans_affine* mtx);
+                                    int xtype, int ytype, const trans_affine* mtx);
     virtual void set_fill_gradient(const abstract_gradient_adapter* g);
     virtual void set_font_fill_color(const rgba& c);
 
@@ -110,7 +110,7 @@ public:
     virtual void apply_text_fill(abstract_raster_adapter* rs, text_style style);
     virtual void apply_mono_text_fill(void * storage);
     virtual void apply_clear(const rgba& c);
-    virtual void apply_clip_path(const vertex_source& v, int rule, const abstract_trans_affine* mtx);
+    virtual void apply_clip_path(const vertex_source& v, int rule, const trans_affine* mtx);
     virtual void apply_clip_device(const rect_s& rc, scalar xoffset, scalar yoffset);
     virtual void clear_clip(void);
 
@@ -316,7 +316,7 @@ inline void gfx_painter<Pixfmt>::set_stroke_canvas(const abstract_rendering_buff
 
 template <typename Pixfmt>
 inline void gfx_painter<Pixfmt>::set_stroke_pattern(const abstract_rendering_buffer* img, pix_fmt format, int filter, const rect_s& rc,
-                                        int xtype, int ytype, const abstract_trans_affine* mtx)
+                                        int xtype, int ytype, const trans_affine* mtx)
 {
     m_stroke_type = type_pattern;
     m_pattern_stroke.buffer = const_cast<abstract_rendering_buffer*>(img);
@@ -325,7 +325,7 @@ inline void gfx_painter<Pixfmt>::set_stroke_pattern(const abstract_rendering_buf
     m_pattern_stroke.format = format;
     m_pattern_stroke.xtype = xtype;
     m_pattern_stroke.ytype = ytype;
-    m_pattern_stroke.matrix = const_cast<abstract_trans_affine*>(mtx);
+    m_pattern_stroke.matrix = const_cast<trans_affine*>(mtx);
     m_pattern_stroke.transparent = img->is_transparent();
 }
 
@@ -364,7 +364,7 @@ inline void gfx_painter<Pixfmt>::set_fill_canvas(const abstract_rendering_buffer
 
 template <typename Pixfmt>
 inline void gfx_painter<Pixfmt>::set_fill_pattern(const abstract_rendering_buffer* img, pix_fmt format, int filter, const rect_s& rc,
-                                        int xtype, int ytype, const abstract_trans_affine* mtx)
+                                        int xtype, int ytype, const trans_affine* mtx)
 {
     m_fill_type = type_pattern;
     m_pattern_source.buffer = const_cast<abstract_rendering_buffer*>(img);
@@ -373,7 +373,7 @@ inline void gfx_painter<Pixfmt>::set_fill_pattern(const abstract_rendering_buffe
     m_pattern_source.format = format;
     m_pattern_source.xtype = xtype;
     m_pattern_source.ytype = ytype;
-    m_pattern_source.matrix = const_cast<abstract_trans_affine*>(mtx);
+    m_pattern_source.matrix = const_cast<trans_affine*>(mtx);
     m_pattern_source.transparent = img->is_transparent();
 }
 
@@ -403,7 +403,7 @@ inline void gfx_painter<Pixfmt>::apply_stroke(abstract_raster_adapter* raster)
                 gfx_gradient_adapter* gradient = static_cast<gfx_gradient_adapter*>(m_gradient_stroke.gradient);
                 gradient->build();
 
-                gfx_trans_affine mtx;
+                trans_affine mtx;
                 mtx = gradient->matrix();
                 mtx *= stable_matrix(static_cast<gfx_raster_adapter*>(raster)->transformation());
                 mtx.invert();
@@ -481,8 +481,8 @@ inline void gfx_painter<Pixfmt>::apply_stroke_impl(abstract_raster_adapter* rast
                 pixfmt2 canvas_fmt(*static_cast<gfx_rendering_buffer*>(m_image_stroke.buffer));
 
                 rect_s dr = m_image_stroke.rect;
-                gfx_trans_affine mtx;
-                mtx *= gfx_trans_affine_translation(sround(dr.x()), sround(dr.y()));
+                trans_affine mtx;
+                mtx *= trans_affine_translation(sround(dr.x()), sround(dr.y()));
                 mtx *= stable_matrix(static_cast<gfx_raster_adapter*>(raster)->transformation());
                 mtx.invert();
 
@@ -527,9 +527,9 @@ inline void gfx_painter<Pixfmt>::apply_stroke_impl(abstract_raster_adapter* rast
                 scalar xs = (scalar)dr.width() / m_image_stroke.buffer->width();
                 scalar ys = (scalar)dr.height() / m_image_stroke.buffer->height();
 
-                gfx_trans_affine mtx;
-                mtx *= gfx_trans_affine_scaling(xs, ys);
-                mtx *= gfx_trans_affine_translation(sround(dr.x()), sround(dr.y()));
+                trans_affine mtx;
+                mtx *= trans_affine_scaling(xs, ys);
+                mtx *= trans_affine_translation(sround(dr.x()), sround(dr.y()));
                 mtx *= stable_matrix(static_cast<gfx_raster_adapter*>(raster)->transformation());
                 mtx.invert();
 
@@ -590,9 +590,9 @@ inline void gfx_painter<Pixfmt>::apply_stroke_impl(abstract_raster_adapter* rast
 
                 rect_s dr = m_pattern_stroke.rect;
                 bool transparent = m_pattern_stroke.transparent;
-                gfx_trans_affine mtx;
-                mtx = *static_cast<gfx_trans_affine*>(m_pattern_stroke.matrix);
-                mtx *= gfx_trans_affine_translation(sround(dr.x()), sround(dr.y()));
+                trans_affine mtx;
+                mtx = *(m_pattern_stroke.matrix);
+                mtx *= trans_affine_translation(sround(dr.x()), sround(dr.y()));
                 mtx *= stable_matrix(static_cast<gfx_raster_adapter*>(raster)->transformation());
                 mtx.invert();
 
@@ -667,8 +667,8 @@ inline void gfx_painter<Pixfmt>::apply_fill_impl(abstract_raster_adapter* raster
                 pixfmt2 canvas_fmt(*static_cast<gfx_rendering_buffer*>(m_image_source.buffer));
 
                 rect_s dr = m_image_source.rect;
-                gfx_trans_affine mtx;
-                mtx *= gfx_trans_affine_translation(sround(dr.x()), sround(dr.y()));
+                trans_affine mtx;
+                mtx *= trans_affine_translation(sround(dr.x()), sround(dr.y()));
                 mtx *= stable_matrix(static_cast<gfx_raster_adapter*>(raster)->transformation());
                 mtx.invert();
 
@@ -713,9 +713,9 @@ inline void gfx_painter<Pixfmt>::apply_fill_impl(abstract_raster_adapter* raster
                 scalar xs = (scalar)dr.width() / m_image_source.buffer->width();
                 scalar ys = (scalar)dr.height() / m_image_source.buffer->height();
 
-                gfx_trans_affine mtx;
-                mtx *= gfx_trans_affine_scaling(xs, ys);
-                mtx *= gfx_trans_affine_translation(sround(dr.x()), sround(dr.y()));
+                trans_affine mtx;
+                mtx *= trans_affine_scaling(xs, ys);
+                mtx *= trans_affine_translation(sround(dr.x()), sround(dr.y()));
                 mtx *= stable_matrix(static_cast<gfx_raster_adapter*>(raster)->transformation());
                 mtx.invert();
 
@@ -776,9 +776,9 @@ inline void gfx_painter<Pixfmt>::apply_fill_impl(abstract_raster_adapter* raster
 
                 rect_s dr = m_pattern_source.rect;
                 bool transparent = m_pattern_source.transparent;
-                gfx_trans_affine mtx;
-                mtx = *static_cast<gfx_trans_affine*>(m_pattern_source.matrix);
-                mtx *= gfx_trans_affine_translation(sround(dr.x()), sround(dr.y()));
+                trans_affine mtx;
+                mtx = *(m_pattern_source.matrix);
+                mtx *= trans_affine_translation(sround(dr.x()), sround(dr.y()));
                 mtx *= stable_matrix(static_cast<gfx_raster_adapter*>(raster)->transformation());
                 mtx.invert();
 
@@ -861,7 +861,7 @@ inline void gfx_painter<Pixfmt>::apply_fill(abstract_raster_adapter* raster)
                 gfx_gradient_adapter* gradient = static_cast<gfx_gradient_adapter*>(m_gradient_source.gradient);
                 gradient->build();
 
-                gfx_trans_affine mtx;
+                trans_affine mtx;
                 mtx = gradient->matrix();
                 mtx *= stable_matrix(static_cast<gfx_raster_adapter*>(raster)->transformation());
                 mtx.invert();
@@ -889,11 +889,9 @@ inline void gfx_painter<Pixfmt>::apply_fill(abstract_raster_adapter* raster)
 }
 
 template <typename Pixfmt>
-inline void gfx_painter<Pixfmt>::apply_clip_path(const vertex_source& v, int rule, const abstract_trans_affine* mtx)
+inline void gfx_painter<Pixfmt>::apply_clip_path(const vertex_source& v, int rule, const trans_affine* mtx)
 {
-    abstract_trans_affine* cm = const_cast<abstract_trans_affine*>(mtx);
-    gfx_trans_affine* m = static_cast<gfx_trans_affine*>(cm);
-    conv_transform p(const_cast<vertex_source&>(v), m);
+    conv_transform p(const_cast<vertex_source&>(v), mtx);
 
     if (m_draw_shadow) { //in shadow draw context.
         m_shadow_base.add_clipping(p, (picasso::filling_rule)rule);

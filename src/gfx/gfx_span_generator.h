@@ -9,9 +9,9 @@
 
 #include "common.h"
 #include "data_vector.h"
+#include "matrix.h"
 
 #include "gfx_line_generator.h"
-#include "gfx_trans_affine.h"
 
 namespace gfx {
 
@@ -53,7 +53,7 @@ public:
         subpixel_scale = 1 << subpixel_shift,
     };
 
-    gfx_span_interpolator_linear(const gfx_trans_affine& trans)
+    gfx_span_interpolator_linear(const trans_affine& trans)
         : m_trans(&trans)
     {
     }
@@ -92,7 +92,7 @@ public:
     }
 
 private:
-    const gfx_trans_affine* m_trans;
+    const trans_affine* m_trans;
     gfx_dda2_line_interpolator m_li_x;
     gfx_dda2_line_interpolator m_li_y;
 };

@@ -9,10 +9,10 @@
 
 #include "common.h"
 #include "interfaces.h"
+#include "matrix.h"
 
 #include "gfx_pixfmt_wrapper.h"
 #include "gfx_span_generator.h"
-#include "gfx_trans_affine.h"
 
 #include "picasso_gradient.h"
 
@@ -199,10 +199,9 @@ public:
         m_build = false;
     }
 
-    virtual void transform(const abstract_trans_affine* mtx)
+    virtual void transform(const trans_affine* mtx)
     {
-        _REGISTER_ const gfx_trans_affine* m = static_cast<const gfx_trans_affine*>(mtx);
-        m_matrix *= (*const_cast<gfx_trans_affine*>(m));
+        m_matrix *= (*mtx);
     }
 
     void build(void)
@@ -217,13 +216,13 @@ public:
     scalar start(void) { return m_start; }
     scalar length(void) { return m_length; }
     gfx_gradient_table& colors(void) { return m_colors; }
-    gfx_trans_affine& matrix(void) { return m_matrix; }
+    trans_affine& matrix(void) { return m_matrix; }
 private:
     gfx_gradient_wrapper* m_wrapper;
     scalar m_start;
     scalar m_length;
     bool m_build;
-    gfx_trans_affine m_matrix;
+    trans_affine m_matrix;
     gfx_gradient_table m_colors;
 };
 
