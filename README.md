@@ -39,6 +39,9 @@ cd proj
 <open "picasso.xcodeproj" with Xcode>
 ```
 
+## **Documents**
+[API Reference Documents](http://onecoolx.github.io/picasso/html/modules.html)
+
 ## **Gallery**
 ### **alpha blending**
 ![](http://onecoolx.github.io/picasso/res/flowers.png)
