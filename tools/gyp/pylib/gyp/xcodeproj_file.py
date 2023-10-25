@@ -138,19 +138,17 @@ a project file is output.
 """
 
 import gyp.common
+from functools import cmp_to_key
 import hashlib
+from operator import attrgetter
 import posixpath
 import re
 import struct
 import sys
 
-try:
-    basestring, cmp, unicode
-except NameError:  # Python 3
-    basestring = unicode = str
 
-    def cmp(x, y):
-        return (x > y) - (x < y)
+def cmp(x, y):
+    return (x > y) - (x < y)
 
 
 # See XCObject._EncodeString.  This pattern is used to determine when a string
@@ -199,7 +197,7 @@ def ConvertVariablesToShellSyntax(input_string):
     return re.sub(r"\$\((.*?)\)", "${\\1}", input_string)
 
 
-class XCObject(object):
+class XCObject:
     """The abstract base of all class types used in Xcode project files.
 
   Class variables:
@@ -301,6 +299,8 @@ class XCObject(object):
         try:
             name = self.Name()
         except NotImplementedError:
+#            return f"<{self.__class__.__name__} at 0x{id(self):x}>"
+#        return f"<{self.__class__.__name__} {name!r} at 0x{id(self):x}>"
             return "<%s at 0x%x>" % (self.__class__.__name__, id(self))
         return "<%s %r at 0x%x>" % (self.__class__.__name__, name, id(self))
 
@@ -325,7 +325,7 @@ class XCObject(object):
                     that._properties[key] = new_value
                 else:
                     that._properties[key] = value
-            elif isinstance(value, (basestring, int)):
+            elif isinstance(value, (str, int)):
                 that._properties[key] = value
             elif isinstance(value, list):
                 if is_strong:
@@ -427,6 +427,8 @@ class XCObject(object):
       """
 
             hash.update(struct.pack(">i", len(data)))
+            if isinstance(data, str):
+                data = data.encode("utf-8")
             hash.update(data)
 
         if seed_hash is None:
@@ -515,7 +517,7 @@ class XCObject(object):
         return None
 
     def _EncodeComment(self, comment):
-        """Encodes a comment to be placed in the project file output, mimicing
+        """Encodes a comment to be placed in the project file output, mimicking
     Xcode behavior.
     """
 
@@ -543,7 +545,7 @@ class XCObject(object):
         return self._encode_transforms[ord(char)]
 
     def _EncodeString(self, value):
-        """Encodes a string to be placed in the project file output, mimicing
+        """Encodes a string to be placed in the project file output, mimicking
     Xcode behavior.
     """
 
@@ -586,7 +588,7 @@ class XCObject(object):
 
     def _XCPrintableValue(self, tabs, value, flatten_list=False):
         """Returns a representation of value that may be printed in a project file,
-    mimicing Xcode's behavior.
+    mimicking Xcode's behavior.
 
     _XCPrintableValue can handle str and int values, XCObjects (which are
     made printable by returning their id property), and list and dict objects
@@ -616,7 +618,7 @@ class XCObject(object):
             comment = value.Comment()
         elif isinstance(value, str):
             printable += self._EncodeString(value)
-        elif isinstance(value, basestring):
+        elif isinstance(value, str):
             printable += self._EncodeString(value.encode("utf-8"))
         elif isinstance(value, int):
             printable += str(value)
@@ -791,7 +793,7 @@ class XCObject(object):
                     )
                 for item in value:
                     if not isinstance(item, property_type) and not (
-                        isinstance(item, basestring) and property_type == str
+                        isinstance(item, str) and property_type == str
                     ):
                         # Accept unicode where str is specified.  str is treated as
                         # UTF-8-encoded.
@@ -806,7 +808,7 @@ class XCObject(object):
                             + item.__class__.__name__
                         )
             elif not isinstance(value, property_type) and not (
-                isinstance(value, basestring) and property_type == str
+                isinstance(value, str) and property_type == str
             ):
                 # Accept unicode where str is specified.  str is treated as
                 # UTF-8-encoded.
@@ -827,12 +829,12 @@ class XCObject(object):
                         self._properties[property] = value.Copy()
                     else:
                         self._properties[property] = value
-                elif isinstance(value, (basestring, int)):
+                elif isinstance(value, (str, int)):
                     self._properties[property] = value
                 elif isinstance(value, list):
                     if is_strong:
-                        # If is_strong is True, each element is an XCObject, so it's safe
-                        # to call Copy.
+                        # If is_strong is True, each element is an XCObject,
+                        # so it's safe to call Copy.
                         self._properties[property] = []
                         for item in value:
                             self._properties[property].append(item.Copy())
@@ -1487,7 +1489,7 @@ class PBXGroup(XCHierarchicalElement):
 
     def SortGroup(self):
         self._properties["children"] = sorted(
-            self._properties["children"], cmp=lambda x, y: x.Compare(y)
+            self._properties["children"], key=cmp_to_key(lambda x, y: x.Compare(y))
         )
 
         # Recurse.
@@ -2132,9 +2134,10 @@ class PBXCopyFilesBuildPhase(XCBuildPhase):
                     # to the target. Xcode uses the dstSubfolderSpec value set here
                     # to determine the full path.
                     #
-                    # An alternative of xcode_emulation.py setting the values to absolute
-                    # paths when exporting these variables has been ruled out because
-                    # then the values would be different depending on the build tool.
+                    # An alternative of xcode_emulation.py setting the values to
+                    # absolute paths when exporting these variables has been
+                    # ruled out because then the values would be different
+                    # depending on the build tool.
                     #
                     # Another alternative is to invent new names for the variables used
                     # to match to the subfolder indices in the second table. .gyp files
@@ -2146,7 +2149,8 @@ class PBXCopyFilesBuildPhase(XCBuildPhase):
                     # Requiring prepending BUILT_PRODUCTS_DIR has been chosen because
                     # this same way could be used to specify destinations in .gyp files
                     # that pre-date this addition to GYP. However they would only work
-                    # with the Xcode generator. The previous version of xcode_emulation.py
+                    # with the Xcode generator.
+                    # The previous version of xcode_emulation.py
                     # does not export these variables. Such files will get the benefit
                     # of the Xcode UI showing the proper destination name simply by
                     # regenerating the projects with this version of GYP.
@@ -2183,6 +2187,7 @@ class PBXCopyFilesBuildPhase(XCBuildPhase):
             relative_path = path[1:]
         else:
             raise ValueError(
+                #f"Can't use path {path} in a {self.__class__.__name__}"
                 "Can't use path %s in a %s" % (path, self.__class__.__name__)
             )
 
@@ -2248,6 +2253,8 @@ class PBXContainerItemProxy(XCObject):
 
     def __repr__(self):
         props = self._properties
+        #name = "{}.gyp:{}".format(props["containerPortal"].Name(), props["remoteInfo"])
+        #return f"<{self.__class__.__name__} {name!r} at 0x{id(self):x}>"
         name = "%s.gyp:%s" % (props["containerPortal"].Name(), props["remoteInfo"])
         return "<%s %r at 0x%x>" % (self.__class__.__name__, name, id(self))
 
@@ -2286,6 +2293,7 @@ class PBXTargetDependency(XCObject):
 
     def __repr__(self):
         name = self._properties.get("name") or self._properties["target"].Name()
+        #return f"<{self.__class__.__name__} {name!r} at 0x{id(self):x}>"
         return "<%s %r at 0x%x>" % (self.__class__.__name__, name, id(self))
 
     def Name(self):
@@ -2768,7 +2776,7 @@ class PBXProject(XCContainerPortal):
         self.path = path
         self._other_pbxprojects = {}
         # super
-        return XCContainerPortal.__init__(self, properties, id, parent)
+        XCContainerPortal.__init__(self, properties, id, parent)
 
     def Name(self):
         name = self.path
@@ -2893,7 +2901,7 @@ class PBXProject(XCContainerPortal):
         # according to their defined order.
         self._properties["mainGroup"]._properties["children"] = sorted(
             self._properties["mainGroup"]._properties["children"],
-            cmp=lambda x, y: x.CompareRootGroup(y),
+            key=cmp_to_key(lambda x, y: x.CompareRootGroup(y)),
         )
 
         # Sort everything else by putting group before files, and going
@@ -2988,9 +2996,7 @@ class PBXProject(XCContainerPortal):
             # Xcode seems to sort this list case-insensitively
             self._properties["projectReferences"] = sorted(
                 self._properties["projectReferences"],
-                cmp=lambda x, y: cmp(
-                    x["ProjectRef"].Name().lower(), y["ProjectRef"].Name().lower()
-                ),
+                key=lambda x: x["ProjectRef"].Name().lower()
             )
         else:
             # The link already exists.  Pull out the relevnt data.
@@ -3122,7 +3128,8 @@ class PBXProject(XCContainerPortal):
             product_group = ref_dict["ProductGroup"]
             product_group._properties["children"] = sorted(
                 product_group._properties["children"],
-                cmp=lambda x, y, rp=remote_products: CompareProducts(x, y, rp),
+                key=cmp_to_key(
+                    lambda x, y, rp=remote_products: CompareProducts(x, y, rp)),
             )
 
 
@@ -3157,7 +3164,7 @@ class XCProjectFile(XCObject):
         else:
             self._XCPrint(file, 0, "{\n")
         for property, value in sorted(
-            self._properties.items(), cmp=lambda x, y: cmp(x, y)
+            self._properties.items()
         ):
             if property == "objects":
                 self._PrintObjects(file)
@@ -3185,7 +3192,7 @@ class XCProjectFile(XCObject):
             self._XCPrint(file, 0, "\n")
             self._XCPrint(file, 0, "/* Begin " + class_name + " section */\n")
             for object in sorted(
-                objects_by_class[class_name], cmp=lambda x, y: cmp(x.id, y.id)
+                objects_by_class[class_name], key=attrgetter("id")
             ):
                 object.Print(file)
             self._XCPrint(file, 0, "/* End " + class_name + " section */\n")
