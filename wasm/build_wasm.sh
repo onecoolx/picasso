@@ -2,7 +2,7 @@
 
 emmake make -f Makefile.em
 
-emcc --no-entry -sEXPORTED_FUNCTIONS=@export.list libpicasso.a -o picasso.wasm
+emcc --no-entry -s"ALLOW_MEMORY_GROWTH=1" -s"EXPORTED_FUNCTIONS=@export.list" -s"EXPORTED_RUNTIME_METHODS=@runtime.list" libpicasso.a -o picasso.wasm
 
 emmake make -f Makefile.em clean
 

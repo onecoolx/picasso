@@ -192,4 +192,6 @@
     _ps_path_add_rounded_rect
     _ps_path_add_sub_path
     _ps_path_clipping
+    _malloc
+    _free
 
