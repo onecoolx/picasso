@@ -29,8 +29,7 @@ jobs:
         python-version: '3.x'
     - name: Install Python3 Distutils
       run: |
-        python -m pip install --upgrade pip setuptools wheel
-        pip install distutils
+        python -m pip install --upgrade pip setuptools wheel packaging
 
     - name: Generate Project
       run: ./build_windows.bat
