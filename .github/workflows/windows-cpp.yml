@@ -29,9 +29,9 @@ jobs:
         python-version: '3.x'
     - name: Install Python3 Distutils
       run: |
-        sudo apt-get update
-        sudo apt-get install python3-distutils
-        sudo apt-get install python3-apt
+        apt-get update
+        apt-get install python3-distutils
+        apt-get install python3-apt
 
     - name: Generate Project
       run: ./build_windows.bat
