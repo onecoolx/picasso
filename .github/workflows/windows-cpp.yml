@@ -27,6 +27,8 @@ jobs:
       uses: actions/setup-python@v3
       with:
         python-version: '3.x'
+    - name: Install Python3 Distutils
+      run: sudo apt update && sudo apt install python3-distutils && sudo apt install python3-apt
 
     - name: Generate Project
       run: ./build_windows.bat
