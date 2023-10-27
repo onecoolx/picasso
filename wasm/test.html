@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Picasso Test</title>
+  <script src="./lib.js" type="module"></script>
+</head>
+<body>
+    <canvas id="canvas" width="640" height="480"/>
+    <script type="module">
+        import Picasso from './lib.js';
+
+        var h5canvas = document.getElementById("canvas");
+
+        var p = new Picasso();
+        p.init(h5canvas, (ps) => {
+            // get main picasso canvas object.
+            var canvas = ps.canvas;
+            var ctx = ps.createContext(canvas);
+
+
+            function draw(time) {
+
+                //let c = {r:1, g:0, b:1, a:0.5};
+                //let c = 0xFF0000FF;
+                let c = "lett";
+                ctx.setSourceColor(c); 
+                ctx.clear();
+      
+
+                canvas.flush();
+                window.requestAnimationFrame(draw);
+            }
+
+            window.requestAnimationFrame(draw);
+        });
+
+    </script>
+</body>
+</html>
