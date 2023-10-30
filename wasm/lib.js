@@ -10,7 +10,7 @@ const wasmImports = {
     fd_write: (fd, iov, iovn, pn)=>{},
     emscripten_resize_heap: (d,s,n)=>{},
     emscripten_memcpy_js: (s)=>{},
-    emscripten_notify_memory_growth: (s) =>{},    
+    emscripten_notify_memory_growth: (s) =>{},
     abort: ()=>{},
 };
 
@@ -23,10 +23,44 @@ function _getExportWrapper(instance, name) {
     return instance.exports[name];
 }
 
-function _createColorBuffer(vm, color) {
-    let cv = vm._malloc(16);
+function _createDataBuffer(vm, bytes) {
+    return vm._malloc(bytes);
+}
+
+function _createRectBuffer(vm, rc, y, w, h) {
+    let cv = _createDataBuffer(vm, 16);
     let buffer = vm._HEAPF32.subarray((cv>>2), (cv>>2) + 4);
-    if (typeof color === "number") {
+    if (y !== undefined && w !== undefined && h !== undefined) {
+        buffer[0] = rc;
+        buffer[1] = y;
+        buffer[2] = w;
+        buffer[3] = h;
+    } else if (typeof rc === "object") {
+        if (typeof rc.x !== "number" ||
+                typeof rc.y !== "number" ||
+                typeof rc.w !== "number" ||
+                typeof rc.h !== "number") {
+            throw TypeError("Rect value object must be {x:<number>, y:<number>, w:<number>, h:<number>}");
+        }
+        buffer[0] = typeof rc.x === "number" ? rc.x : 0.0;
+        buffer[1] = typeof rc.y === "number" ? rc.y : 0.0;
+        buffer[2] = typeof rc.w === "number" ? rc.w : 0.0;
+        buffer[3] = typeof rc.h === "number" ? rc.h : 0.0;
+    } else {
+        throw TypeError("Rect values is not numbers or object!");
+    }
+    return cv;
+}
+
+function _createColorBuffer(vm, color, g, b, a) {
+    let cv = _createDataBuffer(vm, 16);
+    let buffer = vm._HEAPF32.subarray((cv>>2), (cv>>2) + 4);
+    if (g !== undefined && b !== undefined && a !== undefined) {
+        buffer[0] = (color <= 1.0 && color >= 0.0) ? color : color / 255.0;
+        buffer[1] = (g <= 1.0 && g >= 0.0) ? g : g / 255.0;
+        buffer[2] = (b <= 1.0 && b >= 0.0) ? b : b / 255.0;
+        buffer[3] = (a <= 1.0 && a >= 0.0) ? a : a / 255.0;
+    } else if (typeof color === "number") {
         buffer[0] = (color >>> 24) / 255.0;
         buffer[1] = (color >> 16 & 0xFF) / 255.0;
         buffer[2] = (color >> 8 & 0xFF) / 255.0;
@@ -101,48 +135,48 @@ class Context {
         this._ps_mask_ref = _getExportWrapper(instance, 'ps_mask_ref');
         this._ps_mask_unref = _getExportWrapper(instance, 'ps_mask_unref');
         this._ps_mask_add_color_filter = _getExportWrapper(instance, 'ps_mask_add_color_filter');
-        this._ps_context_create = _getExportWrapper(instance, 'ps_context_create');
-        this._ps_context_ref = _getExportWrapper(instance, 'ps_context_ref');
-        this._ps_context_set_canvas = _getExportWrapper(instance, 'ps_context_set_canvas');
-        this._ps_context_get_canvas = _getExportWrapper(instance, 'ps_context_get_canvas');
-        this._ps_context_unref = _getExportWrapper(instance, 'ps_context_unref');
+        this._ps_context_create = _getExportWrapper(instance, 'ps_context_create'); // RED
+        this._ps_context_ref = _getExportWrapper(instance, 'ps_context_ref'); // DEL
+        this._ps_context_set_canvas = _getExportWrapper(instance, 'ps_context_set_canvas'); // DEL
+        this._ps_context_get_canvas = _getExportWrapper(instance, 'ps_context_get_canvas'); // DEL
+        this._ps_context_unref = _getExportWrapper(instance, 'ps_context_unref'); // RED
         this._ps_set_source_gradient = _getExportWrapper(instance, 'ps_set_source_gradient');
         this._ps_set_source_pattern = _getExportWrapper(instance, 'ps_set_source_pattern');
         this._ps_set_source_image = _getExportWrapper(instance, 'ps_set_source_image');
-        this._ps_set_source_color = _getExportWrapper(instance, 'ps_set_source_color');
+        this._ps_set_source_color = _getExportWrapper(instance, 'ps_set_source_color'); // RED
         this._ps_set_source_canvas = _getExportWrapper(instance, 'ps_set_source_canvas');
-        this._ps_set_stroke_color = _getExportWrapper(instance, 'ps_set_stroke_color');
+        this._ps_set_stroke_color = _getExportWrapper(instance, 'ps_set_stroke_color'); // RED
         this._ps_set_stroke_image = _getExportWrapper(instance, 'ps_set_stroke_image');
         this._ps_set_stroke_pattern = _getExportWrapper(instance, 'ps_set_stroke_pattern');
         this._ps_set_stroke_gradient = _getExportWrapper(instance, 'ps_set_stroke_gradient');
         this._ps_set_stroke_canvas = _getExportWrapper(instance, 'ps_set_stroke_canvas');
         this._ps_set_filter = _getExportWrapper(instance, 'ps_set_filter');
-        this._ps_stroke = _getExportWrapper(instance, 'ps_stroke');
-        this._ps_fill = _getExportWrapper(instance, 'ps_fill');
-        this._ps_paint = _getExportWrapper(instance, 'ps_paint');
-        this._ps_clear = _getExportWrapper(instance, 'ps_clear');
+        this._ps_stroke = _getExportWrapper(instance, 'ps_stroke'); // RED
+        this._ps_fill = _getExportWrapper(instance, 'ps_fill'); // RED
+        this._ps_paint = _getExportWrapper(instance, 'ps_paint'); // RED
+        this._ps_clear = _getExportWrapper(instance, 'ps_clear'); // RED
         this._ps_set_alpha = _getExportWrapper(instance, 'ps_set_alpha');
         this._ps_set_blur = _getExportWrapper(instance, 'ps_set_blur');
         this._ps_set_gamma = _getExportWrapper(instance, 'ps_set_gamma');
         this._ps_set_antialias = _getExportWrapper(instance, 'ps_set_antialias');
         this._ps_set_shadow = _getExportWrapper(instance, 'ps_set_shadow');
         this._ps_set_shadow_color = _getExportWrapper(instance, 'ps_set_shadow_color');
-        this._ps_reset_shadow = _getExportWrapper(instance, 'ps_reset_shadow');
+        this._ps_reset_shadow = _getExportWrapper(instance, 'ps_reset_shadow'); // RED
         this._ps_set_fill_rule = _getExportWrapper(instance, 'ps_set_fill_rule');
         this._ps_set_line_cap = _getExportWrapper(instance, 'ps_set_line_cap');
         this._ps_set_line_inner_join = _getExportWrapper(instance, 'ps_set_line_inner_join');
         this._ps_set_line_join = _getExportWrapper(instance, 'ps_set_line_join');
         this._ps_set_line_width = _getExportWrapper(instance, 'ps_set_line_width');
         this._ps_set_miter_limit = _getExportWrapper(instance, 'ps_set_miter_limit');
-        this._ps_set_line_dash = _getExportWrapper(instance, 'ps_set_line_dash');
-        this._ps_reset_line_dash = _getExportWrapper(instance, 'ps_reset_line_dash');
-        this._ps_new_path = _getExportWrapper(instance, 'ps_new_path');
+        this._ps_set_line_dash = _getExportWrapper(instance, 'ps_set_line_dash'); // RED
+        this._ps_reset_line_dash = _getExportWrapper(instance, 'ps_reset_line_dash'); // RED
+        this._ps_new_path = _getExportWrapper(instance, 'ps_new_path'); // RED
         this._ps_add_sub_path = _getExportWrapper(instance, 'ps_add_sub_path');
         this._ps_new_sub_path = _getExportWrapper(instance, 'ps_new_sub_path');
-        this._ps_rectangle = _getExportWrapper(instance, 'ps_rectangle');
-        this._ps_rounded_rect = _getExportWrapper(instance, 'ps_rounded_rect');
+        this._ps_rectangle = _getExportWrapper(instance, 'ps_rectangle'); // RED
+        this._ps_rounded_rect = _getExportWrapper(instance, 'ps_rounded_rect'); // RED
         this._ps_ellipse = _getExportWrapper(instance, 'ps_ellipse');
-        this._ps_close_path = _getExportWrapper(instance, 'ps_close_path');
+        this._ps_close_path = _getExportWrapper(instance, 'ps_close_path'); // RED
         this._ps_move_to = _getExportWrapper(instance, 'ps_move_to');
         this._ps_line_to = _getExportWrapper(instance, 'ps_line_to');
         this._ps_bezier_curve_to = _getExportWrapper(instance, 'ps_bezier_curve_to');
@@ -150,26 +184,26 @@ class Context {
         this._ps_arc = _getExportWrapper(instance, 'ps_arc');
         this._ps_tangent_arc = _getExportWrapper(instance, 'ps_tangent_arc');
         this._ps_set_path = _getExportWrapper(instance, 'ps_set_path');
-        this._ps_get_path = _getExportWrapper(instance, 'ps_get_path');
+        this._ps_get_path = _getExportWrapper(instance, 'ps_get_path'); // DEL
         this._ps_translate = _getExportWrapper(instance, 'ps_translate');
         this._ps_scale = _getExportWrapper(instance, 'ps_scale');
         this._ps_shear = _getExportWrapper(instance, 'ps_shear');
         this._ps_rotate = _getExportWrapper(instance, 'ps_rotate');
-        this._ps_identity = _getExportWrapper(instance, 'ps_identity');
+        this._ps_identity = _getExportWrapper(instance, 'ps_identity'); // RED
         this._ps_transform = _getExportWrapper(instance, 'ps_transform');
         this._ps_set_matrix = _getExportWrapper(instance, 'ps_set_matrix');
         this._ps_get_matrix = _getExportWrapper(instance, 'ps_get_matrix');
         this._ps_world_to_viewport = _getExportWrapper(instance, 'ps_world_to_viewport');
         this._ps_viewport_to_world = _getExportWrapper(instance, 'ps_viewport_to_world');
         this._ps_set_composite_operator = _getExportWrapper(instance, 'ps_set_composite_operator');
-        this._ps_clip = _getExportWrapper(instance, 'ps_clip');
+        this._ps_clip = _getExportWrapper(instance, 'ps_clip'); // RED
         this._ps_clip_path = _getExportWrapper(instance, 'ps_clip_path');
         this._ps_clip_device_rect = _getExportWrapper(instance, 'ps_clip_device_rect');
         this._ps_clip_rect = _getExportWrapper(instance, 'ps_clip_rect');
         this._ps_clip_rects = _getExportWrapper(instance, 'ps_clip_rects');
-        this._ps_reset_clip = _getExportWrapper(instance, 'ps_reset_clip');
-        this._ps_save = _getExportWrapper(instance, 'ps_save');
-        this._ps_restore = _getExportWrapper(instance, 'ps_restore');
+        this._ps_reset_clip = _getExportWrapper(instance, 'ps_reset_clip'); // RED
+        this._ps_save = _getExportWrapper(instance, 'ps_save'); // RED
+        this._ps_restore = _getExportWrapper(instance, 'ps_restore'); // RED
     }
 
     create(canvas) {
@@ -180,10 +214,103 @@ class Context {
         this._ps_clear(this._ctx);
     }
 
-    setSourceColor(color) {
-        let cv = _createColorBuffer(this._ps, color); 
+    stroke() {
+        this._ps_stroke(this._ctx);
+    }
+
+    fill() {
+        this._ps_fill(this._ctx);
+    }
+
+    paint() {
+        this._ps_paint(this._ctx);
+    }
+
+    clip() {
+        this._ps_clip(this._ctx);
+    }
+
+    save() {
+        this._ps_save(this._ctx);
+    }
+
+    restore() {
+        this._ps_restore(this._ctx);
+    }
+
+    resetClip() {
+        this._ps_reset_clip(this._ctx);
+    }
+
+    resetShadow() {
+        this._ps_reset_shadow(this._ctx);
+    }
+
+    resetLineDash() {
+        this._ps_reset_line_dash(this._ctx);
+    }
+
+    identity() {
+        this._ps_identity(this._ctx);
+    }
+
+    closePath() {
+        this._ps_close_path(this._ctx);
+    }
+
+    rectangle(rc/* x */, y, w, h) {
+        let cv = _createRectBuffer(this._ps, rc, y, w, h);
+        this._ps_rectangle(this._ctx, cv);
+        _destoryBuffer(this._ps, cv);
+    }
+
+    roundedRect(rrc) {
+        let cv = _createDataBuffer(this._ps, 16);
+        let buffer = this._ps._HEAPF32.subarray((cv>>2), (cv>>2) + 4);
+        if (typeof rrc === "object") {
+            if (typeof rrc.x !== "number" ||
+                    typeof rrc.y !== "number" ||
+                    typeof rrc.w !== "number" ||
+                    typeof rrc.h !== "number") {
+                throw TypeError("RoundedRect value object must be {x:<number>, y:<number>, w:<number>, h:<number>, "+
+                       "[optional]ltx:<number>, [optional]lty:<number>, [optional]rtx:<number>, [optional]rty:<number>, "+
+                       "[optional]lbx:<numner>, [optional]lby:<number>, [optional]rbx:<number>, [optional]rby:<number>}");
+            }
+            buffer[0] = typeof rrc.x === "number" ? rrc.x : 0.0;
+            buffer[1] = typeof rrc.y === "number" ? rrc.y : 0.0;
+            buffer[2] = typeof rrc.w === "number" ? rrc.w : 0.0;
+            buffer[3] = typeof rrc.h === "number" ? rrc.h : 0.0;
+        } else {
+            throw TypeError("Rect values is not numbers or object!");
+        }
+
+        let ltx = typeof rrc.ltx === "number" ? rrc.ltx : 0.0;
+        let lty = typeof rrc.lty === "number" ? rrc.lty : 0.0;
+        let rtx = typeof rrc.rtx === "number" ? rrc.rtx : 0.0;
+        let rty = typeof rrc.rty === "number" ? rrc.rty : 0.0;
+        let lbx = typeof rrc.lbx === "number" ? rrc.lbx : 0.0;
+        let lby = typeof rrc.lby === "number" ? rrc.lby : 0.0;
+        let rbx = typeof rrc.rbx === "number" ? rrc.rbx : 0.0;
+        let rby = typeof rrc.rby === "number" ? rrc.rby : 0.0;
+
+        this._ps_rounded_rect(this._ctx, cv, ltx, lty, rtx, rty, lbx, lby, rbx, rby);
+        _destoryBuffer(this._ps, cv);
+    }
+
+    newPath() {
+        this._ps_new_path(this._ctx);
+    }
+
+    setSourceColor(color/* r */, g, b, a) {
+        let cv = _createColorBuffer(this._ps, color, g, b, a);
         this._ps_set_source_color(this._ctx, cv);
-        _destoryBuffer(this._ps, cv); 
+        _destoryBuffer(this._ps, cv);
+    }
+
+    setStrokeColor(color/* r */, g, b, a) {
+        let cv = _createColorBuffer(this._ps, color, g, b, a);
+        this._ps_set_stroke_color(this._ctx, cv);
+        _destoryBuffer(this._ps, cv);
     }
 
     destroy() {
@@ -302,7 +429,7 @@ export default class Picasso {
                 onFail();
         });
     }
-    
+
     get version() {
         return this._ps_version();
     }
@@ -324,10 +451,10 @@ export default class Picasso {
         ctx.create(canvas);
         return ctx;
     }
-    
+
     destroy() {
         this._canvas.destroy();
-        this._canvas = undefined; 
+        this._canvas = undefined;
         this._ps_shutdown();
     }
 }

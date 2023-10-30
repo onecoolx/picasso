@@ -20,13 +20,22 @@
 
             function draw(time) {
 
-                //let c = {r:1, g:0, b:1, a:0.5};
                 //let c = 0xFF0000FF;
-                let c = "lett";
-                ctx.setSourceColor(c); 
-                ctx.clear();
-      
+                ctx.setSourceColor(255, 0, 0, 1.0);
+               // ctx.rectangle(100, 100, 200, 300);
+                let rc = {x:50, y:50, w:100, h:100};
+                ctx.rectangle(rc);
+                ctx.fill();
 
+                let rrc = {x:200, y:50, w:100, h:100, ltx:10, lty:10, rtx:10, rty:10};
+                let c = {r:0, g:1, b:0, a:1};
+                ctx.setSourceColor(c); 
+                ctx.roundedRect(rrc);
+                ctx.fill();
+
+
+                //ctx.stroke();
+                //ctx.paint();
                 canvas.flush();
                 window.requestAnimationFrame(draw);
             }
