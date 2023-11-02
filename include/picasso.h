@@ -1336,6 +1336,7 @@ PEXPORT void PICAPI ps_set_line_inner_join(ps_context* ctx, ps_line_inner_join l
  *
  * \param ctx     Pointer to an existing context object.
  * \param width   The line width to use, in pixels, must be greater than 0.
+ *                   Default value is 1.
  *
  * \return If the function succeeds, the return value is the old width.
  *         If the function fails, the return value is 0.
@@ -1352,7 +1353,8 @@ PEXPORT float PICAPI ps_set_line_width(ps_context* ctx, float width);
  * \brief Set the miter limit for the joins of connected lines in a graphics context.
  *
  * \param ctx     Pointer to an existing context object.
- * \param limit   The miter limit to use.
+ * \param limit   The miter limit to use, must be greater than 0.
+ *                   Default value is 4.
  *
  * \return If the function succeeds, the return value is the old miter limit.
  *         If the function fails, the return value is 0.
