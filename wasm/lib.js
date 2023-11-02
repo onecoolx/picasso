@@ -27,6 +27,26 @@ function _createDataBuffer(vm, bytes) {
     return vm._malloc(bytes);
 }
 
+function _createPointBuffer(vm, pt, y) {
+    let cv = _createDataBuffer(vm, 8);
+    let buffer = vm._HEAPF32.subarray((cv>>2), (cv>>2) + 2);
+
+    if (y !== undefined) {
+        buffer[0] = pt;
+        buffer[1] = y;
+    } else if (typeof pt === "object") {
+        if (typeof pt.x !== "number" ||
+                typeof pt.y !== "number") {
+            throw TypeError("Rect value object must be {x:<number>, y:<number>}");
+        }
+        buffer[0] = typeof pt.x === "number" ? pt.x : 0.0;
+        buffer[1] = typeof pt.y === "number" ? pt.y : 0.0;
+    } else {
+        throw TypeError("Point values is not numbers or object!");
+    }
+    return cv;
+}
+
 function _createRectBuffer(vm, rc, y, w, h) {
     let cv = _createDataBuffer(vm, 16);
     let buffer = vm._HEAPF32.subarray((cv>>2), (cv>>2) + 4);
@@ -155,40 +175,40 @@ class Context {
         this._ps_fill = _getExportWrapper(instance, 'ps_fill'); // RED
         this._ps_paint = _getExportWrapper(instance, 'ps_paint'); // RED
         this._ps_clear = _getExportWrapper(instance, 'ps_clear'); // RED
-        this._ps_set_alpha = _getExportWrapper(instance, 'ps_set_alpha');
-        this._ps_set_blur = _getExportWrapper(instance, 'ps_set_blur');
-        this._ps_set_gamma = _getExportWrapper(instance, 'ps_set_gamma');
-        this._ps_set_antialias = _getExportWrapper(instance, 'ps_set_antialias');
-        this._ps_set_shadow = _getExportWrapper(instance, 'ps_set_shadow');
-        this._ps_set_shadow_color = _getExportWrapper(instance, 'ps_set_shadow_color');
+        this._ps_set_alpha = _getExportWrapper(instance, 'ps_set_alpha'); // RED
+        this._ps_set_blur = _getExportWrapper(instance, 'ps_set_blur'); // RED
+        this._ps_set_gamma = _getExportWrapper(instance, 'ps_set_gamma'); // RED
+        this._ps_set_antialias = _getExportWrapper(instance, 'ps_set_antialias'); // RED
+        this._ps_set_shadow = _getExportWrapper(instance, 'ps_set_shadow'); // RED
+        this._ps_set_shadow_color = _getExportWrapper(instance, 'ps_set_shadow_color'); // RED
         this._ps_reset_shadow = _getExportWrapper(instance, 'ps_reset_shadow'); // RED
         this._ps_set_fill_rule = _getExportWrapper(instance, 'ps_set_fill_rule');
         this._ps_set_line_cap = _getExportWrapper(instance, 'ps_set_line_cap');
         this._ps_set_line_inner_join = _getExportWrapper(instance, 'ps_set_line_inner_join');
         this._ps_set_line_join = _getExportWrapper(instance, 'ps_set_line_join');
-        this._ps_set_line_width = _getExportWrapper(instance, 'ps_set_line_width');
-        this._ps_set_miter_limit = _getExportWrapper(instance, 'ps_set_miter_limit');
-        this._ps_set_line_dash = _getExportWrapper(instance, 'ps_set_line_dash'); // RED
+        this._ps_set_line_width = _getExportWrapper(instance, 'ps_set_line_width'); // RED
+        this._ps_set_miter_limit = _getExportWrapper(instance, 'ps_set_miter_limit'); // RED
+        this._ps_set_line_dash = _getExportWrapper(instance, 'ps_set_line_dash');
         this._ps_reset_line_dash = _getExportWrapper(instance, 'ps_reset_line_dash'); // RED
         this._ps_new_path = _getExportWrapper(instance, 'ps_new_path'); // RED
         this._ps_add_sub_path = _getExportWrapper(instance, 'ps_add_sub_path');
         this._ps_new_sub_path = _getExportWrapper(instance, 'ps_new_sub_path');
         this._ps_rectangle = _getExportWrapper(instance, 'ps_rectangle'); // RED
         this._ps_rounded_rect = _getExportWrapper(instance, 'ps_rounded_rect'); // RED
-        this._ps_ellipse = _getExportWrapper(instance, 'ps_ellipse');
+        this._ps_ellipse = _getExportWrapper(instance, 'ps_ellipse'); // RED
         this._ps_close_path = _getExportWrapper(instance, 'ps_close_path'); // RED
-        this._ps_move_to = _getExportWrapper(instance, 'ps_move_to');
-        this._ps_line_to = _getExportWrapper(instance, 'ps_line_to');
-        this._ps_bezier_curve_to = _getExportWrapper(instance, 'ps_bezier_curve_to');
-        this._ps_quad_curve_to = _getExportWrapper(instance, 'ps_quad_curve_to');
-        this._ps_arc = _getExportWrapper(instance, 'ps_arc');
-        this._ps_tangent_arc = _getExportWrapper(instance, 'ps_tangent_arc');
+        this._ps_move_to = _getExportWrapper(instance, 'ps_move_to'); // RED
+        this._ps_line_to = _getExportWrapper(instance, 'ps_line_to'); // RED
+        this._ps_bezier_curve_to = _getExportWrapper(instance, 'ps_bezier_curve_to'); // RED
+        this._ps_quad_curve_to = _getExportWrapper(instance, 'ps_quad_curve_to'); // RED
+        this._ps_arc = _getExportWrapper(instance, 'ps_arc'); // RED
+        this._ps_tangent_arc = _getExportWrapper(instance, 'ps_tangent_arc'); // RED
         this._ps_set_path = _getExportWrapper(instance, 'ps_set_path');
         this._ps_get_path = _getExportWrapper(instance, 'ps_get_path'); // DEL
-        this._ps_translate = _getExportWrapper(instance, 'ps_translate');
-        this._ps_scale = _getExportWrapper(instance, 'ps_scale');
-        this._ps_shear = _getExportWrapper(instance, 'ps_shear');
-        this._ps_rotate = _getExportWrapper(instance, 'ps_rotate');
+        this._ps_translate = _getExportWrapper(instance, 'ps_translate'); // RED
+        this._ps_scale = _getExportWrapper(instance, 'ps_scale'); // RED
+        this._ps_shear = _getExportWrapper(instance, 'ps_shear'); // RED
+        this._ps_rotate = _getExportWrapper(instance, 'ps_rotate'); // RED
         this._ps_identity = _getExportWrapper(instance, 'ps_identity'); // RED
         this._ps_transform = _getExportWrapper(instance, 'ps_transform');
         this._ps_set_matrix = _getExportWrapper(instance, 'ps_set_matrix');
@@ -254,6 +274,70 @@ class Context {
         this._ps_identity(this._ctx);
     }
 
+    translate(x, y) {
+        this._ps_translate(this._ctx, x, y);
+    }
+
+    scale(sx, sy) {
+        this._ps_scale(this._ctx, sx, sy);
+    }
+
+    shear(shx, shy) {
+        this._ps_shear(this._ctx, shx, shy);
+    }
+
+    rotate(a) {
+        this._ps_rotate(this._ctx, a);
+    }
+
+    moveTo(pt/*x*/, y) {
+        let cv = _createPointBuffer(this._ps, pt, y);
+        this._ps_move_to(this._ctx, cv);
+        _destoryBuffer(this._ps, cv);
+    }
+
+    lineTo(pt/*x*/, y) {
+        let cv = _createPointBuffer(this._ps, pt, y);
+        this._ps_line_to(this._ctx, cv);
+        _destoryBuffer(this._ps, cv);
+    }
+
+    quadCurveTo(cp, ep) {
+        let cv1 = _createPointBuffer(this._ps, cp);
+        let cv2 = _createPointBuffer(this._ps, ep);
+        this._ps_quad_curve_to(this._ctx, cv1, cv2);
+        _destoryBuffer(this._ps, cv2);
+        _destoryBuffer(this._ps, cv1);
+    }
+
+    bezierCurveTo(cp1, cp2, ep) {
+        let cv1 = _createPointBuffer(this._ps, cp1);
+        let cv2 = _createPointBuffer(this._ps, cp2);
+        let cv3 = _createPointBuffer(this._ps, ep);
+        this._ps_bezier_curve_to(this._ctx, cv1, cv2, cv3);
+        _destoryBuffer(this._ps, cv3);
+        _destoryBuffer(this._ps, cv2);
+        _destoryBuffer(this._ps, cv1);
+    }
+
+    arc(cp, r, sa, ea, c) {
+        if (typeof r !== "number" || typeof sa !== "number" || typeof ea !== "number" || typeof c !== "boolean") {
+            throw TypeError("Parameters must be radius:<number>, sangle:<number>, eangle:<number>, colckwise:<boolean>");
+        }
+        let cv = _createPointBuffer(this._ps, cp);
+        this._ps_arc(this._ctx, cv, r, sa, ea, c);
+        _destoryBuffer(this._ps, cv);
+    }
+
+    tangentArc(rc, sa, sw) {
+        if (typeof sa !== "number" || typeof sw !== "number") {
+            throw TypeError("Parameters must be sangle:<number>, sweep:<number>");
+        }
+        let cv = _createRectBuffer(this._ps, rc);
+        this._ps_tangent_arc(this._ctx, cv, sa, sw);
+        _destoryBuffer(this._ps, cv);
+    }
+
     closePath() {
         this._ps_close_path(this._ctx);
     }
@@ -297,6 +381,12 @@ class Context {
         _destoryBuffer(this._ps, cv);
     }
 
+    ellipse(rc/* x */, y, w, h) {
+        let cv = _createRectBuffer(this._ps, rc, y, w, h);
+        this._ps_ellipse(this._ctx, cv);
+        _destoryBuffer(this._ps, cv);
+    }
+
     newPath() {
         this._ps_new_path(this._ctx);
     }
@@ -311,6 +401,61 @@ class Context {
         let cv = _createColorBuffer(this._ps, color, g, b, a);
         this._ps_set_stroke_color(this._ctx, cv);
         _destoryBuffer(this._ps, cv);
+    }
+
+    setShadowColor(color/* r */, g, b, a) {
+        let cv = _createColorBuffer(this._ps, color, g, b, a);
+        this._ps_set_shadow_color(this._ctx, cv);
+        _destoryBuffer(this._ps, cv);
+    }
+
+    setShadow(x, y, b) {
+        if (typeof x !== "number" || typeof y !== "number" || typeof b !== "number") {
+            throw TypeError("Parameters must be <number>");
+        }
+        this._ps_set_shadow(this._ctx, x, y, b);
+    }
+
+    setAlpha(a) {
+        if (typeof a !== "number" || a < 0.0 || a > 1.0) {
+            throw TypeError("Parameter must be <number> [0 ~ 1] default 1.0");
+        }
+        this._ps_set_alpha(this._ctx, a);
+    }
+
+    setLineWidth(w) {
+        if (typeof w !== "number") {
+            throw TypeError("Parameter must be <number> [greater than 0] default 1");
+        }
+        this._ps_set_line_width(this._ctx, w);
+    }
+
+    setGamma(g) {
+        if (typeof g !== "number" || g < 0.0 || g > 3.0) {
+            throw TypeError("Parameter must be <number> [0 ~ 3] default 1.0");
+        }
+        this._ps_set_gamma(this._ctx, g);
+    }
+
+    setBlur(b) {
+        if (typeof b !== "number" || b < 0.0 || b > 1.0) {
+            throw TypeError("Parameter must be <number> [0 ~ 1] default 0.0");
+        }
+        this._ps_set_blur(this._ctx, b);
+    }
+
+    setMiterLimit(l) {
+        if (typeof l !== "number") {
+            throw TypeError("Parameter must be <number> [greater than 0] default 4.0");
+        }
+        this._ps_set_miter_limit(this._ctx, l);
+    }
+
+    setAntialias(a) {
+        if (typeof a !== "boolean") {
+            throw TypeError("Parameter must be <boolean> default true");
+        }
+        this._ps_set_antialias(this._ctx, a);
     }
 
     destroy() {
