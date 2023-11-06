@@ -81,6 +81,23 @@
                 let crc = {x:400, y:200, w:100, h:80};
                 ctx.tangentArc(crc, 0.2, 2.8);
                 ctx.stroke();
+
+
+                ctx.save();
+                ctx.setLineDash(5, [5, 8, 10, 8]);
+                ctx.moveTo(550, 200);
+                ctx.lineTo(650, 250);
+                ctx.stroke();
+                ctx.restore();
+
+                ctx.save();
+                ctx.rectangle(50, 320, 100, 100);
+                ctx.rectangle(80, 350, 40, 40);
+                ctx.setFillRule("evenodd");
+//                ctx.setFillRule("nonzero");
+                ctx.setSourceColor(0xff80ff);
+                ctx.fill();
+                ctx.restore();
                 //ctx.paint();
                 canvas.flush();
                 window.requestAnimationFrame(draw);

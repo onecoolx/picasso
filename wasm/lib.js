@@ -182,17 +182,17 @@ class Context {
         this._ps_set_shadow = _getExportWrapper(instance, 'ps_set_shadow'); // RED
         this._ps_set_shadow_color = _getExportWrapper(instance, 'ps_set_shadow_color'); // RED
         this._ps_reset_shadow = _getExportWrapper(instance, 'ps_reset_shadow'); // RED
-        this._ps_set_fill_rule = _getExportWrapper(instance, 'ps_set_fill_rule');
+        this._ps_set_fill_rule = _getExportWrapper(instance, 'ps_set_fill_rule'); // RED
         this._ps_set_line_cap = _getExportWrapper(instance, 'ps_set_line_cap');
         this._ps_set_line_inner_join = _getExportWrapper(instance, 'ps_set_line_inner_join');
         this._ps_set_line_join = _getExportWrapper(instance, 'ps_set_line_join');
         this._ps_set_line_width = _getExportWrapper(instance, 'ps_set_line_width'); // RED
         this._ps_set_miter_limit = _getExportWrapper(instance, 'ps_set_miter_limit'); // RED
-        this._ps_set_line_dash = _getExportWrapper(instance, 'ps_set_line_dash');
+        this._ps_set_line_dash = _getExportWrapper(instance, 'ps_set_line_dash'); // RED
         this._ps_reset_line_dash = _getExportWrapper(instance, 'ps_reset_line_dash'); // RED
         this._ps_new_path = _getExportWrapper(instance, 'ps_new_path'); // RED
         this._ps_add_sub_path = _getExportWrapper(instance, 'ps_add_sub_path');
-        this._ps_new_sub_path = _getExportWrapper(instance, 'ps_new_sub_path');
+        this._ps_new_sub_path = _getExportWrapper(instance, 'ps_new_sub_path'); // RED
         this._ps_rectangle = _getExportWrapper(instance, 'ps_rectangle'); // RED
         this._ps_rounded_rect = _getExportWrapper(instance, 'ps_rounded_rect'); // RED
         this._ps_ellipse = _getExportWrapper(instance, 'ps_ellipse'); // RED
@@ -264,6 +264,38 @@ class Context {
 
     resetShadow() {
         this._ps_reset_shadow(this._ctx);
+    }
+
+    setFillRule(rule) {
+        if (typeof rule !== "string") {
+            throw TypeError("Parameters must be rule:<string>");
+        }
+
+        switch (rule) {
+            case "evenodd":
+                this._ps_set_fill_rule(this._ctx, 1);
+                return;
+            case "nonzero":
+                this._ps_set_fill_rule(this._ctx, 0);
+                return;
+        }
+    }
+
+    setLineDash(s, dashes) {
+        if (typeof s !== "number" || !(dashes instanceof Array)) {
+            throw TypeError("Parameters must be start:<number>, dashes:<array>.");
+        }
+        let n = dashes.length;
+        let cv = _createDataBuffer(this._ps, n * 4);
+        let buffer = this._ps._HEAPF32.subarray((cv>>2), (cv>>2) + n);
+        for (let i = 0; i < n; i++) {
+            if (typeof dashes[i] !== "number") {
+                throw TypeError("The dashes array must be: array<number>.");
+            }
+            buffer[i] = dashes[i];
+        }
+        this._ps_set_line_dash(this._ctx, s, cv, n);
+        _destoryBuffer(this._ps, cv);
     }
 
     resetLineDash() {
@@ -389,6 +421,10 @@ class Context {
 
     newPath() {
         this._ps_new_path(this._ctx);
+    }
+
+    newSubPath() {
+        this._ps_new_sub_path(this._ctx);
     }
 
     setSourceColor(color/* r */, g, b, a) {
