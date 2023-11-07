@@ -151,79 +151,75 @@ class Context {
         this._ps_set_text_stroke_color = _getExportWrapper(instance, 'ps_set_text_stroke_color');
         this._ps_text_transform = _getExportWrapper(instance, 'ps_text_transform');
         this._ps_set_text_matrix = _getExportWrapper(instance, 'ps_set_text_matrix');
-        this._ps_mask_create_with_data = _getExportWrapper(instance, 'ps_mask_create_with_data');
-        this._ps_mask_ref = _getExportWrapper(instance, 'ps_mask_ref');
-        this._ps_mask_unref = _getExportWrapper(instance, 'ps_mask_unref');
-        this._ps_mask_add_color_filter = _getExportWrapper(instance, 'ps_mask_add_color_filter');
-        this._ps_context_create = _getExportWrapper(instance, 'ps_context_create'); // RED
+        this._ps_context_create = _getExportWrapper(instance, 'ps_context_create'); // USE
         this._ps_context_ref = _getExportWrapper(instance, 'ps_context_ref'); // DEL
         this._ps_context_set_canvas = _getExportWrapper(instance, 'ps_context_set_canvas'); // DEL
         this._ps_context_get_canvas = _getExportWrapper(instance, 'ps_context_get_canvas'); // DEL
-        this._ps_context_unref = _getExportWrapper(instance, 'ps_context_unref'); // RED
+        this._ps_context_unref = _getExportWrapper(instance, 'ps_context_unref'); // USE
         this._ps_set_source_gradient = _getExportWrapper(instance, 'ps_set_source_gradient');
         this._ps_set_source_pattern = _getExportWrapper(instance, 'ps_set_source_pattern');
         this._ps_set_source_image = _getExportWrapper(instance, 'ps_set_source_image');
-        this._ps_set_source_color = _getExportWrapper(instance, 'ps_set_source_color'); // RED
+        this._ps_set_source_color = _getExportWrapper(instance, 'ps_set_source_color'); // USE
         this._ps_set_source_canvas = _getExportWrapper(instance, 'ps_set_source_canvas');
-        this._ps_set_stroke_color = _getExportWrapper(instance, 'ps_set_stroke_color'); // RED
+        this._ps_set_stroke_color = _getExportWrapper(instance, 'ps_set_stroke_color'); // USE
         this._ps_set_stroke_image = _getExportWrapper(instance, 'ps_set_stroke_image');
         this._ps_set_stroke_pattern = _getExportWrapper(instance, 'ps_set_stroke_pattern');
         this._ps_set_stroke_gradient = _getExportWrapper(instance, 'ps_set_stroke_gradient');
         this._ps_set_stroke_canvas = _getExportWrapper(instance, 'ps_set_stroke_canvas');
-        this._ps_set_filter = _getExportWrapper(instance, 'ps_set_filter');
-        this._ps_stroke = _getExportWrapper(instance, 'ps_stroke'); // RED
-        this._ps_fill = _getExportWrapper(instance, 'ps_fill'); // RED
-        this._ps_paint = _getExportWrapper(instance, 'ps_paint'); // RED
-        this._ps_clear = _getExportWrapper(instance, 'ps_clear'); // RED
-        this._ps_set_alpha = _getExportWrapper(instance, 'ps_set_alpha'); // RED
-        this._ps_set_blur = _getExportWrapper(instance, 'ps_set_blur'); // RED
-        this._ps_set_gamma = _getExportWrapper(instance, 'ps_set_gamma'); // RED
-        this._ps_set_antialias = _getExportWrapper(instance, 'ps_set_antialias'); // RED
-        this._ps_set_shadow = _getExportWrapper(instance, 'ps_set_shadow'); // RED
-        this._ps_set_shadow_color = _getExportWrapper(instance, 'ps_set_shadow_color'); // RED
-        this._ps_reset_shadow = _getExportWrapper(instance, 'ps_reset_shadow'); // RED
-        this._ps_set_fill_rule = _getExportWrapper(instance, 'ps_set_fill_rule'); // RED
-        this._ps_set_line_cap = _getExportWrapper(instance, 'ps_set_line_cap');
-        this._ps_set_line_inner_join = _getExportWrapper(instance, 'ps_set_line_inner_join');
-        this._ps_set_line_join = _getExportWrapper(instance, 'ps_set_line_join');
-        this._ps_set_line_width = _getExportWrapper(instance, 'ps_set_line_width'); // RED
-        this._ps_set_miter_limit = _getExportWrapper(instance, 'ps_set_miter_limit'); // RED
-        this._ps_set_line_dash = _getExportWrapper(instance, 'ps_set_line_dash'); // RED
-        this._ps_reset_line_dash = _getExportWrapper(instance, 'ps_reset_line_dash'); // RED
-        this._ps_new_path = _getExportWrapper(instance, 'ps_new_path'); // RED
+        this._ps_set_filter = _getExportWrapper(instance, 'ps_set_filter'); // USE
+        this._ps_stroke = _getExportWrapper(instance, 'ps_stroke'); // USE
+        this._ps_fill = _getExportWrapper(instance, 'ps_fill'); // USE
+        this._ps_paint = _getExportWrapper(instance, 'ps_paint'); // USE
+        this._ps_clear = _getExportWrapper(instance, 'ps_clear'); // USE
+        this._ps_set_alpha = _getExportWrapper(instance, 'ps_set_alpha'); // USE
+        this._ps_set_blur = _getExportWrapper(instance, 'ps_set_blur'); // USE
+        this._ps_set_gamma = _getExportWrapper(instance, 'ps_set_gamma'); // USE
+        this._ps_set_antialias = _getExportWrapper(instance, 'ps_set_antialias'); // USE
+        this._ps_set_shadow = _getExportWrapper(instance, 'ps_set_shadow'); // USE
+        this._ps_set_shadow_color = _getExportWrapper(instance, 'ps_set_shadow_color'); // USE
+        this._ps_reset_shadow = _getExportWrapper(instance, 'ps_reset_shadow'); // USE
+        this._ps_set_fill_rule = _getExportWrapper(instance, 'ps_set_fill_rule'); // USE
+        this._ps_set_line_cap = _getExportWrapper(instance, 'ps_set_line_cap'); // USE
+        this._ps_set_line_inner_join = _getExportWrapper(instance, 'ps_set_line_inner_join'); // USE
+        this._ps_set_line_join = _getExportWrapper(instance, 'ps_set_line_join'); // USE
+        this._ps_set_line_width = _getExportWrapper(instance, 'ps_set_line_width'); // USE
+        this._ps_set_miter_limit = _getExportWrapper(instance, 'ps_set_miter_limit'); // USE
+        this._ps_set_line_dash = _getExportWrapper(instance, 'ps_set_line_dash'); // USE
+        this._ps_reset_line_dash = _getExportWrapper(instance, 'ps_reset_line_dash'); // USE
+        this._ps_new_path = _getExportWrapper(instance, 'ps_new_path'); // USE
         this._ps_add_sub_path = _getExportWrapper(instance, 'ps_add_sub_path');
-        this._ps_new_sub_path = _getExportWrapper(instance, 'ps_new_sub_path'); // RED
-        this._ps_rectangle = _getExportWrapper(instance, 'ps_rectangle'); // RED
-        this._ps_rounded_rect = _getExportWrapper(instance, 'ps_rounded_rect'); // RED
-        this._ps_ellipse = _getExportWrapper(instance, 'ps_ellipse'); // RED
-        this._ps_close_path = _getExportWrapper(instance, 'ps_close_path'); // RED
-        this._ps_move_to = _getExportWrapper(instance, 'ps_move_to'); // RED
-        this._ps_line_to = _getExportWrapper(instance, 'ps_line_to'); // RED
-        this._ps_bezier_curve_to = _getExportWrapper(instance, 'ps_bezier_curve_to'); // RED
-        this._ps_quad_curve_to = _getExportWrapper(instance, 'ps_quad_curve_to'); // RED
-        this._ps_arc = _getExportWrapper(instance, 'ps_arc'); // RED
-        this._ps_tangent_arc = _getExportWrapper(instance, 'ps_tangent_arc'); // RED
+        this._ps_new_sub_path = _getExportWrapper(instance, 'ps_new_sub_path'); // USE
+        this._ps_rectangle = _getExportWrapper(instance, 'ps_rectangle'); // USE
+        this._ps_rounded_rect = _getExportWrapper(instance, 'ps_rounded_rect'); // USE
+        this._ps_ellipse = _getExportWrapper(instance, 'ps_ellipse'); // USE
+        this._ps_close_path = _getExportWrapper(instance, 'ps_close_path'); // USE
+        this._ps_move_to = _getExportWrapper(instance, 'ps_move_to'); // USE
+        this._ps_line_to = _getExportWrapper(instance, 'ps_line_to'); // USE
+        this._ps_bezier_curve_to = _getExportWrapper(instance, 'ps_bezier_curve_to'); // USE
+        this._ps_quad_curve_to = _getExportWrapper(instance, 'ps_quad_curve_to'); // USE
+        this._ps_arc = _getExportWrapper(instance, 'ps_arc'); // USE
+        this._ps_tangent_arc = _getExportWrapper(instance, 'ps_tangent_arc'); // USE
         this._ps_set_path = _getExportWrapper(instance, 'ps_set_path');
         this._ps_get_path = _getExportWrapper(instance, 'ps_get_path'); // DEL
-        this._ps_translate = _getExportWrapper(instance, 'ps_translate'); // RED
-        this._ps_scale = _getExportWrapper(instance, 'ps_scale'); // RED
-        this._ps_shear = _getExportWrapper(instance, 'ps_shear'); // RED
-        this._ps_rotate = _getExportWrapper(instance, 'ps_rotate'); // RED
-        this._ps_identity = _getExportWrapper(instance, 'ps_identity'); // RED
+        this._ps_translate = _getExportWrapper(instance, 'ps_translate'); // USE
+        this._ps_scale = _getExportWrapper(instance, 'ps_scale'); // USE
+        this._ps_shear = _getExportWrapper(instance, 'ps_shear'); // USE
+        this._ps_rotate = _getExportWrapper(instance, 'ps_rotate'); // USE
+        this._ps_identity = _getExportWrapper(instance, 'ps_identity'); // USE
         this._ps_transform = _getExportWrapper(instance, 'ps_transform');
         this._ps_set_matrix = _getExportWrapper(instance, 'ps_set_matrix');
         this._ps_get_matrix = _getExportWrapper(instance, 'ps_get_matrix');
         this._ps_world_to_viewport = _getExportWrapper(instance, 'ps_world_to_viewport');
         this._ps_viewport_to_world = _getExportWrapper(instance, 'ps_viewport_to_world');
-        this._ps_set_composite_operator = _getExportWrapper(instance, 'ps_set_composite_operator');
-        this._ps_clip = _getExportWrapper(instance, 'ps_clip'); // RED
+        this._ps_set_composite_operator = _getExportWrapper(instance, 'ps_set_composite_operator'); // USE
+        this._ps_clip = _getExportWrapper(instance, 'ps_clip'); // USE
         this._ps_clip_path = _getExportWrapper(instance, 'ps_clip_path');
         this._ps_clip_device_rect = _getExportWrapper(instance, 'ps_clip_device_rect');
         this._ps_clip_rect = _getExportWrapper(instance, 'ps_clip_rect');
         this._ps_clip_rects = _getExportWrapper(instance, 'ps_clip_rects');
-        this._ps_reset_clip = _getExportWrapper(instance, 'ps_reset_clip'); // RED
-        this._ps_save = _getExportWrapper(instance, 'ps_save'); // RED
-        this._ps_restore = _getExportWrapper(instance, 'ps_restore'); // RED
+        this._ps_reset_clip = _getExportWrapper(instance, 'ps_reset_clip'); // USE
+        this._ps_save = _getExportWrapper(instance, 'ps_save'); // USE
+        this._ps_restore = _getExportWrapper(instance, 'ps_restore'); // USE
     }
 
     create(canvas) {
@@ -266,17 +262,179 @@ class Context {
         this._ps_reset_shadow(this._ctx);
     }
 
+    setCompositeOperation(cp) {
+        if (typeof cp !== "string") {
+            throw TypeError("Parameters must be composite:<string>");
+        }
+
+        let op = 2; // SRC_OVER
+        switch (cp.toLowerCase()) {
+            case "clear":
+                op = 0; break;
+            case "source":
+                op = 1; break;
+            case "source-over":
+                op = 2; break;
+            case "source-in":
+                op = 3; break;
+            case "source-out":
+                op = 4; break;
+            case "source-atop":
+                op = 5; break;
+            case "destination":
+                op = 6; break;
+            case "destination-over":
+                op = 7; break;
+            case "destination-in":
+                op = 8; break;
+            case "destination-out":
+                op = 9; break;
+            case "destination-atop":
+                op = 10; break;
+            case "xor":
+                op = 11; break;
+            case "darken":
+                op = 12; break;
+            case "lighten":
+                op = 13; break;
+            case "overlay":
+                op = 14; break;
+            case "screen":
+                op = 15; break;
+            case "multiply":
+                op = 16; break;
+            case "plus":
+                op = 17; break;
+            case "minus":
+                op = 18; break;
+            case "exclusion":
+                op = 19; break;
+            case "difference":
+                op = 20; break;
+            case "soft-light":
+                op = 21; break;
+            case "hard-light":
+                op = 22; break;
+            case "color-burn":
+                op = 23; break;
+            case "color-dodge":
+                op = 24; break;
+            case "contrast":
+                op = 25; break;
+            case "invert":
+                op = 26; break;
+            case "invert-blend":
+                op = 27; break;
+            case "hue":
+                op = 28; break;
+            case "saturation":
+                op = 29; break;
+            case "color":
+                op = 30; break;
+            case "luminosity":
+                op = 31; break;
+        }
+        this._ps_set_composite_operator(this._ctx, op);
+    }
+
     setFillRule(rule) {
         if (typeof rule !== "string") {
             throw TypeError("Parameters must be rule:<string>");
         }
 
-        switch (rule) {
+        switch (rule.toLowerCase()) {
             case "evenodd":
                 this._ps_set_fill_rule(this._ctx, 1);
                 return;
             case "nonzero":
                 this._ps_set_fill_rule(this._ctx, 0);
+                return;
+        }
+    }
+
+    setLineCap(cap) {
+        if (typeof cap !== "string") {
+            throw TypeError("Parameters must be cap:<string>");
+        }
+
+        switch (cap.toLowerCase()) {
+            case "butt":
+                this._ps_set_line_cap(this._ctx, 0);
+                return;
+            case "round":
+                this._ps_set_line_cap(this._ctx, 1);
+                return;
+            case "square":
+                this._ps_set_line_cap(this._ctx, 2);
+                return;
+        }
+    }
+
+    setLineJoin(join) {
+        if (typeof join !== "string") {
+            throw TypeError("Parameters must be join:<string>");
+        }
+
+        switch (join.toLowerCase()) {
+            case "miter":
+                this._ps_set_line_join(this._ctx, 0);
+                return;
+            case "miter-revert":
+                this._ps_set_line_join(this._ctx, 1);
+                return;
+            case "miter-round":
+                this._ps_set_line_join(this._ctx, 2);
+                return;
+            case "round":
+                this._ps_set_line_join(this._ctx, 3);
+                return;
+            case "bevel":
+                this._ps_set_line_join(this._ctx, 4);
+                return;
+        }
+    }
+
+    setLineInnerJoin(join) {
+        if (typeof join !== "string") {
+            throw TypeError("Parameters must be join:<string>");
+        }
+
+        switch (join.toLowerCase()) {
+            case "miter":
+                this._ps_set_line_inner_join(this._ctx, 0);
+                return;
+            case "bevel":
+                this._ps_set_line_inner_join(this._ctx, 1);
+                return;
+            case "jag":
+                this._ps_set_line_inner_join(this._ctx, 2);
+                return;
+            case "round":
+                this._ps_set_line_inner_join(this._ctx, 3);
+                return;
+        }
+    }
+
+    setFilter(f) {
+        if (typeof f !== "string") {
+            throw TypeError("Parameters must be filter:<string>");
+        }
+
+        switch (f.toLowerCase()) {
+            case "nearest":
+                this._ps_set_filter(this._ctx, 0);
+                return;
+            case "bilinear":
+                this._ps_set_filter(this._ctx, 1);
+                return;
+            case "gaussian":
+                this._ps_set_filter(this._ctx, 2);
+                return;
+            case "bicubic":
+                this._ps_set_filter(this._ctx, 3);
+                return;
+            case "quadric":
+                this._ps_set_filter(this._ctx, 4);
                 return;
         }
     }
@@ -642,6 +800,10 @@ export default class Picasso {
 
 /*
 
+        this._ps_mask_create_with_data = _getExportWrapper(instance, 'ps_mask_create_with_data');
+        this._ps_mask_ref = _getExportWrapper(instance, 'ps_mask_ref');
+        this._ps_mask_unref = _getExportWrapper(instance, 'ps_mask_unref');
+        this._ps_mask_add_color_filter = _getExportWrapper(instance, 'ps_mask_add_color_filter');
 this._ps_matrix_create_init = _getExportWrapper(instance, 'ps_matrix_create_init');
 this._ps_matrix_create = _getExportWrapper(instance, 'ps_matrix_create');
 this._ps_matrix_create_copy = _getExportWrapper(instance, 'ps_matrix_create_copy');
