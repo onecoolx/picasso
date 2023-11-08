@@ -130,6 +130,249 @@ function _destoryBuffer(vm, b) {
     vm._free(b);
 }
 
+class Path2D {
+    constructor(ps) {
+        this._ps = ps;
+        let instance = ps._instance;
+        this._ps_path_create = _getExportWrapper(instance, 'ps_path_create'); // USE
+        this._ps_path_create_copy = _getExportWrapper(instance, 'ps_path_create_copy'); // DEL
+        this._ps_path_ref = _getExportWrapper(instance, 'ps_path_ref'); // DEL
+        this._ps_path_unref = _getExportWrapper(instance, 'ps_path_unref'); // USE
+        this._ps_path_move_to = _getExportWrapper(instance, 'ps_path_move_to'); // USE
+        this._ps_path_line_to = _getExportWrapper(instance, 'ps_path_line_to'); // USE
+        this._ps_path_tangent_arc_to = _getExportWrapper(instance, 'ps_path_tangent_arc_to'); // USE
+        this._ps_path_arc_to = _getExportWrapper(instance, 'ps_path_arc_to'); // USE
+        this._ps_path_bezier_to = _getExportWrapper(instance, 'ps_path_bezier_to'); // USE
+        this._ps_path_quad_to = _getExportWrapper(instance, 'ps_path_quad_to'); // USE
+        this._ps_path_sub_close = _getExportWrapper(instance, 'ps_path_sub_close'); // USE
+        this._ps_path_get_length = _getExportWrapper(instance, 'ps_path_get_length'); // USE
+        this._ps_path_get_vertex_count = _getExportWrapper(instance, 'ps_path_get_vertex_count'); // DEL
+        this._ps_path_get_vertex = _getExportWrapper(instance, 'ps_path_get_vertex'); // DEL
+        this._ps_path_clear = _getExportWrapper(instance, 'ps_path_clear'); // USE
+        this._ps_path_is_empty = _getExportWrapper(instance, 'ps_path_is_empty'); // USE
+        this._ps_path_bounding_rect = _getExportWrapper(instance, 'ps_path_bounding_rect'); // USE
+        this._ps_path_stroke_contains = _getExportWrapper(instance, 'ps_path_stroke_contains'); // USE
+        this._ps_path_contains = _getExportWrapper(instance, 'ps_path_contains'); // USE
+        this._ps_path_add_arc = _getExportWrapper(instance, 'ps_path_add_arc'); // USE
+        this._ps_path_add_line = _getExportWrapper(instance, 'ps_path_add_line'); // USE
+        this._ps_path_add_rect = _getExportWrapper(instance, 'ps_path_add_rect'); // USE
+        this._ps_path_add_ellipse = _getExportWrapper(instance, 'ps_path_add_ellipse'); // USE
+        this._ps_path_add_rounded_rect = _getExportWrapper(instance, 'ps_path_add_rounded_rect'); // USE
+        this._ps_path_add_sub_path = _getExportWrapper(instance, 'ps_path_add_sub_path'); // USE
+        this._ps_path_clipping = _getExportWrapper(instance, 'ps_path_clipping'); // USE
+        this._data = this._ps_path_create();
+    }
+
+    moveTo(pt/*x*/, y) {
+        let cv = _createPointBuffer(this._ps, pt, y);
+        this._ps_path_move_to(this._data, cv);
+        _destoryBuffer(this._ps, cv);
+    }
+
+    lineTo(pt/*x*/, y) {
+        let cv = _createPointBuffer(this._ps, pt, y);
+        this._ps_path_line_to(this._data, cv);
+        _destoryBuffer(this._ps, cv);
+    }
+
+    quadTo(cp, ep) {
+        let cv1 = _createPointBuffer(this._ps, cp);
+        let cv2 = _createPointBuffer(this._ps, ep);
+        this._ps_path_quad_to(this._data, cv1, cv2);
+        _destoryBuffer(this._ps, cv2);
+        _destoryBuffer(this._ps, cv1);
+    }
+
+    bezierTo(cp1, cp2, ep) {
+        let cv1 = _createPointBuffer(this._ps, cp1);
+        let cv2 = _createPointBuffer(this._ps, cp2);
+        let cv3 = _createPointBuffer(this._ps, ep);
+        this._ps_path_bezier_to(this._data, cv1, cv2, cv3);
+        _destoryBuffer(this._ps, cv3);
+        _destoryBuffer(this._ps, cv2);
+        _destoryBuffer(this._ps, cv1);
+    }
+
+    tangentArcTo(r, tp, ep) {
+        if (typeof r !== "number") {
+            throw TypeError("Parameters must be radius:<number>.");
+        }
+        let cv1 = _createPointBuffer(this._ps, tp);
+        let cv2 = _createPointBuffer(this._ps, ep);
+        this._ps_path_tangent_arc_to(this._data, r, cv1, cv2);
+        _destoryBuffer(this._ps, cv2);
+        _destoryBuffer(this._ps, cv1);
+    }
+
+    arcTo(rx, ry, a, l, c, ep) {
+        if (typeof rx !== "number" || typeof ry !== "number" || typeof a !== "number"
+            || typeof l !== "boolean" || typeof c !== "boolean") {
+            throw TypeError("Parameters must be rx:<number>, ry:<number>, angle:<number>, large_arc:<boolean>, clockwise:<boolean>, ep:<object>");
+        }
+        let cv = _createPointBuffer(this._ps, ep);
+        this._ps_path_arc_to(this._data, rx, ry, a, (l ? 1 : 0), (c ? 1 : 0), cv);
+        _destoryBuffer(this._ps, cv);
+    }
+
+    subClose() {
+        this._ps_path_sub_close(this._data);
+    }
+
+    getLength() {
+        return this._ps_path_get_length(this._data);
+    }
+
+    boundRect() {
+        let cv = _createDataBuffer(this._ps, 16);
+        let buffer = this._ps._HEAPF32.subarray((cv>>2), (cv>>2) + 4);
+        let r = this._ps_path_bounding_rect(this._data, cv);
+        let rect = {x: 0, y: 0, w: 0, h: 0};
+        if (r) {
+            rect.x = buffer[0];
+            rect.y = buffer[1];
+            rect.w = buffer[2];
+            rect.h = buffer[3];
+        }
+        _destoryBuffer(this._ps, cv);
+        return rect;
+    }
+
+    clear() {
+        this._ps_path_clear(this._data);
+    }
+
+    isEmpty() {
+        return this._ps_path_is_empty(this._data) ? true : false;
+    }
+
+    strokeContains(p, w) {
+        if (typeof w !== "number") {
+            throw TypeError("Parameters must be width:<number>.");
+        }
+        let cv = _createPointBuffer(this._ps, p);
+        let r = this._ps_path_stroke_contains(this._data, cv, w);
+        _destoryBuffer(this._ps, cv);
+        return r ? true : false;
+    }
+
+    contains(p, rl) {
+        if (typeof rl !== "string") {
+            throw TypeError("Parameters must be rule:<string>.");
+        }
+        let w = 0;
+        switch (rl.toLowerCase()) {
+            case "evenodd":
+                w = 1;
+                break;
+            case "nonzero":
+                w = 0;
+                break;
+        }
+        let cv = _createPointBuffer(this._ps, p);
+        let r = this._ps_path_contains(this._data, cv, w);
+        _destoryBuffer(this._ps, cv);
+        return r ? true : false;
+    }
+
+    addArc(cp, r, sa, ea, c) {
+        if (typeof r !== "number" || typeof sa !== "number" || typeof ea !== "number" || typeof c !== "boolean") {
+            throw TypeError("Parameters must be radius:<number>, sangle:<number>, eangle:<number>, clockwise:<boolean>");
+        }
+        let cv = _createPointBuffer(this._ps, cp);
+        this._ps_path_add_arc(this._data, cv, r, sa, ea, (c ? 1 : 0));
+        _destoryBuffer(this._ps, cv);
+    }
+
+    addLine(sp, ep) {
+        let cv1 = _createPointBuffer(this._ps, sp);
+        let cv2 = _createPointBuffer(this._ps, ep);
+        this._ps_path_add_line(this._data, cv1, cv2);
+        _destoryBuffer(this._ps, cv2);
+        _destoryBuffer(this._ps, cv1);
+    }
+
+    addRect(rc/*x*/, y, w, h) {
+        let cv = _createRectBuffer(this._ps, rc, y, w, h);
+        this._ps_path_add_rect(this._data, cv);
+        _destoryBuffer(this._ps, cv);
+    }
+
+    addEllipse(rc/*x*/, y, w, h) {
+        let cv = _createRectBuffer(this._ps, rc, y, w, h);
+        this._ps_path_add_ellipse(this._data, cv);
+        _destoryBuffer(this._ps, cv);
+    }
+
+    addRoundedRect(rrc) {
+        let cv = _createDataBuffer(this._ps, 16);
+        let buffer = this._ps._HEAPF32.subarray((cv>>2), (cv>>2) + 4);
+        if (typeof rrc === "object") {
+            if (typeof rrc.x !== "number" ||
+                    typeof rrc.y !== "number" ||
+                    typeof rrc.w !== "number" ||
+                    typeof rrc.h !== "number") {
+                throw TypeError("RoundedRect value object must be {x:<number>, y:<number>, w:<number>, h:<number>, "+
+                       "[optional]ltx:<number>, [optional]lty:<number>, [optional]rtx:<number>, [optional]rty:<number>, "+
+                       "[optional]lbx:<numner>, [optional]lby:<number>, [optional]rbx:<number>, [optional]rby:<number>}");
+            }
+            buffer[0] = typeof rrc.x === "number" ? rrc.x : 0.0;
+            buffer[1] = typeof rrc.y === "number" ? rrc.y : 0.0;
+            buffer[2] = typeof rrc.w === "number" ? rrc.w : 0.0;
+            buffer[3] = typeof rrc.h === "number" ? rrc.h : 0.0;
+        } else {
+            throw TypeError("Rect values is not numbers or object!");
+        }
+
+        let ltx = typeof rrc.ltx === "number" ? rrc.ltx : 0.0;
+        let lty = typeof rrc.lty === "number" ? rrc.lty : 0.0;
+        let rtx = typeof rrc.rtx === "number" ? rrc.rtx : 0.0;
+        let rty = typeof rrc.rty === "number" ? rrc.rty : 0.0;
+        let lbx = typeof rrc.lbx === "number" ? rrc.lbx : 0.0;
+        let lby = typeof rrc.lby === "number" ? rrc.lby : 0.0;
+        let rbx = typeof rrc.rbx === "number" ? rrc.rbx : 0.0;
+        let rby = typeof rrc.rby === "number" ? rrc.rby : 0.0;
+
+        this._ps_path_add_rounded_rect(this._data, cv, ltx, lty, rtx, rty, lbx, lby, rbx, rby);
+        _destoryBuffer(this._ps, cv);
+    }
+
+    addSubPath(path) {
+        if (!(path instanceof Path2D)) {
+            throw TypeError("Parameters must be path:<Path2D>.");
+        }
+        this._ps_path_add_sub_path(this._data, path._data);
+    }
+
+    pathClip(op, p) {
+        if (typeof op !== "string" || !(p instanceof Path2D)) {
+            throw TypeError("Parameters must be op:<string>, path:<Path2D>.");
+        }
+
+        let o = 1; // intersect
+        switch (op.toLowerCase()) {
+            case "union":
+                o = 0; break;
+            case "intersect":
+                o = 1; break;
+            case "xor":
+                o = 2; break;
+            case "diff":
+                o = 3; break;
+        }
+        let np = new Path2D(this._ps);
+        this._ps_path_clipping(np._data, o, this._data, p._data);
+        return np;
+    }
+
+    destroy() {
+        if (this._data != undefined) {
+            this._ps_path_unref(this._data);
+            this._data = undefined;
+        }
+    }
+}
+
+
 class Context {
     constructor(ps) {
         this._ps = ps;
@@ -187,7 +430,7 @@ class Context {
         this._ps_set_line_dash = _getExportWrapper(instance, 'ps_set_line_dash'); // USE
         this._ps_reset_line_dash = _getExportWrapper(instance, 'ps_reset_line_dash'); // USE
         this._ps_new_path = _getExportWrapper(instance, 'ps_new_path'); // USE
-        this._ps_add_sub_path = _getExportWrapper(instance, 'ps_add_sub_path');
+        this._ps_add_sub_path = _getExportWrapper(instance, 'ps_add_sub_path'); // USE
         this._ps_new_sub_path = _getExportWrapper(instance, 'ps_new_sub_path'); // USE
         this._ps_rectangle = _getExportWrapper(instance, 'ps_rectangle'); // USE
         this._ps_rounded_rect = _getExportWrapper(instance, 'ps_rounded_rect'); // USE
@@ -199,8 +442,8 @@ class Context {
         this._ps_quad_curve_to = _getExportWrapper(instance, 'ps_quad_curve_to'); // USE
         this._ps_arc = _getExportWrapper(instance, 'ps_arc'); // USE
         this._ps_tangent_arc = _getExportWrapper(instance, 'ps_tangent_arc'); // USE
-        this._ps_set_path = _getExportWrapper(instance, 'ps_set_path');
-        this._ps_get_path = _getExportWrapper(instance, 'ps_get_path'); // DEL
+        this._ps_set_path = _getExportWrapper(instance, 'ps_set_path'); // USE
+        this._ps_get_path = _getExportWrapper(instance, 'ps_get_path'); // USE
         this._ps_translate = _getExportWrapper(instance, 'ps_translate'); // USE
         this._ps_scale = _getExportWrapper(instance, 'ps_scale'); // USE
         this._ps_shear = _getExportWrapper(instance, 'ps_shear'); // USE
@@ -213,10 +456,10 @@ class Context {
         this._ps_viewport_to_world = _getExportWrapper(instance, 'ps_viewport_to_world');
         this._ps_set_composite_operator = _getExportWrapper(instance, 'ps_set_composite_operator'); // USE
         this._ps_clip = _getExportWrapper(instance, 'ps_clip'); // USE
-        this._ps_clip_path = _getExportWrapper(instance, 'ps_clip_path');
-        this._ps_clip_device_rect = _getExportWrapper(instance, 'ps_clip_device_rect');
-        this._ps_clip_rect = _getExportWrapper(instance, 'ps_clip_rect');
-        this._ps_clip_rects = _getExportWrapper(instance, 'ps_clip_rects');
+        this._ps_clip_path = _getExportWrapper(instance, 'ps_clip_path'); // USE
+        this._ps_clip_device_rect = _getExportWrapper(instance, 'ps_clip_device_rect'); // DEL
+        this._ps_clip_rect = _getExportWrapper(instance, 'ps_clip_rect'); // USE
+        this._ps_clip_rects = _getExportWrapper(instance, 'ps_clip_rects'); // USE
         this._ps_reset_clip = _getExportWrapper(instance, 'ps_reset_clip'); // USE
         this._ps_save = _getExportWrapper(instance, 'ps_save'); // USE
         this._ps_restore = _getExportWrapper(instance, 'ps_restore'); // USE
@@ -224,6 +467,10 @@ class Context {
 
     create(canvas) {
         this._ctx = this._ps_context_create(canvas._canvas, 0);
+    }
+
+    createPath2D() {
+        return new Path2D(this._ps);
     }
 
     clear() {
@@ -532,6 +779,69 @@ class Context {
         this._ps_close_path(this._ctx);
     }
 
+    setPath(p) {
+        if (!(p instanceof Path2D)) {
+            throw TypeError("Parameters must be path:<Path2D>.");
+        }
+        this._ps_set_path(this._ctx, p._data);
+    }
+
+    getPath() {
+        let np = new Path2D(this._ps);
+        this._ps_get_path(this._ctx, np._data);
+        return np;
+    }
+
+    clipRects(rcs) {
+        if (!(rcs instanceof Array)) {
+            throw TypeError("Parameters must be rects:<array>.");
+        }
+
+        let n = rcs.length;
+        let cv = _createDataBuffer(this._ps, n * 16);
+        let buffer = this._ps._HEAPF32.subarray((cv>>2), (cv>>2) + (n * 4));
+        for (let i = 0; i < n; i++) {
+            if (typeof rcs[i] === "object") {
+                if (typeof rcs[i].x !== "number" ||
+                        typeof rcs[i].y !== "number" ||
+                        typeof rcs[i].w !== "number" ||
+                        typeof rcs[i].h !== "number") {
+                    throw TypeError("Rect value object must be {x:<number>, y:<number>, w:<number>, h:<number>}");
+                }
+                buffer[i * 4] = rcs[i].x;
+                buffer[i * 4 + 1] = rcs[i].y;
+                buffer[i * 4 + 2] = rcs[i].w;
+                buffer[i * 4 + 3] = rcs[i].h;
+            } else {
+                throw TypeError("Rect values is not object!");
+            }
+        }
+        this._ps_clip_rects(this._ctx, cv, n);
+        _destoryBuffer(this._ps, cv);
+    }
+
+    clipPath(p, r) {
+        if (!(p instanceof Path2D) || typeof r !== "string") {
+            throw TypeError("Parameters must be path:<Path2D>, rule:<string>.");
+        }
+        let rule = 0;
+        switch (r.toLowerCase()) {
+            case "evenodd":
+                rule = 1;
+                break;
+            case "nonzero":
+                rule = 0;
+                break;
+        }
+        this._ps_clip_path(this._ctx, p._data, rule);
+    }
+
+    clipRect(rc/* x */, y, w, h) {
+        let cv = _createRectBuffer(this._ps, rc, y, w, h);
+        this._ps_clip_rect(this._ctx, cv);
+        _destoryBuffer(this._ps, cv);
+    }
+
     rectangle(rc/* x */, y, w, h) {
         let cv = _createRectBuffer(this._ps, rc, y, w, h);
         this._ps_rectangle(this._ctx, cv);
@@ -583,6 +893,13 @@ class Context {
 
     newSubPath() {
         this._ps_new_sub_path(this._ctx);
+    }
+
+    addSubPath(p) {
+        if (!(p instanceof Path2D)) {
+            throw TypeError("Parameters must be path:<Path2D>.");
+        }
+        this._ps_add_sub_path(this._ctx, p._data);
     }
 
     setSourceColor(color/* r */, g, b, a) {
@@ -708,12 +1025,6 @@ class Canvas {
             this._canvas = undefined;
             this._ps._free(this._rawBuffer);
         }
-    }
-}
-
-class Path2D {
-
-    destroy() {
     }
 }
 
@@ -847,32 +1158,6 @@ this._ps_pattern_create_image= _getExportWrapper(instance, 'ps_pattern_create_im
 this._ps_pattern_ref = _getExportWrapper(instance, 'ps_pattern_ref');
 this._ps_pattern_unref = _getExportWrapper(instance, 'ps_pattern_unref');
 this._ps_pattern_transform = _getExportWrapper(instance, 'ps_pattern_transform');
-this._ps_path_create = _getExportWrapper(instance, 'ps_path_create');
-this._ps_path_create_copy = _getExportWrapper(instance, 'ps_path_create_copy');
-this._ps_path_ref = _getExportWrapper(instance, 'ps_path_ref');
-this._ps_path_unref = _getExportWrapper(instance, 'ps_path_unref');
-this._ps_path_move_to = _getExportWrapper(instance, 'ps_path_move_to');
-this._ps_path_line_to = _getExportWrapper(instance, 'ps_path_line_to');
-this._ps_path_tangent_arc_to = _getExportWrapper(instance, 'ps_path_tangent_arc_to');
-this._ps_path_add_arc = _getExportWrapper(instance, 'ps_path_add_arc');
-this._ps_path_arc_to = _getExportWrapper(instance, 'ps_path_arc_to');
-this._ps_path_bezier_to = _getExportWrapper(instance, 'ps_path_bezier_to');
-this._ps_path_quad_to = _getExportWrapper(instance, 'ps_path_quad_to');
-this._ps_path_sub_close = _getExportWrapper(instance, 'ps_path_sub_close');
-this._ps_path_get_length = _getExportWrapper(instance, 'ps_path_get_length');
-this._ps_path_get_vertex_count = _getExportWrapper(instance, 'ps_path_get_vertex_count');
-this._ps_path_get_vertex = _getExportWrapper(instance, 'ps_path_get_vertex');
-this._ps_path_clear = _getExportWrapper(instance, 'ps_path_clear');
-this._ps_path_is_empty = _getExportWrapper(instance, 'ps_path_is_empty');
-this._ps_path_bounding_rect = _getExportWrapper(instance, 'ps_path_bounding_rect');
-this._ps_path_stroke_contains = _getExportWrapper(instance, 'ps_path_stroke_contains');
-this._ps_path_contains = _getExportWrapper(instance, 'ps_path_contains');
-this._ps_path_add_line = _getExportWrapper(instance, 'ps_path_add_line');
-this._ps_path_add_rect = _getExportWrapper(instance, 'ps_path_add_rect');
-this._ps_path_add_ellipse = _getExportWrapper(instance, 'ps_path_add_ellipse');
-this._ps_path_add_rounded_rect = _getExportWrapper(instance, 'ps_path_add_rounded_rect');
-this._ps_path_add_sub_path = _getExportWrapper(instance, 'ps_path_add_sub_path');
-this._ps_path_clipping = _getExportWrapper(instance, 'ps_path_clipping');
 this._ps_gradient_create_linear = _getExportWrapper(instance, 'ps_gradient_create_linear');
 this._ps_gradient_create_radial = _getExportWrapper(instance, 'ps_gradient_create_radial');
 this._ps_gradient_create_conic = _getExportWrapper(instance, 'ps_gradient_create_conic');

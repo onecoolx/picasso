@@ -31,17 +31,17 @@
 
                 let rrc = {x:200, y:50, w:100, h:100, ltx:10, lty:10, rtx:10, rty:10};
                 let c = {r:0, g:1, b:0, a:1};
-                ctx.setSourceColor(c); 
+                ctx.setSourceColor(c);
                 ctx.roundedRect(rrc);
                 ctx.fill();
 
                 ctx.ellipse(350, 50, 150, 100);
-                ctx.setSourceColor("#0000FF80"); 
+                ctx.setSourceColor("#0000FF80");
                 ctx.fill();
 
                 ctx.save();
                 ctx.rectangle(550, 50, 100, 100);
-                ctx.setStrokeColor("#0080FF"); 
+                ctx.setStrokeColor("#0080FF");
                 ctx.setLineWidth(10);
                 ctx.translate(-600, -100);
                 ctx.rotate(1.84);
@@ -51,7 +51,7 @@
                 ctx.restore();
 
                 ctx.save();
-                ctx.setStrokeColor("#000000"); 
+                ctx.setStrokeColor("#000000");
                 ctx.setLineWidth(5);
                 ctx.moveTo(50, 200);
                 let p = {x: 200, y: 200};
@@ -135,12 +135,34 @@
                 ctx.setCompositeOperation("screen");
 
                 ctx.ellipse(100, 450, 150, 100);
-                ctx.setSourceColor("#FF0000FF"); 
+                ctx.setSourceColor("#FF0000FF");
                 ctx.fill();
                 ctx.restore();
                 //ctx.paint();
+
+
+                ctx.save();
+
+                ctx.ellipse(300, 450, 150, 100);
+                ctx.setSourceColor("#00FF00FF");
+
+                //ctx.clipRect(320, 460, 20, 20);
+                let crc1 = [{x:350, y:500, w:30, h:30}, {x:390, y:500, w:10, h:10}];
+                ctx.clipRects(crc1);
+                ctx.fill();
+                ctx.restore();
+
+                ctx.save();
+                let path = ctx.createPath2D();
+                path.clear();
+
+
+                ctx.setPath(path);
+                ctx.paint();
+                ctx.restore();
+
                 canvas.flush();
-               // window.requestAnimationFrame(draw);
+                window.requestAnimationFrame(draw);
             }
 
             window.requestAnimationFrame(draw);
