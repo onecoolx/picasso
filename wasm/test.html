@@ -5,7 +5,7 @@
   <script src="./lib.js" type="module"></script>
 </head>
 <body>
-    <canvas id="canvas" width="800" height="600"/>
+    <canvas id="canvas" width="1280" height="720"/>
     <script type="module">
         import Picasso from './lib.js';
 
@@ -156,10 +156,42 @@
                 let path = ctx.createPath2D();
                 path.clear();
 
+                if (path.isEmpty()) {
+                    path.moveTo(50, 600);
+                    path.lineTo(150, 650);
+                    path.quadTo({x: 20, y: 680}, {x:60, y:650});
+                    path.subClose();
+                }
+
+                let path2 = ctx.createPath2D();
+                path2.moveTo(100, 600);
+                path2.bezierTo({x:200, y:500}, {x:300, y:550}, {x:180, y:650});
+                path2.tangentArcTo(50, {x:150, y:550}, {x:120, y:650});
+                path2.subClose();
+
 
                 ctx.setPath(path);
+                ctx.fill();
+                ctx.setPath(path2);
+                ctx.stroke();
+
+                let cpath = path.pathClip("intersect", path2);
+
+                if (cpath.contains({x:120, y:650}, "nonzero")){
+                    ctx.setSourceColor("#FF0000");
+                } else {
+                    ctx.setSourceColor("#0000FF");
+                }
+                ctx.setPath(cpath);
                 ctx.paint();
                 ctx.restore();
+
+                cpath.destroy();
+                path.destroy();
+                path2.destroy();
+
+//                let wp = ctx.worldToViewport(100, 200);
+//                wp = ctx.viewportToWorld(wp);
 
                 canvas.flush();
                 window.requestAnimationFrame(draw);

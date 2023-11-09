@@ -451,13 +451,13 @@ class Context {
         this._ps_identity = _getExportWrapper(instance, 'ps_identity'); // USE
         this._ps_transform = _getExportWrapper(instance, 'ps_transform');
         this._ps_set_matrix = _getExportWrapper(instance, 'ps_set_matrix');
-        this._ps_get_matrix = _getExportWrapper(instance, 'ps_get_matrix');
-        this._ps_world_to_viewport = _getExportWrapper(instance, 'ps_world_to_viewport');
-        this._ps_viewport_to_world = _getExportWrapper(instance, 'ps_viewport_to_world');
+        this._ps_get_matrix = _getExportWrapper(instance, 'ps_get_matrix'); // DEL
+        this._ps_world_to_viewport = _getExportWrapper(instance, 'ps_world_to_viewport'); // USE
+        this._ps_viewport_to_world = _getExportWrapper(instance, 'ps_viewport_to_world'); // USE
         this._ps_set_composite_operator = _getExportWrapper(instance, 'ps_set_composite_operator'); // USE
         this._ps_clip = _getExportWrapper(instance, 'ps_clip'); // USE
         this._ps_clip_path = _getExportWrapper(instance, 'ps_clip_path'); // USE
-        this._ps_clip_device_rect = _getExportWrapper(instance, 'ps_clip_device_rect'); // DEL
+        //this._ps_clip_device_rect = _getExportWrapper(instance, 'ps_clip_device_rect'); // DEL
         this._ps_clip_rect = _getExportWrapper(instance, 'ps_clip_rect'); // USE
         this._ps_clip_rects = _getExportWrapper(instance, 'ps_clip_rects'); // USE
         this._ps_reset_clip = _getExportWrapper(instance, 'ps_reset_clip'); // USE
@@ -967,6 +967,24 @@ class Context {
             throw TypeError("Parameter must be <boolean> default true");
         }
         this._ps_set_antialias(this._ctx, a);
+    }
+
+    worldToViewport(pt/*x*/, y) {
+        let cv = _createPointBuffer(this._ps, pt, y);
+        this._ps_world_to_viewport(this._ctx, cv);
+        let buffer = this._ps._HEAPF32.subarray((cv>>2), (cv>>2) + 2);
+        let ret = {x: buffer[0], y: buffer[1]};
+        _destoryBuffer(this._ps, cv);
+        return ret;
+    }
+
+    viewportToWorld(pt/*x*/, y) {
+        let cv = _createPointBuffer(this._ps, pt, y);
+        this._ps_viewport_to_world(this._ctx, cv);
+        let buffer = this._ps._HEAPF32.subarray((cv>>2), (cv>>2) + 2);
+        let ret = {x: buffer[0], y: buffer[1]};
+        _destoryBuffer(this._ps, cv);
+        return ret;
     }
 
     destroy() {
