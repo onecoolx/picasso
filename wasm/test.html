@@ -5,7 +5,7 @@
   <script src="./lib.js" type="module"></script>
 </head>
 <body>
-    <canvas id="canvas" width="1280" height="720"/>
+    <canvas id="canvas" width="1280" height="960"/>
     <script type="module">
         import Picasso from './lib.js';
 
@@ -17,187 +17,205 @@
             var canvas = ps.canvas;
             var ctx = ps.createContext(canvas);
 
+            let img = new Image();
+            img.src = "selt2.png";
+            img.onload = () => {
+                function draw(time) {
+                    ctx.setSourceColor(0xFFFFFFFF);
+                    ctx.clear();
+                    ctx.identity();
 
-            function draw(time) {
-                ctx.setSourceColor(0xFFFFFFFF);
-                ctx.clear();
-                ctx.identity();
+                    //let c = 0xFF0000FF;
+                    ctx.setSourceColor(255, 0, 0, 1.0);
+                    let rc = {x:50, y:50, w:100, h:100};
+                    ctx.rectangle(rc);
+                    ctx.fill();
 
-                //let c = 0xFF0000FF;
-                ctx.setSourceColor(255, 0, 0, 1.0);
-                let rc = {x:50, y:50, w:100, h:100};
-                ctx.rectangle(rc);
-                ctx.fill();
+                    let rrc = {x:200, y:50, w:100, h:100, ltx:10, lty:10, rtx:10, rty:10};
+                    let c = {r:0, g:1, b:0, a:1};
+                    ctx.setSourceColor(c);
+                    ctx.roundedRect(rrc);
+                    ctx.fill();
 
-                let rrc = {x:200, y:50, w:100, h:100, ltx:10, lty:10, rtx:10, rty:10};
-                let c = {r:0, g:1, b:0, a:1};
-                ctx.setSourceColor(c);
-                ctx.roundedRect(rrc);
-                ctx.fill();
+                    ctx.ellipse(350, 50, 150, 100);
+                    ctx.setSourceColor("#0000FF80");
+                    ctx.fill();
 
-                ctx.ellipse(350, 50, 150, 100);
-                ctx.setSourceColor("#0000FF80");
-                ctx.fill();
+                    ctx.save();
+                    ctx.rectangle(550, 50, 100, 100);
+                    ctx.setStrokeColor("#0080FF");
+                    ctx.setLineWidth(10);
+                    ctx.translate(-600, -100);
+                    ctx.rotate(1.84);
+                    ctx.scale(0.5, 0.5);
+                    ctx.translate(600, 100);
+                    ctx.stroke();
+                    ctx.restore();
 
-                ctx.save();
-                ctx.rectangle(550, 50, 100, 100);
-                ctx.setStrokeColor("#0080FF");
-                ctx.setLineWidth(10);
-                ctx.translate(-600, -100);
-                ctx.rotate(1.84);
-                ctx.scale(0.5, 0.5);
-                ctx.translate(600, 100);
-                ctx.stroke();
-                ctx.restore();
+                    ctx.save();
+                    ctx.setStrokeColor("#000000");
+                    ctx.setLineWidth(5);
+                    ctx.moveTo(50, 200);
+                    let p = {x: 200, y: 200};
+                    ctx.lineTo(p);
+                    //ctx.lineTo(50, 200);
+                    //ctx.setAntialias(false);
+                    ctx.setShadow(10, 10, 0.1);
+                    ctx.stroke();
+                    ctx.restore();
 
-                ctx.save();
-                ctx.setStrokeColor("#000000");
-                ctx.setLineWidth(5);
-                ctx.moveTo(50, 200);
-                let p = {x: 200, y: 200};
-                ctx.lineTo(p);
-                //ctx.lineTo(50, 200);
-                //ctx.setAntialias(false);
-                ctx.setShadow(10, 10, 0.1);
-                ctx.stroke();
-                ctx.restore();
+                    ctx.moveTo(50, 250);
+                    let cp = {x:100, y:200};
+                    let ep1 = {x:200, y:250};
+                    ctx.quadCurveTo(cp, ep1);
 
-                ctx.moveTo(50, 250);
-                let cp = {x:100, y:200};
-                let ep1 = {x:200, y:250};
-                ctx.quadCurveTo(cp, ep1);
+                    ctx.moveTo(50, 300);
+                    let cp1 = {x:100, y:250};
+                    let cp2 = {x:150, y:200};
+                    let ep2 = {x:200, y:300};
+                    ctx.bezierCurveTo(cp1, cp2, ep2);
+                    ctx.stroke();
 
-                ctx.moveTo(50, 300);
-                let cp1 = {x:100, y:250};
-                let cp2 = {x:150, y:200};
-                let ep2 = {x:200, y:300};
-                ctx.bezierCurveTo(cp1, cp2, ep2);
-                ctx.stroke();
+                    let ce = {x:300, y:250};
+                    ctx.arc(ce, 50, 0.2, 1.1, false);
+                    ctx.stroke();
 
-                let ce = {x:300, y:250};
-                ctx.arc(ce, 50, 0.2, 1.1, false);
-                ctx.stroke();
-
-                let crc = {x:400, y:200, w:100, h:80};
-                ctx.tangentArc(crc, 0.2, 2.8);
-                ctx.stroke();
-
-
-                ctx.save();
-                ctx.setLineDash(5, [5, 8, 10, 8]);
-                ctx.moveTo(550, 200);
-                ctx.lineTo(650, 250);
-                ctx.stroke();
-                ctx.restore();
-
-                ctx.save();
-                ctx.rectangle(50, 320, 100, 100);
-                ctx.rectangle(80, 350, 40, 40);
-                ctx.setFillRule("evenodd");
-//                ctx.setFillRule("nonzero");
-                ctx.setSourceColor(0xff80ff);
-                ctx.fill();
-                ctx.restore();
-
-                ctx.save();
-                ctx.moveTo(200, 350);
-                ctx.lineTo(250, 400);
-                ctx.lineTo(300, 350);
-                ctx.setLineWidth(10);
-                ctx.setLineCap("butt");
-                ctx.setLineJoin("round");
-                ctx.setLineInnerJoin("BEVEL");
-                ctx.stroke();
-
-                ctx.moveTo(200, 350);
-                ctx.lineTo(250, 400);
-                ctx.lineTo(300, 350);
-                ctx.translate(120, 0);
-                ctx.setLineCap("square");
-                ctx.setLineJoin("bevel");
-                ctx.stroke();
-
-                ctx.moveTo(200, 350);
-                ctx.lineTo(250, 400);
-                ctx.lineTo(300, 350);
-                ctx.translate(120, 0);
-                ctx.setLineCap("round");
-                ctx.setLineJoin("miter");
-                ctx.stroke();
-
-                ctx.restore();
-
-                ctx.save();
-                ctx.setSourceColor(0, 0, 255, 1.0);
-                ctx.rectangle(50, 450, 100, 100);
-                ctx.fill();
-
-                ctx.setCompositeOperation("screen");
-
-                ctx.ellipse(100, 450, 150, 100);
-                ctx.setSourceColor("#FF0000FF");
-                ctx.fill();
-                ctx.restore();
-                //ctx.paint();
+                    let crc = {x:400, y:200, w:100, h:80};
+                    ctx.tangentArc(crc, 0.2, 2.8);
+                    ctx.stroke();
 
 
-                ctx.save();
+                    ctx.save();
+                    ctx.setLineDash(5, [5, 8, 10, 8]);
+                    ctx.moveTo(550, 200);
+                    ctx.lineTo(650, 250);
+                    ctx.stroke();
+                    ctx.restore();
 
-                ctx.ellipse(300, 450, 150, 100);
-                ctx.setSourceColor("#00FF00FF");
+                    ctx.save();
+                    ctx.rectangle(50, 320, 100, 100);
+                    ctx.rectangle(80, 350, 40, 40);
+                    ctx.setFillRule("evenodd");
+    //                ctx.setFillRule("nonzero");
+                    ctx.setSourceColor(0xff80ff);
+                    ctx.fill();
+                    ctx.restore();
 
-                //ctx.clipRect(320, 460, 20, 20);
-                let crc1 = [{x:350, y:500, w:30, h:30}, {x:390, y:500, w:10, h:10}];
-                ctx.clipRects(crc1);
-                ctx.fill();
-                ctx.restore();
+                    ctx.save();
+                    ctx.moveTo(200, 350);
+                    ctx.lineTo(250, 400);
+                    ctx.lineTo(300, 350);
+                    ctx.setLineWidth(10);
+                    ctx.setLineCap("butt");
+                    ctx.setLineJoin("round");
+                    ctx.setLineInnerJoin("BEVEL");
+                    ctx.stroke();
 
-                ctx.save();
-                let path = ctx.createPath2D();
-                path.clear();
+                    ctx.moveTo(200, 350);
+                    ctx.lineTo(250, 400);
+                    ctx.lineTo(300, 350);
+                    ctx.translate(120, 0);
+                    ctx.setLineCap("square");
+                    ctx.setLineJoin("bevel");
+                    ctx.stroke();
 
-                if (path.isEmpty()) {
-                    path.moveTo(50, 600);
-                    path.lineTo(150, 650);
-                    path.quadTo({x: 20, y: 680}, {x:60, y:650});
-                    path.subClose();
+                    ctx.moveTo(200, 350);
+                    ctx.lineTo(250, 400);
+                    ctx.lineTo(300, 350);
+                    ctx.translate(120, 0);
+                    ctx.setLineCap("round");
+                    ctx.setLineJoin("miter");
+                    ctx.stroke();
+
+                    ctx.restore();
+
+                    ctx.save();
+                    ctx.setSourceColor(0, 0, 255, 1.0);
+                    ctx.rectangle(50, 450, 100, 100);
+                    ctx.fill();
+
+                    ctx.setCompositeOperation("screen");
+
+                    ctx.ellipse(100, 450, 150, 100);
+                    ctx.setSourceColor("#FF0000FF");
+                    ctx.fill();
+                    ctx.restore();
+                    //ctx.paint();
+
+
+                    ctx.save();
+
+                    ctx.ellipse(300, 450, 150, 100);
+                    ctx.setSourceColor("#00FF00FF");
+
+                    //ctx.clipRect(320, 460, 20, 20);
+                    let crc1 = [{x:350, y:500, w:30, h:30}, {x:390, y:500, w:10, h:10}];
+                    ctx.clipRects(crc1);
+                    ctx.fill();
+                    ctx.restore();
+
+                    ctx.save();
+                    let path = ctx.createPath2D();
+                    path.clear();
+
+                    if (path.isEmpty()) {
+                        path.moveTo(50, 600);
+                        path.lineTo(150, 650);
+                        path.quadTo({x: 20, y: 680}, {x:60, y:650});
+                        path.subClose();
+                    }
+
+                    let path2 = ctx.createPath2D();
+                    path2.moveTo(100, 600);
+                    path2.bezierTo({x:200, y:500}, {x:300, y:550}, {x:180, y:650});
+                    path2.tangentArcTo(50, {x:150, y:550}, {x:120, y:650});
+                    path2.subClose();
+
+
+                    ctx.setPath(path);
+                    ctx.fill();
+                    ctx.setPath(path2);
+                    ctx.stroke();
+
+                    let cpath = path.pathClip("intersect", path2);
+
+                    if (cpath.contains({x:120, y:650}, "nonzero")){
+                        ctx.setSourceColor("#FF0000");
+                    } else {
+                        ctx.setSourceColor("#0000FF");
+                    }
+                    ctx.setPath(cpath);
+                    ctx.paint();
+                    ctx.restore();
+
+                    cpath.destroy();
+                    path.destroy();
+                    path2.destroy();
+
+    //                let wp = ctx.worldToViewport(100, 200);
+    //                wp = ctx.viewportToWorld(wp);
+
+                    ctx.save();
+                    let image = ctx.createImage(img);
+//                    image.setAllowTransparent(true);
+//                    image.setTransparentColor(0, 0, 0, 255);
+
+                    //ctx.setStrokeImage(image);
+                    ctx.setSourceImage(image);
+                    let irc = {x:250, y:650, w:100, h:100};
+                    ctx.rectangle(irc);
+                    //ctx.setLineWidth(6);
+                    //ctx.stroke();
+                    ctx.paint();
+                    ctx.restore();
+
+                    image.destroy();
+                    canvas.flush();
+                    window.requestAnimationFrame(draw);
                 }
-
-                let path2 = ctx.createPath2D();
-                path2.moveTo(100, 600);
-                path2.bezierTo({x:200, y:500}, {x:300, y:550}, {x:180, y:650});
-                path2.tangentArcTo(50, {x:150, y:550}, {x:120, y:650});
-                path2.subClose();
-
-
-                ctx.setPath(path);
-                ctx.fill();
-                ctx.setPath(path2);
-                ctx.stroke();
-
-                let cpath = path.pathClip("intersect", path2);
-
-                if (cpath.contains({x:120, y:650}, "nonzero")){
-                    ctx.setSourceColor("#FF0000");
-                } else {
-                    ctx.setSourceColor("#0000FF");
-                }
-                ctx.setPath(cpath);
-                ctx.paint();
-                ctx.restore();
-
-                cpath.destroy();
-                path.destroy();
-                path2.destroy();
-
-//                let wp = ctx.worldToViewport(100, 200);
-//                wp = ctx.viewportToWorld(wp);
-
-                canvas.flush();
-                window.requestAnimationFrame(draw);
+            window.requestAnimationFrame(draw);
             }
 
-            window.requestAnimationFrame(draw);
         });
 
     </script>

@@ -372,6 +372,202 @@ class Path2D {
     }
 }
 
+class Matrix2D {
+    constructor(ps) {
+        this._ps = ps;
+        let instance = ps._instance;
+        this._ps_matrix_create_init = _getExportWrapper(instance, 'ps_matrix_create_init'); // DEL
+        this._ps_matrix_create = _getExportWrapper(instance, 'ps_matrix_create'); // USE
+        this._ps_matrix_create_copy = _getExportWrapper(instance, 'ps_matrix_create_copy'); // DEL
+        this._ps_matrix_ref = _getExportWrapper(instance, 'ps_matrix_ref'); // DEL
+        this._ps_matrix_unref = _getExportWrapper(instance, 'ps_matrix_unref'); // USE
+        this._ps_matrix_init= _getExportWrapper(instance, 'ps_matrix_init'); // USE
+        this._ps_matrix_translate = _getExportWrapper(instance, 'ps_matrix_translate'); // USE
+        this._ps_matrix_scale = _getExportWrapper(instance, 'ps_matrix_scale'); // USE
+        this._ps_matrix_rotate = _getExportWrapper(instance, 'ps_matrix_rotate'); // USE
+        this._ps_matrix_shear = _getExportWrapper(instance, 'ps_matrix_shear'); // USE
+        this._ps_matrix_invert = _getExportWrapper(instance, 'ps_matrix_invert'); // USE
+        this._ps_matrix_flip_x = _getExportWrapper(instance, 'ps_matrix_flip_x'); // USE
+        this._ps_matrix_flip_y = _getExportWrapper(instance, 'ps_matrix_flip_y'); //USE
+        this._ps_matrix_reset = _getExportWrapper(instance, 'ps_matrix_reset'); // USE
+        this._ps_matrix_multiply= _getExportWrapper(instance, 'ps_matrix_multiply'); // USE
+        this._ps_matrix_is_equal = _getExportWrapper(instance, 'ps_matrix_is_equal'); // USE
+        this._ps_matrix_is_identity = _getExportWrapper(instance, 'ps_matrix_is_identity'); // USE
+        this._ps_matrix_get_determinant = _getExportWrapper(instance, 'ps_matrix_get_determinant'); // USE
+        this._ps_matrix_set_translate_factor = _getExportWrapper(instance, 'ps_matrix_set_translate_factor'); // DEL
+        this._ps_matrix_get_translate_factor = _getExportWrapper(instance, 'ps_matrix_get_translate_factor'); // DEL
+        this._ps_matrix_set_scale_factor = _getExportWrapper(instance, 'ps_matrix_set_scale_factor'); // DEL
+        this._ps_matrix_get_scale_factor = _getExportWrapper(instance, 'ps_matrix_get_scale_factor'); // DEL
+        this._ps_matrix_set_shear_factor = _getExportWrapper(instance, 'ps_matrix_set_shear_factor'); // DEL
+        this._ps_matrix_get_shear_factor = _getExportWrapper(instance, 'ps_matrix_get_shear_factor'); // DEL
+        this._ps_matrix_transform_point = _getExportWrapper(instance, 'ps_matrix_transform_point'); // USE
+        this._ps_matrix_transform_rect = _getExportWrapper(instance, 'ps_matrix_transform_rect'); // USE
+        this._ps_matrix_transform_path = _getExportWrapper(instance, 'ps_matrix_transform_path'); // DEL
+        this._data = this._ps_matrix_create();
+    }
+
+    init(sx, shy, shx, sy, tx, ty) {
+        if (typeof sx !== "number" || typeof shy !== "number" || typeof shx !== "number" ||
+            typeof sy !== "number" || typeof tx !== "number" || typeof ty !== "number") {
+            throw TypeError("Parameters must be sx:<number>, shy:<number>, shx:<number>, sy:<number>, tx:<number>, ty:<number>");
+        }
+        this._ps_matrix_init(this._data, sx, shy, shx, sy, tx, ty);
+    }
+
+    translate(tx, ty) {
+        if (typeof tx !== "number" || typeof ty !== "number") {
+            throw TypeError("Parameters must be tx:<number>, ty:<number>");
+        }
+        this._ps_matrix_translate(this._data, tx, ty);
+    }
+
+    scale(sx, sy) {
+        if (typeof sx !== "number" || typeof sy !== "number") {
+            throw TypeError("Parameters must be sx:<number>, sy:<number>");
+        }
+        this._ps_matrix_scale(this._data, sx, sy);
+    }
+
+    rotate(r) {
+        if (typeof r !== "number") {
+            throw TypeError("Parameters must be radian:<number>");
+        }
+        this._ps_matrix_rotate(this._data, r);
+    }
+
+    shear(shx, shy) {
+        if (typeof shy !== "number" || typeof shx !== "number") {
+            throw TypeError("Parameters must be shx:<number>, shy:<number>");
+        }
+        this._ps_matrix_shear(this._data, shx, shy);
+    }
+
+    isEqual(m) {
+        if (!(m instanceof Matrix2D)) {
+            throw TypeError("Parameters must be matrix:<Matrix2D>");
+        }
+        return this._ps_matrix_is_equal(this._data, m._data) ? true : false;
+    }
+
+    isIdentity() {
+        return this._ps_matrix_is_identity(this._data) ? true : false;
+    }
+
+    det() {
+        return this._ps_matrix_get_determinant(this._data);
+    }
+
+    invert() {
+        this._ps_matrix_invert(this._data);
+    }
+
+    flipX() {
+        this._ps_matrix_flip_x(this._data);
+    }
+
+    flipY() {
+        this._ps_matrix_flip_y(this._data);
+    }
+
+    identity() {
+        this._ps_matrix_reset(this._data);
+    }
+
+    multiply(m) {
+        if (!(m instanceof Matrix2D)) {
+            throw TypeError("Parameters must be matrix:<Matrix2D>");
+        }
+        let r = new Matrix2D(this._ps);
+        this._ps_matrix_multiply(r._data, this._data, m._data);
+        return r;
+    }
+
+    transformPoint(pt/*x*/, y) {
+        let cv = _createPointBuffer(this._ps, pt, y);
+        this._ps_matrix_transform_point(this._data, cv);
+        let buffer = this._ps._HEAPF32.subarray((cv>>2), (cv>>2) + 2);
+        let ret = {x: buffer[0], y: buffer[1]};
+        _destoryBuffer(this._ps, cv);
+        return ret;
+    }
+
+    transformRect(rc/*x*/, y, w, h) {
+        let cv = _createRectBuffer(this._ps, rc, y, w, h);
+        this._ps_matrix_transform_rect(this._data, cv);
+        let buffer = this._ps._HEAPF32.subarray((cv>>2), (cv>>2) + 4);
+        let ret = {x: buffer[0], y: buffer[1], w: buffer[2], h: buffer[3]};
+        _destoryBuffer(this._ps, cv);
+        return ret;
+    }
+
+    destroy() {
+        if (this._data != undefined) {
+            this._ps_matrix_unref(this._data);
+            this._data = undefined;
+        }
+    }
+}
+
+class ImageTexture {
+    _createImg(img) {
+        let tcanvas = new OffscreenCanvas(img.width, img.height);
+        let tcontext = tcanvas.getContext('2d');
+        tcontext.drawImage(img, 0, 0);
+        let pixels = tcontext.getImageData(0, 0, img.width, img.height).data;
+        let bytes = pixels.length;
+        this._imgData = _createDataBuffer(this._ps, bytes);
+        let buffer = this._ps._HEAPU8.subarray(this._imgData, this._imgData + bytes);
+        let imgBuffer = new Uint8ClampedArray(buffer.buffer, buffer.byteOffset, buffer.length);
+        imgBuffer.set(pixels);
+        this._data = this._ps_image_create_with_data(this._imgData, 0, img.width, img.height, img.width * 4);
+        this._width = img.width;
+        this._height = img.height;
+    }
+
+    constructor(ps, h5Image) {
+        this._ps = ps;
+        let instance = ps._instance;
+        this._ps_image_create = _getExportWrapper(instance, 'ps_image_create'); // DEL
+        this._ps_image_create_from_data = _getExportWrapper(instance, 'ps_image_create_from_data'); // DEL
+        this._ps_image_create_with_data = _getExportWrapper(instance, 'ps_image_create_with_data'); // USE
+        this._ps_image_create_compatible = _getExportWrapper(instance, 'ps_image_create_compatible'); // DEL
+        this._ps_image_create_from_image = _getExportWrapper(instance, 'ps_image_create_from_image'); // DEL
+        this._ps_image_ref = _getExportWrapper(instance, 'ps_image_ref'); // DEL
+        this._ps_image_create_from_canvas = _getExportWrapper(instance, 'ps_image_create_from_canvas'); // DEL
+        this._ps_image_unref = _getExportWrapper(instance, 'ps_image_unref'); // USE
+        this._ps_image_get_size= _getExportWrapper(instance, 'ps_image_get_size'); // DEL
+        this._ps_image_get_format = _getExportWrapper(instance, 'ps_image_get_format'); // DEL
+        this._ps_image_set_allow_transparent = _getExportWrapper(instance, 'ps_image_set_allow_transparent'); // USE
+        this._ps_image_set_transparent_color = _getExportWrapper(instance, 'ps_image_set_transparent_color'); // USE
+        this._createImg(h5Image);
+    }
+
+    getSize() {
+        return {w: this._width, h: this._height};
+    }
+
+    setAllowTransparent(b) {
+        if (typeof b !== "boolean") {
+            throw TypeError("Parameters must be allow:<boolean>");
+        }
+        this._ps_image_set_allow_transparent(this._data, b);
+    }
+
+    setTransparentColor(color/*r*/, g, b, a) {
+        let cv = _createColorBuffer(this._ps, color, g, b, a);
+        this._ps_image_set_transparent_color(this._data, cv);
+        _destoryBuffer(this._ps, cv);
+    }
+
+    destroy() {
+        if (this._data != undefined) {
+            this._ps_image_unref(this._data);
+            this._data = undefined;
+            _destoryBuffer(this._ps, this._imgData);
+            this._imgData = undefined;
+        }
+    }
+}
 
 class Context {
     constructor(ps) {
@@ -401,11 +597,11 @@ class Context {
         this._ps_context_unref = _getExportWrapper(instance, 'ps_context_unref'); // USE
         this._ps_set_source_gradient = _getExportWrapper(instance, 'ps_set_source_gradient');
         this._ps_set_source_pattern = _getExportWrapper(instance, 'ps_set_source_pattern');
-        this._ps_set_source_image = _getExportWrapper(instance, 'ps_set_source_image');
+        this._ps_set_source_image = _getExportWrapper(instance, 'ps_set_source_image'); // USE
         this._ps_set_source_color = _getExportWrapper(instance, 'ps_set_source_color'); // USE
         this._ps_set_source_canvas = _getExportWrapper(instance, 'ps_set_source_canvas');
         this._ps_set_stroke_color = _getExportWrapper(instance, 'ps_set_stroke_color'); // USE
-        this._ps_set_stroke_image = _getExportWrapper(instance, 'ps_set_stroke_image');
+        this._ps_set_stroke_image = _getExportWrapper(instance, 'ps_set_stroke_image'); // USE
         this._ps_set_stroke_pattern = _getExportWrapper(instance, 'ps_set_stroke_pattern');
         this._ps_set_stroke_gradient = _getExportWrapper(instance, 'ps_set_stroke_gradient');
         this._ps_set_stroke_canvas = _getExportWrapper(instance, 'ps_set_stroke_canvas');
@@ -449,8 +645,8 @@ class Context {
         this._ps_shear = _getExportWrapper(instance, 'ps_shear'); // USE
         this._ps_rotate = _getExportWrapper(instance, 'ps_rotate'); // USE
         this._ps_identity = _getExportWrapper(instance, 'ps_identity'); // USE
-        this._ps_transform = _getExportWrapper(instance, 'ps_transform');
-        this._ps_set_matrix = _getExportWrapper(instance, 'ps_set_matrix');
+        this._ps_transform = _getExportWrapper(instance, 'ps_transform'); // USE
+        this._ps_set_matrix = _getExportWrapper(instance, 'ps_set_matrix'); // USE
         this._ps_get_matrix = _getExportWrapper(instance, 'ps_get_matrix'); // DEL
         this._ps_world_to_viewport = _getExportWrapper(instance, 'ps_world_to_viewport'); // USE
         this._ps_viewport_to_world = _getExportWrapper(instance, 'ps_viewport_to_world'); // USE
@@ -471,6 +667,17 @@ class Context {
 
     createPath2D() {
         return new Path2D(this._ps);
+    }
+
+    createMatrix() {
+        return new Matrix2D(this._ps);
+    }
+
+    createImage(h5Image) {
+        if (!(h5Image instanceof Image)) {
+            throw TypeError("Parameters must be image:<Image>");
+        }
+        return new ImageTexture(this._ps, h5Image);
     }
 
     clear() {
@@ -796,7 +1003,6 @@ class Context {
         if (!(rcs instanceof Array)) {
             throw TypeError("Parameters must be rects:<array>.");
         }
-
         let n = rcs.length;
         let cv = _createDataBuffer(this._ps, n * 16);
         let buffer = this._ps._HEAPF32.subarray((cv>>2), (cv>>2) + (n * 4));
@@ -902,6 +1108,20 @@ class Context {
         this._ps_add_sub_path(this._ctx, p._data);
     }
 
+    setSourceImage(img) {
+        if (!(img instanceof ImageTexture)) {
+            throw TypeError("Parameters must be image:<ImageTexture>.");
+        }
+        this._ps_set_source_image(this._ctx, img._data);
+    }
+
+    setStrokeImage(img) {
+        if (!(img instanceof ImageTexture)) {
+            throw TypeError("Parameters must be image:<ImageTexture>.");
+        }
+        this._ps_set_stroke_image(this._ctx, img._data);
+    }
+
     setSourceColor(color/* r */, g, b, a) {
         let cv = _createColorBuffer(this._ps, color, g, b, a);
         this._ps_set_source_color(this._ctx, cv);
@@ -967,6 +1187,20 @@ class Context {
             throw TypeError("Parameter must be <boolean> default true");
         }
         this._ps_set_antialias(this._ctx, a);
+    }
+
+    transform(m) {
+        if (!(m instanceof Matrix2D)) {
+            throw TypeError("Parameters must be matrix:<Matrix2D>");
+        }
+        this._ps_transform(this._ctx, m._data);
+    }
+
+    setMatrix(m) {
+        if (!(m instanceof Matrix2D)) {
+            throw TypeError("Parameters must be matrix:<Matrix2D>");
+        }
+        this._ps_set_matrix(this._ctx, m._data);
     }
 
     worldToViewport(pt/*x*/, y) {
@@ -1133,45 +1367,6 @@ export default class Picasso {
         this._ps_mask_ref = _getExportWrapper(instance, 'ps_mask_ref');
         this._ps_mask_unref = _getExportWrapper(instance, 'ps_mask_unref');
         this._ps_mask_add_color_filter = _getExportWrapper(instance, 'ps_mask_add_color_filter');
-this._ps_matrix_create_init = _getExportWrapper(instance, 'ps_matrix_create_init');
-this._ps_matrix_create = _getExportWrapper(instance, 'ps_matrix_create');
-this._ps_matrix_create_copy = _getExportWrapper(instance, 'ps_matrix_create_copy');
-this._ps_matrix_ref = _getExportWrapper(instance, 'ps_matrix_ref');
-this._ps_matrix_unref = _getExportWrapper(instance, 'ps_matrix_unref');
-this._ps_matrix_init= _getExportWrapper(instance, 'ps_matrix_init');
-this._ps_matrix_translate = _getExportWrapper(instance, 'ps_matrix_translate');
-this._ps_matrix_scale = _getExportWrapper(instance, 'ps_matrix_scale');
-this._ps_matrix_rotate = _getExportWrapper(instance, 'ps_matrix_rotate');
-this._ps_matrix_shear = _getExportWrapper(instance, 'ps_matrix_shear');
-this._ps_matrix_invert = _getExportWrapper(instance, 'ps_matrix_invert');
-this._ps_matrix_flip_x = _getExportWrapper(instance, 'ps_matrix_flip_x');
-this._ps_matrix_flip_y = _getExportWrapper(instance, 'ps_matrix_flip_y');
-this._ps_matrix_reset = _getExportWrapper(instance, 'ps_matrix_reset');
-this._ps_matrix_multiply= _getExportWrapper(instance, 'ps_matrix_multiply');
-this._ps_matrix_transform_point = _getExportWrapper(instance, 'ps_matrix_transform_point');
-this._ps_matrix_is_equal = _getExportWrapper(instance, 'ps_matrix_is_equal');
-this._ps_matrix_is_identity = _getExportWrapper(instance, 'ps_matrix_is_identity');
-this._ps_matrix_get_determinant = _getExportWrapper(instance, 'ps_matrix_get_determinant');
-this._ps_matrix_set_translate_factor = _getExportWrapper(instance, 'ps_matrix_set_translate_factor');
-this._ps_matrix_get_translate_factor = _getExportWrapper(instance, 'ps_matrix_get_translate_factor');
-this._ps_matrix_set_scale_factor = _getExportWrapper(instance, 'ps_matrix_set_scale_factor');
-this._ps_matrix_get_scale_factor = _getExportWrapper(instance, 'ps_matrix_get_scale_factor');
-this._ps_matrix_set_shear_factor = _getExportWrapper(instance, 'ps_matrix_set_shear_factor');
-this._ps_matrix_get_shear_factor = _getExportWrapper(instance, 'ps_matrix_get_shear_factor');
-this._ps_matrix_transform_rect = _getExportWrapper(instance, 'ps_matrix_transform_rect');
-this._ps_matrix_transform_path = _getExportWrapper(instance, 'ps_matrix_transform_path');
-this._ps_image_create = _getExportWrapper(instance, 'ps_image_create');
-this._ps_image_create_from_data = _getExportWrapper(instance, 'ps_image_create_from_data');
-this._ps_image_create_with_data = _getExportWrapper(instance, 'ps_image_create_with_data');
-this._ps_image_create_compatible = _getExportWrapper(instance, 'ps_image_create_compatible');
-this._ps_image_create_from_image = _getExportWrapper(instance, 'ps_image_create_from_image');
-this._ps_image_ref = _getExportWrapper(instance, 'ps_image_ref');
-this._ps_image_create_from_canvas = _getExportWrapper(instance, 'ps_image_create_from_canvas');
-this._ps_image_unref = _getExportWrapper(instance, 'ps_image_unref');
-this._ps_image_get_size= _getExportWrapper(instance, 'ps_image_get_size');
-this._ps_image_get_format = _getExportWrapper(instance, 'ps_image_get_format');
-this._ps_image_set_allow_transparent = _getExportWrapper(instance, 'ps_image_set_allow_transparent');
-this._ps_image_set_transparent_color = _getExportWrapper(instance, 'ps_image_set_transparent_color');
 this._ps_pattern_create_image= _getExportWrapper(instance, 'ps_pattern_create_image');
 this._ps_pattern_ref = _getExportWrapper(instance, 'ps_pattern_ref');
 this._ps_pattern_unref = _getExportWrapper(instance, 'ps_pattern_unref');
