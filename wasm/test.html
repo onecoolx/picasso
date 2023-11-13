@@ -198,7 +198,7 @@
                     ctx.save();
                     let image = ctx.createImage(img);
 //                    image.setAllowTransparent(true);
-//                    image.setTransparentColor(0, 0, 0, 255);
+//                    image.setTransparentColor(255, 0, 0, 255);
 
                     //ctx.setStrokeImage(image);
                     ctx.setSourceImage(image);
@@ -209,6 +209,23 @@
                     ctx.paint();
                     ctx.restore();
 
+                    ctx.save();
+                    let jrc = {x:400, y:650, w:200, h:200};
+                    ctx.rectangle(jrc);
+
+
+                    let mt = ctx.createMatrix();
+                    mt.scale(0.2, 0.2);
+                    mt.rotate(0.12);
+
+                    let pat = ctx.createPattern(image, "repeat", "reflect", mt);
+                    ctx.setSourcePattern(pat);
+
+                    ctx.fill();
+                    ctx.restore();
+
+                    pat.destroy();
+                    mt.destroy();
                     image.destroy();
                     canvas.flush();
                     window.requestAnimationFrame(draw);

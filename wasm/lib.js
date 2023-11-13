@@ -569,6 +569,34 @@ class ImageTexture {
     }
 }
 
+
+class ImagePattern {
+    constructor(ps, img, xWrap, yWrap, mtx) {
+        this._ps = ps;
+        let instance = ps._instance;
+        this._ps_pattern_create_image= _getExportWrapper(instance, 'ps_pattern_create_image'); // USE
+        this._ps_pattern_ref = _getExportWrapper(instance, 'ps_pattern_ref'); // DEL
+        this._ps_pattern_unref = _getExportWrapper(instance, 'ps_pattern_unref'); // USE
+        this._ps_pattern_transform = _getExportWrapper(instance, 'ps_pattern_transform'); // USE
+        this._data = this._ps_pattern_create_image(img._data, xWrap, yWrap, mtx._data);
+    }
+
+    transform(m) {
+        if (!(m instanceof Matrix2D)) {
+            throw TypeError("Parameters must be matrix:<Matrix2D>");
+        }
+        this._ps_pattern_transform(this._data, m._data);
+    }
+
+    destroy() {
+        if (this._data != undefined) {
+            this._ps_pattern_unref(this._data);
+            this._data = undefined;
+            this._img = undefined;
+        }
+    }
+}
+
 class Context {
     constructor(ps) {
         this._ps = ps;
@@ -596,13 +624,13 @@ class Context {
         this._ps_context_get_canvas = _getExportWrapper(instance, 'ps_context_get_canvas'); // DEL
         this._ps_context_unref = _getExportWrapper(instance, 'ps_context_unref'); // USE
         this._ps_set_source_gradient = _getExportWrapper(instance, 'ps_set_source_gradient');
-        this._ps_set_source_pattern = _getExportWrapper(instance, 'ps_set_source_pattern');
+        this._ps_set_source_pattern = _getExportWrapper(instance, 'ps_set_source_pattern'); // USE
         this._ps_set_source_image = _getExportWrapper(instance, 'ps_set_source_image'); // USE
         this._ps_set_source_color = _getExportWrapper(instance, 'ps_set_source_color'); // USE
         this._ps_set_source_canvas = _getExportWrapper(instance, 'ps_set_source_canvas');
         this._ps_set_stroke_color = _getExportWrapper(instance, 'ps_set_stroke_color'); // USE
         this._ps_set_stroke_image = _getExportWrapper(instance, 'ps_set_stroke_image'); // USE
-        this._ps_set_stroke_pattern = _getExportWrapper(instance, 'ps_set_stroke_pattern');
+        this._ps_set_stroke_pattern = _getExportWrapper(instance, 'ps_set_stroke_pattern'); // USE
         this._ps_set_stroke_gradient = _getExportWrapper(instance, 'ps_set_stroke_gradient');
         this._ps_set_stroke_canvas = _getExportWrapper(instance, 'ps_set_stroke_canvas');
         this._ps_set_filter = _getExportWrapper(instance, 'ps_set_filter'); // USE
@@ -678,6 +706,42 @@ class Context {
             throw TypeError("Parameters must be image:<Image>");
         }
         return new ImageTexture(this._ps, h5Image);
+    }
+
+    createPattern(image, xwrap, ywrap, m) {
+        if (typeof xwrap !== "string" || typeof ywrap !== "string") {
+            throw TypeError("Parameters must be xwrap:<string>, ywrap:<string>");
+        }
+        if (m !== undefined && !(m instanceof Matrix2D)) {
+            throw TypeError("Parameters must be matrix:<Matrix2D>");
+        }
+        
+        let xr = 0, yr = 0; 
+        switch (xwrap.toLowerCase()) {
+            case "repeat":
+                xr = 0;
+                break;
+            case "reflect":
+                xr = 1;
+                break;
+        }
+        switch (ywrap.toLowerCase()) {
+            case "repeat":
+                yr = 0;
+                break;
+            case "reflect":
+                yr = 1;
+                break;
+        }
+
+        if (image instanceof Image) {
+            let img = new ImageTexture(this._ps, image);
+            return new ImagePattern(this._ps, img, xr, yr, m);
+        } else if (image instanceof ImageTexture) {
+            return new ImagePattern(this._ps, image, xr, yr, m);
+        } else {
+            throw TypeError("Parameters must be image:<Image> or <ImageTexture>");
+        }
     }
 
     clear() {
@@ -1108,6 +1172,13 @@ class Context {
         this._ps_add_sub_path(this._ctx, p._data);
     }
 
+    setSourcePattern(p) {
+        if (!(p instanceof ImagePattern)) {
+            throw TypeError("Parameters must be image:<ImagePattern>.");
+        }
+        this._ps_set_source_pattern(this._ctx, p._data);
+    }
+
     setSourceImage(img) {
         if (!(img instanceof ImageTexture)) {
             throw TypeError("Parameters must be image:<ImageTexture>.");
@@ -1120,6 +1191,13 @@ class Context {
             throw TypeError("Parameters must be image:<ImageTexture>.");
         }
         this._ps_set_stroke_image(this._ctx, img._data);
+    }
+
+    setStrokePattern(p) {
+        if (!(p instanceof ImagePattern)) {
+            throw TypeError("Parameters must be image:<ImagePattern>.");
+        }
+        this._ps_set_stroke_pattern(this._ctx, p._data);
     }
 
     setSourceColor(color/* r */, g, b, a) {
@@ -1367,10 +1445,6 @@ export default class Picasso {
         this._ps_mask_ref = _getExportWrapper(instance, 'ps_mask_ref');
         this._ps_mask_unref = _getExportWrapper(instance, 'ps_mask_unref');
         this._ps_mask_add_color_filter = _getExportWrapper(instance, 'ps_mask_add_color_filter');
-this._ps_pattern_create_image= _getExportWrapper(instance, 'ps_pattern_create_image');
-this._ps_pattern_ref = _getExportWrapper(instance, 'ps_pattern_ref');
-this._ps_pattern_unref = _getExportWrapper(instance, 'ps_pattern_unref');
-this._ps_pattern_transform = _getExportWrapper(instance, 'ps_pattern_transform');
 this._ps_gradient_create_linear = _getExportWrapper(instance, 'ps_gradient_create_linear');
 this._ps_gradient_create_radial = _getExportWrapper(instance, 'ps_gradient_create_radial');
 this._ps_gradient_create_conic = _getExportWrapper(instance, 'ps_gradient_create_conic');
