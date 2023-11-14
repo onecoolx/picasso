@@ -116,10 +116,10 @@ function _createColorBuffer(vm, color, g, b, a) {
             typeof color.a !== "number") {
             throw TypeError("Color value object must be {r:<number>, g:<number>, b:<number>, a:<number>}");
         }
-        buffer[0] = typeof color.r === "number" ? color.r : 0.0;
-        buffer[1] = typeof color.g === "number" ? color.g : 0.0;
-        buffer[2] = typeof color.b === "number" ? color.b : 0.0;
-        buffer[3] = typeof color.a === "number" ? color.a : 0.0;
+        buffer[0] = (color.r <= 1.0 && color.r >= 0.0) ? color.r : color.r / 255.0;
+        buffer[1] = (color.g <= 1.0 && color.g >= 0.0) ? color.g : color.g / 255.0;
+        buffer[2] = (color.b <= 1.0 && color.b >= 0.0) ? color.b : color.b / 255.0;
+        buffer[3] = (color.a <= 1.0 && color.a >= 0.0) ? color.a : color.a / 255.0;
     } else {
         throw TypeError("Color value is not a number, string or object!");
     }
@@ -571,6 +571,22 @@ class ImageTexture {
 
 
 class ImagePattern {
+    _getWrap(wrap) {
+        if (typeof wrap !== "string") {
+            throw TypeError("Parameters must be xwrap:<string>, ywrap:<string>");
+        }
+        let r = 0;
+        switch (wrap.toLowerCase()) {
+            case "repeat":
+                r = 0;
+                break;
+            case "reflect":
+                r = 1;
+                break;
+        }
+        return r;
+    }
+
     constructor(ps, img, xWrap, yWrap, mtx) {
         this._ps = ps;
         let instance = ps._instance;
@@ -578,7 +594,7 @@ class ImagePattern {
         this._ps_pattern_ref = _getExportWrapper(instance, 'ps_pattern_ref'); // DEL
         this._ps_pattern_unref = _getExportWrapper(instance, 'ps_pattern_unref'); // USE
         this._ps_pattern_transform = _getExportWrapper(instance, 'ps_pattern_transform'); // USE
-        this._data = this._ps_pattern_create_image(img._data, xWrap, yWrap, mtx._data);
+        this._data = this._ps_pattern_create_image(img._data, this._getWrap(xWrap), this._getWrap(yWrap), mtx._data);
     }
 
     transform(m) {
@@ -593,6 +609,96 @@ class ImagePattern {
             this._ps_pattern_unref(this._data);
             this._data = undefined;
             this._img = undefined;
+        }
+    }
+}
+
+
+class Gradient {
+    constructor(ps) {
+        this._ps = ps;
+        let instance = ps._instance;
+        this._ps_gradient_create_linear = _getExportWrapper(instance, 'ps_gradient_create_linear'); // USE
+        this._ps_gradient_create_radial = _getExportWrapper(instance, 'ps_gradient_create_radial'); // USE
+        this._ps_gradient_create_conic = _getExportWrapper(instance, 'ps_gradient_create_conic'); // USE
+        this._ps_gradient_ref = _getExportWrapper(instance, 'ps_gradient_ref'); // DEL
+        this._ps_gradient_unref = _getExportWrapper(instance, 'ps_gradient_unref'); // USE
+        this._ps_gradient_clear_color_stops = _getExportWrapper(instance, 'ps_gradient_clear_color_stops'); // USE
+        this._ps_gradient_add_color_stop = _getExportWrapper(instance, 'ps_gradient_add_color_stop'); // USE
+        this._ps_gradient_transform = _getExportWrapper(instance, 'ps_gradient_transform'); // USE
+    }
+
+    _getSpread(s) {
+        if (typeof s !== "string") {
+            throw TypeError("Parameters must be spread:<string>");
+        }
+        let r = 0;
+        switch (s.toLowerCase()) {
+            case "pad":
+                r = 0; break;
+            case "repeat":
+                r = 1; break;
+            case "reflect":
+                r = 2; break;
+        }
+        return r;
+    }
+
+    createLinear(spread, sp, ep) {
+        let s = this._getSpread(spread);
+        let cv1 = _createPointBuffer(this._ps, sp);
+        let cv2 = _createPointBuffer(this._ps, ep);
+        this._data = this._ps_gradient_create_linear(s, cv1, cv2);
+        _destoryBuffer(this._ps, cv2);
+        _destoryBuffer(this._ps, cv1);
+    }
+
+    createRadial(spread, sp, sr, ep, er) {
+        if (typeof sr !== "number" || typeof er !== "number") {
+            throw TypeError("Parameters must be sradius:<number>, eradius:<number>");
+        }
+        let s = this._getSpread(spread);
+        let cv1 = _createPointBuffer(this._ps, sp);
+        let cv2 = _createPointBuffer(this._ps, ep);
+        this._data = this._ps_gradient_create_radial(s, cv1, sr, cv2, er);
+        _destoryBuffer(this._ps, cv2);
+        _destoryBuffer(this._ps, cv1);
+    }
+
+    createConic(spread, cp, sa) {
+        if (typeof sa !== "number") {
+            throw TypeError("Parameters must be sangle:<number>");
+        }
+        let s = this._getSpread(spread);
+        let cv = _createPointBuffer(this._ps, cp);
+        this._data = this._ps_gradient_create_conic(s, cv, sa);
+        _destoryBuffer(this._ps, cv);
+    }
+
+    addColorStop(offset, color/*r*/, g, b, a) {
+        if (typeof offset !== "number") {
+            throw TypeError("Parameters must be offset:<number>");
+        }
+        let cv = _createColorBuffer(this._ps, color, g, b, a);
+        this._ps_gradient_add_color_stop(this._data, offset, cv);
+        _destoryBuffer(this._ps, cv);
+    }
+
+    clear() {
+        this._ps_gradient_clear_color_stops(this._data);
+    }
+
+    transform(m) {
+        if (!(m instanceof Matrix2D)) {
+            throw TypeError("Parameters must be matrix:<Matrix2D>");
+        }
+        this._ps_gradient_transform(this._data, m._data);
+    }
+
+    destroy() {
+        if (this._data != undefined) {
+            this._ps_gradient_unref(this._data);
+            this._data = undefined;
         }
     }
 }
@@ -623,7 +729,7 @@ class Context {
         this._ps_context_set_canvas = _getExportWrapper(instance, 'ps_context_set_canvas'); // DEL
         this._ps_context_get_canvas = _getExportWrapper(instance, 'ps_context_get_canvas'); // DEL
         this._ps_context_unref = _getExportWrapper(instance, 'ps_context_unref'); // USE
-        this._ps_set_source_gradient = _getExportWrapper(instance, 'ps_set_source_gradient');
+        this._ps_set_source_gradient = _getExportWrapper(instance, 'ps_set_source_gradient'); // USE
         this._ps_set_source_pattern = _getExportWrapper(instance, 'ps_set_source_pattern'); // USE
         this._ps_set_source_image = _getExportWrapper(instance, 'ps_set_source_image'); // USE
         this._ps_set_source_color = _getExportWrapper(instance, 'ps_set_source_color'); // USE
@@ -631,7 +737,7 @@ class Context {
         this._ps_set_stroke_color = _getExportWrapper(instance, 'ps_set_stroke_color'); // USE
         this._ps_set_stroke_image = _getExportWrapper(instance, 'ps_set_stroke_image'); // USE
         this._ps_set_stroke_pattern = _getExportWrapper(instance, 'ps_set_stroke_pattern'); // USE
-        this._ps_set_stroke_gradient = _getExportWrapper(instance, 'ps_set_stroke_gradient');
+        this._ps_set_stroke_gradient = _getExportWrapper(instance, 'ps_set_stroke_gradient'); // USE
         this._ps_set_stroke_canvas = _getExportWrapper(instance, 'ps_set_stroke_canvas');
         this._ps_set_filter = _getExportWrapper(instance, 'ps_set_filter'); // USE
         this._ps_stroke = _getExportWrapper(instance, 'ps_stroke'); // USE
@@ -709,39 +815,36 @@ class Context {
     }
 
     createPattern(image, xwrap, ywrap, m) {
-        if (typeof xwrap !== "string" || typeof ywrap !== "string") {
-            throw TypeError("Parameters must be xwrap:<string>, ywrap:<string>");
-        }
         if (m !== undefined && !(m instanceof Matrix2D)) {
             throw TypeError("Parameters must be matrix:<Matrix2D>");
-        }
-        
-        let xr = 0, yr = 0; 
-        switch (xwrap.toLowerCase()) {
-            case "repeat":
-                xr = 0;
-                break;
-            case "reflect":
-                xr = 1;
-                break;
-        }
-        switch (ywrap.toLowerCase()) {
-            case "repeat":
-                yr = 0;
-                break;
-            case "reflect":
-                yr = 1;
-                break;
         }
 
         if (image instanceof Image) {
             let img = new ImageTexture(this._ps, image);
-            return new ImagePattern(this._ps, img, xr, yr, m);
+            return new ImagePattern(this._ps, img, xwrap, ywrap, m);
         } else if (image instanceof ImageTexture) {
-            return new ImagePattern(this._ps, image, xr, yr, m);
+            return new ImagePattern(this._ps, image, xwrap, ywrap, m);
         } else {
             throw TypeError("Parameters must be image:<Image> or <ImageTexture>");
         }
+    }
+
+    createLinearGradient(s, sp, ep) {
+        let g = new Gradient(this._ps);
+        g.createLinear(s, sp, ep);
+        return g;
+    }
+
+    createRadialGradient(s, sp, sr, ep, er) {
+        let g = new Gradient(this._ps);
+        g.createRadial(s, sp, sr, ep, er);
+        return g;
+    }
+
+    createConicGradient(s, cp, sa) {
+        let g = new Gradient(this._ps);
+        g.createConic(s, cp, sa);
+        return g;
     }
 
     clear() {
@@ -1172,6 +1275,13 @@ class Context {
         this._ps_add_sub_path(this._ctx, p._data);
     }
 
+    setSourceGradient(g) {
+        if (!(g instanceof Gradient)) {
+            throw TypeError("Parameters must be gradient:<Gradient>.");
+        }
+        this._ps_set_source_gradient(this._ctx, g._data);
+    }
+
     setSourcePattern(p) {
         if (!(p instanceof ImagePattern)) {
             throw TypeError("Parameters must be image:<ImagePattern>.");
@@ -1184,6 +1294,13 @@ class Context {
             throw TypeError("Parameters must be image:<ImageTexture>.");
         }
         this._ps_set_source_image(this._ctx, img._data);
+    }
+
+    setStrokeGradient(g) {
+        if (!(g instanceof Gradient)) {
+            throw TypeError("Parameters must be gradient:<Gradient>.");
+        }
+        this._ps_set_stroke_gradient(this._ctx, g._data);
     }
 
     setStrokeImage(img) {
@@ -1445,14 +1562,6 @@ export default class Picasso {
         this._ps_mask_ref = _getExportWrapper(instance, 'ps_mask_ref');
         this._ps_mask_unref = _getExportWrapper(instance, 'ps_mask_unref');
         this._ps_mask_add_color_filter = _getExportWrapper(instance, 'ps_mask_add_color_filter');
-this._ps_gradient_create_linear = _getExportWrapper(instance, 'ps_gradient_create_linear');
-this._ps_gradient_create_radial = _getExportWrapper(instance, 'ps_gradient_create_radial');
-this._ps_gradient_create_conic = _getExportWrapper(instance, 'ps_gradient_create_conic');
-this._ps_gradient_ref = _getExportWrapper(instance, 'ps_gradient_ref');
-this._ps_gradient_unref = _getExportWrapper(instance, 'ps_gradient_unref');
-this._ps_gradient_clear_color_stops = _getExportWrapper(instance, 'ps_gradient_clear_color_stops');
-this._ps_gradient_add_color_stop = _getExportWrapper(instance, 'ps_gradient_add_color_stop');
-this._ps_gradient_transform = _getExportWrapper(instance, 'ps_gradient_transform');
 this._ps_font_unref = _getExportWrapper(instance, 'ps_font_unref');
 this._ps_font_create_copy = _getExportWrapper(instance, 'ps_font_create_copy');
 this._ps_font_create = _getExportWrapper(instance, 'ps_font_create');

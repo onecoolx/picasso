@@ -84,7 +84,6 @@
                     ctx.tangentArc(crc, 0.2, 2.8);
                     ctx.stroke();
 
-
                     ctx.save();
                     ctx.setLineDash(5, [5, 8, 10, 8]);
                     ctx.moveTo(550, 200);
@@ -227,6 +226,37 @@
                     pat.destroy();
                     mt.destroy();
                     image.destroy();
+
+
+                    ctx.save();
+
+                    let grc = {x:50, y:850, w:100, h:100};
+                    ctx.rectangle(grc);
+                    let g1 = ctx.createLinearGradient("repeat", {x:60, y:870}, {x: 130, y:940});
+                    g1.addColorStop(0.2, 255, 0, 0 , 1.0/*aka 255*/);
+                    g1.addColorStop(0.6, "#00FF00");
+                    g1.addColorStop(0.9, {r:0, g:0, b:255, a:255});
+                    ctx.setSourceGradient(g1);
+                    ctx.fill();
+
+                    ctx.rectangle(grc);
+                    let g2 = ctx.createRadialGradient("pad", {x:90, y:890}, 5, {x:110, y:910}, 40);
+                    g2.addColorStop(0.1, 0, 0, 0 , 1.0/*aka 255*/);
+                    g2.addColorStop(0.9, {r:1, g:1, b:1, a:255});
+                    ctx.setSourceGradient(g2);
+                    ctx.translate(150, 0);
+                    ctx.paint();
+
+                    ctx.rectangle(grc);
+                    let g3 = ctx.createConicGradient("reflect", {x:100, y:900}, 6.28);
+                    g3.addColorStop(1.0, 0, 0, 0 , 1.0/*aka 255*/);
+                    g3.addColorStop(0.0, {r:1, g:1, b:1, a:255});
+                    ctx.setSourceGradient(g3);
+                    ctx.translate(150, 0);
+                    ctx.fill();
+
+                    ctx.restore();
+
                     canvas.flush();
                     window.requestAnimationFrame(draw);
                 }
