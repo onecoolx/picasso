@@ -1503,9 +1503,9 @@ export default class Picasso {
     _init() {
         return fetch("picasso.wasm")
         .then((response) => response.arrayBuffer())
-        .then((binary) => {
-            let module = new WebAssembly.Module(binary);
-            this._instance = new WebAssembly.Instance(module, info);
+        .then((binary) => WebAssembly.instantiate(binary, info))
+        .then((result) => {
+            this._instance = result.instance;
             this._setEnv(this._instance);
             this._setupFuncs(this._instance);
         });
