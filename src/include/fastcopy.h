@@ -18,14 +18,14 @@
 inline void fastcopy4(uint8_t* __restrict dest, const uint8_t* __restrict src, int n)
 {
     _REGISTER_ int i;
-    for (i = 0; i < (n&3); i++){
+    for (i = 0; i < (n & 3); i++) {
         *dest++ = *src++;
     }
 
     n >>= 2;
 
-    for (i = 0; i < n; i++){
-        *(uint32_t *)dest = *(uint32_t *)src;
+    for (i = 0; i < n; i++) {
+        *(uint32_t*)dest = *(uint32_t*)src;
         dest += 4;
         src += 4;
     }

@@ -35,7 +35,7 @@ void painter::attach(rendering_buffer& buf)
 }
 
 void painter::init_raster_data(context_state* state, unsigned int methods,
-                                    raster_adapter& raster, const vertex_source& p, const trans_affine& mtx)
+                               raster_adapter& raster, const vertex_source& p, const trans_affine& mtx)
 {
     raster.set_raster_method(methods);
 
@@ -66,36 +66,32 @@ void painter::init_source_data(context_state* state, unsigned int methods, const
 
     if (methods & raster_stroke) {
         switch (state->pen.style) {
-            case pen_style_canvas:
-                {
-                    scalar x1 = 1, y1 = 1, x2 = 0 ,y2 = 0;
+            case pen_style_canvas: {
+                    scalar x1 = 1, y1 = 1, x2 = 0, y2 = 0;
                     bounding_rect(const_cast<graphic_path&>(p), 0, &x1, &y1, &x2, &y2);
                     ps_canvas* canvas = static_cast<ps_canvas*>(state->pen.data);
                     rect_s rect(x1, y1, x2, y2);
                     m_impl->set_stroke_canvas(canvas->buffer.impl(), (pix_fmt)(canvas->fmt), (int)state->filter, rect);
                 }
                 break;
-            case pen_style_pattern:
-                {
-                    scalar x1 = 1, y1 = 1, x2 = 0 ,y2 = 0;
+            case pen_style_pattern: {
+                    scalar x1 = 1, y1 = 1, x2 = 0, y2 = 0;
                     bounding_rect(const_cast<graphic_path&>(p), 0, &x1, &y1, &x2, &y2);
                     ps_pattern* pattern = static_cast<ps_pattern*>(state->pen.data);
                     rect_s rect(x1, y1, x2, y2);
                     m_impl->set_stroke_pattern(pattern->img->buffer.impl(), (pix_fmt)(pattern->img->fmt), (int)state->filter, rect,
-                                                                            pattern->xtype, pattern->ytype, &(pattern->matrix));
+                                               pattern->xtype, pattern->ytype, &(pattern->matrix));
                 }
                 break;
-            case pen_style_image:
-                {
-                    scalar x1 = 1, y1 = 1, x2 = 0 ,y2 = 0;
+            case pen_style_image: {
+                    scalar x1 = 1, y1 = 1, x2 = 0, y2 = 0;
                     bounding_rect(const_cast<graphic_path&>(p), 0, &x1, &y1, &x2, &y2);
                     ps_image* img = static_cast<ps_image*>(state->pen.data);
                     rect_s rect(x1, y1, x2, y2);
-                    m_impl->set_stroke_image(img->buffer.impl(), (pix_fmt)(img->fmt),(int)state->filter, rect);
+                    m_impl->set_stroke_image(img->buffer.impl(), (pix_fmt)(img->fmt), (int)state->filter, rect);
                 }
                 break;
-            case pen_style_gradient:
-                {
+            case pen_style_gradient: {
                     ps_gradient* gradient = static_cast<ps_gradient*>(state->pen.data);
                     m_impl->set_stroke_gradient(gradient->gradient.impl());
                 }
@@ -111,36 +107,32 @@ void painter::init_source_data(context_state* state, unsigned int methods, const
 
     if (methods & raster_fill) {
         switch (state->brush.style) {
-            case brush_style_canvas:
-                {
-                    scalar x1 = 1, y1 = 1, x2 = 0 ,y2 = 0;
+            case brush_style_canvas: {
+                    scalar x1 = 1, y1 = 1, x2 = 0, y2 = 0;
                     bounding_rect(const_cast<graphic_path&>(p), 0, &x1, &y1, &x2, &y2);
                     ps_canvas* canvas = static_cast<ps_canvas*>(state->brush.data);
                     rect_s rect(x1, y1, x2, y2);
                     m_impl->set_fill_canvas(canvas->buffer.impl(), (pix_fmt)(canvas->fmt), (int)state->filter, rect);
                 }
                 break;
-            case brush_style_pattern:
-                {
-                    scalar x1 = 1, y1 = 1, x2 = 0 ,y2 = 0;
+            case brush_style_pattern: {
+                    scalar x1 = 1, y1 = 1, x2 = 0, y2 = 0;
                     bounding_rect(const_cast<graphic_path&>(p), 0, &x1, &y1, &x2, &y2);
                     ps_pattern* pattern = static_cast<ps_pattern*>(state->brush.data);
                     rect_s rect(x1, y1, x2, y2);
                     m_impl->set_fill_pattern(pattern->img->buffer.impl(), (pix_fmt)(pattern->img->fmt), (int)state->filter, rect,
-                                                                            pattern->xtype, pattern->ytype, &(pattern->matrix));
+                                             pattern->xtype, pattern->ytype, &(pattern->matrix));
                 }
                 break;
-            case brush_style_image:
-                {
-                    scalar x1 = 1, y1 = 1, x2 = 0 ,y2 = 0;
+            case brush_style_image: {
+                    scalar x1 = 1, y1 = 1, x2 = 0, y2 = 0;
                     bounding_rect(const_cast<graphic_path&>(p), 0, &x1, &y1, &x2, &y2);
                     ps_image* img = static_cast<ps_image*>(state->brush.data);
                     rect_s rect(x1, y1, x2, y2);
-                    m_impl->set_fill_image(img->buffer.impl(), (pix_fmt)(img->fmt),(int)state->filter, rect);
+                    m_impl->set_fill_image(img->buffer.impl(), (pix_fmt)(img->fmt), (int)state->filter, rect);
                 }
                 break;
-            case brush_style_gradient:
-                {
+            case brush_style_gradient: {
                     ps_gradient* gradient = static_cast<ps_gradient*>(state->brush.data);
                     m_impl->set_fill_gradient(gradient->gradient.impl());
                 }
@@ -157,8 +149,9 @@ void painter::init_source_data(context_state* state, unsigned int methods, const
 
 void painter::render_stroke(context_state* state, raster_adapter& raster, const graphic_path& p)
 {
-    if (raster.is_empty())
+    if (raster.is_empty()) {
         init_raster_data(state, raster_stroke, raster, p, state->world_matrix);
+    }
 
     init_source_data(state, raster_stroke, p);
 
@@ -168,8 +161,9 @@ void painter::render_stroke(context_state* state, raster_adapter& raster, const 
 
 void painter::render_fill(context_state* state, raster_adapter& raster, const graphic_path& p)
 {
-    if (raster.is_empty())
+    if (raster.is_empty()) {
         init_raster_data(state, raster_fill, raster, p, state->world_matrix);
+    }
 
     init_source_data(state, raster_fill, p);
 
@@ -179,8 +173,9 @@ void painter::render_fill(context_state* state, raster_adapter& raster, const gr
 
 void painter::render_paint(context_state* state, raster_adapter& raster, const graphic_path& p)
 {
-    if (raster.is_empty())
+    if (raster.is_empty()) {
         init_raster_data(state, raster_fill | raster_stroke, raster, p, state->world_matrix);
+    }
 
     init_source_data(state, raster_fill | raster_stroke, p);
 
@@ -216,10 +211,11 @@ void painter::render_clip(context_state* state, bool clip)
         if (state->clip.type != clip_none) { // need clip
             m_impl->clear_clip(); // clear old clip.
 
-            if (state->clip.type == clip_content)
+            if (state->clip.type == clip_content) {
                 m_impl->apply_clip_path(state->clip.path, state->clip.rule, &(state->world_matrix));
-            else if (state->clip.type == clip_device)
+            } else if (state->clip.type == clip_device) {
                 m_impl->apply_clip_device(state->clip.rect, 0, 0);
+            }
         }
     } else {
         m_impl->clear_clip();
@@ -238,22 +234,22 @@ void painter::render_shadow(context_state* state, const graphic_path& p, bool fi
             method |= raster_stroke;
         }
 
-        scalar x1 = 1, y1 = 1, x2 = 0 ,y2 = 0;
+        scalar x1 = 1, y1 = 1, x2 = 0, y2 = 0;
         conv_transform tp(p, state->world_matrix);
         bounding_rect(tp, 0, &x1, &y1, &x2, &y2);
 
         //FIXME: it is hard code here right?
-        x1 -= (state->shadow.blur*40+5);
-        y1 -= (state->shadow.blur*40+5);
-        x2 += (state->shadow.blur*40+5);
-        y2 += (state->shadow.blur*40+5);
+        x1 -= (state->shadow.blur * 40 + 5);
+        y1 -= (state->shadow.blur * 40 + 5);
+        x2 += (state->shadow.blur * 40 + 5);
+        y2 += (state->shadow.blur * 40 + 5);
 
         rect_s rect(x1, y1, x2, y2);
 
         trans_affine mtx = state->world_matrix;
         mtx.translate(-x1, -y1); // translate to (0,0) of shadow layer.
 
-        if (m_impl->begin_shadow(rect)){ //switch to shadow layer.
+        if (m_impl->begin_shadow(rect)) { //switch to shadow layer.
 
             raster_adapter shadow_raster;
 
@@ -274,7 +270,7 @@ void painter::render_shadow(context_state* state, const graphic_path& p, bool fi
 
             shadow_raster.commit();
             m_impl->apply_shadow(shadow_raster.impl(), rect,
-                    state->shadow.color, state->shadow.x_offset, state->shadow.y_offset, state->shadow.blur);
+                                 state->shadow.color, state->shadow.x_offset, state->shadow.y_offset, state->shadow.blur);
 
             shadow_raster.reset();
         }
@@ -333,4 +329,3 @@ void painter::render_glyphs_raster(context_state* state, raster_adapter& raster,
 }
 
 }
-

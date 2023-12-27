@@ -60,7 +60,7 @@ typedef struct _psx_image_header {
     int alpha;
     /** Image frame count. */
     int frames;
-}psx_image_header;
+} psx_image_header;
 
 /**
  * \brief The image operator define.
@@ -73,14 +73,14 @@ typedef struct _psx_image_operator {
     int (*decode_image_data)(psx_image_header* header, const psx_image* image, psx_image_frame* frame, int idx, ps_byte* buffer, size_t buffer_len);
     /** Release reader resources. */
     int (*release_read_header_info)(psx_image_header* header);
-    /** Create a image writer header. */ 
+    /** Create a image writer header. */
     int (*write_header_info)(const psx_image* image, image_writer_fn func,
-                                         void* param, float quality, psx_image_header* header);
-    /** Write image data frames. */ 
+                             void* param, float quality, psx_image_header* header);
+    /** Write image data frames. */
     int (*encode_image_data)(psx_image_header* header, const psx_image* image, psx_image_frame* frame, int idx, const ps_byte* buffer, size_t buffer_len, int* ret);
-    /** Release writer resources. */ 
+    /** Release writer resources. */
     int (*release_write_header_info)(psx_image_header* header);
-}psx_image_operator;
+} psx_image_operator;
 
 /**
  * \brief Priority level for image_operator.
@@ -90,10 +90,10 @@ typedef enum _psx_priority_level {
     /** Low level operator. */
     PRIORITY_EXTENTED = -1,
     /** Default level operator. */
-    PRIORITY_DEFAULT  = 0,
+    PRIORITY_DEFAULT = 0,
     /** High level operator. */
-    PRIORITY_MASTER   = 1,
-}psx_priority_level;
+    PRIORITY_MASTER = 1,
+} psx_priority_level;
 
 /** @} end of plugin types */
 
@@ -119,11 +119,11 @@ typedef enum _psx_priority_level {
  * \sa psx_image_unregister_operator
  */
 PEXPORT int psx_image_register_operator(const char* type, const ps_byte* signature, size_t sig_offset, size_t sig_len,
-                                                                    psx_priority_level level, psx_image_operator* coder);
+                                        psx_priority_level level, psx_image_operator* coder);
 
 /**
  * \fn int psx_image_unregister_operator(psx_image_operator* coder)
- * \brief Unregister the image operator. 
+ * \brief Unregister the image operator.
  *
  * \param coder The image operator which will be unregister.
  *
@@ -165,7 +165,7 @@ PEXPORT void psx_image_module_shutdown(void);
 /**
  * \fn char* psx_image_module_get_string(int id)
  * \brief Get the string info about module.
- * 
+ *
  * \param id  The information index.
  *
  * \return If successs, return the pointer of string. Can not be modify and free.
@@ -184,4 +184,3 @@ PEXPORT const char* psx_image_module_get_string(int id);
 #endif
 
 #endif /*_PICASSO_IMAGE_PLUGININ_INTERFACE_H_*/
-

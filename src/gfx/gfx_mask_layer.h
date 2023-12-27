@@ -23,8 +23,8 @@ public:
     typedef uint8_t cover_type;
     enum {
         cover_shift = 8,
-        cover_none  = 0,
-        cover_full  = 255,
+        cover_none = 0,
+        cover_full = 255,
     };
 
     enum { // gray8 color
@@ -48,8 +48,7 @@ public:
     {
         if (x >= 0 && y >= 0 &&
             x < (int)m_buffer->internal_width() &&
-            y < (int)m_buffer->internal_height())
-        {
+            y < (int)m_buffer->internal_height()) {
             return (cover_type)calculate(m_buffer->row_ptr(y) + x * step + offset);
         }
         return 0;
@@ -59,10 +58,9 @@ public:
     {
         if (x >= 0 && y >= 0 &&
             x < (int)m_buffer->internal_width() &&
-            y < (int)m_buffer->internal_height())
-        {
+            y < (int)m_buffer->internal_height()) {
             return (cover_type)((cover_full + val * calculate(
-                                 m_buffer->row_ptr(y) + x * step + offset)) >> cover_shift);
+                                     m_buffer->row_ptr(y) + x * step + offset)) >> cover_shift);
         }
         return 0;
     }
@@ -105,7 +103,7 @@ public:
         do {
             *covers++ = (cover_type)calculate(mask);
             mask += step;
-        } while(--count);
+        } while (--count);
     }
 
     void combine_hspan(int x, int y, cover_type* dst, int num_pix) const
@@ -145,10 +143,10 @@ public:
         const uint8_t* mask = m_buffer->row_ptr(y) + x * step + offset;
         do {
             *covers = (cover_type)((cover_full + (*covers) *
-                                   calculate(mask)) >> cover_shift);
+                                    calculate(mask)) >> cover_shift);
             ++covers;
             mask += step;
-        } while(--count);
+        } while (--count);
     }
 
     void fill_vspan(int x, int y, cover_type* dst, int num_pix) const
@@ -189,7 +187,7 @@ public:
         do {
             *covers++ = (cover_type)calculate(mask);
             mask += m_buffer->internal_stride();
-        } while(--count);
+        } while (--count);
     }
 
     void combine_vspan(int x, int y, cover_type* dst, int num_pix) const
@@ -229,10 +227,10 @@ public:
         const uint8_t* mask = m_buffer->row_ptr(y) + x * step + offset;
         do {
             *covers = (cover_type)((cover_full + (*covers) *
-                                   calculate(mask)) >> cover_shift);
+                                    calculate(mask)) >> cover_shift);
             ++covers;
             mask += m_buffer->internal_stride();
-        } while(--count);
+        } while (--count);
     }
 
 private:
@@ -255,14 +253,15 @@ public:
     typedef typename amask_type::cover_type cover_type;
 
     enum {
-        span_extra_tail = 1<<8,
+        span_extra_tail = 1 << 8,
     };
 
 private:
     void realloc_span(unsigned int len)
     {
-        if (len > m_span.size())
+        if (len > m_span.size()) {
             m_span.resize(len + span_extra_tail);
+        }
     }
 
     void init_span(unsigned int len)
@@ -287,7 +286,7 @@ public:
     void attach_pixfmt(pixfmt_type& pixfmt) { m_pixfmt = &pixfmt; }
     void attach_alpha_mask(const amask_type& mask) { m_mask = &mask; }
 
-    unsigned int width(void) const { return m_pixfmt->width();  }
+    unsigned int width(void) const { return m_pixfmt->width(); }
     unsigned int height(void) const { return m_pixfmt->height(); }
 
     color_type pixel(int x, int y)
@@ -341,7 +340,6 @@ public:
         m_pixfmt->copy_from(from, xdst, ydst, xsrc, ysrc, len);
     }
 
-
     void blend_solid_hspan(int x, int y, unsigned int len,
                            const color_type& c, const cover_type* covers)
     {
@@ -349,7 +347,6 @@ public:
         m_mask->combine_hspan(x, y, &m_span[0], len);
         m_pixfmt->blend_solid_hspan(x, y, len, c, &m_span[0]);
     }
-
 
     void blend_solid_vspan(int x, int y, unsigned int len,
                            const color_type& c, const cover_type* covers)
@@ -404,7 +401,6 @@ private:
     const amask_type* m_mask;
     pod_array<cover_type> m_span;
 };
-
 
 // mask layer
 class gfx_mask_layer : public abstract_mask_layer

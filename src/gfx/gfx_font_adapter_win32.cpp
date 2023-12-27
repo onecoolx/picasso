@@ -41,7 +41,7 @@ public:
         , cur_glyph_index(0)
         , cur_data_size(0)
         , cur_data_type(glyph_type_outline)
-        , cur_bound_rect(0,0,0,0)
+        , cur_bound_rect(0, 0, 0, 0)
         , cur_advance_x(0)
         , cur_advance_y(0)
         , num_kerning_pairs(0)
@@ -61,7 +61,7 @@ public:
             font = 0;
         }
 
-        if (kerning_pairs){
+        if (kerning_pairs) {
             delete [] kerning_pairs;
             kerning_pairs = 0;
         }
@@ -106,27 +106,27 @@ public:
 };
 
 gfx_font_adapter::gfx_font_adapter(const char* name, int charset, scalar height, scalar weight,
-                                bool italic, bool hint, bool flip, bool a, const trans_affine* mtx)
-    :m_impl(new font_adapter_impl)
+                                   bool italic, bool hint, bool flip, bool a, const trans_affine* mtx)
+    : m_impl(new font_adapter_impl)
 {
     int char_set = (charset == charset_latin) ? ANSI_CHARSET : DEFAULT_CHARSET;
     m_impl->antialias = a;
     m_impl->flip_y = flip;
     m_impl->hinting = hint;
-    m_impl->font = ::CreateFontA(-iround(height),        // height of font
-                                0,                      // average character width
-                                0,                      // angle of escapement
-                                0,                      // base-line orientation angle
-                                iround(weight),         // font weight
-                                italic ? TRUE : FALSE,  // italic attribute option
-                                0,                      // underline attribute option
-                                0,                      // strikeout attribute option
-                                char_set,               // character set identifier
-                                OUT_DEFAULT_PRECIS,     // output precision
-                                CLIP_DEFAULT_PRECIS,    // clipping precision
-                                ANTIALIASED_QUALITY,    // output quality
-                                FF_DONTCARE,            // pitch and family
-                                name);              // typeface name
+    m_impl->font = ::CreateFontA(-iround(height), // height of font
+                                 0, // average character width
+                                 0, // angle of escapement
+                                 0, // base-line orientation angle
+                                 iround(weight), // font weight
+                                 italic ? TRUE : FALSE, // italic attribute option
+                                 0, // underline attribute option
+                                 0, // strikeout attribute option
+                                 char_set, // character set identifier
+                                 OUT_DEFAULT_PRECIS, // output precision
+                                 CLIP_DEFAULT_PRECIS, // clipping precision
+                                 ANTIALIASED_QUALITY, // output quality
+                                 FF_DONTCARE, // pitch and family
+                                 name); // typeface name
 
     m_impl->matrix = *mtx;
 
@@ -148,8 +148,9 @@ gfx_font_adapter::gfx_font_adapter(const char* name, int charset, scalar height,
 
 gfx_font_adapter::~gfx_font_adapter()
 {
-    if (m_impl->dc && m_impl->old_font)
+    if (m_impl->dc && m_impl->old_font) {
         deactive();
+    }
 
     delete m_impl;
 }
@@ -196,18 +197,18 @@ unsigned int gfx_font_adapter::units_per_em(void) const
 
 static int pair_less(const void* v1, const void* v2)
 {
-    if (((KERNINGPAIR*)v1)->wFirst != ((KERNINGPAIR*)v2)->wFirst)
+    if (((KERNINGPAIR*)v1)->wFirst != ((KERNINGPAIR*)v2)->wFirst) {
         return ((KERNINGPAIR*)v1)->wFirst - ((KERNINGPAIR*)v2)->wFirst;
+    }
     return ((KERNINGPAIR*)v1)->wSecond - ((KERNINGPAIR*)v2)->wSecond;
 }
-
 
 void font_adapter_impl::load_kerning_pairs(void)
 {
     if (dc) {
         if (!kerning_pairs) {
-            kerning_pairs = new KERNINGPAIR [16384-16];
-            max_kerning_pairs = 16384-16;
+            kerning_pairs = new KERNINGPAIR [16384 - 16];
+            max_kerning_pairs = 16384 - 16;
         }
 
         num_kerning_pairs = ::GetKerningPairs(dc, max_kerning_pairs, kerning_pairs);
@@ -244,9 +245,8 @@ void gfx_font_adapter::add_kerning(unsigned int first, unsigned int second, scal
 
         while (beg <= end) {
             int mid = (end + beg) / 2;
-            if (m_impl->kerning_pairs[mid].wFirst  == t.wFirst &&
-                    m_impl->kerning_pairs[mid].wSecond == t.wSecond)
-            {
+            if (m_impl->kerning_pairs[mid].wFirst == t.wFirst &&
+                m_impl->kerning_pairs[mid].wSecond == t.wSecond) {
                 scalar dx = INT_TO_SCALAR(m_impl->kerning_pairs[mid].iKernAmount);
                 scalar dy = 0;
                 m_impl->matrix.transform_2x2(&dx, &dy);
@@ -270,7 +270,7 @@ static inline float fx_to_flt(const FIXED& p)
 }
 
 static void decompose_win32_glyph_bitmap_mono(const char* gbuf, int w, int h, int x, int y,
-                                bool flip_y, gfx_scanline_bin& sl, gfx_scanline_storage_bin& storage)
+                                              bool flip_y, gfx_scanline_bin& sl, gfx_scanline_storage_bin& storage)
 {
     int pitch = ((w + 31) >> 5) << 2;
     const byte* buf = (const byte*)gbuf;
@@ -288,7 +288,7 @@ static void decompose_win32_glyph_bitmap_mono(const char* gbuf, int w, int h, in
         bitset_iterator bits(buf, 0);
         int j;
         for (j = 0; j < w; j++) {
-            if (bits.bit()) sl.add_cell(x + j, cover_full);
+            if (bits.bit()) { sl.add_cell(x + j, cover_full); }
             ++bits;
         }
 
@@ -301,7 +301,7 @@ static void decompose_win32_glyph_bitmap_mono(const char* gbuf, int w, int h, in
 }
 
 static bool decompose_win32_glyph_outline(const char* gbuf, unsigned int total_size,
-                                     bool flip_y, const trans_affine& mtx, graphic_path& path)
+                                          bool flip_y, const trans_affine& mtx, graphic_path& path)
 {
     const char* cur_glyph = gbuf;
     const char* end_glyph = gbuf + total_size;
@@ -314,62 +314,66 @@ static bool decompose_win32_glyph_outline(const char* gbuf, unsigned int total_s
         const char* end_poly = cur_glyph + th->cb;
         const char* cur_poly = cur_glyph + sizeof(TTPOLYGONHEADER);
 
-            x = fx_to_flt(th->pfxStart.x);
-            y = fx_to_flt(th->pfxStart.y);
-            //FIXME: it is needed ?
-            if (flip_y)
-                y = -y;
+        x = fx_to_flt(th->pfxStart.x);
+        y = fx_to_flt(th->pfxStart.y);
+        //FIXME: it is needed ?
+        if (flip_y) {
+            y = -y;
+        }
 
-            if (!closed)
-                path.close_polygon();
+        if (!closed) {
+            path.close_polygon();
+        }
 
-            mtx.transform(&x, &y);
-            path.move_to(x, y);
+        mtx.transform(&x, &y);
+        path.move_to(x, y);
 
-            while (cur_poly < end_poly) {
-                const TTPOLYCURVE* pc = (const TTPOLYCURVE*)cur_poly;
+        while (cur_poly < end_poly) {
+            const TTPOLYCURVE* pc = (const TTPOLYCURVE*)cur_poly;
 
-                if (pc->wType == TT_PRIM_LINE) {
-                    for (int i = 0; i < pc->cpfx; i++) {
-                        x = fx_to_flt(pc->apfx[i].x);
-                        y = fx_to_flt(pc->apfx[i].y);
-                        //FIXME: it is needed ?
-                        if (flip_y)
-                            y = -y;
-                        mtx.transform(&x, &y);
-                        path.line_to(x, y);
+            if (pc->wType == TT_PRIM_LINE) {
+                for (int i = 0; i < pc->cpfx; i++) {
+                    x = fx_to_flt(pc->apfx[i].x);
+                    y = fx_to_flt(pc->apfx[i].y);
+                    //FIXME: it is needed ?
+                    if (flip_y) {
+                        y = -y;
                     }
+                    mtx.transform(&x, &y);
+                    path.line_to(x, y);
                 }
-
-                if (pc->wType == TT_PRIM_QSPLINE) {
-                    for (int u = 0; u < pc->cpfx - 1; u++) {  // Walk through points in spline
-                        POINTFX pnt_b = pc->apfx[u];    // B is always the current point
-                        POINTFX pnt_c = pc->apfx[u+1];
-
-                        if (u < pc->cpfx - 2) {           // If not on last spline, compute C
-                            // midpoint (x,y)
-                            *(int*)&pnt_c.x = (*(int*)&pnt_b.x + *(int*)&pnt_c.x) / 2;
-                            *(int*)&pnt_c.y = (*(int*)&pnt_b.y + *(int*)&pnt_c.y) / 2;
-                        }
-
-                        scalar x2, y2;
-                        x  = fx_to_flt(pnt_b.x);
-                        y  = fx_to_flt(pnt_b.y);
-                        x2 = fx_to_flt(pnt_c.x);
-                        y2 = fx_to_flt(pnt_c.y);
-                        //FIXME: it is needed ?
-                        if (flip_y) {
-                            y = -y; y2 = -y2;
-                        }
-                        mtx.transform(&x,  &y);
-                        mtx.transform(&x2, &y2);
-                        path.curve3(x, y, x2, y2);
-                    }
-                }
-                cur_poly += sizeof(WORD) * 2 + sizeof(POINTFX) * pc->cpfx;
             }
-            cur_glyph += th->cb;
-            closed = false;
+
+            if (pc->wType == TT_PRIM_QSPLINE) {
+                for (int u = 0; u < pc->cpfx - 1; u++) { // Walk through points in spline
+                    POINTFX pnt_b = pc->apfx[u]; // B is always the current point
+                    POINTFX pnt_c = pc->apfx[u + 1];
+
+                    if (u < pc->cpfx - 2) { // If not on last spline, compute C
+                        // midpoint (x,y)
+                        *(int*)&pnt_c.x = (*(int*)&pnt_b.x + * (int*)&pnt_c.x) / 2;
+                        *(int*)&pnt_c.y = (*(int*)&pnt_b.y + * (int*)&pnt_c.y) / 2;
+                    }
+
+                    scalar x2, y2;
+                    x = fx_to_flt(pnt_b.x);
+                    y = fx_to_flt(pnt_b.y);
+                    x2 = fx_to_flt(pnt_c.x);
+                    y2 = fx_to_flt(pnt_c.y);
+                    //FIXME: it is needed ?
+                    if (flip_y) {
+                        y = -y;
+                        y2 = -y2;
+                    }
+                    mtx.transform(&x, &y);
+                    mtx.transform(&x2, &y2);
+                    path.curve3(x, y, x2, y2);
+                }
+            }
+            cur_poly += sizeof(WORD) * 2 + sizeof(POINTFX) * pc->cpfx;
+        }
+        cur_glyph += th->cb;
+        closed = false;
     }
     path.close_polygon();
     return true;
@@ -377,13 +381,13 @@ static bool decompose_win32_glyph_outline(const char* gbuf, unsigned int total_s
 
 static rect get_bounding_rect(graphic_path& path)
 {
-    rect_s rc(0,0,0,0);
+    rect_s rc(0, 0, 0, 0);
     bounding_rect(path, 0, &rc.x1, &rc.y1, &rc.x2, &rc.y2);
     return rect((int)Floor(rc.x1), (int)Floor(rc.y1), (int)Ceil(rc.x2), (int)Ceil(rc.y2));
 }
 
 #ifndef GGO_UNHINTED         // For compatibility with old SDKs.
-#define GGO_UNHINTED 0x0100
+    #define GGO_UNHINTED 0x0100
 #endif
 
 bool gfx_font_adapter::prepare_glyph(unsigned int code)
@@ -398,21 +402,21 @@ bool gfx_font_adapter::prepare_glyph(unsigned int code)
             format = GGO_BITMAP;
         }
 
-        if(!m_impl->hinting) format |= GGO_UNHINTED;
+        if (!m_impl->hinting) { format |= GGO_UNHINTED; }
 
         GLYPHMETRICS gm;
         int total_size = GetGlyphOutlineW(m_impl->dc, code, format, &gm,
-                                    m_impl->buf_size, m_impl->buf, &m_impl->mat);
+                                          m_impl->buf_size, m_impl->buf, &m_impl->mat);
         if (total_size < 0) {
             int total_size = GetGlyphOutlineW(m_impl->dc, code, GGO_METRICS, &gm,
-                                        m_impl->buf_size, m_impl->buf, &m_impl->mat);
+                                              m_impl->buf_size, m_impl->buf, &m_impl->mat);
 
-            if(total_size < 0)
+            if (total_size < 0) {
                 return false;
+            }
             gm.gmBlackBoxX = gm.gmBlackBoxY = 0;
             total_size = 0;
         }
-
 
         m_impl->cur_glyph_index = code;
         m_impl->cur_advance_x = INT_TO_SCALAR(gm.gmCellIncX);
@@ -425,10 +429,9 @@ bool gfx_font_adapter::prepare_glyph(unsigned int code)
             m_impl->cur_font_path.remove_all();
 
             if (decompose_win32_glyph_outline(m_impl->buf, total_size,
-                        m_impl->flip_y, m_impl->matrix, m_impl->cur_font_path))
-            {
+                                              m_impl->flip_y, m_impl->matrix, m_impl->cur_font_path)) {
                 m_impl->cur_bound_rect = get_bounding_rect(m_impl->cur_font_path);
-                m_impl->cur_data_size = m_impl->cur_font_path.total_byte_size()+sizeof(unsigned int);//count data
+                m_impl->cur_data_size = m_impl->cur_font_path.total_byte_size() + sizeof(unsigned int); //count data
                 return true;
             }
         } else {
@@ -437,21 +440,20 @@ bool gfx_font_adapter::prepare_glyph(unsigned int code)
             if (sys_bitmap) { // bitmap create by system.
                 gfx_scanline_bin sl;
                 decompose_win32_glyph_bitmap_mono(m_impl->buf, gm.gmBlackBoxX, gm.gmBlackBoxY,
-                            gm.gmptGlyphOrigin.x, m_impl->flip_y ? -gm.gmptGlyphOrigin.y : gm.gmptGlyphOrigin.y,
-                            m_impl->flip_y, sl, m_impl->cur_font_scanlines_bin);
+                                                  gm.gmptGlyphOrigin.x, m_impl->flip_y ? -gm.gmptGlyphOrigin.y : gm.gmptGlyphOrigin.y,
+                                                  m_impl->flip_y, sl, m_impl->cur_font_scanlines_bin);
 
                 m_impl->cur_bound_rect = rect(m_impl->cur_font_scanlines_bin.min_x(),
-                        m_impl->cur_font_scanlines_bin.min_y(),
-                        m_impl->cur_font_scanlines_bin.max_x() + 1,
-                        m_impl->cur_font_scanlines_bin.max_y() + 1);
+                                              m_impl->cur_font_scanlines_bin.min_y(),
+                                              m_impl->cur_font_scanlines_bin.max_x() + 1,
+                                              m_impl->cur_font_scanlines_bin.max_y() + 1);
                 m_impl->cur_data_size = m_impl->cur_font_scanlines_bin.byte_size();
                 return true;
             } else { // bitmap create by own rastering
                 m_impl->cur_font_path.remove_all();
 
                 if (decompose_win32_glyph_outline(m_impl->buf, total_size,
-                            m_impl->flip_y, m_impl->matrix, m_impl->cur_font_path))
-                {
+                                                  m_impl->flip_y, m_impl->matrix, m_impl->cur_font_path)) {
                     gfx_rasterizer_scanline_aa<> rasterizer;
                     conv_curve curves(m_impl->cur_font_path);
                     curves.approximation_scale(4.0);

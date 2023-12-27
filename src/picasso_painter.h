@@ -24,7 +24,8 @@ class graphic_path;
 class trans_affine;
 class mask_layer;
 
-class painter {
+class painter
+{
 public:
     painter(pix_fmt fmt);
     ~painter();
@@ -56,4 +57,3 @@ private:
 
 }
 #endif /*_PICASSO_PAINTER_H_*/
-

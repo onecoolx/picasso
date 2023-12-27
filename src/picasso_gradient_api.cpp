@@ -30,15 +30,15 @@ ps_gradient* PICAPI ps_gradient_create_linear(ps_gradient_spread sp, const ps_po
 
     int spread = SPREAD_PAD;
     switch (sp) {
-    case GRADIENT_SPREAD_PAD:
-        spread = SPREAD_PAD;
-        break;
-    case GRADIENT_SPREAD_REPEAT:
-        spread = SPREAD_REPEAT;
-        break;
-    case GRADIENT_SPREAD_REFLECT:
-        spread = SPREAD_REFLECT;
-        break;
+        case GRADIENT_SPREAD_PAD:
+            spread = SPREAD_PAD;
+            break;
+        case GRADIENT_SPREAD_REPEAT:
+            spread = SPREAD_REPEAT;
+            break;
+        case GRADIENT_SPREAD_REFLECT:
+            spread = SPREAD_REFLECT;
+            break;
     };
 
     scalar x1 = FLT_TO_SCALAR(s->x);
@@ -46,10 +46,10 @@ ps_gradient* PICAPI ps_gradient_create_linear(ps_gradient_spread sp, const ps_po
     scalar x2 = FLT_TO_SCALAR(e->x);
     scalar y2 = FLT_TO_SCALAR(e->y);
 
-    ps_gradient *p = (ps_gradient*)mem_malloc(sizeof(ps_gradient));
+    ps_gradient* p = (ps_gradient*)mem_malloc(sizeof(ps_gradient));
     if (p) {
         p->refcount = 1;
-        new ((void*)&(p->gradient))picasso::gradient_adapter;
+        new ((void*) & (p->gradient))picasso::gradient_adapter;
         p->gradient.init_linear(spread, x1, y1, x2, y2);
         global_status = STATUS_SUCCEED;
         return p;
@@ -60,7 +60,7 @@ ps_gradient* PICAPI ps_gradient_create_linear(ps_gradient_spread sp, const ps_po
 }
 
 ps_gradient* PICAPI ps_gradient_create_radial(ps_gradient_spread sp, const ps_point* s, float sr,
-                                                                            const ps_point* e, float er)
+                                              const ps_point* e, float er)
 {
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;
@@ -74,15 +74,15 @@ ps_gradient* PICAPI ps_gradient_create_radial(ps_gradient_spread sp, const ps_po
 
     int spread = SPREAD_PAD;
     switch (sp) {
-    case GRADIENT_SPREAD_PAD:
-        spread = SPREAD_PAD;
-        break;
-    case GRADIENT_SPREAD_REPEAT:
-        spread = SPREAD_REPEAT;
-        break;
-    case GRADIENT_SPREAD_REFLECT:
-        spread = SPREAD_REFLECT;
-        break;
+        case GRADIENT_SPREAD_PAD:
+            spread = SPREAD_PAD;
+            break;
+        case GRADIENT_SPREAD_REPEAT:
+            spread = SPREAD_REPEAT;
+            break;
+        case GRADIENT_SPREAD_REFLECT:
+            spread = SPREAD_REFLECT;
+            break;
     };
 
     scalar x1 = FLT_TO_SCALAR(s->x);
@@ -92,10 +92,10 @@ ps_gradient* PICAPI ps_gradient_create_radial(ps_gradient_spread sp, const ps_po
     scalar y2 = FLT_TO_SCALAR(e->y);
     scalar r2 = FLT_TO_SCALAR(er);
 
-    ps_gradient *p = (ps_gradient*)mem_malloc(sizeof(ps_gradient));
+    ps_gradient* p = (ps_gradient*)mem_malloc(sizeof(ps_gradient));
     if (p) {
         p->refcount = 1;
-        new ((void*)&(p->gradient))picasso::gradient_adapter;;
+        new ((void*) & (p->gradient))picasso::gradient_adapter;;
         p->gradient.init_radial(spread, x1, y1, r1, x2, y2, r2);
         global_status = STATUS_SUCCEED;
         return p;
@@ -119,25 +119,25 @@ ps_gradient* PICAPI ps_gradient_create_conic(ps_gradient_spread sp, const ps_poi
 
     int spread = SPREAD_PAD;
     switch (sp) {
-    case GRADIENT_SPREAD_PAD:
-        spread = SPREAD_PAD;
-        break;
-    case GRADIENT_SPREAD_REPEAT:
-        spread = SPREAD_REPEAT;
-        break;
-    case GRADIENT_SPREAD_REFLECT:
-        spread = SPREAD_REFLECT;
-        break;
+        case GRADIENT_SPREAD_PAD:
+            spread = SPREAD_PAD;
+            break;
+        case GRADIENT_SPREAD_REPEAT:
+            spread = SPREAD_REPEAT;
+            break;
+        case GRADIENT_SPREAD_REFLECT:
+            spread = SPREAD_REFLECT;
+            break;
     };
 
     scalar x = FLT_TO_SCALAR(o->x);
     scalar y = FLT_TO_SCALAR(o->y);
     scalar ca = FLT_TO_SCALAR(a);
 
-    ps_gradient *p = (ps_gradient*)mem_malloc(sizeof(ps_gradient));
+    ps_gradient* p = (ps_gradient*)mem_malloc(sizeof(ps_gradient));
     if (p) {
         p->refcount = 1;
-        new ((void*)&(p->gradient))picasso::gradient_adapter;
+        new ((void*) & (p->gradient))picasso::gradient_adapter;
         p->gradient.init_conic(spread, x, y, ca);
         global_status = STATUS_SUCCEED;
         return p;
@@ -212,13 +212,14 @@ void PICAPI ps_gradient_add_color_stop(ps_gradient* g, float off, const ps_color
         return;
     }
 
-    if (off < 0)
+    if (off < 0) {
         off = 0.0f;
-    else if (off > 1)
+    } else if (off > 1) {
         off = 1.0f;
+    }
 
     g->gradient.add_color_stop(FLT_TO_SCALAR(off),
-                picasso::rgba(FLT_TO_SCALAR(c->r), FLT_TO_SCALAR(c->g), FLT_TO_SCALAR(c->b), FLT_TO_SCALAR(c->a)));
+                               picasso::rgba(FLT_TO_SCALAR(c->r), FLT_TO_SCALAR(c->g), FLT_TO_SCALAR(c->b), FLT_TO_SCALAR(c->a)));
     global_status = STATUS_SUCCEED;
 }
 

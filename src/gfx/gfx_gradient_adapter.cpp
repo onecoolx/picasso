@@ -40,11 +40,10 @@ public:
     static int calculate(int x, int y, int d)
     {
         scalar a = Atan2(INT_TO_SCALAR(y), INT_TO_SCALAR(x));
-        if (a < 0) a = _2PI + a;
+        if (a < 0) { a = _2PI + a; }
         return iround(a * INT_TO_SCALAR(d) * _1div2PI);
     }
 };
-
 
 // gradient_radial
 class gradient_radial
@@ -53,7 +52,7 @@ public:
     void init(scalar, scalar, scalar) { }
     static int calculate(int x, int y, int d)
     {
-        return (int)fast_sqrt(x*x + y*y);
+        return (int)fast_sqrt(x * x + y * y);
     }
 };
 
@@ -101,17 +100,19 @@ private:
         scalar d = (m_r2 - (m_fx2 + m_fy2));
         if (d == INT_TO_SCALAR(0)) {
             if (m_fx) {
-                if (m_fx < 0)
+                if (m_fx < 0) {
                     ++m_fx;
-                else
+                } else {
                     --m_fx;
+                }
             }
 
             if (m_fy) {
-                if (m_fy < 0)
+                if (m_fy < 0) {
                     ++m_fy;
-                else
+                } else {
                     --m_fy;
+                }
             }
 
             m_fx2 = INT_TO_SCALAR(m_fx) * INT_TO_SCALAR(m_fx);
@@ -146,8 +147,8 @@ public:
     int calculate(int x, int y, int d) const
     {
         int ret = m_gradient->calculate(x, y, d);
-        if (ret < 0) ret = 0;
-        if (ret > d) ret = d;
+        if (ret < 0) { ret = 0; }
+        if (ret > d) { ret = d; }
         return ret;
     }
 
@@ -168,7 +169,7 @@ public:
     int calculate(int x, int y, int d) const
     {
         int ret = m_gradient->calculate(x, y, d) % d;
-        if (ret < 0) ret += d;
+        if (ret < 0) { ret += d; }
         return ret;
     }
 
@@ -190,15 +191,14 @@ public:
     {
         int d2 = d << 1;
         int ret = m_gradient->calculate(x, y, d) % d2;
-        if (ret < 0) ret += d2;
-        if (ret >= d) ret = d2 - ret;
+        if (ret < 0) { ret += d2; }
+        if (ret >= d) { ret = d2 - ret; }
         return ret;
     }
 
 private:
     const GradientFunc* m_gradient;
 };
-
 
 // gradient wrapper implements
 template <typename GradientFunc, typename Adaptor>
@@ -229,8 +229,7 @@ private:
 // gfx gradient table
 
 // rgba8 color interpolator
-struct color_interpolator
-{
+struct color_interpolator {
 public:
     typedef rgba8 color_type;
 
@@ -244,7 +243,10 @@ public:
 
     void operator ++ ()
     {
-        ++r; ++g; ++b; ++a;
+        ++r;
+        ++g;
+        ++b;
+        ++a;
     }
 
     color_type color(void) const
@@ -275,8 +277,8 @@ void gfx_gradient_table::build_table(void)
         }
 
         for (i = 1; i < m_color_profile.size(); i++) {
-            end  = uround(m_color_profile[i].offset * color_table_size);
-            color_interpolator ci(m_color_profile[i-1].color,
+            end = uround(m_color_profile[i].offset * color_table_size);
+            color_interpolator ci(m_color_profile[i - 1].color,
                                   m_color_profile[i].color, end - start + 1);
             while (start < end) {
                 m_color_table[start] = ci.color();
@@ -335,37 +337,37 @@ void gfx_gradient_adapter::init_linear(int spread, scalar x1, scalar y1, scalar 
 }
 
 void gfx_gradient_adapter::init_radial(int spread, scalar x1, scalar y1, scalar radius1,
-                                           scalar x2, scalar y2, scalar radius2)
+                                       scalar x2, scalar y2, scalar radius2)
 {
     if (!m_wrapper) {
         if ((x1 == x2) && (y1 == y2)) {
             switch (spread) {
                 case SPREAD_PAD:
                     m_wrapper = new gfx_gradient<gradient_radial,
-                                             gradient_pad_adaptor<gradient_radial> >;
+                    gradient_pad_adaptor<gradient_radial> >;
                     break;
                 case SPREAD_REPEAT:
                     m_wrapper = new gfx_gradient<gradient_radial,
-                                             gradient_repeat_adaptor<gradient_radial> >;
+                    gradient_repeat_adaptor<gradient_radial> >;
                     break;
                 case SPREAD_REFLECT:
                     m_wrapper = new gfx_gradient<gradient_radial,
-                                             gradient_reflect_adaptor<gradient_radial> >;
+                    gradient_reflect_adaptor<gradient_radial> >;
                     break;
             }
         } else {
             switch (spread) {
                 case SPREAD_PAD:
                     m_wrapper = new gfx_gradient<gradient_radial_focus,
-                                             gradient_pad_adaptor<gradient_radial_focus> >;
+                    gradient_pad_adaptor<gradient_radial_focus> >;
                     break;
                 case SPREAD_REPEAT:
                     m_wrapper = new gfx_gradient<gradient_radial_focus,
-                                             gradient_repeat_adaptor<gradient_radial_focus> >;
+                    gradient_repeat_adaptor<gradient_radial_focus> >;
                     break;
                 case SPREAD_REFLECT:
                     m_wrapper = new gfx_gradient<gradient_radial_focus,
-                                             gradient_reflect_adaptor<gradient_radial_focus> >;
+                    gradient_reflect_adaptor<gradient_radial_focus> >;
                     break;
             }
 

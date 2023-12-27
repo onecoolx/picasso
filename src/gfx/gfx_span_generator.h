@@ -24,7 +24,7 @@ public:
 
     enum {
         base_span_shift = 8,
-        base_span_mask  = 1 << base_span_shift,
+        base_span_mask = 1 << base_span_shift,
         base_span_block = base_span_mask - 1,
     };
 
@@ -42,7 +42,6 @@ public:
 private:
     pod_array<color_type> m_span;
 };
-
 
 // span interpolator linear
 class gfx_span_interpolator_linear

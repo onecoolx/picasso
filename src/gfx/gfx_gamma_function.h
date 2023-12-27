@@ -71,8 +71,8 @@ public:
 
     scalar operator()(scalar x) const
     {
-        if (x < m_start) return FLT_TO_SCALAR(0.0f);
-        if (x > m_end) return FLT_TO_SCALAR(1.0f);
+        if (x < m_start) { return FLT_TO_SCALAR(0.0f); }
+        if (x > m_end) { return FLT_TO_SCALAR(1.0f); }
         return (x - m_start) / (m_end - m_start);
     }
 
@@ -94,7 +94,7 @@ public:
     scalar operator()(scalar x) const
     {
         scalar y = x * m_mul;
-        if (y > FLT_TO_SCALAR(1.0f)) y = FLT_TO_SCALAR(1.0f);
+        if (y > FLT_TO_SCALAR(1.0f)) { y = FLT_TO_SCALAR(1.0f); }
         return y;
     }
 

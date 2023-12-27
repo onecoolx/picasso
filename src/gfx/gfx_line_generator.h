@@ -50,7 +50,7 @@ public:
         m_dy -= m_inc * n;
     }
 
-    int y(void) const { return m_y + (m_dy >> (FractionShift-YShift)); }
+    int y(void) const { return m_y + (m_dy >> (FractionShift - YShift)); }
     int dy(void) const { return m_dy; }
 
 private:

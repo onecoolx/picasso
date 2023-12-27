@@ -56,7 +56,7 @@ void font_engine::set_antialias(bool b)
 
 void font_engine::set_transform(const trans_affine& mtx)
 {
-    if (m_affine != mtx){
+    if (m_affine != mtx) {
         m_affine = mtx;
         m_stamp_change = true;
     }
@@ -74,8 +74,9 @@ int font_engine::find_font(const char* font_signature)
 
 bool font_engine::create_font(const font_desc& desc)
 {
-    if (!font_adapter::create_signature(desc, m_affine, m_antialias, m_signature))
+    if (!font_adapter::create_signature(desc, m_affine, m_antialias, m_signature)) {
         return false;
+    }
 
     if (m_current) {
         m_current->deactive();
@@ -114,31 +115,32 @@ void font_engine::shutdown(void)
 // font adapter
 bool font_adapter::create_signature(const font_desc& desc, const trans_affine& mtx, bool anti, char* recv_sig)
 {
-    if (!recv_sig)
+    if (!recv_sig) {
         return false; //out of memory.
+    }
 
     recv_sig[0] = 0;
 
-    snprintf(recv_sig, MAX_SIGNATURE_BUFFER_LEN-1,
-            "%s,%d,%3d,%3d,%d,%d,%d,%d-",
-            desc.name(),
-            desc.charset(),
-            (int)desc.height(),
-            (int)desc.weight(),
-            (int)desc.italic(),
-            (int)desc.hint(),
-            (int)desc.flip_y(),
-            (int)anti);
+    snprintf(recv_sig, MAX_SIGNATURE_BUFFER_LEN - 1,
+             "%s,%d,%3d,%3d,%d,%d,%d,%d-",
+             desc.name(),
+             desc.charset(),
+             (int)desc.height(),
+             (int)desc.weight(),
+             (int)desc.italic(),
+             (int)desc.hint(),
+             (int)desc.flip_y(),
+             (int)anti);
 
     char mbuf[64] = {0};
     snprintf(mbuf, 64,
-            "%08X%08X%08X%08X%08X%08X",
-            fxmath::flt_to_fixed(SCALAR_TO_FLT(mtx.sx())),
-            fxmath::flt_to_fixed(SCALAR_TO_FLT(mtx.sy())),
-            fxmath::flt_to_fixed(SCALAR_TO_FLT(mtx.shx())),
-            fxmath::flt_to_fixed(SCALAR_TO_FLT(mtx.shy())),
-            fxmath::flt_to_fixed(SCALAR_TO_FLT(mtx.tx())),
-            fxmath::flt_to_fixed(SCALAR_TO_FLT(mtx.ty())));
+             "%08X%08X%08X%08X%08X%08X",
+             fxmath::flt_to_fixed(SCALAR_TO_FLT(mtx.sx())),
+             fxmath::flt_to_fixed(SCALAR_TO_FLT(mtx.sy())),
+             fxmath::flt_to_fixed(SCALAR_TO_FLT(mtx.shx())),
+             fxmath::flt_to_fixed(SCALAR_TO_FLT(mtx.shy())),
+             fxmath::flt_to_fixed(SCALAR_TO_FLT(mtx.tx())),
+             fxmath::flt_to_fixed(SCALAR_TO_FLT(mtx.ty())));
 
     strcat(recv_sig, mbuf);
     return true;
@@ -158,8 +160,9 @@ void font_adapter::deactive(void)
 
 void font_adapter::add_kerning(scalar* x, scalar* y)
 {
-    if (m_prev_glyph && m_last_glyph)
+    if (m_prev_glyph && m_last_glyph) {
         m_impl->add_kerning(m_prev_glyph->index, m_last_glyph->index, x, y);
+    }
 }
 
 const glyph* font_adapter::get_glyph(unsigned int code)
@@ -173,13 +176,13 @@ const glyph* font_adapter::get_glyph(unsigned int code)
         if (m_impl->prepare_glyph(code)) {
             m_prev_glyph = m_last_glyph;
             gl = m_cache->cache_glyph(code,
-                                 m_impl->glyph_index(),
-                                 m_impl->data_size(),
-                                 m_impl->data_type(),
-                                 m_impl->bounds(),
-                                 m_impl->height(),
-                                 m_impl->advance_x(),
-                                 m_impl->advance_y());
+                                      m_impl->glyph_index(),
+                                      m_impl->data_size(),
+                                      m_impl->data_type(),
+                                      m_impl->bounds(),
+                                      m_impl->height(),
+                                      m_impl->advance_x(),
+                                      m_impl->advance_y());
             m_impl->write_glyph_to(gl->data);
             m_last_glyph = gl;
             return gl;
@@ -198,12 +201,13 @@ bool font_adapter::generate_raster(const glyph* g, scalar x, scalar y)
             unsigned int count = 0;
             unsigned int offset = sizeof(unsigned int);
             mem_copy(&count, g->data, offset);
-            m_path_adaptor.serialize_from(count, g->data+offset, g->data_size-offset);
+            m_path_adaptor.serialize_from(count, g->data + offset, g->data_size - offset);
             m_path_adaptor.translate(x, y);
         }
         return true;
-    } else
+    } else {
         return false;
+    }
 }
 
 }

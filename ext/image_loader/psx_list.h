@@ -8,11 +8,11 @@
 #define _PSX_LIST_H_
 
 #if defined(__GNUC__)
-#define INLINE inline
+    #define INLINE inline
 #elif defined(_MSC_VER)
-#define INLINE __inline
+    #define INLINE __inline
 #else
-#define INLINE
+    #define INLINE
 #endif
 
 struct list_hdr {
@@ -35,7 +35,7 @@ static INLINE int list_empty(const struct list_hdr* head)
 }
 
 #define list_add(head, value) \
-            list_add_entry((struct list_hdr*)(head), (struct list_hdr*)(value))
+    list_add_entry((struct list_hdr*)(head), (struct list_hdr*)(value))
 
 static INLINE int list_add_entry(struct list_hdr* head, struct list_hdr* value)
 {
@@ -49,7 +49,7 @@ static INLINE int list_add_entry(struct list_hdr* head, struct list_hdr* value)
 }
 
 #define list_add_tail(head, value) \
-            list_add_tail_entry((struct list_hdr*)(head), (struct list_hdr*)(value))
+    list_add_tail_entry((struct list_hdr*)(head), (struct list_hdr*)(value))
 
 static INLINE int list_add_tail_entry(struct list_hdr* head, struct list_hdr* value)
 {
@@ -63,7 +63,7 @@ static INLINE int list_add_tail_entry(struct list_hdr* head, struct list_hdr* va
 }
 
 #define list_remove(entry) \
-            list_remove_entry((struct list_hdr*)(entry))
+    list_remove_entry((struct list_hdr*)(entry))
 
 static INLINE int list_remove_entry(struct list_hdr* entry)
 {
@@ -74,10 +74,9 @@ static INLINE int list_remove_entry(struct list_hdr* entry)
 }
 
 #define list_for_each(head, iterator) \
-        for ((iterator) = (head)->next; (iterator) != (head); (iterator) = (iterator)->next)
+    for ((iterator) = (head)->next; (iterator) != (head); (iterator) = (iterator)->next)
 
 #define list_for_each_start_with(head, start, iterator) \
-        for ((iterator) = ((struct list_hdr*)(start))->next; (iterator) != (head); (iterator) = (iterator)->next)
+    for ((iterator) = ((struct list_hdr*)(start))->next; (iterator) != (head); (iterator) = (iterator)->next)
 
 #endif /*_PSX_LIST_H_*/
-

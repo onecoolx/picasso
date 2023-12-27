@@ -38,8 +38,7 @@ public:
         m_y = y;
 
         if ((y >= 0) && (y < (int)m_pixf->height()) &&
-            (x >= 0) && ((x+(int)len) <= (int)m_pixf->width()))
-        {
+            (x >= 0) && ((x + (int)len) <= (int)m_pixf->width())) {
             return m_pix_ptr = m_pixf->pix_ptr(x, y);
         }
 
@@ -49,8 +48,9 @@ public:
 
     const byte* next_x(void)
     {
-        if (m_pix_ptr)
+        if (m_pix_ptr) {
             return m_pix_ptr += pix_width;
+        }
 
         ++m_x;
         return pixel();
@@ -78,8 +78,9 @@ private:
         _REGISTER_ int x = m_x;
         _REGISTER_ int y = m_y;
 
-        if (x < 0 || y < 0 || x >= (int)m_pixf->width() || y >= (int)m_pixf->height())
+        if (x < 0 || y < 0 || x >= (int)m_pixf->width() || y >= (int)m_pixf->height()) {
             return m_pixf->pix_zero();
+        }
 
         return m_pixf->pix_ptr(x, y);
     }
@@ -91,7 +92,6 @@ private:
     const PixFmt* m_pixf;
     const byte* m_pix_ptr;
 };
-
 
 // image_accessor_wrap
 template<class PixFmt, class WrapX, class WrapY> class image_accessor_wrap
@@ -146,7 +146,6 @@ private:
     WrapY m_wrap_y;
 };
 
-
 // wrap_mode_repeat
 class wrap_mode_repeat
 {
@@ -166,8 +165,9 @@ public:
     unsigned int operator++()
     {
         ++m_value;
-        if (m_value >= m_size)
+        if (m_value >= m_size) {
             m_value = 0;
+        }
         return m_value;
     }
 private:
@@ -175,7 +175,6 @@ private:
     unsigned int m_add;
     unsigned int m_value;
 };
-
 
 // wrap_mode_reflect
 class wrap_mode_reflect
@@ -192,18 +191,21 @@ public:
     unsigned int operator()(int v)
     {
         m_value = ((unsigned int)v + m_add) % m_size2;
-        if (m_value >= m_size)
+        if (m_value >= m_size) {
             return m_size2 - m_value - 1;
+        }
         return m_value;
     }
 
     unsigned int operator++()
     {
         ++m_value;
-        if (m_value >= m_size2)
+        if (m_value >= m_size2) {
             m_value = 0;
-        if (m_value >= m_size)
+        }
+        if (m_value >= m_size) {
             return m_size2 - m_value - 1;
+        }
         return m_value;
     }
 private:

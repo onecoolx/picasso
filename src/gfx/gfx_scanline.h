@@ -44,7 +44,7 @@ public:
 
     void add_cell(int x, unsigned int)
     {
-        if (x == m_last_x+1) {
+        if (x == m_last_x + 1) {
             m_cur_span->len++;
         } else {
             ++m_cur_span;
@@ -56,7 +56,7 @@ public:
 
     void add_span(int x, unsigned int len, unsigned int)
     {
-        if (x == m_last_x+1) {
+        if (x == m_last_x + 1) {
             m_cur_span->len = (int16_t)(m_cur_span->len + len);
         } else {
             ++m_cur_span;
@@ -95,7 +95,6 @@ private:
     span* m_cur_span;
     pod_array<span> m_spans;
 };
-
 
 // scanline 8bit packed container
 class gfx_scanline_p8
@@ -137,7 +136,7 @@ public:
     void add_cell(int x, unsigned int cover)
     {
         *m_cover_ptr = (cover_type)cover;
-        if (x == m_last_x+1 && m_cur_span->len > 0) {
+        if (x == m_last_x + 1 && m_cur_span->len > 0) {
             m_cur_span->len++;
         } else {
             m_cur_span++;
@@ -152,7 +151,7 @@ public:
     void add_cells(int x, unsigned int len, const cover_type* covers)
     {
         mem_copy(m_cover_ptr, covers, len * sizeof(cover_type));
-        if (x == m_last_x+1 && m_cur_span->len > 0) {
+        if (x == m_last_x + 1 && m_cur_span->len > 0) {
             m_cur_span->len += (int16_t)len;
         } else {
             m_cur_span++;
@@ -166,9 +165,8 @@ public:
 
     void add_span(int x, unsigned int len, unsigned int cover)
     {
-        if (x == m_last_x+1 && m_cur_span->len < 0
-            && cover == *m_cur_span->covers)
-        {
+        if (x == m_last_x + 1 && m_cur_span->len < 0
+            && cover == *m_cur_span->covers) {
             m_cur_span->len -= (int16_t)len;
         } else {
             *m_cover_ptr = (cover_type)cover;
@@ -208,7 +206,6 @@ private:
     span* m_cur_span;
     pod_array<span> m_spans;
 };
-
 
 // scanline unpacked container
 class gfx_scanline_u8
@@ -250,7 +247,7 @@ public:
     {
         x -= m_min_x;
         m_covers[x] = (cover_type)cover;
-        if (x == m_last_x+1) {
+        if (x == m_last_x + 1) {
             m_cur_span->len++;
         } else {
             m_cur_span++;
@@ -265,7 +262,7 @@ public:
     {
         x -= m_min_x;
         mem_copy(&m_covers[x], covers, len * sizeof(cover_type));
-        if (x == m_last_x+1) {
+        if (x == m_last_x + 1) {
             m_cur_span->len += (coord_type)len;
         } else {
             m_cur_span++;
@@ -280,7 +277,7 @@ public:
     {
         x -= m_min_x;
         memset(&m_covers[x], cover, len);
-        if (x == m_last_x+1) {
+        if (x == m_last_x + 1) {
             m_cur_span->len += (coord_type)len;
         } else {
             m_cur_span++;

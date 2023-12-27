@@ -36,12 +36,12 @@ public:
 
     // redering buffer
     virtual abstract_rendering_buffer* create_rendering_buffer(byte* buf,
-                                    unsigned int width, unsigned int height, int stride) = 0;
+                                                               unsigned int width, unsigned int height, int stride) = 0;
     virtual void destroy_rendering_buffer(abstract_rendering_buffer* b) = 0;
 
     // masking layer
     virtual abstract_mask_layer* create_mask_layer(byte* buf,
-                                    unsigned int width, unsigned int height, int stride) = 0;
+                                                   unsigned int width, unsigned int height, int stride) = 0;
     virtual void destroy_mask_layer(abstract_mask_layer* m) = 0;
 
     // gradient adapter
@@ -50,8 +50,8 @@ public:
 
     // font adapter
     virtual abstract_font_adapter* create_font_adapter(const char* name, int charset,
-                                    scalar height, scalar weight, bool italic, bool hint, bool flip,
-                                    bool antialias, const trans_affine* mtx) = 0;
+                                                       scalar height, scalar weight, bool italic, bool hint, bool flip,
+                                                       bool antialias, const trans_affine* mtx) = 0;
     virtual void destroy_font_adapter(abstract_font_adapter* f) = 0;
 
 protected:
@@ -65,4 +65,3 @@ bool is_valid_system_device(void);
 device* get_system_device(void);
 }
 #endif/*_GRAPHIC_DEVICE_H_*/
-

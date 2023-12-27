@@ -68,7 +68,7 @@ public:
         scalar end_y = FLT_TO_SCALAR(0.0f);
 
         unsigned int cmd = m_source->vertex(x, y);
-        switch(cmd) {
+        switch (cmd) {
             case path_cmd_curve3:
                 m_source->vertex(&end_x, &end_y);
                 m_curve3.init(m_last_x, m_last_y, *x, *y, end_x, end_y);
@@ -183,20 +183,19 @@ public:
         add(m_poly_a, *m_src_a);
         add(m_poly_b, *m_src_b);
 
-        switch(m_operation)
-        {
-           case clip_union:
-               polygon_clip(POLY_UNION, &m_poly_a, &m_poly_b, &m_result);
-               break;
-           case clip_intersect:
-               polygon_clip(POLY_INTERSECT, &m_poly_a, &m_poly_b, &m_result);
-               break;
-           case clip_xor:
-               polygon_clip(POLY_XOR, &m_poly_a, &m_poly_b, &m_result);
-               break;
-           case clip_diff:
-               polygon_clip(POLY_DIFF, &m_poly_a, &m_poly_b, &m_result);
-               break;
+        switch (m_operation) {
+            case clip_union:
+                polygon_clip(POLY_UNION, &m_poly_a, &m_poly_b, &m_result);
+                break;
+            case clip_intersect:
+                polygon_clip(POLY_INTERSECT, &m_poly_a, &m_poly_b, &m_result);
+                break;
+            case clip_xor:
+                polygon_clip(POLY_XOR, &m_poly_a, &m_poly_b, &m_result);
+                break;
+            case clip_diff:
+                polygon_clip(POLY_DIFF, &m_poly_a, &m_poly_b, &m_result);
+                break;
         }
 
         m_status = status_move_to;
@@ -245,7 +244,7 @@ private:
     {
         for (int i = 0; i < p.num_contours; i++) {
             pod_allocator<vertex_s>::deallocate(p.contour[i].vertex,
-                                                  p.contour[i].num_vertices);
+                                                p.contour[i].num_vertices);
         }
         pod_allocator<vertex_list>::deallocate(p.contour, p.num_contours);
         memset(&p, 0, sizeof(polygon));
@@ -283,7 +282,7 @@ private:
 
         m_contour_accumulator.clear();
 
-        while(!is_stop(cmd = src.vertex(&x, &y))) {
+        while (!is_stop(cmd = src.vertex(&x, &y))) {
             if (is_vertex(cmd)) {
                 if (is_move_to(cmd)) {
                     if (line_to) {
@@ -411,55 +410,53 @@ public:
     {
         unsigned int cmd = path_cmd_stop;
         bool done = false;
-        while (!done)
-        {
-            switch(m_status)
-            {
-            case status_initial:
-                m_last_cmd = m_source->vertex(&m_start_x, &m_start_y);
-                m_status = status_accumulate;
+        while (!done) {
+            switch (m_status) {
+                case status_initial:
+                    m_last_cmd = m_source->vertex(&m_start_x, &m_start_y);
+                    m_status = status_accumulate;
 
-            case status_accumulate:
-                if (is_stop(m_last_cmd))
-                    return path_cmd_stop;
+                case status_accumulate:
+                    if (is_stop(m_last_cmd)) {
+                        return path_cmd_stop;
+                    }
 
-                remove_all();
-                add_vertex(m_start_x, m_start_y, path_cmd_move_to);
+                    remove_all();
+                    add_vertex(m_start_x, m_start_y, path_cmd_move_to);
 
-                while (true)
-                {
-                    cmd = m_source->vertex(x, y);
-                    if (is_vertex(cmd)) {
-                        m_last_cmd = cmd;
-                        if (is_move_to(cmd)) {
-                            m_start_x = *x;
-                            m_start_y = *y;
-                            break;
-                        }
-                        add_vertex(*x, *y, cmd);
-                    } else {
-                        if (is_stop(cmd)) {
-                            m_last_cmd = path_cmd_stop;
-                            break;
-                        }
-
-                        if (is_end_poly(cmd)) {
+                    while (true) {
+                        cmd = m_source->vertex(x, y);
+                        if (is_vertex(cmd)) {
+                            m_last_cmd = cmd;
+                            if (is_move_to(cmd)) {
+                                m_start_x = *x;
+                                m_start_y = *y;
+                                break;
+                            }
                             add_vertex(*x, *y, cmd);
-                            break;
+                        } else {
+                            if (is_stop(cmd)) {
+                                m_last_cmd = path_cmd_stop;
+                                break;
+                            }
+
+                            if (is_end_poly(cmd)) {
+                                add_vertex(*x, *y, cmd);
+                                break;
+                            }
                         }
                     }
-                }
-                reset();
-                m_status = status_generate;
+                    reset();
+                    m_status = status_generate;
 
-            case status_generate:
-                cmd = get_vertex(x, y);
-                if (is_stop(cmd)) {
-                    m_status = status_accumulate;
+                case status_generate:
+                    cmd = get_vertex(x, y);
+                    if (is_stop(cmd)) {
+                        m_status = status_accumulate;
+                        break;
+                    }
+                    done = true;
                     break;
-                }
-                done = true;
-                break;
             }
         }
         return cmd;
@@ -540,77 +537,76 @@ public:
     virtual unsigned int get_vertex(scalar* x, scalar* y)
     {
         unsigned int cmd = path_cmd_move_to;
-        while (!is_stop(cmd))
-        {
-            switch(m_status)
-            {
-            case initial:
-                 reset();
+        while (!is_stop(cmd)) {
+            switch (m_status) {
+                case initial:
+                    reset();
 
-            case ready:
-                if (m_num_dashes < 2 || m_src_vertices.size() < 2) {
-                    cmd = path_cmd_stop;
-                    break;
-                }
+                case ready:
+                    if (m_num_dashes < 2 || m_src_vertices.size() < 2) {
+                        cmd = path_cmd_stop;
+                        break;
+                    }
 
-                m_status = polyline;
-                m_src_vertex = 1;
-                m_v1 = &m_src_vertices[0];
-                m_v2 = &m_src_vertices[1];
-                m_curr_rest = m_v1->d;
-                *x = m_v1->x;
-                *y = m_v1->y;
+                    m_status = polyline;
+                    m_src_vertex = 1;
+                    m_v1 = &m_src_vertices[0];
+                    m_v2 = &m_src_vertices[1];
+                    m_curr_rest = m_v1->d;
+                    *x = m_v1->x;
+                    *y = m_v1->y;
 
-                if (m_dash_start >= FLT_TO_SCALAR(0.0f))
-                    calc_dash_start(m_dash_start);
+                    if (m_dash_start >= FLT_TO_SCALAR(0.0f)) {
+                        calc_dash_start(m_dash_start);
+                    }
 
-                return path_cmd_move_to;
+                    return path_cmd_move_to;
 
-            case polyline:
-                {
-                    scalar dash_rest = m_dashes[m_curr_dash] - m_curr_dash_start;
+                case polyline: {
+                        scalar dash_rest = m_dashes[m_curr_dash] - m_curr_dash_start;
 
-                    unsigned int cmd = (m_curr_dash & 1) ? path_cmd_move_to : path_cmd_line_to;
+                        unsigned int cmd = (m_curr_dash & 1) ? path_cmd_move_to : path_cmd_line_to;
 
-                    if (m_curr_rest > dash_rest) {
-                        m_curr_rest -= dash_rest;
-                        ++m_curr_dash;
+                        if (m_curr_rest > dash_rest) {
+                            m_curr_rest -= dash_rest;
+                            ++m_curr_dash;
 
-                        if (m_curr_dash >= m_num_dashes)
-                            m_curr_dash = 0;
-
-                        m_curr_dash_start = FLT_TO_SCALAR(0.0f);
-                        *x = m_v2->x - (m_v2->x - m_v1->x) * m_curr_rest / m_v1->d;
-                        *y = m_v2->y - (m_v2->y - m_v1->y) * m_curr_rest / m_v1->d;
-                    } else {
-                        m_curr_dash_start += m_curr_rest;
-                        *x = m_v2->x;
-                        *y = m_v2->y;
-                        ++m_src_vertex;
-                        m_v1 = m_v2;
-                        m_curr_rest = m_v1->d;
-
-                        if (m_closed) {
-                            if (m_src_vertex > m_src_vertices.size()) {
-                                m_status = stop;
-                            } else {
-                                m_v2 = &m_src_vertices
-                                [(m_src_vertex >= m_src_vertices.size()) ? 0 : m_src_vertex];
+                            if (m_curr_dash >= m_num_dashes) {
+                                m_curr_dash = 0;
                             }
+
+                            m_curr_dash_start = FLT_TO_SCALAR(0.0f);
+                            *x = m_v2->x - (m_v2->x - m_v1->x) * m_curr_rest / m_v1->d;
+                            *y = m_v2->y - (m_v2->y - m_v1->y) * m_curr_rest / m_v1->d;
                         } else {
-                            if (m_src_vertex >= m_src_vertices.size()) {
-                                m_status = stop;
+                            m_curr_dash_start += m_curr_rest;
+                            *x = m_v2->x;
+                            *y = m_v2->y;
+                            ++m_src_vertex;
+                            m_v1 = m_v2;
+                            m_curr_rest = m_v1->d;
+
+                            if (m_closed) {
+                                if (m_src_vertex > m_src_vertices.size()) {
+                                    m_status = stop;
+                                } else {
+                                    m_v2 = &m_src_vertices
+                                           [(m_src_vertex >= m_src_vertices.size()) ? 0 : m_src_vertex];
+                                }
                             } else {
-                                m_v2 = &m_src_vertices[m_src_vertex];
+                                if (m_src_vertex >= m_src_vertices.size()) {
+                                    m_status = stop;
+                                } else {
+                                    m_v2 = &m_src_vertices[m_src_vertex];
+                                }
                             }
                         }
+                        return cmd;
                     }
-                    return cmd;
-                }
-                break;
-            case stop:
-                cmd = path_cmd_stop;
-                break;
+                    break;
+                case stop:
+                    cmd = path_cmd_stop;
+                    break;
             }
         }
         return path_cmd_stop;
@@ -643,15 +639,15 @@ private:
         m_curr_dash = 0;
         m_curr_dash_start = FLT_TO_SCALAR(0.0f);
 
-        while (ds > FLT_TO_SCALAR(0.0f))
-        {
+        while (ds > FLT_TO_SCALAR(0.0f)) {
             if (ds > m_dashes[m_curr_dash]) {
                 ds -= m_dashes[m_curr_dash];
                 ++m_curr_dash;
                 m_curr_dash_start = FLT_TO_SCALAR(0.0f);
 
-                if (m_curr_dash >= m_num_dashes)
+                if (m_curr_dash >= m_num_dashes) {
                     m_curr_dash = 0;
+                }
             } else {
                 m_curr_dash_start = ds;
                 ds = FLT_TO_SCALAR(0.0f);
@@ -706,7 +702,7 @@ public:
         : conv_line_generator(v)
         , m_width(FLT_TO_SCALAR(0.5f))
         , m_width_abs(FLT_TO_SCALAR(0.5f))
-        , m_width_eps(FLT_TO_SCALAR(0.5f/1024.0f))
+        , m_width_eps(FLT_TO_SCALAR(0.5f / 1024.0f))
         , m_width_sign(1)
         , m_miter_limit(FLT_TO_SCALAR(4.0f))
         , m_inner_miter_limit(FLT_TO_SCALAR(1.01f))
@@ -738,10 +734,10 @@ public:
     {
         m_width = w * FLT_TO_SCALAR(0.5f);
         if (m_width < 0) {
-            m_width_abs  = -m_width;
+            m_width_abs = -m_width;
             m_width_sign = -1;
         } else {
-            m_width_abs  = m_width;
+            m_width_abs = m_width;
             m_width_sign = 1;
         }
         m_width_eps = m_width / FLT_TO_SCALAR(1024.0f);
@@ -785,8 +781,9 @@ public:
             m_src_vertices.close(m_closed != 0);
             shorten_path(m_src_vertices, m_shorten, m_closed);
 
-            if (m_src_vertices.size() < 3)
+            if (m_src_vertices.size() < 3) {
                 m_closed = 0;
+            }
         }
 
         m_status = ready;
@@ -797,114 +794,112 @@ public:
     virtual unsigned int get_vertex(scalar* x, scalar* y)
     {
         unsigned int cmd = path_cmd_line_to;
-        while (!is_stop(cmd))
-        {
-            switch(m_status)
-            {
-            case initial:
-                reset();
+        while (!is_stop(cmd)) {
+            switch (m_status) {
+                case initial:
+                    reset();
 
-            case ready:
-                if (m_src_vertices.size() < 2 + (unsigned int)(m_closed != 0)) {
+                case ready:
+                    if (m_src_vertices.size() < 2 + (unsigned int)(m_closed != 0)) {
+                        cmd = path_cmd_stop;
+                        break;
+                    }
+                    m_status = m_closed ? outline1 : cap1;
+                    cmd = path_cmd_move_to;
+                    m_src_vertex = 0;
+                    m_out_vertex = 0;
+                    break;
+                case cap1:
+                    calc_cap(m_out_vertices,
+                             m_src_vertices[0],
+                             m_src_vertices[1],
+                             m_src_vertices[0].d);
+
+                    m_src_vertex = 1;
+                    m_prev_status = outline1;
+                    m_status = out_vertices;
+                    m_out_vertex = 0;
+                    break;
+                case cap2:
+                    calc_cap(m_out_vertices,
+                             m_src_vertices[m_src_vertices.size() - 1],
+                             m_src_vertices[m_src_vertices.size() - 2],
+                             m_src_vertices[m_src_vertices.size() - 2].d);
+
+                    m_prev_status = outline2;
+                    m_status = out_vertices;
+                    m_out_vertex = 0;
+                    break;
+                case outline1:
+                    if (m_closed) {
+                        if (m_src_vertex >= m_src_vertices.size()) {
+                            m_prev_status = close_first;
+                            m_status = end_poly1;
+                            break;
+                        }
+                    } else {
+                        if (m_src_vertex >= m_src_vertices.size() - 1) {
+                            m_status = cap2;
+                            break;
+                        }
+                    }
+
+                    calc_join(m_out_vertices,
+                              m_src_vertices.prev(m_src_vertex),
+                              m_src_vertices.curr(m_src_vertex),
+                              m_src_vertices.next(m_src_vertex),
+                              m_src_vertices.prev(m_src_vertex).d,
+                              m_src_vertices.curr(m_src_vertex).d);
+
+                    ++m_src_vertex;
+                    m_prev_status = m_status;
+                    m_status = out_vertices;
+                    m_out_vertex = 0;
+                    break;
+                case close_first:
+                    m_status = outline2;
+                    cmd = path_cmd_move_to;
+
+                case outline2:
+                    if (m_src_vertex <= (unsigned int)(m_closed == 0)) {
+                        m_status = end_poly2;
+                        m_prev_status = stop;
+                        break;
+                    }
+
+                    --m_src_vertex;
+                    calc_join(m_out_vertices,
+                              m_src_vertices.next(m_src_vertex),
+                              m_src_vertices.curr(m_src_vertex),
+                              m_src_vertices.prev(m_src_vertex),
+                              m_src_vertices.curr(m_src_vertex).d,
+                              m_src_vertices.prev(m_src_vertex).d);
+
+                    m_prev_status = m_status;
+                    m_status = out_vertices;
+                    m_out_vertex = 0;
+                    break;
+                case out_vertices:
+                    if (m_out_vertex >= m_out_vertices.size()) {
+                        m_status = m_prev_status;
+                    } else {
+                        const vertex_s& v = m_out_vertices[m_out_vertex++];
+                        *x = v.x;
+                        *y = v.y;
+                        return cmd;
+                    }
+                    break;
+                case end_poly1:
+                    m_status = m_prev_status;
+                    return path_cmd_end_poly | path_flags_close | path_flags_ccw;
+
+                case end_poly2:
+                    m_status = m_prev_status;
+                    return path_cmd_end_poly | path_flags_close | path_flags_cw;
+
+                case stop:
                     cmd = path_cmd_stop;
                     break;
-                }
-                m_status = m_closed ? outline1 : cap1;
-                cmd = path_cmd_move_to;
-                m_src_vertex = 0;
-                m_out_vertex = 0;
-                break;
-            case cap1:
-                calc_cap(m_out_vertices,
-                         m_src_vertices[0],
-                         m_src_vertices[1],
-                         m_src_vertices[0].d);
-
-                m_src_vertex = 1;
-                m_prev_status = outline1;
-                m_status = out_vertices;
-                m_out_vertex = 0;
-                break;
-            case cap2:
-                calc_cap(m_out_vertices,
-                         m_src_vertices[m_src_vertices.size() - 1],
-                         m_src_vertices[m_src_vertices.size() - 2],
-                         m_src_vertices[m_src_vertices.size() - 2].d);
-
-                m_prev_status = outline2;
-                m_status = out_vertices;
-                m_out_vertex = 0;
-                break;
-            case outline1:
-                if (m_closed) {
-                    if (m_src_vertex >= m_src_vertices.size()) {
-                        m_prev_status = close_first;
-                        m_status = end_poly1;
-                        break;
-                    }
-                } else {
-                    if (m_src_vertex >= m_src_vertices.size() - 1) {
-                        m_status = cap2;
-                        break;
-                    }
-                }
-
-                calc_join(m_out_vertices,
-                          m_src_vertices.prev(m_src_vertex),
-                          m_src_vertices.curr(m_src_vertex),
-                          m_src_vertices.next(m_src_vertex),
-                          m_src_vertices.prev(m_src_vertex).d,
-                          m_src_vertices.curr(m_src_vertex).d);
-
-                ++m_src_vertex;
-                m_prev_status = m_status;
-                m_status = out_vertices;
-                m_out_vertex = 0;
-                break;
-            case close_first:
-                m_status = outline2;
-                cmd = path_cmd_move_to;
-
-            case outline2:
-                if (m_src_vertex <= (unsigned int)(m_closed == 0)) {
-                    m_status = end_poly2;
-                    m_prev_status = stop;
-                    break;
-                }
-
-                --m_src_vertex;
-                calc_join(m_out_vertices,
-                          m_src_vertices.next(m_src_vertex),
-                          m_src_vertices.curr(m_src_vertex),
-                          m_src_vertices.prev(m_src_vertex),
-                          m_src_vertices.curr(m_src_vertex).d,
-                          m_src_vertices.prev(m_src_vertex).d);
-
-                m_prev_status = m_status;
-                m_status = out_vertices;
-                m_out_vertex = 0;
-                break;
-            case out_vertices:
-                if (m_out_vertex >= m_out_vertices.size()) {
-                    m_status = m_prev_status;
-                } else {
-                    const vertex_s& v = m_out_vertices[m_out_vertex++];
-                    *x = v.x;
-                    *y = v.y;
-                    return cmd;
-                }
-                break;
-            case end_poly1:
-                m_status = m_prev_status;
-                return path_cmd_end_poly | path_flags_close | path_flags_ccw;
-
-            case end_poly2:
-                m_status = m_prev_status;
-                return path_cmd_end_poly | path_flags_close | path_flags_cw;
-
-            case stop:
-                cmd = path_cmd_stop;
-                break;
             }
         }
         return cmd;
@@ -978,15 +973,14 @@ private:
                 limit = m_inner_miter_limit;
             }
 
-            switch (m_inner_join)
-            {
+            switch (m_inner_join) {
                 case inner_miter:
                     calc_miter(cs, v0, v1, v2, dx1, dy1, dx2, dy2,
                                miter_join_revert, limit, 0);
                     break;
                 case inner_jag:
                 case inner_round:
-                    cp = (dx1-dx2) * (dx1-dx2) + (dy1-dy2) * (dy1-dy2);
+                    cp = (dx1 - dx2) * (dx1 - dx2) + (dy1 - dy2) * (dy1 - dy2);
                     if (cp < len1 * len1 && cp < len2 * len2) {
                         calc_miter(cs, v0, v1, v2, dx1, dy1, dx2, dy2,
                                    miter_join_revert, limit, 0);
@@ -1019,8 +1013,7 @@ private:
             if (m_line_join == round_join || m_line_join == bevel_join) {
                 if (m_approx_scale * (m_width_abs - dbevel) < m_width_eps) {
                     if (calc_intersection(v0.x + dx1, v0.y - dy1, v1.x + dx1, v1.y - dy1,
-                                          v1.x + dx2, v1.y - dy2, v2.x + dx2, v2.y - dy2, &dx, &dy))
-                    {
+                                          v1.x + dx2, v1.y - dy2, v2.x + dx2, v2.y - dy2, &dx, &dy)) {
                         add_coord_vertex(cs, dx, dy);
                     } else {
                         add_coord_vertex(cs, v1.x + dx1, v1.y - dy1);
@@ -1029,8 +1022,7 @@ private:
                 }
             }
 
-            switch (m_line_join)
-            {
+            switch (m_line_join) {
                 case miter_join:
                 case miter_join_revert:
                 case miter_join_round:
@@ -1060,8 +1052,9 @@ private:
 
         add_coord_vertex(cs, x + dx1, y + dy1);
         if (m_width_sign > 0) {
-            if (a1 > a2)
+            if (a1 > a2) {
                 a2 += _2PI;
+            }
             n = (int)iround((a2 - a1) / da); // FIXME:need round ?
             da = (a2 - a1) / (n + 1);
             a1 += da;
@@ -1070,8 +1063,9 @@ private:
                 a1 += da;
             }
         } else {
-            if (a1 < a2)
+            if (a1 < a2) {
                 a2 -= _2PI;
+            }
             n = (int)iround((a1 - a2) / da); // FIXME:need round ?
             da = (a1 - a2) / (n + 1);
             a1 -= da;
@@ -1092,11 +1086,10 @@ private:
         scalar di = FLT_TO_SCALAR(1.0f);
         scalar lim = m_width_abs * mlimit;
         bool miter_limit_exceeded = true; // Assume the worst
-        bool intersection_failed  = true; // Assume the worst
+        bool intersection_failed = true; // Assume the worst
 
         if (calc_intersection(v0.x + dx1, v0.y - dy1, v1.x + dx1, v1.y - dy1,
-                              v1.x + dx2, v1.y - dy2, v2.x + dx2, v2.y - dy2, &xi, &yi))
-        {
+                              v1.x + dx2, v1.y - dy2, v2.x + dx2, v2.y - dy2, &xi, &yi)) {
             // calculation of the intersection succeeded
             di = calc_distance(v1.x, v1.y, xi, yi);
             if (di <= lim) {
@@ -1117,8 +1110,7 @@ private:
             scalar x2 = v1.x + dx1;
             scalar y2 = v1.y - dy1;
             if ((cross_product(v0.x, v0.y, v1.x, v1.y, x2, y2) < 0.0) ==
-                (cross_product(v1.x, v1.y, v2.x, v2.y, x2, y2) < 0.0))
-            {
+                (cross_product(v1.x, v1.y, v2.x, v2.y, x2, y2) < 0.0)) {
                 // this case means that the next segment continues
                 // the previous one (straight line)
                 add_coord_vertex(cs, v1.x + dx1, v1.y - dy1);
@@ -1128,8 +1120,7 @@ private:
 
         if (miter_limit_exceeded) {
             // miter limit exceeded
-            switch (lj)
-            {
+            switch (lj) {
                 case miter_join_revert:
                     add_coord_vertex(cs, v1.x + dx1, v1.y - dy1);
                     add_coord_vertex(cs, v1.x + dx2, v1.y - dy2);
@@ -1142,9 +1133,9 @@ private:
                     if (intersection_failed) {
                         mlimit *= m_width_sign;
                         add_coord_vertex(cs, v1.x + dx1 + dy1 * mlimit,
-                                                    v1.y - dy1 + dx1 * mlimit);
+                                         v1.y - dy1 + dx1 * mlimit);
                         add_coord_vertex(cs, v1.x + dx2 - dy2 * mlimit,
-                                                    v1.y - dy2 - dx2 * mlimit);
+                                         v1.y - dy2 - dx2 * mlimit);
                     } else {
                         scalar x1 = v1.x + dx1;
                         scalar y1 = v1.y - dy1;
@@ -1192,4 +1183,3 @@ private:
 
 }
 #endif /*_CONVERT_H_*/
-

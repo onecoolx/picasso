@@ -17,7 +17,7 @@ namespace picasso {
 class glyph_cache_manager
 {
     enum {
-        block_size = 16384-16
+        block_size = 16384 - 16
     };
 
 public:
@@ -35,7 +35,7 @@ public:
 
     void set_signature(const char* font_signature)
     {
-        m_signature = (char*)m_allocator.allocate((unsigned int)strlen(font_signature)+1);
+        m_signature = (char*)m_allocator.allocate((unsigned int)strlen(font_signature) + 1);
         strcpy(m_signature, font_signature);
     }
 
@@ -54,7 +54,7 @@ public:
     }
 
     glyph* cache_glyph(unsigned int code, unsigned int index, unsigned int data_size, glyph_type data_type,
-                                            const rect& bounds, scalar height, scalar advance_x, scalar advance_y)
+                       const rect& bounds, scalar height, scalar advance_x, scalar advance_y)
     {
         unsigned int msb = (code >> 8) & 0xFF;
         if (m_glyphs[msb] == 0) { // cache row is empty.
@@ -70,15 +70,15 @@ public:
 
         glyph* g = (glyph*)m_allocator.allocate(sizeof(glyph), sizeof(int));
 
-        g->code         = code;
-        g->index        = index;
-        g->data         = m_allocator.allocate(data_size);
-        g->data_size    = data_size;
-        g->type         = data_type;
-        g->bounds       = bounds;
-        g->height        = height;
-        g->advance_x    = advance_x;
-        g->advance_y    = advance_y;
+        g->code = code;
+        g->index = index;
+        g->data = m_allocator.allocate(data_size);
+        g->data_size = data_size;
+        g->type = data_type;
+        g->bounds = bounds;
+        g->height = height;
+        g->advance_x = advance_x;
+        g->advance_y = advance_y;
         return m_glyphs[msb][lsb] = g;
     }
 
@@ -87,8 +87,8 @@ private:
     glyph_cache_manager& operator=(const glyph_cache_manager&);
 
     block_allocator m_allocator;
-    glyph**         m_glyphs[256];
-    char*           m_signature;
+    glyph** m_glyphs[256];
+    char* m_signature;
 };
 
 }

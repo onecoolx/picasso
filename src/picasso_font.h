@@ -17,9 +17,9 @@
 #include "picasso_font_cache.h"
 
 #if ENABLE(LOW_MEMORY)
-#define MAX_FONTS 4
+    #define MAX_FONTS 4
 #else
-#define MAX_FONTS 16
+    #define MAX_FONTS 16
 #endif
 
 #define MAX_FONT_NAME_LENGTH 128
@@ -45,7 +45,7 @@ public:
         : m_name(0), m_charset(charset_latin)
         , m_height(0), m_weight(0), m_italic(false), m_hint(false), m_flip_y(false)
     {
-        size_t len = MIN(strlen(face_name)+1, MAX_FONT_NAME_LENGTH);
+        size_t len = MIN(strlen(face_name) + 1, MAX_FONT_NAME_LENGTH);
         m_name = (char*)mem_malloc(len);
         strncpy(m_name, face_name, len);
     }
@@ -59,7 +59,7 @@ public:
 
     font_desc(const font_desc& o)
     {
-        size_t len = strlen(o.m_name)+1;
+        size_t len = strlen(o.m_name) + 1;
         m_name = (char*)mem_malloc(len);
         strncpy(m_name, o.m_name, len);
 
@@ -73,14 +73,15 @@ public:
 
     font_desc& operator=(const font_desc& o)
     {
-        if (this == &o)
+        if (this == &o) {
             return *this;
+        }
 
         if (m_name) {
             mem_free(m_name);
         }
 
-        size_t len = strlen(o.m_name)+1;
+        size_t len = strlen(o.m_name) + 1;
         m_name = (char*)mem_malloc(len);
         strncpy(m_name, o.m_name, len);
 
@@ -110,13 +111,13 @@ public:
     bool flip_y(void) const { return m_flip_y; }
 
 private:
-    char*  m_name;
-    int    m_charset;
+    char* m_name;
+    int m_charset;
     scalar m_height;
     scalar m_weight;
-    bool   m_italic;
-    bool   m_hint;
-    bool   m_flip_y;
+    bool m_italic;
+    bool m_hint;
+    bool m_flip_y;
 };
 
 inline bool operator == (const font_desc& a, const font_desc& b)
@@ -129,7 +130,6 @@ inline bool operator == (const font_desc& a, const font_desc& b)
            (a.flip_y() == b.flip_y()) &&
            (strcmp(a.name(), b.name()) == 0);
 }
-
 
 // mono glyph storage
 class mono_storage
@@ -197,7 +197,7 @@ public:
     {
         m_cache->set_signature(signature);
         m_impl = get_system_device()->create_font_adapter(desc.name(), desc.charset(), desc.height(),
-                                    desc.weight(), desc.italic(), desc.hint(), desc.flip_y(), antialias, &mtx);
+                                                          desc.weight(), desc.italic(), desc.hint(), desc.flip_y(), antialias, &mtx);
 
         // for mono font
         m_mono_storage.set_font(m_impl);
@@ -221,7 +221,7 @@ public:
     const glyph* get_glyph(unsigned int code);
 
     const char* signature(void) const { return m_cache->signature(); }
-    const font_desc& desc(void) const{ return m_desc; }
+    const font_desc& desc(void) const { return m_desc; }
 
     bool generate_raster(const glyph* g, scalar x, scalar y);
     void add_kerning(scalar* x, scalar* y);
@@ -244,7 +244,6 @@ private:
     const glyph* m_prev_glyph;
     const glyph* m_last_glyph;
 };
-
 
 // font engine
 class font_engine

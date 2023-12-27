@@ -137,7 +137,7 @@ inline trans_affine stable_matrix(const trans_affine& o)
         scalar tx = Floor(o.tx());
         scalar ty = Floor(o.ty());
         return trans_affine(o.sx(), o.shy(), o.shx(), o.sy(), SCALAR_TO_FLT(tx), SCALAR_TO_FLT(ty));
-    } else  {
+    } else {
         return trans_affine(o);
     }
 }

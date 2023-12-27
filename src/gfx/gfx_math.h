@@ -17,8 +17,8 @@ extern int8_t g_elder_bit_table[256];
 
 //Fast integer Sqrt - really fast: no cycles, divisions or multiplications
 #if defined(_MSC_VER)
-#pragma warning(push)
-#pragma warning(disable : 4035) //Disable warning "no return value"
+    #pragma warning(push)
+    #pragma warning(disable : 4035) //Disable warning "no return value"
 #endif
 inline unsigned int fast_sqrt(unsigned int val)
 {
@@ -38,9 +38,9 @@ inline unsigned int fast_sqrt(unsigned int val)
         sub edx, ecx
         shl ecx, 1
         shr ebx, cl
-less_than_9_bits:
+        less_than_9_bits:
         xor eax, eax
-        mov  ax, g_sqrt_table[ebx*2]
+        mov ax, g_sqrt_table[ebx*2]
         mov ecx, edx
         shr eax, cl
     }
@@ -85,7 +85,7 @@ less_than_9_bits:
 #endif
 }
 #if defined(_MSC_VER)
-#pragma warning(pop)
+    #pragma warning(pop)
 #endif
 
 }

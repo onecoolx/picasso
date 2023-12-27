@@ -13,10 +13,9 @@
 namespace picasso {
 
 template <typename T>
-struct pod_allocator
-{
-    static T*   allocate(unsigned int num)       { return new T [num]; }
-    static void deallocate(T* ptr, unsigned int) { delete [] ptr;      }
+struct pod_allocator {
+    static T* allocate(unsigned int num) { return new T [num]; }
+    static void deallocate(T* ptr, unsigned int) { delete [] ptr; }
 };
 
 // pod array
@@ -66,8 +65,9 @@ public:
     }
     const pod_array<T>& operator = (const pod_array<T>& o)
     {
-        if (this == &o)
+        if (this == &o) {
             return *this;
+        }
 
         resize(o.size());
         mem_copy(m_array, o.m_array, sizeof(T) * m_size);
@@ -89,16 +89,15 @@ public:
 private:
     unsigned int m_size;
     unsigned int m_capacity;
-    T*           m_array;
+    T* m_array;
 };
-
 
 // pod vector
 template <typename T> class pod_vector
 {
 public:
     enum {
-       max_limit = 16384,
+        max_limit = 16384,
     };
 
     pod_vector()
@@ -142,19 +141,19 @@ public:
     bool set_data(unsigned int num, T* data);
 
     const T& operator [] (unsigned int i) const { return m_array[i]; }
-          T& operator [] (unsigned int i)       { return m_array[i]; }
+    T& operator [] (unsigned int i) { return m_array[i]; }
 
     const T* data(void) const { return m_array; }
-          T* data(void)       { return m_array; }
+    T* data(void) { return m_array; }
 
-    void clear(void)              { m_size = 0; }
+    void clear(void) { m_size = 0; }
     void remove_last(void) { if (m_size) --m_size; }
     void cut_at(unsigned int num) { if (num < m_size) m_size = num; }
 
 protected:
     unsigned int m_size;
     unsigned int m_capacity;
-    T*           m_array;
+    T* m_array;
 };
 
 template <typename T> pod_vector<T>::pod_vector(unsigned int cap)
@@ -169,8 +168,9 @@ template <typename T> pod_vector<T>::pod_vector(const pod_vector<T>& v)
     , m_capacity(v.m_capacity)
     , m_array(v.m_capacity ? pod_allocator<T>::allocate(v.m_capacity) : 0)
 {
-    if (m_array)
+    if (m_array) {
         mem_copy(m_array, v.m_array, sizeof(T) * v.m_size);
+    }
 }
 
 template <typename T>
@@ -210,8 +210,9 @@ inline void pod_vector<T>::allocate(unsigned int new_size)
 template <typename T>
 inline const pod_vector<T>& pod_vector<T>::operator = (const pod_vector<T>& v)
 {
-    if (this == &v)
+    if (this == &v) {
         return *this;
+    }
 
     if (v.m_size > m_size) {
         if ((v.m_size > m_capacity) || (m_capacity > max_limit)) {
@@ -219,16 +220,18 @@ inline const pod_vector<T>& pod_vector<T>::operator = (const pod_vector<T>& v)
             m_capacity = v.m_capacity;
             m_array = 0;
 
-            if (m_capacity)
+            if (m_capacity) {
                 m_array = pod_allocator<T>::allocate(m_capacity);
+            }
         }
         m_size = v.m_size;
     } else {
         m_size = v.m_size;
     }
 
-    if (m_size)
+    if (m_size) {
         mem_copy(m_array, v.m_array, sizeof(T) * v.m_size);
+    }
 
     return *this;
 }
@@ -236,8 +239,9 @@ inline const pod_vector<T>& pod_vector<T>::operator = (const pod_vector<T>& v)
 template <typename T>
 inline bool pod_vector<T>::push_back(const T& v)
 {
-    if (unlikely(m_size >= m_capacity))
+    if (unlikely(m_size >= m_capacity)) {
         return false;
+    }
 
     m_array[m_size++] = v;
     return true;
@@ -246,8 +250,9 @@ inline bool pod_vector<T>::push_back(const T& v)
 template <typename T>
 inline bool pod_vector<T>::insert_at(unsigned int pos, const T& val)
 {
-    if (pos >= m_capacity)
+    if (pos >= m_capacity) {
         return false;
+    }
 
     if (pos >= m_size) {
         m_array[m_size] = val;
@@ -262,17 +267,18 @@ inline bool pod_vector<T>::insert_at(unsigned int pos, const T& val)
 template <typename T>
 inline bool pod_vector<T>::set_data(unsigned int num, T* data)
 {
-    if (!num || !data)
+    if (!num || !data) {
         return false;
+    }
 
-    if (num > m_capacity)
+    if (num > m_capacity) {
         return false;
+    }
 
     m_size = num;
     mem_copy(m_array, data, sizeof(T) * m_size);
     return true;
 }
-
 
 // pod_bvector  default S = 5, mean block size 32
 template <typename T, unsigned int S = 5> class pod_bvector
@@ -280,8 +286,8 @@ template <typename T, unsigned int S = 5> class pod_bvector
 public:
     enum {
         block_shift = S,
-        block_size  = 1 << block_shift,
-        block_mask  = block_size - 1,
+        block_size = 1 << block_shift,
+        block_mask = block_size - 1,
     };
 
     typedef T value_type;
@@ -363,11 +369,11 @@ private:
     unsigned int m_size;
     unsigned int m_num_blocks;
     unsigned int m_max_blocks;
-    T**          m_blocks;
+    T** m_blocks;
     unsigned int m_block_ptr_inc;
 };
 
-template <typename T, unsigned int S> pod_bvector<T,S>::~pod_bvector()
+template <typename T, unsigned int S> pod_bvector<T, S>::~pod_bvector()
 {
     if (m_num_blocks) {
         T** block = m_blocks + m_num_blocks - 1;
@@ -399,8 +405,7 @@ template <typename T, unsigned int S> pod_bvector<T, S>::pod_bvector(unsigned in
 {
 }
 
-template <typename T, unsigned int S>
-pod_bvector<T, S>::pod_bvector(const pod_bvector<T, S>& o)
+template <typename T, unsigned int S> pod_bvector<T, S>::pod_bvector(const pod_bvector<T, S>& o)
     : m_size(o.m_size)
     , m_num_blocks(o.m_num_blocks)
     , m_max_blocks(o.m_max_blocks)
@@ -416,8 +421,9 @@ pod_bvector<T, S>::pod_bvector(const pod_bvector<T, S>& o)
 template <typename T, unsigned int S>
 const pod_bvector<T, S>& pod_bvector<T, S>::operator = (const pod_bvector<T, S>& o)
 {
-    if (this == &o)
+    if (this == &o) {
         return *this;
+    }
 
     remove_all();
 
@@ -478,7 +484,7 @@ template <typename T, unsigned int S>
 inline void pod_bvector<T, S>::remove_all(void)
 {
     if (m_num_blocks) {
-        while(m_num_blocks > 0) {
+        while (m_num_blocks > 0) {
             pod_allocator<T>::deallocate(m_blocks[--m_num_blocks], block_size);
         }
 
@@ -489,18 +495,17 @@ inline void pod_bvector<T, S>::remove_all(void)
     }
 }
 
-
 // block_allocator
 class block_allocator
 {
     typedef struct {
-        byte*        data;
+        byte* data;
         unsigned int size;
     } block_type;
 
 public:
 
-    block_allocator(unsigned block_size, unsigned block_ptr_inc = 256-8)
+    block_allocator(unsigned block_size, unsigned block_ptr_inc = 256 - 8)
         : m_block_size(block_size)
         , m_block_ptr_inc(block_ptr_inc)
         , m_num_blocks(0)
@@ -521,8 +526,9 @@ public:
 
     byte* allocate(unsigned int size, unsigned int alignment = 1)
     {
-        if (!size)
+        if (!size) {
             return 0;
+        }
 
         if (size <= m_remain_size) {
             byte* ptr = m_buf_ptr;
@@ -581,14 +587,15 @@ private:
 
     void allocate_block(unsigned int size)
     {
-        if (size < m_block_size)
+        if (size < m_block_size) {
             size = m_block_size;
+        }
 
         if (m_num_blocks >= m_max_blocks) {
             block_type* new_blocks = pod_allocator<block_type>::allocate(m_max_blocks + m_block_ptr_inc);
 
 #if _DEBUG
-            m_all_mem += sizeof(block_type)*(m_block_ptr_inc);
+            m_all_mem += sizeof(block_type) * (m_block_ptr_inc);
 #endif
 
             if (m_blocks) {
@@ -615,17 +622,15 @@ private:
     unsigned int m_block_ptr_inc;
     unsigned int m_num_blocks;
     unsigned int m_max_blocks;
-    block_type*  m_blocks;
-    byte*        m_buf_ptr;
+    block_type* m_blocks;
+    byte* m_buf_ptr;
     unsigned int m_remain_size;
 #if _DEBUG
     unsigned int m_all_mem;
 #endif
 };
 
-
-    //------------------------------------------------------------------------
-
+//------------------------------------------------------------------------
 
 // swap_elements
 template <typename T> inline void swap_elements(T& a, T& b)
@@ -641,8 +646,9 @@ const int quick_sort_threshold = 9;
 template <typename Array, typename LessFunc>
 void quick_sort(Array& array, LessFunc less)
 {
-    if (array.size() < 2)
+    if (array.size() < 2) {
         return;
+    }
 
     typename Array::value_type* e1;
     typename Array::value_type* e2;
@@ -670,22 +676,27 @@ void quick_sort(Array& array, LessFunc less)
             // now ensure that *i <= *base <= *j
             e1 = &(array[j]);
             e2 = &(array[i]);
-            if (less(*e1, *e2))
+            if (less(*e1, *e2)) {
                 swap_elements(*e1, *e2);
+            }
 
             e1 = &(array[base]);
             e2 = &(array[i]);
-            if (less(*e1, *e2))
+            if (less(*e1, *e2)) {
                 swap_elements(*e1, *e2);
+            }
 
             e1 = &(array[j]);
             e2 = &(array[base]);
-            if (less(*e1, *e2))
+            if (less(*e1, *e2)) {
                 swap_elements(*e1, *e2);
+            }
 
             while (true) {
-                do { i++; } while (less(array[i], array[base]) );
-                do { j--; } while (less(array[base], array[j]) );
+                do { i++; }
+                while (less(array[i], array[base]) );
+                do { j--; }
+                while (less(array[base], array[j]) );
 
                 if ( i > j ) {
                     break;
@@ -700,11 +711,11 @@ void quick_sort(Array& array, LessFunc less)
             if (j - base > limit - i) {
                 top[0] = base;
                 top[1] = j;
-                base   = i;
+                base = i;
             } else {
                 top[0] = i;
                 top[1] = limit;
-                limit  = j;
+                limit = j;
             }
             top += 2;
         } else {
@@ -722,8 +733,8 @@ void quick_sort(Array& array, LessFunc less)
             }
 
             if (top > stack) {
-                top  -= 2;
-                base  = top[0];
+                top -= 2;
+                base = top[0];
                 limit = top[1];
             } else {
                 break;
@@ -738,8 +749,9 @@ void quick_sort(Array& array, LessFunc less)
 template <typename Array, typename EqualFunc>
 unsigned remove_duplicates(Array& array, EqualFunc equal)
 {
-    if (array.size() < 2)
+    if (array.size() < 2) {
         return array.size();
+    }
 
     unsigned int i, j;
     for (i = 1, j = 1; i < array.size(); i++) {
@@ -758,4 +770,3 @@ using picasso::pod_vector;
 using picasso::pod_bvector;
 
 #endif /*_DATA_VECTOR_H_*/
-

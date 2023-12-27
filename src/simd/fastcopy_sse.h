@@ -19,14 +19,14 @@ inline void fastcopy_sse2_32(uint8_t* __restrict dest, const uint8_t* __restrict
     }
 
     for (; n >= 32; n -= 32) {
-        _mm_store_si128((__m128i *)dest, _mm_loadu_si128((__m128i *)src));
-        _mm_store_si128((__m128i *)(dest + 16), _mm_loadu_si128((__m128i *)(src + 16)));
+        _mm_store_si128((__m128i*)dest, _mm_loadu_si128((__m128i*)src));
+        _mm_store_si128((__m128i*)(dest + 16), _mm_loadu_si128((__m128i*)(src + 16)));
         src += 32;
         dest += 32;
     }
 
     if (n >= 16) {
-        _mm_store_si128((__m128i *)dest, _mm_loadu_si128((__m128i *)src));
+        _mm_store_si128((__m128i*)dest, _mm_loadu_si128((__m128i*)src));
         src += 16;
         dest += 16;
         n -= 16;
@@ -44,7 +44,7 @@ inline void fastcopy_sse2_16(uint8_t* __restrict dest, const uint8_t* __restrict
     }
 
     for (; n >= 16; n -= 16) {
-        _mm_store_si128((__m128i *)dest, _mm_loadu_si128((__m128i *)src));
+        _mm_store_si128((__m128i*)dest, _mm_loadu_si128((__m128i*)src));
         src += 16;
         dest += 16;
     }

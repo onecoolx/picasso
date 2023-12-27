@@ -15,7 +15,7 @@
 namespace gfx {
 
 gfx_font_adapter::gfx_font_adapter(const char* name, int charset, scalar size, scalar weight,
-                                bool italic, bool hint, bool flip, bool a, const trans_affine* mtx) { }
+                                   bool italic, bool hint, bool flip, bool a, const trans_affine* mtx) { }
 gfx_font_adapter::~gfx_font_adapter() { }
 void gfx_font_adapter::active(void) { }
 void gfx_font_adapter::deactive(void) { }

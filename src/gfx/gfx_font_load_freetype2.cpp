@@ -14,11 +14,11 @@
 #include <string.h>
 
 #if defined(WINCE) || defined(WIN32)
-#define strncasecmp _strnicmp
+    #define strncasecmp _strnicmp
 #endif
 
 #if defined(__ANDROID__)
-#include <expat.h>
+    #include <expat.h>
 #endif
 
 #define MAX_PATH_LEN 512
@@ -35,33 +35,36 @@
 #include <windows.h>
 #define CONFIG_FILE GetFilePath(L"font_config.cfg")
 #if defined(LOAD_FONT_WITH_PATH)
-#define CONFIG_PATH(path) path
+    #define CONFIG_PATH(path) path
 #else
-#define CONFIG_PATH(path) GetFontPath(path)
+    #define CONFIG_PATH(path) GetFontPath(path)
 #endif
 static TCHAR g_path[MAX_PATH_LEN];
 static inline LPTSTR GetFilePath(LPTSTR file)
 {
-    TCHAR *p = 0;
+    TCHAR* p = 0;
     GetModuleFileName(NULL, g_path, MAX_PATH_LEN);
     p = wcsrchr(g_path, '\\');
-    p++; *p = 0;
+    p++;
+    *p = 0;
     lstrcat (g_path, file);
     return g_path;
 }
 
 static inline char* GetFontPath(const char* name)
 {
-    TCHAR *p = 0;
+    TCHAR* p = 0;
     static char p_path[MAX_PATH_LEN];
     GetModuleFileName(NULL, g_path, MAX_PATH_LEN);
     p = wcsrchr(g_path, '\\');
-    p++; *p = 0;
+    p++;
+    *p = 0;
 
     int len = ::WideCharToMultiByte(CP_ACP, WC_COMPOSITECHECK, g_path, -1, p_path, MAX_PATH_LEN, NULL, NULL);
 
-    if ((len + strlen(name)) > (MAX_PATH_LEN-1))
+    if ((len + strlen(name)) > (MAX_PATH_LEN - 1)) {
         return 0;
+    }
 
     strcat(p_path, name);
     return p_path;
@@ -95,8 +98,8 @@ static font_item* get_font_item(const char* name, const char* path)
 {
     font_item* f = (font_item*)mem_calloc(1, sizeof(font_item));
     if (f) {
-        strncpy(f->font_name, name, MAX_FONT_NAME_LENGTH-1);
-        strncpy(f->font_path, path, MAX_FONT_PATH_LENGTH-1);
+        strncpy(f->font_name, name, MAX_FONT_NAME_LENGTH - 1);
+        strncpy(f->font_path, path, MAX_FONT_PATH_LENGTH - 1);
         return f;
     } else {
         global_status = STATUS_OUT_OF_MEMORY;
@@ -149,47 +152,44 @@ struct ParserContext {
     {
     }
 
-    XML_Parser *parser; // The expat parser doing the work
-    font_map * map;
+    XML_Parser* parser; // The expat parser doing the work
+    font_map* map;
     int remaining_names;
     int current_tag;
 };
 
-static void text_callback(void *data, const char *s, int len)
+static void text_callback(void* data, const char* s, int len)
 {
     ParserContext* context = (ParserContext*)data;
 
     if (context->current_tag == NAMESET_TAG || context->current_tag == FILESET_TAG) {
-        switch (context->current_tag)
-        {
-        case NAMESET_TAG:
-            {
-                // add a new font item.
-                font_item* f = (font_item*)mem_calloc(1, sizeof(font_item));
-                strncpy(f->font_name, s, MIN(len, MAX_FONT_NAME_LENGTH-1));
-                context->map->add(f);
-                context->remaining_names++;
-            }
-            break;
-        case FILESET_TAG:
-            {
-                for (int i = 0; i < context->remaining_names; i++) {
-                    char* path = context->map->at(context->map->size()-i-1)->font_path;
-                    char buffer[MAX_FONT_PATH_LENGTH] = {0};
-                    strncpy(buffer, s, MIN(len, MAX_FONT_PATH_LENGTH-1));
-                    snprintf(path, MAX_FONT_PATH_LENGTH-1, "/system/fonts/%s", buffer);
+        switch (context->current_tag) {
+            case NAMESET_TAG: {
+                    // add a new font item.
+                    font_item* f = (font_item*)mem_calloc(1, sizeof(font_item));
+                    strncpy(f->font_name, s, MIN(len, MAX_FONT_NAME_LENGTH - 1));
+                    context->map->add(f);
+                    context->remaining_names++;
                 }
-                context->remaining_names = 0;
-            }
-            break;
-        default:
-            // do nothing.
-            break;
+                break;
+            case FILESET_TAG: {
+                    for (int i = 0; i < context->remaining_names; i++) {
+                        char* path = context->map->at(context->map->size() - i - 1)->font_path;
+                        char buffer[MAX_FONT_PATH_LENGTH] = {0};
+                        strncpy(buffer, s, MIN(len, MAX_FONT_PATH_LENGTH - 1));
+                        snprintf(path, MAX_FONT_PATH_LENGTH - 1, "/system/fonts/%s", buffer);
+                    }
+                    context->remaining_names = 0;
+                }
+                break;
+            default:
+                // do nothing.
+                break;
         }
     }
 }
 
-static void start_callback(void *data, const char *tag, const char **atts)
+static void start_callback(void* data, const char* tag, const char** atts)
 {
     ParserContext* context = (ParserContext*)data;
 
@@ -214,11 +214,11 @@ static void start_callback(void *data, const char *tag, const char **atts)
     }
 }
 
-static void end_callback(void *data, const char *tag)
+static void end_callback(void* data, const char* tag)
 {
     ParserContext* context = (ParserContext*)data;
     int len = strlen(tag);
-    if (strncmp(tag, "family", len)== 0) {
+    if (strncmp(tag, "family", len) == 0) {
         context->current_tag = NO_TAG;
         context->remaining_names = 0;
     } else if (len == 7 && strncmp(tag, "nameset", len) == 0) {
@@ -226,7 +226,7 @@ static void end_callback(void *data, const char *tag)
     } else if (len == 7 && strncmp(tag, "fileset", len) == 0) {
         context->current_tag = NO_TAG;
     } else if ((strncmp(tag, "name", len) == 0 && context->current_tag == NAMESET_TAG) ||
-            (strncmp(tag, "file", len) == 0 && context->current_tag == FILESET_TAG)) {
+               (strncmp(tag, "file", len) == 0 && context->current_tag == FILESET_TAG)) {
         // Disable the arbitrary text handler installed to load Name data
         XML_SetCharacterDataHandler(*context->parser, NULL);
     }
@@ -236,8 +236,9 @@ static void parse_config_file(const char* file, font_map& map)
 {
     FILE* fp = NULL;
     fp = fopen(file, "r");
-    if (!fp)
+    if (!fp) {
         return; // file not found.
+    }
 
     XML_Parser parser = XML_ParserCreate(NULL);
     ParserContext* context = new ParserContext(&parser, &map);
@@ -286,9 +287,9 @@ static void write_default(void)
     }
 }
 
-static void load_font_from_file(FILE * f)
+static void load_font_from_file(FILE* f)
 {
-    char buf[MAX_CONFIG_LINE+1];
+    char buf[MAX_CONFIG_LINE + 1];
     char* tname = 0;
     char* tpath = 0;
     while (!feof(f)) {
@@ -297,18 +298,18 @@ static void load_font_from_file(FILE * f)
         if (ps) {
             char* pe = strchr(buf, ']');
             if (pe) {
-                tname = (char*)mem_malloc(pe-ps);
-                strncpy(tname, ps+1, pe-ps-1);
-                tname[pe-ps-1] = '\0';
+                tname = (char*)mem_malloc(pe - ps);
+                strncpy(tname, ps + 1, pe - ps - 1);
+                tname[pe - ps - 1] = '\0';
 
                 (void)fgets(buf, MAX_CONFIG_LINE, f);
                 ps = strstr(buf, "path=");
                 if (ps) {
                     char* pe = strchr(buf, '\n');
                     if (pe) {
-                        tpath = (char*)mem_malloc(pe-ps);
-                        strncpy(tpath, ps+5, pe-ps-5);
-                        tpath[pe-ps-5] = '\0';
+                        tpath = (char*)mem_malloc(pe - ps);
+                        strncpy(tpath, ps + 5, pe - ps - 5);
+                        tpath[pe - ps - 5] = '\0';
 
                         font_item* font = get_font_item(tname, CONFIG_PATH(tpath));
                         g_font_map.add(font);
@@ -332,7 +333,7 @@ bool _load_fonts(void)
 #elif defined(__ANDROID__)
     load_font_from_android();
 #else
-    FILE *pf = 0;
+    FILE* pf = 0;
 
     if ((pf = OPENFILE(CONFIG_FILE, F("r")))) {
 
@@ -355,25 +356,28 @@ bool _load_fonts(void)
         g_font_map.add(ansi_font);
     }
 
-    if (FT_Init_FreeType(&g_library) == 0)
+    if (FT_Init_FreeType(&g_library) == 0) {
         return true;
-    else
+    } else {
         return false;
+    }
 }
 
 void _free_fonts(void)
 {
-    if (g_library)
+    if (g_library) {
         FT_Done_FreeType(g_library);
+    }
 
-    for (unsigned int i = 0; i < g_font_map.size(); i++)
+    for (unsigned int i = 0; i < g_font_map.size(); i++) {
         mem_free(g_font_map[i]);
+    }
 
     g_font_map.remove_all();
 }
 
 #if ENABLE(FONT_CONFIG)
-char * _font_by_name(const char* face, float size, float weight, bool italic)
+char* _font_by_name(const char* face, float size, float weight, bool italic)
 {
     // find from cache
     char tname[64] = {0};
@@ -382,8 +386,9 @@ char * _font_by_name(const char* face, float size, float weight, bool italic)
     sprintf(font_key, "%s-%4.0f-%4.0f-%d", tname, size, weight, italic ? 1 : 0);
 
     for (unsigned int i = 0; i < g_font_map.size(); i++) {
-        if (strncmp(font_key, g_font_map[i]->font_name, MAX_FONT_NAME_LENGTH-1) == 0)
+        if (strncmp(font_key, g_font_map[i]->font_name, MAX_FONT_NAME_LENGTH - 1) == 0) {
             return g_font_map[i]->font_path;
+        }
     }
 
     FcPattern* pattern = FcPatternCreate();
@@ -428,11 +433,12 @@ char * _font_by_name(const char* face, float size, float weight, bool italic)
     return font ? font->font_path : g_font_map[0]->font_path;
 }
 #else
-char * _font_by_name(const char* face, float size, float weight, bool italic)
+char* _font_by_name(const char* face, float size, float weight, bool italic)
 {
     for (unsigned int i = 0; i < g_font_map.size(); i++)
-        if (strncasecmp(face, g_font_map[i]->font_name, MAX_FONT_NAME_LENGTH-1) == 0)
+        if (strncasecmp(face, g_font_map[i]->font_name, MAX_FONT_NAME_LENGTH - 1) == 0) {
             return g_font_map[i]->font_path;
+        }
 
     return g_font_map[0]->font_path;
 }
@@ -452,8 +458,9 @@ void platform_font_shutdown(void)
 {
     gfx::_free_fonts();
 #if ENABLE(FONT_CONFIG)
-    if (gfx::g_FcConfig)
+    if (gfx::g_FcConfig) {
         FcConfigDestroy(gfx::g_FcConfig);
+    }
 
     FcFini();
 #endif

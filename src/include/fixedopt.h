@@ -15,7 +15,6 @@ namespace fxmath {
 typedef int32_t fixed_type;
 typedef int64_t fixed_type64;
 
-
 // Fixed point specialed
 
 // Fixed point bits
@@ -66,16 +65,16 @@ public:
     fixed(fixed_type v, int) : m_data(v) {}
     fixed_type data(void) const { return m_data; }
 
-    friend bool operator < (const fixed &a, const fixed &b);
-    friend bool operator > (const fixed &a, const fixed &b);
-    friend bool operator >= (const fixed &a, const fixed &b);
-    friend bool operator <= (const fixed &a, const fixed &b);
-    friend bool operator == (const fixed &a, const fixed &b);
-    friend bool operator != (const fixed &a, const fixed &b);
-    friend fixed operator + (const fixed &a, const fixed &b);
-    friend fixed operator - (const fixed &a, const fixed &b);
-    friend fixed operator * (const fixed &a, const fixed &b);
-    friend fixed operator / (const fixed &a, const fixed &b);
+    friend bool operator < (const fixed& a, const fixed& b);
+    friend bool operator > (const fixed& a, const fixed& b);
+    friend bool operator >= (const fixed& a, const fixed& b);
+    friend bool operator <= (const fixed& a, const fixed& b);
+    friend bool operator == (const fixed& a, const fixed& b);
+    friend bool operator != (const fixed& a, const fixed& b);
+    friend fixed operator + (const fixed& a, const fixed& b);
+    friend fixed operator - (const fixed& a, const fixed& b);
+    friend fixed operator * (const fixed& a, const fixed& b);
+    friend fixed operator / (const fixed& a, const fixed& b);
     // math functions
     friend int floor(fixed x);
     friend int ceil(fixed x);
@@ -141,10 +140,10 @@ inline fixed_type arm_fixmul (fixed_type a, fixed_type b)
     int res_low, res_hi;
 
     __asm__ ("smull %0, %1, %2, %3     \n"
-            "mov   %0, %0,     lsr %4 \n"
-            "add   %1, %0, %1, lsl %5 \n"
-            : "=r"(res_hi), "=r"(res_low) \
-            : "r"(a), "r"(b), "i"(FIXED_Q), "i"(32 - FIXED_Q));
+             "mov   %0, %0,     lsr %4 \n"
+             "add   %1, %0, %1, lsl %5 \n"
+             : "=r"(res_hi), "=r"(res_low) \
+             : "r"(a), "r"(b), "i"(FIXED_Q), "i"(32 - FIXED_Q));
 
     return (fixed_type) res_low;
 }
@@ -158,7 +157,7 @@ inline fixed operator * (const fixed& a, const fixed& b)
 inline fixed operator * (const fixed& a, const fixed& b)
 {
     fixed_type64 r = (fixed_type64)a.m_data * (fixed_type64)b.m_data;
-    return fixed((fixed_type)(r>>FIXED_Q), 0);
+    return fixed((fixed_type)(r >> FIXED_Q), 0);
 }
 #endif
 
@@ -168,7 +167,6 @@ inline fixed operator / (const fixed& a, const fixed& b)
     fixed_type64 r = ((((fixed_type64)a.m_data) << FIXED_Q) / b.m_data) ;
     return fixed((fixed_type)r, 0);
 }
-
 
 // Std C math library fixed point version
 
@@ -181,14 +179,14 @@ inline int floor(fixed x)
 // double ceil(double x)
 inline int ceil(fixed x)
 {
-    x.m_data += ((((fixed_type)1) << FIXED_Q)-1);
+    x.m_data += ((((fixed_type)1) << FIXED_Q) - 1);
     return (int)((x.m_data >= 0) ? (x.m_data >> FIXED_Q) : ~((~(x.m_data)) >> FIXED_Q));
 }
 
 // double round(double x)
 inline int round(fixed x)
 {
-    return floor(fixed(x.data()+FIXED_0_5, 0));
+    return floor(fixed(x.data() + FIXED_0_5, 0));
 }
 
 inline fixed_type flt_to_fixed(float f)

@@ -48,7 +48,7 @@ private:
     void setup_stroke_raster(void);
     void setup_fill_raster(void);
 
-    gfx_raster_adapter_impl * m_impl;
+    gfx_raster_adapter_impl* m_impl;
     gfx_rasterizer_scanline_aa<> m_sraster;
     gfx_rasterizer_scanline_aa<> m_fraster;
 };

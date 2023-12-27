@@ -20,10 +20,10 @@ class graphic_path : public vertex_container
 {
 public:
     typedef enum {
-        shape_polygon       = 0,
-        shape_rectangle     = 1,
-        shape_ellipse       = 2,
-        shape_rounded_rect  = 3,
+        shape_polygon = 0,
+        shape_rectangle = 1,
+        shape_ellipse = 2,
+        shape_rounded_rect = 3,
     } shape_type;
 
     graphic_path();
@@ -54,10 +54,10 @@ public:
                 bool large_arc_flag, bool sweep_flag, scalar x, scalar y);
 
     void arc_rel(scalar rx, scalar ry, scalar angle,
-                bool large_arc_flag, bool sweep_flag, scalar dx, scalar dy);
+                 bool large_arc_flag, bool sweep_flag, scalar dx, scalar dy);
 
-    void curve3(scalar x_ctrl, scalar y_ctrl, scalar x_to,   scalar y_to);
-    void curve3_rel(scalar dx_ctrl, scalar dy_ctrl, scalar dx_to,   scalar dy_to);
+    void curve3(scalar x_ctrl, scalar y_ctrl, scalar x_to, scalar y_to);
+    void curve3_rel(scalar dx_ctrl, scalar dy_ctrl, scalar dx_to, scalar dy_to);
 
     void curve3(scalar x_to, scalar y_to);
     void curve3_rel(scalar dx_to, scalar dy_to);
@@ -148,8 +148,9 @@ private:
 
 inline bool operator != (const graphic_path& a, const graphic_path& b)
 {
-    if (a.total_vertices() != b.total_vertices())
-        return true;  // total vertices is not same , the path is not same
+    if (a.total_vertices() != b.total_vertices()) {
+        return true; // total vertices is not same , the path is not same
+    }
 
     unsigned int num = a.total_vertices(); //because a total_vertices is same to b total_vertices.
     scalar x1 = 0, y1 = 0, x2 = 0, y2 = 0;
@@ -158,8 +159,9 @@ inline bool operator != (const graphic_path& a, const graphic_path& b)
     for (unsigned int i = 0; i < num; i++) {
         unsigned int cmd1 = a.vertex(i, &x1, &y1);
         unsigned int cmd2 = b.vertex(i, &x2, &y2);
-        if ((cmd1 != cmd2) || (x1 != x2) || (y1 != y2))
+        if ((cmd1 != cmd2) || (x1 != x2) || (y1 != y2)) {
             return true; // this vertex is not same.
+        }
     }
     return false;
 }
@@ -168,16 +170,17 @@ inline bool _is_closed_path(const graphic_path& path)
 {
     scalar x, y;
     unsigned int flag;
-    if (!path.total_vertices())
+    if (!path.total_vertices()) {
         return true;
+    }
 
     flag = path.last_vertex(&x, &y);
-    if (flag & path_flags_close)
+    if (flag & path_flags_close) {
         return true;
+    }
 
     return false;
 }
 
 }
 #endif /*_GRAPHIC_PATH_H_*/
-

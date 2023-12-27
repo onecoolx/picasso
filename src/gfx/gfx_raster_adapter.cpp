@@ -21,7 +21,7 @@ public:
     enum {
         aa_shift = 8,
         aa_scale = 1 << aa_shift,
-        aa_mask  = aa_scale - 1,
+        aa_mask = aa_scale - 1,
     };
 
     gfx_raster_adapter_impl()
@@ -40,8 +40,9 @@ public:
         , m_inner_join(inner_miter)
         , m_filling_rule(fill_non_zero)
     {
-        for (int i = 0; i < aa_scale; i++)
+        for (int i = 0; i < aa_scale; i++) {
             m_gamma[i] = i;
+        }
     }
 
     ~gfx_raster_adapter_impl()
@@ -212,8 +213,9 @@ void gfx_raster_adapter::setup_stroke_raster(void)
     if (m_impl->m_dashline) {
         picasso::conv_dash c(*const_cast<vertex_source*>(m_impl->m_source));
 
-        for (unsigned int i = 0; i < m_impl->m_dash_num; i += 2)
-            c.add_dash(m_impl->m_dash_data[i], m_impl->m_dash_data[i+1]);
+        for (unsigned int i = 0; i < m_impl->m_dash_num; i += 2) {
+            c.add_dash(m_impl->m_dash_data[i], m_impl->m_dash_data[i + 1]);
+        }
 
         c.dash_start(m_impl->m_dash_start);
 
@@ -262,11 +264,13 @@ void gfx_raster_adapter::setup_fill_raster(void)
 void gfx_raster_adapter::commit(void)
 {
     if (m_impl->m_source) {
-        if (m_impl->m_method & raster_stroke)
+        if (m_impl->m_method & raster_stroke) {
             setup_stroke_raster();
+        }
 
-        if (m_impl->m_method & raster_fill)
+        if (m_impl->m_method & raster_fill) {
             setup_fill_raster();
+        }
     }
 }
 
@@ -278,12 +282,13 @@ void gfx_raster_adapter::add_shape(const vertex_source& vs, unsigned int id)
 bool gfx_raster_adapter::contains(scalar x, scalar y)
 {
     if (m_impl->m_source) {
-        if (m_impl->m_method & raster_stroke)
+        if (m_impl->m_method & raster_stroke) {
             return m_sraster.hit_test(iround(x), iround(y));
-        else if (m_impl->m_method & raster_fill)
+        } else if (m_impl->m_method & raster_fill) {
             return m_fraster.hit_test(iround(x), iround(y));
-        else
+        } else {
             return false;
+        }
     } else {
         return false;
     }

@@ -20,8 +20,7 @@ namespace picasso {
 
 int _bytes_per_color(ps_color_format fmt)
 {
-    switch (fmt)
-    {
+    switch (fmt) {
 #if ENABLE(FORMAT_RGBA)
         case COLOR_FORMAT_RGBA:
             return 4;
@@ -62,8 +61,7 @@ int _bytes_per_color(ps_color_format fmt)
 
 static inline painter* get_painter_from_format(ps_color_format fmt)
 {
-    switch (fmt)
-    {
+    switch (fmt) {
 #if ENABLE(FORMAT_RGBA)
         case COLOR_FORMAT_RGBA:
             return new painter(pix_fmt_rgba);
@@ -121,18 +119,18 @@ ps_canvas* PICAPI ps_canvas_create(ps_color_format fmt, int w, int h)
     }
 
     picasso::painter* pa = picasso::get_painter_from_format(fmt);
-    if (!pa){
+    if (!pa) {
         return NULL;
     }
 
-    ps_canvas *p = (ps_canvas*)mem_malloc(sizeof(ps_canvas));
+    ps_canvas* p = (ps_canvas*)mem_malloc(sizeof(ps_canvas));
     if (p) {
         p->refcount = 1;
         p->fmt = fmt;
         p->p = pa;
         p->host = NULL;
         p->mask = NULL;
-        new ((void*)&(p->buffer)) picasso::rendering_buffer;
+        new ((void*) & (p->buffer)) picasso::rendering_buffer;
         int pitch = picasso::_bytes_per_color(fmt) * w;
         byte* buf = NULL;
         if ((buf = (byte*)BufferAlloc(h * pitch))) {
@@ -193,7 +191,7 @@ ps_canvas* PICAPI ps_canvas_create_compatible(const ps_canvas* c, int w, int h)
         p->p = pa;
         p->host = NULL;
         p->mask = NULL;
-        new ((void*)&(p->buffer)) picasso::rendering_buffer;
+        new ((void*) & (p->buffer)) picasso::rendering_buffer;
         int pitch = picasso::_bytes_per_color(c->fmt) * w;
         byte* buf = NULL;
         if ((buf = (byte*)BufferAlloc(h * pitch))) {
@@ -255,7 +253,7 @@ ps_canvas* PICAPI ps_canvas_create_from_canvas(ps_canvas* c, const ps_rect* r)
     }
 
     picasso::painter* pa = picasso::get_painter_from_format(c->fmt);
-    if (!pa){
+    if (!pa) {
         return NULL;
     }
 
@@ -268,9 +266,9 @@ ps_canvas* PICAPI ps_canvas_create_from_canvas(ps_canvas* c, const ps_rect* r)
         p->host = (void*)ps_canvas_ref(c);
         p->mask = NULL;
         int bpp = picasso::_bytes_per_color(c->fmt);
-        new ((void*)&(p->buffer)) picasso::rendering_buffer;
-        p->buffer.attach(c->buffer.buffer()+_iround(rc.y*c->buffer.stride()+rc.x*bpp),
-                                       _iround(rc.w), _iround(rc.h), c->buffer.stride());
+        new ((void*) & (p->buffer)) picasso::rendering_buffer;
+        p->buffer.attach(c->buffer.buffer() + _iround(rc.y * c->buffer.stride() + rc.x * bpp),
+                         _iround(rc.w), _iround(rc.h), c->buffer.stride());
         p->p->attach(p->buffer);
         global_status = STATUS_SUCCEED;
         return p;
@@ -310,7 +308,7 @@ ps_canvas* PICAPI ps_canvas_create_from_image(ps_image* i, const ps_rect* r)
     }
 
     picasso::painter* pa = picasso::get_painter_from_format(i->fmt);
-    if (!pa){
+    if (!pa) {
         return NULL;
     }
 
@@ -323,9 +321,9 @@ ps_canvas* PICAPI ps_canvas_create_from_image(ps_image* i, const ps_rect* r)
         p->host = (void*)ps_image_ref(i);
         p->mask = NULL;
         int bpp = picasso::_bytes_per_color(i->fmt);
-        new ((void*)&(p->buffer)) picasso::rendering_buffer;
-        p->buffer.attach(i->buffer.buffer()+_iround(rc.y*i->buffer.stride()+rc.x*bpp),
-                                       _iround(rc.w), _iround(rc.h), i->buffer.stride());
+        new ((void*) & (p->buffer)) picasso::rendering_buffer;
+        p->buffer.attach(i->buffer.buffer() + _iround(rc.y * i->buffer.stride() + rc.x * bpp),
+                         _iround(rc.w), _iround(rc.h), i->buffer.stride());
         p->p->attach(p->buffer);
         global_status = STATUS_SUCCEED;
         return p;
@@ -336,7 +334,7 @@ ps_canvas* PICAPI ps_canvas_create_from_image(ps_image* i, const ps_rect* r)
     }
 }
 
-ps_canvas* PICAPI ps_canvas_create_with_data(ps_byte * addr, ps_color_format fmt, int w, int h, int pitch)
+ps_canvas* PICAPI ps_canvas_create_with_data(ps_byte* addr, ps_color_format fmt, int w, int h, int pitch)
 {
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;
@@ -349,7 +347,7 @@ ps_canvas* PICAPI ps_canvas_create_with_data(ps_byte * addr, ps_color_format fmt
     }
 
     picasso::painter* pa = picasso::get_painter_from_format(fmt);
-    if (!pa){
+    if (!pa) {
         return NULL;
     }
 
@@ -361,7 +359,7 @@ ps_canvas* PICAPI ps_canvas_create_with_data(ps_byte * addr, ps_color_format fmt
         p->flage = buffer_alloc_none;
         p->host = NULL;
         p->mask = NULL;
-        new ((void*)&(p->buffer)) picasso::rendering_buffer;
+        new ((void*) & (p->buffer)) picasso::rendering_buffer;
         p->buffer.attach(addr, w, h, pitch);
         p->p->attach(p->buffer);
         global_status = STATUS_SUCCEED;
@@ -374,7 +372,7 @@ ps_canvas* PICAPI ps_canvas_create_with_data(ps_byte * addr, ps_color_format fmt
 }
 
 ps_canvas* PICAPI ps_canvas_replace_data(ps_canvas* canvas, ps_byte* addr,
-                                            ps_color_format fmt, int w, int h, int pitch)
+                                         ps_color_format fmt, int w, int h, int pitch)
 {
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;
@@ -553,7 +551,7 @@ void PICAPI ps_canvas_bitblt(ps_canvas* src, const ps_rect* r, ps_canvas* dst, c
 
     if (r) {
         picasso::rect rc(_iround(r->x), _iround(r->y),
-                         _iround(r->x+r->w), _iround(r->y+r->h));
+                         _iround(r->x + r->w), _iround(r->y + r->h));
         src->p->render_copy(src->buffer, &rc, dst->p, x, y);
     } else {
         src->p->render_copy(src->buffer, 0, dst->p, x, y);

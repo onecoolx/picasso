@@ -41,8 +41,9 @@ public:
         unsigned int end = (diameter() << image_subpixel_shift) - 1;
         m_weight_array[0] = m_weight_array[end];
 
-        if (normalization)
+        if (normalization) {
             normalize();
+        }
     }
 
     int start(void) const { return m_start; }
@@ -62,14 +63,15 @@ public:
                     sum += m_weight_array[j * image_subpixel_scale + i];
                 }
 
-                if (sum == image_filter_scale)
+                if (sum == image_filter_scale) {
                     break; // break loop
+                }
 
                 scalar k = INT_TO_SCALAR(image_filter_scale) / INT_TO_SCALAR(sum);
                 sum = 0;
                 for (j = 0; j < m_diameter; j++) {
                     sum += m_weight_array[j * image_subpixel_scale + i] =
-                        iround(m_weight_array[j * image_subpixel_scale + i] * k);
+                               iround(m_weight_array[j * image_subpixel_scale + i] * k);
                 }
 
                 sum -= image_filter_scale;
@@ -108,8 +110,9 @@ private:
         m_start = -(int)(m_diameter / 2 - 1);
         unsigned int size = m_diameter << image_subpixel_shift;
 
-        if (size > m_weight_array.size())
+        if (size > m_weight_array.size()) {
             m_weight_array.resize(size);
+        }
     }
 
     scalar m_radius;
@@ -117,7 +120,6 @@ private:
     unsigned int m_diameter;
     pod_array<int16_t> m_weight_array;
 };
-
 
 // filter creater
 image_filter_adapter* create_image_filter(int filter);

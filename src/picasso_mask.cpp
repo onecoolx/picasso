@@ -22,34 +22,39 @@ mask_layer::mask_layer(byte* buf, unsigned int width, unsigned int height, int s
 
 mask_layer::~mask_layer()
 {
-    if (m_impl)
+    if (m_impl) {
         get_system_device()->destroy_mask_layer(m_impl);
+    }
 }
 
 void mask_layer::attach(byte* buf, unsigned int width, unsigned int height, int stride)
 {
-    if (m_impl)
+    if (m_impl) {
         get_system_device()->destroy_mask_layer(m_impl);
+    }
 
     m_impl = get_system_device()->create_mask_layer(buf, width, height, stride);
 }
 
 void mask_layer::set_mask_type(int type)
 {
-    if (m_impl)
+    if (m_impl) {
         m_impl->set_mask_type(type);
+    }
 }
 
 void mask_layer::add_filter_color(const rgba& c)
 {
-    if (m_impl)
+    if (m_impl) {
         m_impl->add_filter_color(c);
+    }
 }
 
 void mask_layer::clear_filter_colors(void)
 {
-    if (m_impl)
+    if (m_impl) {
         m_impl->clear_filter_colors();
+    }
 }
 
 }

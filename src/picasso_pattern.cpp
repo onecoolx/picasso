@@ -30,9 +30,9 @@ ps_pattern* PICAPI ps_pattern_create_image(const ps_image* img, ps_wrap_type xp,
     if (p) {
         p->refcount = 1;
         if (m) {
-            new ((void*)&(p->matrix))picasso::trans_affine(m->matrix);
+            new ((void*) & (p->matrix))picasso::trans_affine(m->matrix);
         } else {
-            new ((void*)&(p->matrix))picasso::trans_affine;
+            new ((void*) & (p->matrix))picasso::trans_affine;
         }
         p->xtype = xp;
         p->ytype = yp;

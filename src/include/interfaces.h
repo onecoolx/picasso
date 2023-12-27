@@ -97,7 +97,7 @@ public:
 
     virtual void init_linear(int spread, scalar x1, scalar y1, scalar x2, scalar y2) = 0;
     virtual void init_radial(int spread, scalar x1, scalar y1, scalar radius1,
-                                               scalar x2, scalar y2, scalar radius2) = 0;
+                             scalar x2, scalar y2, scalar radius2) = 0;
     virtual void init_conic(int spread, scalar x, scalar y, scalar angle) = 0;
 
     virtual void add_color_stop(scalar offset, const rgba& c) = 0;
@@ -134,7 +134,7 @@ public:
     virtual void set_fill_image(const abstract_rendering_buffer* img, pix_fmt format, int filter, const rect_s& rc) = 0;
     virtual void set_fill_canvas(const abstract_rendering_buffer* img, pix_fmt format, int filter, const rect_s& rc) = 0;
     virtual void set_fill_pattern(const abstract_rendering_buffer* img, pix_fmt format, int filter, const rect_s& rc,
-                                    int xtype, int ytype, const trans_affine* mtx) = 0;
+                                  int xtype, int ytype, const trans_affine* mtx) = 0;
     virtual void set_fill_gradient(const abstract_gradient_adapter* g) = 0;
     virtual void set_font_fill_color(const rgba& c) = 0;
 
@@ -144,7 +144,7 @@ public:
     virtual void apply_text_fill(abstract_raster_adapter* rs, text_style style) = 0;
 
     // FIXME: own mono storage implements needed!
-    virtual void apply_mono_text_fill(void * storage) = 0;
+    virtual void apply_mono_text_fill(void* storage) = 0;
 
     // clear
     virtual void apply_clear(const rgba& c) = 0;
@@ -164,7 +164,7 @@ public:
     // shadow
     virtual bool begin_shadow(const rect_s& rc) = 0;
     virtual void apply_shadow(abstract_raster_adapter* rs, const rect_s& r,
-                                                const rgba& c, scalar x, scalar y, scalar b) = 0;
+                              const rgba& c, scalar x, scalar y, scalar b) = 0;
 
     //data copy
     virtual void copy_rect_from(abstract_rendering_buffer* src, const rect& rc, int x, int y) = 0;
@@ -224,4 +224,3 @@ using picasso::abstract_font_adapter;
 using picasso::abstract_gradient_adapter;
 
 #endif/*_OBJ_INTERFACES_H_*/
-

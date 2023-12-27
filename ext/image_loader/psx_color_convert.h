@@ -10,11 +10,11 @@
 #include <stdlib.h>
 
 #if defined(__GNUC__)
-#define INLINE inline
+    #define INLINE inline
 #elif defined(_MSC_VER)
-#define INLINE __inline
+    #define INLINE __inline
 #else
-#define INLINE
+    #define INLINE
 #endif
 
 /* 32 bit color convert */

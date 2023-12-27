@@ -35,8 +35,7 @@ gfx_device::~gfx_device()
 
 abstract_painter* gfx_device::create_painter(pix_fmt fmt)
 {
-    switch (fmt)
-    {
+    switch (fmt) {
 #if ENABLE(FORMAT_RGBA)
         case pix_fmt_rgba:
             return new gfx_painter<pixfmt_rgba32>;
@@ -90,7 +89,7 @@ void gfx_device::destroy_raster_adapter(abstract_raster_adapter* d)
 }
 
 abstract_rendering_buffer* gfx_device::create_rendering_buffer(byte* buf,
-                                        unsigned int width, unsigned int height, int stride)
+                                                               unsigned int width, unsigned int height, int stride)
 {
     return new gfx_rendering_buffer(buf, width, height, stride);
 }
@@ -101,7 +100,7 @@ void gfx_device::destroy_rendering_buffer(abstract_rendering_buffer* b)
 }
 
 abstract_mask_layer* gfx_device::create_mask_layer(byte* buf,
-                                        unsigned int width, unsigned int height, int stride)
+                                                   unsigned int width, unsigned int height, int stride)
 {
     return new gfx_mask_layer(buf, width, height, stride);
 }
@@ -122,7 +121,7 @@ void gfx_device::destroy_gradient_adapter(abstract_gradient_adapter* g)
 }
 
 abstract_font_adapter* gfx_device::create_font_adapter(const char* name, int charset, scalar height, scalar weight,
-                                bool italic, bool hint, bool flip, bool antialias, const trans_affine* mtx)
+                                                       bool italic, bool hint, bool flip, bool antialias, const trans_affine* mtx)
 {
     return new gfx_font_adapter(name, charset, height, weight, italic, hint, flip, antialias, mtx);
 }

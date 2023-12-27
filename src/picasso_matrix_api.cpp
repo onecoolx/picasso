@@ -16,7 +16,7 @@
 namespace picasso {
 
 //inner function
-static void _matrix_transform_rect(const trans_affine & matrix, ps_rect* rect)
+static void _matrix_transform_rect(const trans_affine& matrix, ps_rect* rect)
 {
     if ((matrix.shy() == FLT_TO_SCALAR(0.0)) && (matrix.shx() == FLT_TO_SCALAR(0.0))) {
         scalar x = matrix.sx() * FLT_TO_SCALAR(rect->x) + matrix.tx();
@@ -25,38 +25,45 @@ static void _matrix_transform_rect(const trans_affine & matrix, ps_rect* rect)
         scalar h = matrix.sy() * FLT_TO_SCALAR(rect->h);
         if (w < 0) {
             w = -w;
-            x -= w-1;
+            x -= w - 1;
         }
         if (h < 0) {
             h = -h;
-            y -= h-1;
+            y -= h - 1;
         }
-        rect->x = SCALAR_TO_FLT(x); rect->y = SCALAR_TO_FLT(y);
-        rect->w = SCALAR_TO_FLT(w); rect->h = SCALAR_TO_FLT(h);
+        rect->x = SCALAR_TO_FLT(x);
+        rect->y = SCALAR_TO_FLT(y);
+        rect->w = SCALAR_TO_FLT(w);
+        rect->h = SCALAR_TO_FLT(h);
     } else {
         scalar x, y, w, h, x0, y0;
         scalar xmin, ymin, xmax, ymax;
-        x0 = x = FLT_TO_SCALAR(rect->x); y0 = y = FLT_TO_SCALAR(rect->y);
-        w = FLT_TO_SCALAR(rect->w); h = FLT_TO_SCALAR(rect->h);
+        x0 = x = FLT_TO_SCALAR(rect->x);
+        y0 = y = FLT_TO_SCALAR(rect->y);
+        w = FLT_TO_SCALAR(rect->w);
+        h = FLT_TO_SCALAR(rect->h);
         matrix.transform(&x0, &y0);
         xmin = xmax = x0;
         ymin = ymax = y0;
 
-        x = FLT_TO_SCALAR(rect->x+rect->w+1); y = FLT_TO_SCALAR(rect->y);
+        x = FLT_TO_SCALAR(rect->x + rect->w + 1);
+        y = FLT_TO_SCALAR(rect->y);
         matrix.transform(&x, &y);
         xmin = MIN(xmin, x);
         ymin = MIN(ymin, y);
         xmax = MAX(xmax, x);
         ymax = MAX(ymax, y);
 
-        x = FLT_TO_SCALAR(rect->x+rect->w+1); y = FLT_TO_SCALAR(rect->y+rect->h+1);
+        x = FLT_TO_SCALAR(rect->x + rect->w + 1);
+        y = FLT_TO_SCALAR(rect->y + rect->h + 1);
         matrix.transform(&x, &y);
         xmin = MIN(xmin, x);
         ymin = MIN(ymin, y);
         xmax = MAX(xmax, x);
         ymax = MAX(ymax, y);
 
-        x = FLT_TO_SCALAR(rect->x); y = FLT_TO_SCALAR(rect->y+rect->h+1);
+        x = FLT_TO_SCALAR(rect->x);
+        y = FLT_TO_SCALAR(rect->y + rect->h + 1);
         matrix.transform(&x, &y);
         xmin = MIN(xmin, x);
         ymin = MIN(ymin, y);
@@ -72,8 +79,10 @@ static void _matrix_transform_rect(const trans_affine & matrix, ps_rect* rect)
         xmax -= (xmax - x0) / w;
         ymax -= (ymax - y0) / h;
 
-        rect->x = SCALAR_TO_FLT(xmin); rect->y = SCALAR_TO_FLT(ymin);
-        rect->w = SCALAR_TO_FLT(xmax-xmin+1); rect->h = SCALAR_TO_FLT(ymax-ymin+1);
+        rect->x = SCALAR_TO_FLT(xmin);
+        rect->y = SCALAR_TO_FLT(ymin);
+        rect->w = SCALAR_TO_FLT(xmax - xmin + 1);
+        rect->h = SCALAR_TO_FLT(ymax - ymin + 1);
     }
 }
 
@@ -90,11 +99,11 @@ ps_matrix* PICAPI ps_matrix_create_init(float xx, float yx, float xy, float yy, 
         return NULL;
     }
 
-    ps_matrix *p = (ps_matrix*)mem_malloc(sizeof(ps_matrix));
+    ps_matrix* p = (ps_matrix*)mem_malloc(sizeof(ps_matrix));
     if (p) {
         p->refcount = 1;
-        new ((void*)&(p->matrix)) picasso::trans_affine(FLT_TO_SCALAR(xx), FLT_TO_SCALAR(yx),
-                               FLT_TO_SCALAR(xy), FLT_TO_SCALAR(yy), FLT_TO_SCALAR(x0), FLT_TO_SCALAR(y0));
+        new ((void*) & (p->matrix)) picasso::trans_affine(FLT_TO_SCALAR(xx), FLT_TO_SCALAR(yx),
+                                                          FLT_TO_SCALAR(xy), FLT_TO_SCALAR(yy), FLT_TO_SCALAR(x0), FLT_TO_SCALAR(y0));
         global_status = STATUS_SUCCEED;
         return p;
     } else {
@@ -110,10 +119,10 @@ ps_matrix* PICAPI ps_matrix_create(void)
         return NULL;
     }
 
-    ps_matrix *p = (ps_matrix*)mem_malloc(sizeof(ps_matrix));
+    ps_matrix* p = (ps_matrix*)mem_malloc(sizeof(ps_matrix));
     if (p) {
         p->refcount = 1;
-        new ((void*)&(p->matrix)) picasso::trans_affine;
+        new ((void*) & (p->matrix)) picasso::trans_affine;
         global_status = STATUS_SUCCEED;
         return p;
     } else {
@@ -134,10 +143,10 @@ ps_matrix* PICAPI ps_matrix_create_copy(const ps_matrix* matrix)
         return NULL;
     }
 
-    ps_matrix *p = (ps_matrix*)mem_malloc(sizeof(ps_matrix));
+    ps_matrix* p = (ps_matrix*)mem_malloc(sizeof(ps_matrix));
     if (p) {
         p->refcount = 1;
-        new ((void*)&(p->matrix))picasso::trans_affine(matrix->matrix);
+        new ((void*) & (p->matrix))picasso::trans_affine(matrix->matrix);
         global_status = STATUS_SUCCEED;
         return p;
     } else {
@@ -183,7 +192,7 @@ void PICAPI ps_matrix_unref(ps_matrix* matrix)
 }
 
 void PICAPI ps_matrix_init(ps_matrix* matrix, float xx, float yx, float xy,
-                                                        float yy, float x0, float y0)
+                           float yy, float x0, float y0)
 {
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;
@@ -196,7 +205,7 @@ void PICAPI ps_matrix_init(ps_matrix* matrix, float xx, float yx, float xy,
     }
 
     matrix->matrix = picasso::trans_affine(FLT_TO_SCALAR(xx), FLT_TO_SCALAR(yx),
-                    FLT_TO_SCALAR(xy), FLT_TO_SCALAR(yy), FLT_TO_SCALAR(x0), FLT_TO_SCALAR(y0));
+                                           FLT_TO_SCALAR(xy), FLT_TO_SCALAR(yy), FLT_TO_SCALAR(x0), FLT_TO_SCALAR(y0));
     global_status = STATUS_SUCCEED;
 }
 
@@ -369,11 +378,13 @@ ps_bool PICAPI ps_matrix_is_equal(const ps_matrix* a, const ps_matrix* b)
     }
 
     global_status = STATUS_SUCCEED;
-    if (a == b)
+    if (a == b) {
         return True;
+    }
 
-    if (a->matrix == b->matrix)
+    if (a->matrix == b->matrix) {
         return True;
+    }
 
     return False;
 }
@@ -427,7 +438,7 @@ void PICAPI ps_matrix_set_translate_factor(ps_matrix* matrix, float tx, float ty
     global_status = STATUS_SUCCEED;
 }
 
-ps_bool PICAPI ps_matrix_get_translate_factor(ps_matrix* matrix, float *tx, float *ty)
+ps_bool PICAPI ps_matrix_get_translate_factor(ps_matrix* matrix, float* tx, float* ty)
 {
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;
@@ -462,7 +473,7 @@ void PICAPI ps_matrix_set_scale_factor(ps_matrix* matrix, float sx, float sy)
     global_status = STATUS_SUCCEED;
 }
 
-ps_bool PICAPI ps_matrix_get_scale_factor(ps_matrix* matrix, float *sx, float *sy)
+ps_bool PICAPI ps_matrix_get_scale_factor(ps_matrix* matrix, float* sx, float* sy)
 {
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;
@@ -497,7 +508,7 @@ void PICAPI ps_matrix_set_shear_factor(ps_matrix* matrix, float shx, float shy)
     global_status = STATUS_SUCCEED;
 }
 
-ps_bool PICAPI ps_matrix_get_shear_factor(ps_matrix* matrix, float *shx, float *shy)
+ps_bool PICAPI ps_matrix_get_shear_factor(ps_matrix* matrix, float* shx, float* shy)
 {
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;

@@ -11,13 +11,12 @@
 
 namespace picasso {
 
-struct vertex_s
-{
+struct vertex_s {
     scalar x;
     scalar y;
 
-    vertex_s() : x(0), y(0){ }
-    vertex_s(scalar _x, scalar _y) : x(_x), y(_y){ }
+    vertex_s() : x(0), y(0) { }
+    vertex_s(scalar _x, scalar _y) : x(_x), y(_y) { }
 };
 
 class vertex_source
@@ -41,4 +40,3 @@ public:
 }
 
 #endif /*_VERTEX_OBJECT_H_*/
-

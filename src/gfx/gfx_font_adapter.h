@@ -20,7 +20,7 @@ class gfx_font_adapter : public abstract_font_adapter
 {
 public:
     gfx_font_adapter(const char* name, int charset, scalar height, scalar weight,
-                    bool italic, bool hint, bool flip, bool antialias, const trans_affine* mtx);
+                     bool italic, bool hint, bool flip, bool antialias, const trans_affine* mtx);
     virtual ~gfx_font_adapter();
 
     virtual scalar height(void) const;
