@@ -85,9 +85,9 @@ EXPORTS
     ps_clip
     ps_clip_path
     ps_clip_rect
-    ps_clip_device_rect
     ps_clip_rects
     ps_reset_clip
+    ps_scissor_rect
     ps_save
     ps_restore
     ps_font_create
