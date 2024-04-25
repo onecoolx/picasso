@@ -1820,12 +1820,12 @@ PEXPORT void PICAPI ps_clip_path(ps_context* ctx, const ps_path* path, ps_fill_r
  * \param ctx  Pointer to an existing context object.
  * \param rect The rectangle which will be clipped.
  *
- * \sa ps_clip, ps_clip_path, ps_clip_rects, ps_reset_clip, ps_clip_device_rect
+ * \sa ps_clip, ps_clip_path, ps_clip_rects, ps_reset_clip, ps_scissor_rect
  */
 PEXPORT void PICAPI ps_clip_rect(ps_context* ctx, const ps_rect* rect);
 
 /**
- * \fn void ps_clip_device_rect(ps_context* ctx, const ps_rect* rect)
+ * \fn void ps_scissor_rect(ps_context* ctx, const ps_rect* rect)
  * \brief The fast way to clipping specified rectangle, the clip rect can not be rotated
  *           by world matrix. (Deprecated)
  *
@@ -1836,7 +1836,7 @@ PEXPORT void PICAPI ps_clip_rect(ps_context* ctx, const ps_rect* rect);
  *
  * \sa ps_clip, ps_clip_path, ps_clip_rects, ps_reset_clip, ps_clip_rect
  */
-PEXPORT void PICAPI ps_clip_device_rect(ps_context* ctx, const ps_rect* rect);
+PEXPORT void PICAPI ps_scissor_rect(ps_context* ctx, const ps_rect* rect);
 
 /**
  * \fn void ps_clip_rects(ps_context* ctx, const ps_rect* rects, unsigned int num_rects)

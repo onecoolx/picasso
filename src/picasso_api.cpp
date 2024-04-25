@@ -1453,7 +1453,7 @@ void PICAPI ps_clip_path(ps_context* ctx, const ps_path* p, ps_fill_rule r)
     global_status = STATUS_SUCCEED;
 }
 
-void PICAPI ps_clip_device_rect(ps_context* ctx, const ps_rect* r)
+void PICAPI ps_scissor_rect(ps_context* ctx, const ps_rect* r)
 {
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;
@@ -1470,21 +1470,8 @@ void PICAPI ps_clip_device_rect(ps_context* ctx, const ps_rect* r)
                        FLT_TO_SCALAR(r->x + r->w),
                        FLT_TO_SCALAR(r->y + r->h));
 
-    picasso::trans_affine mtx = ctx->state->world_matrix;
-    scalar rotate = mtx.rotation();
-    mtx.rotate(-rotate); //not support rotation
-    mtx.transform(&(tr.x1), &(tr.y1));
-    mtx.transform(&(tr.x2), &(tr.y2));
-
-    if (ctx->state->clip.type == picasso::clip_device) { //clip device rect.
-        picasso::rect_s cr = ctx->state->clip.rect;
-        if (cr.clip(tr)) {
-            ctx->state->clip.rect = cr;
-        }
-    } else {
-        ctx->state->clip.rect = tr;
-    }
     ctx->state->clip.type = picasso::clip_device;
+    ctx->state->clip.rect = tr;
     ctx->canvas->p->render_clip(ctx->state, true);
     global_status = STATUS_SUCCEED;
 }
