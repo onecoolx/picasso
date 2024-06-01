@@ -51,7 +51,6 @@
             'GCC_OPTIMIZATION_LEVEL': '0',
             'GCC_ENABLE_CPP_EXCEPTIONS': "NO",
             'GCC_ENABLE_CPP_RTTI': "NO",
-            'MACOSX_DEPLOYMENT_TARGET': '10.9',
           },
         }],
         ['OS=="ios"', {
@@ -68,7 +67,6 @@
             'GCC_OPTIMIZATION_LEVEL': '0',
             'GCC_ENABLE_CPP_EXCEPTIONS': "NO",
             'GCC_ENABLE_CPP_RTTI': "NO",
-            'IPHONEOS_DEPLOYMENT_TARGET': '12.0',
           },
         }],
         ['OS=="linux"', {
@@ -152,7 +150,6 @@
             'GCC_OPTIMIZATION_LEVEL': '3',
             'GCC_ENABLE_CPP_EXCEPTIONS': 'NO',
             'GCC_ENABLE_CPP_RTTI': 'NO',
-            'MACOSX_DEPLOYMENT_TARGET': '10.9',
           },
         }],
         ['OS=="ios"', {
@@ -173,7 +170,6 @@
             'GCC_OPTIMIZATION_LEVEL': '3',
             'GCC_ENABLE_CPP_EXCEPTIONS': 'NO',
             'GCC_ENABLE_CPP_RTTI': 'NO',
-            'IPHONEOS_DEPLOYMENT_TARGET': '12.0',
           },
         }],
         ['OS=="linux"', {
