@@ -7,7 +7,7 @@
  *
  \verbatim
 
-    Copyright (C) 2008 ~ 2018  Zhang Ji Peng
+    Copyright (C) 2008 ~ 2024  Zhang Ji Peng
 
     All rights reserved.
 
@@ -1826,8 +1826,8 @@ PEXPORT void PICAPI ps_clip_rect(ps_context* ctx, const ps_rect* rect);
 
 /**
  * \fn void ps_scissor_rect(ps_context* ctx, const ps_rect* rect)
- * \brief The fast way to clipping specified rectangle, the clip rect can not be rotated
- *           by world matrix. (Deprecated)
+ * \brief The fast way to clipping specified rectangle, the clip rect can not be transformed
+ *           by world matrix.
  *
  * \param ctx  Pointer to an existing context object.
  * \param rect The rectangle which will be clipped.
