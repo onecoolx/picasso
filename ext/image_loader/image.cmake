@@ -15,11 +15,20 @@ set(PXIMG_SOURCES
     ${PXIMG_DIR}/psx_image_modules.c
 )
 
+if (WIN32)
+    set(PXIMG_SOURCES
+        ${PXIMG_SOURCES}
+        ${PXIMG_DIR}/psx_image.rc
+        ${PXIMG_DIR}/psx_image.def
+        ${PXIMG_DIR}/resource.h
+    )
+endif()
+
 add_definitions(-DEXPORT)
 add_library(psx_image ${PXIMG_SOURCES})
 
 include_directories(${PXIMG_DIR} ${PROJECT_ROOT}/include)
-target_link_libraries(psx_image PRIVATE picasso PUBLIC dl)
+target_link_libraries(psx_image PRIVATE picasso2_sw)
 
 if (NOT APPLE)
 include (${PXIMG_DIR}/png/png.cmake)

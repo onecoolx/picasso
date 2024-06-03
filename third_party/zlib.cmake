@@ -19,6 +19,18 @@ set(ZLIB_SOURCES
     ${ZLIB_DIR}/zutil.c
 )
 
+if (WIN32)
+set(ZLIB_SOURCES
+    ${ZLIB_SOURCES}
+    ${ZLIB_DIR}/gzclose.c
+    ${ZLIB_DIR}/gzlib.c
+    ${ZLIB_DIR}/gzread.c
+    ${ZLIB_DIR}/gzwrite.c
+    ${ZLIB_DIR}/win32/zlib.def
+    ${ZLIB_DIR}/win32/zlib1.rc
+)
+endif()
+
 add_definitions(-DZLIB_DLL)
 configure_file(${ZLIB_DIR}/zconf.h ${CMAKE_CURRENT_BINARY_DIR}/include/zconf.h)
 configure_file(${ZLIB_DIR}/zlib.h ${CMAKE_CURRENT_BINARY_DIR}/include/zlib.h)

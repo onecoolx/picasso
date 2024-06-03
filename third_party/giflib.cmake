@@ -19,6 +19,13 @@ set(GIF_SOURCES
     ${GIF_DIR}/lib/quantize.c
 )
 
+if (WIN32)
+set(GIF_SOURCES
+    ${GIF_SOURCES}
+    ${GIF_DIR}/gif_lib.def
+)
+endif()
+
 configure_file(${GIF_DIR}/lib/gif_lib.h ${CMAKE_CURRENT_BINARY_DIR}/include/gif_lib.h)
 
 add_library(gif ${GIF_SOURCES})

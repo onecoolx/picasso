@@ -155,6 +155,11 @@ set(WEBP_SOURCES
 
 add_definitions(-DWEBP_USE_THREAD)
 
+if (WIN32)
+add_definitions(-DWIN32_EXPORT)
+add_definitions(-DHAVE_WINCODEC_H)
+endif()
+
 file(GLOB_RECURSE WEBP_HEADERS ${WEBP_DIR}/src/webp/*.h)
 foreach(webp_header ${WEBP_HEADERS})
     get_filename_component(header_name ${webp_header} NAME)

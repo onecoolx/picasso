@@ -62,6 +62,15 @@ set(JPEG_SOURCES
     ${JPEG_DIR}/jsimd_none.c
 )
 
+if (WIN32)
+    add_definitions(-DHAVE_BOOLEAN)
+    add_definitions(-DXMD_H)
+    set(JPEG_SOURCES
+        ${JPEG_SOURCES}
+        ${JPEG_DIR}/win/jpeg8.def
+    )
+endif()
+
 configure_file(${JPEG_DIR}/build/jconfig.h ${CMAKE_CURRENT_BINARY_DIR}/include/jconfig.h)
 configure_file(${JPEG_DIR}/jmorecfg.h ${CMAKE_CURRENT_BINARY_DIR}/include/jmorecfg.h)
 configure_file(${JPEG_DIR}/jpeglib.h ${CMAKE_CURRENT_BINARY_DIR}/include/jpeglib.h)
