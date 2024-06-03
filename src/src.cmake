@@ -19,7 +19,12 @@ if (WIN32)
         ${PROJECT_ROOT}/src/picasso.def
         ${PROJECT_ROOT}/src/resource.h
     )
-elseif (UNIX AND NOT APPLE)
+endif()
+
+add_definitions(-DEXPORT)
+add_library(picasso2_sw ${SOURCES})
+
+if (UNIX AND NOT APPLE)
     find_package(Freetype REQUIRED)
     find_package(Fontconfig REQUIRED)
     target_include_directories(picasso2_sw PRIVATE ${FREETYPE_INCLUDE_DIRS} ${FONTCONFIG_INCLUDE_DIRS})
@@ -27,6 +32,4 @@ elseif (UNIX AND NOT APPLE)
 elseif (APPLE)
 endif()
 
-add_definitions(-DEXPORT)
-add_library(picasso2_sw ${SOURCES})
 

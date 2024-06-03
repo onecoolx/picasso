@@ -30,6 +30,10 @@ add_library(psx_image ${PXIMG_SOURCES})
 include_directories(${PXIMG_DIR} ${PROJECT_ROOT}/include)
 target_link_libraries(psx_image PRIVATE picasso2_sw)
 
+if (UNIX AND NOT APPLE)
+target_link_libraries(psx_image PUBLIC dl)
+endif()
+
 if (NOT APPLE)
 include (${PXIMG_DIR}/png/png.cmake)
 include (${PXIMG_DIR}/jpeg/jpeg.cmake)
