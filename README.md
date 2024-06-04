@@ -1,5 +1,6 @@
 <a href="https://github.com/sponsors/onecoolx" target="_blank"><img align="left" src="http://onecoolx.github.io/picasso/res/sponsor.png" height="28px"></a>
 ![Windows Build](https://github.com/onecoolx/picasso/workflows/Windows%20Build/badge.svg) ![Linux Build](https://github.com/onecoolx/picasso/workflows/Linux%20Build/badge.svg) ![MacOSX Build](https://github.com/onecoolx/picasso/workflows/MacOSX%20Build/badge.svg) ![Android Build](https://github.com/onecoolx/picasso/workflows/Android%20Build/badge.svg)
+[![CMake Build](https://github.com/onecoolx/picasso/actions/workflows/cmake-multi-platform.yml/badge.svg)](https://github.com/onecoolx/picasso/actions/workflows/cmake-multi-platform.yml)
 [![CodeFactor](https://www.codefactor.io/repository/github/onecoolx/picasso/badge)](https://www.codefactor.io/repository/github/onecoolx/picasso)
 
 Copyright (C) 2008 ~ 2023 Zhang Ji Peng  (onecoolx@gmail.com)
