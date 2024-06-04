@@ -45,7 +45,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - if: ${{matrix.os == ubuntu-latest}}
+    - if: ${{matrix.os == 'ubuntu-latest'}}
       run: |
         apt-get install libgtk2.0-dev
 
