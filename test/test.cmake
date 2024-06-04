@@ -25,6 +25,7 @@ elseif (UNIX AND NOT APPLE)
     set(host_gui_lib ${GTK2_LIBRARIES} pthread)
     configure_file(${PROJECT_ROOT}/test/pat.png ${CMAKE_CURRENT_BINARY_DIR}/pat.png COPYONLY)
     configure_file(${PROJECT_ROOT}/test/selt2.png ${CMAKE_CURRENT_BINARY_DIR}/selt2.png COPYONLY)
+    add_definitions(-DLINUX)
 elseif (APPLE)
 endif()
 

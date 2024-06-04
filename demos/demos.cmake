@@ -11,6 +11,7 @@ elseif (UNIX AND NOT APPLE)
     set(plat_file ${PROJECT_ROOT}/demos/platform_gtk2.c)
     set(plat_gui_inc ${GTK2_INCLUDE_DIRS})
     set(plat_gui_lib ${GTK2_LIBRARIES} pthread)
+    add_definitions(-DLINUX)
 elseif (APPLE)
 endif()
 
