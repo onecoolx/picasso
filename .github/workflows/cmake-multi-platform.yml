@@ -47,7 +47,7 @@ jobs:
 
     - if: ${{matrix.os == 'ubuntu-latest'}}
       run: |
-        apt-get install libgtk2.0-dev
+        sudo apt-get install libgtk2.0-dev
 
     - name: Set reusable strings
       # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
