@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -16,11 +16,15 @@
     <RootNamespace>picasso2_sw</RootNamespace>
     <IgnoreWarnCompileDuplicatedFilename>true</IgnoreWarnCompileDuplicatedFilename>
     <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+    <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props"/>
   <PropertyGroup Label="Configuration">
     <CharacterSet>Unicode</CharacterSet>
     <ConfigurationType>DynamicLibrary</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Label="Locals">
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props"/>
   <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.props"/>
@@ -148,17 +152,18 @@
     <ClInclude Include="..\src\include\data_vector.h"/>
     <ClInclude Include="..\src\include\device.h"/>
     <ClInclude Include="..\src\include\fastcopy.h"/>
+    <ClInclude Include="..\src\include\fixedopt.h"/>
     <ClInclude Include="..\src\include\geometry.h"/>
     <ClInclude Include="..\src\include\graphic_base.h"/>
     <ClInclude Include="..\src\include\graphic_helper.h"/>
     <ClInclude Include="..\src\include\graphic_path.h"/>
     <ClInclude Include="..\src\include\interfaces.h"/>
+    <ClInclude Include="..\src\include\matrix.h"/>
     <ClInclude Include="..\src\include\math_type.h"/>
     <ClInclude Include="..\src\include\memory_manager.h"/>
     <ClInclude Include="..\src\include\platform.h"/>
     <ClInclude Include="..\src\include\vertex.h"/>
     <ClInclude Include="..\src\include\vertex_dist.h"/>
-    <ClInclude Include="..\src\include\matrix.h"/>
     <ClInclude Include="..\src\simd\fastcopy_sse.h"/>
     <ClInclude Include="..\src\picasso_font.h"/>
     <ClInclude Include="..\src\picasso_font_cache.h"/>
