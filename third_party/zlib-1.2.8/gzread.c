@@ -4,6 +4,10 @@
  */
 
 #include "gzguts.h"
+#if defined(_WIN32) && !defined(__BORLANDC__)
+#  define read _read
+#  define close _close
+#endif
 
 /* Local functions */
 local int gz_load OF((gz_statep, unsigned char *, unsigned, unsigned *));
