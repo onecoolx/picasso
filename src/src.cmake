@@ -19,6 +19,11 @@ if (WIN32)
         ${PROJECT_ROOT}/src/picasso.def
         ${PROJECT_ROOT}/src/resource.h
     )
+elseif (APPLE)
+    set(SOURCES
+        ${SOURCES}
+        ${PROJECT_ROOT}/src/gfx/gfx_font_adapter_apple.mm
+    )
 endif()
 
 add_definitions(-DEXPORT)
@@ -30,6 +35,9 @@ if (UNIX AND NOT APPLE)
     target_include_directories(picasso2_sw PRIVATE ${FREETYPE_INCLUDE_DIRS} ${FONTCONFIG_INCLUDE_DIRS})
     target_link_libraries(picasso2_sw PUBLIC Freetype::Freetype Fontconfig::Fontconfig)
 elseif (APPLE)
+    find_library(CORETEXT_LIBRARY CoreText)
+    find_library(COREGRAPHICS_LIBRARY CoreGraphics)
+    target_link_libraries(picasso2_sw PUBLIC ${CORETEXT_LIBRARY} ${COREGRAPHICS_LIBRARY})
 endif()
 
 

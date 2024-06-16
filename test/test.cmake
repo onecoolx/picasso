@@ -28,6 +28,15 @@ elseif (UNIX AND NOT APPLE)
     configure_file(${PROJECT_ROOT}/test/selt2.png ${CMAKE_CURRENT_BINARY_DIR}/selt2.png COPYONLY)
     add_definitions(-DLINUX)
 elseif (APPLE)
+    find_library(APPKIT_LIBRARY AppKit)
+    find_library(CARBON_LIBRARY Carbon)
+    set(thread_file ${PROJECT_ROOT}/test/thr_posix.c)
+    set(main_file ${PROJECT_ROOT}/test/testMac.m)
+    set(host_gui_lib ${APPKIT_LIBRARY} ${CARBON_LIBRARY})
+    add_definitions(-DUNIX)
+    set(app_type MACOSX_BUNDLE)
+    set(resources ${PROJECT_ROOT}/test/pat.png ${PROJECT_ROOT}/test/selt2.png)
+    set(main_file ${main_file} ${resources})
 endif()
 
 foreach(test_file ${TEST_SOURCES})
@@ -41,6 +50,12 @@ foreach(test_file ${TEST_SOURCES})
         add_executable(${test} ${app_type} ${test_file} ${main_file})
     endif()
 
+    if (APPLE)
+        set(CMAKE_XCODE_ATTRIBUTE_INFOPLIST_FILE "${PROJECT_ROOT}/test/Info.plist")
+        set_target_properties(${test} PROPERTIES
+        MACOSX_BUNDLE TRUE
+        RESOURCE "${resources}")
+    endif()
     include_directories(${test} ${host_gui_inc})
     target_link_libraries(${test} PRIVATE picasso2_sw PUBLIC ${host_gui_lib})
 
@@ -55,6 +70,9 @@ foreach(image_file ${IMAGE_SOURCES})
         add_executable(${image_name} ${app_type} ${image_file} ${main_file})
     endif()
 
+    if (APPLE)
+        set(CMAKE_XCODE_ATTRIBUTE_INFOPLIST_FILE "${PROJECT_ROOT}/test/Info.plist")
+    endif()
     include_directories(${image_name} ${host_gui_inc})
     target_link_libraries(${image_name} PRIVATE picasso2_sw psx_image PUBLIC ${host_gui_lib})
 

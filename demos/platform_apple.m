@@ -94,8 +94,10 @@ static int get_virtual_key(int pk);
     
     _drawView = [[DrawView alloc] initWithFrame:rc];
     [_drawView setWantsLayer:YES];
-#if MAC_OS_X_VERSION_MAX_ALLOWED >= 1060
+#if MAC_OS_X_VERSION_MAX_ALLOWED >= 1060 && MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_12
     [_drawView setAcceptsTouchEvents:YES];
+#elif MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_12
+    _drawView.allowedTouchTypes = NSTouchTypeMaskDirect;
 #endif
     [_drawView layer].backgroundColor = [[NSColor blackColor] CGColor];
     [self.mainWindow.contentView addSubview:_drawView];
