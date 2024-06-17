@@ -21,7 +21,7 @@ jobs:
       #
       # To add more build types (Release, Debug, RelWithDebInfo, etc.) customize the build_type list.
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
         build_type: [Debug, Release]
         c_compiler: [gcc, clang, cl]
         include:
@@ -34,12 +34,17 @@ jobs:
           - os: ubuntu-latest
             c_compiler: clang
             cpp_compiler: clang++
+          - os: macos-latest
+            c_compiler: clang
+            cpp_compiler: clang++
         exclude:
           - os: windows-latest
             c_compiler: gcc
           - os: windows-latest
             c_compiler: clang
           - os: ubuntu-latest
+            c_compiler: cl
+          - os: macos-latest
             c_compiler: cl
 
     steps:
@@ -48,6 +53,10 @@ jobs:
     - if: ${{matrix.os == 'ubuntu-latest'}}
       run: |
         sudo apt-get install libgtk2.0-dev
+
+    - if: ${{matrix.os == 'macos-latest'}}
+      run: |
+        python -m pip install --upgrade pip setuptools wheel packaging
 
     - name: Set reusable strings
       # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
