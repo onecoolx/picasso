@@ -32,6 +32,7 @@ foreach(demo_file ${DEMOS_SOURCES})
      
     if (APPLE)
         set(CMAKE_XCODE_ATTRIBUTE_INFOPLIST_FILE "${PROJECT_ROOT}/demos/Info.plist")
+        set_source_files_properties(${plat_file} PROPERTIES COMPILE_FLAGS "-fobjc-arc")
     endif()
     include_directories(${demo} ${plat_gui_inc})
     target_link_libraries(${demo} PRIVATE picasso2_sw PUBLIC ${plat_gui_lib})
