@@ -37,7 +37,8 @@ if (UNIX AND NOT APPLE)
 elseif (APPLE)
     find_library(CORETEXT_LIBRARY CoreText)
     find_library(COREGRAPHICS_LIBRARY CoreGraphics)
-    target_link_libraries(picasso2_sw PUBLIC ${CORETEXT_LIBRARY} ${COREGRAPHICS_LIBRARY})
+    find_library(COREFOUNDATION_LIBRARY CoreFoundation)
+    target_link_libraries(picasso2_sw PUBLIC ${CORETEXT_LIBRARY} ${COREGRAPHICS_LIBRARY} ${COREFOUNDATION_LIBRARY})
 endif()
 
 
