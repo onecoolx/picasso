@@ -35,12 +35,12 @@ jobs:
       run: ./build_windows.bat
     
     - name: Restore Project
-      run: msbuild ./vcproj/picasso.sln /t:Restore /p:Configuration=$env:Configuration
+      run: msbuild ./proj/picasso.sln /t:Restore /p:Configuration=$env:Configuration
       env:
         Configuration: ${{ matrix.configuration }}
      
     - name: Build Solution
-      run: msbuild ./vcproj/picasso.sln /p:Configuration=$env:Configuration
+      run: msbuild ./proj/picasso.sln /p:Configuration=$env:Configuration
       env:
         Configuration: ${{ matrix.configuration }}   
 
