@@ -25,10 +25,10 @@ make
 ```
 #### windows:
 ```
-1. Install Active Python 2.7 on your windows system and register path environment variables.
+1. Install cmake above v3.16 on your windows system and register path environment variables.
 2. Build project
 ./build_windows.bat
-cd vcproj
+cd proj
 <open "picasso.sln" with visual studio>
 ```
 #### macosx:
