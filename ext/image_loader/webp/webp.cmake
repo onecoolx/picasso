@@ -11,11 +11,14 @@ set(PXWEBP_SOURCES
     ${PXWEBP_DIR}/webp_module.c
 )
 
-add_definitions(-DEXPORT)
-add_library(psxm_image_webp ${PXWEBP_SOURCES})
-target_link_libraries(psxm_image_webp PRIVATE webp)
+set(LIBX_WEBP psxm_image_webp)
 
-set_target_properties(psxm_image_webp
+add_definitions(-DEXPORT)
+add_library(${LIBX_WEBP} ${PXWEBP_SOURCES})
+target_link_libraries(${LIBX_WEBP} PRIVATE webp)
+install(TARGETS ${LIBX_WEBP} LIBRARY DESTINATION lib/modules ARCHIVE DESTINATION lib/modules)
+
+set_target_properties(${LIBX_WEBP}
     PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/modules"
 )

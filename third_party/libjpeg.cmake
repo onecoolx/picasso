@@ -76,6 +76,7 @@ configure_file(${JPEG_DIR}/jmorecfg.h ${CMAKE_CURRENT_BINARY_DIR}/include/jmorec
 configure_file(${JPEG_DIR}/jpeglib.h ${CMAKE_CURRENT_BINARY_DIR}/include/jpeglib.h)
 
 add_library(jpeg ${JPEG_SOURCES})
+install(TARGETS jpeg LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
 
 include_directories(${JPEG_DIR} ${JPEG_DIR}/build ${JPEG_DIR}/simd ${CMAKE_CURRENT_BINARY_DIR}/include)
 

@@ -12,6 +12,8 @@ include_directories(${PROJECT_ROOT}/build
                     ${PROJECT_ROOT}/src/gfx
                     ${PROJECT_ROOT}/src/simd)
 
+set(LIB_NAME picasso2_sw)
+
 if (WIN32)
     set(SOURCES
         ${SOURCES}
@@ -27,18 +29,21 @@ elseif (APPLE)
 endif()
 
 add_definitions(-DEXPORT)
-add_library(picasso2_sw ${SOURCES})
+add_library(${LIB_NAME} ${SOURCES})
+install(TARGETS ${LIB_NAME} LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
 
 if (UNIX AND NOT APPLE)
     find_package(Freetype REQUIRED)
     find_package(Fontconfig REQUIRED)
-    target_include_directories(picasso2_sw PRIVATE ${FREETYPE_INCLUDE_DIRS} ${FONTCONFIG_INCLUDE_DIRS})
-    target_link_libraries(picasso2_sw PUBLIC Freetype::Freetype Fontconfig::Fontconfig)
+    set_target_properties(${LIB_NAME} PROPERTIES VERSION ${VERSION_INFO} SOVERSION 1)
+    target_include_directories(${LIB_NAME} PRIVATE ${FREETYPE_INCLUDE_DIRS} ${FONTCONFIG_INCLUDE_DIRS})
+    target_link_libraries(${LIB_NAME} PUBLIC Freetype::Freetype Fontconfig::Fontconfig)
 elseif (APPLE)
     find_library(CORETEXT_LIBRARY CoreText)
     find_library(COREGRAPHICS_LIBRARY CoreGraphics)
     find_library(COREFOUNDATION_LIBRARY CoreFoundation)
-    target_link_libraries(picasso2_sw PUBLIC ${CORETEXT_LIBRARY} ${COREGRAPHICS_LIBRARY} ${COREFOUNDATION_LIBRARY})
+    set_target_properties(${LIB_NAME} PROPERTIES VERSION ${VERSION_INFO} SOVERSION 1)
+    target_link_libraries(${LIB_NAME} PUBLIC ${CORETEXT_LIBRARY} ${COREGRAPHICS_LIBRARY} ${COREFOUNDATION_LIBRARY})
 endif()
 
 

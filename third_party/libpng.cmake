@@ -29,6 +29,7 @@ configure_file(${PNG_DIR}/pngconf.h ${CMAKE_CURRENT_BINARY_DIR}/include/pngconf.
 configure_file(${PNG_DIR}/png.h ${CMAKE_CURRENT_BINARY_DIR}/include/png.h)
 
 add_library(png ${PNG_SOURCES})
+install(TARGETS png LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
 
 include_directories(${PNG_DIR} ${CMAKE_CURRENT_BINARY_DIR}/include)
 target_link_libraries(png PRIVATE zlib)

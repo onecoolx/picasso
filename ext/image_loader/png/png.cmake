@@ -11,11 +11,14 @@ set(PXPNG_SOURCES
     ${PXPNG_DIR}/png_module.c
 )
 
-add_definitions(-DEXPORT)
-add_library(psxm_image_png ${PXPNG_SOURCES})
-target_link_libraries(psxm_image_png PRIVATE png)
+set(LIBX_PNG psxm_image_png)
 
-set_target_properties(psxm_image_png
+add_definitions(-DEXPORT)
+add_library(${LIBX_PNG} ${PXPNG_SOURCES})
+target_link_libraries(${LIBX_PNG} PRIVATE png)
+install(TARGETS ${LIBX_PNG} LIBRARY DESTINATION lib/modules ARCHIVE DESTINATION lib/modules)
+
+set_target_properties(${LIBX_PNG}
     PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/modules"
 )

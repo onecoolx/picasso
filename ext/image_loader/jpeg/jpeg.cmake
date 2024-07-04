@@ -11,11 +11,14 @@ set(PXJPEG_SOURCES
     ${PXJPEG_DIR}/jpeg_module.c
 )
 
-add_definitions(-DEXPORT)
-add_library(psxm_image_jpeg ${PXJPEG_SOURCES})
-target_link_libraries(psxm_image_jpeg PRIVATE jpeg)
+set(LIBX_JPEG psxm_image_jpeg)
 
-set_target_properties(psxm_image_jpeg
+add_definitions(-DEXPORT)
+add_library(${LIBX_JPEG} ${PXJPEG_SOURCES})
+target_link_libraries(${LIBX_JPEG} PRIVATE jpeg)
+install(TARGETS ${LIBX_JPEG} LIBRARY DESTINATION lib/modules ARCHIVE DESTINATION lib/modules)
+
+set_target_properties(${LIBX_JPEG}
     PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/modules"
 )

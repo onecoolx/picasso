@@ -2,8 +2,6 @@ FREETYPE_INC=-I/usr/include/freetype2
 INC=-I./ -I../src -I../src/gfx -I../src/include -I../include ${FREETYPE_INC}
 
 CXXFLAGS=-Wall -O3 -fno-rtti -fno-exceptions
-#CXXFLAGS=-Wall -O3 -g -fprofile-arcs -ftest-coverage -fno-rtti -fno-exceptions
-#CXXFLAGS=-Wall -O3 -g -pg -fno-rtti -fno-exceptions
 CXXFLAGS +=-DEXPORT 
 
 VPATH=../src ../src/include ../src/core ../src/gfx

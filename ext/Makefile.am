@@ -1,2 +1,0 @@
-SUBDIRS = image_loader
-

@@ -11,11 +11,14 @@ set(PXGIF_SOURCES
     ${PXGIF_DIR}/gif_module.c
 )
 
-add_definitions(-DEXPORT)
-add_library(psxm_image_gif ${PXGIF_SOURCES})
-target_link_libraries(psxm_image_gif PRIVATE gif)
+set(LIBX_GIF psxm_image_gif)
 
-set_target_properties(psxm_image_gif
+add_definitions(-DEXPORT)
+add_library(${LIBX_GIF} ${PXGIF_SOURCES})
+target_link_libraries(${LIBX_GIF} PRIVATE gif)
+install(TARGETS ${LIBX_GIF} LIBRARY DESTINATION lib/modules ARCHIVE DESTINATION lib/modules)
+
+set_target_properties(${LIBX_GIF}
     PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/modules"
 )
