@@ -41,7 +41,6 @@
     #define PEXPORT
 #endif
 
-#include "pconfig.h"
 #include <stdint.h>
 
 #ifdef __cplusplus
