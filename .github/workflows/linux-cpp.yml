@@ -13,11 +13,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: auto gen
-      run: ./autogen.sh
-    - name: configure
-      run: ./configure
+    - name: Generate Project
+      run: ./build_linux.sh
     - name: make
-      run: make
-    - name: make check
-      run: make check  
+      run: make -C ./proj

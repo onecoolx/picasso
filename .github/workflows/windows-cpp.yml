@@ -23,14 +23,6 @@ jobs:
     - name: Setup MSBuild.exe
       uses: microsoft/setup-msbuild@v1.0.2
     
-    - name: Set up Python
-      uses: actions/setup-python@v3
-      with:
-        python-version: '3.x'
-    - name: Install Python3 Distutils
-      run: |
-        python -m pip install --upgrade pip setuptools wheel packaging
-
     - name: Generate Project
       run: ./build_windows.bat
     

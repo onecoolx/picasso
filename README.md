@@ -11,14 +11,8 @@ Picasso is a high quality vector graphic rendering library. It has high performa
 
 #### linux:
 ```
-1. automake & autoconf
-./autogen.sh
-./configure
-make
-sudo make install;
-
-
-2. gyp build
+1. Install cmake above v3.16 on your system
+2. Build project
 ./build_linux.sh
 cd proj
 make
