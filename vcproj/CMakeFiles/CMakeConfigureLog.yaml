@@ -1,0 +1,626 @@
+
+---
+events:
+  -
+    kind: "message-v1"
+    backtrace:
+      - "D:/Program Files/CMake/share/cmake-3.29/Modules/CMakeDetermineSystem.cmake:205 (message)"
+      - "CMakeLists.txt:3 (project)"
+    message: |
+      The system is: Windows - 10.0.22631 - AMD64
+  -
+    kind: "message-v1"
+    backtrace:
+      - "D:/Program Files/CMake/share/cmake-3.29/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "D:/Program Files/CMake/share/cmake-3.29/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "D:/Program Files/CMake/share/cmake-3.29/Modules/CMakeDetermineCCompiler.cmake:123 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:3 (project)"
+    message: |
+      Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+      Compiler:  
+      Build flags: 
+      Id flags:  
+      
+      The output was:
+      0
+      用于 .NET Framework 的 Microsoft (R) 生成引擎版本 16.11.2+f32259642
+      版权所有(C) Microsoft Corporation。保留所有权利。
+      
+      生成启动时间为 2024/7/4 11:29:21。
+      节点 1 上的项目“D:\\picasso\\proj\\CMakeFiles\\3.29.1\\CompilerIdC\\CompilerIdC.vcxproj”(默认目标)。
+      PrepareForBuild:
+        正在创建目录“Debug\\”。
+        正在创建目录“Debug\\CompilerIdC.tlog\\”。
+      InitializeBuildStatus:
+        正在创建“Debug\\CompilerIdC.tlog\\unsuccessfulbuild”，因为已指定“AlwaysCreate”。
+      ClCompile:
+        C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\bin\\HostX64\\x64\\CL.exe /c /nologo /W0 /WX- /diagnostics:column /Od /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\\\" /Fd"Debug\\vc142.pdb" /external:W0 /Gd /TC /FC /errorReport:queue CMakeCCompilerId.c
+        CMakeCCompilerId.c
+      Link:
+        C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:".\\CompilerIdC.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:".\\CompilerIdC.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:".\\CompilerIdC.lib" /MACHINE:X64 Debug\\CMakeCCompilerId.obj
+        CompilerIdC.vcxproj -> D:\\picasso\\proj\\CMakeFiles\\3.29.1\\CompilerIdC\\CompilerIdC.exe
+      PostBuildEvent:
+        for %%i in (cl.exe) do @echo CMAKE_C_COMPILER=%%~$PATH:i
+        :VCEnd
+        CMAKE_C_COMPILER=C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\bin\\Hostx64\\x64\\cl.exe
+      FinalizeBuildStatus:
+        正在删除文件“Debug\\CompilerIdC.tlog\\unsuccessfulbuild”。
+        正在对“Debug\\CompilerIdC.tlog\\CompilerIdC.lastbuildstate”执行 Touch 任务。
+      已完成生成项目“D:\\picasso\\proj\\CMakeFiles\\3.29.1\\CompilerIdC\\CompilerIdC.vcxproj”(默认目标)的操作。
+      
+      已成功生成。
+          0 个警告
+          0 个错误
+      
+      已用时间 00:00:01.08
+      
+      
+      Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "CompilerIdC.exe"
+      
+      Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "CompilerIdC.vcxproj"
+      
+      The C compiler identification is MSVC, found in:
+        D:/picasso/proj/CMakeFiles/3.29.1/CompilerIdC/CompilerIdC.exe
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "D:/Program Files/CMake/share/cmake-3.29/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "D:/Program Files/CMake/share/cmake-3.29/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "D:/Program Files/CMake/share/cmake-3.29/Modules/CMakeDetermineCXXCompiler.cmake:126 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:3 (project)"
+    message: |
+      Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+      Compiler:  
+      Build flags: 
+      Id flags:  
+      
+      The output was:
+      0
+      用于 .NET Framework 的 Microsoft (R) 生成引擎版本 16.11.2+f32259642
+      版权所有(C) Microsoft Corporation。保留所有权利。
+      
+      生成启动时间为 2024/7/4 11:29:22。
+      节点 1 上的项目“D:\\picasso\\proj\\CMakeFiles\\3.29.1\\CompilerIdCXX\\CompilerIdCXX.vcxproj”(默认目标)。
+      PrepareForBuild:
+        正在创建目录“Debug\\”。
+        正在创建目录“Debug\\CompilerIdCXX.tlog\\”。
+      InitializeBuildStatus:
+        正在创建“Debug\\CompilerIdCXX.tlog\\unsuccessfulbuild”，因为已指定“AlwaysCreate”。
+      ClCompile:
+        C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\bin\\HostX64\\x64\\CL.exe /c /nologo /W0 /WX- /diagnostics:column /Od /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\\\" /Fd"Debug\\vc142.pdb" /external:W0 /Gd /TP /FC /errorReport:queue CMakeCXXCompilerId.cpp
+        CMakeCXXCompilerId.cpp
+      Link:
+        C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:".\\CompilerIdCXX.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:".\\CompilerIdCXX.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:".\\CompilerIdCXX.lib" /MACHINE:X64 Debug\\CMakeCXXCompilerId.obj
+        CompilerIdCXX.vcxproj -> D:\\picasso\\proj\\CMakeFiles\\3.29.1\\CompilerIdCXX\\CompilerIdCXX.exe
+      PostBuildEvent:
+        for %%i in (cl.exe) do @echo CMAKE_CXX_COMPILER=%%~$PATH:i
+        :VCEnd
+        CMAKE_CXX_COMPILER=C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\bin\\Hostx64\\x64\\cl.exe
+      FinalizeBuildStatus:
+        正在删除文件“Debug\\CompilerIdCXX.tlog\\unsuccessfulbuild”。
+        正在对“Debug\\CompilerIdCXX.tlog\\CompilerIdCXX.lastbuildstate”执行 Touch 任务。
+      已完成生成项目“D:\\picasso\\proj\\CMakeFiles\\3.29.1\\CompilerIdCXX\\CompilerIdCXX.vcxproj”(默认目标)的操作。
+      
+      已成功生成。
+          0 个警告
+          0 个错误
+      
+      已用时间 00:00:00.87
+      
+      
+      Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CompilerIdCXX.exe"
+      
+      Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CompilerIdCXX.vcxproj"
+      
+      The CXX compiler identification is MSVC, found in:
+        D:/picasso/proj/CMakeFiles/3.29.1/CompilerIdCXX/CompilerIdCXX.exe
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "D:/Program Files/CMake/share/cmake-3.29/Modules/CMakeDetermineCompilerId.cmake:1178 (message)"
+      - "D:/Program Files/CMake/share/cmake-3.29/Modules/CMakeDetermineASMCompiler.cmake:135 (CMAKE_DETERMINE_COMPILER_ID_VENDOR)"
+      - "CMakeLists.txt:3 (project)"
+    message: |
+      Checking whether the ASM compiler is GNU using "--version" did not match "(GNU assembler)|(GCC)|(Free Software Foundation)":
+      用于 x64 的 Microsoft (R) C/C++ 优化编译器 19.29.30151 版
+      版权所有(C) Microsoft Corporation。保留所有权利。
+      
+      cl: 命令行 warning D9002 :忽略未知选项“--version”
+      cl: 命令行 error D8003 :缺少源文件名
+  -
+    kind: "message-v1"
+    backtrace:
+      - "D:/Program Files/CMake/share/cmake-3.29/Modules/CMakeDetermineCompilerId.cmake:1178 (message)"
+      - "D:/Program Files/CMake/share/cmake-3.29/Modules/CMakeDetermineASMCompiler.cmake:135 (CMAKE_DETERMINE_COMPILER_ID_VENDOR)"
+      - "CMakeLists.txt:3 (project)"
+    message: |
+      Checking whether the ASM compiler is AppleClang using "--version" did not match "(Apple (clang|LLVM) version)":
+      用于 x64 的 Microsoft (R) C/C++ 优化编译器 19.29.30151 版
+      版权所有(C) Microsoft Corporation。保留所有权利。
+      
+      cl: 命令行 warning D9002 :忽略未知选项“--version”
+      cl: 命令行 error D8003 :缺少源文件名
+  -
+    kind: "message-v1"
+    backtrace:
+      - "D:/Program Files/CMake/share/cmake-3.29/Modules/CMakeDetermineCompilerId.cmake:1178 (message)"
+      - "D:/Program Files/CMake/share/cmake-3.29/Modules/CMakeDetermineASMCompiler.cmake:135 (CMAKE_DETERMINE_COMPILER_ID_VENDOR)"
+      - "CMakeLists.txt:3 (project)"
+    message: |
+      Checking whether the ASM compiler is Clang using "--version" did not match "(clang version)":
+      用于 x64 的 Microsoft (R) C/C++ 优化编译器 19.29.30151 版
+      版权所有(C) Microsoft Corporation。保留所有权利。
+      
+      cl: 命令行 warning D9002 :忽略未知选项“--version”
+      cl: 命令行 error D8003 :缺少源文件名
+  -
+    kind: "message-v1"
+    backtrace:
+      - "D:/Program Files/CMake/share/cmake-3.29/Modules/CMakeDetermineCompilerId.cmake:1178 (message)"
+      - "D:/Program Files/CMake/share/cmake-3.29/Modules/CMakeDetermineASMCompiler.cmake:135 (CMAKE_DETERMINE_COMPILER_ID_VENDOR)"
+      - "CMakeLists.txt:3 (project)"
+    message: |
+      Checking whether the ASM compiler is ARMClang using "--version" did not match "armclang":
+      用于 x64 的 Microsoft (R) C/C++ 优化编译器 19.29.30151 版
+      版权所有(C) Microsoft Corporation。保留所有权利。
+      
+      cl: 命令行 warning D9002 :忽略未知选项“--version”
+      cl: 命令行 error D8003 :缺少源文件名
+  -
+    kind: "message-v1"
+    backtrace:
+      - "D:/Program Files/CMake/share/cmake-3.29/Modules/CMakeDetermineCompilerId.cmake:1178 (message)"
+      - "D:/Program Files/CMake/share/cmake-3.29/Modules/CMakeDetermineASMCompiler.cmake:135 (CMAKE_DETERMINE_COMPILER_ID_VENDOR)"
+      - "CMakeLists.txt:3 (project)"
+    message: |
+      Checking whether the ASM compiler is OrangeC using "--version" did not match "occ \\(OrangeC\\) Version":
+      用于 x64 的 Microsoft (R) C/C++ 优化编译器 19.29.30151 版
+      版权所有(C) Microsoft Corporation。保留所有权利。
+      
+      cl: 命令行 warning D9002 :忽略未知选项“--version”
+      cl: 命令行 error D8003 :缺少源文件名
+  -
+    kind: "message-v1"
+    backtrace:
+      - "D:/Program Files/CMake/share/cmake-3.29/Modules/CMakeDetermineCompilerId.cmake:1178 (message)"
+      - "D:/Program Files/CMake/share/cmake-3.29/Modules/CMakeDetermineASMCompiler.cmake:135 (CMAKE_DETERMINE_COMPILER_ID_VENDOR)"
+      - "CMakeLists.txt:3 (project)"
+    message: |
+      Checking whether the ASM compiler is HP using "-V" did not match "HP C":
+      用于 x64 的 Microsoft (R) C/C++ 优化编译器 19.29.30151 版
+      版权所有(C) Microsoft Corporation。保留所有权利。
+      
+      cl: 命令行 error D8004 :“/V”需要参数
+  -
+    kind: "message-v1"
+    backtrace:
+      - "D:/Program Files/CMake/share/cmake-3.29/Modules/CMakeDetermineCompilerId.cmake:1178 (message)"
+      - "D:/Program Files/CMake/share/cmake-3.29/Modules/CMakeDetermineASMCompiler.cmake:135 (CMAKE_DETERMINE_COMPILER_ID_VENDOR)"
+      - "CMakeLists.txt:3 (project)"
+    message: |
+      Checking whether the ASM compiler is Intel using "--version" did not match "(ICC)":
+      用于 x64 的 Microsoft (R) C/C++ 优化编译器 19.29.30151 版
+      版权所有(C) Microsoft Corporation。保留所有权利。
+      
+      cl: 命令行 warning D9002 :忽略未知选项“--version”
+      cl: 命令行 error D8003 :缺少源文件名
+  -
+    kind: "message-v1"
+    backtrace:
+      - "D:/Program Files/CMake/share/cmake-3.29/Modules/CMakeDetermineCompilerId.cmake:1178 (message)"
+      - "D:/Program Files/CMake/share/cmake-3.29/Modules/CMakeDetermineASMCompiler.cmake:135 (CMAKE_DETERMINE_COMPILER_ID_VENDOR)"
+      - "CMakeLists.txt:3 (project)"
+    message: |
+      Checking whether the ASM compiler is IntelLLVM using "--version" did not match "(Intel[^
+      ]+oneAPI)":
+      用于 x64 的 Microsoft (R) C/C++ 优化编译器 19.29.30151 版
+      版权所有(C) Microsoft Corporation。保留所有权利。
+      
+      cl: 命令行 warning D9002 :忽略未知选项“--version”
+      cl: 命令行 error D8003 :缺少源文件名
+  -
+    kind: "message-v1"
+    backtrace:
+      - "D:/Program Files/CMake/share/cmake-3.29/Modules/CMakeDetermineCompilerId.cmake:1178 (message)"
+      - "D:/Program Files/CMake/share/cmake-3.29/Modules/CMakeDetermineASMCompiler.cmake:135 (CMAKE_DETERMINE_COMPILER_ID_VENDOR)"
+      - "CMakeLists.txt:3 (project)"
+    message: |
+      Checking whether the ASM compiler is SunPro using "-V" did not match "Sun C":
+      用于 x64 的 Microsoft (R) C/C++ 优化编译器 19.29.30151 版
+      版权所有(C) Microsoft Corporation。保留所有权利。
+      
+      cl: 命令行 error D8004 :“/V”需要参数
+  -
+    kind: "message-v1"
+    backtrace:
+      - "D:/Program Files/CMake/share/cmake-3.29/Modules/CMakeDetermineCompilerId.cmake:1178 (message)"
+      - "D:/Program Files/CMake/share/cmake-3.29/Modules/CMakeDetermineASMCompiler.cmake:135 (CMAKE_DETERMINE_COMPILER_ID_VENDOR)"
+      - "CMakeLists.txt:3 (project)"
+    message: |
+      Checking whether the ASM compiler is XL using "-qversion" did not match "XL C":
+      用于 x64 的 Microsoft (R) C/C++ 优化编译器 19.29.30151 版
+      版权所有(C) Microsoft Corporation。保留所有权利。
+      
+      cl: 命令行 warning D9002 :忽略未知选项“-qversion”
+      cl: 命令行 error D8003 :缺少源文件名
+  -
+    kind: "message-v1"
+    backtrace:
+      - "D:/Program Files/CMake/share/cmake-3.29/Modules/CMakeDetermineCompilerId.cmake:1165 (message)"
+      - "D:/Program Files/CMake/share/cmake-3.29/Modules/CMakeDetermineASMCompiler.cmake:135 (CMAKE_DETERMINE_COMPILER_ID_VENDOR)"
+      - "CMakeLists.txt:3 (project)"
+    message: |
+      Checking whether the ASM compiler is MSVC using "-?" matched "Microsoft":
+      用于 x64 的 Microsoft (R) C/C++ 优化编译器 19.29.30151 版
+      版权所有(C) Microsoft Corporation。保留所有权利。
+      
+                   C/C++ 编译器选项
+      
+      
+                     -优化-
+      
+      /O1 最大优化(优选空间)                  /O2 最大优化(优选速度)
+      /Ob<n> 内联扩展(默认 n=0)               /Od 禁用优化(默认)
+      /Og 启用全局优化                        /Oi[-] 启用内部函数
+      /Os 优选代码空间                        /Ot 优选代码速度
+      /Ox 优化(优选速度)                      
+      /favor:<blend|AMD64|INTEL64|ATOM> 选择优化所针对的处理器，为以下值之一:
+        blend - 针对几种不同 x64 处理器的优化组合
+        AMD64 - 64 位 AMD 处理器                 
+        INTEL64 - Intel(R)64 架构处理器       
+      ATOM - Intel(R) Atom(TM) 处理器              
+      
+                     -代码生成-
+      
+      /Gu[-] 确保 distinct 函数具有非重复地址 /Gw[-] 分隔链接器的全局变量
+      /GF 启用只读字符串池                    /Gm[-] 启用最小重新生成
+      /Gy[-] 分隔链接器函数                   /GS[-] 启用安全检查
+      /GR[-] 启用 C++ RTTI                    /GX[-] 启用 C++ EH (与 /EHsc 相同)
+      /guard:cf[-] 启用 CFG (控制流保护)      /guard:ehcont[-] 启用 EH 继续元数据(CET)
+      /EHs 启用 C++ EH (没有 SEH 异常)        /EHa 启用 C++ EH (w/ SEH 异常)
+      /EHc 外部 "C" 默认为 nothrow            /EHr 始终生成 noexcept 运行时终止检查
+      /fp:<except[-]|fast|precise|strict> 选择浮点模型:
+        except[-] - 在生成代码时考虑浮点异常  
+        fast - "fast" 浮点模型；结果可预测性比较低
+        precise - "precise" 浮点模型；结果可预测
+        strict - "strict" 浮点模型(意味着 /fp:except)
+      即使使用 /fp:except，/Qfast_transcendentals 也生成内联内部 FP
+      /Qspectre[-] 对 CVE 2017-5753 启用缓解措施
+      /Qpar[-] 启用并行代码生成               
+      /Qpar-report:1 自动并行化诊断；指示已并行化循环
+      /Qpar-report:2 自动并行化诊断；指示未并行化循环
+      /Qvec-report:1 自动向量化诊断；指示已向量化循环
+      /Qvec-report:2 自动向量化诊断；指示未向量化循环
+      /GL[-] 启用链接时代码生成               /volatile:<iso|ms> 选择可变模型:
+          iso - Acquire/release 语义对可变访问不一定有效
+          ms - Acquire/release 语义对可变访问一定有效
+      /GA 为 Windows 应用程序进行优化         /Ge 对所有函数强制堆栈检查
+      /Gs[num] 控制堆栈检查调用               /Gh 启用 _penter 函数调用
+      /GH 启用 _pexit 函数调用                /GT 生成纤程安全 TLS 访问
+      /RTC1 启用快速检查(/RTCsu)              /RTCc 转换为较小的类型检查
+      /RTCs 堆栈帧运行时检查                  /RTCu 未初始化的局部用法检查
+      /clr[:option] 为公共语言运行时编译，其中 option 是:
+          pure : 生成仅包含 IL 的输出文件(没有本机可执行代码)
+          safe : 生成只包含 IL 的可验证输出文件
+          netcore : 生成以 .NET Core 运行时为目标的程序集
+          noAssembly : 不生成程序集           
+          nostdlib : 搜索程序集时忽略系统 .NET Framework 目录
+          nostdimport : 不隐式导入任何必需的程序集
+          initialAppDomain : 启用 Visual C++ 2002 的初始 AppDomain 行为
+          implicitKeepAlive- : 关闭 System::GC::KeepAlive(this)的隐式值
+      /fsanitize=解决启用地址消毒代码生成     
+      /homeparams 强制将传入寄存器的参数写入到堆栈中
+      /GZ 启用堆栈检查(/RTCs)                 /Gv __vectorcall 调用约定
+      /arch:<AVX|AVX2|AVX512> 最小 CPU 架构要求，以下之一:
+        AVX - 允许使用支持 AVX 的 CPU 可用的指令
+        AVX2 - 允许使用支持 AVX2 的 CPU 可用的指令
+        AVX512 - 允许使用支持 AVX-512 的 CPU 可用的指令
+      /QIntel-jcc-erratum 为 Intel JCC Erratum 启用缓解措施
+      /Qspectre-load 对加载内存的所有指令启用 spectre 缓解措施
+      /Qspectre-load-cf 对加载内存的所有控制流指令启用 spectre 缓解措施
+      /fpcvt:<IA|BC> 无符号整数转换兼容性为 FP   IA - 与 VCVTTSD2USI 指令兼容的结果
+         BC - 与 VS2017 及更低版本的编译器兼容的结果
+      
+                     -输出文件-
+      
+      /Fa[file] 命名程序集列表文件            /FA[scu] 配置程序集列表
+      /Fd[file] 命名 .PDB 文件                /Fe<file> 命名可执行文件
+      /Fm[file] 命名映射文件                  /Fo<file> 命名对象文件
+      /Fp<file> 命名预编译头文件              /Fr[file] 命名源浏览器文件
+      /FR[file] 命名扩展 .SBR 文件            /Fi[file] 命名预处理的文件
+      /Fd: <file> 命名 .PDB 文件              /Fe: <file> 命名可执行文件
+      /Fm: <file> 命名映射文件                /Fo: <file> 命名对象文件
+      /Fp: <file> 命名 .PCH 文件              /FR: <file> 命名扩展 .SBR 文件
+      /Fi: <file> 命名预处理的文件            /Ft<dir> 为 #import 生成的头文件的地址
+      /doc[file] 处理 XML 文档注释，并可选择命名 .xdc 文件
+      
+                     -预处理器-
+      
+      /AI<dir> 添加到程序集搜索路径           /FU<file> 强制使用程序集/模块 
+      /C 不抽出注释                           /D<name>{=|#}<text> 定义宏
+      /E 预处理到 stdout                      /EP 预处理到 stdout，无行号
+      /P 预处理到文件                         /Fx 将插入的代码合并到文件中
+      /FI<file> 命名强制包含文件              /U<name> 移除预定义的宏
+      /u 移除所有预定义的宏                   /I<dir> 添加到包含搜索路径
+      /X 忽略“标准位置”                     /PH 在预处理时生成 #pragma file_hash
+      /PD 打印所有宏定义                      
+      
+                      -语言-
+      
+      /std:<c++14|c++17|c++latest> C++ 标准版
+          c++14 - ISO/IEC 14882:2014 (默认值)
+          c++17 - ISO/IEC 14882:2017
+          c++latest - 最新草案标准(功能集可能会更改)
+      /permissive[-] 使某些非符合代码可编译(功能集可更改)(默认开启)
+      /Ze 启用扩展(默认)                      /Za 禁用扩展
+      /ZW 启用 WinRT 语言扩展                 /Zs 只进行语法检查
+      /Zc:arg1[,arg2] C++ 语言合规性，这里的参数可以是:
+       forScope[-]      对范围规则强制使用标准 C++
+       wchar_t[-]      wchar_t 是本机类型，不是 typedef
+        auto[-]               对 auto 强制使用新的标准 C++ 含义
+        trigraphs[-]          启用三元祖(默认关闭)
+       rvalueCast[-]     强制实施标准 C++ 显式类型转换规则
+       strictStrings[-]   禁用从字符串文本到 [char|wchar_t]*
+                              的转换(默认关闭)
+       implicitNoexcept[-]  在必需的函数上启用隐式 noexcept
+      threadSafeInit[-]   启用线程安全的本地静态初始化
+        inline[-]             如果是 COMDAT，则删除未引用的函数或数据
+                              或仅使用内部链接(默认关闭)
+        sizedDealloc[-]       启用 C++14 全局大小解除分配
+                              函数(默认开启)
+        throwingNew[-]        假设运算符 new 在故障时引发(默认关闭)
+        referenceBinding[-]   临时引用不会绑定到非常数
+                              lvalue 引用(默认关闭)
+        twoPhase-             禁用两阶段名称查找
+        ternary[-]            对条件运算符强制使用 C++11 规则(默认关闭)
+        noexceptTypes[-]      强制执行 C++17 noexcept 规则(在 C++17 或更高版本中默认开启)
+        alignedNew[-]         对动态分配的对象启用 C++17 对齐方式(默认开启)
+        hiddenFriend[-]       强制实施标准 C++ 隐藏好友规则(/permissive- 所隐含)
+        externC[-]            强制实施外部 "C" 函数的标准 C++ 规则(/permissive- 所隐含)
+        lambda[-]             使用更新的 lambda 处理器提供更好的 lambda 支持(默认为关闭)
+        tlsGuards[-]          生成 TLS 变量初始化的运行时检查(默认情况下启用)
+        zeroSizeArrayNew[-]   针对大小为零的对象数组的调用对象 new/delete (默认启用)
+      /await 启用可恢复函数扩展
+      /await:strict 启用使用早期语言版本的标准 C++20 协同例程支持
+      /constexpr:depth<N>     constexpr 评估的递归深度限制(默认值: 512)
+      /constexpr:backtrace<N> 在诊断中显示 N constexpr 评估(默认值: 10)
+      /constexpr:steps<N>     在 N 个步骤后终止 constexpr 评估(默认值: 100000)
+      /Zi 启用调试信息                        /Z7 启用旧式调试信息
+      /Zo[-] 为优化的代码生成更丰富的调试信息(默认开启)
+      /ZH:[MD5|SHA1|SHA_256] 用于计算调试信息中的文件校验和的哈希算法(默认值: MD5)
+      /Zp[n] 在 n 字节边界上包装结构          /Zl 省略 .OBJ 中的默认库名
+      /vd{0|1|2} 禁用/启用 vtordisp           /vm<x> 指向成员的指针类型
+      /std:<c11|c17> C 标准版本
+          c11 - ISO/IEC 9899:2011
+          c17 - ISO/IEC 9899:2018
+      /ZI 启用“编辑并继续”调试信息          /openmp 启用 OpenMP 2.0 语言扩展
+      /openmp:experimental 会启用 OpenMP 2.0 语言扩展并选择 OpenMP 3.0+ 语言扩展
+      使用 LLVM 运行时 /openmp:llvm OpenMP 语言扩展
+      
+                     - 杂项 -
+      
+      @<file> 选项响应文件                    /?, /help 打印此帮助消息
+      /bigobj 生成扩展的对象格式              /c 只编译，不链接
+      /errorReport:option 已弃用。请将内部编译器错误报告给 Microsoft
+          none - 不发送报告                       prompt - 提示立即发送报告
+          queue - 在下一次管理员登录时，提示发送报告(默认)
+          send - 自动发送报告                 /FC 诊断中使用完整路径名
+      /H<num> 最大外部名称长度                /J 默认 char 类型是 unsigned
+      /MP[n] 最多使用“n”个进程进行编译      /nologo 取消显示版权信息
+      /showIncludes 显示包含文件名            /Tc<source file> 将文件编译为 .c
+      /Tp<source file> 将文件编译为 .cpp      /TC 将所有文件编译为 .c
+      /TP 将所有文件编译为 .cpp               /V<string> 设置版本字符串
+      /Yc[file] 创建 .PCH 文件                /Yd 将调试信息放在每个 .OBJ 中
+      /Yl[sym] 为调试库插入 .PCH 引用         /Yu[file] 使用 .PCH 文件
+      /Y- 禁用所有 PCH 选项                   /Zm<n> 最大内存分配(默认值的百分比)
+      /FS 强制使用 MSPDBSRV.EXE               
+      /source-charset:<iana-name>|.nnnn 集源字符集
+      /execution-charset:<iana-name>|.nnnn 集执行字符集
+      /utf-8 集源和到 UTF-8 的执行字符集      
+      /validate-charset[-] 验证 UTF-8 文件是否只有合法字符
+      /fastfail[-] 启用 fast-fail 模式        /JMC[-] 启用本机“仅我的代码”
+      /presetPadding[-] 将基于堆栈的类类型的填充初始化为零
+      /volatileMetadata[-] 对易失存储器访问生成元数据
+      
+                      -链接-
+      
+      /LD 创建 .DLL                           /LDd 创建 .DLL 调试库
+      /LN 创建 .netmodule                     /F<num> 设置堆栈大小
+      /link [链接器选项和库]                  /MD 与 MSVCRT.LIB 链接
+      /MT 与 LIBCMT.LIB 链接                  /MDd 与 MSVCRTD.LIB 调试库链接
+      /MTd 与 LIBCMTD.LIB 调试库链接          
+      
+                     -代码分析-
+      
+      /analyze[-] 启用本机分析                /analyze:quiet[-] 没有对控制台的警告
+      /analyze:log<name> 对文件的警告         /analyze:autolog Log to *.pftlog
+      /analyze:autolog:ext<ext> Log to *.<ext>/analyze:autolog- 无日志文件
+      /analyze:WX- 警告不严重                 /analyze:stacksize<num> 最大堆栈帧
+      /analyze:max_paths<num> 最大路径        /analyze:only Analyze, no code gen
+      
+                                    -诊断-
+      
+      /diagnostics:<args,...> 控制诊断消息的格式:
+                   传统型 - 保留之前的格式
+                   列[-] - 打印列信息
+                   脱字号[-] - 打印列和源的指示行
+      /Wall 启用所有警告                      /w   禁用所有警告
+      /W<n> 设置警告等级(默认 n=1)            
+      /Wv:xx[.yy[.zzzzz]] 禁用在 xx.yy.zzzzz 版本后引入的警告功能
+      /WX 将警告视为错误                      /WL 启用单行诊断
+      /wd<n> 禁用警告 n                       /we<n> 将警告 n 视为错误
+      /wo<n> 发出一次警告 n                   /w<l><n> 为 n 设置警告等级 1-4
+      /external:I <path>      - 外部标头的位置
+      /external:env:<var>    - 外部标头位置的环境变量
+      /external:anglebrackets - 将所有通过 <> 包含的标头视为外部
+      /external:W<n>          - 外部标头的警告等级
+      /external:templates[-]  - 跨模板实例化链评估警告级别
+      /sdl 支持其他安全功能和警告             
+      
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "D:/Program Files/CMake/share/cmake-3.29/Modules/CMakeDetermineCompilerABI.cmake:64 (try_compile)"
+      - "D:/Program Files/CMake/share/cmake-3.29/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:3 (project)"
+    checks:
+      - "Detecting C compiler ABI info"
+    directories:
+      source: "D:/picasso/proj/CMakeFiles/CMakeScratch/TryCompile-as54m3"
+      binary: "D:/picasso/proj/CMakeFiles/CMakeScratch/TryCompile-as54m3"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS"
+      CMAKE_C_FLAGS_DEBUG: "/Zi /Ob0 /Od /RTC1"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+    buildResult:
+      variable: "CMAKE_C_ABI_COMPILED"
+      cached: true
+      stdout: |
+        Change Dir: 'D:/picasso/proj/CMakeFiles/CMakeScratch/TryCompile-as54m3'
+        
+        Run Build Command(s): "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/MSBuild/Current/Bin/MSBuild.exe" cmTC_5a614.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=16.0 /v:n
+        用于 .NET Framework 的 Microsoft (R) 生成引擎版本 16.11.2+f32259642
+        版权所有(C) Microsoft Corporation。保留所有权利。
+        
+        生成启动时间为 2024/7/4 11:29:24。
+        节点 1 上的项目“D:\\picasso\\proj\\CMakeFiles\\CMakeScratch\\TryCompile-as54m3\\cmTC_5a614.vcxproj”(默认目标)。
+        PrepareForBuild:
+          正在创建目录“cmTC_5a614.dir\\Debug\\”。
+          正在创建目录“D:\\picasso\\proj\\CMakeFiles\\CMakeScratch\\TryCompile-as54m3\\Debug\\”。
+          正在创建目录“cmTC_5a614.dir\\Debug\\cmTC_5a614.tlog\\”。
+        InitializeBuildStatus:
+          正在创建“cmTC_5a614.dir\\Debug\\cmTC_5a614.tlog\\unsuccessfulbuild”，因为已指定“AlwaysCreate”。
+        ClCompile:
+          C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\bin\\HostX64\\x64\\CL.exe /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_5a614.dir\\Debug\\\\" /Fd"cmTC_5a614.dir\\Debug\\vc142.pdb" /external:W1 /Gd /TC /errorReport:queue "D:\\Program Files\\CMake\\share\\cmake-3.29\\Modules\\CMakeCCompilerABI.c"
+          用于 x64 的 Microsoft (R) C/C++ 优化编译器 19.29.30151 版
+          版权所有(C) Microsoft Corporation。保留所有权利。
+          CMakeCCompilerABI.c
+          cl /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_5a614.dir\\Debug\\\\" /Fd"cmTC_5a614.dir\\Debug\\vc142.pdb" /external:W1 /Gd /TC /errorReport:queue "D:\\Program Files\\CMake\\share\\cmake-3.29\\Modules\\CMakeCCompilerABI.c"
+        Link:
+          C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"D:\\picasso\\proj\\CMakeFiles\\CMakeScratch\\TryCompile-as54m3\\Debug\\cmTC_5a614.exe" /INCREMENTAL /ILK:"cmTC_5a614.dir\\Debug\\cmTC_5a614.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/picasso/proj/CMakeFiles/CMakeScratch/TryCompile-as54m3/Debug/cmTC_5a614.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/picasso/proj/CMakeFiles/CMakeScratch/TryCompile-as54m3/Debug/cmTC_5a614.lib" /MACHINE:X64  /machine:x64 cmTC_5a614.dir\\Debug\\CMakeCCompilerABI.obj
+          cmTC_5a614.vcxproj -> D:\\picasso\\proj\\CMakeFiles\\CMakeScratch\\TryCompile-as54m3\\Debug\\cmTC_5a614.exe
+        FinalizeBuildStatus:
+          正在删除文件“cmTC_5a614.dir\\Debug\\cmTC_5a614.tlog\\unsuccessfulbuild”。
+          正在对“cmTC_5a614.dir\\Debug\\cmTC_5a614.tlog\\cmTC_5a614.lastbuildstate”执行 Touch 任务。
+        已完成生成项目“D:\\picasso\\proj\\CMakeFiles\\CMakeScratch\\TryCompile-as54m3\\cmTC_5a614.vcxproj”(默认目标)的操作。
+        
+        已成功生成。
+            0 个警告
+            0 个错误
+        
+        已用时间 00:00:00.79
+        
+      exitCode: 0
+  -
+    kind: "message-v1"
+    backtrace:
+      - "D:/Program Files/CMake/share/cmake-3.29/Modules/CMakeDetermineCompilerABI.cmake:170 (message)"
+      - "D:/Program Files/CMake/share/cmake-3.29/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:3 (project)"
+    message: |
+      Parsed C implicit link information:
+        link line regex: [^( *|.*[/\\])(ld[0-9]*(\\.[a-z]+)?|link\\.exe|lld-link(\\.exe)?|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]
+        linker tool regex: [^[ 	]*(->|")?[ 	]*(([^"]*[/\\])?(ld[0-9]*(\\.[a-z]+)?|link\\.exe|lld-link(\\.exe)?))("|,| |$)]
+        linker tool for 'C': C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.29.30133/bin/HostX64/x64/link.exe
+        implicit libs: []
+        implicit objs: []
+        implicit dirs: []
+        implicit fwks: []
+      
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "D:/Program Files/CMake/share/cmake-3.29/Modules/Internal/CMakeDetermineLinkerId.cmake:40 (message)"
+      - "D:/Program Files/CMake/share/cmake-3.29/Modules/CMakeDetermineCompilerABI.cmake:207 (cmake_determine_linker_id)"
+      - "D:/Program Files/CMake/share/cmake-3.29/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:3 (project)"
+    message: |
+      Running the C compiler's linker: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.29.30133/bin/HostX64/x64/link.exe" "-v"
+      Microsoft (R) Incremental Linker Version 14.29.30151.0
+      Copyright (C) Microsoft Corporation.  All rights reserved.
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "D:/Program Files/CMake/share/cmake-3.29/Modules/CMakeDetermineCompilerABI.cmake:64 (try_compile)"
+      - "D:/Program Files/CMake/share/cmake-3.29/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:3 (project)"
+    checks:
+      - "Detecting CXX compiler ABI info"
+    directories:
+      source: "D:/picasso/proj/CMakeFiles/CMakeScratch/TryCompile-v236bj"
+      binary: "D:/picasso/proj/CMakeFiles/CMakeScratch/TryCompile-v236bj"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: "/DWIN32 /D_WINDOWS /GR /EHsc"
+      CMAKE_CXX_FLAGS_DEBUG: "/Zi /Ob0 /Od /RTC1"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+    buildResult:
+      variable: "CMAKE_CXX_ABI_COMPILED"
+      cached: true
+      stdout: |
+        Change Dir: 'D:/picasso/proj/CMakeFiles/CMakeScratch/TryCompile-v236bj'
+        
+        Run Build Command(s): "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/MSBuild/Current/Bin/MSBuild.exe" cmTC_7124b.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=16.0 /v:n
+        用于 .NET Framework 的 Microsoft (R) 生成引擎版本 16.11.2+f32259642
+        版权所有(C) Microsoft Corporation。保留所有权利。
+        
+        生成启动时间为 2024/7/4 11:29:26。
+        节点 1 上的项目“D:\\picasso\\proj\\CMakeFiles\\CMakeScratch\\TryCompile-v236bj\\cmTC_7124b.vcxproj”(默认目标)。
+        PrepareForBuild:
+          正在创建目录“cmTC_7124b.dir\\Debug\\”。
+          正在创建目录“D:\\picasso\\proj\\CMakeFiles\\CMakeScratch\\TryCompile-v236bj\\Debug\\”。
+          正在创建目录“cmTC_7124b.dir\\Debug\\cmTC_7124b.tlog\\”。
+        InitializeBuildStatus:
+          正在创建“cmTC_7124b.dir\\Debug\\cmTC_7124b.tlog\\unsuccessfulbuild”，因为已指定“AlwaysCreate”。
+        ClCompile:
+          C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\bin\\HostX64\\x64\\CL.exe /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /Fo"cmTC_7124b.dir\\Debug\\\\" /Fd"cmTC_7124b.dir\\Debug\\vc142.pdb" /external:W1 /Gd /TP /errorReport:queue "D:\\Program Files\\CMake\\share\\cmake-3.29\\Modules\\CMakeCXXCompilerABI.cpp"
+          用于 x64 的 Microsoft (R) C/C++ 优化编译器 19.29.30151 版
+          版权所有(C) Microsoft Corporation。保留所有权利。
+          CMakeCXXCompilerABI.cpp
+          cl /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /Fo"cmTC_7124b.dir\\Debug\\\\" /Fd"cmTC_7124b.dir\\Debug\\vc142.pdb" /external:W1 /Gd /TP /errorReport:queue "D:\\Program Files\\CMake\\share\\cmake-3.29\\Modules\\CMakeCXXCompilerABI.cpp"
+        Link:
+          C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"D:\\picasso\\proj\\CMakeFiles\\CMakeScratch\\TryCompile-v236bj\\Debug\\cmTC_7124b.exe" /INCREMENTAL /ILK:"cmTC_7124b.dir\\Debug\\cmTC_7124b.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/picasso/proj/CMakeFiles/CMakeScratch/TryCompile-v236bj/Debug/cmTC_7124b.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/picasso/proj/CMakeFiles/CMakeScratch/TryCompile-v236bj/Debug/cmTC_7124b.lib" /MACHINE:X64  /machine:x64 cmTC_7124b.dir\\Debug\\CMakeCXXCompilerABI.obj
+          cmTC_7124b.vcxproj -> D:\\picasso\\proj\\CMakeFiles\\CMakeScratch\\TryCompile-v236bj\\Debug\\cmTC_7124b.exe
+        FinalizeBuildStatus:
+          正在删除文件“cmTC_7124b.dir\\Debug\\cmTC_7124b.tlog\\unsuccessfulbuild”。
+          正在对“cmTC_7124b.dir\\Debug\\cmTC_7124b.tlog\\cmTC_7124b.lastbuildstate”执行 Touch 任务。
+        已完成生成项目“D:\\picasso\\proj\\CMakeFiles\\CMakeScratch\\TryCompile-v236bj\\cmTC_7124b.vcxproj”(默认目标)的操作。
+        
+        已成功生成。
+            0 个警告
+            0 个错误
+        
+        已用时间 00:00:00.77
+        
+      exitCode: 0
+  -
+    kind: "message-v1"
+    backtrace:
+      - "D:/Program Files/CMake/share/cmake-3.29/Modules/CMakeDetermineCompilerABI.cmake:170 (message)"
+      - "D:/Program Files/CMake/share/cmake-3.29/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:3 (project)"
+    message: |
+      Parsed CXX implicit link information:
+        link line regex: [^( *|.*[/\\])(ld[0-9]*(\\.[a-z]+)?|link\\.exe|lld-link(\\.exe)?|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]
+        linker tool regex: [^[ 	]*(->|")?[ 	]*(([^"]*[/\\])?(ld[0-9]*(\\.[a-z]+)?|link\\.exe|lld-link(\\.exe)?))("|,| |$)]
+        linker tool for 'CXX': C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.29.30133/bin/HostX64/x64/link.exe
+        implicit libs: []
+        implicit objs: []
+        implicit dirs: []
+        implicit fwks: []
+      
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "D:/Program Files/CMake/share/cmake-3.29/Modules/Internal/CMakeDetermineLinkerId.cmake:40 (message)"
+      - "D:/Program Files/CMake/share/cmake-3.29/Modules/CMakeDetermineCompilerABI.cmake:207 (cmake_determine_linker_id)"
+      - "D:/Program Files/CMake/share/cmake-3.29/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:3 (project)"
+    message: |
+      Running the CXX compiler's linker: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.29.30133/bin/HostX64/x64/link.exe" "-v"
+      Microsoft (R) Incremental Linker Version 14.29.30151.0
+      Copyright (C) Microsoft Corporation.  All rights reserved.
+...

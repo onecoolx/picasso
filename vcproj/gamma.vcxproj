@@ -1,128 +1,349 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="Debug|Win32">
+    <ProjectConfiguration Include="Debug|x64">
       <Configuration>Debug</Configuration>
-      <Platform>Win32</Platform>
+      <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Release|Win32">
+    <ProjectConfiguration Include="Release|x64">
       <Configuration>Release</Configuration>
-      <Platform>Win32</Platform>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|x64">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{029BE5F1-AD5E-68F4-43E2-4103EE300CB1}</ProjectGuid>
+    <ProjectGuid>{288FC939-C0B8-3DE1-933A-344729694594}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>gamma</RootNamespace>
-    <IgnoreWarnCompileDuplicatedFilename>true</IgnoreWarnCompileDuplicatedFilename>
-    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
     <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
+    <Platform>x64</Platform>
+    <ProjectName>gamma</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
   </PropertyGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props"/>
-  <PropertyGroup Label="Configuration">
-    <CharacterSet>Unicode</CharacterSet>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-  </PropertyGroup>
-  <PropertyGroup Label="Locals">
+    <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props"/>
-  <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.props"/>
-  <ImportGroup Label="ExtensionSettings"/>
-  <ImportGroup Label="PropertySheets">
-    <Import Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props"/>
-  </ImportGroup>
-  <PropertyGroup Label="UserMacros"/>
-  <PropertyGroup>
-    <ExecutablePath>$(ExecutablePath);$(MSBuildProjectDirectory)\..\bin\;$(MSBuildProjectDirectory)\..\bin\</ExecutablePath>
-    <IntDir>$(Configuration)\obj\$(ProjectName)\</IntDir>
-    <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
-    <TargetName>$(ProjectName)</TargetName>
-    <TargetPath>$(OutDir)\$(ProjectName)$(TargetExt)</TargetPath>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\picasso\proj\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">gamma.dir\Debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">gamma</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\picasso\proj\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">gamma.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">gamma</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\picasso\proj\MinSizeRel\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">gamma.dir\MinSizeRel\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">gamma</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\picasso\proj\RelWithDebInfo\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">gamma.dir\RelWithDebInfo\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">gamma</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</GenerateManifest>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\include;..\build;..\test;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\picasso\third_party\zlib-1.2.8;D:\picasso\proj\include;D:\picasso\third_party\libpng-1.6.17;D:\picasso\third_party\libjpeg-turbo-1.4.1;D:\picasso\third_party\libjpeg-turbo-1.4.1\build;D:\picasso\third_party\libjpeg-turbo-1.4.1\simd;D:\picasso\third_party\giflib-5.1.3;D:\picasso\third_party\libwebp-0.5.1;D:\picasso\build;D:\picasso\include;D:\picasso\src\include;D:\picasso\src;D:\picasso\src\gfx;D:\picasso\src\simd;D:\picasso\ext\image_loader;D:\picasso\alpha;D:\picasso\bitblt;D:\picasso\blur;D:\picasso\clip;D:\picasso\composite;D:\picasso\gamma;D:\picasso\gcstate;D:\picasso\gradient;D:\picasso\mask;D:\picasso\part;D:\picasso\path;D:\picasso\pattern;D:\picasso\shadow;D:\picasso\text;D:\picasso\thread;D:\picasso\image_info;D:\picasso\image_view;D:\picasso\clock;D:\picasso\flowers;D:\picasso\tiger;D:\picasso\subwaymap;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <CallingConvention>Cdecl</CallingConvention>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <ExceptionHandling>false</ExceptionHandling>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <MinimalRebuild>false</MinimalRebuild>
       <Optimization>Disabled</Optimization>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PreprocessorDefinitions>WIN32;DLL_EXPORT;ENABLE_FAST_COPY=1;ENABLE_SYSTEM_MALLOC=1;__SSE2__=1;_HAS_EXCEPTIONS=0;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <UseFullPaths>false</UseFullPaths>
       <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;_DEBUG;DLL_EXPORT;ENABLE_FAST_COPY=1;ENABLE_SYSTEM_MALLOC=1;__SSE2__=1;_UNICODE=1;UNICODE=1;_HAS_EXCEPTIONS=0;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;ZLIB_DLL;HAVE_BOOLEAN;XMD_H;WEBP_USE_THREAD;WIN32_EXPORT;HAVE_WINCODEC_H;EXPORT;CMAKE_INTDIR="Debug"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
     </ClCompile>
-    <Link>
-      <AdditionalDependencies>gdi32.lib;user32.lib</AdditionalDependencies>
-      <DataExecutionPrevention></DataExecutionPrevention>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <OutputFile>$(OutDir)$(ProjectName)$(TargetExt)</OutputFile>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-      <TargetMachine>MachineX86</TargetMachine>
-    </Link>
     <ResourceCompile>
-      <AdditionalIncludeDirectories>..\include;..\build;..\test;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;DLL_EXPORT;ENABLE_FAST_COPY=1;ENABLE_SYSTEM_MALLOC=1;__SSE2__=1;_HAS_EXCEPTIONS=0;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;_DEBUG;%(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;_WINDOWS;DLL_EXPORT;ENABLE_FAST_COPY=1;ENABLE_SYSTEM_MALLOC=1;__SSE2__=1;_UNICODE=1;UNICODE=1;_HAS_EXCEPTIONS=0;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;ZLIB_DLL;HAVE_BOOLEAN;XMD_H;WEBP_USE_THREAD;WIN32_EXPORT;HAVE_WINCODEC_H;EXPORT;CMAKE_INTDIR=\"Debug\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\picasso\third_party\zlib-1.2.8;D:\picasso\proj\include;D:\picasso\third_party\libpng-1.6.17;D:\picasso\third_party\libjpeg-turbo-1.4.1;D:\picasso\third_party\libjpeg-turbo-1.4.1\build;D:\picasso\third_party\libjpeg-turbo-1.4.1\simd;D:\picasso\third_party\giflib-5.1.3;D:\picasso\third_party\libwebp-0.5.1;D:\picasso\build;D:\picasso\include;D:\picasso\src\include;D:\picasso\src;D:\picasso\src\gfx;D:\picasso\src\simd;D:\picasso\ext\image_loader;D:\picasso\alpha;D:\picasso\bitblt;D:\picasso\blur;D:\picasso\clip;D:\picasso\composite;D:\picasso\gamma;D:\picasso\gcstate;D:\picasso\gradient;D:\picasso\mask;D:\picasso\part;D:\picasso\path;D:\picasso\pattern;D:\picasso\shadow;D:\picasso\text;D:\picasso\thread;D:\picasso\image_info;D:\picasso\image_view;D:\picasso\clock;D:\picasso\flowers;D:\picasso\tiger;D:\picasso\subwaymap;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\picasso\third_party\zlib-1.2.8;D:\picasso\proj\include;D:\picasso\third_party\libpng-1.6.17;D:\picasso\third_party\libjpeg-turbo-1.4.1;D:\picasso\third_party\libjpeg-turbo-1.4.1\build;D:\picasso\third_party\libjpeg-turbo-1.4.1\simd;D:\picasso\third_party\giflib-5.1.3;D:\picasso\third_party\libwebp-0.5.1;D:\picasso\build;D:\picasso\include;D:\picasso\src\include;D:\picasso\src;D:\picasso\src\gfx;D:\picasso\src\simd;D:\picasso\ext\image_loader;D:\picasso\alpha;D:\picasso\bitblt;D:\picasso\blur;D:\picasso\clip;D:\picasso\composite;D:\picasso\gamma;D:\picasso\gcstate;D:\picasso\gradient;D:\picasso\mask;D:\picasso\part;D:\picasso\path;D:\picasso\pattern;D:\picasso\shadow;D:\picasso\text;D:\picasso\thread;D:\picasso\image_info;D:\picasso\image_view;D:\picasso\clock;D:\picasso\flowers;D:\picasso\tiger;D:\picasso\subwaymap;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>Debug\picasso2_sw.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>D:/picasso/proj/Debug/gamma.lib</ImportLibrary>
+      <ProgramDataBaseFile>D:/picasso/proj/Debug/gamma.pdb</ProgramDataBaseFile>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\include;..\build;..\test;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
-      <ExceptionHandling>false</ExceptionHandling>
+      <AdditionalIncludeDirectories>D:\picasso\third_party\zlib-1.2.8;D:\picasso\proj\include;D:\picasso\third_party\libpng-1.6.17;D:\picasso\third_party\libjpeg-turbo-1.4.1;D:\picasso\third_party\libjpeg-turbo-1.4.1\build;D:\picasso\third_party\libjpeg-turbo-1.4.1\simd;D:\picasso\third_party\giflib-5.1.3;D:\picasso\third_party\libwebp-0.5.1;D:\picasso\build;D:\picasso\include;D:\picasso\src\include;D:\picasso\src;D:\picasso\src\gfx;D:\picasso\src\simd;D:\picasso\ext\image_loader;D:\picasso\alpha;D:\picasso\bitblt;D:\picasso\blur;D:\picasso\clip;D:\picasso\composite;D:\picasso\gamma;D:\picasso\gcstate;D:\picasso\gradient;D:\picasso\mask;D:\picasso\part;D:\picasso\path;D:\picasso\pattern;D:\picasso\shadow;D:\picasso\text;D:\picasso\thread;D:\picasso\image_info;D:\picasso\image_view;D:\picasso\clock;D:\picasso\flowers;D:\picasso\tiger;D:\picasso\subwaymap;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ExceptionHandling>
+      </ExceptionHandling>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <FloatingPointModel>Fast</FloatingPointModel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
-      <Optimization>Full</Optimization>
+      <MinimalRebuild>false</MinimalRebuild>
+      <Optimization>MaxSpeed</Optimization>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PreprocessorDefinitions>WIN32;DLL_EXPORT;ENABLE_FAST_COPY=1;ENABLE_SYSTEM_MALLOC=1;__SSE2__=1;_HAS_EXCEPTIONS=0;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <StringPooling>true</StringPooling>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <UseFullPaths>false</UseFullPaths>
       <WarningLevel>Level3</WarningLevel>
       <WholeProgramOptimization>true</WholeProgramOptimization>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;DLL_EXPORT;ENABLE_FAST_COPY=1;ENABLE_SYSTEM_MALLOC=1;__SSE2__=1;_UNICODE=1;UNICODE=1;_HAS_EXCEPTIONS=0;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;ZLIB_DLL;HAVE_BOOLEAN;XMD_H;WEBP_USE_THREAD;WIN32_EXPORT;HAVE_WINCODEC_H;EXPORT;CMAKE_INTDIR="Release"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
     </ClCompile>
-    <Link>
-      <AdditionalDependencies>gdi32.lib;user32.lib</AdditionalDependencies>
-      <DataExecutionPrevention></DataExecutionPrevention>
-      <GenerateDebugInformation>false</GenerateDebugInformation>
-      <GenerateMapFile>true</GenerateMapFile>
-      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
-      <OutputFile>$(OutDir)$(ProjectName)$(TargetExt)</OutputFile>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-      <TargetMachine>MachineX86</TargetMachine>
-    </Link>
     <ResourceCompile>
-      <AdditionalIncludeDirectories>..\include;..\build;..\test;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;DLL_EXPORT;ENABLE_FAST_COPY=1;ENABLE_SYSTEM_MALLOC=1;__SSE2__=1;_HAS_EXCEPTIONS=0;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;NDEBUG;%(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;DLL_EXPORT;ENABLE_FAST_COPY=1;ENABLE_SYSTEM_MALLOC=1;__SSE2__=1;_UNICODE=1;UNICODE=1;_HAS_EXCEPTIONS=0;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;ZLIB_DLL;HAVE_BOOLEAN;XMD_H;WEBP_USE_THREAD;WIN32_EXPORT;HAVE_WINCODEC_H;EXPORT;CMAKE_INTDIR=\"Release\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\picasso\third_party\zlib-1.2.8;D:\picasso\proj\include;D:\picasso\third_party\libpng-1.6.17;D:\picasso\third_party\libjpeg-turbo-1.4.1;D:\picasso\third_party\libjpeg-turbo-1.4.1\build;D:\picasso\third_party\libjpeg-turbo-1.4.1\simd;D:\picasso\third_party\giflib-5.1.3;D:\picasso\third_party\libwebp-0.5.1;D:\picasso\build;D:\picasso\include;D:\picasso\src\include;D:\picasso\src;D:\picasso\src\gfx;D:\picasso\src\simd;D:\picasso\ext\image_loader;D:\picasso\alpha;D:\picasso\bitblt;D:\picasso\blur;D:\picasso\clip;D:\picasso\composite;D:\picasso\gamma;D:\picasso\gcstate;D:\picasso\gradient;D:\picasso\mask;D:\picasso\part;D:\picasso\path;D:\picasso\pattern;D:\picasso\shadow;D:\picasso\text;D:\picasso\thread;D:\picasso\image_info;D:\picasso\image_view;D:\picasso\clock;D:\picasso\flowers;D:\picasso\tiger;D:\picasso\subwaymap;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\picasso\third_party\zlib-1.2.8;D:\picasso\proj\include;D:\picasso\third_party\libpng-1.6.17;D:\picasso\third_party\libjpeg-turbo-1.4.1;D:\picasso\third_party\libjpeg-turbo-1.4.1\build;D:\picasso\third_party\libjpeg-turbo-1.4.1\simd;D:\picasso\third_party\giflib-5.1.3;D:\picasso\third_party\libwebp-0.5.1;D:\picasso\build;D:\picasso\include;D:\picasso\src\include;D:\picasso\src;D:\picasso\src\gfx;D:\picasso\src\simd;D:\picasso\ext\image_loader;D:\picasso\alpha;D:\picasso\bitblt;D:\picasso\blur;D:\picasso\clip;D:\picasso\composite;D:\picasso\gamma;D:\picasso\gcstate;D:\picasso\gradient;D:\picasso\mask;D:\picasso\part;D:\picasso\path;D:\picasso\pattern;D:\picasso\shadow;D:\picasso\text;D:\picasso\thread;D:\picasso\image_info;D:\picasso\image_view;D:\picasso\clock;D:\picasso\flowers;D:\picasso\tiger;D:\picasso\subwaymap;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>Release\picasso2_sw.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>D:/picasso/proj/Release/gamma.lib</ImportLibrary>
+      <ProgramDataBaseFile>D:/picasso/proj/Release/gamma.pdb</ProgramDataBaseFile>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\picasso\third_party\zlib-1.2.8;D:\picasso\proj\include;D:\picasso\third_party\libpng-1.6.17;D:\picasso\third_party\libjpeg-turbo-1.4.1;D:\picasso\third_party\libjpeg-turbo-1.4.1\build;D:\picasso\third_party\libjpeg-turbo-1.4.1\simd;D:\picasso\third_party\giflib-5.1.3;D:\picasso\third_party\libwebp-0.5.1;D:\picasso\build;D:\picasso\include;D:\picasso\src\include;D:\picasso\src;D:\picasso\src\gfx;D:\picasso\src\simd;D:\picasso\ext\image_loader;D:\picasso\alpha;D:\picasso\bitblt;D:\picasso\blur;D:\picasso\clip;D:\picasso\composite;D:\picasso\gamma;D:\picasso\gcstate;D:\picasso\gradient;D:\picasso\mask;D:\picasso\part;D:\picasso\path;D:\picasso\pattern;D:\picasso\shadow;D:\picasso\text;D:\picasso\thread;D:\picasso\image_info;D:\picasso\image_view;D:\picasso\clock;D:\picasso\flowers;D:\picasso\tiger;D:\picasso\subwaymap;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <Optimization>MinSpace</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <UseFullPaths>false</UseFullPaths>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;DLL_EXPORT;ENABLE_FAST_COPY=1;ENABLE_SYSTEM_MALLOC=1;__SSE2__=1;_UNICODE=1;UNICODE=1;_HAS_EXCEPTIONS=0;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;ZLIB_DLL;HAVE_BOOLEAN;XMD_H;WEBP_USE_THREAD;WIN32_EXPORT;HAVE_WINCODEC_H;EXPORT;CMAKE_INTDIR="MinSizeRel"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;DLL_EXPORT;ENABLE_FAST_COPY=1;ENABLE_SYSTEM_MALLOC=1;__SSE2__=1;_UNICODE=1;UNICODE=1;_HAS_EXCEPTIONS=0;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;ZLIB_DLL;HAVE_BOOLEAN;XMD_H;WEBP_USE_THREAD;WIN32_EXPORT;HAVE_WINCODEC_H;EXPORT;CMAKE_INTDIR=\"MinSizeRel\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\picasso\third_party\zlib-1.2.8;D:\picasso\proj\include;D:\picasso\third_party\libpng-1.6.17;D:\picasso\third_party\libjpeg-turbo-1.4.1;D:\picasso\third_party\libjpeg-turbo-1.4.1\build;D:\picasso\third_party\libjpeg-turbo-1.4.1\simd;D:\picasso\third_party\giflib-5.1.3;D:\picasso\third_party\libwebp-0.5.1;D:\picasso\build;D:\picasso\include;D:\picasso\src\include;D:\picasso\src;D:\picasso\src\gfx;D:\picasso\src\simd;D:\picasso\ext\image_loader;D:\picasso\alpha;D:\picasso\bitblt;D:\picasso\blur;D:\picasso\clip;D:\picasso\composite;D:\picasso\gamma;D:\picasso\gcstate;D:\picasso\gradient;D:\picasso\mask;D:\picasso\part;D:\picasso\path;D:\picasso\pattern;D:\picasso\shadow;D:\picasso\text;D:\picasso\thread;D:\picasso\image_info;D:\picasso\image_view;D:\picasso\clock;D:\picasso\flowers;D:\picasso\tiger;D:\picasso\subwaymap;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\picasso\third_party\zlib-1.2.8;D:\picasso\proj\include;D:\picasso\third_party\libpng-1.6.17;D:\picasso\third_party\libjpeg-turbo-1.4.1;D:\picasso\third_party\libjpeg-turbo-1.4.1\build;D:\picasso\third_party\libjpeg-turbo-1.4.1\simd;D:\picasso\third_party\giflib-5.1.3;D:\picasso\third_party\libwebp-0.5.1;D:\picasso\build;D:\picasso\include;D:\picasso\src\include;D:\picasso\src;D:\picasso\src\gfx;D:\picasso\src\simd;D:\picasso\ext\image_loader;D:\picasso\alpha;D:\picasso\bitblt;D:\picasso\blur;D:\picasso\clip;D:\picasso\composite;D:\picasso\gamma;D:\picasso\gcstate;D:\picasso\gradient;D:\picasso\mask;D:\picasso\part;D:\picasso\path;D:\picasso\pattern;D:\picasso\shadow;D:\picasso\text;D:\picasso\thread;D:\picasso\image_info;D:\picasso\image_view;D:\picasso\clock;D:\picasso\flowers;D:\picasso\tiger;D:\picasso\subwaymap;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>MinSizeRel\picasso2_sw.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>D:/picasso/proj/MinSizeRel/gamma.lib</ImportLibrary>
+      <ProgramDataBaseFile>D:/picasso/proj/MinSizeRel/gamma.pdb</ProgramDataBaseFile>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\picasso\third_party\zlib-1.2.8;D:\picasso\proj\include;D:\picasso\third_party\libpng-1.6.17;D:\picasso\third_party\libjpeg-turbo-1.4.1;D:\picasso\third_party\libjpeg-turbo-1.4.1\build;D:\picasso\third_party\libjpeg-turbo-1.4.1\simd;D:\picasso\third_party\giflib-5.1.3;D:\picasso\third_party\libwebp-0.5.1;D:\picasso\build;D:\picasso\include;D:\picasso\src\include;D:\picasso\src;D:\picasso\src\gfx;D:\picasso\src\simd;D:\picasso\ext\image_loader;D:\picasso\alpha;D:\picasso\bitblt;D:\picasso\blur;D:\picasso\clip;D:\picasso\composite;D:\picasso\gamma;D:\picasso\gcstate;D:\picasso\gradient;D:\picasso\mask;D:\picasso\part;D:\picasso\path;D:\picasso\pattern;D:\picasso\shadow;D:\picasso\text;D:\picasso\thread;D:\picasso\image_info;D:\picasso\image_view;D:\picasso\clock;D:\picasso\flowers;D:\picasso\tiger;D:\picasso\subwaymap;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <UseFullPaths>false</UseFullPaths>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;DLL_EXPORT;ENABLE_FAST_COPY=1;ENABLE_SYSTEM_MALLOC=1;__SSE2__=1;_UNICODE=1;UNICODE=1;_HAS_EXCEPTIONS=0;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;ZLIB_DLL;HAVE_BOOLEAN;XMD_H;WEBP_USE_THREAD;WIN32_EXPORT;HAVE_WINCODEC_H;EXPORT;CMAKE_INTDIR="RelWithDebInfo"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;DLL_EXPORT;ENABLE_FAST_COPY=1;ENABLE_SYSTEM_MALLOC=1;__SSE2__=1;_UNICODE=1;UNICODE=1;_HAS_EXCEPTIONS=0;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;ZLIB_DLL;HAVE_BOOLEAN;XMD_H;WEBP_USE_THREAD;WIN32_EXPORT;HAVE_WINCODEC_H;EXPORT;CMAKE_INTDIR=\"RelWithDebInfo\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\picasso\third_party\zlib-1.2.8;D:\picasso\proj\include;D:\picasso\third_party\libpng-1.6.17;D:\picasso\third_party\libjpeg-turbo-1.4.1;D:\picasso\third_party\libjpeg-turbo-1.4.1\build;D:\picasso\third_party\libjpeg-turbo-1.4.1\simd;D:\picasso\third_party\giflib-5.1.3;D:\picasso\third_party\libwebp-0.5.1;D:\picasso\build;D:\picasso\include;D:\picasso\src\include;D:\picasso\src;D:\picasso\src\gfx;D:\picasso\src\simd;D:\picasso\ext\image_loader;D:\picasso\alpha;D:\picasso\bitblt;D:\picasso\blur;D:\picasso\clip;D:\picasso\composite;D:\picasso\gamma;D:\picasso\gcstate;D:\picasso\gradient;D:\picasso\mask;D:\picasso\part;D:\picasso\path;D:\picasso\pattern;D:\picasso\shadow;D:\picasso\text;D:\picasso\thread;D:\picasso\image_info;D:\picasso\image_view;D:\picasso\clock;D:\picasso\flowers;D:\picasso\tiger;D:\picasso\subwaymap;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\picasso\third_party\zlib-1.2.8;D:\picasso\proj\include;D:\picasso\third_party\libpng-1.6.17;D:\picasso\third_party\libjpeg-turbo-1.4.1;D:\picasso\third_party\libjpeg-turbo-1.4.1\build;D:\picasso\third_party\libjpeg-turbo-1.4.1\simd;D:\picasso\third_party\giflib-5.1.3;D:\picasso\third_party\libwebp-0.5.1;D:\picasso\build;D:\picasso\include;D:\picasso\src\include;D:\picasso\src;D:\picasso\src\gfx;D:\picasso\src\simd;D:\picasso\ext\image_loader;D:\picasso\alpha;D:\picasso\bitblt;D:\picasso\blur;D:\picasso\clip;D:\picasso\composite;D:\picasso\gamma;D:\picasso\gcstate;D:\picasso\gradient;D:\picasso\mask;D:\picasso\part;D:\picasso\path;D:\picasso\pattern;D:\picasso\shadow;D:\picasso\text;D:\picasso\thread;D:\picasso\image_info;D:\picasso\image_view;D:\picasso\clock;D:\picasso\flowers;D:\picasso\tiger;D:\picasso\subwaymap;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>RelWithDebInfo\picasso2_sw.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>D:/picasso/proj/RelWithDebInfo/gamma.lib</ImportLibrary>
+      <ProgramDataBaseFile>D:/picasso/proj/RelWithDebInfo/gamma.pdb</ProgramDataBaseFile>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="..\picasso.gyp"/>
+    <CustomBuild Include="D:\picasso\CMakeLists.txt">
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule D:/picasso/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"D:\Program Files\CMake\bin\cmake.exe" -SD:/picasso -BD:/picasso/proj --check-stamp-file D:/picasso/proj/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeASMCompiler.cmake.in;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeASMInformation.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeCCompiler.cmake.in;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeCCompilerABI.c;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeCInformation.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeCXXCompiler.cmake.in;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeCXXCompilerABI.cpp;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeCXXInformation.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeCommonLanguageInclude.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeCompilerIdDetection.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeDetermineASMCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeDetermineCCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeDetermineCXXCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeDetermineCompileFeatures.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeDetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeDetermineCompilerABI.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeDetermineCompilerId.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeDetermineRCCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeDetermineSystem.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeFindBinUtils.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeGenericSystem.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeInitializeConfigs.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeLanguageInformation.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeParseImplicitIncludeInfo.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeParseImplicitLinkInfo.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeParseLibraryArchitecture.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeRCCompiler.cmake.in;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeRCInformation.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeSystem.cmake.in;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeSystemSpecificInformation.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeSystemSpecificInitialize.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeTestASMCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeTestCCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeTestCXXCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeTestCompilerCommon.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeTestRCCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\ADSP-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\ARMCC-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\ARMClang-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\AppleClang-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\Borland-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\Bruce-C-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\CMakeCommonCompilerMacros.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\Clang-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\Clang-DetermineCompilerInternal.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\Compaq-C-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\Compaq-CXX-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\Cray-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\CrayClang-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\Embarcadero-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\Fujitsu-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\FujitsuClang-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\GHS-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\GNU-C-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\GNU-CXX-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\HP-C-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\HP-CXX-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\IAR-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\IBMCPP-C-DetermineVersionInternal.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\IBMCPP-CXX-DetermineVersionInternal.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\IBMClang-C-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\IBMClang-CXX-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\Intel-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\IntelLLVM-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\LCC-C-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\LCC-CXX-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\MSVC-ASM.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\MSVC-C.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\MSVC-CXX.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\MSVC-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\MSVC.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\NVHPC-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\NVIDIA-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\OpenWatcom-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\OrangeC-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\PGI-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\PathScale-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\SCO-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\SDCC-C-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\SunPro-C-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\SunPro-CXX-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\TI-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\TIClang-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\Tasking-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\TinyCC-C-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\VisualAge-C-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\VisualAge-CXX-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\Watcom-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\XL-C-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\XL-CXX-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\XLClang-C-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\XLClang-CXX-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\zOS-C-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\zOS-CXX-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CompilerId\VS-10.vcxproj.in;D:\Program Files\CMake\share\cmake-3.29\Modules\Internal\CMakeDetermineLinkerId.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Internal\FeatureTesting.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Platform\Windows-Determine-CXX.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Platform\Windows-Initialize.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Platform\Windows-MSVC-C.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Platform\Windows-MSVC-CXX.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Platform\Windows-MSVC.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Platform\Windows.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Platform\WindowsPaths.cmake;D:\picasso\build\configs.cmake;D:\picasso\build\defines.cmake;D:\picasso\demos\demos.cmake;D:\picasso\ext\ext.cmake;D:\picasso\ext\image_loader\gif\gif.cmake;D:\picasso\ext\image_loader\image.cmake;D:\picasso\ext\image_loader\jpeg\jpeg.cmake;D:\picasso\ext\image_loader\png\png.cmake;D:\picasso\ext\image_loader\webp\webp.cmake;D:\picasso\proj\CMakeFiles\3.29.1\CMakeASMCompiler.cmake;D:\picasso\proj\CMakeFiles\3.29.1\CMakeCCompiler.cmake;D:\picasso\proj\CMakeFiles\3.29.1\CMakeCXXCompiler.cmake;D:\picasso\proj\CMakeFiles\3.29.1\CMakeRCCompiler.cmake;D:\picasso\proj\CMakeFiles\3.29.1\CMakeSystem.cmake;D:\picasso\src\src.cmake;D:\picasso\test\test.cmake;D:\picasso\third_party\giflib-5.1.3\lib\gif_lib.h;D:\picasso\third_party\giflib.cmake;D:\picasso\third_party\libjpeg-turbo-1.4.1\build\jconfig.h;D:\picasso\third_party\libjpeg-turbo-1.4.1\jmorecfg.h;D:\picasso\third_party\libjpeg-turbo-1.4.1\jpeglib.h;D:\picasso\third_party\libjpeg.cmake;D:\picasso\third_party\libpng-1.6.17\png.h;D:\picasso\third_party\libpng-1.6.17\pngconf.h;D:\picasso\third_party\libpng-1.6.17\scripts\pnglibconf.h.prebuilt;D:\picasso\third_party\libpng.cmake;D:\picasso\third_party\libwebp-0.5.1\src\webp\decode.h;D:\picasso\third_party\libwebp-0.5.1\src\webp\demux.h;D:\picasso\third_party\libwebp-0.5.1\src\webp\encode.h;D:\picasso\third_party\libwebp-0.5.1\src\webp\extras.h;D:\picasso\third_party\libwebp-0.5.1\src\webp\format_constants.h;D:\picasso\third_party\libwebp-0.5.1\src\webp\mux.h;D:\picasso\third_party\libwebp-0.5.1\src\webp\mux_types.h;D:\picasso\third_party\libwebp-0.5.1\src\webp\types.h;D:\picasso\third_party\libwebp.cmake;D:\picasso\third_party\third_party.cmake;D:\picasso\third_party\zlib-1.2.8\zconf.h;D:\picasso\third_party\zlib-1.2.8\zlib.h;D:\picasso\third_party\zlib.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\picasso\proj\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule D:/picasso/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+"D:\Program Files\CMake\bin\cmake.exe" -SD:/picasso -BD:/picasso/proj --check-stamp-file D:/picasso/proj/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeASMCompiler.cmake.in;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeASMInformation.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeCCompiler.cmake.in;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeCCompilerABI.c;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeCInformation.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeCXXCompiler.cmake.in;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeCXXCompilerABI.cpp;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeCXXInformation.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeCommonLanguageInclude.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeCompilerIdDetection.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeDetermineASMCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeDetermineCCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeDetermineCXXCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeDetermineCompileFeatures.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeDetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeDetermineCompilerABI.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeDetermineCompilerId.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeDetermineRCCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeDetermineSystem.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeFindBinUtils.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeGenericSystem.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeInitializeConfigs.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeLanguageInformation.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeParseImplicitIncludeInfo.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeParseImplicitLinkInfo.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeParseLibraryArchitecture.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeRCCompiler.cmake.in;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeRCInformation.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeSystem.cmake.in;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeSystemSpecificInformation.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeSystemSpecificInitialize.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeTestASMCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeTestCCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeTestCXXCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeTestCompilerCommon.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeTestRCCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\ADSP-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\ARMCC-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\ARMClang-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\AppleClang-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\Borland-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\Bruce-C-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\CMakeCommonCompilerMacros.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\Clang-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\Clang-DetermineCompilerInternal.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\Compaq-C-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\Compaq-CXX-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\Cray-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\CrayClang-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\Embarcadero-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\Fujitsu-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\FujitsuClang-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\GHS-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\GNU-C-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\GNU-CXX-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\HP-C-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\HP-CXX-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\IAR-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\IBMCPP-C-DetermineVersionInternal.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\IBMCPP-CXX-DetermineVersionInternal.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\IBMClang-C-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\IBMClang-CXX-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\Intel-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\IntelLLVM-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\LCC-C-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\LCC-CXX-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\MSVC-ASM.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\MSVC-C.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\MSVC-CXX.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\MSVC-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\MSVC.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\NVHPC-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\NVIDIA-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\OpenWatcom-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\OrangeC-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\PGI-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\PathScale-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\SCO-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\SDCC-C-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\SunPro-C-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\SunPro-CXX-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\TI-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\TIClang-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\Tasking-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\TinyCC-C-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\VisualAge-C-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\VisualAge-CXX-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\Watcom-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\XL-C-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\XL-CXX-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\XLClang-C-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\XLClang-CXX-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\zOS-C-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\zOS-CXX-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CompilerId\VS-10.vcxproj.in;D:\Program Files\CMake\share\cmake-3.29\Modules\Internal\CMakeDetermineLinkerId.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Internal\FeatureTesting.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Platform\Windows-Determine-CXX.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Platform\Windows-Initialize.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Platform\Windows-MSVC-C.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Platform\Windows-MSVC-CXX.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Platform\Windows-MSVC.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Platform\Windows.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Platform\WindowsPaths.cmake;D:\picasso\build\configs.cmake;D:\picasso\build\defines.cmake;D:\picasso\demos\demos.cmake;D:\picasso\ext\ext.cmake;D:\picasso\ext\image_loader\gif\gif.cmake;D:\picasso\ext\image_loader\image.cmake;D:\picasso\ext\image_loader\jpeg\jpeg.cmake;D:\picasso\ext\image_loader\png\png.cmake;D:\picasso\ext\image_loader\webp\webp.cmake;D:\picasso\proj\CMakeFiles\3.29.1\CMakeASMCompiler.cmake;D:\picasso\proj\CMakeFiles\3.29.1\CMakeCCompiler.cmake;D:\picasso\proj\CMakeFiles\3.29.1\CMakeCXXCompiler.cmake;D:\picasso\proj\CMakeFiles\3.29.1\CMakeRCCompiler.cmake;D:\picasso\proj\CMakeFiles\3.29.1\CMakeSystem.cmake;D:\picasso\src\src.cmake;D:\picasso\test\test.cmake;D:\picasso\third_party\giflib-5.1.3\lib\gif_lib.h;D:\picasso\third_party\giflib.cmake;D:\picasso\third_party\libjpeg-turbo-1.4.1\build\jconfig.h;D:\picasso\third_party\libjpeg-turbo-1.4.1\jmorecfg.h;D:\picasso\third_party\libjpeg-turbo-1.4.1\jpeglib.h;D:\picasso\third_party\libjpeg.cmake;D:\picasso\third_party\libpng-1.6.17\png.h;D:\picasso\third_party\libpng-1.6.17\pngconf.h;D:\picasso\third_party\libpng-1.6.17\scripts\pnglibconf.h.prebuilt;D:\picasso\third_party\libpng.cmake;D:\picasso\third_party\libwebp-0.5.1\src\webp\decode.h;D:\picasso\third_party\libwebp-0.5.1\src\webp\demux.h;D:\picasso\third_party\libwebp-0.5.1\src\webp\encode.h;D:\picasso\third_party\libwebp-0.5.1\src\webp\extras.h;D:\picasso\third_party\libwebp-0.5.1\src\webp\format_constants.h;D:\picasso\third_party\libwebp-0.5.1\src\webp\mux.h;D:\picasso\third_party\libwebp-0.5.1\src\webp\mux_types.h;D:\picasso\third_party\libwebp-0.5.1\src\webp\types.h;D:\picasso\third_party\libwebp.cmake;D:\picasso\third_party\third_party.cmake;D:\picasso\third_party\zlib-1.2.8\zconf.h;D:\picasso\third_party\zlib-1.2.8\zlib.h;D:\picasso\third_party\zlib.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\picasso\proj\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule D:/picasso/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+"D:\Program Files\CMake\bin\cmake.exe" -SD:/picasso -BD:/picasso/proj --check-stamp-file D:/picasso/proj/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeASMCompiler.cmake.in;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeASMInformation.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeCCompiler.cmake.in;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeCCompilerABI.c;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeCInformation.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeCXXCompiler.cmake.in;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeCXXCompilerABI.cpp;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeCXXInformation.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeCommonLanguageInclude.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeCompilerIdDetection.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeDetermineASMCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeDetermineCCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeDetermineCXXCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeDetermineCompileFeatures.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeDetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeDetermineCompilerABI.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeDetermineCompilerId.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeDetermineRCCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeDetermineSystem.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeFindBinUtils.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeGenericSystem.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeInitializeConfigs.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeLanguageInformation.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeParseImplicitIncludeInfo.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeParseImplicitLinkInfo.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeParseLibraryArchitecture.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeRCCompiler.cmake.in;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeRCInformation.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeSystem.cmake.in;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeSystemSpecificInformation.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeSystemSpecificInitialize.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeTestASMCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeTestCCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeTestCXXCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeTestCompilerCommon.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeTestRCCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\ADSP-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\ARMCC-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\ARMClang-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\AppleClang-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\Borland-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\Bruce-C-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\CMakeCommonCompilerMacros.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\Clang-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\Clang-DetermineCompilerInternal.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\Compaq-C-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\Compaq-CXX-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\Cray-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\CrayClang-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\Embarcadero-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\Fujitsu-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\FujitsuClang-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\GHS-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\GNU-C-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\GNU-CXX-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\HP-C-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\HP-CXX-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\IAR-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\IBMCPP-C-DetermineVersionInternal.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\IBMCPP-CXX-DetermineVersionInternal.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\IBMClang-C-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\IBMClang-CXX-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\Intel-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\IntelLLVM-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\LCC-C-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\LCC-CXX-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\MSVC-ASM.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\MSVC-C.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\MSVC-CXX.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\MSVC-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\MSVC.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\NVHPC-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\NVIDIA-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\OpenWatcom-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\OrangeC-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\PGI-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\PathScale-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\SCO-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\SDCC-C-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\SunPro-C-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\SunPro-CXX-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\TI-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\TIClang-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\Tasking-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\TinyCC-C-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\VisualAge-C-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\VisualAge-CXX-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\Watcom-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\XL-C-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\XL-CXX-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\XLClang-C-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\XLClang-CXX-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\zOS-C-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\zOS-CXX-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CompilerId\VS-10.vcxproj.in;D:\Program Files\CMake\share\cmake-3.29\Modules\Internal\CMakeDetermineLinkerId.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Internal\FeatureTesting.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Platform\Windows-Determine-CXX.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Platform\Windows-Initialize.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Platform\Windows-MSVC-C.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Platform\Windows-MSVC-CXX.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Platform\Windows-MSVC.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Platform\Windows.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Platform\WindowsPaths.cmake;D:\picasso\build\configs.cmake;D:\picasso\build\defines.cmake;D:\picasso\demos\demos.cmake;D:\picasso\ext\ext.cmake;D:\picasso\ext\image_loader\gif\gif.cmake;D:\picasso\ext\image_loader\image.cmake;D:\picasso\ext\image_loader\jpeg\jpeg.cmake;D:\picasso\ext\image_loader\png\png.cmake;D:\picasso\ext\image_loader\webp\webp.cmake;D:\picasso\proj\CMakeFiles\3.29.1\CMakeASMCompiler.cmake;D:\picasso\proj\CMakeFiles\3.29.1\CMakeCCompiler.cmake;D:\picasso\proj\CMakeFiles\3.29.1\CMakeCXXCompiler.cmake;D:\picasso\proj\CMakeFiles\3.29.1\CMakeRCCompiler.cmake;D:\picasso\proj\CMakeFiles\3.29.1\CMakeSystem.cmake;D:\picasso\src\src.cmake;D:\picasso\test\test.cmake;D:\picasso\third_party\giflib-5.1.3\lib\gif_lib.h;D:\picasso\third_party\giflib.cmake;D:\picasso\third_party\libjpeg-turbo-1.4.1\build\jconfig.h;D:\picasso\third_party\libjpeg-turbo-1.4.1\jmorecfg.h;D:\picasso\third_party\libjpeg-turbo-1.4.1\jpeglib.h;D:\picasso\third_party\libjpeg.cmake;D:\picasso\third_party\libpng-1.6.17\png.h;D:\picasso\third_party\libpng-1.6.17\pngconf.h;D:\picasso\third_party\libpng-1.6.17\scripts\pnglibconf.h.prebuilt;D:\picasso\third_party\libpng.cmake;D:\picasso\third_party\libwebp-0.5.1\src\webp\decode.h;D:\picasso\third_party\libwebp-0.5.1\src\webp\demux.h;D:\picasso\third_party\libwebp-0.5.1\src\webp\encode.h;D:\picasso\third_party\libwebp-0.5.1\src\webp\extras.h;D:\picasso\third_party\libwebp-0.5.1\src\webp\format_constants.h;D:\picasso\third_party\libwebp-0.5.1\src\webp\mux.h;D:\picasso\third_party\libwebp-0.5.1\src\webp\mux_types.h;D:\picasso\third_party\libwebp-0.5.1\src\webp\types.h;D:\picasso\third_party\libwebp.cmake;D:\picasso\third_party\third_party.cmake;D:\picasso\third_party\zlib-1.2.8\zconf.h;D:\picasso\third_party\zlib-1.2.8\zlib.h;D:\picasso\third_party\zlib.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\picasso\proj\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule D:/picasso/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+"D:\Program Files\CMake\bin\cmake.exe" -SD:/picasso -BD:/picasso/proj --check-stamp-file D:/picasso/proj/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeASMCompiler.cmake.in;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeASMInformation.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeCCompiler.cmake.in;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeCCompilerABI.c;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeCInformation.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeCXXCompiler.cmake.in;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeCXXCompilerABI.cpp;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeCXXInformation.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeCommonLanguageInclude.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeCompilerIdDetection.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeDetermineASMCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeDetermineCCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeDetermineCXXCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeDetermineCompileFeatures.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeDetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeDetermineCompilerABI.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeDetermineCompilerId.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeDetermineRCCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeDetermineSystem.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeFindBinUtils.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeGenericSystem.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeInitializeConfigs.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeLanguageInformation.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeParseImplicitIncludeInfo.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeParseImplicitLinkInfo.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeParseLibraryArchitecture.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeRCCompiler.cmake.in;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeRCInformation.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeSystem.cmake.in;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeSystemSpecificInformation.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeSystemSpecificInitialize.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeTestASMCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeTestCCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeTestCXXCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeTestCompilerCommon.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CMakeTestRCCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\ADSP-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\ARMCC-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\ARMClang-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\AppleClang-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\Borland-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\Bruce-C-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\CMakeCommonCompilerMacros.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\Clang-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\Clang-DetermineCompilerInternal.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\Compaq-C-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\Compaq-CXX-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\Cray-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\CrayClang-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\Embarcadero-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\Fujitsu-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\FujitsuClang-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\GHS-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\GNU-C-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\GNU-CXX-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\HP-C-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\HP-CXX-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\IAR-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\IBMCPP-C-DetermineVersionInternal.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\IBMCPP-CXX-DetermineVersionInternal.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\IBMClang-C-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\IBMClang-CXX-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\Intel-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\IntelLLVM-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\LCC-C-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\LCC-CXX-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\MSVC-ASM.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\MSVC-C.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\MSVC-CXX.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\MSVC-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\MSVC.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\NVHPC-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\NVIDIA-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\OpenWatcom-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\OrangeC-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\PGI-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\PathScale-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\SCO-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\SDCC-C-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\SunPro-C-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\SunPro-CXX-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\TI-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\TIClang-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\Tasking-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\TinyCC-C-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\VisualAge-C-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\VisualAge-CXX-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\Watcom-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\XL-C-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\XL-CXX-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\XLClang-C-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\XLClang-CXX-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\zOS-C-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Compiler\zOS-CXX-DetermineCompiler.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\CompilerId\VS-10.vcxproj.in;D:\Program Files\CMake\share\cmake-3.29\Modules\Internal\CMakeDetermineLinkerId.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Internal\FeatureTesting.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Platform\Windows-Determine-CXX.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Platform\Windows-Initialize.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Platform\Windows-MSVC-C.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Platform\Windows-MSVC-CXX.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Platform\Windows-MSVC.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Platform\Windows.cmake;D:\Program Files\CMake\share\cmake-3.29\Modules\Platform\WindowsPaths.cmake;D:\picasso\build\configs.cmake;D:\picasso\build\defines.cmake;D:\picasso\demos\demos.cmake;D:\picasso\ext\ext.cmake;D:\picasso\ext\image_loader\gif\gif.cmake;D:\picasso\ext\image_loader\image.cmake;D:\picasso\ext\image_loader\jpeg\jpeg.cmake;D:\picasso\ext\image_loader\png\png.cmake;D:\picasso\ext\image_loader\webp\webp.cmake;D:\picasso\proj\CMakeFiles\3.29.1\CMakeASMCompiler.cmake;D:\picasso\proj\CMakeFiles\3.29.1\CMakeCCompiler.cmake;D:\picasso\proj\CMakeFiles\3.29.1\CMakeCXXCompiler.cmake;D:\picasso\proj\CMakeFiles\3.29.1\CMakeRCCompiler.cmake;D:\picasso\proj\CMakeFiles\3.29.1\CMakeSystem.cmake;D:\picasso\src\src.cmake;D:\picasso\test\test.cmake;D:\picasso\third_party\giflib-5.1.3\lib\gif_lib.h;D:\picasso\third_party\giflib.cmake;D:\picasso\third_party\libjpeg-turbo-1.4.1\build\jconfig.h;D:\picasso\third_party\libjpeg-turbo-1.4.1\jmorecfg.h;D:\picasso\third_party\libjpeg-turbo-1.4.1\jpeglib.h;D:\picasso\third_party\libjpeg.cmake;D:\picasso\third_party\libpng-1.6.17\png.h;D:\picasso\third_party\libpng-1.6.17\pngconf.h;D:\picasso\third_party\libpng-1.6.17\scripts\pnglibconf.h.prebuilt;D:\picasso\third_party\libpng.cmake;D:\picasso\third_party\libwebp-0.5.1\src\webp\decode.h;D:\picasso\third_party\libwebp-0.5.1\src\webp\demux.h;D:\picasso\third_party\libwebp-0.5.1\src\webp\encode.h;D:\picasso\third_party\libwebp-0.5.1\src\webp\extras.h;D:\picasso\third_party\libwebp-0.5.1\src\webp\format_constants.h;D:\picasso\third_party\libwebp-0.5.1\src\webp\mux.h;D:\picasso\third_party\libwebp-0.5.1\src\webp\mux_types.h;D:\picasso\third_party\libwebp-0.5.1\src\webp\types.h;D:\picasso\third_party\libwebp.cmake;D:\picasso\third_party\third_party.cmake;D:\picasso\third_party\zlib-1.2.8\zconf.h;D:\picasso\third_party\zlib-1.2.8\zlib.h;D:\picasso\third_party\zlib.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\picasso\proj\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\test\gamma_func.c"/>
-    <ClCompile Include="..\test\testWin.c"/>
+    <ClCompile Include="D:\picasso\test\gamma_func.c" />
+    <ClCompile Include="D:\picasso\test\testWin.c" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="picasso2_sw.vcxproj">
-      <Project>{D76D2325-CDDA-3A00-A705-7EFFD069C6D8}</Project>
+    <ProjectReference Include="D:\picasso\proj\ZERO_CHECK.vcxproj">
+      <Project>{BA5C7250-6FEF-3766-A6CE-FAE34451F722}</Project>
+      <Name>ZERO_CHECK</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+    <ProjectReference Include="D:\picasso\proj\picasso2_sw.vcxproj">
+      <Project>{73324072-3B01-34D7-A172-8469BE66AB00}</Project>
+      <Name>picasso2_sw</Name>
     </ProjectReference>
   </ItemGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets"/>
-  <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.targets"/>
-  <ImportGroup Label="ExtensionTargets"/>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
 </Project>
