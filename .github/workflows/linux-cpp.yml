@@ -13,6 +13,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: Setup GTK2
+      run: sudo apt-get install libgtk2.0-dev
     - name: Generate Project
       run: ./build_linux.sh
     - name: make
