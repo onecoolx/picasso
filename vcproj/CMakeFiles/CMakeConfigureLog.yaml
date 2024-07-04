@@ -26,8 +26,8 @@ events:
       用于 .NET Framework 的 Microsoft (R) 生成引擎版本 16.11.2+f32259642
       版权所有(C) Microsoft Corporation。保留所有权利。
       
-      生成启动时间为 2024/7/4 11:29:21。
-      节点 1 上的项目“D:\\picasso\\proj\\CMakeFiles\\3.29.1\\CompilerIdC\\CompilerIdC.vcxproj”(默认目标)。
+      生成启动时间为 2024/7/4 19:49:41。
+      节点 1 上的项目“D:\\picasso\\vcproj\\CMakeFiles\\3.29.1\\CompilerIdC\\CompilerIdC.vcxproj”(默认目标)。
       PrepareForBuild:
         正在创建目录“Debug\\”。
         正在创建目录“Debug\\CompilerIdC.tlog\\”。
@@ -38,7 +38,7 @@ events:
         CMakeCCompilerId.c
       Link:
         C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:".\\CompilerIdC.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:".\\CompilerIdC.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:".\\CompilerIdC.lib" /MACHINE:X64 Debug\\CMakeCCompilerId.obj
-        CompilerIdC.vcxproj -> D:\\picasso\\proj\\CMakeFiles\\3.29.1\\CompilerIdC\\CompilerIdC.exe
+        CompilerIdC.vcxproj -> D:\\picasso\\vcproj\\CMakeFiles\\3.29.1\\CompilerIdC\\CompilerIdC.exe
       PostBuildEvent:
         for %%i in (cl.exe) do @echo CMAKE_C_COMPILER=%%~$PATH:i
         :VCEnd
@@ -46,13 +46,13 @@ events:
       FinalizeBuildStatus:
         正在删除文件“Debug\\CompilerIdC.tlog\\unsuccessfulbuild”。
         正在对“Debug\\CompilerIdC.tlog\\CompilerIdC.lastbuildstate”执行 Touch 任务。
-      已完成生成项目“D:\\picasso\\proj\\CMakeFiles\\3.29.1\\CompilerIdC\\CompilerIdC.vcxproj”(默认目标)的操作。
+      已完成生成项目“D:\\picasso\\vcproj\\CMakeFiles\\3.29.1\\CompilerIdC\\CompilerIdC.vcxproj”(默认目标)的操作。
       
       已成功生成。
           0 个警告
           0 个错误
       
-      已用时间 00:00:01.08
+      已用时间 00:00:01.06
       
       
       Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "CompilerIdC.exe"
@@ -60,7 +60,7 @@ events:
       Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "CompilerIdC.vcxproj"
       
       The C compiler identification is MSVC, found in:
-        D:/picasso/proj/CMakeFiles/3.29.1/CompilerIdC/CompilerIdC.exe
+        D:/picasso/vcproj/CMakeFiles/3.29.1/CompilerIdC/CompilerIdC.exe
       
   -
     kind: "message-v1"
@@ -80,8 +80,8 @@ events:
       用于 .NET Framework 的 Microsoft (R) 生成引擎版本 16.11.2+f32259642
       版权所有(C) Microsoft Corporation。保留所有权利。
       
-      生成启动时间为 2024/7/4 11:29:22。
-      节点 1 上的项目“D:\\picasso\\proj\\CMakeFiles\\3.29.1\\CompilerIdCXX\\CompilerIdCXX.vcxproj”(默认目标)。
+      生成启动时间为 2024/7/4 19:49:42。
+      节点 1 上的项目“D:\\picasso\\vcproj\\CMakeFiles\\3.29.1\\CompilerIdCXX\\CompilerIdCXX.vcxproj”(默认目标)。
       PrepareForBuild:
         正在创建目录“Debug\\”。
         正在创建目录“Debug\\CompilerIdCXX.tlog\\”。
@@ -92,7 +92,7 @@ events:
         CMakeCXXCompilerId.cpp
       Link:
         C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:".\\CompilerIdCXX.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:".\\CompilerIdCXX.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:".\\CompilerIdCXX.lib" /MACHINE:X64 Debug\\CMakeCXXCompilerId.obj
-        CompilerIdCXX.vcxproj -> D:\\picasso\\proj\\CMakeFiles\\3.29.1\\CompilerIdCXX\\CompilerIdCXX.exe
+        CompilerIdCXX.vcxproj -> D:\\picasso\\vcproj\\CMakeFiles\\3.29.1\\CompilerIdCXX\\CompilerIdCXX.exe
       PostBuildEvent:
         for %%i in (cl.exe) do @echo CMAKE_CXX_COMPILER=%%~$PATH:i
         :VCEnd
@@ -100,13 +100,13 @@ events:
       FinalizeBuildStatus:
         正在删除文件“Debug\\CompilerIdCXX.tlog\\unsuccessfulbuild”。
         正在对“Debug\\CompilerIdCXX.tlog\\CompilerIdCXX.lastbuildstate”执行 Touch 任务。
-      已完成生成项目“D:\\picasso\\proj\\CMakeFiles\\3.29.1\\CompilerIdCXX\\CompilerIdCXX.vcxproj”(默认目标)的操作。
+      已完成生成项目“D:\\picasso\\vcproj\\CMakeFiles\\3.29.1\\CompilerIdCXX\\CompilerIdCXX.vcxproj”(默认目标)的操作。
       
       已成功生成。
           0 个警告
           0 个错误
       
-      已用时间 00:00:00.87
+      已用时间 00:00:01.21
       
       
       Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CompilerIdCXX.exe"
@@ -114,7 +114,7 @@ events:
       Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CompilerIdCXX.vcxproj"
       
       The CXX compiler identification is MSVC, found in:
-        D:/picasso/proj/CMakeFiles/3.29.1/CompilerIdCXX/CompilerIdCXX.exe
+        D:/picasso/vcproj/CMakeFiles/3.29.1/CompilerIdCXX/CompilerIdCXX.exe
       
   -
     kind: "message-v1"
@@ -468,8 +468,8 @@ events:
     checks:
       - "Detecting C compiler ABI info"
     directories:
-      source: "D:/picasso/proj/CMakeFiles/CMakeScratch/TryCompile-as54m3"
-      binary: "D:/picasso/proj/CMakeFiles/CMakeScratch/TryCompile-as54m3"
+      source: "D:/picasso/vcproj/CMakeFiles/CMakeScratch/TryCompile-sqv641"
+      binary: "D:/picasso/vcproj/CMakeFiles/CMakeScratch/TryCompile-sqv641"
     cmakeVariables:
       CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS"
       CMAKE_C_FLAGS_DEBUG: "/Zi /Ob0 /Od /RTC1"
@@ -478,39 +478,39 @@ events:
       variable: "CMAKE_C_ABI_COMPILED"
       cached: true
       stdout: |
-        Change Dir: 'D:/picasso/proj/CMakeFiles/CMakeScratch/TryCompile-as54m3'
+        Change Dir: 'D:/picasso/vcproj/CMakeFiles/CMakeScratch/TryCompile-sqv641'
         
-        Run Build Command(s): "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/MSBuild/Current/Bin/MSBuild.exe" cmTC_5a614.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=16.0 /v:n
+        Run Build Command(s): "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/MSBuild/Current/Bin/MSBuild.exe" cmTC_3f993.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=16.0 /v:n
         用于 .NET Framework 的 Microsoft (R) 生成引擎版本 16.11.2+f32259642
         版权所有(C) Microsoft Corporation。保留所有权利。
         
-        生成启动时间为 2024/7/4 11:29:24。
-        节点 1 上的项目“D:\\picasso\\proj\\CMakeFiles\\CMakeScratch\\TryCompile-as54m3\\cmTC_5a614.vcxproj”(默认目标)。
+        生成启动时间为 2024/7/4 19:49:45。
+        节点 1 上的项目“D:\\picasso\\vcproj\\CMakeFiles\\CMakeScratch\\TryCompile-sqv641\\cmTC_3f993.vcxproj”(默认目标)。
         PrepareForBuild:
-          正在创建目录“cmTC_5a614.dir\\Debug\\”。
-          正在创建目录“D:\\picasso\\proj\\CMakeFiles\\CMakeScratch\\TryCompile-as54m3\\Debug\\”。
-          正在创建目录“cmTC_5a614.dir\\Debug\\cmTC_5a614.tlog\\”。
+          正在创建目录“cmTC_3f993.dir\\Debug\\”。
+          正在创建目录“D:\\picasso\\vcproj\\CMakeFiles\\CMakeScratch\\TryCompile-sqv641\\Debug\\”。
+          正在创建目录“cmTC_3f993.dir\\Debug\\cmTC_3f993.tlog\\”。
         InitializeBuildStatus:
-          正在创建“cmTC_5a614.dir\\Debug\\cmTC_5a614.tlog\\unsuccessfulbuild”，因为已指定“AlwaysCreate”。
+          正在创建“cmTC_3f993.dir\\Debug\\cmTC_3f993.tlog\\unsuccessfulbuild”，因为已指定“AlwaysCreate”。
         ClCompile:
-          C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\bin\\HostX64\\x64\\CL.exe /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_5a614.dir\\Debug\\\\" /Fd"cmTC_5a614.dir\\Debug\\vc142.pdb" /external:W1 /Gd /TC /errorReport:queue "D:\\Program Files\\CMake\\share\\cmake-3.29\\Modules\\CMakeCCompilerABI.c"
+          C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\bin\\HostX64\\x64\\CL.exe /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_3f993.dir\\Debug\\\\" /Fd"cmTC_3f993.dir\\Debug\\vc142.pdb" /external:W1 /Gd /TC /errorReport:queue "D:\\Program Files\\CMake\\share\\cmake-3.29\\Modules\\CMakeCCompilerABI.c"
           用于 x64 的 Microsoft (R) C/C++ 优化编译器 19.29.30151 版
           版权所有(C) Microsoft Corporation。保留所有权利。
           CMakeCCompilerABI.c
-          cl /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_5a614.dir\\Debug\\\\" /Fd"cmTC_5a614.dir\\Debug\\vc142.pdb" /external:W1 /Gd /TC /errorReport:queue "D:\\Program Files\\CMake\\share\\cmake-3.29\\Modules\\CMakeCCompilerABI.c"
+          cl /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_3f993.dir\\Debug\\\\" /Fd"cmTC_3f993.dir\\Debug\\vc142.pdb" /external:W1 /Gd /TC /errorReport:queue "D:\\Program Files\\CMake\\share\\cmake-3.29\\Modules\\CMakeCCompilerABI.c"
         Link:
-          C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"D:\\picasso\\proj\\CMakeFiles\\CMakeScratch\\TryCompile-as54m3\\Debug\\cmTC_5a614.exe" /INCREMENTAL /ILK:"cmTC_5a614.dir\\Debug\\cmTC_5a614.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/picasso/proj/CMakeFiles/CMakeScratch/TryCompile-as54m3/Debug/cmTC_5a614.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/picasso/proj/CMakeFiles/CMakeScratch/TryCompile-as54m3/Debug/cmTC_5a614.lib" /MACHINE:X64  /machine:x64 cmTC_5a614.dir\\Debug\\CMakeCCompilerABI.obj
-          cmTC_5a614.vcxproj -> D:\\picasso\\proj\\CMakeFiles\\CMakeScratch\\TryCompile-as54m3\\Debug\\cmTC_5a614.exe
+          C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"D:\\picasso\\vcproj\\CMakeFiles\\CMakeScratch\\TryCompile-sqv641\\Debug\\cmTC_3f993.exe" /INCREMENTAL /ILK:"cmTC_3f993.dir\\Debug\\cmTC_3f993.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/picasso/vcproj/CMakeFiles/CMakeScratch/TryCompile-sqv641/Debug/cmTC_3f993.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/picasso/vcproj/CMakeFiles/CMakeScratch/TryCompile-sqv641/Debug/cmTC_3f993.lib" /MACHINE:X64  /machine:x64 cmTC_3f993.dir\\Debug\\CMakeCCompilerABI.obj
+          cmTC_3f993.vcxproj -> D:\\picasso\\vcproj\\CMakeFiles\\CMakeScratch\\TryCompile-sqv641\\Debug\\cmTC_3f993.exe
         FinalizeBuildStatus:
-          正在删除文件“cmTC_5a614.dir\\Debug\\cmTC_5a614.tlog\\unsuccessfulbuild”。
-          正在对“cmTC_5a614.dir\\Debug\\cmTC_5a614.tlog\\cmTC_5a614.lastbuildstate”执行 Touch 任务。
-        已完成生成项目“D:\\picasso\\proj\\CMakeFiles\\CMakeScratch\\TryCompile-as54m3\\cmTC_5a614.vcxproj”(默认目标)的操作。
+          正在删除文件“cmTC_3f993.dir\\Debug\\cmTC_3f993.tlog\\unsuccessfulbuild”。
+          正在对“cmTC_3f993.dir\\Debug\\cmTC_3f993.tlog\\cmTC_3f993.lastbuildstate”执行 Touch 任务。
+        已完成生成项目“D:\\picasso\\vcproj\\CMakeFiles\\CMakeScratch\\TryCompile-sqv641\\cmTC_3f993.vcxproj”(默认目标)的操作。
         
         已成功生成。
             0 个警告
             0 个错误
         
-        已用时间 00:00:00.79
+        已用时间 00:00:01.13
         
       exitCode: 0
   -
@@ -550,8 +550,8 @@ events:
     checks:
       - "Detecting CXX compiler ABI info"
     directories:
-      source: "D:/picasso/proj/CMakeFiles/CMakeScratch/TryCompile-v236bj"
-      binary: "D:/picasso/proj/CMakeFiles/CMakeScratch/TryCompile-v236bj"
+      source: "D:/picasso/vcproj/CMakeFiles/CMakeScratch/TryCompile-g9y3ua"
+      binary: "D:/picasso/vcproj/CMakeFiles/CMakeScratch/TryCompile-g9y3ua"
     cmakeVariables:
       CMAKE_CXX_FLAGS: "/DWIN32 /D_WINDOWS /GR /EHsc"
       CMAKE_CXX_FLAGS_DEBUG: "/Zi /Ob0 /Od /RTC1"
@@ -560,39 +560,39 @@ events:
       variable: "CMAKE_CXX_ABI_COMPILED"
       cached: true
       stdout: |
-        Change Dir: 'D:/picasso/proj/CMakeFiles/CMakeScratch/TryCompile-v236bj'
+        Change Dir: 'D:/picasso/vcproj/CMakeFiles/CMakeScratch/TryCompile-g9y3ua'
         
-        Run Build Command(s): "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/MSBuild/Current/Bin/MSBuild.exe" cmTC_7124b.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=16.0 /v:n
+        Run Build Command(s): "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/MSBuild/Current/Bin/MSBuild.exe" cmTC_0bd3d.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=16.0 /v:n
         用于 .NET Framework 的 Microsoft (R) 生成引擎版本 16.11.2+f32259642
         版权所有(C) Microsoft Corporation。保留所有权利。
         
-        生成启动时间为 2024/7/4 11:29:26。
-        节点 1 上的项目“D:\\picasso\\proj\\CMakeFiles\\CMakeScratch\\TryCompile-v236bj\\cmTC_7124b.vcxproj”(默认目标)。
+        生成启动时间为 2024/7/4 19:49:48。
+        节点 1 上的项目“D:\\picasso\\vcproj\\CMakeFiles\\CMakeScratch\\TryCompile-g9y3ua\\cmTC_0bd3d.vcxproj”(默认目标)。
         PrepareForBuild:
-          正在创建目录“cmTC_7124b.dir\\Debug\\”。
-          正在创建目录“D:\\picasso\\proj\\CMakeFiles\\CMakeScratch\\TryCompile-v236bj\\Debug\\”。
-          正在创建目录“cmTC_7124b.dir\\Debug\\cmTC_7124b.tlog\\”。
+          正在创建目录“cmTC_0bd3d.dir\\Debug\\”。
+          正在创建目录“D:\\picasso\\vcproj\\CMakeFiles\\CMakeScratch\\TryCompile-g9y3ua\\Debug\\”。
+          正在创建目录“cmTC_0bd3d.dir\\Debug\\cmTC_0bd3d.tlog\\”。
         InitializeBuildStatus:
-          正在创建“cmTC_7124b.dir\\Debug\\cmTC_7124b.tlog\\unsuccessfulbuild”，因为已指定“AlwaysCreate”。
+          正在创建“cmTC_0bd3d.dir\\Debug\\cmTC_0bd3d.tlog\\unsuccessfulbuild”，因为已指定“AlwaysCreate”。
         ClCompile:
-          C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\bin\\HostX64\\x64\\CL.exe /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /Fo"cmTC_7124b.dir\\Debug\\\\" /Fd"cmTC_7124b.dir\\Debug\\vc142.pdb" /external:W1 /Gd /TP /errorReport:queue "D:\\Program Files\\CMake\\share\\cmake-3.29\\Modules\\CMakeCXXCompilerABI.cpp"
+          C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\bin\\HostX64\\x64\\CL.exe /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /Fo"cmTC_0bd3d.dir\\Debug\\\\" /Fd"cmTC_0bd3d.dir\\Debug\\vc142.pdb" /external:W1 /Gd /TP /errorReport:queue "D:\\Program Files\\CMake\\share\\cmake-3.29\\Modules\\CMakeCXXCompilerABI.cpp"
           用于 x64 的 Microsoft (R) C/C++ 优化编译器 19.29.30151 版
           版权所有(C) Microsoft Corporation。保留所有权利。
           CMakeCXXCompilerABI.cpp
-          cl /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /Fo"cmTC_7124b.dir\\Debug\\\\" /Fd"cmTC_7124b.dir\\Debug\\vc142.pdb" /external:W1 /Gd /TP /errorReport:queue "D:\\Program Files\\CMake\\share\\cmake-3.29\\Modules\\CMakeCXXCompilerABI.cpp"
+          cl /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /Fo"cmTC_0bd3d.dir\\Debug\\\\" /Fd"cmTC_0bd3d.dir\\Debug\\vc142.pdb" /external:W1 /Gd /TP /errorReport:queue "D:\\Program Files\\CMake\\share\\cmake-3.29\\Modules\\CMakeCXXCompilerABI.cpp"
         Link:
-          C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"D:\\picasso\\proj\\CMakeFiles\\CMakeScratch\\TryCompile-v236bj\\Debug\\cmTC_7124b.exe" /INCREMENTAL /ILK:"cmTC_7124b.dir\\Debug\\cmTC_7124b.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/picasso/proj/CMakeFiles/CMakeScratch/TryCompile-v236bj/Debug/cmTC_7124b.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/picasso/proj/CMakeFiles/CMakeScratch/TryCompile-v236bj/Debug/cmTC_7124b.lib" /MACHINE:X64  /machine:x64 cmTC_7124b.dir\\Debug\\CMakeCXXCompilerABI.obj
-          cmTC_7124b.vcxproj -> D:\\picasso\\proj\\CMakeFiles\\CMakeScratch\\TryCompile-v236bj\\Debug\\cmTC_7124b.exe
+          C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"D:\\picasso\\vcproj\\CMakeFiles\\CMakeScratch\\TryCompile-g9y3ua\\Debug\\cmTC_0bd3d.exe" /INCREMENTAL /ILK:"cmTC_0bd3d.dir\\Debug\\cmTC_0bd3d.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/picasso/vcproj/CMakeFiles/CMakeScratch/TryCompile-g9y3ua/Debug/cmTC_0bd3d.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/picasso/vcproj/CMakeFiles/CMakeScratch/TryCompile-g9y3ua/Debug/cmTC_0bd3d.lib" /MACHINE:X64  /machine:x64 cmTC_0bd3d.dir\\Debug\\CMakeCXXCompilerABI.obj
+          cmTC_0bd3d.vcxproj -> D:\\picasso\\vcproj\\CMakeFiles\\CMakeScratch\\TryCompile-g9y3ua\\Debug\\cmTC_0bd3d.exe
         FinalizeBuildStatus:
-          正在删除文件“cmTC_7124b.dir\\Debug\\cmTC_7124b.tlog\\unsuccessfulbuild”。
-          正在对“cmTC_7124b.dir\\Debug\\cmTC_7124b.tlog\\cmTC_7124b.lastbuildstate”执行 Touch 任务。
-        已完成生成项目“D:\\picasso\\proj\\CMakeFiles\\CMakeScratch\\TryCompile-v236bj\\cmTC_7124b.vcxproj”(默认目标)的操作。
+          正在删除文件“cmTC_0bd3d.dir\\Debug\\cmTC_0bd3d.tlog\\unsuccessfulbuild”。
+          正在对“cmTC_0bd3d.dir\\Debug\\cmTC_0bd3d.tlog\\cmTC_0bd3d.lastbuildstate”执行 Touch 任务。
+        已完成生成项目“D:\\picasso\\vcproj\\CMakeFiles\\CMakeScratch\\TryCompile-g9y3ua\\cmTC_0bd3d.vcxproj”(默认目标)的操作。
         
         已成功生成。
             0 个警告
             0 个错误
         
-        已用时间 00:00:00.77
+        已用时间 00:00:01.26
         
       exitCode: 0
   -
