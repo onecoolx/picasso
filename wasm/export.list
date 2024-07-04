@@ -82,9 +82,9 @@
     _ps_clip
     _ps_clip_path
     _ps_clip_rect
-    _ps_clip_device_rect
     _ps_clip_rects
     _ps_reset_clip
+    _ps_scissor_rect
     _ps_save
     _ps_restore
     _ps_font_create
