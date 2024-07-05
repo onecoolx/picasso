@@ -35,15 +35,15 @@ namespace picasso {
 #define NEXT_INDEX(i, n)   ((i + 1) % n)
 
 #define OPTIMAL(v, i, n) ((v[PREV_INDEX(i, n)].y != v[i].y) || \
-                            (v[NEXT_INDEX(i, n)].y != v[i].y))
+                          (v[NEXT_INDEX(i, n)].y != v[i].y))
 
 #define FWD_MIN(v, i, n) ((v[PREV_INDEX(i, n)].vertex.y >= v[i].vertex.y) \
-                            && (v[NEXT_INDEX(i, n)].vertex.y > v[i].vertex.y))
+                          && (v[NEXT_INDEX(i, n)].vertex.y > v[i].vertex.y))
 
 #define NOT_FMAX(v, i, n)   (v[NEXT_INDEX(i, n)].vertex.y > v[i].vertex.y)
 
 #define REV_MIN(v, i, n) ((v[PREV_INDEX(i, n)].vertex.y > v[i].vertex.y) \
-                            && (v[NEXT_INDEX(i, n)].vertex.y >= v[i].vertex.y))
+                          && (v[NEXT_INDEX(i, n)].vertex.y >= v[i].vertex.y))
 
 #define NOT_RMAX(v, i, n)   (v[PREV_INDEX(i, n)].vertex.y > v[i].vertex.y)
 
