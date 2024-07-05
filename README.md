@@ -27,7 +27,7 @@ cd proj
 ```
 #### macosx:
 ```
-1. Install python 2.7 on your shell environment.
+1. Install cmake above v3.16 on your system
 2. Build project
 ./build_macosx.sh
 cd proj
