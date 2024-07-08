@@ -255,7 +255,7 @@ void on_draw(ps_context* gc)
     ps_set_composite_operator(gc, COMPOSITE_SRC);
 
     ps_identity(gc);
-    ps_matrix_reset(matrix);
+    ps_matrix_identity(matrix);
     ps_matrix_translate(matrix, tx, ty);
     ps_matrix_translate(matrix, 0.5f*(width-tigerMaxX*scale), -(float)height/12.0f);
     ps_matrix_scale(matrix, scale, scale);

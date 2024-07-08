@@ -138,7 +138,7 @@ EXPORTS
     ps_matrix_rotate
     ps_matrix_shear
     ps_matrix_invert
-    ps_matrix_reset
+    ps_matrix_identity
     ps_matrix_flip_x
     ps_matrix_flip_y
     ps_matrix_multiply

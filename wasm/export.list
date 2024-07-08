@@ -135,7 +135,7 @@
     _ps_matrix_rotate
     _ps_matrix_shear
     _ps_matrix_invert
-    _ps_matrix_reset
+    _ps_matrix_identity
     _ps_matrix_flip_x
     _ps_matrix_flip_y
     _ps_matrix_multiply

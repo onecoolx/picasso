@@ -314,7 +314,7 @@ void PICAPI ps_matrix_flip_y(ps_matrix* matrix)
     global_status = STATUS_SUCCEED;
 }
 
-void PICAPI ps_matrix_reset(ps_matrix* matrix)
+void PICAPI ps_matrix_identity(ps_matrix* matrix)
 {
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;

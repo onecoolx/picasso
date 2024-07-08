@@ -389,7 +389,7 @@ class Matrix2D {
         this._ps_matrix_invert = _getExportWrapper(instance, 'ps_matrix_invert'); // USE
         this._ps_matrix_flip_x = _getExportWrapper(instance, 'ps_matrix_flip_x'); // USE
         this._ps_matrix_flip_y = _getExportWrapper(instance, 'ps_matrix_flip_y'); //USE
-        this._ps_matrix_reset = _getExportWrapper(instance, 'ps_matrix_reset'); // USE
+        this._ps_matrix_identity = _getExportWrapper(instance, 'ps_matrix_identity'); // USE
         this._ps_matrix_multiply= _getExportWrapper(instance, 'ps_matrix_multiply'); // USE
         this._ps_matrix_is_equal = _getExportWrapper(instance, 'ps_matrix_is_equal'); // USE
         this._ps_matrix_is_identity = _getExportWrapper(instance, 'ps_matrix_is_identity'); // USE
@@ -470,7 +470,7 @@ class Matrix2D {
     }
 
     identity() {
-        this._ps_matrix_reset(this._data);
+        this._ps_matrix_identity(this._data);
     }
 
     multiply(m) {

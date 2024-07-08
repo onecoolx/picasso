@@ -2691,19 +2691,19 @@ PEXPORT void PICAPI ps_matrix_shear(ps_matrix* matrix, float shx, float shy);
  *
  * \param matrix  Pointer to an existing matrix object.
  *
- * \sa ps_matrix_flip_x, ps_matrix_flip_y, ps_matrix_reset
+ * \sa ps_matrix_flip_x, ps_matrix_flip_y, ps_matrix_identity
  */
 PEXPORT void PICAPI ps_matrix_invert(ps_matrix* matrix);
 
 /**
- * \fn void ps_matrix_reset(ps_matrix* matrix)
+ * \fn void ps_matrix_identity(ps_matrix* matrix)
  * \brief Reset a matrix to identity matrix.
  *
  * \param matrix  Pointer to an existing matrix object.
  *
  * \sa ps_matrix_flip_x, ps_matrix_flip_y, ps_matrix_invert
  */
-PEXPORT void PICAPI ps_matrix_reset(ps_matrix* matrix);
+PEXPORT void PICAPI ps_matrix_identity(ps_matrix* matrix);
 
 /**
  * \fn void ps_matrix_flip_x(ps_matrix* matrix)
@@ -2711,7 +2711,7 @@ PEXPORT void PICAPI ps_matrix_reset(ps_matrix* matrix);
  *
  * \param matrix  Pointer to an existing matrix object.
  *
- * \sa ps_matrix_reset, ps_matrix_flip_y, ps_matrix_invert
+ * \sa ps_matrix_identity, ps_matrix_flip_y, ps_matrix_invert
  */
 PEXPORT void PICAPI ps_matrix_flip_x(ps_matrix* matrix);
 
@@ -2721,7 +2721,7 @@ PEXPORT void PICAPI ps_matrix_flip_x(ps_matrix* matrix);
  *
  * \param matrix  Pointer to an existing matrix object.
  *
- * \sa ps_matrix_reset, ps_matrix_flip_x, ps_matrix_invert
+ * \sa ps_matrix_identity, ps_matrix_flip_x, ps_matrix_invert
  */
 PEXPORT void PICAPI ps_matrix_flip_y(ps_matrix* matrix);
 
