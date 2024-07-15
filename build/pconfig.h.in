@@ -1,0 +1,46 @@
+#ifndef _CONFIGURATION_HEADER_PCONFIG_H_
+#define _CONFIGURATION_HEADER_PCONFIG_H_
+
+/* Define if Fast memory copy is supported. */
+#cmakedefine ENABLE_FAST_COPY @ENABLE_FAST_COPY@
+
+/* Define if ABGR color format is supported. */
+#cmakedefine ENABLE_FORMAT_ABGR @ENABLE_FORMAT_ABGR@
+
+/* Define if ARGB color format is supported. */
+#cmakedefine ENABLE_FORMAT_ARGB @ENABLE_FORMAT_ARGB@
+
+/* Define if BGRA color format is supported. */
+#cmakedefine ENABLE_FORMAT_BGRA @ENABLE_FORMAT_BGRA@
+
+/* Define if RGBA color format is supported. */
+#cmakedefine ENABLE_FORMAT_RGBA @ENABLE_FORMAT_RGBA@
+
+/* Define if BGR color format is supported. */
+#cmakedefine ENABLE_FORMAT_BGR @ENABLE_FORMAT_BGR@
+
+/* Define if RGB color format is supported. */
+#cmakedefine ENABLE_FORMAT_RGB @ENABLE_FORMAT_RGB@
+
+/* Define if RGB555 color format is supported. */
+#cmakedefine ENABLE_FORMAT_RGB555 @ENABLE_FORMAT_RGB555@
+
+/* Define if RGB565 color format is supported. */
+#cmakedefine ENABLE_FORMAT_RGB565 @ENABLE_FORMAT_RGB565@
+
+/* Define if FreeType2 is supported. */
+#cmakedefine ENABLE_FREE_TYPE2 @ENABLE_FREE_TYPE2@
+
+/* Define if FontConfig is supported. */
+#cmakedefine ENABLE_FONT_CONFIG @ENABLE_FONT_CONFIG@
+
+/* Define if Low memory is supported. */
+#cmakedefine ENABLE_LOW_MEMORY @ENABLE_LOW_MEMORY@
+
+/* Define if System memory allocator is supported. */
+#cmakedefine ENABLE_SYSTEM_MALLOC @ENABLE_SYSTEM_MALLOC@
+    
+/* Have stdint.h */
+#cmakedefine HAVE_STDINT_H @HAVE_STDINT_H@
+
+#endif /*_CONFIGURATION_HEADER_PCONFIG_H_*/

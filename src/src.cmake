@@ -5,12 +5,12 @@
 
 file(GLOB_RECURSE SOURCES ${PROJECT_ROOT}/src/*.cpp)
 
-include_directories(${PROJECT_ROOT}/build
-                    ${PROJECT_ROOT}/include
+include_directories(${PROJECT_ROOT}/include
                     ${PROJECT_ROOT}/src/include
                     ${PROJECT_ROOT}/src
                     ${PROJECT_ROOT}/src/gfx
-                    ${PROJECT_ROOT}/src/simd)
+                    ${PROJECT_ROOT}/src/simd
+                    ${PROJECT_OUT}/include)
 
 set(LIB_NAME picasso2_sw)
 

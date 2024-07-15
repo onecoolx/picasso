@@ -1,6 +1,9 @@
 #!/bin/sh
 
-mkdir proj
+if [ ! -d "./proj" ]; then
+    mkdir proj
+fi
+
 cd proj
 
 build_type="-DCMAKE_BUILD_TYPE=Debug"
