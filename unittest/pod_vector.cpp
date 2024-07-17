@@ -1,7 +1,8 @@
 
 #include "test.h"
-#include "src/include/data_vector.h"
 #include "timeuse.h"
+#define _DEBUG 1
+#include "src/include/data_vector.h"
 
 using namespace picasso;
 
