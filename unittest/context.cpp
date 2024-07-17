@@ -12,8 +12,8 @@ TEST(Context, AntialiasAndGamma)
 {
     ps_context * ctx = get_context();
 // gamma
-    double g = 1.5;
-    double old = ps_set_gamma(ctx, g);
+    float g = 1.5;
+    float old = ps_set_gamma(ctx, g);
     ASSERT_EQ(STATUS_SUCCEED, ps_last_status());
 
     old = ps_set_gamma(ctx, old);
