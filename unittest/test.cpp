@@ -1,6 +1,4 @@
-
 #include "test.h"
-
 
 TEST(SystemDeathTest, Init) 
 { 

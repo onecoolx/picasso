@@ -27,6 +27,8 @@ option(OPT_FONT_CONFIG "Build FontConfig is support." OFF)
 option(OPT_LOW_MEMORY "Build Low Memory used support." OFF)
 option(OPT_SYSTEM_MALLOC "Build System Memory Allocator (new/delete/malloc/free/realloc/calloc) used support." OFF)
 
+option(OPT_UNITTEST "Build Unit tests" OFF)
+
 if (NOT CMAKE_BUILD_TYPE)
 	set(CMAKE_BUILD_TYPE Debug CACHE STRING "Build Type" FORCE)
 endif()
@@ -39,6 +41,11 @@ include (${CMAKE_CURRENT_LIST_DIR}/ext/ext.cmake)
 include (${CMAKE_CURRENT_LIST_DIR}/include/include.cmake)
 include (${CMAKE_CURRENT_LIST_DIR}/test/test.cmake)
 include (${CMAKE_CURRENT_LIST_DIR}/demos/demos.cmake)
+
+if (OPT_UNITTEST)
+enable_testing()
+include (${CMAKE_CURRENT_LIST_DIR}/unittest/unittest.cmake)
+endif(OPT_UNITTEST)
 
 include(CheckIncludeFile)
 check_include_file(stdint.h HAVE_STDINT_H)
