@@ -27,7 +27,7 @@ if (WIN32)
         COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_RUNTIME_DLLS:unit_test> $<TARGET_FILE_DIR:unit_test>
         COMMAND_EXPAND_LISTS
     )
-endif ()
+endif()
 
 add_test(NAME unittest COMMAND unit_test)
 
