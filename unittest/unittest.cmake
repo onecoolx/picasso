@@ -21,5 +21,13 @@ include_directories(${PROJECT_ROOT})
 add_executable(unit_test ${UNIT_SOURCES})
 target_link_libraries(unit_test PRIVATE GTest::GTest ${LIB_NAME})
 
+if (WIN32)
+    add_custom_command(
+        TARGET unit_test POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_RUNTIME_DLLS:unit_test> $<TARGET_FILE_DIR:unit_test>
+        COMMAND_EXPAND_LISTS
+    )
+endif ()
+
 add_test(NAME unittest COMMAND unit_test)
 
