@@ -12,26 +12,30 @@ Picasso is a high quality vector graphic rendering library. It has high performa
 #### linux:
 ```
 1. Install cmake above v3.16 on your system
+ $ sudo apt install cmake
+
 2. Build project
-./build_linux.sh
-cd proj
-make
+ ./build_linux.sh
+ cd proj
+ make
 ```
 #### windows:
 ```
 1. Install cmake above v3.16 on your windows system and register path environment variables.
+ c:\> winget install --id Kitware.CMake -e
+
 2. Build project
-./build_windows.bat
-cd proj
-<open "picasso.sln" with visual studio>
+ build_windows.bat
+ cd proj
+ <open "picasso.sln" with visual studio>
 ```
 #### macosx:
 ```
 1. Install cmake above v3.16 on your system
 2. Build project
-./build_macosx.sh
-cd proj
-<open "picasso.xcodeproj" with Xcode>
+ ./build_macosx.sh
+ cd proj
+ <open "picasso.xcodeproj" with Xcode>
 ```
 
 ## **Documents**
