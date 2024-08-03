@@ -32,6 +32,8 @@ Picasso is a high quality vector graphic rendering library. It has high performa
 #### macosx:
 ```
 1. Install cmake above v3.16 on your system
+ $ brew install cmake
+
 2. Build project
  ./build_macosx.sh
  cd proj
