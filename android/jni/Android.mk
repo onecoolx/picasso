@@ -15,6 +15,7 @@ LOCAL_C_INCLUDES := \
 	$(LOCAL_PATH)/$(SOURCE_PATH)/include/ \
 	$(LOCAL_PATH)/$(SOURCE_PATH)/src/ \
 	$(LOCAL_PATH)/$(SOURCE_PATH)/src/include/ \
+	$(LOCAL_PATH)/$(SOURCE_PATH)/src/font/ \
 	$(LOCAL_PATH)/$(SOURCE_PATH)/src/gfx/ \
 	$(LOCAL_PATH)/$(SOURCE_PATH)/src/simd/
 
@@ -24,9 +25,9 @@ LOCAL_SRC_FILES := \
 	$(SOURCE_PATH)/src/core/device.cpp \
 	$(SOURCE_PATH)/src/core/graphic_path.cpp \
 	$(SOURCE_PATH)/src/core/matrix.cpp \
+	$(SOURCE_PATH)/src/font/font_adapter_freetype2.cpp \
+	$(SOURCE_PATH)/src/font/font_load_freetype2.cpp \
 	$(SOURCE_PATH)/src/gfx/gfx_device.cpp \
-	$(SOURCE_PATH)/src/gfx/gfx_font_adapter_freetype2.cpp \
-	$(SOURCE_PATH)/src/gfx/gfx_font_load_freetype2.cpp \
 	$(SOURCE_PATH)/src/gfx/gfx_image_filters.cpp \
 	$(SOURCE_PATH)/src/gfx/gfx_blur.cpp \
 	$(SOURCE_PATH)/src/gfx/gfx_gradient_adapter.cpp \
