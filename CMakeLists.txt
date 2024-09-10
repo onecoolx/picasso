@@ -49,6 +49,10 @@ endif(OPT_UNITTEST)
 
 include(CheckIncludeFile)
 check_include_file(stdint.h HAVE_STDINT_H)
+check_include_file(stdlib.h HAVE_STDLIB_H)
+check_include_file(stddef.h HAVE_STDDEF_H)
+check_include_file(string.h HAVE_STRING_H)
+check_include_file(memory.h HAVE_MEMORY_H)
 
 if (OPT_FORMAT_ABGR)
     set(ENABLE_FORMAT_ABGR 1)
