@@ -1,20 +1,41 @@
-/* Picasso - a vector graphics library
+/*
+ * Copyright (c) 2024, Zhang Ji Peng
+ * All rights reserved.
  *
- * Copyright (C) 2013 Zhang Ji Peng
- * Contact: onecoolx@gmail.com
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * * Redistributions of source code must retain the above copyright notice, this
+ *   list of conditions and the following disclaimer.
+ *
+ * * Redistributions in binary form must reproduce the above copyright notice,
+ *   this list of conditions and the following disclaimer in the documentation
+ *   and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <stdio.h>
 #include "common.h"
+
+#if ENABLE(FREE_TYPE2)
 #include "convert.h"
 #include "matrix.h"
-#include "gfx_font_adapter.h"
+#include "font_adapter.h"
+
 #include "gfx_rasterizer_scanline.h"
 #include "gfx_scanline.h"
 #include "gfx_scanline_renderer.h"
 #include "gfx_scanline_storage.h"
 
-#if ENABLE(FREE_TYPE2)
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include FT_OUTLINE_H
@@ -22,7 +43,9 @@
 #include "graphic_helper.h"
 #include "graphic_base.h"
 
-namespace gfx {
+using namespace gfx;
+
+namespace picasso {
 
 extern FT_Library g_library;
 extern char* _font_by_name(const char* face, float size, float weight, bool italic);
@@ -69,12 +92,12 @@ public:
     scalar ascent;
     scalar descent;
     scalar leading;
-    unsigned int units_per_em;
+    uint32_t units_per_em;
     //font special
     FT_Library library;
     //current glyph
-    unsigned int cur_glyph_index;
-    unsigned int cur_data_size;
+    uint32_t cur_glyph_index;
+    uint32_t cur_data_size;
     glyph_type cur_data_type;
     rect cur_bound_rect;
     scalar cur_advance_x;
@@ -84,11 +107,11 @@ public:
     gfx_serialized_scanlines_adaptor_bin cur_font_storage_bin;
 };
 
-gfx_font_adapter::gfx_font_adapter(const char* name, int charset, scalar size, scalar weight,
+font_adapter::font_adapter(const char* name, int charset, scalar size, scalar weight,
                                    bool italic, bool hint, bool flip, bool a, const trans_affine* mtx)
     : m_impl(new font_adapter_impl)
 {
-    FT_Encoding char_set = (charset == charset_latin) ? FT_ENCODING_NONE : FT_ENCODING_UNICODE;
+    FT_Encoding char_set = (charset == charset_latin1) ? FT_ENCODING_NONE : FT_ENCODING_UNICODE;
     m_impl->antialias = a;
     m_impl->flip_y = flip;
     m_impl->hinting = hint;
@@ -113,16 +136,16 @@ gfx_font_adapter::gfx_font_adapter(const char* name, int charset, scalar size, s
     }
 }
 
-gfx_font_adapter::~gfx_font_adapter()
+font_adapter::~font_adapter()
 {
     delete m_impl;
 }
 
-void gfx_font_adapter::active(void)
+void font_adapter::active(void)
 {
 }
 
-void gfx_font_adapter::deactive(void)
+void font_adapter::deactive(void)
 {
 }
 
@@ -131,7 +154,7 @@ static inline float int26p6_to_flt(int p)
     return float(p) / 64.0f;
 }
 
-void gfx_font_adapter::add_kerning(unsigned int first, unsigned int second, scalar* x, scalar* y)
+void font_adapter::add_kerning(uint32_t first, uint32_t second, scalar* x, scalar* y)
 {
     if (m_impl->font && first && second && FT_HAS_KERNING(m_impl->font)) {
         FT_Vector delta;
@@ -403,8 +426,7 @@ static void decompose_ft_bitmap_mono(const FT_Bitmap& bitmap, int x, int y,
         sl.reset_spans();
         bitset_iterator bits(buf, 0);
         for (int j = 0; j < (int)bitmap.width; j++) {
-            if (bits.bit()) sl.add_cell(x + j, cover_full)
-                                  ; //do nothing
+            if (bits.bit()) sl.add_cell(x + j, cover_full); //do nothing
             ++bits;
         }
         buf += pitch;
@@ -415,7 +437,7 @@ static void decompose_ft_bitmap_mono(const FT_Bitmap& bitmap, int x, int y,
     }
 }
 
-bool gfx_font_adapter::prepare_glyph(unsigned int code)
+bool font_adapter::prepare_glyph(uint32_t code)
 {
     if (m_impl->font) {
         m_impl->cur_glyph_index = FT_Get_Char_Index(m_impl->font, code);
@@ -447,7 +469,7 @@ bool gfx_font_adapter::prepare_glyph(unsigned int code)
                 if (decompose_ft_outline(m_impl->font->glyph->outline,
                                          m_impl->flip_y, m_impl->matrix, m_impl->cur_font_path)) {
                     m_impl->cur_bound_rect = get_bounding_rect(m_impl->cur_font_path);
-                    m_impl->cur_data_size = m_impl->cur_font_path.total_byte_size() + sizeof(unsigned int); //count data
+                    m_impl->cur_data_size = m_impl->cur_font_path.total_byte_size() + sizeof(uint32_t); //count data
                     m_impl->cur_advance_x = FLT_TO_SCALAR(int26p6_to_flt(m_impl->font->glyph->advance.x));
                     m_impl->cur_advance_y = FLT_TO_SCALAR(int26p6_to_flt(m_impl->font->glyph->advance.y));
                     m_impl->matrix.transform(&m_impl->cur_advance_x, &m_impl->cur_advance_y);
@@ -512,13 +534,13 @@ bool gfx_font_adapter::prepare_glyph(unsigned int code)
     return false;
 }
 
-void gfx_font_adapter::write_glyph_to(byte* buffer)
+void font_adapter::write_glyph_to(byte* buffer)
 {
     if (buffer && m_impl->cur_data_size) {
         if (m_impl->cur_data_type == glyph_type_outline) {
-            unsigned int count = m_impl->cur_font_path.total_vertices();
-            mem_copy(buffer, &count, sizeof(unsigned int));
-            buffer += sizeof(unsigned int);
+            uint32_t count = m_impl->cur_font_path.total_vertices();
+            mem_copy(buffer, &count, sizeof(uint32_t));
+            buffer += sizeof(uint32_t);
             m_impl->cur_font_path.serialize_to(buffer);
         } else { // mono glyph
             m_impl->cur_font_scanlines_bin.serialize(buffer);
@@ -526,18 +548,18 @@ void gfx_font_adapter::write_glyph_to(byte* buffer)
     }
 }
 
-void* gfx_font_adapter::create_storage(byte* buf, unsigned int len, scalar x, scalar y)
+void* font_adapter::create_storage(byte* buf, uint32_t len, scalar x, scalar y)
 {
     m_impl->cur_font_storage_bin.init(buf, len, SCALAR_TO_FLT(Ceil(x)), SCALAR_TO_FLT(Ceil(y)));
     return (void*)&m_impl->cur_font_storage_bin;
 }
 
-void gfx_font_adapter::destroy_storage(void*)
+void font_adapter::destroy_storage(void*)
 {
     // do nothing
 }
 
-void gfx_font_adapter::translate_storage(void* storage, scalar x, scalar y)
+void font_adapter::translate_storage(void* storage, scalar x, scalar y)
 {
     gfx_serialized_scanlines_adaptor_bin* sd = (gfx_serialized_scanlines_adaptor_bin*)storage;
     int ox = sd->x();
@@ -546,59 +568,60 @@ void gfx_font_adapter::translate_storage(void* storage, scalar x, scalar y)
     sd->setY(oy + SCALAR_TO_INT(Ceil(y)));
 }
 
-scalar gfx_font_adapter::height(void) const
+scalar font_adapter::height(void) const
 {
     return m_impl->height;
 }
 
-scalar gfx_font_adapter::ascent(void) const
+scalar font_adapter::ascent(void) const
 {
     return m_impl->ascent;
 }
 
-scalar gfx_font_adapter::descent(void) const
+scalar font_adapter::descent(void) const
 {
     return m_impl->descent;
 }
 
-scalar gfx_font_adapter::leading(void) const
+scalar font_adapter::leading(void) const
 {
     return m_impl->leading;
 }
 
-unsigned int gfx_font_adapter::units_per_em(void) const
+uint32_t font_adapter::units_per_em(void) const
 {
     return m_impl->units_per_em;
 }
-unsigned int gfx_font_adapter::glyph_index(void) const
+
+uint32_t font_adapter::glyph_index(void) const
 {
     return m_impl->cur_glyph_index;
 }
 
-unsigned int gfx_font_adapter::data_size(void) const
+uint32_t font_adapter::data_size(void) const
 {
     return m_impl->cur_data_size;
 }
 
-glyph_type gfx_font_adapter::data_type(void) const
+glyph_type font_adapter::data_type(void) const
 {
     return m_impl->cur_data_type;
 }
 
-const rect& gfx_font_adapter::bounds(void) const
+const rect& font_adapter::bounds(void) const
 {
     return m_impl->cur_bound_rect;
 }
 
-scalar gfx_font_adapter::advance_x(void) const
+scalar font_adapter::advance_x(void) const
 {
     return m_impl->cur_advance_x;
 }
 
-scalar gfx_font_adapter::advance_y(void) const
+scalar font_adapter::advance_y(void) const
 {
     return m_impl->cur_advance_y;
 }
 
-}
+} // namespace picasso
 #endif /* FREE_TYPE2 */

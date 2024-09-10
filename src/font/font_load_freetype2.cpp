@@ -1,7 +1,27 @@
-/* Picasso - a vector graphics library
+/*
+ * Copyright (c) 2024, Zhang Ji Peng
+ * All rights reserved.
  *
- * Copyright (C) 2008 Zhang Ji Peng
- * Contact: onecoolx@gmail.com
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * * Redistributions of source code must retain the above copyright notice, this
+ *   list of conditions and the following disclaimer.
+ *
+ * * Redistributions in binary form must reproduce the above copyright notice,
+ *   this list of conditions and the following disclaimer in the documentation
+ *   and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include "common.h"
@@ -13,7 +33,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#if defined(WINCE) || defined(WIN32)
+#if defined(WIN32)
     #define strncasecmp _strnicmp
 #endif
 
@@ -29,57 +49,15 @@
 #define MAX_CONFIG_LINE    MAX_PATH_LEN
 
 #if ENABLE(FONT_CONFIG)
-#include <fontconfig/fontconfig.h>
+    #include <fontconfig/fontconfig.h>
 #else //not fontconfig
-#if defined(WINCE)
-#include <windows.h>
-#define CONFIG_FILE GetFilePath(L"font_config.cfg")
-#if defined(LOAD_FONT_WITH_PATH)
+    #define F(txt)   txt
+    #define OPENFILE   fopen
+    #define CONFIG_FILE "font_config.cfg"
     #define CONFIG_PATH(path) path
-#else
-    #define CONFIG_PATH(path) GetFontPath(path)
-#endif
-static TCHAR g_path[MAX_PATH_LEN];
-static inline LPTSTR GetFilePath(LPTSTR file)
-{
-    TCHAR* p = 0;
-    GetModuleFileName(NULL, g_path, MAX_PATH_LEN);
-    p = wcsrchr(g_path, '\\');
-    p++;
-    *p = 0;
-    lstrcat (g_path, file);
-    return g_path;
-}
-
-static inline char* GetFontPath(const char* name)
-{
-    TCHAR* p = 0;
-    static char p_path[MAX_PATH_LEN];
-    GetModuleFileName(NULL, g_path, MAX_PATH_LEN);
-    p = wcsrchr(g_path, '\\');
-    p++;
-    *p = 0;
-
-    int len = ::WideCharToMultiByte(CP_ACP, WC_COMPOSITECHECK, g_path, -1, p_path, MAX_PATH_LEN, NULL, NULL);
-
-    if ((len + strlen(name)) > (MAX_PATH_LEN - 1)) {
-        return 0;
-    }
-
-    strcat(p_path, name);
-    return p_path;
-}
-#define OPENFILE   _wfopen
-#define F(txt)    L##txt
-#else
-#define F(txt)   txt
-#define OPENFILE   fopen
-#define CONFIG_FILE "font_config.cfg"
-#define CONFIG_PATH(path) path
-#endif
 #endif //FONT_CONFIG
 
-namespace gfx {
+namespace picasso {
 
 struct font_item {
     char font_name[MAX_FONT_NAME_LENGTH];
@@ -380,7 +358,7 @@ void _free_fonts(void)
 char* _font_by_name(const char* face, float size, float weight, bool italic)
 {
     // find from cache
-    char tname[64] = {0};
+    char tname[68] = {0};
     strncpy(tname, face, 64);
     char font_key[128] = {0};
     sprintf(font_key, "%s-%4.0f-%4.0f-%d", tname, size, weight, italic ? 1 : 0);
@@ -444,22 +422,22 @@ char* _font_by_name(const char* face, float size, float weight, bool italic)
 }
 #endif
 
-}
+} // namespace picasso
 
 bool platform_font_init(void)
 {
 #if ENABLE(FONT_CONFIG)
     FcInit();
 #endif
-    return gfx::_load_fonts();
+    return picasso::_load_fonts();
 }
 
 void platform_font_shutdown(void)
 {
-    gfx::_free_fonts();
+    picasso::_free_fonts();
 #if ENABLE(FONT_CONFIG)
-    if (gfx::g_FcConfig) {
-        FcConfigDestroy(gfx::g_FcConfig);
+    if (picasso::g_FcConfig) {
+        FcConfigDestroy(picasso::g_FcConfig);
     }
 
     FcFini();

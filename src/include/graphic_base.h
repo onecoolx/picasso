@@ -402,7 +402,13 @@ typedef enum {
     text_stroke,
 } text_style;
 
-}
+// charset type
+typedef enum {
+    charset_latin1,
+    charset_unicode,
+} charset_type;
+
+} // namespace picasso
 
 using namespace picasso;
 

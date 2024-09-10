@@ -19,7 +19,6 @@ class abstract_raster_adapter;
 class abstract_rendering_buffer;
 class abstract_mask_layer;
 class abstract_gradient_adapter;
-class abstract_font_adapter;
 
 class device
 {
@@ -47,13 +46,6 @@ public:
     // gradient adapter
     virtual abstract_gradient_adapter* create_gradient_adapter(void) = 0;
     virtual void destroy_gradient_adapter(abstract_gradient_adapter* g) = 0;
-
-    // font adapter
-    virtual abstract_font_adapter* create_font_adapter(const char* name, int charset,
-                                                       scalar height, scalar weight, bool italic, bool hint, bool flip,
-                                                       bool antialias, const trans_affine* mtx) = 0;
-    virtual void destroy_font_adapter(abstract_font_adapter* f) = 0;
-
 protected:
     device() { }
 };

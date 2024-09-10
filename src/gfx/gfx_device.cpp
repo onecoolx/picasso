@@ -12,7 +12,6 @@
 #include "gfx_painter.h"
 #include "gfx_raster_adapter.h"
 #include "gfx_gradient_adapter.h"
-#include "gfx_font_adapter.h"
 #include "gfx_mask_layer.h"
 #include "gfx_pixfmt_rgba.h"
 #include "gfx_pixfmt_rgb.h"
@@ -120,15 +119,4 @@ void gfx_device::destroy_gradient_adapter(abstract_gradient_adapter* g)
     delete g;
 }
 
-abstract_font_adapter* gfx_device::create_font_adapter(const char* name, int charset, scalar height, scalar weight,
-                                                       bool italic, bool hint, bool flip, bool antialias, const trans_affine* mtx)
-{
-    return new gfx_font_adapter(name, charset, height, weight, italic, hint, flip, antialias, mtx);
-}
-
-void gfx_device::destroy_font_adapter(abstract_font_adapter* f)
-{
-    delete f;
-}
-
-}
+} //namespace gfx

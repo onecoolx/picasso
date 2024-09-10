@@ -23,6 +23,7 @@ class font_adapter;
 class graphic_path;
 class trans_affine;
 class mask_layer;
+class font;
 
 class painter
 {
@@ -44,7 +45,7 @@ public:
     void render_mask(const mask_layer& m, bool mask);
     void render_copy(rendering_buffer& src, const rect* rect, const painter* dst, int off_x, int off_y);
 
-    void render_glyph(context_state* state, raster_adapter& raster, const font_adapter* font, int type);
+    void render_glyph(context_state* state, raster_adapter& raster, const font* f, int type);
     void render_glyphs_raster(context_state* state, raster_adapter& raster, int style);
 private:
     void init_raster_data(context_state*, unsigned int, raster_adapter&, const vertex_source&, const trans_affine&);

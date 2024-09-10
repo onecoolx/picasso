@@ -8,6 +8,7 @@ file(GLOB_RECURSE SOURCES ${PROJECT_ROOT}/src/*.cpp)
 include_directories(${PROJECT_ROOT}/include
                     ${PROJECT_ROOT}/src/include
                     ${PROJECT_ROOT}/src
+                    ${PROJECT_ROOT}/src/font
                     ${PROJECT_ROOT}/src/gfx
                     ${PROJECT_ROOT}/src/simd
                     ${PROJECT_OUT}/include)
@@ -24,7 +25,7 @@ if (WIN32)
 elseif (APPLE)
     set(SOURCES
         ${SOURCES}
-        ${PROJECT_ROOT}/src/gfx/gfx_font_adapter_apple.mm
+        ${PROJECT_ROOT}/src/font/font_adapter_apple.mm
     )
 endif()
 

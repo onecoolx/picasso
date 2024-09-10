@@ -20,8 +20,8 @@
 
 namespace picasso {
 
-font_engine::font_engine(unsigned int max_fonts)
-    : m_fonts(pod_allocator<font_adapter*>::allocate(max_fonts))
+font_engine::font_engine(uint32_t max_fonts)
+    : m_fonts(pod_allocator<font*>::allocate(max_fonts))
     , m_current(0)
     , m_max_fonts(max_fonts)
     , m_num_fonts(0)
@@ -29,7 +29,7 @@ font_engine::font_engine(unsigned int max_fonts)
     , m_stamp_change(false)
     , m_antialias(false)
 {
-    memset(m_fonts, 0, sizeof(font_adapter*) * max_fonts);
+    memset(m_fonts, 0, sizeof(font*) * max_fonts);
     m_signature = (char*)mem_calloc(1, MAX_SIGNATURE_BUFFER_LEN);
 }
 
@@ -39,11 +39,11 @@ font_engine::~font_engine()
         mem_free(m_signature);
     }
 
-    for (unsigned int i = 0; i < m_num_fonts; ++i) {
+    for (uint32_t i = 0; i < m_num_fonts; ++i) {
         delete m_fonts[i];
     }
 
-    pod_allocator<font_adapter*>::deallocate(m_fonts, m_max_fonts);
+    pod_allocator<font*>::deallocate(m_fonts, m_max_fonts);
 }
 
 void font_engine::set_antialias(bool b)
@@ -64,7 +64,7 @@ void font_engine::set_transform(const trans_affine& mtx)
 
 int font_engine::find_font(const char* font_signature)
 {
-    for (unsigned int i = 0; i < m_num_fonts; i++) {
+    for (uint32_t i = 0; i < m_num_fonts; i++) {
         if (strcmp(m_fonts[i]->signature(), font_signature) == 0) {
             return (int)i;
         }
@@ -74,7 +74,7 @@ int font_engine::find_font(const char* font_signature)
 
 bool font_engine::create_font(const font_desc& desc)
 {
-    if (!font_adapter::create_signature(desc, m_affine, m_antialias, m_signature)) {
+    if (!font::create_signature(desc, m_affine, m_antialias, m_signature)) {
         return false;
     }
 
@@ -88,11 +88,11 @@ bool font_engine::create_font(const font_desc& desc)
     } else {
         if (m_num_fonts >= m_max_fonts) {
             delete m_fonts[0];
-            mem_copy(m_fonts, m_fonts + 1, (m_max_fonts - 1) * sizeof(font_adapter*));
+            mem_copy(m_fonts, m_fonts + 1, (m_max_fonts - 1) * sizeof(font*));
             m_num_fonts = m_max_fonts - 1;
         }
 
-        m_fonts[m_num_fonts] = new font_adapter(desc, m_signature, m_affine, m_antialias);
+        m_fonts[m_num_fonts] = new font(desc, m_signature, m_affine, m_antialias);
         m_current = m_fonts[m_num_fonts];
         m_num_fonts++;
     }
@@ -112,8 +112,8 @@ void font_engine::shutdown(void)
     platform_font_shutdown();
 }
 
-// font adapter
-bool font_adapter::create_signature(const font_desc& desc, const trans_affine& mtx, bool anti, char* recv_sig)
+// font
+bool font::create_signature(const font_desc& desc, const trans_affine& mtx, bool anti, char* recv_sig)
 {
     if (!recv_sig) {
         return false; //out of memory.
@@ -146,26 +146,26 @@ bool font_adapter::create_signature(const font_desc& desc, const trans_affine& m
     return true;
 }
 
-void font_adapter::active(void)
+void font::active(void)
 {
     m_impl->active();
     m_prev_glyph = m_last_glyph = 0;
 }
 
-void font_adapter::deactive(void)
+void font::deactive(void)
 {
     m_prev_glyph = m_last_glyph = 0;
     m_impl->deactive();
 }
 
-void font_adapter::add_kerning(scalar* x, scalar* y)
+void font::add_kerning(scalar* x, scalar* y)
 {
     if (m_prev_glyph && m_last_glyph) {
         m_impl->add_kerning(m_prev_glyph->index, m_last_glyph->index, x, y);
     }
 }
 
-const glyph* font_adapter::get_glyph(unsigned int code)
+const glyph* font::get_glyph(uint32_t code)
 {
     const glyph* gl = m_cache->find_glyph(code);
     if (gl) {
@@ -191,15 +191,15 @@ const glyph* font_adapter::get_glyph(unsigned int code)
     return 0;
 }
 
-bool font_adapter::generate_raster(const glyph* g, scalar x, scalar y)
+bool font::generate_raster(const glyph* g, scalar x, scalar y)
 {
     if (g) {
         if (g->type == glyph_type_mono) {
             m_mono_storage.serialize_from(g->data, g->data_size, x, y);
             return true;
         } else {
-            unsigned int count = 0;
-            unsigned int offset = sizeof(unsigned int);
+            uint32_t count = 0;
+            uint32_t offset = sizeof(uint32_t);
             mem_copy(&count, g->data, offset);
             m_path_adaptor.serialize_from(count, g->data + offset, g->data_size - offset);
             m_path_adaptor.translate(x, y);
@@ -210,4 +210,4 @@ bool font_adapter::generate_raster(const glyph* g, scalar x, scalar y)
     }
 }
 
-}
+} // namespace picasso

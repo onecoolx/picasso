@@ -175,52 +175,12 @@ private:
     abstract_painter& operator=(const abstract_painter&);
 };
 
-// Font adapter interface
-class abstract_font_adapter
-{
-public:
-    virtual ~abstract_font_adapter() {}
-
-    virtual scalar height(void) const = 0;
-    virtual scalar ascent(void) const = 0;
-    virtual scalar descent(void) const = 0;
-    virtual scalar leading(void) const = 0;
-    virtual unsigned int units_per_em(void) const = 0;
-
-    virtual void active(void) = 0;
-    virtual void deactive(void) = 0;
-public:
-    // glyph create
-    virtual bool prepare_glyph(unsigned int code) = 0;
-    virtual void write_glyph_to(byte* buffer) = 0;
-    virtual void add_kerning(unsigned int first, unsigned int second, scalar* x, scalar* y) = 0;
-
-    virtual unsigned int glyph_index(void) const = 0;
-    virtual unsigned int data_size(void) const = 0;
-    virtual glyph_type data_type(void) const = 0;
-    virtual const rect& bounds(void) const = 0;
-    virtual scalar advance_x(void) const = 0;
-    virtual scalar advance_y(void) const = 0;
-
-public:
-    // scanline storage for mono and gray
-    virtual void* create_storage(byte* buf, unsigned int len, scalar x, scalar y) = 0;
-    virtual void destroy_storage(void*) = 0;
-    virtual void translate_storage(void*, scalar x, scalar y) = 0;
-protected:
-    abstract_font_adapter() {}
-private:
-    abstract_font_adapter(const abstract_font_adapter&);
-    abstract_font_adapter& operator=(const abstract_font_adapter&);
-};
-
 }
 
 using picasso::abstract_rendering_buffer;
 using picasso::abstract_raster_adapter;
 using picasso::abstract_painter;
 using picasso::abstract_mask_layer;
-using picasso::abstract_font_adapter;
 using picasso::abstract_gradient_adapter;
 
 #endif/*_OBJ_INTERFACES_H_*/

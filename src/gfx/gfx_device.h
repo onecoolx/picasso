@@ -35,11 +35,6 @@ public:
 
     virtual abstract_gradient_adapter* create_gradient_adapter(void);
     virtual void destroy_gradient_adapter(abstract_gradient_adapter* g);
-
-    virtual abstract_font_adapter* create_font_adapter(const char* name, int charset,
-                                                       scalar height, scalar weight, bool italic, bool hint, bool flip,
-                                                       bool antialias, const trans_affine* mtx);
-    virtual void destroy_font_adapter(abstract_font_adapter* f);
 protected:
     gfx_device();
 

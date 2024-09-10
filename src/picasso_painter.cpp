@@ -297,7 +297,7 @@ void painter::render_copy(rendering_buffer& src, const rect* r, const painter* d
     }
 }
 
-void painter::render_glyph(context_state* state, raster_adapter& raster, const font_adapter* font, int type)
+void painter::render_glyph(context_state* state, raster_adapter& raster, const font* ft, int type)
 {
     //FIXME: support other source !
     m_impl->set_alpha(state->alpha);
@@ -306,13 +306,13 @@ void painter::render_glyph(context_state* state, raster_adapter& raster, const f
     m_impl->set_font_fill_color(state->font_fcolor);
 
     if (type == glyph_type_mono) {
-        mono_storage& mono = const_cast<font_adapter*>(font)->mono_adaptor();
+        mono_storage& mono = const_cast<font*>(ft)->mono_adaptor();
         scalar tx = state->world_matrix.tx();
         scalar ty = state->world_matrix.ty();
         mono.translate(tx, ty);
         m_impl->apply_mono_text_fill(mono.get_storage());
     } else {
-        conv_curve curve(const_cast<font_adapter*>(font)->path_adaptor());
+        conv_curve curve(const_cast<font*>(ft)->path_adaptor());
         //FIXME: support stroke feature!
         init_raster_data(state, raster_fill, raster, curve, state->world_matrix);
 

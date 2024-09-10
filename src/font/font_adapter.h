@@ -24,32 +24,50 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _PICASSO_PRIVATE_H_
-#define _PICASSO_PRIVATE_H_
+#ifndef _FONT_ADAPTER_H_
+#define _FONT_ADAPTER_H_
 
 #include "common.h"
-#include "convert.h"
+#include "interfaces.h"
+#include "non_copy.h"
 
 namespace picasso {
 
-class graphic_path;
+class font_adapter_impl;
 
-// Font
-bool _init_default_font(void);
-void _destory_default_font(void);
-ps_font* _default_font(void);
+class font_adapter : public non_copyable
+{
+public:
+    font_adapter(const char* name, int charset, scalar height, scalar weight,
+                     bool italic, bool hint, bool flip, bool antialias, const trans_affine* mtx);
+    ~font_adapter();
 
-// Path
-void _path_operation(conv_clipper::clip_op op, const graphic_path& a, const graphic_path& b, graphic_path& r);
+    scalar height(void) const;
+    scalar ascent(void) const;
+    scalar descent(void) const;
+    scalar leading(void) const;
+    uint32_t units_per_em(void) const;
 
-// Format
-int _bytes_per_color(ps_color_format fmt);
+    void active(void);
+    void deactive(void);
 
-} // namespace picasso
+    bool prepare_glyph(uint32_t code);
+    void write_glyph_to(byte* buffer);
+    void add_kerning(uint32_t f, uint32_t s, scalar* x, scalar* y);
 
-// Font Load
-bool platform_font_init(void);
+    uint32_t glyph_index(void) const;
+    uint32_t data_size(void) const;
+    glyph_type data_type(void) const;
+    const rect& bounds(void) const;
+    scalar advance_x(void) const;
+    scalar advance_y(void) const;
 
-void platform_font_shutdown(void);
+    void* create_storage(byte* buf, uint32_t buf_len, scalar x, scalar y);
+    void destroy_storage(void*);
+    void translate_storage(void*, scalar x, scalar y);
+private:
+    font_adapter_impl* m_impl;
+};
 
-#endif/*_PICASSO_PRIVATE_H_*/
+}
+#endif /*_FONT_ADAPTER_H_*/

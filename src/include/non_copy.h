@@ -24,32 +24,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _PICASSO_PRIVATE_H_
-#define _PICASSO_PRIVATE_H_
-
-#include "common.h"
-#include "convert.h"
+#ifndef _NON_COPYABLE_H_
+#define _NON_COPYABLE_H_
 
 namespace picasso {
 
-class graphic_path;
+class non_copyable
+{
+    non_copyable(const non_copyable&);
+    non_copyable & operator=(const non_copyable&);
+protected:
+    non_copyable() {}
+    ~non_copyable() {}
+};
 
-// Font
-bool _init_default_font(void);
-void _destory_default_font(void);
-ps_font* _default_font(void);
-
-// Path
-void _path_operation(conv_clipper::clip_op op, const graphic_path& a, const graphic_path& b, graphic_path& r);
-
-// Format
-int _bytes_per_color(ps_color_format fmt);
-
-} // namespace picasso
-
-// Font Load
-bool platform_font_init(void);
-
-void platform_font_shutdown(void);
-
-#endif/*_PICASSO_PRIVATE_H_*/
+}
+#endif /* _NON_COPYABLE_H_ */
