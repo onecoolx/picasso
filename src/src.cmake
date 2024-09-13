@@ -30,7 +30,13 @@ elseif (APPLE)
 endif()
 
 add_definitions(-DEXPORT)
-add_library(${LIB_NAME} ${SOURCES})
+if (BUILD_SHARED_LIBS)
+  set(BUILD_LIBS_TYPE SHARED)
+else()
+  set(BUILD_LIBS_TYPE STATIC)
+endif()
+
+add_library(${LIB_NAME} ${BUILD_LIBS_TYPE} ${SOURCES})
 install(TARGETS ${LIB_NAME} LIBRARY DESTINATION lib ARCHIVE DESTINATION lib RUNTIME DESTINATION bin)
 
 if (UNIX AND NOT APPLE)

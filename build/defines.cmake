@@ -5,7 +5,9 @@
 
 if (WIN32)
     add_compile_definitions(WIN32)
-    add_compile_definitions(DLL_EXPORT)
+    if (BUILD_SHARED_LIBS)
+        add_compile_definitions(DLL_EXPORT)
+    endif()
     add_compile_definitions(ENABLE_FAST_COPY=1)
     add_compile_definitions(ENABLE_SYSTEM_MALLOC=1)
     add_compile_definitions(__SSE2__=1)
