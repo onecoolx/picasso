@@ -12,6 +12,9 @@ set(VERSION_MINOR 8)
 set(VERSION_MICRO 0)
 set(VERSION_INFO ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_MICRO})
 
+option(BUILD_SHARED_LIBS "Build shared libraries (default)" ON)
+option(BUILD_STATIC_LIBS "Build static libraries" OFF)
+
 option(OPT_FORMAT_ABGR "Pixel format ABGR support." ON)
 option(OPT_FORMAT_ARGB "Pixel format ARGB support." ON)
 option(OPT_FORMAT_BGRA "Pixel format BGRA support." ON)
@@ -27,20 +30,46 @@ option(OPT_FONT_CONFIG "Build FontConfig is support." OFF)
 option(OPT_LOW_MEMORY "Build Low Memory used support." OFF)
 option(OPT_SYSTEM_MALLOC "Build System Memory Allocator (new/delete/malloc/free/realloc/calloc) used support." OFF)
 
+option(OPT_EXTENSIONS "Build extension libraries." ON)
+
+option(OPT_TESTS "Build test apps" ON)
+option(OPT_DEMOS "Build example demos" ON)
 option(OPT_UNITTEST "Build Unit tests" OFF)
 
 if (NOT CMAKE_BUILD_TYPE)
 	set(CMAKE_BUILD_TYPE Debug CACHE STRING "Build Type" FORCE)
 endif()
 
+if (NOT BUILD_SHARED_LIBS AND NOT BUILD_STATIC_LIBS)
+  set(BUILD_STATIC_LIBS ON)
+endif()
+
+if (BUILD_SHARED_LIBS)
+  set(BUILD_SHARED_LIBS ON)
+endif()
+
+if (BUILD_STATIC_LIBS)
+  set(BUILD_STATIC_LIBS ON)
+endif()
+
 include (${CMAKE_CURRENT_LIST_DIR}/build/configs.cmake)
 include (${CMAKE_CURRENT_LIST_DIR}/build/defines.cmake)
-include (${CMAKE_CURRENT_LIST_DIR}/third_party/third_party.cmake)
 include (${CMAKE_CURRENT_LIST_DIR}/src/src.cmake)
+
+if (OPT_EXTENSIONS)
+include (${CMAKE_CURRENT_LIST_DIR}/third_party/third_party.cmake)
 include (${CMAKE_CURRENT_LIST_DIR}/ext/ext.cmake)
+endif()
+
 include (${CMAKE_CURRENT_LIST_DIR}/include/include.cmake)
+
+if (OPT_TESTS)
 include (${CMAKE_CURRENT_LIST_DIR}/test/test.cmake)
+endif()
+
+if (OPT_DEMOS)
 include (${CMAKE_CURRENT_LIST_DIR}/demos/demos.cmake)
+endif()
 
 if (OPT_UNITTEST)
 enable_testing()
