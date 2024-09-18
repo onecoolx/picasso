@@ -33,7 +33,7 @@
 namespace picasso {
 
 font_adapter::font_adapter(const char* name, int charset, scalar size, scalar weight,
-                                   bool italic, bool hint, bool flip, bool a, const trans_affine* mtx) { }
+                           bool italic, bool hint, bool flip, bool a, const trans_affine* mtx) { }
 font_adapter::~font_adapter() { }
 void font_adapter::active(void) { }
 void font_adapter::deactive(void) { }

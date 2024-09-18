@@ -39,7 +39,7 @@ class font_adapter : public non_copyable
 {
 public:
     font_adapter(const char* name, int charset, scalar height, scalar weight,
-                     bool italic, bool hint, bool flip, bool antialias, const trans_affine* mtx);
+                 bool italic, bool hint, bool flip, bool antialias, const trans_affine* mtx);
     ~font_adapter();
 
     scalar height(void) const;

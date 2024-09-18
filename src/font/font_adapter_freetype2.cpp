@@ -108,7 +108,7 @@ public:
 };
 
 font_adapter::font_adapter(const char* name, int charset, scalar size, scalar weight,
-                                   bool italic, bool hint, bool flip, bool a, const trans_affine* mtx)
+                           bool italic, bool hint, bool flip, bool a, const trans_affine* mtx)
     : m_impl(new font_adapter_impl)
 {
     FT_Encoding char_set = (charset == charset_latin1) ? FT_ENCODING_NONE : FT_ENCODING_UNICODE;
@@ -426,7 +426,7 @@ static void decompose_ft_bitmap_mono(const FT_Bitmap& bitmap, int x, int y,
         sl.reset_spans();
         bitset_iterator bits(buf, 0);
         for (int j = 0; j < (int)bitmap.width; j++) {
-            if (bits.bit()) sl.add_cell(x + j, cover_full); //do nothing
+            if (bits.bit()) { sl.add_cell(x + j, cover_full); } //do nothing
             ++bits;
         }
         buf += pitch;

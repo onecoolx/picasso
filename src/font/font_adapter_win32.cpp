@@ -129,7 +129,7 @@ public:
 };
 
 font_adapter::font_adapter(const char* name, int charset, scalar height, scalar weight,
-                                   bool italic, bool hint, bool flip, bool a, const trans_affine* mtx)
+                           bool italic, bool hint, bool flip, bool a, const trans_affine* mtx)
     : m_impl(new font_adapter_impl)
 {
     int char_set = (charset == charset_latin1) ? ANSI_CHARSET : DEFAULT_CHARSET;
