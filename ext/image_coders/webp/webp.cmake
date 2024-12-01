@@ -3,7 +3,7 @@
 # Copyright (C) 2024 Zhang Ji Peng
 # Contact: onecoolx@gmail.com
 
-set(PXWEBP_DIR ${PROJECT_ROOT}/ext/image_loader/webp)
+set(PXWEBP_DIR ${PROJECT_ROOT}/ext/image_coders/webp)
 
 set(PXWEBP_SOURCES
     ${PXWEBP_DIR}/../psx_image_io.h

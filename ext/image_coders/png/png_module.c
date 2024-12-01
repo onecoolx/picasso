@@ -353,7 +353,7 @@ static int encode_png_data(psx_image_header* header, const psx_image* image, psx
     return 0;
 }
 
-psx_image_operator * png_coder = NULL;
+static psx_image_operator * png_coder = NULL;
 static module_handle lib_image = INVALID_HANDLE;
 
 typedef int (*register_func)(const char*, const ps_byte*, size_t, size_t, psx_priority_level, psx_image_operator*);

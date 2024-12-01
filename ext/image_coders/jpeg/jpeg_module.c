@@ -27,7 +27,7 @@ struct jpeg_error_pub {
 
 struct jpeg_write_pub {
     struct jpeg_destination_mgr dst;
-    unsigned char buffer[256];
+    uint8_t buffer[256];
     image_writer_fn writer;
     void* writer_param;
 };
@@ -354,7 +354,7 @@ static int release_write_jpg_info(psx_image_header* header)
     return 0;
 }
 
-psx_image_operator * jpg_coder = NULL;
+static psx_image_operator * jpg_coder = NULL;
 static module_handle lib_image = INVALID_HANDLE;
 
 typedef int (*register_func)(const char*, const ps_byte*, size_t, size_t, psx_priority_level, psx_image_operator*);

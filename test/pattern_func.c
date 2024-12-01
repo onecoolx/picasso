@@ -71,6 +71,7 @@ void set_pattern_data(unsigned char* data, ps_color_format fmt, int w, int h, in
     pt2 = ps_pattern_create_image(pam, WRAP_TYPE_REPEAT, WRAP_TYPE_REFLECT, pm);
     pt3 = ps_pattern_create_image(pam, WRAP_TYPE_REFLECT, WRAP_TYPE_REPEAT, pm);
     pt4 = ps_pattern_create_image(pam, WRAP_TYPE_REFLECT, WRAP_TYPE_REFLECT, pm);
+    ps_image_unref(pam);
 }
 
 void timer_action(ps_context* gc)

@@ -70,7 +70,6 @@ int modules_init(struct image_modules_mgr* mgr)
     return 0;
 }
 
-
 void modules_destroy(struct image_modules_mgr* mgr)
 {
     size_t i = 0;

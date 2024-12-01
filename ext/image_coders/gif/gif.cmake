@@ -3,7 +3,7 @@
 # Copyright (C) 2024 Zhang Ji Peng
 # Contact: onecoolx@gmail.com
 
-set(PXGIF_DIR ${PROJECT_ROOT}/ext/image_loader/gif)
+set(PXGIF_DIR ${PROJECT_ROOT}/ext/image_coders/gif)
 
 set(PXGIF_SOURCES
     ${PXGIF_DIR}/../psx_image_io.h

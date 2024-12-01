@@ -3,7 +3,7 @@
 # Copyright (C) 2024 Zhang Ji Peng
 # Contact: onecoolx@gmail.com
 
-set(PXIMG_DIR ${PROJECT_ROOT}/ext/image_loader)
+set(PXIMG_DIR ${PROJECT_ROOT}/ext/image_coders)
 
 set(PXIMG_SOURCES
     ${PXIMG_DIR}/psx_list.h

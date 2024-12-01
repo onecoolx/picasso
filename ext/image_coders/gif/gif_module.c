@@ -581,7 +581,7 @@ static int release_write_gif_info(psx_image_header* header)
     return 0;
 }
 
-psx_image_operator * gif_coder = NULL;
+static psx_image_operator * gif_coder = NULL;
 static module_handle lib_image = INVALID_HANDLE;
 
 typedef int (*register_func)(const char*, const ps_byte*, size_t, size_t, psx_priority_level, psx_image_operator*);

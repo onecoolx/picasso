@@ -427,7 +427,7 @@ void PICAPI ps_draw_text(ps_context* ctx, const ps_rect* area, const void* text,
         // draw the text
         if (ctx->state->font->desc.charset() == CHARSET_ANSI) {
             const char* p = (const char*)text;
-            while (*p && len) {
+            while (len && *p) {
                 _REGISTER_ char c = *p;
                 const picasso::glyph* glyph = ctx->fonts->current_font()->get_glyph(c);
                 if (glyph) {
@@ -446,7 +446,7 @@ void PICAPI ps_draw_text(ps_context* ctx, const ps_rect* area, const void* text,
             }
         } else {
             const ps_uchar16* p = (const ps_uchar16*)text;
-            while (*p && len) {
+            while (len && *p) {
                 _REGISTER_ ps_uchar16 c = *p;
                 const picasso::glyph* glyph = ctx->fonts->current_font()->get_glyph(c);
                 if (glyph) {
