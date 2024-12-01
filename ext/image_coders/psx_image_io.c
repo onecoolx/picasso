@@ -181,6 +181,12 @@ int _file_remove(const char* path)
     return remove(path);
 }
 
+#ifdef __APPLE__
+#define SO_EXT "dylib"
+#else
+#define SO_EXT "so"
+#endif
+
 size_t _module_get_modules(const char* dir_path, char* paths[], size_t size)
 {
     DIR* dir = NULL;
@@ -194,7 +200,7 @@ size_t _module_get_modules(const char* dir_path, char* paths[], size_t size)
 
     dir_path_len = strlen(dir_path);
     while ((de = readdir(dir)) != NULL) {
-        if (fnmatch("*.so", de->d_name, 0) != 0)
+        if (fnmatch("*."SO_EXT, de->d_name, 0) != 0)
             continue;
 
         if (paths && (nums < size)) {

@@ -38,7 +38,7 @@ int modules_init(struct image_modules_mgr* mgr)
         return -1;
     }
 
-    nums = _module_get_modules(modules_dir, NULL, 0);
+    nums = _module_get_modules(dir_path, NULL, 0);
     if (!nums) {
         fprintf(stderr, "no image modules found!\n");
         return -1;
@@ -46,7 +46,7 @@ int modules_init(struct image_modules_mgr* mgr)
 
     mgr->modules = (struct image_module_node*)calloc(nums, sizeof(struct image_module_node));
     mod_paths = (pchar**)calloc(nums, sizeof(pchar*));
-    _module_get_modules(modules_dir, mod_paths, nums);
+    _module_get_modules(dir_path, mod_paths, nums);
 
     for (i = 0, n = 0; i < nums; i++) {
         pchar * ps = mod_paths[i];
