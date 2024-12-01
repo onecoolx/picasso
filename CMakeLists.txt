@@ -21,7 +21,7 @@ option(OPT_FORMAT_BGR "Pixel format BGR support." ON)
 option(OPT_FORMAT_RGB565 "Pixel format RGB565 support." ON)
 option(OPT_FORMAT_RGB555 "Pixel format RGB555 support." ON)
 
-option(OPT_FAST_COPY "Build Fast Memory Copy used support." ON)
+option(OPT_FAST_COPY "Build Fast Memory Copy used support." OFF)
 option(OPT_FREE_TYPE2 "Build FreeType2 is support." OFF)
 option(OPT_FONT_CONFIG "Build FontConfig is support." OFF)
 option(OPT_LOW_MEMORY "Build Low Memory used support." OFF)
