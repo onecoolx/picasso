@@ -26,7 +26,7 @@
 
 struct cg_image_ctx {
     CGImageSourceRef source;
-
+    CGDataConsumerRef consumer;
     // write
     image_writer_fn writer;
     void* writer_param;
@@ -110,18 +110,122 @@ static int decode_image_data(psx_image_header* header, const psx_image* image, p
     return 0;
 }
 
+static int get_bpp(ps_color_format fmt)
+{
+    switch (fmt) {
+    case COLOR_FORMAT_RGBA:
+    case COLOR_FORMAT_BGRA:
+    case COLOR_FORMAT_ARGB:
+    case COLOR_FORMAT_ABGR:
+        return 4;
+    case COLOR_FORMAT_RGB:
+    case COLOR_FORMAT_BGR:
+        return 3;
+    case COLOR_FORMAT_RGB565:
+    case COLOR_FORMAT_RGB555:
+        return 2;
+    default:
+        return 4;
+    }
+}
+
+static int get_depth(ps_color_format fmt)
+{
+    switch (fmt) {
+    case COLOR_FORMAT_RGBA:
+    case COLOR_FORMAT_BGRA:
+    case COLOR_FORMAT_ARGB:
+    case COLOR_FORMAT_ABGR:
+        return 32;
+    case COLOR_FORMAT_RGB:
+    case COLOR_FORMAT_BGR:
+        return 24;
+    case COLOR_FORMAT_RGB565:
+    case COLOR_FORMAT_RGB555:
+        return 16;
+    default:
+        return 32;
+    }
+}
+
+static size_t consumer_putbytes(void* info, const void* buffer, size_t count)
+{
+    struct cg_image_ctx* ctx = (struct cg_image_ctx*)info;
+    ctx->writer(ctx->writer_param, buffer, count);
+    return count;
+}
+
+static const CGDataConsumerCallbacks callbacks = {
+    .putBytes = consumer_putbytes,
+};
 
 static int write_image_info(const psx_image* image, image_writer_fn func, void* param, float quality, psx_image_header* header)
 {
+    struct cg_image_ctx* ctx = (struct cg_image_ctx*)calloc(1, sizeof(struct cg_image_ctx));
+    if (!ctx) {
+        return -1; // out of memory.
+    }
+
+    ctx->writer = func;
+    ctx->writer_param = param;
+
+    ctx->consumer = CGDataConsumerCreate(ctx, &callbacks);
+
+    header->priv = ctx;
+    header->width = image->width;
+    header->height = image->height;
+    header->pitch = image->pitch;
+    header->depth = get_depth(image->format);
+    header->bpp = get_bpp(image->format);
+    header->format = (int)image->format;
+    header->alpha = 1;
+    header->frames = 1;
+    return 0;
 }
 
 static int release_write_image_info(psx_image_header* header)
 {
+    struct cg_image_ctx* ctx = (struct cg_image_ctx*)header->priv;
+    CGDataConsumerRelease(ctx->consumer);
+    free(ctx);
+    return 0;
 }
 
 static int encode_image_data(psx_image_header* header, const psx_image* image, psx_image_frame* frame,
                                                                      int idx, const ps_byte* buffer, size_t buffer_len, int* ret)
 {
+    struct cg_image_ctx* ctx = (struct cg_image_ctx*)header->priv;
+    
+    CFStringRef str_type = CFStringCreateWithCString(kCFAllocatorDefault, "public.png", kCFStringEncodingUTF8);
+    CGImageDestinationRef dest_img = CGImageDestinationCreateWithDataConsumer(ctx->consumer, str_type, 1, nil);
+    CFRelease(str_type);
+
+    CGDataProviderRef data_provider = CGDataProviderCreateWithData(nil, buffer, buffer_len, nil); 
+    CGColorSpaceRef color_space = CGColorSpaceCreateWithName(kCGColorSpaceSRGB);
+
+    CGImageRef cg_image = CGImageCreate(
+        header->width,
+        header->height,
+        8,
+        header->bpp * 8,
+        header->pitch,
+        color_space,
+        kCGImageAlphaPremultipliedLast,
+        data_provider,
+        nil,
+        FALSE,
+        kCGRenderingIntentDefault
+    );
+    
+    CGImageDestinationAddImage(dest_img, cg_image, nil);
+    CGImageDestinationFinalize(dest_img);
+
+    CGImageRelease(cg_image);
+    CGColorSpaceRelease(color_space);
+    CGDataProviderRelease(data_provider);
+
+    CFRelease(dest_img);
+    return 0;
 }
 
 static psx_image_operator * cg_coder = NULL;
