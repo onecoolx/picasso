@@ -1,0 +1,151 @@
+\doxysection{Pattern}
+\label{group__pattern}\index{Pattern@{Pattern}}
+\doxysubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\label{group__pattern_gacfdf5c50e09ee1aef9694e78fbde961b}} 
+typedef enum \textbf{ \+\_\+ps\+\_\+wrap\+\_\+type} \textbf{ ps\+\_\+wrap\+\_\+type}
+\begin{DoxyCompactList}\small\item\em Fill type of pattern. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \textbf{ \+\_\+ps\+\_\+wrap\+\_\+type} \{ \textbf{ W\+R\+A\+P\+\_\+\+T\+Y\+P\+E\+\_\+\+R\+E\+P\+E\+AT}, 
+\textbf{ W\+R\+A\+P\+\_\+\+T\+Y\+P\+E\+\_\+\+R\+E\+F\+L\+E\+CT}
+ \}
+\begin{DoxyCompactList}\small\item\em Fill type of pattern. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+pattern} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+pattern\+\_\+create\+\_\+image} (const \textbf{ ps\+\_\+image} $\ast$img, \textbf{ ps\+\_\+wrap\+\_\+type} x\+\_\+wrap, \textbf{ ps\+\_\+wrap\+\_\+type} y\+\_\+wrap, const \textbf{ ps\+\_\+matrix} $\ast$transform)
+\begin{DoxyCompactList}\small\item\em Create a new pattern with an existing image. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+pattern\+\_\+transform} (\textbf{ ps\+\_\+pattern} $\ast$pattern, const \textbf{ ps\+\_\+matrix} $\ast$matrix)
+\begin{DoxyCompactList}\small\item\em Transform the pattern object. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+pattern} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+pattern\+\_\+ref} (\textbf{ ps\+\_\+pattern} $\ast$pattern)
+\begin{DoxyCompactList}\small\item\em Increases the reference count of the pattern by 1. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+pattern\+\_\+unref} (\textbf{ ps\+\_\+pattern} $\ast$pattern)
+\begin{DoxyCompactList}\small\item\em Decrements the reference count for the pattern object. If the reference count on the pattern falls to 0, the pattern is freed. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+
+
+\doxysubsection{Enumeration Type Documentation}
+\mbox{\label{group__pattern_gafdbe8821163a2902b7fa19558a01efef}} 
+\index{Pattern@{Pattern}!\_ps\_wrap\_type@{\_ps\_wrap\_type}}
+\index{\_ps\_wrap\_type@{\_ps\_wrap\_type}!Pattern@{Pattern}}
+\doxysubsubsection{\_ps\_wrap\_type}
+{\footnotesize\ttfamily enum \textbf{ \+\_\+ps\+\_\+wrap\+\_\+type}}
+
+
+
+Fill type of pattern. 
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{WRAP\_TYPE\_REPEAT@{WRAP\_TYPE\_REPEAT}!Pattern@{Pattern}}\index{Pattern@{Pattern}!WRAP\_TYPE\_REPEAT@{WRAP\_TYPE\_REPEAT}}}\mbox{\label{group__pattern_ggafdbe8821163a2902b7fa19558a01efefa33a3825c4a4bedf87e8043ba0769fdb5}} 
+W\+R\+A\+P\+\_\+\+T\+Y\+P\+E\+\_\+\+R\+E\+P\+E\+AT&Wrap repeat, the pattern is repeated. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{WRAP\_TYPE\_REFLECT@{WRAP\_TYPE\_REFLECT}!Pattern@{Pattern}}\index{Pattern@{Pattern}!WRAP\_TYPE\_REFLECT@{WRAP\_TYPE\_REFLECT}}}\mbox{\label{group__pattern_ggafdbe8821163a2902b7fa19558a01efefaa6a5ad01dde236ba1847d1af2e3cb6cd}} 
+W\+R\+A\+P\+\_\+\+T\+Y\+P\+E\+\_\+\+R\+E\+F\+L\+E\+CT&Wrap reflect the pattern is reflected. \\
+\hline
+
+\end{DoxyEnumFields}
+
+
+Definition at line 864 of file picasso.\+h.
+
+
+
+\doxysubsection{Function Documentation}
+\mbox{\label{group__pattern_ga39be185ceee870d24cc2b95e2e2dc553}} 
+\index{Pattern@{Pattern}!ps\_pattern\_create\_image@{ps\_pattern\_create\_image}}
+\index{ps\_pattern\_create\_image@{ps\_pattern\_create\_image}!Pattern@{Pattern}}
+\doxysubsubsection{ps\_pattern\_create\_image()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+pattern} $\ast$ ps\+\_\+pattern\+\_\+create\+\_\+image (\begin{DoxyParamCaption}\item[{const \textbf{ ps\+\_\+image} $\ast$}]{img,  }\item[{\textbf{ ps\+\_\+wrap\+\_\+type}}]{x\+\_\+wrap,  }\item[{\textbf{ ps\+\_\+wrap\+\_\+type}}]{y\+\_\+wrap,  }\item[{const \textbf{ ps\+\_\+matrix} $\ast$}]{transform }\end{DoxyParamCaption})}
+
+
+
+Create a new pattern with an existing image. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em img} & An existing image object which will be a tiled of pattern object. \\
+\hline
+{\em x\+\_\+wrap} & The horizontal wrap type, of the required pattern. \\
+\hline
+{\em y\+\_\+wrap} & The vertical wrap type, of the required pattern. \\
+\hline
+{\em transform} & A matrix that represents a transform for every tiled. If no transform needed, pass N\+U\+LL.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+If the function succeeds, the return value is the pointer to a new pattern object. If the function fails, the return value is N\+U\+LL.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+pattern\+\_\+ref}{p.}{group__pattern_ga288ba7739d222010cd45146b64e79306}, \doxyref{ps\+\_\+pattern\+\_\+unref}{p.}{group__pattern_gabbc7857ee6f53b0d47f9321c8c4a4351} 
+\end{DoxySeeAlso}
+\mbox{\label{group__pattern_ga288ba7739d222010cd45146b64e79306}} 
+\index{Pattern@{Pattern}!ps\_pattern\_ref@{ps\_pattern\_ref}}
+\index{ps\_pattern\_ref@{ps\_pattern\_ref}!Pattern@{Pattern}}
+\doxysubsubsection{ps\_pattern\_ref()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+pattern} $\ast$ ps\+\_\+pattern\+\_\+ref (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+pattern} $\ast$}]{pattern }\end{DoxyParamCaption})}
+
+
+
+Increases the reference count of the pattern by 1. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em pattern} & Pointer to an existing pattern object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+If the function succeeds, the return value is the pointer to the pattern object. If the function fails, the return value is N\+U\+LL.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+pattern\+\_\+create\+\_\+image}{p.}{group__pattern_ga39be185ceee870d24cc2b95e2e2dc553}, \doxyref{ps\+\_\+pattern\+\_\+unref}{p.}{group__pattern_gabbc7857ee6f53b0d47f9321c8c4a4351} 
+\end{DoxySeeAlso}
+\mbox{\label{group__pattern_ga98f3f55017d3fffd9c1e030bbcacc5e8}} 
+\index{Pattern@{Pattern}!ps\_pattern\_transform@{ps\_pattern\_transform}}
+\index{ps\_pattern\_transform@{ps\_pattern\_transform}!Pattern@{Pattern}}
+\doxysubsubsection{ps\_pattern\_transform()}
+{\footnotesize\ttfamily void ps\+\_\+pattern\+\_\+transform (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+pattern} $\ast$}]{pattern,  }\item[{const \textbf{ ps\+\_\+matrix} $\ast$}]{matrix }\end{DoxyParamCaption})}
+
+
+
+Transform the pattern object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em pattern} & Pointer to an existing pattern object. \\
+\hline
+{\em matrix} & Pointer to an existing matrix object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+pattern\+\_\+create\+\_\+image}{p.}{group__pattern_ga39be185ceee870d24cc2b95e2e2dc553}, \doxyref{ps\+\_\+pattern\+\_\+ref}{p.}{group__pattern_ga288ba7739d222010cd45146b64e79306}, \doxyref{ps\+\_\+pattern\+\_\+unref}{p.}{group__pattern_gabbc7857ee6f53b0d47f9321c8c4a4351} 
+\end{DoxySeeAlso}
+\mbox{\label{group__pattern_gabbc7857ee6f53b0d47f9321c8c4a4351}} 
+\index{Pattern@{Pattern}!ps\_pattern\_unref@{ps\_pattern\_unref}}
+\index{ps\_pattern\_unref@{ps\_pattern\_unref}!Pattern@{Pattern}}
+\doxysubsubsection{ps\_pattern\_unref()}
+{\footnotesize\ttfamily void ps\+\_\+pattern\+\_\+unref (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+pattern} $\ast$}]{pattern }\end{DoxyParamCaption})}
+
+
+
+Decrements the reference count for the pattern object. If the reference count on the pattern falls to 0, the pattern is freed. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em pattern} & Pointer to an existing pattern object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+pattern\+\_\+create\+\_\+image}{p.}{group__pattern_ga39be185ceee870d24cc2b95e2e2dc553}, \doxyref{ps\+\_\+pattern\+\_\+ref}{p.}{group__pattern_ga288ba7739d222010cd45146b64e79306} 
+\end{DoxySeeAlso}

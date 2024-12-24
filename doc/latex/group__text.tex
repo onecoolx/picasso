@@ -1,0 +1,522 @@
+\doxysection{Text}
+\label{group__text}\index{Text@{Text}}
+\doxysubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\label{group__text_gaa0ce9699b5df689c3b29adc7f9801305}} 
+typedef enum \textbf{ \+\_\+ps\+\_\+text\+\_\+type} \textbf{ ps\+\_\+text\+\_\+type}
+\begin{DoxyCompactList}\small\item\em Text rendering type. \end{DoxyCompactList}\item 
+\mbox{\label{group__text_ga40b43dab2c47ceb5785de4a3211776d5}} 
+typedef enum \textbf{ \+\_\+ps\+\_\+draw\+\_\+text\+\_\+type} \textbf{ ps\+\_\+draw\+\_\+text\+\_\+type}
+\begin{DoxyCompactList}\small\item\em Draw mode for rending text. \end{DoxyCompactList}\item 
+\mbox{\label{group__text_gab55b17eee1e3e00cfb82fa0e98d52fac}} 
+typedef enum \textbf{ \+\_\+ps\+\_\+text\+\_\+align} \textbf{ ps\+\_\+text\+\_\+align}
+\begin{DoxyCompactList}\small\item\em Text align mode for drawing text. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \textbf{ \+\_\+ps\+\_\+text\+\_\+type} \{ \textbf{ T\+E\+X\+T\+\_\+\+T\+Y\+P\+E\+\_\+\+S\+M\+O\+O\+TH}, 
+\textbf{ T\+E\+X\+T\+\_\+\+T\+Y\+P\+E\+\_\+\+M\+O\+NO}, 
+\textbf{ T\+E\+X\+T\+\_\+\+T\+Y\+P\+E\+\_\+\+S\+T\+R\+O\+KE}
+ \}
+\begin{DoxyCompactList}\small\item\em Text rendering type. \end{DoxyCompactList}\item 
+enum \textbf{ \+\_\+ps\+\_\+draw\+\_\+text\+\_\+type} \{ \textbf{ D\+R\+A\+W\+\_\+\+T\+E\+X\+T\+\_\+\+F\+I\+LL}, 
+\textbf{ D\+R\+A\+W\+\_\+\+T\+E\+X\+T\+\_\+\+S\+T\+R\+O\+KE}, 
+\textbf{ D\+R\+A\+W\+\_\+\+T\+E\+X\+T\+\_\+\+B\+O\+TH}
+ \}
+\begin{DoxyCompactList}\small\item\em Draw mode for rending text. \end{DoxyCompactList}\item 
+enum \textbf{ \+\_\+ps\+\_\+text\+\_\+align} \{ \newline
+\textbf{ T\+E\+X\+T\+\_\+\+A\+L\+I\+G\+N\+\_\+\+C\+E\+N\+T\+ER} = 0, 
+\textbf{ T\+E\+X\+T\+\_\+\+A\+L\+I\+G\+N\+\_\+\+T\+OP} = 1, 
+\textbf{ T\+E\+X\+T\+\_\+\+A\+L\+I\+G\+N\+\_\+\+B\+O\+T\+T\+OM} = 2, 
+\textbf{ T\+E\+X\+T\+\_\+\+A\+L\+I\+G\+N\+\_\+\+L\+E\+FT} = 4, 
+\newline
+\textbf{ T\+E\+X\+T\+\_\+\+A\+L\+I\+G\+N\+\_\+\+R\+I\+G\+HT} = 8
+ \}
+\begin{DoxyCompactList}\small\item\em Text align mode for drawing text. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+bool} P\+I\+C\+A\+PI \textbf{ ps\+\_\+get\+\_\+text\+\_\+extent} (\textbf{ ps\+\_\+context} $\ast$ctx, const void $\ast$text, unsigned int length, \textbf{ ps\+\_\+size} $\ast$rsize)
+\begin{DoxyCompactList}\small\item\em Get extent for text using current font which selected to graphic context. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+set\+\_\+text\+\_\+color} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+color} $\ast$color)
+\begin{DoxyCompactList}\small\item\em Set the text fill color for the graphic context. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+set\+\_\+text\+\_\+stroke\+\_\+color} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+color} $\ast$color)
+\begin{DoxyCompactList}\small\item\em Set the text stroke color for the graphic context. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+text\+\_\+transform} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+matrix} $\ast$matrix)
+\begin{DoxyCompactList}\small\item\em Transform text matrix for the graphic context. The text matrix is not a part of graphic state -- saving and restoring has no effect on the text matrix. The text matrix is an attribute of graphic context. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+set\+\_\+text\+\_\+matrix} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+matrix} $\ast$matrix)
+\begin{DoxyCompactList}\small\item\em Set text matrix for the graphic context. The text matrix is not a part of graphic state -- saving and restoring has no effect on the text matrix. The text matrix is an attribute of graphic context. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+set\+\_\+text\+\_\+render\+\_\+type} (\textbf{ ps\+\_\+context} $\ast$ctx, \textbf{ ps\+\_\+text\+\_\+type} type)
+\begin{DoxyCompactList}\small\item\em Set rendering type for text. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+set\+\_\+text\+\_\+antialias} (\textbf{ ps\+\_\+context} $\ast$ctx, \textbf{ ps\+\_\+bool} antialias)
+\begin{DoxyCompactList}\small\item\em Set whether the font allowed be anti-\/aliasing. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+set\+\_\+text\+\_\+kerning} (\textbf{ ps\+\_\+context} $\ast$ctx, \textbf{ ps\+\_\+bool} kerning)
+\begin{DoxyCompactList}\small\item\em Set whether the font auto kerning is allowed. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+text\+\_\+out\+\_\+length} (\textbf{ ps\+\_\+context} $\ast$ctx, float x, float y, const char $\ast$text, unsigned int length)
+\begin{DoxyCompactList}\small\item\em Draw single byte characters (latin-\/1) at location in user space. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+wide\+\_\+text\+\_\+out\+\_\+length} (\textbf{ ps\+\_\+context} $\ast$ctx, float x, float y, const \textbf{ ps\+\_\+uchar16} $\ast$text, unsigned int length)
+\begin{DoxyCompactList}\small\item\em Draw unicode characters (ucs-\/2) at location in user space. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+draw\+\_\+text} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+rect} $\ast$area, const void $\ast$text, unsigned int length, \textbf{ ps\+\_\+draw\+\_\+text\+\_\+type} type, \textbf{ ps\+\_\+text\+\_\+align} align)
+\begin{DoxyCompactList}\small\item\em Draw text in a rectangle area, using font object which is selected in graphic context. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+bool} P\+I\+C\+A\+PI \textbf{ ps\+\_\+get\+\_\+glyph} (\textbf{ ps\+\_\+context} $\ast$ctx, int ch, \textbf{ ps\+\_\+glyph} $\ast$glyph)
+\begin{DoxyCompactList}\small\item\em Get the glyph from a given character, using font object which is selected in graphic context. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+show\+\_\+glyphs} (\textbf{ ps\+\_\+context} $\ast$ctx, float x, float y, \textbf{ ps\+\_\+glyph} $\ast$glyphs, unsigned int length)
+\begin{DoxyCompactList}\small\item\em Draw an array of glyphs at location in user space. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+bool} P\+I\+C\+A\+PI \textbf{ ps\+\_\+get\+\_\+path\+\_\+from\+\_\+glyph} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+glyph} $\ast$glyph, \textbf{ ps\+\_\+path} $\ast$path)
+\begin{DoxyCompactList}\small\item\em Get the path from a given glyph object. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+bool} P\+I\+C\+A\+PI \textbf{ ps\+\_\+glyph\+\_\+get\+\_\+extent} (const \textbf{ ps\+\_\+glyph} $\ast$glyph, \textbf{ ps\+\_\+size} $\ast$rsize)
+\begin{DoxyCompactList}\small\item\em Get extent for a glyph object. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+
+
+\doxysubsection{Enumeration Type Documentation}
+\mbox{\label{group__text_gaf761c220adcef1796c24f81566888987}} 
+\index{Text@{Text}!\_ps\_draw\_text\_type@{\_ps\_draw\_text\_type}}
+\index{\_ps\_draw\_text\_type@{\_ps\_draw\_text\_type}!Text@{Text}}
+\doxysubsubsection{\_ps\_draw\_text\_type}
+{\footnotesize\ttfamily enum \textbf{ \+\_\+ps\+\_\+draw\+\_\+text\+\_\+type}}
+
+
+
+Draw mode for rending text. 
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{DRAW\_TEXT\_FILL@{DRAW\_TEXT\_FILL}!Text@{Text}}\index{Text@{Text}!DRAW\_TEXT\_FILL@{DRAW\_TEXT\_FILL}}}\mbox{\label{group__text_ggaf761c220adcef1796c24f81566888987a8906b7905694eb25236cdb940348ccc7}} 
+D\+R\+A\+W\+\_\+\+T\+E\+X\+T\+\_\+\+F\+I\+LL&Perform a fill operation on the text. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{DRAW\_TEXT\_STROKE@{DRAW\_TEXT\_STROKE}!Text@{Text}}\index{Text@{Text}!DRAW\_TEXT\_STROKE@{DRAW\_TEXT\_STROKE}}}\mbox{\label{group__text_ggaf761c220adcef1796c24f81566888987a088752030725262182a2588af86ca607}} 
+D\+R\+A\+W\+\_\+\+T\+E\+X\+T\+\_\+\+S\+T\+R\+O\+KE&Perform a stroke operation on the text. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{DRAW\_TEXT\_BOTH@{DRAW\_TEXT\_BOTH}!Text@{Text}}\index{Text@{Text}!DRAW\_TEXT\_BOTH@{DRAW\_TEXT\_BOTH}}}\mbox{\label{group__text_ggaf761c220adcef1796c24f81566888987a9d50d79300d371c8d34a0f07b68c7ce3}} 
+D\+R\+A\+W\+\_\+\+T\+E\+X\+T\+\_\+\+B\+O\+TH&Perform fill,then stroke operation on the text. \\
+\hline
+
+\end{DoxyEnumFields}
+
+
+Definition at line 2302 of file picasso.\+h.
+
+\mbox{\label{group__text_gaac566a8c2ea1627be2b9cdaf8b3b39e7}} 
+\index{Text@{Text}!\_ps\_text\_align@{\_ps\_text\_align}}
+\index{\_ps\_text\_align@{\_ps\_text\_align}!Text@{Text}}
+\doxysubsubsection{\_ps\_text\_align}
+{\footnotesize\ttfamily enum \textbf{ \+\_\+ps\+\_\+text\+\_\+align}}
+
+
+
+Text align mode for drawing text. 
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{TEXT\_ALIGN\_CENTER@{TEXT\_ALIGN\_CENTER}!Text@{Text}}\index{Text@{Text}!TEXT\_ALIGN\_CENTER@{TEXT\_ALIGN\_CENTER}}}\mbox{\label{group__text_ggaac566a8c2ea1627be2b9cdaf8b3b39e7a4da3c85cde615e7442df8ef17d0753ba}} 
+T\+E\+X\+T\+\_\+\+A\+L\+I\+G\+N\+\_\+\+C\+E\+N\+T\+ER&Centers text horizontally in the rectangle. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{TEXT\_ALIGN\_TOP@{TEXT\_ALIGN\_TOP}!Text@{Text}}\index{Text@{Text}!TEXT\_ALIGN\_TOP@{TEXT\_ALIGN\_TOP}}}\mbox{\label{group__text_ggaac566a8c2ea1627be2b9cdaf8b3b39e7a0c5d12ee712ba28edc34f4d1b4a8c458}} 
+T\+E\+X\+T\+\_\+\+A\+L\+I\+G\+N\+\_\+\+T\+OP&Justifies the text to the top of the rectangle. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{TEXT\_ALIGN\_BOTTOM@{TEXT\_ALIGN\_BOTTOM}!Text@{Text}}\index{Text@{Text}!TEXT\_ALIGN\_BOTTOM@{TEXT\_ALIGN\_BOTTOM}}}\mbox{\label{group__text_ggaac566a8c2ea1627be2b9cdaf8b3b39e7a1cb0e6129b3c5514109b92b4228f6ac8}} 
+T\+E\+X\+T\+\_\+\+A\+L\+I\+G\+N\+\_\+\+B\+O\+T\+T\+OM&Justifies the text to the bottom of the rectangle. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{TEXT\_ALIGN\_LEFT@{TEXT\_ALIGN\_LEFT}!Text@{Text}}\index{Text@{Text}!TEXT\_ALIGN\_LEFT@{TEXT\_ALIGN\_LEFT}}}\mbox{\label{group__text_ggaac566a8c2ea1627be2b9cdaf8b3b39e7a3b85bc4d8cfda6b273b534eb2e1cebfc}} 
+T\+E\+X\+T\+\_\+\+A\+L\+I\+G\+N\+\_\+\+L\+E\+FT&Aligns text to left. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{TEXT\_ALIGN\_RIGHT@{TEXT\_ALIGN\_RIGHT}!Text@{Text}}\index{Text@{Text}!TEXT\_ALIGN\_RIGHT@{TEXT\_ALIGN\_RIGHT}}}\mbox{\label{group__text_ggaac566a8c2ea1627be2b9cdaf8b3b39e7abc81ce8623a972fc7b97f497189c494b}} 
+T\+E\+X\+T\+\_\+\+A\+L\+I\+G\+N\+\_\+\+R\+I\+G\+HT&Aligns text to right. \\
+\hline
+
+\end{DoxyEnumFields}
+
+
+Definition at line 2320 of file picasso.\+h.
+
+\mbox{\label{group__text_gae259beafbac1631008928e8fd20fc423}} 
+\index{Text@{Text}!\_ps\_text\_type@{\_ps\_text\_type}}
+\index{\_ps\_text\_type@{\_ps\_text\_type}!Text@{Text}}
+\doxysubsubsection{\_ps\_text\_type}
+{\footnotesize\ttfamily enum \textbf{ \+\_\+ps\+\_\+text\+\_\+type}}
+
+
+
+Text rendering type. 
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{TEXT\_TYPE\_SMOOTH@{TEXT\_TYPE\_SMOOTH}!Text@{Text}}\index{Text@{Text}!TEXT\_TYPE\_SMOOTH@{TEXT\_TYPE\_SMOOTH}}}\mbox{\label{group__text_ggae259beafbac1631008928e8fd20fc423a4ef8f14ede4d779f625783c7c9f2680e}} 
+T\+E\+X\+T\+\_\+\+T\+Y\+P\+E\+\_\+\+S\+M\+O\+O\+TH&Smooth rendering. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{TEXT\_TYPE\_MONO@{TEXT\_TYPE\_MONO}!Text@{Text}}\index{Text@{Text}!TEXT\_TYPE\_MONO@{TEXT\_TYPE\_MONO}}}\mbox{\label{group__text_ggae259beafbac1631008928e8fd20fc423a19a723289708d86e998c76a484cc68ec}} 
+T\+E\+X\+T\+\_\+\+T\+Y\+P\+E\+\_\+\+M\+O\+NO&Mono rendering. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{TEXT\_TYPE\_STROKE@{TEXT\_TYPE\_STROKE}!Text@{Text}}\index{Text@{Text}!TEXT\_TYPE\_STROKE@{TEXT\_TYPE\_STROKE}}}\mbox{\label{group__text_ggae259beafbac1631008928e8fd20fc423a610856b2f70f639da20060cd20842a95}} 
+T\+E\+X\+T\+\_\+\+T\+Y\+P\+E\+\_\+\+S\+T\+R\+O\+KE&Out\+Line rendering. \\
+\hline
+
+\end{DoxyEnumFields}
+
+
+Definition at line 2150 of file picasso.\+h.
+
+
+
+\doxysubsection{Function Documentation}
+\mbox{\label{group__text_ga6a0eb97cb87386ce25f1c8f5c95d6027}} 
+\index{Text@{Text}!ps\_draw\_text@{ps\_draw\_text}}
+\index{ps\_draw\_text@{ps\_draw\_text}!Text@{Text}}
+\doxysubsubsection{ps\_draw\_text()}
+{\footnotesize\ttfamily void ps\+\_\+draw\+\_\+text (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{const \textbf{ ps\+\_\+rect} $\ast$}]{area,  }\item[{const void $\ast$}]{text,  }\item[{unsigned int}]{length,  }\item[{\textbf{ ps\+\_\+draw\+\_\+text\+\_\+type}}]{type,  }\item[{\textbf{ ps\+\_\+text\+\_\+align}}]{align }\end{DoxyParamCaption})}
+
+
+
+Draw text in a rectangle area, using font object which is selected in graphic context. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em area} & The rectangle area which text to be drawn. \\
+\hline
+{\em text} & The unicode text string to be draw. \\
+\hline
+{\em length} & The length of the text string. \\
+\hline
+{\em type} & The rending type of text. \\
+\hline
+{\em align} & The text align mode.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+text\+\_\+out\+\_\+length}{p.}{group__text_gae94b0d7c8256fce8e8de5e214666bdec}, \doxyref{ps\+\_\+wide\+\_\+text\+\_\+out\+\_\+length}{p.}{group__text_ga33400352bdb79ff76c25980020bd69cf} 
+\end{DoxySeeAlso}
+\mbox{\label{group__text_gab9da1b7b31c4506634ef682bba172c49}} 
+\index{Text@{Text}!ps\_get\_glyph@{ps\_get\_glyph}}
+\index{ps\_get\_glyph@{ps\_get\_glyph}!Text@{Text}}
+\doxysubsubsection{ps\_get\_glyph()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+bool} ps\+\_\+get\+\_\+glyph (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{int}]{ch,  }\item[{\textbf{ ps\+\_\+glyph} $\ast$}]{glyph }\end{DoxyParamCaption})}
+
+
+
+Get the glyph from a given character, using font object which is selected in graphic context. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em ch} & The character value. \\
+\hline
+{\em glyph} & Pointer to a structure to receiving the glyph.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if is success, otherwise False.
+\end{DoxyReturn}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+show\+\_\+glyphs}{p.}{group__text_ga4a7af174d4c6b7b5bf79910d9fee3b32}, \doxyref{ps\+\_\+get\+\_\+path\+\_\+from\+\_\+glyph}{p.}{group__text_gae9ec60c25a891742464c03114fbf2bc7} 
+\end{DoxySeeAlso}
+\mbox{\label{group__text_gae9ec60c25a891742464c03114fbf2bc7}} 
+\index{Text@{Text}!ps\_get\_path\_from\_glyph@{ps\_get\_path\_from\_glyph}}
+\index{ps\_get\_path\_from\_glyph@{ps\_get\_path\_from\_glyph}!Text@{Text}}
+\doxysubsubsection{ps\_get\_path\_from\_glyph()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+bool} ps\+\_\+get\+\_\+path\+\_\+from\+\_\+glyph (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{const \textbf{ ps\+\_\+glyph} $\ast$}]{glyph,  }\item[{\textbf{ ps\+\_\+path} $\ast$}]{path }\end{DoxyParamCaption})}
+
+
+
+Get the path from a given glyph object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em glyph} & The glyph object. \\
+\hline
+{\em path} & Pointer to a structure to receiving the path.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if is success, otherwise False.
+\end{DoxyReturn}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+show\+\_\+glyphs}{p.}{group__text_ga4a7af174d4c6b7b5bf79910d9fee3b32} 
+\end{DoxySeeAlso}
+\mbox{\label{group__text_ga42ef6b742f45fcf0ac21a71a10843c2b}} 
+\index{Text@{Text}!ps\_get\_text\_extent@{ps\_get\_text\_extent}}
+\index{ps\_get\_text\_extent@{ps\_get\_text\_extent}!Text@{Text}}
+\doxysubsubsection{ps\_get\_text\_extent()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+bool} ps\+\_\+get\+\_\+text\+\_\+extent (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{const void $\ast$}]{text,  }\item[{unsigned int}]{length,  }\item[{\textbf{ ps\+\_\+size} $\ast$}]{rsize }\end{DoxyParamCaption})}
+
+
+
+Get extent for text using current font which selected to graphic context. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em text} & Text which being tested. It can be latin-\/1 or unicode encoding. \\
+\hline
+{\em length} & Length of the text. \\
+\hline
+{\em rsize} & Pointer to a buffer to receiving the size.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if is success, otherwise False.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+glyph\+\_\+get\+\_\+extent}{p.}{group__text_ga2ad0879e402446f412809a4d3ebd49d2} 
+\end{DoxySeeAlso}
+\mbox{\label{group__text_ga2ad0879e402446f412809a4d3ebd49d2}} 
+\index{Text@{Text}!ps\_glyph\_get\_extent@{ps\_glyph\_get\_extent}}
+\index{ps\_glyph\_get\_extent@{ps\_glyph\_get\_extent}!Text@{Text}}
+\doxysubsubsection{ps\_glyph\_get\_extent()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+bool} ps\+\_\+glyph\+\_\+get\+\_\+extent (\begin{DoxyParamCaption}\item[{const \textbf{ ps\+\_\+glyph} $\ast$}]{glyph,  }\item[{\textbf{ ps\+\_\+size} $\ast$}]{rsize }\end{DoxyParamCaption})}
+
+
+
+Get extent for a glyph object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em glyph} & Pointer to an existing glyph object. \\
+\hline
+{\em rsize} & Pointer to a buffer to receiving the size.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if is success, otherwise False.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+get\+\_\+text\+\_\+extent}{p.}{group__text_ga42ef6b742f45fcf0ac21a71a10843c2b} 
+\end{DoxySeeAlso}
+\mbox{\label{group__text_ga2578080dcff888eb5d52c669451ba0bf}} 
+\index{Text@{Text}!ps\_set\_text\_antialias@{ps\_set\_text\_antialias}}
+\index{ps\_set\_text\_antialias@{ps\_set\_text\_antialias}!Text@{Text}}
+\doxysubsubsection{ps\_set\_text\_antialias()}
+{\footnotesize\ttfamily void ps\+\_\+set\+\_\+text\+\_\+antialias (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{\textbf{ ps\+\_\+bool}}]{antialias }\end{DoxyParamCaption})}
+
+
+
+Set whether the font allowed be anti-\/aliasing. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em antialias} & Boolean value whether anti-\/aliasing is allowed. (True default)\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+set\+\_\+text\+\_\+matrix}{p.}{group__text_ga6e193574b5c044ee6430062554693396}, \doxyref{ps\+\_\+set\+\_\+text\+\_\+color}{p.}{group__text_ga09aad6a9aa1b6bdb4d3a54bc0c8d4f27}, \doxyref{ps\+\_\+set\+\_\+text\+\_\+stroke\+\_\+color}{p.}{group__text_ga07d2a86f3a5074f756d85ff87a0f0d48}, \doxyref{ps\+\_\+set\+\_\+text\+\_\+render\+\_\+type}{p.}{group__text_gad087544df03c06e5676771e684e901a9}, \doxyref{ps\+\_\+text\+\_\+transform}{p.}{group__text_ga50f52f55f32dedc0dc0f171298268966}, \doxyref{ps\+\_\+set\+\_\+text\+\_\+kerning}{p.}{group__text_ga854b138c2357034dd34513c49a40c02f} 
+\end{DoxySeeAlso}
+\mbox{\label{group__text_ga09aad6a9aa1b6bdb4d3a54bc0c8d4f27}} 
+\index{Text@{Text}!ps\_set\_text\_color@{ps\_set\_text\_color}}
+\index{ps\_set\_text\_color@{ps\_set\_text\_color}!Text@{Text}}
+\doxysubsubsection{ps\_set\_text\_color()}
+{\footnotesize\ttfamily void ps\+\_\+set\+\_\+text\+\_\+color (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{const \textbf{ ps\+\_\+color} $\ast$}]{color }\end{DoxyParamCaption})}
+
+
+
+Set the text fill color for the graphic context. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em color} & The text fill color.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+transform}{p.}{group__transform_ga3c2ad1c918dcd43eb68b42e60a4ff136}, \doxyref{ps\+\_\+set\+\_\+text\+\_\+matrix}{p.}{group__text_ga6e193574b5c044ee6430062554693396}, \doxyref{ps\+\_\+set\+\_\+text\+\_\+antialias}{p.}{group__text_ga2578080dcff888eb5d52c669451ba0bf}, \doxyref{ps\+\_\+set\+\_\+text\+\_\+stroke\+\_\+color}{p.}{group__text_ga07d2a86f3a5074f756d85ff87a0f0d48}, \doxyref{ps\+\_\+set\+\_\+text\+\_\+render\+\_\+type}{p.}{group__text_gad087544df03c06e5676771e684e901a9}, \doxyref{ps\+\_\+set\+\_\+text\+\_\+kerning}{p.}{group__text_ga854b138c2357034dd34513c49a40c02f} 
+\end{DoxySeeAlso}
+\mbox{\label{group__text_ga854b138c2357034dd34513c49a40c02f}} 
+\index{Text@{Text}!ps\_set\_text\_kerning@{ps\_set\_text\_kerning}}
+\index{ps\_set\_text\_kerning@{ps\_set\_text\_kerning}!Text@{Text}}
+\doxysubsubsection{ps\_set\_text\_kerning()}
+{\footnotesize\ttfamily void ps\+\_\+set\+\_\+text\+\_\+kerning (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{\textbf{ ps\+\_\+bool}}]{kerning }\end{DoxyParamCaption})}
+
+
+
+Set whether the font auto kerning is allowed. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em kerning} & Boolean value whether auto kerning is allowed. (True default)\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+set\+\_\+text\+\_\+matrix}{p.}{group__text_ga6e193574b5c044ee6430062554693396}, \doxyref{ps\+\_\+set\+\_\+text\+\_\+color}{p.}{group__text_ga09aad6a9aa1b6bdb4d3a54bc0c8d4f27}, \doxyref{ps\+\_\+set\+\_\+text\+\_\+stroke\+\_\+color}{p.}{group__text_ga07d2a86f3a5074f756d85ff87a0f0d48}, \doxyref{ps\+\_\+set\+\_\+text\+\_\+render\+\_\+type}{p.}{group__text_gad087544df03c06e5676771e684e901a9}, \doxyref{ps\+\_\+text\+\_\+transform}{p.}{group__text_ga50f52f55f32dedc0dc0f171298268966}, \doxyref{ps\+\_\+set\+\_\+text\+\_\+antialias}{p.}{group__text_ga2578080dcff888eb5d52c669451ba0bf} 
+\end{DoxySeeAlso}
+\mbox{\label{group__text_ga6e193574b5c044ee6430062554693396}} 
+\index{Text@{Text}!ps\_set\_text\_matrix@{ps\_set\_text\_matrix}}
+\index{ps\_set\_text\_matrix@{ps\_set\_text\_matrix}!Text@{Text}}
+\doxysubsubsection{ps\_set\_text\_matrix()}
+{\footnotesize\ttfamily void ps\+\_\+set\+\_\+text\+\_\+matrix (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{const \textbf{ ps\+\_\+matrix} $\ast$}]{matrix }\end{DoxyParamCaption})}
+
+
+
+Set text matrix for the graphic context. The text matrix is not a part of graphic state -- saving and restoring has no effect on the text matrix. The text matrix is an attribute of graphic context. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em matrix} & Pointer to an existing matrix object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+text\+\_\+transform}{p.}{group__text_ga50f52f55f32dedc0dc0f171298268966}, \doxyref{ps\+\_\+set\+\_\+text\+\_\+antialias}{p.}{group__text_ga2578080dcff888eb5d52c669451ba0bf}, \doxyref{ps\+\_\+set\+\_\+text\+\_\+color}{p.}{group__text_ga09aad6a9aa1b6bdb4d3a54bc0c8d4f27}, \doxyref{ps\+\_\+set\+\_\+text\+\_\+stroke\+\_\+color}{p.}{group__text_ga07d2a86f3a5074f756d85ff87a0f0d48}, \doxyref{ps\+\_\+set\+\_\+text\+\_\+render\+\_\+type}{p.}{group__text_gad087544df03c06e5676771e684e901a9}, \doxyref{ps\+\_\+set\+\_\+text\+\_\+kerning}{p.}{group__text_ga854b138c2357034dd34513c49a40c02f} 
+\end{DoxySeeAlso}
+\mbox{\label{group__text_gad087544df03c06e5676771e684e901a9}} 
+\index{Text@{Text}!ps\_set\_text\_render\_type@{ps\_set\_text\_render\_type}}
+\index{ps\_set\_text\_render\_type@{ps\_set\_text\_render\_type}!Text@{Text}}
+\doxysubsubsection{ps\_set\_text\_render\_type()}
+{\footnotesize\ttfamily void ps\+\_\+set\+\_\+text\+\_\+render\+\_\+type (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{\textbf{ ps\+\_\+text\+\_\+type}}]{type }\end{DoxyParamCaption})}
+
+
+
+Set rendering type for text. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em type} & Rendering type for the text.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+set\+\_\+text\+\_\+matrix}{p.}{group__text_ga6e193574b5c044ee6430062554693396}, \doxyref{ps\+\_\+set\+\_\+text\+\_\+color}{p.}{group__text_ga09aad6a9aa1b6bdb4d3a54bc0c8d4f27}, \doxyref{ps\+\_\+set\+\_\+text\+\_\+stroke\+\_\+color}{p.}{group__text_ga07d2a86f3a5074f756d85ff87a0f0d48}, \doxyref{ps\+\_\+set\+\_\+text\+\_\+antialias}{p.}{group__text_ga2578080dcff888eb5d52c669451ba0bf}, \doxyref{ps\+\_\+text\+\_\+transform}{p.}{group__text_ga50f52f55f32dedc0dc0f171298268966}, \doxyref{ps\+\_\+set\+\_\+text\+\_\+kerning}{p.}{group__text_ga854b138c2357034dd34513c49a40c02f} 
+\end{DoxySeeAlso}
+\mbox{\label{group__text_ga07d2a86f3a5074f756d85ff87a0f0d48}} 
+\index{Text@{Text}!ps\_set\_text\_stroke\_color@{ps\_set\_text\_stroke\_color}}
+\index{ps\_set\_text\_stroke\_color@{ps\_set\_text\_stroke\_color}!Text@{Text}}
+\doxysubsubsection{ps\_set\_text\_stroke\_color()}
+{\footnotesize\ttfamily void ps\+\_\+set\+\_\+text\+\_\+stroke\+\_\+color (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{const \textbf{ ps\+\_\+color} $\ast$}]{color }\end{DoxyParamCaption})}
+
+
+
+Set the text stroke color for the graphic context. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em color} & The text stroke color.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+set\+\_\+text\+\_\+color}{p.}{group__text_ga09aad6a9aa1b6bdb4d3a54bc0c8d4f27}, \doxyref{ps\+\_\+set\+\_\+text\+\_\+matrix}{p.}{group__text_ga6e193574b5c044ee6430062554693396}, \doxyref{ps\+\_\+set\+\_\+text\+\_\+antialias}{p.}{group__text_ga2578080dcff888eb5d52c669451ba0bf}, \doxyref{ps\+\_\+text\+\_\+transform}{p.}{group__text_ga50f52f55f32dedc0dc0f171298268966}, \doxyref{ps\+\_\+set\+\_\+text\+\_\+render\+\_\+type}{p.}{group__text_gad087544df03c06e5676771e684e901a9}, \doxyref{ps\+\_\+set\+\_\+text\+\_\+kerning}{p.}{group__text_ga854b138c2357034dd34513c49a40c02f} 
+\end{DoxySeeAlso}
+\mbox{\label{group__text_ga4a7af174d4c6b7b5bf79910d9fee3b32}} 
+\index{Text@{Text}!ps\_show\_glyphs@{ps\_show\_glyphs}}
+\index{ps\_show\_glyphs@{ps\_show\_glyphs}!Text@{Text}}
+\doxysubsubsection{ps\_show\_glyphs()}
+{\footnotesize\ttfamily void ps\+\_\+show\+\_\+glyphs (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{float}]{x,  }\item[{float}]{y,  }\item[{\textbf{ ps\+\_\+glyph} $\ast$}]{glyphs,  }\item[{unsigned int}]{length }\end{DoxyParamCaption})}
+
+
+
+Draw an array of glyphs at location in user space. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em x} & The X-\/coordinate at which to draw the glyphs. \\
+\hline
+{\em y} & The Y-\/coordinate at which to draw the glyphs. \\
+\hline
+{\em glyphs} & The array of glyphs. \\
+\hline
+{\em length} & The length of array.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+get\+\_\+path\+\_\+from\+\_\+glyph}{p.}{group__text_gae9ec60c25a891742464c03114fbf2bc7} 
+\end{DoxySeeAlso}
+\mbox{\label{group__text_gae94b0d7c8256fce8e8de5e214666bdec}} 
+\index{Text@{Text}!ps\_text\_out\_length@{ps\_text\_out\_length}}
+\index{ps\_text\_out\_length@{ps\_text\_out\_length}!Text@{Text}}
+\doxysubsubsection{ps\_text\_out\_length()}
+{\footnotesize\ttfamily void ps\+\_\+text\+\_\+out\+\_\+length (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{float}]{x,  }\item[{float}]{y,  }\item[{const char $\ast$}]{text,  }\item[{unsigned int}]{length }\end{DoxyParamCaption})}
+
+
+
+Draw single byte characters (latin-\/1) at location in user space. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em x} & The X-\/coordinate at which to draw the text. \\
+\hline
+{\em y} & The Y-\/coordinate at which to draw the text. \\
+\hline
+{\em text} & The text string to be draw. \\
+\hline
+{\em length} & The length of the text string.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+wide\+\_\+text\+\_\+out\+\_\+length}{p.}{group__text_ga33400352bdb79ff76c25980020bd69cf}, \doxyref{ps\+\_\+draw\+\_\+text}{p.}{group__text_ga6a0eb97cb87386ce25f1c8f5c95d6027} 
+\end{DoxySeeAlso}
+\mbox{\label{group__text_ga50f52f55f32dedc0dc0f171298268966}} 
+\index{Text@{Text}!ps\_text\_transform@{ps\_text\_transform}}
+\index{ps\_text\_transform@{ps\_text\_transform}!Text@{Text}}
+\doxysubsubsection{ps\_text\_transform()}
+{\footnotesize\ttfamily void ps\+\_\+text\+\_\+transform (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{const \textbf{ ps\+\_\+matrix} $\ast$}]{matrix }\end{DoxyParamCaption})}
+
+
+
+Transform text matrix for the graphic context. The text matrix is not a part of graphic state -- saving and restoring has no effect on the text matrix. The text matrix is an attribute of graphic context. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em matrix} & Pointer to an existing matrix object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+set\+\_\+text\+\_\+matrix}{p.}{group__text_ga6e193574b5c044ee6430062554693396}, \doxyref{ps\+\_\+set\+\_\+text\+\_\+antialias}{p.}{group__text_ga2578080dcff888eb5d52c669451ba0bf}, \doxyref{ps\+\_\+set\+\_\+text\+\_\+color}{p.}{group__text_ga09aad6a9aa1b6bdb4d3a54bc0c8d4f27}, \doxyref{ps\+\_\+set\+\_\+text\+\_\+stroke\+\_\+color}{p.}{group__text_ga07d2a86f3a5074f756d85ff87a0f0d48}, \doxyref{ps\+\_\+set\+\_\+text\+\_\+render\+\_\+type}{p.}{group__text_gad087544df03c06e5676771e684e901a9}, \doxyref{ps\+\_\+set\+\_\+text\+\_\+kerning}{p.}{group__text_ga854b138c2357034dd34513c49a40c02f} 
+\end{DoxySeeAlso}
+\mbox{\label{group__text_ga33400352bdb79ff76c25980020bd69cf}} 
+\index{Text@{Text}!ps\_wide\_text\_out\_length@{ps\_wide\_text\_out\_length}}
+\index{ps\_wide\_text\_out\_length@{ps\_wide\_text\_out\_length}!Text@{Text}}
+\doxysubsubsection{ps\_wide\_text\_out\_length()}
+{\footnotesize\ttfamily void ps\+\_\+wide\+\_\+text\+\_\+out\+\_\+length (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{float}]{x,  }\item[{float}]{y,  }\item[{const \textbf{ ps\+\_\+uchar16} $\ast$}]{text,  }\item[{unsigned int}]{length }\end{DoxyParamCaption})}
+
+
+
+Draw unicode characters (ucs-\/2) at location in user space. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em x} & The X-\/coordinate at which to draw the text. \\
+\hline
+{\em y} & The Y-\/coordinate at which to draw the text. \\
+\hline
+{\em text} & The unicode text string to be draw. \\
+\hline
+{\em length} & The length of the text string.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+text\+\_\+out\+\_\+length}{p.}{group__text_gae94b0d7c8256fce8e8de5e214666bdec}, \doxyref{ps\+\_\+draw\+\_\+text}{p.}{group__text_ga6a0eb97cb87386ce25f1c8f5c95d6027} 
+\end{DoxySeeAlso}

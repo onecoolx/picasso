@@ -1,0 +1,372 @@
+\doxysection{Geometry}
+\label{group__geometry}\index{Geometry@{Geometry}}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+new\+\_\+path} (\textbf{ ps\+\_\+context} $\ast$ctx)
+\begin{DoxyCompactList}\small\item\em Create a new empty path in the graphic context, clear the old one. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+new\+\_\+sub\+\_\+path} (\textbf{ ps\+\_\+context} $\ast$ctx)
+\begin{DoxyCompactList}\small\item\em Close the current path, and add a new empty sub path in the graphic context. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+add\+\_\+sub\+\_\+path} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+path} $\ast$path)
+\begin{DoxyCompactList}\small\item\em Add a new sub path to current path in the graphic context. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+set\+\_\+path} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+path} $\ast$path)
+\begin{DoxyCompactList}\small\item\em Replace the current path in the graphic context. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+bool} P\+I\+C\+A\+PI \textbf{ ps\+\_\+get\+\_\+path} (\textbf{ ps\+\_\+context} $\ast$ctx, \textbf{ ps\+\_\+path} $\ast$path)
+\begin{DoxyCompactList}\small\item\em Get the current path in the graphic context. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+close\+\_\+path} (\textbf{ ps\+\_\+context} $\ast$ctx)
+\begin{DoxyCompactList}\small\item\em Close the current path in the graphic context. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+move\+\_\+to} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+point} $\ast$point)
+\begin{DoxyCompactList}\small\item\em Begin a new sub path, and set the current point. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+line\+\_\+to} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+point} $\ast$point)
+\begin{DoxyCompactList}\small\item\em Add a line to the current path from the current point to given point. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+bezier\+\_\+curve\+\_\+to} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+point} $\ast$fcp, const \textbf{ ps\+\_\+point} $\ast$scp, const \textbf{ ps\+\_\+point} $\ast$ep)
+\begin{DoxyCompactList}\small\item\em Add a cubic bezier spline to the current path from current point to end point. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+quad\+\_\+curve\+\_\+to} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+point} $\ast$cp, const \textbf{ ps\+\_\+point} $\ast$ep)
+\begin{DoxyCompactList}\small\item\em Add a quadratic bezier spline to the current path from current point to end point. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+arc} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+point} $\ast$cp, float radius, float sangle, float eangle, \textbf{ ps\+\_\+bool} clockwise)
+\begin{DoxyCompactList}\small\item\em Add a circular arc to the current path. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+tangent\+\_\+arc} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+rect} $\ast$rect, float sangle, float sweep)
+\begin{DoxyCompactList}\small\item\em Add a circular arc which is inner tangent from a rectangle. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+rectangle} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+rect} $\ast$rect)
+\begin{DoxyCompactList}\small\item\em Add a rectangle to the current path. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+rounded\+\_\+rect} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+rect} $\ast$rect, float ltx, float lty, float rtx, float rty, float lbx, float lby, float rbx, float rby)
+\begin{DoxyCompactList}\small\item\em Add a rounded rectangle to the current path. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+ellipse} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+rect} $\ast$rect)
+\begin{DoxyCompactList}\small\item\em Adds an ellipse to the current path which fits inside the specified rectangle. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\label{group__geometry_gaccc48dc1075994d7ac6154676eb5641f}} 
+\index{Geometry@{Geometry}!ps\_add\_sub\_path@{ps\_add\_sub\_path}}
+\index{ps\_add\_sub\_path@{ps\_add\_sub\_path}!Geometry@{Geometry}}
+\doxysubsubsection{ps\_add\_sub\_path()}
+{\footnotesize\ttfamily void ps\+\_\+add\+\_\+sub\+\_\+path (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{const \textbf{ ps\+\_\+path} $\ast$}]{path }\end{DoxyParamCaption})}
+
+
+
+Add a new sub path to current path in the graphic context. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em path} & The path will be add to graphic context.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+new\+\_\+path}{p.}{group__geometry_ga1dd5a2457bbc70bb4aab514c71657d47}, \doxyref{ps\+\_\+new\+\_\+sub\+\_\+path}{p.}{group__geometry_gabc1395130cd155b9e7540d9c66423edd}, \doxyref{ps\+\_\+set\+\_\+path}{p.}{group__geometry_gad29671ee13659f93f1ed9f04e2fef33f}, \doxyref{ps\+\_\+get\+\_\+path}{p.}{group__geometry_ga12919bbac3b448c53c1b8200a464fe01}, \doxyref{ps\+\_\+close\+\_\+path}{p.}{group__geometry_ga7ddb8dc9dd946b85960c2e220d309131} 
+\end{DoxySeeAlso}
+\mbox{\label{group__geometry_ga221af9d23e478b7609b20dc0e780c206}} 
+\index{Geometry@{Geometry}!ps\_arc@{ps\_arc}}
+\index{ps\_arc@{ps\_arc}!Geometry@{Geometry}}
+\doxysubsubsection{ps\_arc()}
+{\footnotesize\ttfamily void ps\+\_\+arc (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{const \textbf{ ps\+\_\+point} $\ast$}]{cp,  }\item[{float}]{radius,  }\item[{float}]{sangle,  }\item[{float}]{eangle,  }\item[{\textbf{ ps\+\_\+bool}}]{clockwise }\end{DoxyParamCaption})}
+
+
+
+Add a circular arc to the current path. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em cp} & The center point of the arc. \\
+\hline
+{\em radius} & The radius of the arc. \\
+\hline
+{\em sangle} & The start angle, in radians. \\
+\hline
+{\em eangle} & The end angle, in radians. \\
+\hline
+{\em clockwise} & True is clockwise, False is counter clockwise.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+move\+\_\+to}{p.}{group__geometry_ga6afa05defe9e5e6bec2ba59395b9ff13}, \doxyref{ps\+\_\+line\+\_\+to}{p.}{group__geometry_ga33144a05340d81d57be43ec15572288c}, \doxyref{ps\+\_\+bezier\+\_\+curve\+\_\+to}{p.}{group__geometry_gab8f032269b7bffbe13d65aab01dfdb22}, \doxyref{ps\+\_\+quad\+\_\+curve\+\_\+to}{p.}{group__geometry_ga1423d2871e7c875312ebd931953d4948}, \doxyref{ps\+\_\+tangent\+\_\+arc}{p.}{group__geometry_ga8f17dcbbfb34fb62862141e22b6040a2}, \doxyref{ps\+\_\+rectangle}{p.}{group__geometry_ga5011a18fa50227967380b08956ceec0f}, \doxyref{ps\+\_\+rounded\+\_\+rect}{p.}{group__geometry_gabee81bb4bac4a8de1bccbd3475b52d9b}, \doxyref{ps\+\_\+ellipse}{p.}{group__geometry_ga5a24c9a87485571696f9a560e5c8afc8} 
+\end{DoxySeeAlso}
+\mbox{\label{group__geometry_gab8f032269b7bffbe13d65aab01dfdb22}} 
+\index{Geometry@{Geometry}!ps\_bezier\_curve\_to@{ps\_bezier\_curve\_to}}
+\index{ps\_bezier\_curve\_to@{ps\_bezier\_curve\_to}!Geometry@{Geometry}}
+\doxysubsubsection{ps\_bezier\_curve\_to()}
+{\footnotesize\ttfamily void ps\+\_\+bezier\+\_\+curve\+\_\+to (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{const \textbf{ ps\+\_\+point} $\ast$}]{fcp,  }\item[{const \textbf{ ps\+\_\+point} $\ast$}]{scp,  }\item[{const \textbf{ ps\+\_\+point} $\ast$}]{ep }\end{DoxyParamCaption})}
+
+
+
+Add a cubic bezier spline to the current path from current point to end point. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em fcp} & The first control point of the curve. \\
+\hline
+{\em scp} & The second control point of the curve. \\
+\hline
+{\em ep} & The end point of the curve.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+move\+\_\+to}{p.}{group__geometry_ga6afa05defe9e5e6bec2ba59395b9ff13}, \doxyref{ps\+\_\+line\+\_\+to}{p.}{group__geometry_ga33144a05340d81d57be43ec15572288c}, \doxyref{ps\+\_\+quad\+\_\+curve\+\_\+to}{p.}{group__geometry_ga1423d2871e7c875312ebd931953d4948}, \doxyref{ps\+\_\+arc}{p.}{group__geometry_ga221af9d23e478b7609b20dc0e780c206}, \doxyref{ps\+\_\+tangent\+\_\+arc}{p.}{group__geometry_ga8f17dcbbfb34fb62862141e22b6040a2}, \doxyref{ps\+\_\+rectangle}{p.}{group__geometry_ga5011a18fa50227967380b08956ceec0f}, \doxyref{ps\+\_\+rounded\+\_\+rect}{p.}{group__geometry_gabee81bb4bac4a8de1bccbd3475b52d9b}, \doxyref{ps\+\_\+ellipse}{p.}{group__geometry_ga5a24c9a87485571696f9a560e5c8afc8} 
+\end{DoxySeeAlso}
+\mbox{\label{group__geometry_ga7ddb8dc9dd946b85960c2e220d309131}} 
+\index{Geometry@{Geometry}!ps\_close\_path@{ps\_close\_path}}
+\index{ps\_close\_path@{ps\_close\_path}!Geometry@{Geometry}}
+\doxysubsubsection{ps\_close\_path()}
+{\footnotesize\ttfamily void ps\+\_\+close\+\_\+path (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx }\end{DoxyParamCaption})}
+
+
+
+Close the current path in the graphic context. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+new\+\_\+path}{p.}{group__geometry_ga1dd5a2457bbc70bb4aab514c71657d47}, \doxyref{ps\+\_\+new\+\_\+sub\+\_\+path}{p.}{group__geometry_gabc1395130cd155b9e7540d9c66423edd}, \doxyref{ps\+\_\+set\+\_\+path}{p.}{group__geometry_gad29671ee13659f93f1ed9f04e2fef33f}, \doxyref{ps\+\_\+get\+\_\+path}{p.}{group__geometry_ga12919bbac3b448c53c1b8200a464fe01}, \doxyref{ps\+\_\+add\+\_\+sub\+\_\+path}{p.}{group__geometry_gaccc48dc1075994d7ac6154676eb5641f} 
+\end{DoxySeeAlso}
+\mbox{\label{group__geometry_ga5a24c9a87485571696f9a560e5c8afc8}} 
+\index{Geometry@{Geometry}!ps\_ellipse@{ps\_ellipse}}
+\index{ps\_ellipse@{ps\_ellipse}!Geometry@{Geometry}}
+\doxysubsubsection{ps\_ellipse()}
+{\footnotesize\ttfamily void ps\+\_\+ellipse (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{const \textbf{ ps\+\_\+rect} $\ast$}]{rect }\end{DoxyParamCaption})}
+
+
+
+Adds an ellipse to the current path which fits inside the specified rectangle. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em rect} & The rectangle which the ellipse to fit in.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+move\+\_\+to}{p.}{group__geometry_ga6afa05defe9e5e6bec2ba59395b9ff13}, \doxyref{ps\+\_\+line\+\_\+to}{p.}{group__geometry_ga33144a05340d81d57be43ec15572288c}, \doxyref{ps\+\_\+bezier\+\_\+curve\+\_\+to}{p.}{group__geometry_gab8f032269b7bffbe13d65aab01dfdb22}, \doxyref{ps\+\_\+quad\+\_\+curve\+\_\+to}{p.}{group__geometry_ga1423d2871e7c875312ebd931953d4948}, \doxyref{ps\+\_\+arc}{p.}{group__geometry_ga221af9d23e478b7609b20dc0e780c206}, \doxyref{ps\+\_\+tangent\+\_\+arc}{p.}{group__geometry_ga8f17dcbbfb34fb62862141e22b6040a2}, \doxyref{ps\+\_\+rectangle}{p.}{group__geometry_ga5011a18fa50227967380b08956ceec0f}, \doxyref{ps\+\_\+rounded\+\_\+rect}{p.}{group__geometry_gabee81bb4bac4a8de1bccbd3475b52d9b} 
+\end{DoxySeeAlso}
+\mbox{\label{group__geometry_ga12919bbac3b448c53c1b8200a464fe01}} 
+\index{Geometry@{Geometry}!ps\_get\_path@{ps\_get\_path}}
+\index{ps\_get\_path@{ps\_get\_path}!Geometry@{Geometry}}
+\doxysubsubsection{ps\_get\_path()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+bool} ps\+\_\+get\+\_\+path (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{\textbf{ ps\+\_\+path} $\ast$}]{path }\end{DoxyParamCaption})}
+
+
+
+Get the current path in the graphic context. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em path} & Pointer to a object to receiving the path.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if is success, otherwise False.
+\end{DoxyReturn}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+new\+\_\+path}{p.}{group__geometry_ga1dd5a2457bbc70bb4aab514c71657d47}, \doxyref{ps\+\_\+new\+\_\+sub\+\_\+path}{p.}{group__geometry_gabc1395130cd155b9e7540d9c66423edd}, \doxyref{ps\+\_\+close\+\_\+path}{p.}{group__geometry_ga7ddb8dc9dd946b85960c2e220d309131}, \doxyref{ps\+\_\+set\+\_\+path}{p.}{group__geometry_gad29671ee13659f93f1ed9f04e2fef33f}, \doxyref{ps\+\_\+add\+\_\+sub\+\_\+path}{p.}{group__geometry_gaccc48dc1075994d7ac6154676eb5641f} 
+\end{DoxySeeAlso}
+\mbox{\label{group__geometry_ga33144a05340d81d57be43ec15572288c}} 
+\index{Geometry@{Geometry}!ps\_line\_to@{ps\_line\_to}}
+\index{ps\_line\_to@{ps\_line\_to}!Geometry@{Geometry}}
+\doxysubsubsection{ps\_line\_to()}
+{\footnotesize\ttfamily void ps\+\_\+line\+\_\+to (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{const \textbf{ ps\+\_\+point} $\ast$}]{point }\end{DoxyParamCaption})}
+
+
+
+Add a line to the current path from the current point to given point. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em point} & The point which will line to.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+move\+\_\+to}{p.}{group__geometry_ga6afa05defe9e5e6bec2ba59395b9ff13}, \doxyref{ps\+\_\+bezier\+\_\+curve\+\_\+to}{p.}{group__geometry_gab8f032269b7bffbe13d65aab01dfdb22}, \doxyref{ps\+\_\+quad\+\_\+curve\+\_\+to}{p.}{group__geometry_ga1423d2871e7c875312ebd931953d4948} \doxyref{ps\+\_\+arc}{p.}{group__geometry_ga221af9d23e478b7609b20dc0e780c206}, \doxyref{ps\+\_\+tangent\+\_\+arc}{p.}{group__geometry_ga8f17dcbbfb34fb62862141e22b6040a2}, \doxyref{ps\+\_\+rectangle}{p.}{group__geometry_ga5011a18fa50227967380b08956ceec0f}, \doxyref{ps\+\_\+rounded\+\_\+rect}{p.}{group__geometry_gabee81bb4bac4a8de1bccbd3475b52d9b}, \doxyref{ps\+\_\+ellipse}{p.}{group__geometry_ga5a24c9a87485571696f9a560e5c8afc8} 
+\end{DoxySeeAlso}
+\mbox{\label{group__geometry_ga6afa05defe9e5e6bec2ba59395b9ff13}} 
+\index{Geometry@{Geometry}!ps\_move\_to@{ps\_move\_to}}
+\index{ps\_move\_to@{ps\_move\_to}!Geometry@{Geometry}}
+\doxysubsubsection{ps\_move\_to()}
+{\footnotesize\ttfamily void ps\+\_\+move\+\_\+to (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{const \textbf{ ps\+\_\+point} $\ast$}]{point }\end{DoxyParamCaption})}
+
+
+
+Begin a new sub path, and set the current point. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em point} & The point which will be set.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+line\+\_\+to}{p.}{group__geometry_ga33144a05340d81d57be43ec15572288c}, \doxyref{ps\+\_\+bezier\+\_\+curve\+\_\+to}{p.}{group__geometry_gab8f032269b7bffbe13d65aab01dfdb22}, \doxyref{ps\+\_\+quad\+\_\+curve\+\_\+to}{p.}{group__geometry_ga1423d2871e7c875312ebd931953d4948} \doxyref{ps\+\_\+arc}{p.}{group__geometry_ga221af9d23e478b7609b20dc0e780c206}, \doxyref{ps\+\_\+tangent\+\_\+arc}{p.}{group__geometry_ga8f17dcbbfb34fb62862141e22b6040a2}, \doxyref{ps\+\_\+rectangle}{p.}{group__geometry_ga5011a18fa50227967380b08956ceec0f}, \doxyref{ps\+\_\+rounded\+\_\+rect}{p.}{group__geometry_gabee81bb4bac4a8de1bccbd3475b52d9b}, \doxyref{ps\+\_\+ellipse}{p.}{group__geometry_ga5a24c9a87485571696f9a560e5c8afc8} 
+\end{DoxySeeAlso}
+\mbox{\label{group__geometry_ga1dd5a2457bbc70bb4aab514c71657d47}} 
+\index{Geometry@{Geometry}!ps\_new\_path@{ps\_new\_path}}
+\index{ps\_new\_path@{ps\_new\_path}!Geometry@{Geometry}}
+\doxysubsubsection{ps\_new\_path()}
+{\footnotesize\ttfamily void ps\+\_\+new\+\_\+path (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx }\end{DoxyParamCaption})}
+
+
+
+Create a new empty path in the graphic context, clear the old one. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+new\+\_\+sub\+\_\+path}{p.}{group__geometry_gabc1395130cd155b9e7540d9c66423edd}, \doxyref{ps\+\_\+set\+\_\+path}{p.}{group__geometry_gad29671ee13659f93f1ed9f04e2fef33f}, \doxyref{ps\+\_\+get\+\_\+path}{p.}{group__geometry_ga12919bbac3b448c53c1b8200a464fe01}, \doxyref{ps\+\_\+close\+\_\+path}{p.}{group__geometry_ga7ddb8dc9dd946b85960c2e220d309131}, \doxyref{ps\+\_\+add\+\_\+sub\+\_\+path}{p.}{group__geometry_gaccc48dc1075994d7ac6154676eb5641f} 
+\end{DoxySeeAlso}
+\mbox{\label{group__geometry_gabc1395130cd155b9e7540d9c66423edd}} 
+\index{Geometry@{Geometry}!ps\_new\_sub\_path@{ps\_new\_sub\_path}}
+\index{ps\_new\_sub\_path@{ps\_new\_sub\_path}!Geometry@{Geometry}}
+\doxysubsubsection{ps\_new\_sub\_path()}
+{\footnotesize\ttfamily void ps\+\_\+new\+\_\+sub\+\_\+path (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx }\end{DoxyParamCaption})}
+
+
+
+Close the current path, and add a new empty sub path in the graphic context. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+new\+\_\+path}{p.}{group__geometry_ga1dd5a2457bbc70bb4aab514c71657d47}, \doxyref{ps\+\_\+set\+\_\+path}{p.}{group__geometry_gad29671ee13659f93f1ed9f04e2fef33f}, \doxyref{ps\+\_\+get\+\_\+path}{p.}{group__geometry_ga12919bbac3b448c53c1b8200a464fe01}, \doxyref{ps\+\_\+close\+\_\+path}{p.}{group__geometry_ga7ddb8dc9dd946b85960c2e220d309131}, \doxyref{ps\+\_\+add\+\_\+sub\+\_\+path}{p.}{group__geometry_gaccc48dc1075994d7ac6154676eb5641f} 
+\end{DoxySeeAlso}
+\mbox{\label{group__geometry_ga1423d2871e7c875312ebd931953d4948}} 
+\index{Geometry@{Geometry}!ps\_quad\_curve\_to@{ps\_quad\_curve\_to}}
+\index{ps\_quad\_curve\_to@{ps\_quad\_curve\_to}!Geometry@{Geometry}}
+\doxysubsubsection{ps\_quad\_curve\_to()}
+{\footnotesize\ttfamily void ps\+\_\+quad\+\_\+curve\+\_\+to (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{const \textbf{ ps\+\_\+point} $\ast$}]{cp,  }\item[{const \textbf{ ps\+\_\+point} $\ast$}]{ep }\end{DoxyParamCaption})}
+
+
+
+Add a quadratic bezier spline to the current path from current point to end point. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em cp} & The control point of the curve. \\
+\hline
+{\em ep} & The end point of the curve.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+move\+\_\+to}{p.}{group__geometry_ga6afa05defe9e5e6bec2ba59395b9ff13}, \doxyref{ps\+\_\+line\+\_\+to}{p.}{group__geometry_ga33144a05340d81d57be43ec15572288c}, \doxyref{ps\+\_\+bezier\+\_\+curve\+\_\+to}{p.}{group__geometry_gab8f032269b7bffbe13d65aab01dfdb22}, \doxyref{ps\+\_\+arc}{p.}{group__geometry_ga221af9d23e478b7609b20dc0e780c206}, \doxyref{ps\+\_\+tangent\+\_\+arc}{p.}{group__geometry_ga8f17dcbbfb34fb62862141e22b6040a2}, \doxyref{ps\+\_\+rectangle}{p.}{group__geometry_ga5011a18fa50227967380b08956ceec0f}, \doxyref{ps\+\_\+rounded\+\_\+rect}{p.}{group__geometry_gabee81bb4bac4a8de1bccbd3475b52d9b}, \doxyref{ps\+\_\+ellipse}{p.}{group__geometry_ga5a24c9a87485571696f9a560e5c8afc8} 
+\end{DoxySeeAlso}
+\mbox{\label{group__geometry_ga5011a18fa50227967380b08956ceec0f}} 
+\index{Geometry@{Geometry}!ps\_rectangle@{ps\_rectangle}}
+\index{ps\_rectangle@{ps\_rectangle}!Geometry@{Geometry}}
+\doxysubsubsection{ps\_rectangle()}
+{\footnotesize\ttfamily void ps\+\_\+rectangle (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{const \textbf{ ps\+\_\+rect} $\ast$}]{rect }\end{DoxyParamCaption})}
+
+
+
+Add a rectangle to the current path. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em rect} & The rectangle which will be added.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+move\+\_\+to}{p.}{group__geometry_ga6afa05defe9e5e6bec2ba59395b9ff13}, \doxyref{ps\+\_\+line\+\_\+to}{p.}{group__geometry_ga33144a05340d81d57be43ec15572288c}, \doxyref{ps\+\_\+bezier\+\_\+curve\+\_\+to}{p.}{group__geometry_gab8f032269b7bffbe13d65aab01dfdb22}, \doxyref{ps\+\_\+quad\+\_\+curve\+\_\+to}{p.}{group__geometry_ga1423d2871e7c875312ebd931953d4948}, \doxyref{ps\+\_\+arc}{p.}{group__geometry_ga221af9d23e478b7609b20dc0e780c206}, \doxyref{ps\+\_\+tangent\+\_\+arc}{p.}{group__geometry_ga8f17dcbbfb34fb62862141e22b6040a2}, \doxyref{ps\+\_\+rounded\+\_\+rect}{p.}{group__geometry_gabee81bb4bac4a8de1bccbd3475b52d9b}, \doxyref{ps\+\_\+ellipse}{p.}{group__geometry_ga5a24c9a87485571696f9a560e5c8afc8} 
+\end{DoxySeeAlso}
+\mbox{\label{group__geometry_gabee81bb4bac4a8de1bccbd3475b52d9b}} 
+\index{Geometry@{Geometry}!ps\_rounded\_rect@{ps\_rounded\_rect}}
+\index{ps\_rounded\_rect@{ps\_rounded\_rect}!Geometry@{Geometry}}
+\doxysubsubsection{ps\_rounded\_rect()}
+{\footnotesize\ttfamily void ps\+\_\+rounded\+\_\+rect (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{const \textbf{ ps\+\_\+rect} $\ast$}]{rect,  }\item[{float}]{ltx,  }\item[{float}]{lty,  }\item[{float}]{rtx,  }\item[{float}]{rty,  }\item[{float}]{lbx,  }\item[{float}]{lby,  }\item[{float}]{rbx,  }\item[{float}]{rby }\end{DoxyParamCaption})}
+
+
+
+Add a rounded rectangle to the current path. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em rect} & The rectangle which will be added. \\
+\hline
+{\em ltx} & The left top horizontal radius. \\
+\hline
+{\em lty} & The left top vertical radius. \\
+\hline
+{\em rtx} & The right top horizontal radius. \\
+\hline
+{\em rty} & The right top vertical radius. \\
+\hline
+{\em lbx} & The left bottom horizontal radius. \\
+\hline
+{\em lby} & The left bottom vertical radius. \\
+\hline
+{\em rbx} & The right bottom horizontal radius. \\
+\hline
+{\em rby} & The right bottom vertical radius.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+move\+\_\+to}{p.}{group__geometry_ga6afa05defe9e5e6bec2ba59395b9ff13}, \doxyref{ps\+\_\+line\+\_\+to}{p.}{group__geometry_ga33144a05340d81d57be43ec15572288c}, \doxyref{ps\+\_\+bezier\+\_\+curve\+\_\+to}{p.}{group__geometry_gab8f032269b7bffbe13d65aab01dfdb22}, \doxyref{ps\+\_\+quad\+\_\+curve\+\_\+to}{p.}{group__geometry_ga1423d2871e7c875312ebd931953d4948}, \doxyref{ps\+\_\+arc}{p.}{group__geometry_ga221af9d23e478b7609b20dc0e780c206}, \doxyref{ps\+\_\+tangent\+\_\+arc}{p.}{group__geometry_ga8f17dcbbfb34fb62862141e22b6040a2}, \doxyref{ps\+\_\+rectangle}{p.}{group__geometry_ga5011a18fa50227967380b08956ceec0f}, \doxyref{ps\+\_\+ellipse}{p.}{group__geometry_ga5a24c9a87485571696f9a560e5c8afc8} 
+\end{DoxySeeAlso}
+\mbox{\label{group__geometry_gad29671ee13659f93f1ed9f04e2fef33f}} 
+\index{Geometry@{Geometry}!ps\_set\_path@{ps\_set\_path}}
+\index{ps\_set\_path@{ps\_set\_path}!Geometry@{Geometry}}
+\doxysubsubsection{ps\_set\_path()}
+{\footnotesize\ttfamily void ps\+\_\+set\+\_\+path (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{const \textbf{ ps\+\_\+path} $\ast$}]{path }\end{DoxyParamCaption})}
+
+
+
+Replace the current path in the graphic context. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em path} & The path will be set to graphic context.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+new\+\_\+path}{p.}{group__geometry_ga1dd5a2457bbc70bb4aab514c71657d47}, \doxyref{ps\+\_\+new\+\_\+sub\+\_\+path}{p.}{group__geometry_gabc1395130cd155b9e7540d9c66423edd}, \doxyref{ps\+\_\+get\+\_\+path}{p.}{group__geometry_ga12919bbac3b448c53c1b8200a464fe01}, \doxyref{ps\+\_\+close\+\_\+path}{p.}{group__geometry_ga7ddb8dc9dd946b85960c2e220d309131}, \doxyref{ps\+\_\+add\+\_\+sub\+\_\+path}{p.}{group__geometry_gaccc48dc1075994d7ac6154676eb5641f} 
+\end{DoxySeeAlso}
+\mbox{\label{group__geometry_ga8f17dcbbfb34fb62862141e22b6040a2}} 
+\index{Geometry@{Geometry}!ps\_tangent\_arc@{ps\_tangent\_arc}}
+\index{ps\_tangent\_arc@{ps\_tangent\_arc}!Geometry@{Geometry}}
+\doxysubsubsection{ps\_tangent\_arc()}
+{\footnotesize\ttfamily void ps\+\_\+tangent\+\_\+arc (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{const \textbf{ ps\+\_\+rect} $\ast$}]{rect,  }\item[{float}]{sangle,  }\item[{float}]{sweep }\end{DoxyParamCaption})}
+
+
+
+Add a circular arc which is inner tangent from a rectangle. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em rect} & The rectangle which the arc to fit in. \\
+\hline
+{\em sangle} & The start angle, in radians. \\
+\hline
+{\em sweep} & The sweep angle, in radians.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+move\+\_\+to}{p.}{group__geometry_ga6afa05defe9e5e6bec2ba59395b9ff13}, \doxyref{ps\+\_\+line\+\_\+to}{p.}{group__geometry_ga33144a05340d81d57be43ec15572288c}, \doxyref{ps\+\_\+bezier\+\_\+curve\+\_\+to}{p.}{group__geometry_gab8f032269b7bffbe13d65aab01dfdb22}, \doxyref{ps\+\_\+quad\+\_\+curve\+\_\+to}{p.}{group__geometry_ga1423d2871e7c875312ebd931953d4948}, \doxyref{ps\+\_\+arc}{p.}{group__geometry_ga221af9d23e478b7609b20dc0e780c206}, \doxyref{ps\+\_\+rectangle}{p.}{group__geometry_ga5011a18fa50227967380b08956ceec0f}, \doxyref{ps\+\_\+rounded\+\_\+rect}{p.}{group__geometry_gabee81bb4bac4a8de1bccbd3475b52d9b}, \doxyref{ps\+\_\+ellipse}{p.}{group__geometry_ga5a24c9a87485571696f9a560e5c8afc8} 
+\end{DoxySeeAlso}

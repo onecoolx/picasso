@@ -1,0 +1,161 @@
+.TH "pattern" 3 "Tue Dec 24 2024" "Version 2.8" "Picasso API" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+pattern
+.SH SYNOPSIS
+.br
+.PP
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef enum \fB_ps_wrap_type\fP \fBps_wrap_type\fP"
+.br
+.RI "Fill type of pattern\&. "
+.in -1c
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum \fB_ps_wrap_type\fP { \fBWRAP_TYPE_REPEAT\fP, \fBWRAP_TYPE_REFLECT\fP }"
+.br
+.RI "Fill type of pattern\&. "
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "PEXPORT \fBps_pattern\fP *PICAPI \fBps_pattern_create_image\fP (const \fBps_image\fP *img, \fBps_wrap_type\fP x_wrap, \fBps_wrap_type\fP y_wrap, const \fBps_matrix\fP *transform)"
+.br
+.RI "Create a new pattern with an existing image\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_pattern_transform\fP (\fBps_pattern\fP *pattern, const \fBps_matrix\fP *matrix)"
+.br
+.RI "Transform the pattern object\&. "
+.ti -1c
+.RI "PEXPORT \fBps_pattern\fP *PICAPI \fBps_pattern_ref\fP (\fBps_pattern\fP *pattern)"
+.br
+.RI "Increases the reference count of the pattern by 1\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_pattern_unref\fP (\fBps_pattern\fP *pattern)"
+.br
+.RI "Decrements the reference count for the pattern object\&. If the reference count on the pattern falls to 0, the pattern is freed\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.SH "Enumeration Type Documentation"
+.PP 
+.SS "enum \fB_ps_wrap_type\fP"
+
+.PP
+Fill type of pattern\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIWRAP_TYPE_REPEAT \fP\fP
+Wrap repeat, the pattern is repeated\&. 
+.TP
+\fB\fIWRAP_TYPE_REFLECT \fP\fP
+Wrap reflect the pattern is reflected\&. 
+.PP
+Definition at line 864 of file picasso\&.h\&.
+.SH "Function Documentation"
+.PP 
+.SS "\fBps_pattern\fP * ps_pattern_create_image (const \fBps_image\fP * img, \fBps_wrap_type\fP x_wrap, \fBps_wrap_type\fP y_wrap, const \fBps_matrix\fP * transform)"
+
+.PP
+Create a new pattern with an existing image\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIimg\fP An existing image object which will be a tiled of pattern object\&. 
+.br
+\fIx_wrap\fP The horizontal wrap type, of the required pattern\&. 
+.br
+\fIy_wrap\fP The vertical wrap type, of the required pattern\&. 
+.br
+\fItransform\fP A matrix that represents a transform for every tiled\&. If no transform needed, pass NULL\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+If the function succeeds, the return value is the pointer to a new pattern object\&. If the function fails, the return value is NULL\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+To get extended error information, call \fIps_last_status\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_pattern_ref\fP, \fBps_pattern_unref\fP 
+.RE
+.PP
+
+.SS "\fBps_pattern\fP * ps_pattern_ref (\fBps_pattern\fP * pattern)"
+
+.PP
+Increases the reference count of the pattern by 1\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpattern\fP Pointer to an existing pattern object\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+If the function succeeds, the return value is the pointer to the pattern object\&. If the function fails, the return value is NULL\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+To get extended error information, call \fIps_last_status\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_pattern_create_image\fP, \fBps_pattern_unref\fP 
+.RE
+.PP
+
+.SS "void ps_pattern_transform (\fBps_pattern\fP * pattern, const \fBps_matrix\fP * matrix)"
+
+.PP
+Transform the pattern object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpattern\fP Pointer to an existing pattern object\&. 
+.br
+\fImatrix\fP Pointer to an existing matrix object\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_pattern_create_image\fP, \fBps_pattern_ref\fP, \fBps_pattern_unref\fP 
+.RE
+.PP
+
+.SS "void ps_pattern_unref (\fBps_pattern\fP * pattern)"
+
+.PP
+Decrements the reference count for the pattern object\&. If the reference count on the pattern falls to 0, the pattern is freed\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpattern\fP Pointer to an existing pattern object\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_pattern_create_image\fP, \fBps_pattern_ref\fP 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Picasso API from the source code\&.

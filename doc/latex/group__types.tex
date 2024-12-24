@@ -1,0 +1,290 @@
+\doxysection{X\+Image Object Types}
+\label{group__types}\index{XImage Object Types@{XImage Object Types}}
+\doxysubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \textbf{ \+\_\+psx\+\_\+image\+\_\+frame}
+\begin{DoxyCompactList}\small\item\em A frame image data. \end{DoxyCompactList}\item 
+struct \textbf{ \+\_\+psx\+\_\+image}
+\begin{DoxyCompactList}\small\item\em A image object. \end{DoxyCompactList}\item 
+struct \textbf{ \+\_\+psx\+\_\+image\+\_\+header}
+\begin{DoxyCompactList}\small\item\em Image reader header define. \end{DoxyCompactList}\item 
+struct \textbf{ \+\_\+psx\+\_\+image\+\_\+operator}
+\begin{DoxyCompactList}\small\item\em The image operator define. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \textbf{ I\+M\+G\+\_\+\+O\+BJ}(image)~\textbf{ I\+M\+G\+\_\+\+O\+B\+J\+\_\+\+A\+T\+\_\+\+I\+N\+D\+EX}(image, 0)
+\begin{DoxyCompactList}\small\item\em Get first ps\+\_\+image obj. \end{DoxyCompactList}\item 
+\#define \textbf{ I\+M\+G\+\_\+\+D\+A\+TA}(image)~\textbf{ I\+M\+G\+\_\+\+D\+A\+T\+A\+\_\+\+A\+T\+\_\+\+I\+N\+D\+EX}(image, 0)
+\begin{DoxyCompactList}\small\item\em Get first image frame data. \end{DoxyCompactList}\item 
+\#define \textbf{ I\+M\+G\+\_\+\+D\+A\+T\+A\+\_\+\+S\+I\+ZE}(image)~\textbf{ I\+M\+G\+\_\+\+D\+A\+T\+A\+\_\+\+S\+I\+Z\+E\+\_\+\+A\+T\+\_\+\+I\+N\+D\+EX}(image, 0)
+\begin{DoxyCompactList}\small\item\em Get first image frame data size. \end{DoxyCompactList}\item 
+\#define \textbf{ I\+M\+G\+\_\+\+O\+B\+J\+\_\+\+A\+T\+\_\+\+I\+N\+D\+EX}(image,  idx)~(image-\/$>$frames[idx].img)
+\begin{DoxyCompactList}\small\item\em Get ps\+\_\+image obj at index. \end{DoxyCompactList}\item 
+\#define \textbf{ I\+M\+G\+\_\+\+D\+A\+T\+A\+\_\+\+A\+T\+\_\+\+I\+N\+D\+EX}(image,  idx)~(image-\/$>$frames[idx].data)
+\begin{DoxyCompactList}\small\item\em Get image frame data at index. \end{DoxyCompactList}\item 
+\#define \textbf{ I\+M\+G\+\_\+\+D\+A\+T\+A\+\_\+\+S\+I\+Z\+E\+\_\+\+A\+T\+\_\+\+I\+N\+D\+EX}(img,  idx)~(img-\/$>$frames[idx].size)
+\begin{DoxyCompactList}\small\item\em Get image frame data size at index. \end{DoxyCompactList}\item 
+\#define \textbf{ I\+M\+G\+\_\+\+D\+U\+R\+A\+T\+I\+O\+N\+\_\+\+A\+T\+\_\+\+I\+N\+D\+EX}(img,  idx)~(img-\/$>$frames[idx].duration)
+\begin{DoxyCompactList}\small\item\em Get image frame duration at index. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\label{group__types_ga9c73a9e18c3dbe35627caf3ca2576e9d}} 
+typedef struct \textbf{ \+\_\+psx\+\_\+image\+\_\+frame} \textbf{ psx\+\_\+image\+\_\+frame}
+\begin{DoxyCompactList}\small\item\em A frame image data. \end{DoxyCompactList}\item 
+\mbox{\label{group__types_gadf288af52cc3e0bcd015ad1d5cb34555}} 
+typedef struct \textbf{ \+\_\+psx\+\_\+image} \textbf{ psx\+\_\+image}
+\begin{DoxyCompactList}\small\item\em A image object. \end{DoxyCompactList}\item 
+\mbox{\label{group__types_ga2a329fae95e995b3152f5794f40577c8}} 
+typedef struct \textbf{ \+\_\+psx\+\_\+image\+\_\+header} \textbf{ psx\+\_\+image\+\_\+header}
+\begin{DoxyCompactList}\small\item\em Image reader header define. \end{DoxyCompactList}\item 
+typedef struct \textbf{ \+\_\+psx\+\_\+image\+\_\+operator} \textbf{ psx\+\_\+image\+\_\+operator}
+\begin{DoxyCompactList}\small\item\em The image operator define. \end{DoxyCompactList}\item 
+typedef enum \textbf{ \+\_\+psx\+\_\+priority\+\_\+level} \textbf{ psx\+\_\+priority\+\_\+level}
+\begin{DoxyCompactList}\small\item\em Priority level for image\+\_\+operator. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \{ \newline
+\textbf{ S\+\_\+\+OK} = 0, 
+\textbf{ S\+\_\+\+B\+A\+D\+\_\+\+P\+A\+R\+A\+MS} = 1, 
+\textbf{ S\+\_\+\+N\+O\+T\+\_\+\+S\+U\+P\+P\+O\+RT} = 2, 
+\textbf{ S\+\_\+\+O\+U\+T\+\_\+\+O\+F\+\_\+\+M\+E\+M\+O\+RY} = 3, 
+\newline
+\textbf{ S\+\_\+\+I\+N\+I\+T\+\_\+\+F\+A\+I\+L\+U\+RE} = 4, 
+\textbf{ S\+\_\+\+F\+A\+I\+L\+U\+RE} = 5
+ \}
+\begin{DoxyCompactList}\small\item\em Status code return by call A\+P\+Is. \end{DoxyCompactList}\item 
+enum \textbf{ \+\_\+psx\+\_\+priority\+\_\+level} \{ \textbf{ P\+R\+I\+O\+R\+I\+T\+Y\+\_\+\+E\+X\+T\+E\+N\+T\+ED} = -\/1, 
+\textbf{ P\+R\+I\+O\+R\+I\+T\+Y\+\_\+\+D\+E\+F\+A\+U\+LT} = 0, 
+\textbf{ P\+R\+I\+O\+R\+I\+T\+Y\+\_\+\+M\+A\+S\+T\+ER} = 1
+ \}
+\begin{DoxyCompactList}\small\item\em Priority level for image\+\_\+operator. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+
+
+\doxysubsection{Macro Definition Documentation}
+\mbox{\label{group__types_ga7659f81b8f07953d369f89e6ccb76946}} 
+\index{XImage Object Types@{XImage Object Types}!IMG\_DATA@{IMG\_DATA}}
+\index{IMG\_DATA@{IMG\_DATA}!XImage Object Types@{XImage Object Types}}
+\doxysubsubsection{IMG\_DATA}
+{\footnotesize\ttfamily \#define I\+M\+G\+\_\+\+D\+A\+TA(\begin{DoxyParamCaption}\item[{}]{image }\end{DoxyParamCaption})~\textbf{ I\+M\+G\+\_\+\+D\+A\+T\+A\+\_\+\+A\+T\+\_\+\+I\+N\+D\+EX}(image, 0)}
+
+
+
+Get first image frame data. 
+
+\begin{DoxySeeAlso}{See also}
+\doxyref{I\+M\+G\+\_\+\+D\+A\+T\+A\+\_\+\+A\+T\+\_\+\+I\+N\+D\+EX}{p.}{group__types_ga55ebbcf390dafc4dbcc392b8a126fa54} 
+\end{DoxySeeAlso}
+
+
+Definition at line 84 of file psx\+\_\+image.\+h.
+
+\mbox{\label{group__types_ga55ebbcf390dafc4dbcc392b8a126fa54}} 
+\index{XImage Object Types@{XImage Object Types}!IMG\_DATA\_AT\_INDEX@{IMG\_DATA\_AT\_INDEX}}
+\index{IMG\_DATA\_AT\_INDEX@{IMG\_DATA\_AT\_INDEX}!XImage Object Types@{XImage Object Types}}
+\doxysubsubsection{IMG\_DATA\_AT\_INDEX}
+{\footnotesize\ttfamily \#define I\+M\+G\+\_\+\+D\+A\+T\+A\+\_\+\+A\+T\+\_\+\+I\+N\+D\+EX(\begin{DoxyParamCaption}\item[{}]{image,  }\item[{}]{idx }\end{DoxyParamCaption})~(image-\/$>$frames[idx].data)}
+
+
+
+Get image frame data at index. 
+
+\begin{DoxySeeAlso}{See also}
+\doxyref{I\+M\+G\+\_\+\+D\+A\+TA}{p.}{group__types_ga7659f81b8f07953d369f89e6ccb76946} 
+\end{DoxySeeAlso}
+
+
+Definition at line 105 of file psx\+\_\+image.\+h.
+
+\mbox{\label{group__types_ga0c129ffe2ff88a4549acc8dc41dcc8e8}} 
+\index{XImage Object Types@{XImage Object Types}!IMG\_DATA\_SIZE@{IMG\_DATA\_SIZE}}
+\index{IMG\_DATA\_SIZE@{IMG\_DATA\_SIZE}!XImage Object Types@{XImage Object Types}}
+\doxysubsubsection{IMG\_DATA\_SIZE}
+{\footnotesize\ttfamily \#define I\+M\+G\+\_\+\+D\+A\+T\+A\+\_\+\+S\+I\+ZE(\begin{DoxyParamCaption}\item[{}]{image }\end{DoxyParamCaption})~\textbf{ I\+M\+G\+\_\+\+D\+A\+T\+A\+\_\+\+S\+I\+Z\+E\+\_\+\+A\+T\+\_\+\+I\+N\+D\+EX}(image, 0)}
+
+
+
+Get first image frame data size. 
+
+\begin{DoxySeeAlso}{See also}
+\doxyref{I\+M\+G\+\_\+\+D\+A\+T\+A\+\_\+\+S\+I\+Z\+E\+\_\+\+A\+T\+\_\+\+I\+N\+D\+EX}{p.}{group__types_ga03cb372f7ebc94296372e691e56d1a81} 
+\end{DoxySeeAlso}
+
+
+Definition at line 91 of file psx\+\_\+image.\+h.
+
+\mbox{\label{group__types_ga03cb372f7ebc94296372e691e56d1a81}} 
+\index{XImage Object Types@{XImage Object Types}!IMG\_DATA\_SIZE\_AT\_INDEX@{IMG\_DATA\_SIZE\_AT\_INDEX}}
+\index{IMG\_DATA\_SIZE\_AT\_INDEX@{IMG\_DATA\_SIZE\_AT\_INDEX}!XImage Object Types@{XImage Object Types}}
+\doxysubsubsection{IMG\_DATA\_SIZE\_AT\_INDEX}
+{\footnotesize\ttfamily \#define I\+M\+G\+\_\+\+D\+A\+T\+A\+\_\+\+S\+I\+Z\+E\+\_\+\+A\+T\+\_\+\+I\+N\+D\+EX(\begin{DoxyParamCaption}\item[{}]{img,  }\item[{}]{idx }\end{DoxyParamCaption})~(img-\/$>$frames[idx].size)}
+
+
+
+Get image frame data size at index. 
+
+\begin{DoxySeeAlso}{See also}
+\doxyref{I\+M\+G\+\_\+\+D\+A\+T\+A\+\_\+\+S\+I\+ZE}{p.}{group__types_ga0c129ffe2ff88a4549acc8dc41dcc8e8} 
+\end{DoxySeeAlso}
+
+
+Definition at line 112 of file psx\+\_\+image.\+h.
+
+\mbox{\label{group__types_ga844356bd32f7c49562ffe9e403eebde5}} 
+\index{XImage Object Types@{XImage Object Types}!IMG\_DURATION\_AT\_INDEX@{IMG\_DURATION\_AT\_INDEX}}
+\index{IMG\_DURATION\_AT\_INDEX@{IMG\_DURATION\_AT\_INDEX}!XImage Object Types@{XImage Object Types}}
+\doxysubsubsection{IMG\_DURATION\_AT\_INDEX}
+{\footnotesize\ttfamily \#define I\+M\+G\+\_\+\+D\+U\+R\+A\+T\+I\+O\+N\+\_\+\+A\+T\+\_\+\+I\+N\+D\+EX(\begin{DoxyParamCaption}\item[{}]{img,  }\item[{}]{idx }\end{DoxyParamCaption})~(img-\/$>$frames[idx].duration)}
+
+
+
+Get image frame duration at index. 
+
+\begin{DoxySeeAlso}{See also}
+\doxyref{I\+M\+G\+\_\+\+D\+A\+T\+A\+\_\+\+S\+I\+ZE}{p.}{group__types_ga0c129ffe2ff88a4549acc8dc41dcc8e8}, \doxyref{I\+M\+G\+\_\+\+D\+A\+TA}{p.}{group__types_ga7659f81b8f07953d369f89e6ccb76946} 
+\end{DoxySeeAlso}
+
+
+Definition at line 119 of file psx\+\_\+image.\+h.
+
+\mbox{\label{group__types_ga4f220b976061c8b3604e2cc0f1acc894}} 
+\index{XImage Object Types@{XImage Object Types}!IMG\_OBJ@{IMG\_OBJ}}
+\index{IMG\_OBJ@{IMG\_OBJ}!XImage Object Types@{XImage Object Types}}
+\doxysubsubsection{IMG\_OBJ}
+{\footnotesize\ttfamily \#define I\+M\+G\+\_\+\+O\+BJ(\begin{DoxyParamCaption}\item[{}]{image }\end{DoxyParamCaption})~\textbf{ I\+M\+G\+\_\+\+O\+B\+J\+\_\+\+A\+T\+\_\+\+I\+N\+D\+EX}(image, 0)}
+
+
+
+Get first ps\+\_\+image obj. 
+
+\begin{DoxySeeAlso}{See also}
+\doxyref{I\+M\+G\+\_\+\+O\+B\+J\+\_\+\+A\+T\+\_\+\+I\+N\+D\+EX}{p.}{group__types_ga7d8aed5aba80028b8b14faa09c4afbce} 
+\end{DoxySeeAlso}
+
+
+Definition at line 77 of file psx\+\_\+image.\+h.
+
+\mbox{\label{group__types_ga7d8aed5aba80028b8b14faa09c4afbce}} 
+\index{XImage Object Types@{XImage Object Types}!IMG\_OBJ\_AT\_INDEX@{IMG\_OBJ\_AT\_INDEX}}
+\index{IMG\_OBJ\_AT\_INDEX@{IMG\_OBJ\_AT\_INDEX}!XImage Object Types@{XImage Object Types}}
+\doxysubsubsection{IMG\_OBJ\_AT\_INDEX}
+{\footnotesize\ttfamily \#define I\+M\+G\+\_\+\+O\+B\+J\+\_\+\+A\+T\+\_\+\+I\+N\+D\+EX(\begin{DoxyParamCaption}\item[{}]{image,  }\item[{}]{idx }\end{DoxyParamCaption})~(image-\/$>$frames[idx].img)}
+
+
+
+Get ps\+\_\+image obj at index. 
+
+\begin{DoxySeeAlso}{See also}
+\doxyref{I\+M\+G\+\_\+\+O\+BJ}{p.}{group__types_ga4f220b976061c8b3604e2cc0f1acc894} 
+\end{DoxySeeAlso}
+
+
+Definition at line 98 of file psx\+\_\+image.\+h.
+
+
+
+\doxysubsection{Typedef Documentation}
+\mbox{\label{group__types_ga3873a0f73c90a4cf33afd3ff7ab6b7b3}} 
+\index{XImage Object Types@{XImage Object Types}!psx\_image\_operator@{psx\_image\_operator}}
+\index{psx\_image\_operator@{psx\_image\_operator}!XImage Object Types@{XImage Object Types}}
+\doxysubsubsection{psx\_image\_operator}
+{\footnotesize\ttfamily typedef struct \textbf{ \+\_\+psx\+\_\+image\+\_\+operator} \textbf{ psx\+\_\+image\+\_\+operator}}
+
+
+
+The image operator define. 
+
+\begin{DoxySeeAlso}{See also}
+\doxyref{psx\+\_\+image\+\_\+register\+\_\+operator}{p.}{group__interface_gac2c1fc7d317f49ee5c246f9aff61e13a} \doxyref{psx\+\_\+image\+\_\+unregister\+\_\+operator}{p.}{group__interface_ga50213dff3b0bec9b77c059bb85126bed} 
+\end{DoxySeeAlso}
+\mbox{\label{group__types_ga56bd2eeea302e1c420d7e7b09fa1b75c}} 
+\index{XImage Object Types@{XImage Object Types}!psx\_priority\_level@{psx\_priority\_level}}
+\index{psx\_priority\_level@{psx\_priority\_level}!XImage Object Types@{XImage Object Types}}
+\doxysubsubsection{psx\_priority\_level}
+{\footnotesize\ttfamily typedef enum \textbf{ \+\_\+psx\+\_\+priority\+\_\+level} \textbf{ psx\+\_\+priority\+\_\+level}}
+
+
+
+Priority level for image\+\_\+operator. 
+
+\begin{DoxySeeAlso}{See also}
+\doxyref{psx\+\_\+image\+\_\+register\+\_\+operator}{p.}{group__interface_gac2c1fc7d317f49ee5c246f9aff61e13a} 
+\end{DoxySeeAlso}
+
+
+\doxysubsection{Enumeration Type Documentation}
+\mbox{\label{group__types_ga06fc87d81c62e9abb8790b6e5713c55b}} 
+\doxysubsubsection{anonymous enum}
+{\footnotesize\ttfamily anonymous enum}
+
+
+
+Status code return by call A\+P\+Is. 
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{S\_OK@{S\_OK}!XImage Object Types@{XImage Object Types}}\index{XImage Object Types@{XImage Object Types}!S\_OK@{S\_OK}}}\mbox{\label{group__types_gga06fc87d81c62e9abb8790b6e5713c55bae36cb8bfb9670d44e24261506cae2791}} 
+S\+\_\+\+OK&Successful no errors. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{S\_BAD\_PARAMS@{S\_BAD\_PARAMS}!XImage Object Types@{XImage Object Types}}\index{XImage Object Types@{XImage Object Types}!S\_BAD\_PARAMS@{S\_BAD\_PARAMS}}}\mbox{\label{group__types_gga06fc87d81c62e9abb8790b6e5713c55ba149bfeb516955c855e9f170db6dc093c}} 
+S\+\_\+\+B\+A\+D\+\_\+\+P\+A\+R\+A\+MS&Invalid params input. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{S\_NOT\_SUPPORT@{S\_NOT\_SUPPORT}!XImage Object Types@{XImage Object Types}}\index{XImage Object Types@{XImage Object Types}!S\_NOT\_SUPPORT@{S\_NOT\_SUPPORT}}}\mbox{\label{group__types_gga06fc87d81c62e9abb8790b6e5713c55badc433abcd1da990b49c947a7c16dd657}} 
+S\+\_\+\+N\+O\+T\+\_\+\+S\+U\+P\+P\+O\+RT&Not support format or decoder module not found. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{S\_OUT\_OF\_MEMORY@{S\_OUT\_OF\_MEMORY}!XImage Object Types@{XImage Object Types}}\index{XImage Object Types@{XImage Object Types}!S\_OUT\_OF\_MEMORY@{S\_OUT\_OF\_MEMORY}}}\mbox{\label{group__types_gga06fc87d81c62e9abb8790b6e5713c55ba6d6bd1f44f637e595bb3564c1d914863}} 
+S\+\_\+\+O\+U\+T\+\_\+\+O\+F\+\_\+\+M\+E\+M\+O\+RY&Not enough memory. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{S\_INIT\_FAILURE@{S\_INIT\_FAILURE}!XImage Object Types@{XImage Object Types}}\index{XImage Object Types@{XImage Object Types}!S\_INIT\_FAILURE@{S\_INIT\_FAILURE}}}\mbox{\label{group__types_gga06fc87d81c62e9abb8790b6e5713c55ba28b75b1b6ca84b4239cf23b1b8b506f2}} 
+S\+\_\+\+I\+N\+I\+T\+\_\+\+F\+A\+I\+L\+U\+RE&Not initialize system. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{S\_FAILURE@{S\_FAILURE}!XImage Object Types@{XImage Object Types}}\index{XImage Object Types@{XImage Object Types}!S\_FAILURE@{S\_FAILURE}}}\mbox{\label{group__types_gga06fc87d81c62e9abb8790b6e5713c55bacd33e5b280a7fed8bd4a5521bd5e4b87}} 
+S\+\_\+\+F\+A\+I\+L\+U\+RE&Operation failed by internal errors. \\
+\hline
+
+\end{DoxyEnumFields}
+
+
+Definition at line 124 of file psx\+\_\+image.\+h.
+
+\mbox{\label{group__types_ga57d2d84e226ccbbbd2a1d9b593f7a4d9}} 
+\index{XImage Object Types@{XImage Object Types}!\_psx\_priority\_level@{\_psx\_priority\_level}}
+\index{\_psx\_priority\_level@{\_psx\_priority\_level}!XImage Object Types@{XImage Object Types}}
+\doxysubsubsection{\_psx\_priority\_level}
+{\footnotesize\ttfamily enum \textbf{ \+\_\+psx\+\_\+priority\+\_\+level}}
+
+
+
+Priority level for image\+\_\+operator. 
+
+\begin{DoxySeeAlso}{See also}
+\doxyref{psx\+\_\+image\+\_\+register\+\_\+operator}{p.}{group__interface_gac2c1fc7d317f49ee5c246f9aff61e13a} 
+\end{DoxySeeAlso}
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{PRIORITY\_EXTENTED@{PRIORITY\_EXTENTED}!XImage Object Types@{XImage Object Types}}\index{XImage Object Types@{XImage Object Types}!PRIORITY\_EXTENTED@{PRIORITY\_EXTENTED}}}\mbox{\label{group__types_gga57d2d84e226ccbbbd2a1d9b593f7a4d9acf0e249bf51a1ce199e4c7f485476ffd}} 
+P\+R\+I\+O\+R\+I\+T\+Y\+\_\+\+E\+X\+T\+E\+N\+T\+ED&Low level operator. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{PRIORITY\_DEFAULT@{PRIORITY\_DEFAULT}!XImage Object Types@{XImage Object Types}}\index{XImage Object Types@{XImage Object Types}!PRIORITY\_DEFAULT@{PRIORITY\_DEFAULT}}}\mbox{\label{group__types_gga57d2d84e226ccbbbd2a1d9b593f7a4d9ad0ec54805bc039724d6e94735ca936a5}} 
+P\+R\+I\+O\+R\+I\+T\+Y\+\_\+\+D\+E\+F\+A\+U\+LT&Default level operator. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{PRIORITY\_MASTER@{PRIORITY\_MASTER}!XImage Object Types@{XImage Object Types}}\index{XImage Object Types@{XImage Object Types}!PRIORITY\_MASTER@{PRIORITY\_MASTER}}}\mbox{\label{group__types_gga57d2d84e226ccbbbd2a1d9b593f7a4d9a6243765615c4bde8b09e02fe0364d3f1}} 
+P\+R\+I\+O\+R\+I\+T\+Y\+\_\+\+M\+A\+S\+T\+ER&High level operator. \\
+\hline
+
+\end{DoxyEnumFields}
+
+
+Definition at line 89 of file psx\+\_\+image\+\_\+plugin.\+h.
+

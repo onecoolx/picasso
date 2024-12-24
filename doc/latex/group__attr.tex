@@ -1,0 +1,494 @@
+\doxysection{Attribute}
+\label{group__attr}\index{Attribute@{Attribute}}
+\doxysubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\label{group__attr_ga1fca7fa05148f8fc45f2f192d9dcd7ab}} 
+typedef enum \textbf{ \+\_\+ps\+\_\+composite} \textbf{ ps\+\_\+composite}
+\begin{DoxyCompactList}\small\item\em Compositing operations for graphics context. \end{DoxyCompactList}\item 
+\mbox{\label{group__attr_gac758e5cc216b548e1ed9f7dca348d70e}} 
+typedef enum \textbf{ \+\_\+ps\+\_\+filter} \textbf{ ps\+\_\+filter}
+\begin{DoxyCompactList}\small\item\em Graphics quality for rendering an image. \end{DoxyCompactList}\item 
+\mbox{\label{group__attr_gaba85cf17ab39df549c492afc7f72ac33}} 
+typedef enum \textbf{ \+\_\+ps\+\_\+fill\+\_\+rule} \textbf{ ps\+\_\+fill\+\_\+rule}
+\begin{DoxyCompactList}\small\item\em Fill rules for graphics. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \textbf{ \+\_\+ps\+\_\+composite} \{ \newline
+\textbf{ C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+C\+L\+E\+AR}, 
+\textbf{ C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+S\+RC}, 
+\textbf{ C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+S\+R\+C\+\_\+\+O\+V\+ER}, 
+\textbf{ C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+S\+R\+C\+\_\+\+IN}, 
+\newline
+\textbf{ C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+S\+R\+C\+\_\+\+O\+UT}, 
+\textbf{ C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+S\+R\+C\+\_\+\+A\+T\+OP}, 
+\textbf{ C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+D\+ST}, 
+\textbf{ C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+D\+S\+T\+\_\+\+O\+V\+ER}, 
+\newline
+\textbf{ C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+D\+S\+T\+\_\+\+IN}, 
+\textbf{ C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+D\+S\+T\+\_\+\+O\+UT}, 
+\textbf{ C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+D\+S\+T\+\_\+\+A\+T\+OP}, 
+\textbf{ C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+X\+OR}, 
+\newline
+\textbf{ C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+D\+A\+R\+K\+EN}, 
+\textbf{ C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+L\+I\+G\+H\+T\+EN}, 
+\textbf{ C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+O\+V\+E\+R\+L\+AY}, 
+\textbf{ C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+S\+C\+R\+E\+EN}, 
+\newline
+\textbf{ C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+M\+U\+L\+T\+I\+P\+LY}, 
+\textbf{ C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+P\+L\+US}, 
+\textbf{ C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+M\+I\+N\+US}, 
+\textbf{ C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+E\+X\+C\+L\+U\+S\+I\+ON}, 
+\newline
+\textbf{ C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+D\+I\+F\+F\+E\+R\+E\+N\+CE}, 
+\textbf{ C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+S\+O\+F\+T\+L\+I\+G\+HT}, 
+\textbf{ C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+H\+A\+R\+D\+L\+I\+G\+HT}, 
+\textbf{ C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+B\+U\+RN}, 
+\newline
+\textbf{ C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+D\+O\+D\+GE}, 
+\textbf{ C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+C\+O\+N\+T\+R\+A\+ST}, 
+\textbf{ C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+I\+N\+V\+E\+RT}, 
+\textbf{ C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+I\+N\+V\+E\+R\+T\+\_\+\+B\+L\+E\+ND}, 
+\newline
+\textbf{ C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+H\+UE}, 
+\textbf{ C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+S\+A\+T\+U\+R\+A\+T\+I\+ON}, 
+\textbf{ C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+C\+O\+L\+OR}, 
+\textbf{ C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+L\+U\+M\+I\+N\+O\+S\+I\+TY}, 
+\newline
+\textbf{ C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+E\+R\+R\+OR}
+ \}
+\begin{DoxyCompactList}\small\item\em Compositing operations for graphics context. \end{DoxyCompactList}\item 
+enum \textbf{ \+\_\+ps\+\_\+filter} \{ \newline
+\textbf{ F\+I\+L\+T\+E\+R\+\_\+\+N\+E\+A\+R\+E\+ST}, 
+\textbf{ F\+I\+L\+T\+E\+R\+\_\+\+B\+I\+L\+I\+N\+E\+AR}, 
+\textbf{ F\+I\+L\+T\+E\+R\+\_\+\+G\+A\+U\+S\+S\+I\+AN}, 
+\textbf{ F\+I\+L\+T\+E\+R\+\_\+\+B\+I\+C\+U\+B\+IC}, 
+\newline
+\textbf{ F\+I\+L\+T\+E\+R\+\_\+\+Q\+U\+A\+D\+R\+IC}, 
+\textbf{ F\+I\+L\+T\+E\+R\+\_\+\+U\+N\+K\+N\+O\+WN}
+ \}
+\begin{DoxyCompactList}\small\item\em Graphics quality for rendering an image. \end{DoxyCompactList}\item 
+enum \textbf{ \+\_\+ps\+\_\+fill\+\_\+rule} \{ \textbf{ F\+I\+L\+L\+\_\+\+R\+U\+L\+E\+\_\+\+W\+I\+N\+D\+I\+NG}, 
+\textbf{ F\+I\+L\+L\+\_\+\+R\+U\+L\+E\+\_\+\+E\+V\+E\+N\+\_\+\+O\+DD}, 
+\textbf{ F\+I\+L\+L\+\_\+\+R\+U\+L\+E\+\_\+\+E\+R\+R\+OR}
+ \}
+\begin{DoxyCompactList}\small\item\em Fill rules for graphics. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+composite} P\+I\+C\+A\+PI \textbf{ ps\+\_\+set\+\_\+composite\+\_\+operator} (\textbf{ ps\+\_\+context} $\ast$ctx, \textbf{ ps\+\_\+composite} composite)
+\begin{DoxyCompactList}\small\item\em Set composites opertaions for graphics context. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+filter} P\+I\+C\+A\+PI \textbf{ ps\+\_\+set\+\_\+filter} (\textbf{ ps\+\_\+context} $\ast$ctx, \textbf{ ps\+\_\+filter} filter)
+\begin{DoxyCompactList}\small\item\em Set interpolation filter for graphic context. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+fill\+\_\+rule} P\+I\+C\+A\+PI \textbf{ ps\+\_\+set\+\_\+fill\+\_\+rule} (\textbf{ ps\+\_\+context} $\ast$ctx, \textbf{ ps\+\_\+fill\+\_\+rule} rule)
+\begin{DoxyCompactList}\small\item\em Set fill rule for graphic context. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT float P\+I\+C\+A\+PI \textbf{ ps\+\_\+set\+\_\+alpha} (\textbf{ ps\+\_\+context} $\ast$ctx, float alpha)
+\begin{DoxyCompactList}\small\item\em Set the opacity level for objects drawn in graphic context. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT float P\+I\+C\+A\+PI \textbf{ ps\+\_\+set\+\_\+gamma} (\textbf{ ps\+\_\+context} $\ast$ctx, float gamma)
+\begin{DoxyCompactList}\small\item\em Set the gamma value for the graphic context. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+set\+\_\+antialias} (\textbf{ ps\+\_\+context} $\ast$ctx, \textbf{ ps\+\_\+bool} antialias)
+\begin{DoxyCompactList}\small\item\em Set whether the Anti-\/aliasing should be turn on. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT float P\+I\+C\+A\+PI \textbf{ ps\+\_\+set\+\_\+blur} (\textbf{ ps\+\_\+context} $\ast$ctx, float blur)
+\begin{DoxyCompactList}\small\item\em Set the blur level for the graphic context. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+
+
+\doxysubsection{Enumeration Type Documentation}
+\mbox{\label{group__attr_gafd7a876bb41fb13485fc6b27696df1d1}} 
+\index{Attribute@{Attribute}!\_ps\_composite@{\_ps\_composite}}
+\index{\_ps\_composite@{\_ps\_composite}!Attribute@{Attribute}}
+\doxysubsubsection{\_ps\_composite}
+{\footnotesize\ttfamily enum \textbf{ \+\_\+ps\+\_\+composite}}
+
+
+
+Compositing operations for graphics context. 
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COMPOSITE\_CLEAR@{COMPOSITE\_CLEAR}!Attribute@{Attribute}}\index{Attribute@{Attribute}!COMPOSITE\_CLEAR@{COMPOSITE\_CLEAR}}}\mbox{\label{group__attr_ggafd7a876bb41fb13485fc6b27696df1d1ac7b99ec86c23d66f64040172a578d622}} 
+C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+C\+L\+E\+AR&Clear operation. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COMPOSITE\_SRC@{COMPOSITE\_SRC}!Attribute@{Attribute}}\index{Attribute@{Attribute}!COMPOSITE\_SRC@{COMPOSITE\_SRC}}}\mbox{\label{group__attr_ggafd7a876bb41fb13485fc6b27696df1d1a53ad8348b59a8faf0168cc1a08110c69}} 
+C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+S\+RC&Source operation. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COMPOSITE\_SRC\_OVER@{COMPOSITE\_SRC\_OVER}!Attribute@{Attribute}}\index{Attribute@{Attribute}!COMPOSITE\_SRC\_OVER@{COMPOSITE\_SRC\_OVER}}}\mbox{\label{group__attr_ggafd7a876bb41fb13485fc6b27696df1d1a40e17ce34eade6a1448b434364c21c4b}} 
+C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+S\+R\+C\+\_\+\+O\+V\+ER&Source over operation. (Default) \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COMPOSITE\_SRC\_IN@{COMPOSITE\_SRC\_IN}!Attribute@{Attribute}}\index{Attribute@{Attribute}!COMPOSITE\_SRC\_IN@{COMPOSITE\_SRC\_IN}}}\mbox{\label{group__attr_ggafd7a876bb41fb13485fc6b27696df1d1a2074a8d4c4ba93dfb01115a7654ecbe8}} 
+C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+S\+R\+C\+\_\+\+IN&Source in operation. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COMPOSITE\_SRC\_OUT@{COMPOSITE\_SRC\_OUT}!Attribute@{Attribute}}\index{Attribute@{Attribute}!COMPOSITE\_SRC\_OUT@{COMPOSITE\_SRC\_OUT}}}\mbox{\label{group__attr_ggafd7a876bb41fb13485fc6b27696df1d1ad2b2fa8b3e9e1911cf6ccb357270c4cc}} 
+C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+S\+R\+C\+\_\+\+O\+UT&Source out operation. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COMPOSITE\_SRC\_ATOP@{COMPOSITE\_SRC\_ATOP}!Attribute@{Attribute}}\index{Attribute@{Attribute}!COMPOSITE\_SRC\_ATOP@{COMPOSITE\_SRC\_ATOP}}}\mbox{\label{group__attr_ggafd7a876bb41fb13485fc6b27696df1d1aaa66229486b9c0c55f7370c7d329aad1}} 
+C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+S\+R\+C\+\_\+\+A\+T\+OP&Source atop operation. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COMPOSITE\_DST@{COMPOSITE\_DST}!Attribute@{Attribute}}\index{Attribute@{Attribute}!COMPOSITE\_DST@{COMPOSITE\_DST}}}\mbox{\label{group__attr_ggafd7a876bb41fb13485fc6b27696df1d1ae764d63860c47715b7edd6005bfb7736}} 
+C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+D\+ST&Destination operation. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COMPOSITE\_DST\_OVER@{COMPOSITE\_DST\_OVER}!Attribute@{Attribute}}\index{Attribute@{Attribute}!COMPOSITE\_DST\_OVER@{COMPOSITE\_DST\_OVER}}}\mbox{\label{group__attr_ggafd7a876bb41fb13485fc6b27696df1d1a4876bba112de09b3c06d431a7ddf237c}} 
+C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+D\+S\+T\+\_\+\+O\+V\+ER&Destination over operation. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COMPOSITE\_DST\_IN@{COMPOSITE\_DST\_IN}!Attribute@{Attribute}}\index{Attribute@{Attribute}!COMPOSITE\_DST\_IN@{COMPOSITE\_DST\_IN}}}\mbox{\label{group__attr_ggafd7a876bb41fb13485fc6b27696df1d1a1c08a5c37957d927ba85b55f4b67e036}} 
+C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+D\+S\+T\+\_\+\+IN&Destination in operation. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COMPOSITE\_DST\_OUT@{COMPOSITE\_DST\_OUT}!Attribute@{Attribute}}\index{Attribute@{Attribute}!COMPOSITE\_DST\_OUT@{COMPOSITE\_DST\_OUT}}}\mbox{\label{group__attr_ggafd7a876bb41fb13485fc6b27696df1d1ae2805a7226acd2df8b28f0a16a3896dd}} 
+C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+D\+S\+T\+\_\+\+O\+UT&Destination out operation. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COMPOSITE\_DST\_ATOP@{COMPOSITE\_DST\_ATOP}!Attribute@{Attribute}}\index{Attribute@{Attribute}!COMPOSITE\_DST\_ATOP@{COMPOSITE\_DST\_ATOP}}}\mbox{\label{group__attr_ggafd7a876bb41fb13485fc6b27696df1d1ad55c780e20e9b2d344fa6065c0d42c6c}} 
+C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+D\+S\+T\+\_\+\+A\+T\+OP&Destination atop operation. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COMPOSITE\_XOR@{COMPOSITE\_XOR}!Attribute@{Attribute}}\index{Attribute@{Attribute}!COMPOSITE\_XOR@{COMPOSITE\_XOR}}}\mbox{\label{group__attr_ggafd7a876bb41fb13485fc6b27696df1d1a9dc53a255d4b362cc4cb30621ba04722}} 
+C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+X\+OR&Xor operation. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COMPOSITE\_DARKEN@{COMPOSITE\_DARKEN}!Attribute@{Attribute}}\index{Attribute@{Attribute}!COMPOSITE\_DARKEN@{COMPOSITE\_DARKEN}}}\mbox{\label{group__attr_ggafd7a876bb41fb13485fc6b27696df1d1ac0d09b28ed26fe930698c10ec3e2683e}} 
+C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+D\+A\+R\+K\+EN&Source darker operation. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COMPOSITE\_LIGHTEN@{COMPOSITE\_LIGHTEN}!Attribute@{Attribute}}\index{Attribute@{Attribute}!COMPOSITE\_LIGHTEN@{COMPOSITE\_LIGHTEN}}}\mbox{\label{group__attr_ggafd7a876bb41fb13485fc6b27696df1d1a6759ce31f11f9be012209f17539a75ad}} 
+C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+L\+I\+G\+H\+T\+EN&Source lighter operation. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COMPOSITE\_OVERLAY@{COMPOSITE\_OVERLAY}!Attribute@{Attribute}}\index{Attribute@{Attribute}!COMPOSITE\_OVERLAY@{COMPOSITE\_OVERLAY}}}\mbox{\label{group__attr_ggafd7a876bb41fb13485fc6b27696df1d1aa9bc52e6efe65aec741cf4757445e820}} 
+C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+O\+V\+E\+R\+L\+AY&Overlay operation. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COMPOSITE\_SCREEN@{COMPOSITE\_SCREEN}!Attribute@{Attribute}}\index{Attribute@{Attribute}!COMPOSITE\_SCREEN@{COMPOSITE\_SCREEN}}}\mbox{\label{group__attr_ggafd7a876bb41fb13485fc6b27696df1d1adcad3560b11b977ddb9e521fab413b6e}} 
+C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+S\+C\+R\+E\+EN&Screen operation. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COMPOSITE\_MULTIPLY@{COMPOSITE\_MULTIPLY}!Attribute@{Attribute}}\index{Attribute@{Attribute}!COMPOSITE\_MULTIPLY@{COMPOSITE\_MULTIPLY}}}\mbox{\label{group__attr_ggafd7a876bb41fb13485fc6b27696df1d1ac84ac653a45a9a677daaef6e868cb417}} 
+C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+M\+U\+L\+T\+I\+P\+LY&Multiply operation. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COMPOSITE\_PLUS@{COMPOSITE\_PLUS}!Attribute@{Attribute}}\index{Attribute@{Attribute}!COMPOSITE\_PLUS@{COMPOSITE\_PLUS}}}\mbox{\label{group__attr_ggafd7a876bb41fb13485fc6b27696df1d1a3258b8d838a643c4b3dacb0be703b4c6}} 
+C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+P\+L\+US&Plus operation. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COMPOSITE\_MINUS@{COMPOSITE\_MINUS}!Attribute@{Attribute}}\index{Attribute@{Attribute}!COMPOSITE\_MINUS@{COMPOSITE\_MINUS}}}\mbox{\label{group__attr_ggafd7a876bb41fb13485fc6b27696df1d1aa5e9e0064983152c370ab640c57a5c66}} 
+C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+M\+I\+N\+US&Minus operation. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COMPOSITE\_EXCLUSION@{COMPOSITE\_EXCLUSION}!Attribute@{Attribute}}\index{Attribute@{Attribute}!COMPOSITE\_EXCLUSION@{COMPOSITE\_EXCLUSION}}}\mbox{\label{group__attr_ggafd7a876bb41fb13485fc6b27696df1d1aadfb03427739dc16770fe49b5e9c1bcb}} 
+C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+E\+X\+C\+L\+U\+S\+I\+ON&Exclusion operation. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COMPOSITE\_DIFFERENCE@{COMPOSITE\_DIFFERENCE}!Attribute@{Attribute}}\index{Attribute@{Attribute}!COMPOSITE\_DIFFERENCE@{COMPOSITE\_DIFFERENCE}}}\mbox{\label{group__attr_ggafd7a876bb41fb13485fc6b27696df1d1a8cea1e908b22b24f546069cef049a696}} 
+C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+D\+I\+F\+F\+E\+R\+E\+N\+CE&Difference operation. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COMPOSITE\_SOFTLIGHT@{COMPOSITE\_SOFTLIGHT}!Attribute@{Attribute}}\index{Attribute@{Attribute}!COMPOSITE\_SOFTLIGHT@{COMPOSITE\_SOFTLIGHT}}}\mbox{\label{group__attr_ggafd7a876bb41fb13485fc6b27696df1d1ae1f016570ff940c130f7a353c4ae09af}} 
+C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+S\+O\+F\+T\+L\+I\+G\+HT&Softlight operation. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COMPOSITE\_HARDLIGHT@{COMPOSITE\_HARDLIGHT}!Attribute@{Attribute}}\index{Attribute@{Attribute}!COMPOSITE\_HARDLIGHT@{COMPOSITE\_HARDLIGHT}}}\mbox{\label{group__attr_ggafd7a876bb41fb13485fc6b27696df1d1a74ee7d438b8304d794434a65293e0c30}} 
+C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+H\+A\+R\+D\+L\+I\+G\+HT&Hardlight operation. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COMPOSITE\_BURN@{COMPOSITE\_BURN}!Attribute@{Attribute}}\index{Attribute@{Attribute}!COMPOSITE\_BURN@{COMPOSITE\_BURN}}}\mbox{\label{group__attr_ggafd7a876bb41fb13485fc6b27696df1d1a71d62a3a9b37663ee8f6e900d9f52370}} 
+C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+B\+U\+RN&Burn operation. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COMPOSITE\_DODGE@{COMPOSITE\_DODGE}!Attribute@{Attribute}}\index{Attribute@{Attribute}!COMPOSITE\_DODGE@{COMPOSITE\_DODGE}}}\mbox{\label{group__attr_ggafd7a876bb41fb13485fc6b27696df1d1a4e7ec1a83d88dbd594e1c7c0bbe17ee0}} 
+C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+D\+O\+D\+GE&Dodge operation. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COMPOSITE\_CONTRAST@{COMPOSITE\_CONTRAST}!Attribute@{Attribute}}\index{Attribute@{Attribute}!COMPOSITE\_CONTRAST@{COMPOSITE\_CONTRAST}}}\mbox{\label{group__attr_ggafd7a876bb41fb13485fc6b27696df1d1a55218ca957db20584a9279d271449bd9}} 
+C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+C\+O\+N\+T\+R\+A\+ST&Contrast operation. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COMPOSITE\_INVERT@{COMPOSITE\_INVERT}!Attribute@{Attribute}}\index{Attribute@{Attribute}!COMPOSITE\_INVERT@{COMPOSITE\_INVERT}}}\mbox{\label{group__attr_ggafd7a876bb41fb13485fc6b27696df1d1a79ad8320211c18b10011b1072e28a772}} 
+C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+I\+N\+V\+E\+RT&Invert operation. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COMPOSITE\_INVERT\_BLEND@{COMPOSITE\_INVERT\_BLEND}!Attribute@{Attribute}}\index{Attribute@{Attribute}!COMPOSITE\_INVERT\_BLEND@{COMPOSITE\_INVERT\_BLEND}}}\mbox{\label{group__attr_ggafd7a876bb41fb13485fc6b27696df1d1abb0ab6a9e9a2a9aaf5857df0fd11ab66}} 
+C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+I\+N\+V\+E\+R\+T\+\_\+\+B\+L\+E\+ND&Invert blend operation. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COMPOSITE\_HUE@{COMPOSITE\_HUE}!Attribute@{Attribute}}\index{Attribute@{Attribute}!COMPOSITE\_HUE@{COMPOSITE\_HUE}}}\mbox{\label{group__attr_ggafd7a876bb41fb13485fc6b27696df1d1a7e761aa71b473f854b2a2a4d486b8211}} 
+C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+H\+UE&Hue operation. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COMPOSITE\_SATURATION@{COMPOSITE\_SATURATION}!Attribute@{Attribute}}\index{Attribute@{Attribute}!COMPOSITE\_SATURATION@{COMPOSITE\_SATURATION}}}\mbox{\label{group__attr_ggafd7a876bb41fb13485fc6b27696df1d1a08b4485d38d22bd9f8b87d2da1c390fe}} 
+C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+S\+A\+T\+U\+R\+A\+T\+I\+ON&Saturation operation. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COMPOSITE\_COLOR@{COMPOSITE\_COLOR}!Attribute@{Attribute}}\index{Attribute@{Attribute}!COMPOSITE\_COLOR@{COMPOSITE\_COLOR}}}\mbox{\label{group__attr_ggafd7a876bb41fb13485fc6b27696df1d1a12d0675be10e0565176c1b50ca183681}} 
+C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+C\+O\+L\+OR&Color operation. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COMPOSITE\_LUMINOSITY@{COMPOSITE\_LUMINOSITY}!Attribute@{Attribute}}\index{Attribute@{Attribute}!COMPOSITE\_LUMINOSITY@{COMPOSITE\_LUMINOSITY}}}\mbox{\label{group__attr_ggafd7a876bb41fb13485fc6b27696df1d1af356b16d08219e0e03c254387575b097}} 
+C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+L\+U\+M\+I\+N\+O\+S\+I\+TY&Luminosity operation. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COMPOSITE\_ERROR@{COMPOSITE\_ERROR}!Attribute@{Attribute}}\index{Attribute@{Attribute}!COMPOSITE\_ERROR@{COMPOSITE\_ERROR}}}\mbox{\label{group__attr_ggafd7a876bb41fb13485fc6b27696df1d1ad10c60119343eb9e22397012e5ccb242}} 
+C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+E\+R\+R\+OR&Error value. \\
+\hline
+
+\end{DoxyEnumFields}
+
+
+Definition at line 1508 of file picasso.\+h.
+
+\mbox{\label{group__attr_ga599ef5638a731cea324edd611b23bc9d}} 
+\index{Attribute@{Attribute}!\_ps\_fill\_rule@{\_ps\_fill\_rule}}
+\index{\_ps\_fill\_rule@{\_ps\_fill\_rule}!Attribute@{Attribute}}
+\doxysubsubsection{\_ps\_fill\_rule}
+{\footnotesize\ttfamily enum \textbf{ \+\_\+ps\+\_\+fill\+\_\+rule}}
+
+
+
+Fill rules for graphics. 
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{FILL\_RULE\_WINDING@{FILL\_RULE\_WINDING}!Attribute@{Attribute}}\index{Attribute@{Attribute}!FILL\_RULE\_WINDING@{FILL\_RULE\_WINDING}}}\mbox{\label{group__attr_gga599ef5638a731cea324edd611b23bc9dae0110e4610e181cb25db62e4be7ae427}} 
+F\+I\+L\+L\+\_\+\+R\+U\+L\+E\+\_\+\+W\+I\+N\+D\+I\+NG&Nonzero winding fill rule. (Default) \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{FILL\_RULE\_EVEN\_ODD@{FILL\_RULE\_EVEN\_ODD}!Attribute@{Attribute}}\index{Attribute@{Attribute}!FILL\_RULE\_EVEN\_ODD@{FILL\_RULE\_EVEN\_ODD}}}\mbox{\label{group__attr_gga599ef5638a731cea324edd611b23bc9daf6ace5c8f06b517f260089618603a20e}} 
+F\+I\+L\+L\+\_\+\+R\+U\+L\+E\+\_\+\+E\+V\+E\+N\+\_\+\+O\+DD&Even-\/odd fill rule. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{FILL\_RULE\_ERROR@{FILL\_RULE\_ERROR}!Attribute@{Attribute}}\index{Attribute@{Attribute}!FILL\_RULE\_ERROR@{FILL\_RULE\_ERROR}}}\mbox{\label{group__attr_gga599ef5638a731cea324edd611b23bc9da44985b77a49dcaf554e6969a43399aeb}} 
+F\+I\+L\+L\+\_\+\+R\+U\+L\+E\+\_\+\+E\+R\+R\+OR&Error value. \\
+\hline
+
+\end{DoxyEnumFields}
+
+
+Definition at line 1642 of file picasso.\+h.
+
+\mbox{\label{group__attr_ga8012bc4b823a0ec5de4ed7f98dddf54a}} 
+\index{Attribute@{Attribute}!\_ps\_filter@{\_ps\_filter}}
+\index{\_ps\_filter@{\_ps\_filter}!Attribute@{Attribute}}
+\doxysubsubsection{\_ps\_filter}
+{\footnotesize\ttfamily enum \textbf{ \+\_\+ps\+\_\+filter}}
+
+
+
+Graphics quality for rendering an image. 
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{FILTER\_NEAREST@{FILTER\_NEAREST}!Attribute@{Attribute}}\index{Attribute@{Attribute}!FILTER\_NEAREST@{FILTER\_NEAREST}}}\mbox{\label{group__attr_gga8012bc4b823a0ec5de4ed7f98dddf54aa0efb9d9eef22137dcfeb824d7b3463fd}} 
+F\+I\+L\+T\+E\+R\+\_\+\+N\+E\+A\+R\+E\+ST&No interpolation filter. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{FILTER\_BILINEAR@{FILTER\_BILINEAR}!Attribute@{Attribute}}\index{Attribute@{Attribute}!FILTER\_BILINEAR@{FILTER\_BILINEAR}}}\mbox{\label{group__attr_gga8012bc4b823a0ec5de4ed7f98dddf54aaaee14116830942a0230e7c0747df9265}} 
+F\+I\+L\+T\+E\+R\+\_\+\+B\+I\+L\+I\+N\+E\+AR&Bilinear interpolation filter. (Default) \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{FILTER\_GAUSSIAN@{FILTER\_GAUSSIAN}!Attribute@{Attribute}}\index{Attribute@{Attribute}!FILTER\_GAUSSIAN@{FILTER\_GAUSSIAN}}}\mbox{\label{group__attr_gga8012bc4b823a0ec5de4ed7f98dddf54aae3212817e27b220dd007bf1b808822a6}} 
+F\+I\+L\+T\+E\+R\+\_\+\+G\+A\+U\+S\+S\+I\+AN&Gaussian interpolation filter. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{FILTER\_BICUBIC@{FILTER\_BICUBIC}!Attribute@{Attribute}}\index{Attribute@{Attribute}!FILTER\_BICUBIC@{FILTER\_BICUBIC}}}\mbox{\label{group__attr_gga8012bc4b823a0ec5de4ed7f98dddf54aa4d0bf2bbf408f7fc7bef617a7beae796}} 
+F\+I\+L\+T\+E\+R\+\_\+\+B\+I\+C\+U\+B\+IC&Bicubic interpolation filter. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{FILTER\_QUADRIC@{FILTER\_QUADRIC}!Attribute@{Attribute}}\index{Attribute@{Attribute}!FILTER\_QUADRIC@{FILTER\_QUADRIC}}}\mbox{\label{group__attr_gga8012bc4b823a0ec5de4ed7f98dddf54aa3be961d11109e104e44ff9d7efa70267}} 
+F\+I\+L\+T\+E\+R\+\_\+\+Q\+U\+A\+D\+R\+IC&Quadric interpolation filter. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{FILTER\_UNKNOWN@{FILTER\_UNKNOWN}!Attribute@{Attribute}}\index{Attribute@{Attribute}!FILTER\_UNKNOWN@{FILTER\_UNKNOWN}}}\mbox{\label{group__attr_gga8012bc4b823a0ec5de4ed7f98dddf54aa43da6f0ed91fa4bbc2f4dc2f7e7064a4}} 
+F\+I\+L\+T\+E\+R\+\_\+\+U\+N\+K\+N\+O\+WN&Error value. \\
+\hline
+
+\end{DoxyEnumFields}
+
+
+Definition at line 1596 of file picasso.\+h.
+
+
+
+\doxysubsection{Function Documentation}
+\mbox{\label{group__attr_ga4ec5db989110ccd6136ead8128116a2e}} 
+\index{Attribute@{Attribute}!ps\_set\_alpha@{ps\_set\_alpha}}
+\index{ps\_set\_alpha@{ps\_set\_alpha}!Attribute@{Attribute}}
+\doxysubsubsection{ps\_set\_alpha()}
+{\footnotesize\ttfamily float ps\+\_\+set\+\_\+alpha (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{float}]{alpha }\end{DoxyParamCaption})}
+
+
+
+Set the opacity level for objects drawn in graphic context. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em alpha} & A value that specifies the opacity level from transparent to opaque(0 $\sim$ 1). Default level is opaque (1).\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+If the function succeeds, the return value is the old level. If the function fails, the return value is 0.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+set\+\_\+gamma}{p.}{group__attr_gae3926e575ca6445abda0ed2cc525d8a9}, \doxyref{ps\+\_\+set\+\_\+blur}{p.}{group__attr_ga5b079950f8e031badba41591a0e8d424}, \doxyref{ps\+\_\+set\+\_\+antialias}{p.}{group__attr_ga02de6bafb811faebb540e59a2b6d8f6e} 
+\end{DoxySeeAlso}
+\mbox{\label{group__attr_ga02de6bafb811faebb540e59a2b6d8f6e}} 
+\index{Attribute@{Attribute}!ps\_set\_antialias@{ps\_set\_antialias}}
+\index{ps\_set\_antialias@{ps\_set\_antialias}!Attribute@{Attribute}}
+\doxysubsubsection{ps\_set\_antialias()}
+{\footnotesize\ttfamily void ps\+\_\+set\+\_\+antialias (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{\textbf{ ps\+\_\+bool}}]{antialias }\end{DoxyParamCaption})}
+
+
+
+Set whether the Anti-\/aliasing should be turn on. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em antialias} & Boolean value whether the anti-\/aliasing is turn on. (True default)\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+set\+\_\+alpha}{p.}{group__attr_ga4ec5db989110ccd6136ead8128116a2e}, \doxyref{ps\+\_\+set\+\_\+blur}{p.}{group__attr_ga5b079950f8e031badba41591a0e8d424}, \doxyref{ps\+\_\+set\+\_\+gamma}{p.}{group__attr_gae3926e575ca6445abda0ed2cc525d8a9} 
+\end{DoxySeeAlso}
+\mbox{\label{group__attr_ga5b079950f8e031badba41591a0e8d424}} 
+\index{Attribute@{Attribute}!ps\_set\_blur@{ps\_set\_blur}}
+\index{ps\_set\_blur@{ps\_set\_blur}!Attribute@{Attribute}}
+\doxysubsubsection{ps\_set\_blur()}
+{\footnotesize\ttfamily float ps\+\_\+set\+\_\+blur (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{float}]{blur }\end{DoxyParamCaption})}
+
+
+
+Set the blur level for the graphic context. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em blur} & A value that specifies the blur level (0 $\sim$ 1). Default value is none blur (0).\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+If the function succeeds, the return value is the old level. If the function fails, the return value is 0.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+set\+\_\+alpha}{p.}{group__attr_ga4ec5db989110ccd6136ead8128116a2e}, \doxyref{ps\+\_\+set\+\_\+gamma}{p.}{group__attr_gae3926e575ca6445abda0ed2cc525d8a9}, \doxyref{ps\+\_\+set\+\_\+antialias}{p.}{group__attr_ga02de6bafb811faebb540e59a2b6d8f6e} 
+\end{DoxySeeAlso}
+\mbox{\label{group__attr_ga5c3ed51fc880feb1516eea2a4767bbe2}} 
+\index{Attribute@{Attribute}!ps\_set\_composite\_operator@{ps\_set\_composite\_operator}}
+\index{ps\_set\_composite\_operator@{ps\_set\_composite\_operator}!Attribute@{Attribute}}
+\doxysubsubsection{ps\_set\_composite\_operator()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+composite} ps\+\_\+set\+\_\+composite\+\_\+operator (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{\textbf{ ps\+\_\+composite}}]{composite }\end{DoxyParamCaption})}
+
+
+
+Set composites opertaions for graphics context. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em composite} & The Composite operation to be set.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+If the function succeeds, the return value is the old operation. If the function fails, the return value is C\+O\+M\+P\+O\+S\+I\+T\+E\+\_\+\+E\+R\+R\+OR.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+set\+\_\+filter}{p.}{group__attr_ga2973043ffd48bb4f4b4e1031a98dab1d}, \doxyref{ps\+\_\+set\+\_\+fill\+\_\+rule}{p.}{group__attr_gae7b9007749db11a17b433e9e81ddeea2} 
+\end{DoxySeeAlso}
+\mbox{\label{group__attr_gae7b9007749db11a17b433e9e81ddeea2}} 
+\index{Attribute@{Attribute}!ps\_set\_fill\_rule@{ps\_set\_fill\_rule}}
+\index{ps\_set\_fill\_rule@{ps\_set\_fill\_rule}!Attribute@{Attribute}}
+\doxysubsubsection{ps\_set\_fill\_rule()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+fill\+\_\+rule} ps\+\_\+set\+\_\+fill\+\_\+rule (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{\textbf{ ps\+\_\+fill\+\_\+rule}}]{rule }\end{DoxyParamCaption})}
+
+
+
+Set fill rule for graphic context. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em rule} & The fill rule to be set.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+If the function succeeds, the return value is the old rule. If the function fails, the return value is F\+I\+L\+L\+\_\+\+R\+U\+L\+E\+\_\+\+E\+R\+R\+OR.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+set\+\_\+composite\+\_\+operator}{p.}{group__attr_ga5c3ed51fc880feb1516eea2a4767bbe2}, \doxyref{ps\+\_\+set\+\_\+filter}{p.}{group__attr_ga2973043ffd48bb4f4b4e1031a98dab1d} 
+\end{DoxySeeAlso}
+\mbox{\label{group__attr_ga2973043ffd48bb4f4b4e1031a98dab1d}} 
+\index{Attribute@{Attribute}!ps\_set\_filter@{ps\_set\_filter}}
+\index{ps\_set\_filter@{ps\_set\_filter}!Attribute@{Attribute}}
+\doxysubsubsection{ps\_set\_filter()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+filter} ps\+\_\+set\+\_\+filter (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{\textbf{ ps\+\_\+filter}}]{filter }\end{DoxyParamCaption})}
+
+
+
+Set interpolation filter for graphic context. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em filter} & The interpolation filter to be set.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+If the function succeeds, the return value is the old filter. If the function fails, the return value is F\+I\+L\+T\+E\+R\+\_\+\+U\+N\+K\+N\+O\+WN.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+set\+\_\+composite\+\_\+operator}{p.}{group__attr_ga5c3ed51fc880feb1516eea2a4767bbe2}, \doxyref{ps\+\_\+set\+\_\+fill\+\_\+rule}{p.}{group__attr_gae7b9007749db11a17b433e9e81ddeea2} 
+\end{DoxySeeAlso}
+\mbox{\label{group__attr_gae3926e575ca6445abda0ed2cc525d8a9}} 
+\index{Attribute@{Attribute}!ps\_set\_gamma@{ps\_set\_gamma}}
+\index{ps\_set\_gamma@{ps\_set\_gamma}!Attribute@{Attribute}}
+\doxysubsubsection{ps\_set\_gamma()}
+{\footnotesize\ttfamily float ps\+\_\+set\+\_\+gamma (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{float}]{gamma }\end{DoxyParamCaption})}
+
+
+
+Set the gamma value for the graphic context. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em gamma} & A value that specifies the gamma (0 $\sim$ 3). Default value is 1.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+If the function succeeds, the return value is the old one. If the function fails, the return value is 0.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+set\+\_\+alpha}{p.}{group__attr_ga4ec5db989110ccd6136ead8128116a2e}, \doxyref{ps\+\_\+set\+\_\+blur}{p.}{group__attr_ga5b079950f8e031badba41591a0e8d424}, \doxyref{ps\+\_\+set\+\_\+antialias}{p.}{group__attr_ga02de6bafb811faebb540e59a2b6d8f6e} 
+\end{DoxySeeAlso}

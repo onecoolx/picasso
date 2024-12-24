@@ -1,0 +1,421 @@
+.TH "attr" 3 "Tue Dec 24 2024" "Version 2.8" "Picasso API" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+attr
+.SH SYNOPSIS
+.br
+.PP
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef enum \fB_ps_composite\fP \fBps_composite\fP"
+.br
+.RI "Compositing operations for graphics context\&. "
+.ti -1c
+.RI "typedef enum \fB_ps_filter\fP \fBps_filter\fP"
+.br
+.RI "Graphics quality for rendering an image\&. "
+.ti -1c
+.RI "typedef enum \fB_ps_fill_rule\fP \fBps_fill_rule\fP"
+.br
+.RI "Fill rules for graphics\&. "
+.in -1c
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum \fB_ps_composite\fP { \fBCOMPOSITE_CLEAR\fP, \fBCOMPOSITE_SRC\fP, \fBCOMPOSITE_SRC_OVER\fP, \fBCOMPOSITE_SRC_IN\fP, \fBCOMPOSITE_SRC_OUT\fP, \fBCOMPOSITE_SRC_ATOP\fP, \fBCOMPOSITE_DST\fP, \fBCOMPOSITE_DST_OVER\fP, \fBCOMPOSITE_DST_IN\fP, \fBCOMPOSITE_DST_OUT\fP, \fBCOMPOSITE_DST_ATOP\fP, \fBCOMPOSITE_XOR\fP, \fBCOMPOSITE_DARKEN\fP, \fBCOMPOSITE_LIGHTEN\fP, \fBCOMPOSITE_OVERLAY\fP, \fBCOMPOSITE_SCREEN\fP, \fBCOMPOSITE_MULTIPLY\fP, \fBCOMPOSITE_PLUS\fP, \fBCOMPOSITE_MINUS\fP, \fBCOMPOSITE_EXCLUSION\fP, \fBCOMPOSITE_DIFFERENCE\fP, \fBCOMPOSITE_SOFTLIGHT\fP, \fBCOMPOSITE_HARDLIGHT\fP, \fBCOMPOSITE_BURN\fP, \fBCOMPOSITE_DODGE\fP, \fBCOMPOSITE_CONTRAST\fP, \fBCOMPOSITE_INVERT\fP, \fBCOMPOSITE_INVERT_BLEND\fP, \fBCOMPOSITE_HUE\fP, \fBCOMPOSITE_SATURATION\fP, \fBCOMPOSITE_COLOR\fP, \fBCOMPOSITE_LUMINOSITY\fP, \fBCOMPOSITE_ERROR\fP }"
+.br
+.RI "Compositing operations for graphics context\&. "
+.ti -1c
+.RI "enum \fB_ps_filter\fP { \fBFILTER_NEAREST\fP, \fBFILTER_BILINEAR\fP, \fBFILTER_GAUSSIAN\fP, \fBFILTER_BICUBIC\fP, \fBFILTER_QUADRIC\fP, \fBFILTER_UNKNOWN\fP }"
+.br
+.RI "Graphics quality for rendering an image\&. "
+.ti -1c
+.RI "enum \fB_ps_fill_rule\fP { \fBFILL_RULE_WINDING\fP, \fBFILL_RULE_EVEN_ODD\fP, \fBFILL_RULE_ERROR\fP }"
+.br
+.RI "Fill rules for graphics\&. "
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "PEXPORT \fBps_composite\fP PICAPI \fBps_set_composite_operator\fP (\fBps_context\fP *ctx, \fBps_composite\fP composite)"
+.br
+.RI "Set composites opertaions for graphics context\&. "
+.ti -1c
+.RI "PEXPORT \fBps_filter\fP PICAPI \fBps_set_filter\fP (\fBps_context\fP *ctx, \fBps_filter\fP filter)"
+.br
+.RI "Set interpolation filter for graphic context\&. "
+.ti -1c
+.RI "PEXPORT \fBps_fill_rule\fP PICAPI \fBps_set_fill_rule\fP (\fBps_context\fP *ctx, \fBps_fill_rule\fP rule)"
+.br
+.RI "Set fill rule for graphic context\&. "
+.ti -1c
+.RI "PEXPORT float PICAPI \fBps_set_alpha\fP (\fBps_context\fP *ctx, float alpha)"
+.br
+.RI "Set the opacity level for objects drawn in graphic context\&. "
+.ti -1c
+.RI "PEXPORT float PICAPI \fBps_set_gamma\fP (\fBps_context\fP *ctx, float gamma)"
+.br
+.RI "Set the gamma value for the graphic context\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_set_antialias\fP (\fBps_context\fP *ctx, \fBps_bool\fP antialias)"
+.br
+.RI "Set whether the Anti-aliasing should be turn on\&. "
+.ti -1c
+.RI "PEXPORT float PICAPI \fBps_set_blur\fP (\fBps_context\fP *ctx, float blur)"
+.br
+.RI "Set the blur level for the graphic context\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.SH "Enumeration Type Documentation"
+.PP 
+.SS "enum \fB_ps_composite\fP"
+
+.PP
+Compositing operations for graphics context\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fICOMPOSITE_CLEAR \fP\fP
+Clear operation\&. 
+.TP
+\fB\fICOMPOSITE_SRC \fP\fP
+Source operation\&. 
+.TP
+\fB\fICOMPOSITE_SRC_OVER \fP\fP
+Source over operation\&. (Default) 
+.TP
+\fB\fICOMPOSITE_SRC_IN \fP\fP
+Source in operation\&. 
+.TP
+\fB\fICOMPOSITE_SRC_OUT \fP\fP
+Source out operation\&. 
+.TP
+\fB\fICOMPOSITE_SRC_ATOP \fP\fP
+Source atop operation\&. 
+.TP
+\fB\fICOMPOSITE_DST \fP\fP
+Destination operation\&. 
+.TP
+\fB\fICOMPOSITE_DST_OVER \fP\fP
+Destination over operation\&. 
+.TP
+\fB\fICOMPOSITE_DST_IN \fP\fP
+Destination in operation\&. 
+.TP
+\fB\fICOMPOSITE_DST_OUT \fP\fP
+Destination out operation\&. 
+.TP
+\fB\fICOMPOSITE_DST_ATOP \fP\fP
+Destination atop operation\&. 
+.TP
+\fB\fICOMPOSITE_XOR \fP\fP
+Xor operation\&. 
+.TP
+\fB\fICOMPOSITE_DARKEN \fP\fP
+Source darker operation\&. 
+.TP
+\fB\fICOMPOSITE_LIGHTEN \fP\fP
+Source lighter operation\&. 
+.TP
+\fB\fICOMPOSITE_OVERLAY \fP\fP
+Overlay operation\&. 
+.TP
+\fB\fICOMPOSITE_SCREEN \fP\fP
+Screen operation\&. 
+.TP
+\fB\fICOMPOSITE_MULTIPLY \fP\fP
+Multiply operation\&. 
+.TP
+\fB\fICOMPOSITE_PLUS \fP\fP
+Plus operation\&. 
+.TP
+\fB\fICOMPOSITE_MINUS \fP\fP
+Minus operation\&. 
+.TP
+\fB\fICOMPOSITE_EXCLUSION \fP\fP
+Exclusion operation\&. 
+.TP
+\fB\fICOMPOSITE_DIFFERENCE \fP\fP
+Difference operation\&. 
+.TP
+\fB\fICOMPOSITE_SOFTLIGHT \fP\fP
+Softlight operation\&. 
+.TP
+\fB\fICOMPOSITE_HARDLIGHT \fP\fP
+Hardlight operation\&. 
+.TP
+\fB\fICOMPOSITE_BURN \fP\fP
+Burn operation\&. 
+.TP
+\fB\fICOMPOSITE_DODGE \fP\fP
+Dodge operation\&. 
+.TP
+\fB\fICOMPOSITE_CONTRAST \fP\fP
+Contrast operation\&. 
+.TP
+\fB\fICOMPOSITE_INVERT \fP\fP
+Invert operation\&. 
+.TP
+\fB\fICOMPOSITE_INVERT_BLEND \fP\fP
+Invert blend operation\&. 
+.TP
+\fB\fICOMPOSITE_HUE \fP\fP
+Hue operation\&. 
+.TP
+\fB\fICOMPOSITE_SATURATION \fP\fP
+Saturation operation\&. 
+.TP
+\fB\fICOMPOSITE_COLOR \fP\fP
+Color operation\&. 
+.TP
+\fB\fICOMPOSITE_LUMINOSITY \fP\fP
+Luminosity operation\&. 
+.TP
+\fB\fICOMPOSITE_ERROR \fP\fP
+Error value\&. 
+.PP
+Definition at line 1508 of file picasso\&.h\&.
+.SS "enum \fB_ps_fill_rule\fP"
+
+.PP
+Fill rules for graphics\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIFILL_RULE_WINDING \fP\fP
+Nonzero winding fill rule\&. (Default) 
+.TP
+\fB\fIFILL_RULE_EVEN_ODD \fP\fP
+Even-odd fill rule\&. 
+.TP
+\fB\fIFILL_RULE_ERROR \fP\fP
+Error value\&. 
+.PP
+Definition at line 1642 of file picasso\&.h\&.
+.SS "enum \fB_ps_filter\fP"
+
+.PP
+Graphics quality for rendering an image\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIFILTER_NEAREST \fP\fP
+No interpolation filter\&. 
+.TP
+\fB\fIFILTER_BILINEAR \fP\fP
+Bilinear interpolation filter\&. (Default) 
+.TP
+\fB\fIFILTER_GAUSSIAN \fP\fP
+Gaussian interpolation filter\&. 
+.TP
+\fB\fIFILTER_BICUBIC \fP\fP
+Bicubic interpolation filter\&. 
+.TP
+\fB\fIFILTER_QUADRIC \fP\fP
+Quadric interpolation filter\&. 
+.TP
+\fB\fIFILTER_UNKNOWN \fP\fP
+Error value\&. 
+.PP
+Definition at line 1596 of file picasso\&.h\&.
+.SH "Function Documentation"
+.PP 
+.SS "float ps_set_alpha (\fBps_context\fP * ctx, float alpha)"
+
+.PP
+Set the opacity level for objects drawn in graphic context\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fIalpha\fP A value that specifies the opacity level from transparent to opaque(0 ~ 1)\&. Default level is opaque (1)\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+If the function succeeds, the return value is the old level\&. If the function fails, the return value is 0\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+To get extended error information, call \fIps_last_status\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_set_gamma\fP, \fBps_set_blur\fP, \fBps_set_antialias\fP 
+.RE
+.PP
+
+.SS "void ps_set_antialias (\fBps_context\fP * ctx, \fBps_bool\fP antialias)"
+
+.PP
+Set whether the Anti-aliasing should be turn on\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fIantialias\fP Boolean value whether the anti-aliasing is turn on\&. (True default)
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_set_alpha\fP, \fBps_set_blur\fP, \fBps_set_gamma\fP 
+.RE
+.PP
+
+.SS "float ps_set_blur (\fBps_context\fP * ctx, float blur)"
+
+.PP
+Set the blur level for the graphic context\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fIblur\fP A value that specifies the blur level (0 ~ 1)\&. Default value is none blur (0)\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+If the function succeeds, the return value is the old level\&. If the function fails, the return value is 0\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+To get extended error information, call \fIps_last_status\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_set_alpha\fP, \fBps_set_gamma\fP, \fBps_set_antialias\fP 
+.RE
+.PP
+
+.SS "\fBps_composite\fP ps_set_composite_operator (\fBps_context\fP * ctx, \fBps_composite\fP composite)"
+
+.PP
+Set composites opertaions for graphics context\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fIcomposite\fP The Composite operation to be set\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+If the function succeeds, the return value is the old operation\&. If the function fails, the return value is COMPOSITE_ERROR\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+To get extended error information, call \fIps_last_status\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_set_filter\fP, \fBps_set_fill_rule\fP 
+.RE
+.PP
+
+.SS "\fBps_fill_rule\fP ps_set_fill_rule (\fBps_context\fP * ctx, \fBps_fill_rule\fP rule)"
+
+.PP
+Set fill rule for graphic context\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fIrule\fP The fill rule to be set\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+If the function succeeds, the return value is the old rule\&. If the function fails, the return value is FILL_RULE_ERROR\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+To get extended error information, call \fIps_last_status\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_set_composite_operator\fP, \fBps_set_filter\fP 
+.RE
+.PP
+
+.SS "\fBps_filter\fP ps_set_filter (\fBps_context\fP * ctx, \fBps_filter\fP filter)"
+
+.PP
+Set interpolation filter for graphic context\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fIfilter\fP The interpolation filter to be set\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+If the function succeeds, the return value is the old filter\&. If the function fails, the return value is FILTER_UNKNOWN\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+To get extended error information, call \fIps_last_status\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_set_composite_operator\fP, \fBps_set_fill_rule\fP 
+.RE
+.PP
+
+.SS "float ps_set_gamma (\fBps_context\fP * ctx, float gamma)"
+
+.PP
+Set the gamma value for the graphic context\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fIgamma\fP A value that specifies the gamma (0 ~ 3)\&. Default value is 1\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+If the function succeeds, the return value is the old one\&. If the function fails, the return value is 0\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+To get extended error information, call \fIps_last_status\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_set_alpha\fP, \fBps_set_blur\fP, \fBps_set_antialias\fP 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Picasso API from the source code\&.

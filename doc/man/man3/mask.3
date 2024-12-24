@@ -1,0 +1,146 @@
+.TH "mask" 3 "Tue Dec 24 2024" "Version 2.8" "Picasso API" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+mask
+.SH SYNOPSIS
+.br
+.PP
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "PEXPORT \fBps_mask\fP *PICAPI \fBps_mask_create_with_data\fP (\fBps_byte\fP *data, int width, int height)"
+.br
+.RI "Create a new mask using a given data block\&. "
+.ti -1c
+.RI "PEXPORT \fBps_mask\fP *PICAPI \fBps_mask_ref\fP (\fBps_mask\fP *mask)"
+.br
+.RI "Increases the reference count of the mask by 1\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_mask_unref\fP (\fBps_mask\fP *mask)"
+.br
+.RI "Decrements the reference count for the mask object\&. If the reference count on the mask falls to 0, the mask is freed\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_mask_add_color_filter\fP (\fBps_mask\fP *mask, const \fBps_color\fP *color)"
+.br
+.RI "Add a color filter to a mask\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_mask_clear_color_filters\fP (\fBps_mask\fP *mask)"
+.br
+.RI "Clear all colors from mask's filter\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.SH "Function Documentation"
+.PP 
+.SS "void ps_mask_add_color_filter (\fBps_mask\fP * mask, const \fBps_color\fP * color)"
+
+.PP
+Add a color filter to a mask\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fImask\fP Pointer to an existing mask object\&. 
+.br
+\fIcolor\fP A color for be masked\&. Only the colors specified by filter can be masked\&. If no color is specified, all colors can be masked\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_mask_clear_color_filters\fP 
+.RE
+.PP
+
+.SS "void ps_mask_clear_color_filters (\fBps_mask\fP * mask)"
+
+.PP
+Clear all colors from mask's filter\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fImask\fP Pointer to an existing mask object\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_mask_add_color_filter\fP 
+.RE
+.PP
+
+.SS "\fBps_mask\fP * ps_mask_create_with_data (\fBps_byte\fP * data, int width, int height)"
+
+.PP
+Create a new mask using a given data block\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIdata\fP A pointer to the mask data block in memory\&. Each byte of data is a aplha value, from transparent to opaque (0 ~ 255)\&. The size of this memory block should be at least (width * height) bytes\&. 
+.br
+\fIwidth\fP The width, in pixels, of the required mask\&. 
+.br
+\fIheight\fP The height, in pixels, of the required mask\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+If the function succeeds, the return value is the pointer to a new mask object\&. If the function fails, the return value is NULL\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+To get extended error information, call \fIps_last_status\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_mask_ref\fP, \fBps_mask_unref\fP, \fBps_canvas_set_mask\fP, \fBps_canvas_reset_mask\fP 
+.RE
+.PP
+
+.SS "\fBps_mask\fP * ps_mask_ref (\fBps_mask\fP * mask)"
+
+.PP
+Increases the reference count of the mask by 1\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fImask\fP Pointer to an existing mask object\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+If the function succeeds, the return value is the pointer to the mask object\&. If the function fails, the return value is NULL\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+To get extended error information, call \fIps_last_status\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_mask_create_with_data\fP, \fBps_mask_unref\fP, \fBps_canvas_set_mask\fP, \fBps_canvas_reset_mask\fP 
+.RE
+.PP
+
+.SS "void ps_mask_unref (\fBps_mask\fP * mask)"
+
+.PP
+Decrements the reference count for the mask object\&. If the reference count on the mask falls to 0, the mask is freed\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fImask\fP Pointer to an existing mask object\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_mask_create_with_data\fP, \fBps_mask_ref\fP, \fBps_canvas_set_mask\fP, \fBps_canvas_reset_mask\fP 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Picasso API from the source code\&.

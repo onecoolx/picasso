@@ -1,0 +1,139 @@
+\doxysection{Context}
+\label{group__context}\index{Context@{Context}}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+context} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+context\+\_\+create} (\textbf{ ps\+\_\+canvas} $\ast$canvas, \textbf{ ps\+\_\+context} $\ast$shared\+\_\+context)
+\begin{DoxyCompactList}\small\item\em Create a new graphic context for a canvas. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+context} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+context\+\_\+ref} (\textbf{ ps\+\_\+context} $\ast$ctx)
+\begin{DoxyCompactList}\small\item\em Increases the reference count of the context by 1. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+context\+\_\+unref} (\textbf{ ps\+\_\+context} $\ast$ctx)
+\begin{DoxyCompactList}\small\item\em Decrements the reference count for the context object. If the reference count on the context falls to 0, the context is freed. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+canvas} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+context\+\_\+set\+\_\+canvas} (\textbf{ ps\+\_\+context} $\ast$ctx, \textbf{ ps\+\_\+canvas} $\ast$canvas)
+\begin{DoxyCompactList}\small\item\em Set a new canvas into a context, and return the old one. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+canvas} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+context\+\_\+get\+\_\+canvas} (\textbf{ ps\+\_\+context} $\ast$ctx)
+\begin{DoxyCompactList}\small\item\em Get the canvas from the context. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\label{group__context_ga33fa4222fe8a78360ee762d7dc21d634}} 
+\index{Context@{Context}!ps\_context\_create@{ps\_context\_create}}
+\index{ps\_context\_create@{ps\_context\_create}!Context@{Context}}
+\doxysubsubsection{ps\_context\_create()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+context} $\ast$ ps\+\_\+context\+\_\+create (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+canvas} $\ast$}]{canvas,  }\item[{\textbf{ ps\+\_\+context} $\ast$}]{shared\+\_\+context }\end{DoxyParamCaption})}
+
+
+
+Create a new graphic context for a canvas. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em canvas} & Pointer to an existing canvas object. \\
+\hline
+{\em shared\+\_\+context} & Resources shared context, N\+U\+LL mean resources not shared.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+If the function succeeds, the return value is the pointer to a new context object. If the function fails, the return value is N\+U\+LL.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+context\+\_\+set\+\_\+canvas}{p.}{group__context_ga10513cabc0cbcef20bd9a3c8fe19c456}, \doxyref{ps\+\_\+context\+\_\+get\+\_\+canvas}{p.}{group__context_ga274cdffd21ed66a070d72d5949b8da4b}, \doxyref{ps\+\_\+context\+\_\+ref}{p.}{group__context_ga4d922def06765e1cc52c8ab95110d73e}, \doxyref{ps\+\_\+context\+\_\+unref}{p.}{group__context_ga2840f4f552f58220684b0023acb30e2a} 
+\end{DoxySeeAlso}
+\mbox{\label{group__context_ga274cdffd21ed66a070d72d5949b8da4b}} 
+\index{Context@{Context}!ps\_context\_get\_canvas@{ps\_context\_get\_canvas}}
+\index{ps\_context\_get\_canvas@{ps\_context\_get\_canvas}!Context@{Context}}
+\doxysubsubsection{ps\_context\_get\_canvas()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+canvas} $\ast$ ps\+\_\+context\+\_\+get\+\_\+canvas (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx }\end{DoxyParamCaption})}
+
+
+
+Get the canvas from the context. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+If the function succeeds, the return value is a pointer to the canvas. If the function fails, the return value is N\+U\+LL.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+context\+\_\+create}{p.}{group__context_ga33fa4222fe8a78360ee762d7dc21d634}, \doxyref{ps\+\_\+context\+\_\+ref}{p.}{group__context_ga4d922def06765e1cc52c8ab95110d73e}, \doxyref{ps\+\_\+context\+\_\+unref}{p.}{group__context_ga2840f4f552f58220684b0023acb30e2a}, \doxyref{ps\+\_\+context\+\_\+set\+\_\+canvas}{p.}{group__context_ga10513cabc0cbcef20bd9a3c8fe19c456} 
+\end{DoxySeeAlso}
+\mbox{\label{group__context_ga4d922def06765e1cc52c8ab95110d73e}} 
+\index{Context@{Context}!ps\_context\_ref@{ps\_context\_ref}}
+\index{ps\_context\_ref@{ps\_context\_ref}!Context@{Context}}
+\doxysubsubsection{ps\_context\_ref()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+context} $\ast$ ps\+\_\+context\+\_\+ref (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx }\end{DoxyParamCaption})}
+
+
+
+Increases the reference count of the context by 1. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+If the function succeeds, the return value is the pointer to the context object. If the function fails, the return value is N\+U\+LL.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+context\+\_\+set\+\_\+canvas}{p.}{group__context_ga10513cabc0cbcef20bd9a3c8fe19c456}, \doxyref{ps\+\_\+context\+\_\+get\+\_\+canvas}{p.}{group__context_ga274cdffd21ed66a070d72d5949b8da4b}, \doxyref{ps\+\_\+context\+\_\+create}{p.}{group__context_ga33fa4222fe8a78360ee762d7dc21d634}, \doxyref{ps\+\_\+context\+\_\+unref}{p.}{group__context_ga2840f4f552f58220684b0023acb30e2a} 
+\end{DoxySeeAlso}
+\mbox{\label{group__context_ga10513cabc0cbcef20bd9a3c8fe19c456}} 
+\index{Context@{Context}!ps\_context\_set\_canvas@{ps\_context\_set\_canvas}}
+\index{ps\_context\_set\_canvas@{ps\_context\_set\_canvas}!Context@{Context}}
+\doxysubsubsection{ps\_context\_set\_canvas()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+canvas} $\ast$ ps\+\_\+context\+\_\+set\+\_\+canvas (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{\textbf{ ps\+\_\+canvas} $\ast$}]{canvas }\end{DoxyParamCaption})}
+
+
+
+Set a new canvas into a context, and return the old one. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em canvas} & Pointer to an existing canvas object to be set.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+If the function succeeds, the return value is a pointer to the canvas being replaced. If the function fails, the return value is N\+U\+LL.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+context\+\_\+create}{p.}{group__context_ga33fa4222fe8a78360ee762d7dc21d634}, \doxyref{ps\+\_\+context\+\_\+ref}{p.}{group__context_ga4d922def06765e1cc52c8ab95110d73e}, \doxyref{ps\+\_\+context\+\_\+unref}{p.}{group__context_ga2840f4f552f58220684b0023acb30e2a}, \doxyref{ps\+\_\+context\+\_\+get\+\_\+canvas}{p.}{group__context_ga274cdffd21ed66a070d72d5949b8da4b} 
+\end{DoxySeeAlso}
+\mbox{\label{group__context_ga2840f4f552f58220684b0023acb30e2a}} 
+\index{Context@{Context}!ps\_context\_unref@{ps\_context\_unref}}
+\index{ps\_context\_unref@{ps\_context\_unref}!Context@{Context}}
+\doxysubsubsection{ps\_context\_unref()}
+{\footnotesize\ttfamily void ps\+\_\+context\+\_\+unref (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx }\end{DoxyParamCaption})}
+
+
+
+Decrements the reference count for the context object. If the reference count on the context falls to 0, the context is freed. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+context\+\_\+set\+\_\+canvas}{p.}{group__context_ga10513cabc0cbcef20bd9a3c8fe19c456}, \doxyref{ps\+\_\+context\+\_\+get\+\_\+canvas}{p.}{group__context_ga274cdffd21ed66a070d72d5949b8da4b}, \doxyref{ps\+\_\+context\+\_\+create}{p.}{group__context_ga33fa4222fe8a78360ee762d7dc21d634}, \doxyref{ps\+\_\+context\+\_\+ref}{p.}{group__context_ga4d922def06765e1cc52c8ab95110d73e} 
+\end{DoxySeeAlso}

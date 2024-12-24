@@ -1,0 +1,80 @@
+.TH "interface" 3 "Tue Dec 24 2024" "Version 2.8" "Picasso API" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+interface
+.SH SYNOPSIS
+.br
+.PP
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "PEXPORT int \fBpsx_image_register_operator\fP (const char *type, const \fBps_byte\fP *signature, size_t sig_offset, size_t sig_len, \fBpsx_priority_level\fP level, \fBpsx_image_operator\fP *coder)"
+.br
+.RI "Register the image operator\&. "
+.ti -1c
+.RI "PEXPORT int \fBpsx_image_unregister_operator\fP (\fBpsx_image_operator\fP *coder)"
+.br
+.RI "Unregister the image operator\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.SH "Function Documentation"
+.PP 
+.SS "int psx_image_register_operator (const char * type, const \fBps_byte\fP * signature, size_t sig_offset, size_t sig_len, \fBpsx_priority_level\fP level, \fBpsx_image_operator\fP * coder)"
+
+.PP
+Register the image operator\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fItype\fP The image operator short name\&. (i\&.e 'png' 'jpg' 'gif' 'bmp') 
+.br
+\fIsignature\fP The image signature\&. 
+.br
+\fIsig_offset\fP The image signature offset from the beginning of the image data\&. (usually is 0) 
+.br
+\fIsig_len\fP The image signature length\&. 
+.br
+\fIlevel\fP The image operator priority level\&. 
+.br
+\fIcoder\fP The pointer to a image_operator object\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Result code returned\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBpsx_image_unregister_operator\fP 
+.RE
+.PP
+
+.SS "int psx_image_unregister_operator (\fBpsx_image_operator\fP * coder)"
+
+.PP
+Unregister the image operator\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIcoder\fP The image operator which will be unregister\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Result code returned\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBpsx_image_register_operator\fP 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Picasso API from the source code\&.

@@ -1,0 +1,339 @@
+\doxysection{Image}
+\label{group__image}\index{Image@{Image}}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+image} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+image\+\_\+create} (\textbf{ ps\+\_\+color\+\_\+format} fmt, int width, int height)
+\begin{DoxyCompactList}\small\item\em Create a new image using the given parameters. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+image} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+image\+\_\+create\+\_\+with\+\_\+data} (\textbf{ ps\+\_\+byte} $\ast$data, \textbf{ ps\+\_\+color\+\_\+format} fmt, int width, int height, int pitch)
+\begin{DoxyCompactList}\small\item\em Create a new image using a given address in memory. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+image} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+image\+\_\+create\+\_\+from\+\_\+data} (\textbf{ ps\+\_\+byte} $\ast$data, \textbf{ ps\+\_\+color\+\_\+format} fmt, int width, int height, int pitch)
+\begin{DoxyCompactList}\small\item\em Create a new image using a copy of given address in memory. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+image} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+image\+\_\+create\+\_\+compatible} (const \textbf{ ps\+\_\+canvas} $\ast$canvas, int width, int height)
+\begin{DoxyCompactList}\small\item\em Create a new image to compatible with an existing canvas. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+image} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+image\+\_\+create\+\_\+from\+\_\+canvas} (\textbf{ ps\+\_\+canvas} $\ast$canvas, const \textbf{ ps\+\_\+rect} $\ast$rect)
+\begin{DoxyCompactList}\small\item\em Create a new image using part of an existing canvas in same pixel buffer. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+image} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+image\+\_\+create\+\_\+from\+\_\+image} (\textbf{ ps\+\_\+image} $\ast$img, const \textbf{ ps\+\_\+rect} $\ast$rect)
+\begin{DoxyCompactList}\small\item\em Create a new image using part of an existing ps\+\_\+image object in same pixel buffer. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+image} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+image\+\_\+ref} (\textbf{ ps\+\_\+image} $\ast$img)
+\begin{DoxyCompactList}\small\item\em Increases the reference count of the image by 1. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+image\+\_\+unref} (\textbf{ ps\+\_\+image} $\ast$img)
+\begin{DoxyCompactList}\small\item\em Decrements the reference count for the image object. If the reference count on the image falls to 0, the image is freed. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+image\+\_\+set\+\_\+allow\+\_\+transparent} (\textbf{ ps\+\_\+image} $\ast$img, \textbf{ ps\+\_\+bool} allow)
+\begin{DoxyCompactList}\small\item\em Set whether the image allowed be transparent, False is default. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+image\+\_\+set\+\_\+transparent\+\_\+color} (\textbf{ ps\+\_\+image} $\ast$img, const \textbf{ ps\+\_\+color} $\ast$color)
+\begin{DoxyCompactList}\small\item\em Set the transparent color for the image. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+bool} P\+I\+C\+A\+PI \textbf{ ps\+\_\+image\+\_\+get\+\_\+size} (const \textbf{ ps\+\_\+image} $\ast$img, \textbf{ ps\+\_\+size} $\ast$rsize)
+\begin{DoxyCompactList}\small\item\em Return the size of the image. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+color\+\_\+format} P\+I\+C\+A\+PI \textbf{ ps\+\_\+image\+\_\+get\+\_\+format} (const \textbf{ ps\+\_\+image} $\ast$img)
+\begin{DoxyCompactList}\small\item\em Return the pixel format of the image. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\label{group__image_gad73f93a376c811065edbbc54b857f093}} 
+\index{Image@{Image}!ps\_image\_create@{ps\_image\_create}}
+\index{ps\_image\_create@{ps\_image\_create}!Image@{Image}}
+\doxysubsubsection{ps\_image\_create()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+image} $\ast$ ps\+\_\+image\+\_\+create (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+color\+\_\+format}}]{fmt,  }\item[{int}]{width,  }\item[{int}]{height }\end{DoxyParamCaption})}
+
+
+
+Create a new image using the given parameters. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em fmt} & The Pixel format to use for the image. \\
+\hline
+{\em width} & The width, in pixels, of the required image. \\
+\hline
+{\em height} & The height, in pixels, of the required image.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+If the function succeeds, the return value is the pointer to a new image object. If the function fails, the return value is N\+U\+LL.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+image\+\_\+create\+\_\+with\+\_\+data}{p.}{group__image_ga8a45a5aa2404138a2dd323b3b009740d}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+compatible}{p.}{group__image_gae649621753e8feca08b0f5e76db0513f}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+canvas}{p.}{group__image_gafb11e3545a00ac5f963cd0bc550fdb54}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+data}{p.}{group__image_gaebebf1d12a7c978a5b5440b2eae4f650}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+image}{p.}{group__image_ga2a0bf1bcf790bf0c32d0562349a0af2a}, \doxyref{ps\+\_\+image\+\_\+ref}{p.}{group__image_ga56a76add1af7ead02d1d9b400f579a46}, \doxyref{ps\+\_\+image\+\_\+unref}{p.}{group__image_ga38cd469f268f5f55c45b36322543a3f6} 
+\end{DoxySeeAlso}
+\mbox{\label{group__image_gae649621753e8feca08b0f5e76db0513f}} 
+\index{Image@{Image}!ps\_image\_create\_compatible@{ps\_image\_create\_compatible}}
+\index{ps\_image\_create\_compatible@{ps\_image\_create\_compatible}!Image@{Image}}
+\doxysubsubsection{ps\_image\_create\_compatible()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+image} $\ast$ ps\+\_\+image\+\_\+create\+\_\+compatible (\begin{DoxyParamCaption}\item[{const \textbf{ ps\+\_\+canvas} $\ast$}]{canvas,  }\item[{int}]{width,  }\item[{int}]{height }\end{DoxyParamCaption})}
+
+
+
+Create a new image to compatible with an existing canvas. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em canvas} & A pointer to an existing canvas. \\
+\hline
+{\em width} & The width, in pixels, of the required canvas. If it is not more than zero, the width will be equal to the width of the reference canvas. \\
+\hline
+{\em height} & The height, in pixels, of the required canvas. If it is not more than zero, the height will be equal to the height of the reference canvas.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+If the function succeeds, the return value is the pointer to a new image object. If the function fails, the return value is N\+U\+LL.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+image\+\_\+create}{p.}{group__image_gad73f93a376c811065edbbc54b857f093}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+with\+\_\+data}{p.}{group__image_ga8a45a5aa2404138a2dd323b3b009740d}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+canvas}{p.}{group__image_gafb11e3545a00ac5f963cd0bc550fdb54}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+image}{p.}{group__image_ga2a0bf1bcf790bf0c32d0562349a0af2a}, \doxyref{ps\+\_\+image\+\_\+ref}{p.}{group__image_ga56a76add1af7ead02d1d9b400f579a46}, \doxyref{ps\+\_\+image\+\_\+unref}{p.}{group__image_ga38cd469f268f5f55c45b36322543a3f6} 
+\end{DoxySeeAlso}
+\mbox{\label{group__image_gafb11e3545a00ac5f963cd0bc550fdb54}} 
+\index{Image@{Image}!ps\_image\_create\_from\_canvas@{ps\_image\_create\_from\_canvas}}
+\index{ps\_image\_create\_from\_canvas@{ps\_image\_create\_from\_canvas}!Image@{Image}}
+\doxysubsubsection{ps\_image\_create\_from\_canvas()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+image} $\ast$ ps\+\_\+image\+\_\+create\+\_\+from\+\_\+canvas (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+canvas} $\ast$}]{canvas,  }\item[{const \textbf{ ps\+\_\+rect} $\ast$}]{rect }\end{DoxyParamCaption})}
+
+
+
+Create a new image using part of an existing canvas in same pixel buffer. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em canvas} & A pointer to an existing canvas. \\
+\hline
+{\em rect} & The rectangle area of the image from the ps\+\_\+canvas. If it is N\+U\+LL, the image\textquotesingle{}s width and height will be equal to the parant canvas.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+If the function succeeds, the return value is the pointer to a new image object. If the function fails, the return value is N\+U\+LL.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+image\+\_\+create}{p.}{group__image_gad73f93a376c811065edbbc54b857f093}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+with\+\_\+data}{p.}{group__image_ga8a45a5aa2404138a2dd323b3b009740d}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+compatible}{p.}{group__image_gae649621753e8feca08b0f5e76db0513f}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+data}{p.}{group__image_gaebebf1d12a7c978a5b5440b2eae4f650}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+image}{p.}{group__image_ga2a0bf1bcf790bf0c32d0562349a0af2a}, \doxyref{ps\+\_\+image\+\_\+ref}{p.}{group__image_ga56a76add1af7ead02d1d9b400f579a46}, \doxyref{ps\+\_\+image\+\_\+unref}{p.}{group__image_ga38cd469f268f5f55c45b36322543a3f6} 
+\end{DoxySeeAlso}
+\mbox{\label{group__image_gaebebf1d12a7c978a5b5440b2eae4f650}} 
+\index{Image@{Image}!ps\_image\_create\_from\_data@{ps\_image\_create\_from\_data}}
+\index{ps\_image\_create\_from\_data@{ps\_image\_create\_from\_data}!Image@{Image}}
+\doxysubsubsection{ps\_image\_create\_from\_data()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+image} $\ast$ ps\+\_\+image\+\_\+create\+\_\+from\+\_\+data (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+byte} $\ast$}]{data,  }\item[{\textbf{ ps\+\_\+color\+\_\+format}}]{fmt,  }\item[{int}]{width,  }\item[{int}]{height,  }\item[{int}]{pitch }\end{DoxyParamCaption})}
+
+
+
+Create a new image using a copy of given address in memory. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em data} & A pointer to the destination in memory where the drawing is to be rendered. The size of this memory block should be at least (pitch $\ast$ height) bytes. \\
+\hline
+{\em fmt} & The Pixel format to use for the image. \\
+\hline
+{\em width} & The width, in pixels, of the required image. \\
+\hline
+{\em height} & The height, in pixels, of the required image. \\
+\hline
+{\em pitch} & The number of bytes per row, of the required image.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+If the function succeeds, the return value is the pointer to a new image object. If the function fails, the return value is N\+U\+LL.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+image\+\_\+create}{p.}{group__image_gad73f93a376c811065edbbc54b857f093}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+compatible}{p.}{group__image_gae649621753e8feca08b0f5e76db0513f}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+canvas}{p.}{group__image_gafb11e3545a00ac5f963cd0bc550fdb54}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+with\+\_\+data}{p.}{group__image_ga8a45a5aa2404138a2dd323b3b009740d}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+image}{p.}{group__image_ga2a0bf1bcf790bf0c32d0562349a0af2a}, \doxyref{ps\+\_\+image\+\_\+ref}{p.}{group__image_ga56a76add1af7ead02d1d9b400f579a46}, \doxyref{ps\+\_\+image\+\_\+unref}{p.}{group__image_ga38cd469f268f5f55c45b36322543a3f6} 
+\end{DoxySeeAlso}
+\mbox{\label{group__image_ga2a0bf1bcf790bf0c32d0562349a0af2a}} 
+\index{Image@{Image}!ps\_image\_create\_from\_image@{ps\_image\_create\_from\_image}}
+\index{ps\_image\_create\_from\_image@{ps\_image\_create\_from\_image}!Image@{Image}}
+\doxysubsubsection{ps\_image\_create\_from\_image()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+image} $\ast$ ps\+\_\+image\+\_\+create\+\_\+from\+\_\+image (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+image} $\ast$}]{img,  }\item[{const \textbf{ ps\+\_\+rect} $\ast$}]{rect }\end{DoxyParamCaption})}
+
+
+
+Create a new image using part of an existing ps\+\_\+image object in same pixel buffer. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em img} & A pointer to an existing ps\+\_\+image object. \\
+\hline
+{\em rect} & The rectangle area of the image from the parent image. If it is N\+U\+LL, the image\textquotesingle{}s width and height will be equal to parent image object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+If the function succeeds, the return value is the pointer to a new image object. If the function fails, the return value is N\+U\+LL.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+image\+\_\+create}{p.}{group__image_gad73f93a376c811065edbbc54b857f093}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+with\+\_\+data}{p.}{group__image_ga8a45a5aa2404138a2dd323b3b009740d}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+compatible}{p.}{group__image_gae649621753e8feca08b0f5e76db0513f}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+data}{p.}{group__image_gaebebf1d12a7c978a5b5440b2eae4f650}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+canvas}{p.}{group__image_gafb11e3545a00ac5f963cd0bc550fdb54}, \doxyref{ps\+\_\+image\+\_\+ref}{p.}{group__image_ga56a76add1af7ead02d1d9b400f579a46}, \doxyref{ps\+\_\+image\+\_\+unref}{p.}{group__image_ga38cd469f268f5f55c45b36322543a3f6} 
+\end{DoxySeeAlso}
+\mbox{\label{group__image_ga8a45a5aa2404138a2dd323b3b009740d}} 
+\index{Image@{Image}!ps\_image\_create\_with\_data@{ps\_image\_create\_with\_data}}
+\index{ps\_image\_create\_with\_data@{ps\_image\_create\_with\_data}!Image@{Image}}
+\doxysubsubsection{ps\_image\_create\_with\_data()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+image} $\ast$ ps\+\_\+image\+\_\+create\+\_\+with\+\_\+data (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+byte} $\ast$}]{data,  }\item[{\textbf{ ps\+\_\+color\+\_\+format}}]{fmt,  }\item[{int}]{width,  }\item[{int}]{height,  }\item[{int}]{pitch }\end{DoxyParamCaption})}
+
+
+
+Create a new image using a given address in memory. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em data} & A pointer to the destination in memory where the drawing is to be rendered. The size of this memory block should be at least (pitch $\ast$ height) bytes. \\
+\hline
+{\em fmt} & The Pixel format to use for the image. \\
+\hline
+{\em width} & The width, in pixels, of the required image. \\
+\hline
+{\em height} & The height, in pixels, of the required image. \\
+\hline
+{\em pitch} & The number of bytes per row, of the required image.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+If the function succeeds, the return value is the pointer to a new image object. If the function fails, the return value is N\+U\+LL.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+image\+\_\+create}{p.}{group__image_gad73f93a376c811065edbbc54b857f093}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+compatible}{p.}{group__image_gae649621753e8feca08b0f5e76db0513f}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+canvas}{p.}{group__image_gafb11e3545a00ac5f963cd0bc550fdb54}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+data}{p.}{group__image_gaebebf1d12a7c978a5b5440b2eae4f650}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+image}{p.}{group__image_ga2a0bf1bcf790bf0c32d0562349a0af2a}, \doxyref{ps\+\_\+image\+\_\+ref}{p.}{group__image_ga56a76add1af7ead02d1d9b400f579a46}, \doxyref{ps\+\_\+image\+\_\+unref}{p.}{group__image_ga38cd469f268f5f55c45b36322543a3f6} 
+\end{DoxySeeAlso}
+\mbox{\label{group__image_gad79495fd520c6eb60ac28ddebce5df4d}} 
+\index{Image@{Image}!ps\_image\_get\_format@{ps\_image\_get\_format}}
+\index{ps\_image\_get\_format@{ps\_image\_get\_format}!Image@{Image}}
+\doxysubsubsection{ps\_image\_get\_format()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+color\+\_\+format} ps\+\_\+image\+\_\+get\+\_\+format (\begin{DoxyParamCaption}\item[{const \textbf{ ps\+\_\+image} $\ast$}]{img }\end{DoxyParamCaption})}
+
+
+
+Return the pixel format of the image. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em img} & Pointer to an existing image object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+If the function succeeds, the return a valid color format. If the function fails, the return value is C\+O\+L\+O\+R\+\_\+\+F\+O\+R\+M\+A\+T\+\_\+\+U\+N\+K\+N\+O\+WN.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+image\+\_\+get\+\_\+size}{p.}{group__image_ga6acdf8c841a85642087da5a07ae5ef19}, \doxyref{ps\+\_\+image\+\_\+set\+\_\+allow\+\_\+transparent}{p.}{group__image_gac08ab14a69f0a88432e3883b1e50231e} 
+\end{DoxySeeAlso}
+\mbox{\label{group__image_ga6acdf8c841a85642087da5a07ae5ef19}} 
+\index{Image@{Image}!ps\_image\_get\_size@{ps\_image\_get\_size}}
+\index{ps\_image\_get\_size@{ps\_image\_get\_size}!Image@{Image}}
+\doxysubsubsection{ps\_image\_get\_size()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+bool} ps\+\_\+image\+\_\+get\+\_\+size (\begin{DoxyParamCaption}\item[{const \textbf{ ps\+\_\+image} $\ast$}]{img,  }\item[{\textbf{ ps\+\_\+size} $\ast$}]{rsize }\end{DoxyParamCaption})}
+
+
+
+Return the size of the image. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em img} & Pointer to an existing image object. \\
+\hline
+{\em rsize} & Pointer to a buffer to receiving the size.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if is success, otherwise False.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+image\+\_\+get\+\_\+format}{p.}{group__image_gad79495fd520c6eb60ac28ddebce5df4d}, \doxyref{ps\+\_\+image\+\_\+set\+\_\+allow\+\_\+transparent}{p.}{group__image_gac08ab14a69f0a88432e3883b1e50231e} 
+\end{DoxySeeAlso}
+\mbox{\label{group__image_ga56a76add1af7ead02d1d9b400f579a46}} 
+\index{Image@{Image}!ps\_image\_ref@{ps\_image\_ref}}
+\index{ps\_image\_ref@{ps\_image\_ref}!Image@{Image}}
+\doxysubsubsection{ps\_image\_ref()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+image} $\ast$ ps\+\_\+image\+\_\+ref (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+image} $\ast$}]{img }\end{DoxyParamCaption})}
+
+
+
+Increases the reference count of the image by 1. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em img} & Pointer to an existing image object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+If the function succeeds, the return value is the pointer to the image object. If the function fails, the return value is N\+U\+LL.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+image\+\_\+create}{p.}{group__image_gad73f93a376c811065edbbc54b857f093}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+with\+\_\+data}{p.}{group__image_ga8a45a5aa2404138a2dd323b3b009740d}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+compatible}{p.}{group__image_gae649621753e8feca08b0f5e76db0513f}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+data}{p.}{group__image_gaebebf1d12a7c978a5b5440b2eae4f650}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+canvas}{p.}{group__image_gafb11e3545a00ac5f963cd0bc550fdb54}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+image}{p.}{group__image_ga2a0bf1bcf790bf0c32d0562349a0af2a}, \doxyref{ps\+\_\+image\+\_\+unref}{p.}{group__image_ga38cd469f268f5f55c45b36322543a3f6} 
+\end{DoxySeeAlso}
+\mbox{\label{group__image_gac08ab14a69f0a88432e3883b1e50231e}} 
+\index{Image@{Image}!ps\_image\_set\_allow\_transparent@{ps\_image\_set\_allow\_transparent}}
+\index{ps\_image\_set\_allow\_transparent@{ps\_image\_set\_allow\_transparent}!Image@{Image}}
+\doxysubsubsection{ps\_image\_set\_allow\_transparent()}
+{\footnotesize\ttfamily void ps\+\_\+image\+\_\+set\+\_\+allow\+\_\+transparent (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+image} $\ast$}]{img,  }\item[{\textbf{ ps\+\_\+bool}}]{allow }\end{DoxyParamCaption})}
+
+
+
+Set whether the image allowed be transparent, False is default. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em img} & Pointer to an existing image object. \\
+\hline
+{\em allow} & Boolean value whether transparent is allowed.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+image\+\_\+get\+\_\+format}{p.}{group__image_gad79495fd520c6eb60ac28ddebce5df4d}, \doxyref{ps\+\_\+image\+\_\+get\+\_\+size}{p.}{group__image_ga6acdf8c841a85642087da5a07ae5ef19} 
+\end{DoxySeeAlso}
+\mbox{\label{group__image_ga39e4e0caf8e78b767384b68143e2fd43}} 
+\index{Image@{Image}!ps\_image\_set\_transparent\_color@{ps\_image\_set\_transparent\_color}}
+\index{ps\_image\_set\_transparent\_color@{ps\_image\_set\_transparent\_color}!Image@{Image}}
+\doxysubsubsection{ps\_image\_set\_transparent\_color()}
+{\footnotesize\ttfamily void ps\+\_\+image\+\_\+set\+\_\+transparent\+\_\+color (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+image} $\ast$}]{img,  }\item[{const \textbf{ ps\+\_\+color} $\ast$}]{color }\end{DoxyParamCaption})}
+
+
+
+Set the transparent color for the image. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em img} & Pointer to an existing image object. \\
+\hline
+{\em color} & The color for the transparent, N\+U\+LL for disable.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+image\+\_\+get\+\_\+format}{p.}{group__image_gad79495fd520c6eb60ac28ddebce5df4d}, \doxyref{ps\+\_\+image\+\_\+get\+\_\+size}{p.}{group__image_ga6acdf8c841a85642087da5a07ae5ef19} 
+\end{DoxySeeAlso}
+\mbox{\label{group__image_ga38cd469f268f5f55c45b36322543a3f6}} 
+\index{Image@{Image}!ps\_image\_unref@{ps\_image\_unref}}
+\index{ps\_image\_unref@{ps\_image\_unref}!Image@{Image}}
+\doxysubsubsection{ps\_image\_unref()}
+{\footnotesize\ttfamily void ps\+\_\+image\+\_\+unref (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+image} $\ast$}]{img }\end{DoxyParamCaption})}
+
+
+
+Decrements the reference count for the image object. If the reference count on the image falls to 0, the image is freed. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em img} & Pointer to an existing image object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+image\+\_\+create}{p.}{group__image_gad73f93a376c811065edbbc54b857f093}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+with\+\_\+data}{p.}{group__image_ga8a45a5aa2404138a2dd323b3b009740d}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+compatible}{p.}{group__image_gae649621753e8feca08b0f5e76db0513f}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+data}{p.}{group__image_gaebebf1d12a7c978a5b5440b2eae4f650}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+canvas}{p.}{group__image_gafb11e3545a00ac5f963cd0bc550fdb54}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+image}{p.}{group__image_ga2a0bf1bcf790bf0c32d0562349a0af2a}, \doxyref{ps\+\_\+image\+\_\+ref}{p.}{group__image_ga56a76add1af7ead02d1d9b400f579a46} 
+\end{DoxySeeAlso}

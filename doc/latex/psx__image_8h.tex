@@ -1,0 +1,83 @@
+\doxysection{include/images/psx\+\_\+image.h File Reference}
+\label{psx__image_8h}\index{include/images/psx\_image.h@{include/images/psx\_image.h}}
+{\ttfamily \#include \char`\"{}picasso.\+h\char`\"{}}\newline
+\doxysubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \textbf{ \+\_\+psx\+\_\+image\+\_\+frame}
+\begin{DoxyCompactList}\small\item\em A frame image data. \end{DoxyCompactList}\item 
+struct \textbf{ \+\_\+psx\+\_\+image}
+\begin{DoxyCompactList}\small\item\em A image object. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \textbf{ I\+M\+G\+\_\+\+O\+BJ}(image)~\textbf{ I\+M\+G\+\_\+\+O\+B\+J\+\_\+\+A\+T\+\_\+\+I\+N\+D\+EX}(image, 0)
+\begin{DoxyCompactList}\small\item\em Get first ps\+\_\+image obj. \end{DoxyCompactList}\item 
+\#define \textbf{ I\+M\+G\+\_\+\+D\+A\+TA}(image)~\textbf{ I\+M\+G\+\_\+\+D\+A\+T\+A\+\_\+\+A\+T\+\_\+\+I\+N\+D\+EX}(image, 0)
+\begin{DoxyCompactList}\small\item\em Get first image frame data. \end{DoxyCompactList}\item 
+\#define \textbf{ I\+M\+G\+\_\+\+D\+A\+T\+A\+\_\+\+S\+I\+ZE}(image)~\textbf{ I\+M\+G\+\_\+\+D\+A\+T\+A\+\_\+\+S\+I\+Z\+E\+\_\+\+A\+T\+\_\+\+I\+N\+D\+EX}(image, 0)
+\begin{DoxyCompactList}\small\item\em Get first image frame data size. \end{DoxyCompactList}\item 
+\#define \textbf{ I\+M\+G\+\_\+\+O\+B\+J\+\_\+\+A\+T\+\_\+\+I\+N\+D\+EX}(image,  idx)~(image-\/$>$frames[idx].img)
+\begin{DoxyCompactList}\small\item\em Get ps\+\_\+image obj at index. \end{DoxyCompactList}\item 
+\#define \textbf{ I\+M\+G\+\_\+\+D\+A\+T\+A\+\_\+\+A\+T\+\_\+\+I\+N\+D\+EX}(image,  idx)~(image-\/$>$frames[idx].data)
+\begin{DoxyCompactList}\small\item\em Get image frame data at index. \end{DoxyCompactList}\item 
+\#define \textbf{ I\+M\+G\+\_\+\+D\+A\+T\+A\+\_\+\+S\+I\+Z\+E\+\_\+\+A\+T\+\_\+\+I\+N\+D\+EX}(img,  idx)~(img-\/$>$frames[idx].size)
+\begin{DoxyCompactList}\small\item\em Get image frame data size at index. \end{DoxyCompactList}\item 
+\#define \textbf{ I\+M\+G\+\_\+\+D\+U\+R\+A\+T\+I\+O\+N\+\_\+\+A\+T\+\_\+\+I\+N\+D\+EX}(img,  idx)~(img-\/$>$frames[idx].duration)
+\begin{DoxyCompactList}\small\item\em Get image frame duration at index. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef struct \textbf{ \+\_\+psx\+\_\+image\+\_\+frame} \textbf{ psx\+\_\+image\+\_\+frame}
+\begin{DoxyCompactList}\small\item\em A frame image data. \end{DoxyCompactList}\item 
+typedef struct \textbf{ \+\_\+psx\+\_\+image} \textbf{ psx\+\_\+image}
+\begin{DoxyCompactList}\small\item\em A image object. \end{DoxyCompactList}\item 
+typedef int($\ast$ \textbf{ image\+\_\+writer\+\_\+fn}) (void $\ast$param, const \textbf{ ps\+\_\+byte} $\ast$data, size\+\_\+t length)
+\begin{DoxyCompactList}\small\item\em Callback function for saving image data. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \{ \newline
+\textbf{ S\+\_\+\+OK} = 0, 
+\textbf{ S\+\_\+\+B\+A\+D\+\_\+\+P\+A\+R\+A\+MS} = 1, 
+\textbf{ S\+\_\+\+N\+O\+T\+\_\+\+S\+U\+P\+P\+O\+RT} = 2, 
+\textbf{ S\+\_\+\+O\+U\+T\+\_\+\+O\+F\+\_\+\+M\+E\+M\+O\+RY} = 3, 
+\newline
+\textbf{ S\+\_\+\+I\+N\+I\+T\+\_\+\+F\+A\+I\+L\+U\+RE} = 4, 
+\textbf{ S\+\_\+\+F\+A\+I\+L\+U\+RE} = 5
+ \}
+\begin{DoxyCompactList}\small\item\em Status code return by call A\+P\+Is. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+P\+E\+X\+P\+O\+RT int P\+I\+C\+A\+PI \textbf{ psx\+\_\+image\+\_\+init} (void)
+\begin{DoxyCompactList}\small\item\em Initialze the library and load resources. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT int P\+I\+C\+A\+PI \textbf{ psx\+\_\+image\+\_\+shutdown} (void)
+\begin{DoxyCompactList}\small\item\em Release resources and shutdoen. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ psx\+\_\+image} $\ast$P\+I\+C\+A\+PI \textbf{ psx\+\_\+image\+\_\+create\+\_\+from\+\_\+data} (\textbf{ ps\+\_\+byte} $\ast$data, \textbf{ ps\+\_\+color\+\_\+format} fmt, int width, int height, int pitch, int $\ast$err\+\_\+code)
+\begin{DoxyCompactList}\small\item\em Create a new psx\+\_\+image using a copy of given address in memory. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ psx\+\_\+image} $\ast$P\+I\+C\+A\+PI \textbf{ psx\+\_\+image\+\_\+load} (const char $\ast$file\+\_\+name, int $\ast$err\+\_\+code)
+\begin{DoxyCompactList}\small\item\em Create a new psx\+\_\+image object and load from file. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ psx\+\_\+image} $\ast$P\+I\+C\+A\+PI \textbf{ psx\+\_\+image\+\_\+load\+\_\+from\+\_\+memory} (const \textbf{ ps\+\_\+byte} $\ast$data, size\+\_\+t length, int $\ast$err\+\_\+code)
+\begin{DoxyCompactList}\small\item\em Create a new psx\+\_\+image object and load data from memory. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT int P\+I\+C\+A\+PI \textbf{ psx\+\_\+image\+\_\+save} (const \textbf{ psx\+\_\+image} $\ast$image, \textbf{ image\+\_\+writer\+\_\+fn} func, void $\ast$param, const char $\ast$type, float quality)
+\begin{DoxyCompactList}\small\item\em Encoding psx\+\_\+image to a gaving format and output it. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT int P\+I\+C\+A\+PI \textbf{ psx\+\_\+image\+\_\+save\+\_\+to\+\_\+file} (const \textbf{ psx\+\_\+image} $\ast$image, const char $\ast$file\+\_\+name, const char $\ast$type, float quality)
+\begin{DoxyCompactList}\small\item\em Encoding psx\+\_\+image to a gaving format and output to a file. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT int P\+I\+C\+A\+PI \textbf{ psx\+\_\+image\+\_\+destroy} (\textbf{ psx\+\_\+image} $\ast$image)
+\begin{DoxyCompactList}\small\item\em Destroy the psx\+\_\+image object and release resources. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyAuthor}{Author}
+Zhang Ji Peng {\texttt{ onecoolx@gmail.\+com}} 
+\end{DoxyAuthor}
+\begin{DoxyDate}{Date}
+2012/1/31
+\end{DoxyDate}
+This file includes all interfaces of picasso extended image decoders. \begin{DoxyVerb}   Copyright (C) 2008 ~ 2024  Zhang Ji Peng
+
+   All rights reserved.
+
+   Picasso is a vector graphic library.\end{DoxyVerb}
+ 

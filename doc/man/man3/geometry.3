@@ -1,0 +1,383 @@
+.TH "geometry" 3 "Tue Dec 24 2024" "Version 2.8" "Picasso API" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+geometry
+.SH SYNOPSIS
+.br
+.PP
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_new_path\fP (\fBps_context\fP *ctx)"
+.br
+.RI "Create a new empty path in the graphic context, clear the old one\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_new_sub_path\fP (\fBps_context\fP *ctx)"
+.br
+.RI "Close the current path, and add a new empty sub path in the graphic context\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_add_sub_path\fP (\fBps_context\fP *ctx, const \fBps_path\fP *path)"
+.br
+.RI "Add a new sub path to current path in the graphic context\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_set_path\fP (\fBps_context\fP *ctx, const \fBps_path\fP *path)"
+.br
+.RI "Replace the current path in the graphic context\&. "
+.ti -1c
+.RI "PEXPORT \fBps_bool\fP PICAPI \fBps_get_path\fP (\fBps_context\fP *ctx, \fBps_path\fP *path)"
+.br
+.RI "Get the current path in the graphic context\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_close_path\fP (\fBps_context\fP *ctx)"
+.br
+.RI "Close the current path in the graphic context\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_move_to\fP (\fBps_context\fP *ctx, const \fBps_point\fP *point)"
+.br
+.RI "Begin a new sub path, and set the current point\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_line_to\fP (\fBps_context\fP *ctx, const \fBps_point\fP *point)"
+.br
+.RI "Add a line to the current path from the current point to given point\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_bezier_curve_to\fP (\fBps_context\fP *ctx, const \fBps_point\fP *fcp, const \fBps_point\fP *scp, const \fBps_point\fP *ep)"
+.br
+.RI "Add a cubic bezier spline to the current path from current point to end point\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_quad_curve_to\fP (\fBps_context\fP *ctx, const \fBps_point\fP *cp, const \fBps_point\fP *ep)"
+.br
+.RI "Add a quadratic bezier spline to the current path from current point to end point\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_arc\fP (\fBps_context\fP *ctx, const \fBps_point\fP *cp, float radius, float sangle, float eangle, \fBps_bool\fP clockwise)"
+.br
+.RI "Add a circular arc to the current path\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_tangent_arc\fP (\fBps_context\fP *ctx, const \fBps_rect\fP *rect, float sangle, float sweep)"
+.br
+.RI "Add a circular arc which is inner tangent from a rectangle\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_rectangle\fP (\fBps_context\fP *ctx, const \fBps_rect\fP *rect)"
+.br
+.RI "Add a rectangle to the current path\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_rounded_rect\fP (\fBps_context\fP *ctx, const \fBps_rect\fP *rect, float ltx, float lty, float rtx, float rty, float lbx, float lby, float rbx, float rby)"
+.br
+.RI "Add a rounded rectangle to the current path\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_ellipse\fP (\fBps_context\fP *ctx, const \fBps_rect\fP *rect)"
+.br
+.RI "Adds an ellipse to the current path which fits inside the specified rectangle\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.SH "Function Documentation"
+.PP 
+.SS "void ps_add_sub_path (\fBps_context\fP * ctx, const \fBps_path\fP * path)"
+
+.PP
+Add a new sub path to current path in the graphic context\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fIpath\fP The path will be add to graphic context\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_new_path\fP, \fBps_new_sub_path\fP, \fBps_set_path\fP, \fBps_get_path\fP, \fBps_close_path\fP 
+.RE
+.PP
+
+.SS "void ps_arc (\fBps_context\fP * ctx, const \fBps_point\fP * cp, float radius, float sangle, float eangle, \fBps_bool\fP clockwise)"
+
+.PP
+Add a circular arc to the current path\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fIcp\fP The center point of the arc\&. 
+.br
+\fIradius\fP The radius of the arc\&. 
+.br
+\fIsangle\fP The start angle, in radians\&. 
+.br
+\fIeangle\fP The end angle, in radians\&. 
+.br
+\fIclockwise\fP True is clockwise, False is counter clockwise\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_move_to\fP, \fBps_line_to\fP, \fBps_bezier_curve_to\fP, \fBps_quad_curve_to\fP, \fBps_tangent_arc\fP, \fBps_rectangle\fP, \fBps_rounded_rect\fP, \fBps_ellipse\fP 
+.RE
+.PP
+
+.SS "void ps_bezier_curve_to (\fBps_context\fP * ctx, const \fBps_point\fP * fcp, const \fBps_point\fP * scp, const \fBps_point\fP * ep)"
+
+.PP
+Add a cubic bezier spline to the current path from current point to end point\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fIfcp\fP The first control point of the curve\&. 
+.br
+\fIscp\fP The second control point of the curve\&. 
+.br
+\fIep\fP The end point of the curve\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_move_to\fP, \fBps_line_to\fP, \fBps_quad_curve_to\fP, \fBps_arc\fP, \fBps_tangent_arc\fP, \fBps_rectangle\fP, \fBps_rounded_rect\fP, \fBps_ellipse\fP 
+.RE
+.PP
+
+.SS "void ps_close_path (\fBps_context\fP * ctx)"
+
+.PP
+Close the current path in the graphic context\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_new_path\fP, \fBps_new_sub_path\fP, \fBps_set_path\fP, \fBps_get_path\fP, \fBps_add_sub_path\fP 
+.RE
+.PP
+
+.SS "void ps_ellipse (\fBps_context\fP * ctx, const \fBps_rect\fP * rect)"
+
+.PP
+Adds an ellipse to the current path which fits inside the specified rectangle\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fIrect\fP The rectangle which the ellipse to fit in\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_move_to\fP, \fBps_line_to\fP, \fBps_bezier_curve_to\fP, \fBps_quad_curve_to\fP, \fBps_arc\fP, \fBps_tangent_arc\fP, \fBps_rectangle\fP, \fBps_rounded_rect\fP 
+.RE
+.PP
+
+.SS "\fBps_bool\fP ps_get_path (\fBps_context\fP * ctx, \fBps_path\fP * path)"
+
+.PP
+Get the current path in the graphic context\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fIpath\fP Pointer to a object to receiving the path\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+True if is success, otherwise False\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_new_path\fP, \fBps_new_sub_path\fP, \fBps_close_path\fP, \fBps_set_path\fP, \fBps_add_sub_path\fP 
+.RE
+.PP
+
+.SS "void ps_line_to (\fBps_context\fP * ctx, const \fBps_point\fP * point)"
+
+.PP
+Add a line to the current path from the current point to given point\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fIpoint\fP The point which will line to\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_move_to\fP, \fBps_bezier_curve_to\fP, \fBps_quad_curve_to\fP \fBps_arc\fP, \fBps_tangent_arc\fP, \fBps_rectangle\fP, \fBps_rounded_rect\fP, \fBps_ellipse\fP 
+.RE
+.PP
+
+.SS "void ps_move_to (\fBps_context\fP * ctx, const \fBps_point\fP * point)"
+
+.PP
+Begin a new sub path, and set the current point\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fIpoint\fP The point which will be set\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_line_to\fP, \fBps_bezier_curve_to\fP, \fBps_quad_curve_to\fP \fBps_arc\fP, \fBps_tangent_arc\fP, \fBps_rectangle\fP, \fBps_rounded_rect\fP, \fBps_ellipse\fP 
+.RE
+.PP
+
+.SS "void ps_new_path (\fBps_context\fP * ctx)"
+
+.PP
+Create a new empty path in the graphic context, clear the old one\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_new_sub_path\fP, \fBps_set_path\fP, \fBps_get_path\fP, \fBps_close_path\fP, \fBps_add_sub_path\fP 
+.RE
+.PP
+
+.SS "void ps_new_sub_path (\fBps_context\fP * ctx)"
+
+.PP
+Close the current path, and add a new empty sub path in the graphic context\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_new_path\fP, \fBps_set_path\fP, \fBps_get_path\fP, \fBps_close_path\fP, \fBps_add_sub_path\fP 
+.RE
+.PP
+
+.SS "void ps_quad_curve_to (\fBps_context\fP * ctx, const \fBps_point\fP * cp, const \fBps_point\fP * ep)"
+
+.PP
+Add a quadratic bezier spline to the current path from current point to end point\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fIcp\fP The control point of the curve\&. 
+.br
+\fIep\fP The end point of the curve\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_move_to\fP, \fBps_line_to\fP, \fBps_bezier_curve_to\fP, \fBps_arc\fP, \fBps_tangent_arc\fP, \fBps_rectangle\fP, \fBps_rounded_rect\fP, \fBps_ellipse\fP 
+.RE
+.PP
+
+.SS "void ps_rectangle (\fBps_context\fP * ctx, const \fBps_rect\fP * rect)"
+
+.PP
+Add a rectangle to the current path\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fIrect\fP The rectangle which will be added\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_move_to\fP, \fBps_line_to\fP, \fBps_bezier_curve_to\fP, \fBps_quad_curve_to\fP, \fBps_arc\fP, \fBps_tangent_arc\fP, \fBps_rounded_rect\fP, \fBps_ellipse\fP 
+.RE
+.PP
+
+.SS "void ps_rounded_rect (\fBps_context\fP * ctx, const \fBps_rect\fP * rect, float ltx, float lty, float rtx, float rty, float lbx, float lby, float rbx, float rby)"
+
+.PP
+Add a rounded rectangle to the current path\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fIrect\fP The rectangle which will be added\&. 
+.br
+\fIltx\fP The left top horizontal radius\&. 
+.br
+\fIlty\fP The left top vertical radius\&. 
+.br
+\fIrtx\fP The right top horizontal radius\&. 
+.br
+\fIrty\fP The right top vertical radius\&. 
+.br
+\fIlbx\fP The left bottom horizontal radius\&. 
+.br
+\fIlby\fP The left bottom vertical radius\&. 
+.br
+\fIrbx\fP The right bottom horizontal radius\&. 
+.br
+\fIrby\fP The right bottom vertical radius\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_move_to\fP, \fBps_line_to\fP, \fBps_bezier_curve_to\fP, \fBps_quad_curve_to\fP, \fBps_arc\fP, \fBps_tangent_arc\fP, \fBps_rectangle\fP, \fBps_ellipse\fP 
+.RE
+.PP
+
+.SS "void ps_set_path (\fBps_context\fP * ctx, const \fBps_path\fP * path)"
+
+.PP
+Replace the current path in the graphic context\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fIpath\fP The path will be set to graphic context\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_new_path\fP, \fBps_new_sub_path\fP, \fBps_get_path\fP, \fBps_close_path\fP, \fBps_add_sub_path\fP 
+.RE
+.PP
+
+.SS "void ps_tangent_arc (\fBps_context\fP * ctx, const \fBps_rect\fP * rect, float sangle, float sweep)"
+
+.PP
+Add a circular arc which is inner tangent from a rectangle\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fIrect\fP The rectangle which the arc to fit in\&. 
+.br
+\fIsangle\fP The start angle, in radians\&. 
+.br
+\fIsweep\fP The sweep angle, in radians\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_move_to\fP, \fBps_line_to\fP, \fBps_bezier_curve_to\fP, \fBps_quad_curve_to\fP, \fBps_arc\fP, \fBps_rectangle\fP, \fBps_rounded_rect\fP, \fBps_ellipse\fP 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Picasso API from the source code\&.

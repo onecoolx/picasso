@@ -1,0 +1,146 @@
+\doxysection{Clip}
+\label{group__clip}\index{Clip@{Clip}}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+clip} (\textbf{ ps\+\_\+context} $\ast$ctx)
+\begin{DoxyCompactList}\small\item\em Clipping the current path, using the current fill rule. After called, the current path will be cleared from the context. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+clip\+\_\+path} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+path} $\ast$path, \textbf{ ps\+\_\+fill\+\_\+rule} rule)
+\begin{DoxyCompactList}\small\item\em Clipping specified path, using the given fill rule. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+clip\+\_\+rect} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+rect} $\ast$rect)
+\begin{DoxyCompactList}\small\item\em Clipping specified rectangle. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+scissor\+\_\+rect} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+rect} $\ast$rect)
+\begin{DoxyCompactList}\small\item\em The fast way to clipping specified rectangle, the clip rect can not be transformed by world matrix. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+clip\+\_\+rects} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+rect} $\ast$rects, unsigned int num\+\_\+rects)
+\begin{DoxyCompactList}\small\item\em Clipping specified area defined by an array of rectangles. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+reset\+\_\+clip} (\textbf{ ps\+\_\+context} $\ast$ctx)
+\begin{DoxyCompactList}\small\item\em Clear the clipping area from the context. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\label{group__clip_ga79550990154227f8377971b1a07f7efc}} 
+\index{Clip@{Clip}!ps\_clip@{ps\_clip}}
+\index{ps\_clip@{ps\_clip}!Clip@{Clip}}
+\doxysubsubsection{ps\_clip()}
+{\footnotesize\ttfamily void ps\+\_\+clip (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx }\end{DoxyParamCaption})}
+
+
+
+Clipping the current path, using the current fill rule. After called, the current path will be cleared from the context. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+clip\+\_\+path}{p.}{group__clip_ga570281d1fa52523e9dc4803db1c4fa85}, \doxyref{ps\+\_\+clip\+\_\+rect}{p.}{group__clip_ga5a2b68ffc66c43b4036779644cd394ab}, \doxyref{ps\+\_\+clip\+\_\+rects}{p.}{group__clip_gacfe347f9cecab66847e0319cd9d9b50f}, \doxyref{ps\+\_\+reset\+\_\+clip}{p.}{group__clip_gab2d284432435b712e1f2327b6d66a080} 
+\end{DoxySeeAlso}
+\mbox{\label{group__clip_ga570281d1fa52523e9dc4803db1c4fa85}} 
+\index{Clip@{Clip}!ps\_clip\_path@{ps\_clip\_path}}
+\index{ps\_clip\_path@{ps\_clip\_path}!Clip@{Clip}}
+\doxysubsubsection{ps\_clip\_path()}
+{\footnotesize\ttfamily void ps\+\_\+clip\+\_\+path (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{const \textbf{ ps\+\_\+path} $\ast$}]{path,  }\item[{\textbf{ ps\+\_\+fill\+\_\+rule}}]{rule }\end{DoxyParamCaption})}
+
+
+
+Clipping specified path, using the given fill rule. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em path} & The path which will be clipped. \\
+\hline
+{\em rule} & The rule of the path.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+clip}{p.}{group__clip_ga79550990154227f8377971b1a07f7efc}, \doxyref{ps\+\_\+clip\+\_\+rect}{p.}{group__clip_ga5a2b68ffc66c43b4036779644cd394ab}, \doxyref{ps\+\_\+clip\+\_\+rects}{p.}{group__clip_gacfe347f9cecab66847e0319cd9d9b50f}, \doxyref{ps\+\_\+reset\+\_\+clip}{p.}{group__clip_gab2d284432435b712e1f2327b6d66a080} 
+\end{DoxySeeAlso}
+\mbox{\label{group__clip_ga5a2b68ffc66c43b4036779644cd394ab}} 
+\index{Clip@{Clip}!ps\_clip\_rect@{ps\_clip\_rect}}
+\index{ps\_clip\_rect@{ps\_clip\_rect}!Clip@{Clip}}
+\doxysubsubsection{ps\_clip\_rect()}
+{\footnotesize\ttfamily void ps\+\_\+clip\+\_\+rect (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{const \textbf{ ps\+\_\+rect} $\ast$}]{rect }\end{DoxyParamCaption})}
+
+
+
+Clipping specified rectangle. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em rect} & The rectangle which will be clipped.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+clip}{p.}{group__clip_ga79550990154227f8377971b1a07f7efc}, \doxyref{ps\+\_\+clip\+\_\+path}{p.}{group__clip_ga570281d1fa52523e9dc4803db1c4fa85}, \doxyref{ps\+\_\+clip\+\_\+rects}{p.}{group__clip_gacfe347f9cecab66847e0319cd9d9b50f}, \doxyref{ps\+\_\+reset\+\_\+clip}{p.}{group__clip_gab2d284432435b712e1f2327b6d66a080}, \doxyref{ps\+\_\+scissor\+\_\+rect}{p.}{group__clip_gaced88979d81f52c7dbfd3129c7e5b80f} 
+\end{DoxySeeAlso}
+\mbox{\label{group__clip_gacfe347f9cecab66847e0319cd9d9b50f}} 
+\index{Clip@{Clip}!ps\_clip\_rects@{ps\_clip\_rects}}
+\index{ps\_clip\_rects@{ps\_clip\_rects}!Clip@{Clip}}
+\doxysubsubsection{ps\_clip\_rects()}
+{\footnotesize\ttfamily void ps\+\_\+clip\+\_\+rects (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{const \textbf{ ps\+\_\+rect} $\ast$}]{rects,  }\item[{unsigned int}]{num\+\_\+rects }\end{DoxyParamCaption})}
+
+
+
+Clipping specified area defined by an array of rectangles. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em rects} & The array of rectangles which will be clipped. \\
+\hline
+{\em num\+\_\+rects} & The number of array entries.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+clip}{p.}{group__clip_ga79550990154227f8377971b1a07f7efc}, \doxyref{ps\+\_\+clip\+\_\+path}{p.}{group__clip_ga570281d1fa52523e9dc4803db1c4fa85}, \doxyref{ps\+\_\+clip\+\_\+rect}{p.}{group__clip_ga5a2b68ffc66c43b4036779644cd394ab}, \doxyref{ps\+\_\+reset\+\_\+clip}{p.}{group__clip_gab2d284432435b712e1f2327b6d66a080} 
+\end{DoxySeeAlso}
+\mbox{\label{group__clip_gab2d284432435b712e1f2327b6d66a080}} 
+\index{Clip@{Clip}!ps\_reset\_clip@{ps\_reset\_clip}}
+\index{ps\_reset\_clip@{ps\_reset\_clip}!Clip@{Clip}}
+\doxysubsubsection{ps\_reset\_clip()}
+{\footnotesize\ttfamily void ps\+\_\+reset\+\_\+clip (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx }\end{DoxyParamCaption})}
+
+
+
+Clear the clipping area from the context. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+clip}{p.}{group__clip_ga79550990154227f8377971b1a07f7efc}, \doxyref{ps\+\_\+clip\+\_\+path}{p.}{group__clip_ga570281d1fa52523e9dc4803db1c4fa85}, \doxyref{ps\+\_\+clip\+\_\+rect}{p.}{group__clip_ga5a2b68ffc66c43b4036779644cd394ab}, \doxyref{ps\+\_\+clip\+\_\+rects}{p.}{group__clip_gacfe347f9cecab66847e0319cd9d9b50f} 
+\end{DoxySeeAlso}
+\mbox{\label{group__clip_gaced88979d81f52c7dbfd3129c7e5b80f}} 
+\index{Clip@{Clip}!ps\_scissor\_rect@{ps\_scissor\_rect}}
+\index{ps\_scissor\_rect@{ps\_scissor\_rect}!Clip@{Clip}}
+\doxysubsubsection{ps\_scissor\_rect()}
+{\footnotesize\ttfamily void ps\+\_\+scissor\+\_\+rect (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{const \textbf{ ps\+\_\+rect} $\ast$}]{rect }\end{DoxyParamCaption})}
+
+
+
+The fast way to clipping specified rectangle, the clip rect can not be transformed by world matrix. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em rect} & The rectangle which will be clipped.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyNote}{Note}
+This function is deprecated, will be remove feature.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+clip}{p.}{group__clip_ga79550990154227f8377971b1a07f7efc}, \doxyref{ps\+\_\+clip\+\_\+path}{p.}{group__clip_ga570281d1fa52523e9dc4803db1c4fa85}, \doxyref{ps\+\_\+clip\+\_\+rects}{p.}{group__clip_gacfe347f9cecab66847e0319cd9d9b50f}, \doxyref{ps\+\_\+reset\+\_\+clip}{p.}{group__clip_gab2d284432435b712e1f2327b6d66a080}, \doxyref{ps\+\_\+clip\+\_\+rect}{p.}{group__clip_ga5a2b68ffc66c43b4036779644cd394ab} 
+\end{DoxySeeAlso}

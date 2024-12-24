@@ -1,0 +1,1085 @@
+.TH "include/picasso.h" 3 "Tue Dec 24 2024" "Version 2.8" "Picasso API" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+include/picasso.h
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <stdint\&.h>\fP
+.br
+
+.SS "Data Structures"
+
+.in +1c
+.ti -1c
+.RI "struct \fB_ps_glyph\fP"
+.br
+.RI "A character glyph of a font\&. "
+.ti -1c
+.RI "struct \fB_ps_size\fP"
+.br
+.RI "A structure that contains width and height values\&. "
+.ti -1c
+.RI "struct \fB_ps_rect\fP"
+.br
+.RI "A structure that contains location and dimensions of a rectangle\&. "
+.ti -1c
+.RI "struct \fB_ps_point\fP"
+.br
+.RI "A structure that contains a point in a two-dimensional coordinate system\&. "
+.ti -1c
+.RI "struct \fB_ps_color\fP"
+.br
+.RI "A structure that contains rgba values for a color\&. "
+.ti -1c
+.RI "struct \fB_ps_font_info\fP"
+.br
+.RI "A structure that contains font information\&. "
+.in -1c
+.SS "Macros"
+
+.in +1c
+.ti -1c
+.RI "#define \fBTrue\fP   1"
+.br
+.RI "define true value "
+.ti -1c
+.RI "#define \fBFalse\fP   0"
+.br
+.RI "define false value "
+.in -1c
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef int \fBps_bool\fP"
+.br
+.RI "boolean type "
+.ti -1c
+.RI "typedef uint16_t \fBps_uchar16\fP"
+.br
+.RI "16 bit unsigned unicode character "
+.ti -1c
+.RI "typedef int16_t \fBps_schar16\fP"
+.br
+.RI "16 bit signed unicode character "
+.ti -1c
+.RI "typedef uint8_t \fBps_byte\fP"
+.br
+.RI "byte data type "
+.ti -1c
+.RI "typedef struct _ps_context \fBps_context\fP"
+.br
+.RI "An opaque type represents a Picasso drawing environment\&. "
+.ti -1c
+.RI "typedef struct _ps_canvas \fBps_canvas\fP"
+.br
+.RI "An opaque type represents a pixel buffer\&. "
+.ti -1c
+.RI "typedef struct _ps_image \fBps_image\fP"
+.br
+.RI "An opaque type represents an image\&. "
+.ti -1c
+.RI "typedef struct _ps_pattern \fBps_pattern\fP"
+.br
+.RI "An opaque type represents a pattern\&. "
+.ti -1c
+.RI "typedef struct _ps_gradient \fBps_gradient\fP"
+.br
+.RI "An opaque type represents a gradient\&. "
+.ti -1c
+.RI "typedef struct _ps_matrix \fBps_matrix\fP"
+.br
+.RI "An opaque type represents a transform matrix\&. "
+.ti -1c
+.RI "typedef struct _ps_path \fBps_path\fP"
+.br
+.RI "An opaque type represents a graphic path\&. "
+.ti -1c
+.RI "typedef struct _ps_mask \fBps_mask\fP"
+.br
+.RI "An opaque type represents an alpha mask\&. "
+.ti -1c
+.RI "typedef struct _ps_font \fBps_font\fP"
+.br
+.RI "An opaque type represents a font\&. "
+.ti -1c
+.RI "typedef struct \fB_ps_glyph\fP \fBps_glyph\fP"
+.br
+.RI "A character glyph of a font\&. "
+.ti -1c
+.RI "typedef struct \fB_ps_size\fP \fBps_size\fP"
+.br
+.RI "A structure that contains width and height values\&. "
+.ti -1c
+.RI "typedef struct \fB_ps_rect\fP \fBps_rect\fP"
+.br
+.RI "A structure that contains location and dimensions of a rectangle\&. "
+.ti -1c
+.RI "typedef struct \fB_ps_point\fP \fBps_point\fP"
+.br
+.RI "A structure that contains a point in a two-dimensional coordinate system\&. "
+.ti -1c
+.RI "typedef struct \fB_ps_color\fP \fBps_color\fP"
+.br
+.RI "A structure that contains rgba values for a color\&. "
+.ti -1c
+.RI "typedef enum \fB_ps_status\fP \fBps_status\fP"
+.br
+.RI "Status code return by call ps_last_status function\&. "
+.ti -1c
+.RI "typedef enum \fB_ps_color_format\fP \fBps_color_format\fP"
+.br
+.RI "Pixel formats of canvas or image\&. "
+.ti -1c
+.RI "typedef enum \fB_ps_wrap_type\fP \fBps_wrap_type\fP"
+.br
+.RI "Fill type of pattern\&. "
+.ti -1c
+.RI "typedef enum \fB_ps_gradient_spread\fP \fBps_gradient_spread\fP"
+.br
+.RI "Fill type of outside the gradient area\&. "
+.ti -1c
+.RI "typedef enum \fB_ps_line_cap\fP \fBps_line_cap\fP"
+.br
+.RI "Styles for rendering the endpoint of a stroked line\&. "
+.ti -1c
+.RI "typedef enum \fB_ps_line_join\fP \fBps_line_join\fP"
+.br
+.RI "Junction types for stroked lines\&. "
+.ti -1c
+.RI "typedef enum \fB_ps_line_inner_join\fP \fBps_line_inner_join\fP"
+.br
+.RI "Inner junction types for stroked lines\&. "
+.ti -1c
+.RI "typedef enum \fB_ps_composite\fP \fBps_composite\fP"
+.br
+.RI "Compositing operations for graphics context\&. "
+.ti -1c
+.RI "typedef enum \fB_ps_filter\fP \fBps_filter\fP"
+.br
+.RI "Graphics quality for rendering an image\&. "
+.ti -1c
+.RI "typedef enum \fB_ps_fill_rule\fP \fBps_fill_rule\fP"
+.br
+.RI "Fill rules for graphics\&. "
+.ti -1c
+.RI "typedef enum \fB_ps_charset\fP \fBps_charset\fP"
+.br
+.RI "Charset for a font\&. "
+.ti -1c
+.RI "typedef enum \fB_ps_font_weight\fP \fBps_font_weight\fP"
+.br
+.RI "Font weight\&. "
+.ti -1c
+.RI "typedef struct \fB_ps_font_info\fP \fBps_font_info\fP"
+.br
+.RI "A structure that contains font information\&. "
+.ti -1c
+.RI "typedef enum \fB_ps_text_type\fP \fBps_text_type\fP"
+.br
+.RI "Text rendering type\&. "
+.ti -1c
+.RI "typedef enum \fB_ps_draw_text_type\fP \fBps_draw_text_type\fP"
+.br
+.RI "Draw mode for rending text\&. "
+.ti -1c
+.RI "typedef enum \fB_ps_text_align\fP \fBps_text_align\fP"
+.br
+.RI "Text align mode for drawing text\&. "
+.ti -1c
+.RI "typedef enum \fB_ps_path_cmd\fP \fBps_path_cmd\fP"
+.br
+.RI "Path command for vertices\&. "
+.ti -1c
+.RI "typedef enum \fB_ps_path_op\fP \fBps_path_operation\fP"
+.br
+.RI "Path clipping operations\&. "
+.in -1c
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum \fB_ps_status\fP { \fBSTATUS_SUCCEED\fP, \fBSTATUS_OUT_OF_MEMORY\fP, \fBSTATUS_INVALID_ARGUMENT\fP, \fBSTATUS_NOT_SUPPORT\fP, \fBSTATUS_DEVICE_ERROR\fP, \fBSTATUS_MISMATCHING_FORMAT\fP, \fBSTATUS_UNKNOWN_ERROR\fP }"
+.br
+.RI "Status code return by call ps_last_status function\&. "
+.ti -1c
+.RI "enum \fB_ps_color_format\fP { \fBCOLOR_FORMAT_RGBA\fP, \fBCOLOR_FORMAT_ARGB\fP, \fBCOLOR_FORMAT_ABGR\fP, \fBCOLOR_FORMAT_BGRA\fP, \fBCOLOR_FORMAT_RGB\fP, \fBCOLOR_FORMAT_BGR\fP, \fBCOLOR_FORMAT_RGB565\fP, \fBCOLOR_FORMAT_RGB555\fP, \fBCOLOR_FORMAT_UNKNOWN\fP }"
+.br
+.RI "Pixel formats of canvas or image\&. "
+.ti -1c
+.RI "enum \fB_ps_wrap_type\fP { \fBWRAP_TYPE_REPEAT\fP, \fBWRAP_TYPE_REFLECT\fP }"
+.br
+.RI "Fill type of pattern\&. "
+.ti -1c
+.RI "enum \fB_ps_gradient_spread\fP { \fBGRADIENT_SPREAD_PAD\fP, \fBGRADIENT_SPREAD_REPEAT\fP, \fBGRADIENT_SPREAD_REFLECT\fP }"
+.br
+.RI "Fill type of outside the gradient area\&. "
+.ti -1c
+.RI "enum \fB_ps_line_cap\fP { \fBLINE_CAP_BUTT\fP, \fBLINE_CAP_ROUND\fP, \fBLINE_CAP_SQUARE\fP }"
+.br
+.RI "Styles for rendering the endpoint of a stroked line\&. "
+.ti -1c
+.RI "enum \fB_ps_line_join\fP { \fBLINE_JOIN_MITER\fP, \fBLINE_JOIN_MITER_REVERT\fP, \fBLINE_JOIN_MITER_ROUND\fP, \fBLINE_JOIN_ROUND\fP, \fBLINE_JOIN_BEVEL\fP }"
+.br
+.RI "Junction types for stroked lines\&. "
+.ti -1c
+.RI "enum \fB_ps_line_inner_join\fP { \fBLINE_INNER_MITER\fP, \fBLINE_INNER_BEVEL\fP, \fBLINE_INNER_JAG\fP, \fBLINE_INNER_ROUND\fP }"
+.br
+.RI "Inner junction types for stroked lines\&. "
+.ti -1c
+.RI "enum \fB_ps_composite\fP { \fBCOMPOSITE_CLEAR\fP, \fBCOMPOSITE_SRC\fP, \fBCOMPOSITE_SRC_OVER\fP, \fBCOMPOSITE_SRC_IN\fP, \fBCOMPOSITE_SRC_OUT\fP, \fBCOMPOSITE_SRC_ATOP\fP, \fBCOMPOSITE_DST\fP, \fBCOMPOSITE_DST_OVER\fP, \fBCOMPOSITE_DST_IN\fP, \fBCOMPOSITE_DST_OUT\fP, \fBCOMPOSITE_DST_ATOP\fP, \fBCOMPOSITE_XOR\fP, \fBCOMPOSITE_DARKEN\fP, \fBCOMPOSITE_LIGHTEN\fP, \fBCOMPOSITE_OVERLAY\fP, \fBCOMPOSITE_SCREEN\fP, \fBCOMPOSITE_MULTIPLY\fP, \fBCOMPOSITE_PLUS\fP, \fBCOMPOSITE_MINUS\fP, \fBCOMPOSITE_EXCLUSION\fP, \fBCOMPOSITE_DIFFERENCE\fP, \fBCOMPOSITE_SOFTLIGHT\fP, \fBCOMPOSITE_HARDLIGHT\fP, \fBCOMPOSITE_BURN\fP, \fBCOMPOSITE_DODGE\fP, \fBCOMPOSITE_CONTRAST\fP, \fBCOMPOSITE_INVERT\fP, \fBCOMPOSITE_INVERT_BLEND\fP, \fBCOMPOSITE_HUE\fP, \fBCOMPOSITE_SATURATION\fP, \fBCOMPOSITE_COLOR\fP, \fBCOMPOSITE_LUMINOSITY\fP, \fBCOMPOSITE_ERROR\fP }"
+.br
+.RI "Compositing operations for graphics context\&. "
+.ti -1c
+.RI "enum \fB_ps_filter\fP { \fBFILTER_NEAREST\fP, \fBFILTER_BILINEAR\fP, \fBFILTER_GAUSSIAN\fP, \fBFILTER_BICUBIC\fP, \fBFILTER_QUADRIC\fP, \fBFILTER_UNKNOWN\fP }"
+.br
+.RI "Graphics quality for rendering an image\&. "
+.ti -1c
+.RI "enum \fB_ps_fill_rule\fP { \fBFILL_RULE_WINDING\fP, \fBFILL_RULE_EVEN_ODD\fP, \fBFILL_RULE_ERROR\fP }"
+.br
+.RI "Fill rules for graphics\&. "
+.ti -1c
+.RI "enum \fB_ps_charset\fP { \fBCHARSET_ANSI\fP, \fBCHARSET_UNICODE\fP }"
+.br
+.RI "Charset for a font\&. "
+.ti -1c
+.RI "enum \fB_ps_font_weight\fP { \fBFONT_WEIGHT_REGULAR\fP = 400, \fBFONT_WEIGHT_MEDIUM\fP = 500, \fBFONT_WEIGHT_BOLD\fP = 700, \fBFONT_WEIGHT_HEAVY\fP = 900 }"
+.br
+.RI "Font weight\&. "
+.ti -1c
+.RI "enum \fB_ps_text_type\fP { \fBTEXT_TYPE_SMOOTH\fP, \fBTEXT_TYPE_MONO\fP, \fBTEXT_TYPE_STROKE\fP }"
+.br
+.RI "Text rendering type\&. "
+.ti -1c
+.RI "enum \fB_ps_draw_text_type\fP { \fBDRAW_TEXT_FILL\fP, \fBDRAW_TEXT_STROKE\fP, \fBDRAW_TEXT_BOTH\fP }"
+.br
+.RI "Draw mode for rending text\&. "
+.ti -1c
+.RI "enum \fB_ps_text_align\fP { \fBTEXT_ALIGN_CENTER\fP = 0, \fBTEXT_ALIGN_TOP\fP = 1, \fBTEXT_ALIGN_BOTTOM\fP = 2, \fBTEXT_ALIGN_LEFT\fP = 4, \fBTEXT_ALIGN_RIGHT\fP = 8 }"
+.br
+.RI "Text align mode for drawing text\&. "
+.ti -1c
+.RI "enum \fB_ps_path_cmd\fP { \fBPATH_CMD_STOP\fP = 0, \fBPATH_CMD_MOVE_TO\fP = 1, \fBPATH_CMD_LINE_TO\fP = 2, \fBPATH_CMD_CURVE3\fP = 3, \fBPATH_CMD_CURVE4\fP = 4, \fBPATH_CMD_END_POLY\fP = 0x0F }"
+.br
+.RI "Path command for vertices\&. "
+.ti -1c
+.RI "enum \fB_ps_path_op\fP { \fBPATH_OP_UNION\fP, \fBPATH_OP_INTERSECT\fP, \fBPATH_OP_XOR\fP, \fBPATH_OP_DIFF\fP }"
+.br
+.RI "Path clipping operations\&. "
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "PEXPORT int PICAPI \fBps_version\fP (void)"
+.br
+.RI "Return current version of picasso\&. "
+.ti -1c
+.RI "PEXPORT \fBps_bool\fP PICAPI \fBps_initialize\fP (void)"
+.br
+.RI "Initialize the picasso drawing environment\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_shutdown\fP (void)"
+.br
+.RI "Shutdown the picasso drawing environment\&. "
+.ti -1c
+.RI "PEXPORT \fBps_status\fP PICAPI \fBps_last_status\fP (void)"
+.br
+.RI "Return the last status code of picasso\&. "
+.ti -1c
+.RI "PEXPORT \fBps_context\fP *PICAPI \fBps_context_create\fP (\fBps_canvas\fP *canvas, \fBps_context\fP *shared_context)"
+.br
+.RI "Create a new graphic context for a canvas\&. "
+.ti -1c
+.RI "PEXPORT \fBps_context\fP *PICAPI \fBps_context_ref\fP (\fBps_context\fP *ctx)"
+.br
+.RI "Increases the reference count of the context by 1\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_context_unref\fP (\fBps_context\fP *ctx)"
+.br
+.RI "Decrements the reference count for the context object\&. If the reference count on the context falls to 0, the context is freed\&. "
+.ti -1c
+.RI "PEXPORT \fBps_canvas\fP *PICAPI \fBps_context_set_canvas\fP (\fBps_context\fP *ctx, \fBps_canvas\fP *canvas)"
+.br
+.RI "Set a new canvas into a context, and return the old one\&. "
+.ti -1c
+.RI "PEXPORT \fBps_canvas\fP *PICAPI \fBps_context_get_canvas\fP (\fBps_context\fP *ctx)"
+.br
+.RI "Get the canvas from the context\&. "
+.ti -1c
+.RI "PEXPORT \fBps_canvas\fP *PICAPI \fBps_canvas_create\fP (\fBps_color_format\fP fmt, int width, int height)"
+.br
+.RI "Create a new canvas using the given parameters\&. "
+.ti -1c
+.RI "PEXPORT \fBps_canvas\fP *PICAPI \fBps_canvas_create_with_data\fP (\fBps_byte\fP *data, \fBps_color_format\fP fmt, int width, int height, int pitch)"
+.br
+.RI "Create a new canvas using a given address in memory\&. "
+.ti -1c
+.RI "PEXPORT \fBps_canvas\fP *PICAPI \fBps_canvas_create_compatible\fP (const \fBps_canvas\fP *canvas, int width, int height)"
+.br
+.RI "Create a new canvas to compatible with an existing canvas\&. "
+.ti -1c
+.RI "PEXPORT \fBps_canvas\fP *PICAPI \fBps_canvas_create_from_canvas\fP (\fBps_canvas\fP *canvas, const \fBps_rect\fP *rect)"
+.br
+.RI "Create a new canvas using part of an existing canvas in same pixel buffer\&. "
+.ti -1c
+.RI "PEXPORT \fBps_canvas\fP *PICAPI \fBps_canvas_create_from_image\fP (\fBps_image\fP *img, const \fBps_rect\fP *rect)"
+.br
+.RI "Create a new canvas using part of an existing ps_image object in same pixel buffer\&. "
+.ti -1c
+.RI "PEXPORT \fBps_canvas\fP *PICAPI \fBps_canvas_replace_data\fP (\fBps_canvas\fP *canvas, \fBps_byte\fP *data, \fBps_color_format\fP fmt, int width, int height, int pitch)"
+.br
+.RI "Replace a canvas target rendering buffer address in memory, which is only use for canvas create by \fIps_canvas_create_with_data\fP\&. "
+.ti -1c
+.RI "PEXPORT \fBps_canvas\fP *PICAPI \fBps_canvas_ref\fP (\fBps_canvas\fP *canvas)"
+.br
+.RI "Increases the reference count of the canvas by 1\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_canvas_unref\fP (\fBps_canvas\fP *canvas)"
+.br
+.RI "Decrements the reference count for the canvas object\&. If the reference count on the canvas falls to 0, the canvas is freed\&. "
+.ti -1c
+.RI "PEXPORT \fBps_bool\fP PICAPI \fBps_canvas_get_size\fP (const \fBps_canvas\fP *canvas, \fBps_size\fP *rsize)"
+.br
+.RI "Return the size of the canvas\&. "
+.ti -1c
+.RI "PEXPORT \fBps_color_format\fP PICAPI \fBps_canvas_get_format\fP (const \fBps_canvas\fP *canvas)"
+.br
+.RI "Return the pixel format of the canvas\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_canvas_set_mask\fP (\fBps_canvas\fP *canvas, const \fBps_mask\fP *mask)"
+.br
+.RI "Set a new mask into an existing canvas object\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_canvas_reset_mask\fP (\fBps_canvas\fP *canvas)"
+.br
+.RI "Clear the mask from the canvas object\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_canvas_bitblt\fP (\fBps_canvas\fP *src, const \fBps_rect\fP *rect, \fBps_canvas\fP *dst, const \fBps_point\fP *location)"
+.br
+.RI "Copy raster data between two canvas objects\&. "
+.ti -1c
+.RI "PEXPORT \fBps_image\fP *PICAPI \fBps_image_create\fP (\fBps_color_format\fP fmt, int width, int height)"
+.br
+.RI "Create a new image using the given parameters\&. "
+.ti -1c
+.RI "PEXPORT \fBps_image\fP *PICAPI \fBps_image_create_with_data\fP (\fBps_byte\fP *data, \fBps_color_format\fP fmt, int width, int height, int pitch)"
+.br
+.RI "Create a new image using a given address in memory\&. "
+.ti -1c
+.RI "PEXPORT \fBps_image\fP *PICAPI \fBps_image_create_from_data\fP (\fBps_byte\fP *data, \fBps_color_format\fP fmt, int width, int height, int pitch)"
+.br
+.RI "Create a new image using a copy of given address in memory\&. "
+.ti -1c
+.RI "PEXPORT \fBps_image\fP *PICAPI \fBps_image_create_compatible\fP (const \fBps_canvas\fP *canvas, int width, int height)"
+.br
+.RI "Create a new image to compatible with an existing canvas\&. "
+.ti -1c
+.RI "PEXPORT \fBps_image\fP *PICAPI \fBps_image_create_from_canvas\fP (\fBps_canvas\fP *canvas, const \fBps_rect\fP *rect)"
+.br
+.RI "Create a new image using part of an existing canvas in same pixel buffer\&. "
+.ti -1c
+.RI "PEXPORT \fBps_image\fP *PICAPI \fBps_image_create_from_image\fP (\fBps_image\fP *img, const \fBps_rect\fP *rect)"
+.br
+.RI "Create a new image using part of an existing ps_image object in same pixel buffer\&. "
+.ti -1c
+.RI "PEXPORT \fBps_image\fP *PICAPI \fBps_image_ref\fP (\fBps_image\fP *img)"
+.br
+.RI "Increases the reference count of the image by 1\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_image_unref\fP (\fBps_image\fP *img)"
+.br
+.RI "Decrements the reference count for the image object\&. If the reference count on the image falls to 0, the image is freed\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_image_set_allow_transparent\fP (\fBps_image\fP *img, \fBps_bool\fP allow)"
+.br
+.RI "Set whether the image allowed be transparent, False is default\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_image_set_transparent_color\fP (\fBps_image\fP *img, const \fBps_color\fP *color)"
+.br
+.RI "Set the transparent color for the image\&. "
+.ti -1c
+.RI "PEXPORT \fBps_bool\fP PICAPI \fBps_image_get_size\fP (const \fBps_image\fP *img, \fBps_size\fP *rsize)"
+.br
+.RI "Return the size of the image\&. "
+.ti -1c
+.RI "PEXPORT \fBps_color_format\fP PICAPI \fBps_image_get_format\fP (const \fBps_image\fP *img)"
+.br
+.RI "Return the pixel format of the image\&. "
+.ti -1c
+.RI "PEXPORT \fBps_pattern\fP *PICAPI \fBps_pattern_create_image\fP (const \fBps_image\fP *img, \fBps_wrap_type\fP x_wrap, \fBps_wrap_type\fP y_wrap, const \fBps_matrix\fP *transform)"
+.br
+.RI "Create a new pattern with an existing image\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_pattern_transform\fP (\fBps_pattern\fP *pattern, const \fBps_matrix\fP *matrix)"
+.br
+.RI "Transform the pattern object\&. "
+.ti -1c
+.RI "PEXPORT \fBps_pattern\fP *PICAPI \fBps_pattern_ref\fP (\fBps_pattern\fP *pattern)"
+.br
+.RI "Increases the reference count of the pattern by 1\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_pattern_unref\fP (\fBps_pattern\fP *pattern)"
+.br
+.RI "Decrements the reference count for the pattern object\&. If the reference count on the pattern falls to 0, the pattern is freed\&. "
+.ti -1c
+.RI "PEXPORT \fBps_gradient\fP *PICAPI \fBps_gradient_create_linear\fP (\fBps_gradient_spread\fP spread, const \fBps_point\fP *start, const \fBps_point\fP *end)"
+.br
+.RI "Create a new gradient that varies along the line defined by provided starting and ending points\&. "
+.ti -1c
+.RI "PEXPORT \fBps_gradient\fP *PICAPI \fBps_gradient_create_radial\fP (\fBps_gradient_spread\fP spread, const \fBps_point\fP *start, float sradius, const \fBps_point\fP *end, float eradius)"
+.br
+.RI "Create a new gradient that varies along the area defined by provided starting and ending circles\&. "
+.ti -1c
+.RI "PEXPORT \fBps_gradient\fP *PICAPI \fBps_gradient_create_conic\fP (\fBps_gradient_spread\fP spread, const \fBps_point\fP *origin, float sangle)"
+.br
+.RI "Create a new gradient that varies along the area defined by provided concentric circles\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_gradient_transform\fP (\fBps_gradient\fP *gradient, const \fBps_matrix\fP *matrix)"
+.br
+.RI "Transform the gradient object\&. "
+.ti -1c
+.RI "PEXPORT \fBps_gradient\fP *PICAPI \fBps_gradient_ref\fP (\fBps_gradient\fP *gradient)"
+.br
+.RI "Increases the reference count of the gradient by 1\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_gradient_unref\fP (\fBps_gradient\fP *gradient)"
+.br
+.RI "Decrements the reference count for the gradient object\&. If the reference count on the gradient falls to 0, the gradient is freed\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_gradient_add_color_stop\fP (\fBps_gradient\fP *gradient, float offset, const \fBps_color\fP *color)"
+.br
+.RI "Add a color stop to a gradient\&. The offset specifies the location along the gradient's control vector\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_gradient_clear_color_stops\fP (\fBps_gradient\fP *gradient)"
+.br
+.RI "Clear color stops from gradient's control vector\&. "
+.ti -1c
+.RI "PEXPORT \fBps_mask\fP *PICAPI \fBps_mask_create_with_data\fP (\fBps_byte\fP *data, int width, int height)"
+.br
+.RI "Create a new mask using a given data block\&. "
+.ti -1c
+.RI "PEXPORT \fBps_mask\fP *PICAPI \fBps_mask_ref\fP (\fBps_mask\fP *mask)"
+.br
+.RI "Increases the reference count of the mask by 1\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_mask_unref\fP (\fBps_mask\fP *mask)"
+.br
+.RI "Decrements the reference count for the mask object\&. If the reference count on the mask falls to 0, the mask is freed\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_mask_add_color_filter\fP (\fBps_mask\fP *mask, const \fBps_color\fP *color)"
+.br
+.RI "Add a color filter to a mask\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_mask_clear_color_filters\fP (\fBps_mask\fP *mask)"
+.br
+.RI "Clear all colors from mask's filter\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_set_source_color\fP (\fBps_context\fP *ctx, const \fBps_color\fP *color)"
+.br
+.RI "Set a Color to the context, it is used to fill a graphic object\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_set_source_image\fP (\fBps_context\fP *ctx, const \fBps_image\fP *image)"
+.br
+.RI "Set a image to the context, it is used to fill a graphic object\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_set_source_pattern\fP (\fBps_context\fP *ctx, const \fBps_pattern\fP *pattern)"
+.br
+.RI "Set a pattern to the context, it is used to fill a graphic object\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_set_source_gradient\fP (\fBps_context\fP *ctx, const \fBps_gradient\fP *gradient)"
+.br
+.RI "Set a gradient to the context, it is used to fill a graphic object\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_set_source_canvas\fP (\fBps_context\fP *ctx, const \fBps_canvas\fP *canvas)"
+.br
+.RI "Set a canvas to the context, it is used to fill a graphic object\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_set_line_cap\fP (\fBps_context\fP *ctx, \fBps_line_cap\fP line_cap)"
+.br
+.RI "Set the style for the endpoint of lines in a graphics context\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_set_line_join\fP (\fBps_context\fP *ctx, \fBps_line_join\fP line_join)"
+.br
+.RI "Set the style for the joins of connected lines in a graphics context\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_set_line_inner_join\fP (\fBps_context\fP *ctx, \fBps_line_inner_join\fP line_inner_join)"
+.br
+.RI "Set the style for the inner joins of connected lines in a graphics context\&. "
+.ti -1c
+.RI "PEXPORT float PICAPI \fBps_set_line_width\fP (\fBps_context\fP *ctx, float width)"
+.br
+.RI "Set the line width for a graphics context\&. "
+.ti -1c
+.RI "PEXPORT float PICAPI \fBps_set_miter_limit\fP (\fBps_context\fP *ctx, float limit)"
+.br
+.RI "Set the miter limit for the joins of connected lines in a graphics context\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_set_stroke_color\fP (\fBps_context\fP *ctx, const \fBps_color\fP *color)"
+.br
+.RI "Set a color to the context, it is used to stroke a graphic object\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_set_stroke_image\fP (\fBps_context\fP *ctx, const \fBps_image\fP *image)"
+.br
+.RI "Set a image to the context, it is used to stroke a graphic object\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_set_stroke_pattern\fP (\fBps_context\fP *ctx, const \fBps_pattern\fP *pattern)"
+.br
+.RI "Set a pattern to the context, it is used to stroke a graphic object\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_set_stroke_gradient\fP (\fBps_context\fP *ctx, const \fBps_gradient\fP *gradient)"
+.br
+.RI "Set a gradient to the context, it is used to stroke a graphic object\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_set_stroke_canvas\fP (\fBps_context\fP *ctx, const \fBps_canvas\fP *canvas)"
+.br
+.RI "Set a canvas to the context, it is used to stroke a graphic object\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_set_line_dash\fP (\fBps_context\fP *ctx, float start, const float *dashes, unsigned int num_dashes)"
+.br
+.RI "Set the pattern for dashed lines in the context\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_reset_line_dash\fP (\fBps_context\fP *ctx)"
+.br
+.RI "Clear the dashs from the context, and set to solid\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_set_shadow\fP (\fBps_context\fP *ctx, float x_offset, float y_offset, float blur)"
+.br
+.RI "Enables shadowing in a context\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_set_shadow_color\fP (\fBps_context\fP *ctx, const \fBps_color\fP *color)"
+.br
+.RI "Set the color of shadow\&. Default is a black color with 1/3 alpha\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_reset_shadow\fP (\fBps_context\fP *ctx)"
+.br
+.RI "Disables shadowing in a context\&. "
+.ti -1c
+.RI "PEXPORT \fBps_composite\fP PICAPI \fBps_set_composite_operator\fP (\fBps_context\fP *ctx, \fBps_composite\fP composite)"
+.br
+.RI "Set composites opertaions for graphics context\&. "
+.ti -1c
+.RI "PEXPORT \fBps_filter\fP PICAPI \fBps_set_filter\fP (\fBps_context\fP *ctx, \fBps_filter\fP filter)"
+.br
+.RI "Set interpolation filter for graphic context\&. "
+.ti -1c
+.RI "PEXPORT \fBps_fill_rule\fP PICAPI \fBps_set_fill_rule\fP (\fBps_context\fP *ctx, \fBps_fill_rule\fP rule)"
+.br
+.RI "Set fill rule for graphic context\&. "
+.ti -1c
+.RI "PEXPORT float PICAPI \fBps_set_alpha\fP (\fBps_context\fP *ctx, float alpha)"
+.br
+.RI "Set the opacity level for objects drawn in graphic context\&. "
+.ti -1c
+.RI "PEXPORT float PICAPI \fBps_set_gamma\fP (\fBps_context\fP *ctx, float gamma)"
+.br
+.RI "Set the gamma value for the graphic context\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_set_antialias\fP (\fBps_context\fP *ctx, \fBps_bool\fP antialias)"
+.br
+.RI "Set whether the Anti-aliasing should be turn on\&. "
+.ti -1c
+.RI "PEXPORT float PICAPI \fBps_set_blur\fP (\fBps_context\fP *ctx, float blur)"
+.br
+.RI "Set the blur level for the graphic context\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_stroke\fP (\fBps_context\fP *ctx)"
+.br
+.RI "Stroke the current path according to the line attributes\&. After called, the current path will be cleared from the context\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_fill\fP (\fBps_context\fP *ctx)"
+.br
+.RI "Fill the current path according to the source attributes\&. After called, the current path will be cleared from the context\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_paint\fP (\fBps_context\fP *ctx)"
+.br
+.RI "Fill and stroke the current path according to the source and line attributes\&. After called, the current path will be cleared from the context\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_clear\fP (\fBps_context\fP *ctx)"
+.br
+.RI "Clear the current context with source color\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_clip\fP (\fBps_context\fP *ctx)"
+.br
+.RI "Clipping the current path, using the current fill rule\&. After called, the current path will be cleared from the context\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_clip_path\fP (\fBps_context\fP *ctx, const \fBps_path\fP *path, \fBps_fill_rule\fP rule)"
+.br
+.RI "Clipping specified path, using the given fill rule\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_clip_rect\fP (\fBps_context\fP *ctx, const \fBps_rect\fP *rect)"
+.br
+.RI "Clipping specified rectangle\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_scissor_rect\fP (\fBps_context\fP *ctx, const \fBps_rect\fP *rect)"
+.br
+.RI "The fast way to clipping specified rectangle, the clip rect can not be transformed by world matrix\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_clip_rects\fP (\fBps_context\fP *ctx, const \fBps_rect\fP *rects, unsigned int num_rects)"
+.br
+.RI "Clipping specified area defined by an array of rectangles\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_reset_clip\fP (\fBps_context\fP *ctx)"
+.br
+.RI "Clear the clipping area from the context\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_save\fP (\fBps_context\fP *ctx)"
+.br
+.RI "Pushes a copy of the current graphics state on to stack for context\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_restore\fP (\fBps_context\fP *ctx)"
+.br
+.RI "Set the current graphics state to the state most recently saved\&. "
+.ti -1c
+.RI "PEXPORT \fBps_font\fP *PICAPI \fBps_font_create\fP (const char *name, \fBps_charset\fP charset, float size, int weight, \fBps_bool\fP italic)"
+.br
+.RI "Create a font object using the given parameters\&. "
+.ti -1c
+.RI "PEXPORT \fBps_font\fP *PICAPI \fBps_font_create_copy\fP (const \fBps_font\fP *font)"
+.br
+.RI "Create a copy from an existing font object\&. "
+.ti -1c
+.RI "PEXPORT \fBps_font\fP *PICAPI \fBps_font_ref\fP (\fBps_font\fP *font)"
+.br
+.RI "Increases the reference count of the font by 1\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_font_unref\fP (\fBps_font\fP *font)"
+.br
+.RI "Decrements the reference count for the font object\&. If the reference count on the font falls to 0, the font is freed\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_font_set_size\fP (\fBps_font\fP *font, float size)"
+.br
+.RI "Set size for a font object\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_font_set_weight\fP (\fBps_font\fP *font, int weight)"
+.br
+.RI "Set weight for a font object\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_font_set_italic\fP (\fBps_font\fP *font, \fBps_bool\fP italic)"
+.br
+.RI "Set italic for a font object\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_font_set_charset\fP (\fBps_font\fP *font, \fBps_charset\fP charset)"
+.br
+.RI "Set charset for a font object\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_font_set_hint\fP (\fBps_font\fP *font, \fBps_bool\fP hint)"
+.br
+.RI "Set hiting for a font object\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_font_set_flip\fP (\fBps_font\fP *font, \fBps_bool\fP flip)"
+.br
+.RI "Set flip for a font object\&. "
+.ti -1c
+.RI "PEXPORT \fBps_bool\fP PICAPI \fBps_get_font_info\fP (\fBps_context\fP *ctx, \fBps_font_info\fP *info)"
+.br
+.RI "Return the font information from the graphics context\&. "
+.ti -1c
+.RI "PEXPORT \fBps_font\fP *PICAPI \fBps_set_font\fP (\fBps_context\fP *ctx, const \fBps_font\fP *font)"
+.br
+.RI "Set a new font to graphics context\&. "
+.ti -1c
+.RI "PEXPORT \fBps_bool\fP PICAPI \fBps_get_text_extent\fP (\fBps_context\fP *ctx, const void *text, unsigned int length, \fBps_size\fP *rsize)"
+.br
+.RI "Get extent for text using current font which selected to graphic context\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_set_text_color\fP (\fBps_context\fP *ctx, const \fBps_color\fP *color)"
+.br
+.RI "Set the text fill color for the graphic context\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_set_text_stroke_color\fP (\fBps_context\fP *ctx, const \fBps_color\fP *color)"
+.br
+.RI "Set the text stroke color for the graphic context\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_text_transform\fP (\fBps_context\fP *ctx, const \fBps_matrix\fP *matrix)"
+.br
+.RI "Transform text matrix for the graphic context\&. The text matrix is not a part of graphic state -- saving and restoring has no effect on the text matrix\&. The text matrix is an attribute of graphic context\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_set_text_matrix\fP (\fBps_context\fP *ctx, const \fBps_matrix\fP *matrix)"
+.br
+.RI "Set text matrix for the graphic context\&. The text matrix is not a part of graphic state -- saving and restoring has no effect on the text matrix\&. The text matrix is an attribute of graphic context\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_set_text_render_type\fP (\fBps_context\fP *ctx, \fBps_text_type\fP type)"
+.br
+.RI "Set rendering type for text\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_set_text_antialias\fP (\fBps_context\fP *ctx, \fBps_bool\fP antialias)"
+.br
+.RI "Set whether the font allowed be anti-aliasing\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_set_text_kerning\fP (\fBps_context\fP *ctx, \fBps_bool\fP kerning)"
+.br
+.RI "Set whether the font auto kerning is allowed\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_text_out_length\fP (\fBps_context\fP *ctx, float x, float y, const char *text, unsigned int length)"
+.br
+.RI "Draw single byte characters (latin-1) at location in user space\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_wide_text_out_length\fP (\fBps_context\fP *ctx, float x, float y, const \fBps_uchar16\fP *text, unsigned int length)"
+.br
+.RI "Draw unicode characters (ucs-2) at location in user space\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_draw_text\fP (\fBps_context\fP *ctx, const \fBps_rect\fP *area, const void *text, unsigned int length, \fBps_draw_text_type\fP type, \fBps_text_align\fP align)"
+.br
+.RI "Draw text in a rectangle area, using font object which is selected in graphic context\&. "
+.ti -1c
+.RI "PEXPORT \fBps_bool\fP PICAPI \fBps_get_glyph\fP (\fBps_context\fP *ctx, int ch, \fBps_glyph\fP *glyph)"
+.br
+.RI "Get the glyph from a given character, using font object which is selected in graphic context\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_show_glyphs\fP (\fBps_context\fP *ctx, float x, float y, \fBps_glyph\fP *glyphs, unsigned int length)"
+.br
+.RI "Draw an array of glyphs at location in user space\&. "
+.ti -1c
+.RI "PEXPORT \fBps_bool\fP PICAPI \fBps_get_path_from_glyph\fP (\fBps_context\fP *ctx, const \fBps_glyph\fP *glyph, \fBps_path\fP *path)"
+.br
+.RI "Get the path from a given glyph object\&. "
+.ti -1c
+.RI "PEXPORT \fBps_bool\fP PICAPI \fBps_glyph_get_extent\fP (const \fBps_glyph\fP *glyph, \fBps_size\fP *rsize)"
+.br
+.RI "Get extent for a glyph object\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_translate\fP (\fBps_context\fP *ctx, float tx, float ty)"
+.br
+.RI "Changes the origin of the user coordinate system in graphic context\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_scale\fP (\fBps_context\fP *ctx, float sx, float sy)"
+.br
+.RI "Changes the scale of the user coordinate system in graphic context\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_shear\fP (\fBps_context\fP *ctx, float shx, float shy)"
+.br
+.RI "Changes the shear of the user coordinate system in graphic context\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_rotate\fP (\fBps_context\fP *ctx, float angle)"
+.br
+.RI "Rotates the user coordinate system in graphic context\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_identity\fP (\fBps_context\fP *ctx)"
+.br
+.RI "Reset the current transformation matrix to identity matrix\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_transform\fP (\fBps_context\fP *ctx, const \fBps_matrix\fP *matrix)"
+.br
+.RI "Transforms the user coordinate system in graphic context using a specified matrix\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_set_matrix\fP (\fBps_context\fP *ctx, const \fBps_matrix\fP *matrix)"
+.br
+.RI "Modifies the current transformation matrix to the given matrix\&. "
+.ti -1c
+.RI "PEXPORT \fBps_bool\fP PICAPI \fBps_get_matrix\fP (\fBps_context\fP *ctx, \fBps_matrix\fP *matrix)"
+.br
+.RI "Get the current transformation matrix from graphic context\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_world_to_viewport\fP (\fBps_context\fP *ctx, \fBps_point\fP *point)"
+.br
+.RI "Transform a coordinate from device space to user space\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_viewport_to_world\fP (\fBps_context\fP *ctx, \fBps_point\fP *point)"
+.br
+.RI "Transform a coordinate from user space to device space\&. "
+.ti -1c
+.RI "PEXPORT \fBps_matrix\fP *PICAPI \fBps_matrix_create\fP (void)"
+.br
+.RI "Create a identity matrix object\&. "
+.ti -1c
+.RI "PEXPORT \fBps_matrix\fP *PICAPI \fBps_matrix_create_init\fP (float sx, float shy, float shx, float sy, float tx, float ty)"
+.br
+.RI "Create a matrix with given parameters\&. "
+.ti -1c
+.RI "PEXPORT \fBps_matrix\fP *PICAPI \fBps_matrix_create_copy\fP (const \fBps_matrix\fP *matrix)"
+.br
+.RI "Create a matrix copy from an exist one\&. "
+.ti -1c
+.RI "PEXPORT \fBps_matrix\fP *PICAPI \fBps_matrix_ref\fP (\fBps_matrix\fP *matrix)"
+.br
+.RI "Increases the reference count of the matrix by 1\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_matrix_unref\fP (\fBps_matrix\fP *matrix)"
+.br
+.RI "Decrements the reference count for the matrix object\&. If the reference count on the matrix falls to 0, the matrix is freed\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_matrix_init\fP (\fBps_matrix\fP *matrix, float sx, float shy, float shx, float sy, float tx, float ty)"
+.br
+.RI "Initialize an existing matrix object with given parameters\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_matrix_translate\fP (\fBps_matrix\fP *matrix, float tx, float ty)"
+.br
+.RI "Modify a matrix by translating\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_matrix_scale\fP (\fBps_matrix\fP *matrix, float sx, float sy)"
+.br
+.RI "Modify a matrix by scaling\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_matrix_rotate\fP (\fBps_matrix\fP *matrix, float angle)"
+.br
+.RI "Modify a matrix by rotating\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_matrix_shear\fP (\fBps_matrix\fP *matrix, float shx, float shy)"
+.br
+.RI "Modify a matrix by shearing\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_matrix_invert\fP (\fBps_matrix\fP *matrix)"
+.br
+.RI "Modify a matrix by inverting\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_matrix_identity\fP (\fBps_matrix\fP *matrix)"
+.br
+.RI "Reset a matrix to identity matrix\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_matrix_flip_x\fP (\fBps_matrix\fP *matrix)"
+.br
+.RI "Flip a matrix in the horizontal direction\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_matrix_flip_y\fP (\fBps_matrix\fP *matrix)"
+.br
+.RI "Flip a matrix in the vertical direction\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_matrix_multiply\fP (\fBps_matrix\fP *result, const \fBps_matrix\fP *a, const \fBps_matrix\fP *b)"
+.br
+.RI "Multiplies the matrix in a and b together and stores the result in result\&. "
+.ti -1c
+.RI "PEXPORT \fBps_bool\fP PICAPI \fBps_matrix_is_identity\fP (const \fBps_matrix\fP *matrix)"
+.br
+.RI "Checks whether the matrix is the identity transform matrix\&. "
+.ti -1c
+.RI "PEXPORT \fBps_bool\fP PICAPI \fBps_matrix_is_equal\fP (const \fBps_matrix\fP *a, const \fBps_matrix\fP *b)"
+.br
+.RI "Checks whether two matrix are equal\&. "
+.ti -1c
+.RI "PEXPORT float PICAPI \fBps_matrix_get_determinant\fP (const \fBps_matrix\fP *matrix)"
+.br
+.RI "Return the determinant from a matrix\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_matrix_set_translate_factor\fP (\fBps_matrix\fP *matrix, float tx, float ty)"
+.br
+.RI "Set the translate factors to the matrix\&. "
+.ti -1c
+.RI "PEXPORT \fBps_bool\fP PICAPI \fBps_matrix_get_translate_factor\fP (\fBps_matrix\fP *matrix, float *tx, float *ty)"
+.br
+.RI "Get the translate factors from the matrix\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_matrix_set_scale_factor\fP (\fBps_matrix\fP *matrix, float sx, float sy)"
+.br
+.RI "Set the scale factors to the matrix\&. "
+.ti -1c
+.RI "PEXPORT \fBps_bool\fP PICAPI \fBps_matrix_get_scale_factor\fP (\fBps_matrix\fP *matrix, float *sx, float *sy)"
+.br
+.RI "Get the scale factors from the matrix\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_matrix_set_shear_factor\fP (\fBps_matrix\fP *matrix, float shx, float shy)"
+.br
+.RI "Set the shear factors to the matrix\&. "
+.ti -1c
+.RI "PEXPORT \fBps_bool\fP PICAPI \fBps_matrix_get_shear_factor\fP (\fBps_matrix\fP *matrix, float *shx, float *shy)"
+.br
+.RI "Get the shear factors from the matrix\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_matrix_transform_point\fP (const \fBps_matrix\fP *matrix, \fBps_point\fP *point)"
+.br
+.RI "Transform an existing point using the matrix\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_matrix_transform_rect\fP (const \fBps_matrix\fP *matrix, \fBps_rect\fP *rect)"
+.br
+.RI "Transform an existing rectangle using the matrix\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_matrix_transform_path\fP (const \fBps_matrix\fP *matrix, \fBps_path\fP *path)"
+.br
+.RI "Transform an existing path using the matrix\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_new_path\fP (\fBps_context\fP *ctx)"
+.br
+.RI "Create a new empty path in the graphic context, clear the old one\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_new_sub_path\fP (\fBps_context\fP *ctx)"
+.br
+.RI "Close the current path, and add a new empty sub path in the graphic context\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_add_sub_path\fP (\fBps_context\fP *ctx, const \fBps_path\fP *path)"
+.br
+.RI "Add a new sub path to current path in the graphic context\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_set_path\fP (\fBps_context\fP *ctx, const \fBps_path\fP *path)"
+.br
+.RI "Replace the current path in the graphic context\&. "
+.ti -1c
+.RI "PEXPORT \fBps_bool\fP PICAPI \fBps_get_path\fP (\fBps_context\fP *ctx, \fBps_path\fP *path)"
+.br
+.RI "Get the current path in the graphic context\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_close_path\fP (\fBps_context\fP *ctx)"
+.br
+.RI "Close the current path in the graphic context\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_move_to\fP (\fBps_context\fP *ctx, const \fBps_point\fP *point)"
+.br
+.RI "Begin a new sub path, and set the current point\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_line_to\fP (\fBps_context\fP *ctx, const \fBps_point\fP *point)"
+.br
+.RI "Add a line to the current path from the current point to given point\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_bezier_curve_to\fP (\fBps_context\fP *ctx, const \fBps_point\fP *fcp, const \fBps_point\fP *scp, const \fBps_point\fP *ep)"
+.br
+.RI "Add a cubic bezier spline to the current path from current point to end point\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_quad_curve_to\fP (\fBps_context\fP *ctx, const \fBps_point\fP *cp, const \fBps_point\fP *ep)"
+.br
+.RI "Add a quadratic bezier spline to the current path from current point to end point\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_arc\fP (\fBps_context\fP *ctx, const \fBps_point\fP *cp, float radius, float sangle, float eangle, \fBps_bool\fP clockwise)"
+.br
+.RI "Add a circular arc to the current path\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_tangent_arc\fP (\fBps_context\fP *ctx, const \fBps_rect\fP *rect, float sangle, float sweep)"
+.br
+.RI "Add a circular arc which is inner tangent from a rectangle\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_rectangle\fP (\fBps_context\fP *ctx, const \fBps_rect\fP *rect)"
+.br
+.RI "Add a rectangle to the current path\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_rounded_rect\fP (\fBps_context\fP *ctx, const \fBps_rect\fP *rect, float ltx, float lty, float rtx, float rty, float lbx, float lby, float rbx, float rby)"
+.br
+.RI "Add a rounded rectangle to the current path\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_ellipse\fP (\fBps_context\fP *ctx, const \fBps_rect\fP *rect)"
+.br
+.RI "Adds an ellipse to the current path which fits inside the specified rectangle\&. "
+.ti -1c
+.RI "PEXPORT \fBps_path\fP *PICAPI \fBps_path_create\fP (void)"
+.br
+.RI "Create a new empty path object\&. "
+.ti -1c
+.RI "PEXPORT \fBps_path\fP *PICAPI \fBps_path_create_copy\fP (const \fBps_path\fP *path)"
+.br
+.RI "Create a copy from an existing path object\&. "
+.ti -1c
+.RI "PEXPORT \fBps_path\fP *PICAPI \fBps_path_ref\fP (\fBps_path\fP *path)"
+.br
+.RI "Increases the reference count of the path by 1\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_path_unref\fP (\fBps_path\fP *path)"
+.br
+.RI "Decrements the reference count for the path object\&. If the reference count on the path falls to 0, the path is freed\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_path_move_to\fP (\fBps_path\fP *path, const \fBps_point\fP *point)"
+.br
+.RI "Begin a new sub path, and set the current point in the path\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_path_line_to\fP (\fBps_path\fP *path, const \fBps_point\fP *point)"
+.br
+.RI "Add a line to the path from the current point to given point\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_path_tangent_arc_to\fP (\fBps_path\fP *path, float radius, const \fBps_point\fP *tp, const \fBps_point\fP *ep)"
+.br
+.RI "Add an arc to the path which tangent at two line\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_path_arc_to\fP (\fBps_path\fP *path, float radiusX, float radiusY, float angle, \fBps_bool\fP large_arc, \fBps_bool\fP clockwise, const \fBps_point\fP *ep)"
+.br
+.RI "Add an arc to the path, using radius, angle and end point\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_path_bezier_to\fP (\fBps_path\fP *path, const \fBps_point\fP *fcp, const \fBps_point\fP *scp, const \fBps_point\fP *ep)"
+.br
+.RI "Add a cubic bezier spline to the path from current point to end point\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_path_quad_to\fP (\fBps_path\fP *path, const \fBps_point\fP *cp, const \fBps_point\fP *ep)"
+.br
+.RI "Add a quadratic bezier spline to the path from current point to end point\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_path_sub_close\fP (\fBps_path\fP *path)"
+.br
+.RI "Close the sub path, and begin a new one\&. "
+.ti -1c
+.RI "PEXPORT float PICAPI \fBps_path_get_length\fP (const \fBps_path\fP *path)"
+.br
+.RI "Return The length of the path\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_path_clear\fP (\fBps_path\fP *path)"
+.br
+.RI "Clear the path to empty\&. "
+.ti -1c
+.RI "PEXPORT \fBps_bool\fP PICAPI \fBps_path_is_empty\fP (const \fBps_path\fP *path)"
+.br
+.RI "Checks whether the path is empty\&. "
+.ti -1c
+.RI "PEXPORT unsigned int PICAPI \fBps_path_get_vertex_count\fP (const \fBps_path\fP *path)"
+.br
+.RI "Return the count of vertices in the path\&. "
+.ti -1c
+.RI "PEXPORT \fBps_path_cmd\fP PICAPI \fBps_path_get_vertex\fP (const \fBps_path\fP *path, unsigned int index, \fBps_point\fP *point)"
+.br
+.RI "Get a vertex from the path by index, and return the vertex command\&. "
+.ti -1c
+.RI "PEXPORT \fBps_bool\fP PICAPI \fBps_path_bounding_rect\fP (const \fBps_path\fP *path, \fBps_rect\fP *rect)"
+.br
+.RI "Get the bounding rectangle of the path\&. "
+.ti -1c
+.RI "PEXPORT \fBps_bool\fP PICAPI \fBps_path_contains\fP (const \fBps_path\fP *path, const \fBps_point\fP *point, \fBps_fill_rule\fP rule)"
+.br
+.RI "Check whether a point is contained in the path by fill method\&. "
+.ti -1c
+.RI "PEXPORT \fBps_bool\fP PICAPI \fBps_path_stroke_contains\fP (const \fBps_path\fP *path, const \fBps_point\fP *point, float width)"
+.br
+.RI "Check whether a point is contained in the path by stroke method\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_path_add_line\fP (\fBps_path\fP *path, const \fBps_point\fP *p1, const \fBps_point\fP *p2)"
+.br
+.RI "Add a line to the path\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_path_add_arc\fP (\fBps_path\fP *path, const \fBps_point\fP *cp, float radius, float sangle, float eangle, \fBps_bool\fP clockwise)"
+.br
+.RI "Add a arc to the path\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_path_add_rect\fP (\fBps_path\fP *path, const \fBps_rect\fP *rect)"
+.br
+.RI "Add a rectangle to the path\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_path_add_ellipse\fP (\fBps_path\fP *path, const \fBps_rect\fP *rect)"
+.br
+.RI "Add an ellipse to the path\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_path_add_rounded_rect\fP (\fBps_path\fP *path, const \fBps_rect\fP *rect, float ltx, float lty, float rtx, float rty, float lbx, float lby, float rbx, float rby)"
+.br
+.RI "Add a rounded rectangle to the path\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_path_add_sub_path\fP (\fBps_path\fP *path, const \fBps_path\fP *spath)"
+.br
+.RI "Add an sub path to the path\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_path_clipping\fP (\fBps_path\fP *result, \fBps_path_operation\fP op, const \fBps_path\fP *a, const \fBps_path\fP *b)"
+.br
+.RI "Clipping two path with the operation and get the result path\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.PP
+\fBAuthor\fP
+.RS 4
+Zhang Ji Peng onecoolx@gmail.com 
+.RE
+.PP
+\fBDate\fP
+.RS 4
+2014/6/16
+.RE
+.PP
+This file includes all interfaces of Picasso
+.PP
+.PP
+.nf
+   Copyright (C) 2008 ~ 2024  Zhang Ji Peng
+
+   All rights reserved.
+
+   Picasso is a vector graphic library..fi
+.PP
+ 
+.PP
+Definition in file \fBpicasso\&.h\fP\&.
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Picasso API from the source code\&.

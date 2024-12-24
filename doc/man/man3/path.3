@@ -1,0 +1,779 @@
+.TH "path" 3 "Tue Dec 24 2024" "Version 2.8" "Picasso API" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+path
+.SH SYNOPSIS
+.br
+.PP
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef enum \fB_ps_path_cmd\fP \fBps_path_cmd\fP"
+.br
+.RI "Path command for vertices\&. "
+.ti -1c
+.RI "typedef enum \fB_ps_path_op\fP \fBps_path_operation\fP"
+.br
+.RI "Path clipping operations\&. "
+.in -1c
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum \fB_ps_path_cmd\fP { \fBPATH_CMD_STOP\fP = 0, \fBPATH_CMD_MOVE_TO\fP = 1, \fBPATH_CMD_LINE_TO\fP = 2, \fBPATH_CMD_CURVE3\fP = 3, \fBPATH_CMD_CURVE4\fP = 4, \fBPATH_CMD_END_POLY\fP = 0x0F }"
+.br
+.RI "Path command for vertices\&. "
+.ti -1c
+.RI "enum \fB_ps_path_op\fP { \fBPATH_OP_UNION\fP, \fBPATH_OP_INTERSECT\fP, \fBPATH_OP_XOR\fP, \fBPATH_OP_DIFF\fP }"
+.br
+.RI "Path clipping operations\&. "
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "PEXPORT \fBps_path\fP *PICAPI \fBps_path_create\fP (void)"
+.br
+.RI "Create a new empty path object\&. "
+.ti -1c
+.RI "PEXPORT \fBps_path\fP *PICAPI \fBps_path_create_copy\fP (const \fBps_path\fP *path)"
+.br
+.RI "Create a copy from an existing path object\&. "
+.ti -1c
+.RI "PEXPORT \fBps_path\fP *PICAPI \fBps_path_ref\fP (\fBps_path\fP *path)"
+.br
+.RI "Increases the reference count of the path by 1\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_path_unref\fP (\fBps_path\fP *path)"
+.br
+.RI "Decrements the reference count for the path object\&. If the reference count on the path falls to 0, the path is freed\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_path_move_to\fP (\fBps_path\fP *path, const \fBps_point\fP *point)"
+.br
+.RI "Begin a new sub path, and set the current point in the path\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_path_line_to\fP (\fBps_path\fP *path, const \fBps_point\fP *point)"
+.br
+.RI "Add a line to the path from the current point to given point\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_path_tangent_arc_to\fP (\fBps_path\fP *path, float radius, const \fBps_point\fP *tp, const \fBps_point\fP *ep)"
+.br
+.RI "Add an arc to the path which tangent at two line\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_path_arc_to\fP (\fBps_path\fP *path, float radiusX, float radiusY, float angle, \fBps_bool\fP large_arc, \fBps_bool\fP clockwise, const \fBps_point\fP *ep)"
+.br
+.RI "Add an arc to the path, using radius, angle and end point\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_path_bezier_to\fP (\fBps_path\fP *path, const \fBps_point\fP *fcp, const \fBps_point\fP *scp, const \fBps_point\fP *ep)"
+.br
+.RI "Add a cubic bezier spline to the path from current point to end point\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_path_quad_to\fP (\fBps_path\fP *path, const \fBps_point\fP *cp, const \fBps_point\fP *ep)"
+.br
+.RI "Add a quadratic bezier spline to the path from current point to end point\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_path_sub_close\fP (\fBps_path\fP *path)"
+.br
+.RI "Close the sub path, and begin a new one\&. "
+.ti -1c
+.RI "PEXPORT float PICAPI \fBps_path_get_length\fP (const \fBps_path\fP *path)"
+.br
+.RI "Return The length of the path\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_path_clear\fP (\fBps_path\fP *path)"
+.br
+.RI "Clear the path to empty\&. "
+.ti -1c
+.RI "PEXPORT \fBps_bool\fP PICAPI \fBps_path_is_empty\fP (const \fBps_path\fP *path)"
+.br
+.RI "Checks whether the path is empty\&. "
+.ti -1c
+.RI "PEXPORT unsigned int PICAPI \fBps_path_get_vertex_count\fP (const \fBps_path\fP *path)"
+.br
+.RI "Return the count of vertices in the path\&. "
+.ti -1c
+.RI "PEXPORT \fBps_path_cmd\fP PICAPI \fBps_path_get_vertex\fP (const \fBps_path\fP *path, unsigned int index, \fBps_point\fP *point)"
+.br
+.RI "Get a vertex from the path by index, and return the vertex command\&. "
+.ti -1c
+.RI "PEXPORT \fBps_bool\fP PICAPI \fBps_path_bounding_rect\fP (const \fBps_path\fP *path, \fBps_rect\fP *rect)"
+.br
+.RI "Get the bounding rectangle of the path\&. "
+.ti -1c
+.RI "PEXPORT \fBps_bool\fP PICAPI \fBps_path_contains\fP (const \fBps_path\fP *path, const \fBps_point\fP *point, \fBps_fill_rule\fP rule)"
+.br
+.RI "Check whether a point is contained in the path by fill method\&. "
+.ti -1c
+.RI "PEXPORT \fBps_bool\fP PICAPI \fBps_path_stroke_contains\fP (const \fBps_path\fP *path, const \fBps_point\fP *point, float width)"
+.br
+.RI "Check whether a point is contained in the path by stroke method\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_path_add_line\fP (\fBps_path\fP *path, const \fBps_point\fP *p1, const \fBps_point\fP *p2)"
+.br
+.RI "Add a line to the path\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_path_add_arc\fP (\fBps_path\fP *path, const \fBps_point\fP *cp, float radius, float sangle, float eangle, \fBps_bool\fP clockwise)"
+.br
+.RI "Add a arc to the path\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_path_add_rect\fP (\fBps_path\fP *path, const \fBps_rect\fP *rect)"
+.br
+.RI "Add a rectangle to the path\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_path_add_ellipse\fP (\fBps_path\fP *path, const \fBps_rect\fP *rect)"
+.br
+.RI "Add an ellipse to the path\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_path_add_rounded_rect\fP (\fBps_path\fP *path, const \fBps_rect\fP *rect, float ltx, float lty, float rtx, float rty, float lbx, float lby, float rbx, float rby)"
+.br
+.RI "Add a rounded rectangle to the path\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_path_add_sub_path\fP (\fBps_path\fP *path, const \fBps_path\fP *spath)"
+.br
+.RI "Add an sub path to the path\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_path_clipping\fP (\fBps_path\fP *result, \fBps_path_operation\fP op, const \fBps_path\fP *a, const \fBps_path\fP *b)"
+.br
+.RI "Clipping two path with the operation and get the result path\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.SH "Enumeration Type Documentation"
+.PP 
+.SS "enum \fB_ps_path_cmd\fP"
+
+.PP
+Path command for vertices\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIPATH_CMD_STOP \fP\fP
+Stop command\&. 
+.TP
+\fB\fIPATH_CMD_MOVE_TO \fP\fP
+Move to command\&. 
+.TP
+\fB\fIPATH_CMD_LINE_TO \fP\fP
+Line to command\&. 
+.TP
+\fB\fIPATH_CMD_CURVE3 \fP\fP
+Quad curve to command\&. 
+.TP
+\fB\fIPATH_CMD_CURVE4 \fP\fP
+Bezier curve to command\&. 
+.TP
+\fB\fIPATH_CMD_END_POLY \fP\fP
+End polyline command\&. 
+.PP
+Definition at line 3301 of file picasso\&.h\&.
+.SS "enum \fB_ps_path_op\fP"
+
+.PP
+Path clipping operations\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIPATH_OP_UNION \fP\fP
+Union\&. 
+.TP
+\fB\fIPATH_OP_INTERSECT \fP\fP
+Intersection\&. 
+.TP
+\fB\fIPATH_OP_XOR \fP\fP
+Exclusive or\&. 
+.TP
+\fB\fIPATH_OP_DIFF \fP\fP
+Difference\&. 
+.PP
+Definition at line 3477 of file picasso\&.h\&.
+.SH "Function Documentation"
+.PP 
+.SS "void ps_path_add_arc (\fBps_path\fP * path, const \fBps_point\fP * cp, float radius, float sangle, float eangle, \fBps_bool\fP clockwise)"
+
+.PP
+Add a arc to the path\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpath\fP Pointer to an existing path object\&. 
+.br
+\fIcp\fP The center point of the arc\&. 
+.br
+\fIradius\fP The radius of the arc\&. 
+.br
+\fIsangle\fP The start angle, in radians\&. 
+.br
+\fIeangle\fP The end angle, in radians\&. 
+.br
+\fIclockwise\fP True is clockwise, False is counter clockwise\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_path_add_line\fP, \fBps_path_add_rect\fP, \fBps_path_add_ellipse\fP, \fBps_path_add_rounded_rect\fP, \fBps_path_add_sub_path\fP 
+.RE
+.PP
+
+.SS "void ps_path_add_ellipse (\fBps_path\fP * path, const \fBps_rect\fP * rect)"
+
+.PP
+Add an ellipse to the path\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpath\fP Pointer to an existing path object\&. 
+.br
+\fIrect\fP The rectangle to enclose the ellipse\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_path_add_arc\fP, \fBps_path_add_line\fP, \fBps_path_add_rect\fP, \fBps_path_add_rounded_rect\fP, \fBps_path_add_sub_path\fP 
+.RE
+.PP
+
+.SS "void ps_path_add_line (\fBps_path\fP * path, const \fBps_point\fP * p1, const \fBps_point\fP * p2)"
+
+.PP
+Add a line to the path\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpath\fP Pointer to an existing path object\&. 
+.br
+\fIp1\fP The start point for the line\&. 
+.br
+\fIp2\fP The end point for the line\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_path_add_arc\fP, \fBps_path_add_rect\fP, \fBps_path_add_ellipse\fP, \fBps_path_add_rounded_rect\fP, \fBps_path_add_sub_path\fP 
+.RE
+.PP
+
+.SS "void ps_path_add_rect (\fBps_path\fP * path, const \fBps_rect\fP * rect)"
+
+.PP
+Add a rectangle to the path\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpath\fP Pointer to an existing path object\&. 
+.br
+\fIrect\fP The rectangle to be added\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_path_add_arc\fP, \fBps_path_add_line\fP, \fBps_path_add_ellipse\fP, \fBps_path_add_rounded_rect\fP, \fBps_path_add_sub_path\fP 
+.RE
+.PP
+
+.SS "void ps_path_add_rounded_rect (\fBps_path\fP * path, const \fBps_rect\fP * rect, float ltx, float lty, float rtx, float rty, float lbx, float lby, float rbx, float rby)"
+
+.PP
+Add a rounded rectangle to the path\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpath\fP Pointer to an existing path object\&. 
+.br
+\fIrect\fP The rectangle which will be added\&. 
+.br
+\fIltx\fP The left top horizontal radius\&. 
+.br
+\fIlty\fP The left top vertical radius\&. 
+.br
+\fIrtx\fP The right top horizontal radius\&. 
+.br
+\fIrty\fP The right top vertical radius\&. 
+.br
+\fIlbx\fP The left bottom horizontal radius\&. 
+.br
+\fIlby\fP The left bottom vertical radius\&. 
+.br
+\fIrbx\fP The right bottom horizontal radius\&. 
+.br
+\fIrby\fP The right bottom vertical radius\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_path_add_arc\fP, \fBps_path_add_line\fP, \fBps_path_add_rect\fP, \fBps_path_add_ellipse\fP, \fBps_path_add_sub_path\fP 
+.RE
+.PP
+
+.SS "void ps_path_add_sub_path (\fBps_path\fP * path, const \fBps_path\fP * spath)"
+
+.PP
+Add an sub path to the path\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpath\fP Pointer to an existing path object\&. 
+.br
+\fIspath\fP The path will be added\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_path_add_arc\fP, \fBps_path_add_line\fP, \fBps_path_add_rect\fP, \fBps_path_add_rounded_rect\fP, \fBps_path_add_ellipse\fP 
+.RE
+.PP
+
+.SS "void ps_path_arc_to (\fBps_path\fP * path, float radiusX, float radiusY, float angle, \fBps_bool\fP large_arc, \fBps_bool\fP clockwise, const \fBps_point\fP * ep)"
+
+.PP
+Add an arc to the path, using radius, angle and end point\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpath\fP Pointer to an existing path object\&. 
+.br
+\fIradiusX\fP The horizontal radius of arc\&. 
+.br
+\fIradiusY\fP The vertical radius of arc\&. 
+.br
+\fIangle\fP The angle of arc, in radians\&. 
+.br
+\fIlarge_arc\fP True is large arc, False is small arc\&. 
+.br
+\fIclockwise\fP True is clockwise, False is counter clockwise\&. 
+.br
+\fIep\fP The end point of the arc\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_path_move_to\fP, \fBps_path_bezier_to\fP, \fBps_path_quad_to\fP \fBps_path_tangent_arc_to\fP, \fBps_path_line_to\fP 
+.RE
+.PP
+
+.SS "void ps_path_bezier_to (\fBps_path\fP * path, const \fBps_point\fP * fcp, const \fBps_point\fP * scp, const \fBps_point\fP * ep)"
+
+.PP
+Add a cubic bezier spline to the path from current point to end point\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpath\fP Pointer to an existing path object\&. 
+.br
+\fIfcp\fP The first control point of the curve\&. 
+.br
+\fIscp\fP The second control point of the curve\&. 
+.br
+\fIep\fP The end point of the curve\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_path_move_to\fP, \fBps_path_arc_to\fP, \fBps_path_quad_to\fP \fBps_path_tangent_arc_to\fP, \fBps_path_line_to\fP 
+.RE
+.PP
+
+.SS "\fBps_bool\fP ps_path_bounding_rect (const \fBps_path\fP * path, \fBps_rect\fP * rect)"
+
+.PP
+Get the bounding rectangle of the path\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpath\fP Pointer to an existing path object\&. 
+.br
+\fIrect\fP Pointer to a buffer to receiving the rect\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+True if is success, otherwise False\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+To get extended error information, call \fIps_last_status\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_path_get_vertex_count\fP, \fBps_path_get_vertex\fP, \fBps_path_contains\fP, \fBps_path_stroke_contains\fP 
+.RE
+.PP
+
+.SS "void ps_path_clear (\fBps_path\fP * path)"
+
+.PP
+Clear the path to empty\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpath\fP Pointer to an existing path object\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_path_sub_close\fP, \fBps_path_get_length\fP, \fBps_path_is_empty\fP 
+.RE
+.PP
+
+.SS "void ps_path_clipping (\fBps_path\fP * result, \fBps_path_operation\fP op, const \fBps_path\fP * a, const \fBps_path\fP * b)"
+
+.PP
+Clipping two path with the operation and get the result path\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIresult\fP Pointer to an existing path object for result\&. 
+.br
+\fIop\fP The specified operation for clipping\&. 
+.br
+\fIa\fP The source path for clipping\&. 
+.br
+\fIb\fP The path which will be clipping\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_path_get_vertex\fP, \fBps_path_get_vertex_count\fP 
+.RE
+.PP
+
+.SS "\fBps_bool\fP ps_path_contains (const \fBps_path\fP * path, const \fBps_point\fP * point, \fBps_fill_rule\fP rule)"
+
+.PP
+Check whether a point is contained in the path by fill method\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpath\fP Pointer to an existing path object\&. 
+.br
+\fIpoint\fP The point to be checked\&. 
+.br
+\fIrule\fP The filling rule for the path\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+True if the point is contained, otherwise False\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_path_get_vertex_count\fP, \fBps_path_get_vertex\fP, \fBps_path_bounding_rect\fP, \fBps_path_stroke_contains\fP 
+.RE
+.PP
+
+.SS "\fBps_path\fP * ps_path_create (void)"
+
+.PP
+Create a new empty path object\&. 
+.PP
+\fBReturns\fP
+.RS 4
+If the function succeeds, the return value is the pointer to a new path object\&. If the function fails, the return value is NULL\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+To get extended error information, call \fIps_last_status\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_path_create_copy\fP, \fBps_path_ref\fP, \fBps_path_unref\fP 
+.RE
+.PP
+
+.SS "\fBps_path\fP * ps_path_create_copy (const \fBps_path\fP * path)"
+
+.PP
+Create a copy from an existing path object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpath\fP Pointer to an existing path object\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+If the function succeeds, the return value is the pointer to a new path object\&. If the function fails, the return value is NULL\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+To get extended error information, call \fIps_last_status\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_path_create\fP, \fBps_path_ref\fP, \fBps_path_unref\fP 
+.RE
+.PP
+
+.SS "float ps_path_get_length (const \fBps_path\fP * path)"
+
+.PP
+Return The length of the path\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpath\fP Pointer to an existing path object\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+If the function succeeds, the return value is the length of the path object\&. If the function fails, the return value is 0\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+To get extended error information, call \fIps_last_status\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_path_sub_close\fP, \fBps_path_clear\fP, \fBps_path_is_empty\fP 
+.RE
+.PP
+
+.SS "\fBps_path_cmd\fP ps_path_get_vertex (const \fBps_path\fP * path, unsigned int index, \fBps_point\fP * point)"
+
+.PP
+Get a vertex from the path by index, and return the vertex command\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpath\fP Pointer to an existing path object\&. 
+.br
+\fIindex\fP The index of the vertex\&. 
+.br
+\fIpoint\fP Pointer to a structure to receiving the vertex\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+If the function succeeds, the return value is the command of the vertex\&. If the function fails, the return value is PATH_CMD_STOP\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+To get extended error information, call \fIps_last_status\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_path_get_vertex_count\fP, \fBps_path_bounding_rect\fP, \fBps_path_contains\fP, \fBps_path_stroke_contains\fP 
+.RE
+.PP
+
+.SS "unsigned int ps_path_get_vertex_count (const \fBps_path\fP * path)"
+
+.PP
+Return the count of vertices in the path\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpath\fP Pointer to an existing path object\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+If the function succeeds, the return value is the vertices count in the path object\&. If the function fails, the return value is 0\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+To get extended error information, call \fIps_last_status\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_path_get_vertex\fP, \fBps_path_bounding_rect\fP, \fBps_path_contains\fP, \fBps_path_stroke_contains\fP 
+.RE
+.PP
+
+.SS "\fBps_bool\fP ps_path_is_empty (const \fBps_path\fP * path)"
+
+.PP
+Checks whether the path is empty\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpath\fP Pointer to an existing path object\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_path_sub_close\fP, \fBps_path_get_length\fP, \fBps_path_clear\fP 
+.RE
+.PP
+
+.SS "void ps_path_line_to (\fBps_path\fP * path, const \fBps_point\fP * point)"
+
+.PP
+Add a line to the path from the current point to given point\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpath\fP Pointer to an existing path object\&. 
+.br
+\fIpoint\fP The point which will be set\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_path_move_to\fP, \fBps_path_bezier_to\fP, \fBps_path_quad_to\fP \fBps_path_arc_to\fP, \fBps_path_tangent_arc_to\fP 
+.RE
+.PP
+
+.SS "void ps_path_move_to (\fBps_path\fP * path, const \fBps_point\fP * point)"
+
+.PP
+Begin a new sub path, and set the current point in the path\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpath\fP Pointer to an existing path object\&. 
+.br
+\fIpoint\fP The point which will be set\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_path_line_to\fP, \fBps_path_bezier_to\fP, \fBps_path_quad_to\fP \fBps_path_arc_to\fP, \fBps_path_tangent_arc_to\fP 
+.RE
+.PP
+
+.SS "void ps_path_quad_to (\fBps_path\fP * path, const \fBps_point\fP * cp, const \fBps_point\fP * ep)"
+
+.PP
+Add a quadratic bezier spline to the path from current point to end point\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpath\fP Pointer to an existing path object\&. 
+.br
+\fIcp\fP The control point of the curve\&. 
+.br
+\fIep\fP The end point of the curve\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_path_move_to\fP, \fBps_path_arc_to\fP, \fBps_path_bezier_to\fP \fBps_path_tangent_arc_to\fP, \fBps_path_line_to\fP 
+.RE
+.PP
+
+.SS "\fBps_path\fP * ps_path_ref (\fBps_path\fP * path)"
+
+.PP
+Increases the reference count of the path by 1\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpath\fP Pointer to an existing path object\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+If the function succeeds, the return value is the pointer to the path object\&. If the function fails, the return value is NULL\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+To get extended error information, call \fIps_last_status\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_path_create\fP, \fBps_path_create_copy\fP, \fBps_path_unref\fP 
+.RE
+.PP
+
+.SS "\fBps_bool\fP ps_path_stroke_contains (const \fBps_path\fP * path, const \fBps_point\fP * point, float width)"
+
+.PP
+Check whether a point is contained in the path by stroke method\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpath\fP Pointer to an existing path object\&. 
+.br
+\fIpoint\fP The point to be checked\&. 
+.br
+\fIwidth\fP The line width to use, in pixels, must be greater than 0\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+True if the point is contained, otherwise False\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_path_get_vertex_count\fP, \fBps_path_get_vertex\fP, \fBps_path_bounding_rect\fP, \fBps_path_contains\fP 
+.RE
+.PP
+
+.SS "void ps_path_sub_close (\fBps_path\fP * path)"
+
+.PP
+Close the sub path, and begin a new one\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpath\fP Pointer to an existing path object\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_path_get_length\fP, \fBps_path_clear\fP, \fBps_path_is_empty\fP 
+.RE
+.PP
+
+.SS "void ps_path_tangent_arc_to (\fBps_path\fP * path, float radius, const \fBps_point\fP * tp, const \fBps_point\fP * ep)"
+
+.PP
+Add an arc to the path which tangent at two line\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpath\fP Pointer to an existing path object\&. 
+.br
+\fIradius\fP The radius of the arc\&. 
+.br
+\fItp\fP The point which the first tangent line from current point to\&. 
+.br
+\fIep\fP The point which the second tangent line from \fItp\fP to\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_path_move_to\fP, \fBps_path_bezier_to\fP, \fBps_path_quad_to\fP \fBps_path_arc_to\fP, \fBps_path_line_to\fP 
+.RE
+.PP
+
+.SS "void ps_path_unref (\fBps_path\fP * path)"
+
+.PP
+Decrements the reference count for the path object\&. If the reference count on the path falls to 0, the path is freed\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpath\fP Pointer to an existing path object\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_path_create\fP, \fBps_path_create_copy\fP, \fBps_path_ref\fP 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Picasso API from the source code\&.

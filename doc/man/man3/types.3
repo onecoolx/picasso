@@ -1,0 +1,273 @@
+.TH "types" 3 "Tue Dec 24 2024" "Version 2.8" "Picasso API" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+types
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Structures"
+
+.in +1c
+.ti -1c
+.RI "struct \fB_psx_image_frame\fP"
+.br
+.RI "A frame image data\&. "
+.ti -1c
+.RI "struct \fB_psx_image\fP"
+.br
+.RI "A image object\&. "
+.ti -1c
+.RI "struct \fB_psx_image_header\fP"
+.br
+.RI "Image reader header define\&. "
+.ti -1c
+.RI "struct \fB_psx_image_operator\fP"
+.br
+.RI "The image operator define\&. "
+.in -1c
+.SS "Macros"
+
+.in +1c
+.ti -1c
+.RI "#define \fBIMG_OBJ\fP(image)   \fBIMG_OBJ_AT_INDEX\fP(image, 0)"
+.br
+.RI "Get first ps_image obj\&. "
+.ti -1c
+.RI "#define \fBIMG_DATA\fP(image)   \fBIMG_DATA_AT_INDEX\fP(image, 0)"
+.br
+.RI "Get first image frame data\&. "
+.ti -1c
+.RI "#define \fBIMG_DATA_SIZE\fP(image)   \fBIMG_DATA_SIZE_AT_INDEX\fP(image, 0)"
+.br
+.RI "Get first image frame data size\&. "
+.ti -1c
+.RI "#define \fBIMG_OBJ_AT_INDEX\fP(image,  idx)   (image\->frames[idx]\&.img)"
+.br
+.RI "Get ps_image obj at index\&. "
+.ti -1c
+.RI "#define \fBIMG_DATA_AT_INDEX\fP(image,  idx)   (image\->frames[idx]\&.data)"
+.br
+.RI "Get image frame data at index\&. "
+.ti -1c
+.RI "#define \fBIMG_DATA_SIZE_AT_INDEX\fP(img,  idx)   (img\->frames[idx]\&.size)"
+.br
+.RI "Get image frame data size at index\&. "
+.ti -1c
+.RI "#define \fBIMG_DURATION_AT_INDEX\fP(img,  idx)   (img\->frames[idx]\&.duration)"
+.br
+.RI "Get image frame duration at index\&. "
+.in -1c
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef struct \fB_psx_image_frame\fP \fBpsx_image_frame\fP"
+.br
+.RI "A frame image data\&. "
+.ti -1c
+.RI "typedef struct \fB_psx_image\fP \fBpsx_image\fP"
+.br
+.RI "A image object\&. "
+.ti -1c
+.RI "typedef struct \fB_psx_image_header\fP \fBpsx_image_header\fP"
+.br
+.RI "Image reader header define\&. "
+.ti -1c
+.RI "typedef struct \fB_psx_image_operator\fP \fBpsx_image_operator\fP"
+.br
+.RI "The image operator define\&. "
+.ti -1c
+.RI "typedef enum \fB_psx_priority_level\fP \fBpsx_priority_level\fP"
+.br
+.RI "Priority level for image_operator\&. "
+.in -1c
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum { \fBS_OK\fP = 0, \fBS_BAD_PARAMS\fP = 1, \fBS_NOT_SUPPORT\fP = 2, \fBS_OUT_OF_MEMORY\fP = 3, \fBS_INIT_FAILURE\fP = 4, \fBS_FAILURE\fP = 5 }"
+.br
+.RI "Status code return by call APIs\&. "
+.ti -1c
+.RI "enum \fB_psx_priority_level\fP { \fBPRIORITY_EXTENTED\fP = -1, \fBPRIORITY_DEFAULT\fP = 0, \fBPRIORITY_MASTER\fP = 1 }"
+.br
+.RI "Priority level for image_operator\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.SH "Macro Definition Documentation"
+.PP 
+.SS "#define IMG_DATA(image)   \fBIMG_DATA_AT_INDEX\fP(image, 0)"
+
+.PP
+Get first image frame data\&. 
+.PP
+\fBSee also\fP
+.RS 4
+\fBIMG_DATA_AT_INDEX\fP 
+.RE
+.PP
+
+.PP
+Definition at line 84 of file psx_image\&.h\&.
+.SS "#define IMG_DATA_AT_INDEX(image, idx)   (image\->frames[idx]\&.data)"
+
+.PP
+Get image frame data at index\&. 
+.PP
+\fBSee also\fP
+.RS 4
+\fBIMG_DATA\fP 
+.RE
+.PP
+
+.PP
+Definition at line 105 of file psx_image\&.h\&.
+.SS "#define IMG_DATA_SIZE(image)   \fBIMG_DATA_SIZE_AT_INDEX\fP(image, 0)"
+
+.PP
+Get first image frame data size\&. 
+.PP
+\fBSee also\fP
+.RS 4
+\fBIMG_DATA_SIZE_AT_INDEX\fP 
+.RE
+.PP
+
+.PP
+Definition at line 91 of file psx_image\&.h\&.
+.SS "#define IMG_DATA_SIZE_AT_INDEX(img, idx)   (img\->frames[idx]\&.size)"
+
+.PP
+Get image frame data size at index\&. 
+.PP
+\fBSee also\fP
+.RS 4
+\fBIMG_DATA_SIZE\fP 
+.RE
+.PP
+
+.PP
+Definition at line 112 of file psx_image\&.h\&.
+.SS "#define IMG_DURATION_AT_INDEX(img, idx)   (img\->frames[idx]\&.duration)"
+
+.PP
+Get image frame duration at index\&. 
+.PP
+\fBSee also\fP
+.RS 4
+\fBIMG_DATA_SIZE\fP, \fBIMG_DATA\fP 
+.RE
+.PP
+
+.PP
+Definition at line 119 of file psx_image\&.h\&.
+.SS "#define IMG_OBJ(image)   \fBIMG_OBJ_AT_INDEX\fP(image, 0)"
+
+.PP
+Get first ps_image obj\&. 
+.PP
+\fBSee also\fP
+.RS 4
+\fBIMG_OBJ_AT_INDEX\fP 
+.RE
+.PP
+
+.PP
+Definition at line 77 of file psx_image\&.h\&.
+.SS "#define IMG_OBJ_AT_INDEX(image, idx)   (image\->frames[idx]\&.img)"
+
+.PP
+Get ps_image obj at index\&. 
+.PP
+\fBSee also\fP
+.RS 4
+\fBIMG_OBJ\fP 
+.RE
+.PP
+
+.PP
+Definition at line 98 of file psx_image\&.h\&.
+.SH "Typedef Documentation"
+.PP 
+.SS "typedef struct \fB_psx_image_operator\fP \fBpsx_image_operator\fP"
+
+.PP
+The image operator define\&. 
+.PP
+\fBSee also\fP
+.RS 4
+\fBpsx_image_register_operator\fP \fBpsx_image_unregister_operator\fP 
+.RE
+.PP
+
+.SS "typedef enum \fB_psx_priority_level\fP \fBpsx_priority_level\fP"
+
+.PP
+Priority level for image_operator\&. 
+.PP
+\fBSee also\fP
+.RS 4
+\fBpsx_image_register_operator\fP 
+.RE
+.PP
+
+.SH "Enumeration Type Documentation"
+.PP 
+.SS "anonymous enum"
+
+.PP
+Status code return by call APIs\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIS_OK \fP\fP
+Successful no errors\&. 
+.TP
+\fB\fIS_BAD_PARAMS \fP\fP
+Invalid params input\&. 
+.TP
+\fB\fIS_NOT_SUPPORT \fP\fP
+Not support format or decoder module not found\&. 
+.TP
+\fB\fIS_OUT_OF_MEMORY \fP\fP
+Not enough memory\&. 
+.TP
+\fB\fIS_INIT_FAILURE \fP\fP
+Not initialize system\&. 
+.TP
+\fB\fIS_FAILURE \fP\fP
+Operation failed by internal errors\&. 
+.PP
+Definition at line 124 of file psx_image\&.h\&.
+.SS "enum \fB_psx_priority_level\fP"
+
+.PP
+Priority level for image_operator\&. 
+.PP
+\fBSee also\fP
+.RS 4
+\fBpsx_image_register_operator\fP 
+.RE
+.PP
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIPRIORITY_EXTENTED \fP\fP
+Low level operator\&. 
+.TP
+\fB\fIPRIORITY_DEFAULT \fP\fP
+Default level operator\&. 
+.TP
+\fB\fIPRIORITY_MASTER \fP\fP
+High level operator\&. 
+.PP
+Definition at line 89 of file psx_image_plugin\&.h\&.
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Picasso API from the source code\&.

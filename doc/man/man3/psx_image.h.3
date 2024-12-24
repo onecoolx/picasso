@@ -1,0 +1,145 @@
+.TH "include/images/psx_image.h" 3 "Tue Dec 24 2024" "Version 2.8" "Picasso API" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+include/images/psx_image.h
+.SH SYNOPSIS
+.br
+.PP
+\fC#include 'picasso\&.h'\fP
+.br
+
+.SS "Data Structures"
+
+.in +1c
+.ti -1c
+.RI "struct \fB_psx_image_frame\fP"
+.br
+.RI "A frame image data\&. "
+.ti -1c
+.RI "struct \fB_psx_image\fP"
+.br
+.RI "A image object\&. "
+.in -1c
+.SS "Macros"
+
+.in +1c
+.ti -1c
+.RI "#define \fBIMG_OBJ\fP(image)   \fBIMG_OBJ_AT_INDEX\fP(image, 0)"
+.br
+.RI "Get first ps_image obj\&. "
+.ti -1c
+.RI "#define \fBIMG_DATA\fP(image)   \fBIMG_DATA_AT_INDEX\fP(image, 0)"
+.br
+.RI "Get first image frame data\&. "
+.ti -1c
+.RI "#define \fBIMG_DATA_SIZE\fP(image)   \fBIMG_DATA_SIZE_AT_INDEX\fP(image, 0)"
+.br
+.RI "Get first image frame data size\&. "
+.ti -1c
+.RI "#define \fBIMG_OBJ_AT_INDEX\fP(image,  idx)   (image\->frames[idx]\&.img)"
+.br
+.RI "Get ps_image obj at index\&. "
+.ti -1c
+.RI "#define \fBIMG_DATA_AT_INDEX\fP(image,  idx)   (image\->frames[idx]\&.data)"
+.br
+.RI "Get image frame data at index\&. "
+.ti -1c
+.RI "#define \fBIMG_DATA_SIZE_AT_INDEX\fP(img,  idx)   (img\->frames[idx]\&.size)"
+.br
+.RI "Get image frame data size at index\&. "
+.ti -1c
+.RI "#define \fBIMG_DURATION_AT_INDEX\fP(img,  idx)   (img\->frames[idx]\&.duration)"
+.br
+.RI "Get image frame duration at index\&. "
+.in -1c
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef struct \fB_psx_image_frame\fP \fBpsx_image_frame\fP"
+.br
+.RI "A frame image data\&. "
+.ti -1c
+.RI "typedef struct \fB_psx_image\fP \fBpsx_image\fP"
+.br
+.RI "A image object\&. "
+.ti -1c
+.RI "typedef int(* \fBimage_writer_fn\fP) (void *param, const \fBps_byte\fP *data, size_t length)"
+.br
+.RI "Callback function for saving image data\&. "
+.in -1c
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum { \fBS_OK\fP = 0, \fBS_BAD_PARAMS\fP = 1, \fBS_NOT_SUPPORT\fP = 2, \fBS_OUT_OF_MEMORY\fP = 3, \fBS_INIT_FAILURE\fP = 4, \fBS_FAILURE\fP = 5 }"
+.br
+.RI "Status code return by call APIs\&. "
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "PEXPORT int PICAPI \fBpsx_image_init\fP (void)"
+.br
+.RI "Initialze the library and load resources\&. "
+.ti -1c
+.RI "PEXPORT int PICAPI \fBpsx_image_shutdown\fP (void)"
+.br
+.RI "Release resources and shutdoen\&. "
+.ti -1c
+.RI "PEXPORT \fBpsx_image\fP *PICAPI \fBpsx_image_create_from_data\fP (\fBps_byte\fP *data, \fBps_color_format\fP fmt, int width, int height, int pitch, int *err_code)"
+.br
+.RI "Create a new psx_image using a copy of given address in memory\&. "
+.ti -1c
+.RI "PEXPORT \fBpsx_image\fP *PICAPI \fBpsx_image_load\fP (const char *file_name, int *err_code)"
+.br
+.RI "Create a new psx_image object and load from file\&. "
+.ti -1c
+.RI "PEXPORT \fBpsx_image\fP *PICAPI \fBpsx_image_load_from_memory\fP (const \fBps_byte\fP *data, size_t length, int *err_code)"
+.br
+.RI "Create a new psx_image object and load data from memory\&. "
+.ti -1c
+.RI "PEXPORT int PICAPI \fBpsx_image_save\fP (const \fBpsx_image\fP *image, \fBimage_writer_fn\fP func, void *param, const char *type, float quality)"
+.br
+.RI "Encoding psx_image to a gaving format and output it\&. "
+.ti -1c
+.RI "PEXPORT int PICAPI \fBpsx_image_save_to_file\fP (const \fBpsx_image\fP *image, const char *file_name, const char *type, float quality)"
+.br
+.RI "Encoding psx_image to a gaving format and output to a file\&. "
+.ti -1c
+.RI "PEXPORT int PICAPI \fBpsx_image_destroy\fP (\fBpsx_image\fP *image)"
+.br
+.RI "Destroy the psx_image object and release resources\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.PP
+\fBAuthor\fP
+.RS 4
+Zhang Ji Peng onecoolx@gmail.com 
+.RE
+.PP
+\fBDate\fP
+.RS 4
+2012/1/31
+.RE
+.PP
+This file includes all interfaces of picasso extended image decoders\&. 
+.PP
+.nf
+   Copyright (C) 2008 ~ 2024  Zhang Ji Peng
+
+   All rights reserved.
+
+   Picasso is a vector graphic library.
+.fi
+.PP
+ 
+.PP
+Definition in file \fBpsx_image\&.h\fP\&.
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Picasso API from the source code\&.

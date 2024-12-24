@@ -1,0 +1,403 @@
+.TH "font" 3 "Tue Dec 24 2024" "Version 2.8" "Picasso API" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+font
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Structures"
+
+.in +1c
+.ti -1c
+.RI "struct \fB_ps_font_info\fP"
+.br
+.RI "A structure that contains font information\&. "
+.in -1c
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef enum \fB_ps_charset\fP \fBps_charset\fP"
+.br
+.RI "Charset for a font\&. "
+.ti -1c
+.RI "typedef enum \fB_ps_font_weight\fP \fBps_font_weight\fP"
+.br
+.RI "Font weight\&. "
+.ti -1c
+.RI "typedef struct \fB_ps_font_info\fP \fBps_font_info\fP"
+.br
+.RI "A structure that contains font information\&. "
+.in -1c
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum \fB_ps_charset\fP { \fBCHARSET_ANSI\fP, \fBCHARSET_UNICODE\fP }"
+.br
+.RI "Charset for a font\&. "
+.ti -1c
+.RI "enum \fB_ps_font_weight\fP { \fBFONT_WEIGHT_REGULAR\fP = 400, \fBFONT_WEIGHT_MEDIUM\fP = 500, \fBFONT_WEIGHT_BOLD\fP = 700, \fBFONT_WEIGHT_HEAVY\fP = 900 }"
+.br
+.RI "Font weight\&. "
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "PEXPORT \fBps_font\fP *PICAPI \fBps_font_create\fP (const char *name, \fBps_charset\fP charset, float size, int weight, \fBps_bool\fP italic)"
+.br
+.RI "Create a font object using the given parameters\&. "
+.ti -1c
+.RI "PEXPORT \fBps_font\fP *PICAPI \fBps_font_create_copy\fP (const \fBps_font\fP *font)"
+.br
+.RI "Create a copy from an existing font object\&. "
+.ti -1c
+.RI "PEXPORT \fBps_font\fP *PICAPI \fBps_font_ref\fP (\fBps_font\fP *font)"
+.br
+.RI "Increases the reference count of the font by 1\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_font_unref\fP (\fBps_font\fP *font)"
+.br
+.RI "Decrements the reference count for the font object\&. If the reference count on the font falls to 0, the font is freed\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_font_set_size\fP (\fBps_font\fP *font, float size)"
+.br
+.RI "Set size for a font object\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_font_set_weight\fP (\fBps_font\fP *font, int weight)"
+.br
+.RI "Set weight for a font object\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_font_set_italic\fP (\fBps_font\fP *font, \fBps_bool\fP italic)"
+.br
+.RI "Set italic for a font object\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_font_set_charset\fP (\fBps_font\fP *font, \fBps_charset\fP charset)"
+.br
+.RI "Set charset for a font object\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_font_set_hint\fP (\fBps_font\fP *font, \fBps_bool\fP hint)"
+.br
+.RI "Set hiting for a font object\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_font_set_flip\fP (\fBps_font\fP *font, \fBps_bool\fP flip)"
+.br
+.RI "Set flip for a font object\&. "
+.ti -1c
+.RI "PEXPORT \fBps_bool\fP PICAPI \fBps_get_font_info\fP (\fBps_context\fP *ctx, \fBps_font_info\fP *info)"
+.br
+.RI "Return the font information from the graphics context\&. "
+.ti -1c
+.RI "PEXPORT \fBps_font\fP *PICAPI \fBps_set_font\fP (\fBps_context\fP *ctx, const \fBps_font\fP *font)"
+.br
+.RI "Set a new font to graphics context\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.SH "Enumeration Type Documentation"
+.PP 
+.SS "enum \fB_ps_charset\fP"
+
+.PP
+Charset for a font\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fICHARSET_ANSI \fP\fP
+Ansi ISO-8859-x charset 
+.TP
+\fB\fICHARSET_UNICODE \fP\fP
+Unicode UCS-2 charset 
+.PP
+Definition at line 1919 of file picasso\&.h\&.
+.SS "enum \fB_ps_font_weight\fP"
+
+.PP
+Font weight\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIFONT_WEIGHT_REGULAR \fP\fP
+Regular weight\&. 
+.TP
+\fB\fIFONT_WEIGHT_MEDIUM \fP\fP
+Medium weight\&. 
+.TP
+\fB\fIFONT_WEIGHT_BOLD \fP\fP
+Bold weight\&. 
+.TP
+\fB\fIFONT_WEIGHT_HEAVY \fP\fP
+Heavy weight\&. 
+.PP
+Definition at line 1933 of file picasso\&.h\&.
+.SH "Function Documentation"
+.PP 
+.SS "\fBps_font\fP * ps_font_create (const char * name, \fBps_charset\fP charset, float size, int weight, \fBps_bool\fP italic)"
+
+.PP
+Create a font object using the given parameters\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIname\fP The font family name\&. 
+.br
+\fIcharset\fP The charset type\&. 
+.br
+\fIsize\fP The font size\&. 
+.br
+\fIweight\fP The font weight\&. 
+.br
+\fIitalic\fP Whether or not it is italic\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+If the function succeeds, the return value is the pointer to a new font object\&. If the function fails, the return value is NULL\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+To get extended error information, call \fIps_last_status\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_font_create_copy\fP, \fBps_font_ref\fP, \fBps_font_unref\fP 
+.RE
+.PP
+
+.SS "\fBps_font\fP * ps_font_create_copy (const \fBps_font\fP * font)"
+
+.PP
+Create a copy from an existing font object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIfont\fP Pointer to an existing font object\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+If the function succeeds, the return value is the pointer to a new font object\&. If the function fails, the return value is NULL\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+To get extended error information, call \fIps_last_status\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_font_create\fP, \fBps_font_ref\fP, \fBps_font_unref\fP 
+.RE
+.PP
+
+.SS "\fBps_font\fP * ps_font_ref (\fBps_font\fP * font)"
+
+.PP
+Increases the reference count of the font by 1\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIfont\fP Pointer to an existing font object\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+If the function succeeds, the return value is the pointer to the font object\&. If the function fails, the return value is NULL\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+To get extended error information, call \fIps_last_status\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_font_create\fP, \fBps_font_create_copy\fP, \fBps_font_unref\fP 
+.RE
+.PP
+
+.SS "void ps_font_set_charset (\fBps_font\fP * font, \fBps_charset\fP charset)"
+
+.PP
+Set charset for a font object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIfont\fP Pointer to an existing font object\&. 
+.br
+\fIcharset\fP Charset for the font\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_font_set_size\fP, \fBps_font_set_weight\fP, \fBps_font_set_italic\fP, \fBps_font_set_hint\fP, \fBps_font_set_flip\fP 
+.RE
+.PP
+
+.SS "void ps_font_set_flip (\fBps_font\fP * font, \fBps_bool\fP flip)"
+
+.PP
+Set flip for a font object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIfont\fP Pointer to an existing font object\&. 
+.br
+\fIflip\fP Whether or not flip y for the font\&. (False default)
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_font_set_size\fP, \fBps_font_set_weight\fP, \fBps_font_set_italic\fP, \fBps_font_set_charset\fP, \fBps_font_set_hint\fP 
+.RE
+.PP
+
+.SS "void ps_font_set_hint (\fBps_font\fP * font, \fBps_bool\fP hint)"
+
+.PP
+Set hiting for a font object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIfont\fP Pointer to an existing font object\&. 
+.br
+\fIhint\fP Whether or not auto hiting for the font\&. (True default)
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_font_set_size\fP, \fBps_font_set_weight\fP, \fBps_font_set_italic\fP, \fBps_font_set_charset\fP, \fBps_font_set_flip\fP 
+.RE
+.PP
+
+.SS "void ps_font_set_italic (\fBps_font\fP * font, \fBps_bool\fP italic)"
+
+.PP
+Set italic for a font object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIfont\fP Pointer to an existing font object\&. 
+.br
+\fIitalic\fP Whether or not italic for the font\&. (False default)
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_font_set_size\fP, \fBps_font_set_weight\fP, \fBps_font_set_charset\fP, \fBps_font_set_hint\fP, \fBps_font_set_flip\fP 
+.RE
+.PP
+
+.SS "void ps_font_set_size (\fBps_font\fP * font, float size)"
+
+.PP
+Set size for a font object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIfont\fP Pointer to an existing font object\&. 
+.br
+\fIsize\fP Size for the font\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_font_set_weight\fP, \fBps_font_set_italic\fP, \fBps_font_set_charset\fP, \fBps_font_set_hint\fP, \fBps_font_set_flip\fP 
+.RE
+.PP
+
+.SS "void ps_font_set_weight (\fBps_font\fP * font, int weight)"
+
+.PP
+Set weight for a font object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIfont\fP Pointer to an existing font object\&. 
+.br
+\fIweight\fP Weight for the font\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_font_set_size\fP, \fBps_font_set_italic\fP, \fBps_font_set_charset\fP, \fBps_font_set_hint\fP, \fBps_font_set_flip\fP 
+.RE
+.PP
+
+.SS "void ps_font_unref (\fBps_font\fP * font)"
+
+.PP
+Decrements the reference count for the font object\&. If the reference count on the font falls to 0, the font is freed\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIfont\fP Pointer to an existing font object\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_font_create\fP, \fBps_font_create_copy\fP, \fBps_font_ref\fP 
+.RE
+.PP
+
+.SS "\fBps_bool\fP ps_get_font_info (\fBps_context\fP * ctx, \fBps_font_info\fP * info)"
+
+.PP
+Return the font information from the graphics context\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fIinfo\fP Pointer to a structure to receiving the font information\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+True if is success, otherwise False\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_set_font\fP 
+.RE
+.PP
+
+.SS "\fBps_font\fP * ps_set_font (\fBps_context\fP * ctx, const \fBps_font\fP * font)"
+
+.PP
+Set a new font to graphics context\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fIfont\fP The new font to be set\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+If the function succeeds, the return value is the pointer to old font object\&. If the function fails, the return value is NULL\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+To get extended error information, call \fIps_last_status\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_get_font_info\fP 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Picasso API from the source code\&.

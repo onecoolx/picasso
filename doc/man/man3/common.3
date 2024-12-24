@@ -1,0 +1,133 @@
+.TH "common" 3 "Tue Dec 24 2024" "Version 2.8" "Picasso API" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+common
+.SH SYNOPSIS
+.br
+.PP
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef enum \fB_ps_status\fP \fBps_status\fP"
+.br
+.RI "Status code return by call ps_last_status function\&. "
+.in -1c
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum \fB_ps_status\fP { \fBSTATUS_SUCCEED\fP, \fBSTATUS_OUT_OF_MEMORY\fP, \fBSTATUS_INVALID_ARGUMENT\fP, \fBSTATUS_NOT_SUPPORT\fP, \fBSTATUS_DEVICE_ERROR\fP, \fBSTATUS_MISMATCHING_FORMAT\fP, \fBSTATUS_UNKNOWN_ERROR\fP }"
+.br
+.RI "Status code return by call ps_last_status function\&. "
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "PEXPORT int PICAPI \fBps_version\fP (void)"
+.br
+.RI "Return current version of picasso\&. "
+.ti -1c
+.RI "PEXPORT \fBps_bool\fP PICAPI \fBps_initialize\fP (void)"
+.br
+.RI "Initialize the picasso drawing environment\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_shutdown\fP (void)"
+.br
+.RI "Shutdown the picasso drawing environment\&. "
+.ti -1c
+.RI "PEXPORT \fBps_status\fP PICAPI \fBps_last_status\fP (void)"
+.br
+.RI "Return the last status code of picasso\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.SH "Enumeration Type Documentation"
+.PP 
+.SS "enum \fB_ps_status\fP"
+
+.PP
+Status code return by call ps_last_status function\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fISTATUS_SUCCEED \fP\fP
+The successful status no errors\&. 
+.TP
+\fB\fISTATUS_OUT_OF_MEMORY \fP\fP
+Out of memory\&. 
+.TP
+\fB\fISTATUS_INVALID_ARGUMENT \fP\fP
+Invalid argument input\&. 
+.TP
+\fB\fISTATUS_NOT_SUPPORT \fP\fP
+Not support this feature\&. 
+.TP
+\fB\fISTATUS_DEVICE_ERROR \fP\fP
+Device is not ready\&. 
+.TP
+\fB\fISTATUS_MISMATCHING_FORMAT \fP\fP
+Mismatching error\&. 
+.TP
+\fB\fISTATUS_UNKNOWN_ERROR \fP\fP
+Unknown error\&. 
+.PP
+Definition at line 262 of file picasso\&.h\&.
+.SH "Function Documentation"
+.PP 
+.SS "\fBps_bool\fP ps_initialize (void)"
+
+.PP
+Initialize the picasso drawing environment\&. It must be the first to be call\&.
+.PP
+\fBReturns\fP
+.RS 4
+True if is initialized, otherwise False\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_shutdown\fP 
+.RE
+.PP
+
+.SS "\fBps_status\fP ps_last_status (void)"
+
+.PP
+Return the last status code of picasso\&. 
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_version\fP 
+.RE
+.PP
+
+.SS "void ps_shutdown (void)"
+
+.PP
+Shutdown the picasso drawing environment\&. It must be call in the end\&.
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_initialize\fP 
+.RE
+.PP
+
+.SS "int ps_version (void)"
+
+.PP
+Return current version of picasso\&. 
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_last_status\fP 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Picasso API from the source code\&.

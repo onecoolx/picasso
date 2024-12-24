@@ -1,0 +1,446 @@
+\doxysection{Canvas}
+\label{group__canvas}\index{Canvas@{Canvas}}
+\doxysubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\label{group__canvas_ga79f9abf66c44773958bf7a91519e4163}} 
+typedef enum \textbf{ \+\_\+ps\+\_\+color\+\_\+format} \textbf{ ps\+\_\+color\+\_\+format}
+\begin{DoxyCompactList}\small\item\em Pixel formats of canvas or image. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \textbf{ \+\_\+ps\+\_\+color\+\_\+format} \{ \newline
+\textbf{ C\+O\+L\+O\+R\+\_\+\+F\+O\+R\+M\+A\+T\+\_\+\+R\+G\+BA}, 
+\textbf{ C\+O\+L\+O\+R\+\_\+\+F\+O\+R\+M\+A\+T\+\_\+\+A\+R\+GB}, 
+\textbf{ C\+O\+L\+O\+R\+\_\+\+F\+O\+R\+M\+A\+T\+\_\+\+A\+B\+GR}, 
+\textbf{ C\+O\+L\+O\+R\+\_\+\+F\+O\+R\+M\+A\+T\+\_\+\+B\+G\+RA}, 
+\newline
+\textbf{ C\+O\+L\+O\+R\+\_\+\+F\+O\+R\+M\+A\+T\+\_\+\+R\+GB}, 
+\textbf{ C\+O\+L\+O\+R\+\_\+\+F\+O\+R\+M\+A\+T\+\_\+\+B\+GR}, 
+\textbf{ C\+O\+L\+O\+R\+\_\+\+F\+O\+R\+M\+A\+T\+\_\+\+R\+G\+B565}, 
+\textbf{ C\+O\+L\+O\+R\+\_\+\+F\+O\+R\+M\+A\+T\+\_\+\+R\+G\+B555}, 
+\newline
+\textbf{ C\+O\+L\+O\+R\+\_\+\+F\+O\+R\+M\+A\+T\+\_\+\+U\+N\+K\+N\+O\+WN}
+ \}
+\begin{DoxyCompactList}\small\item\em Pixel formats of canvas or image. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+canvas} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+canvas\+\_\+create} (\textbf{ ps\+\_\+color\+\_\+format} fmt, int width, int height)
+\begin{DoxyCompactList}\small\item\em Create a new canvas using the given parameters. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+canvas} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+canvas\+\_\+create\+\_\+with\+\_\+data} (\textbf{ ps\+\_\+byte} $\ast$data, \textbf{ ps\+\_\+color\+\_\+format} fmt, int width, int height, int pitch)
+\begin{DoxyCompactList}\small\item\em Create a new canvas using a given address in memory. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+canvas} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+canvas\+\_\+create\+\_\+compatible} (const \textbf{ ps\+\_\+canvas} $\ast$canvas, int width, int height)
+\begin{DoxyCompactList}\small\item\em Create a new canvas to compatible with an existing canvas. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+canvas} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+canvas\+\_\+create\+\_\+from\+\_\+canvas} (\textbf{ ps\+\_\+canvas} $\ast$canvas, const \textbf{ ps\+\_\+rect} $\ast$rect)
+\begin{DoxyCompactList}\small\item\em Create a new canvas using part of an existing canvas in same pixel buffer. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+canvas} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+canvas\+\_\+create\+\_\+from\+\_\+image} (\textbf{ ps\+\_\+image} $\ast$img, const \textbf{ ps\+\_\+rect} $\ast$rect)
+\begin{DoxyCompactList}\small\item\em Create a new canvas using part of an existing ps\+\_\+image object in same pixel buffer. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+canvas} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+canvas\+\_\+replace\+\_\+data} (\textbf{ ps\+\_\+canvas} $\ast$canvas, \textbf{ ps\+\_\+byte} $\ast$data, \textbf{ ps\+\_\+color\+\_\+format} fmt, int width, int height, int pitch)
+\begin{DoxyCompactList}\small\item\em Replace a canvas target rendering buffer address in memory, which is only use for canvas create by {\itshape ps\+\_\+canvas\+\_\+create\+\_\+with\+\_\+data}. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+canvas} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+canvas\+\_\+ref} (\textbf{ ps\+\_\+canvas} $\ast$canvas)
+\begin{DoxyCompactList}\small\item\em Increases the reference count of the canvas by 1. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+canvas\+\_\+unref} (\textbf{ ps\+\_\+canvas} $\ast$canvas)
+\begin{DoxyCompactList}\small\item\em Decrements the reference count for the canvas object. If the reference count on the canvas falls to 0, the canvas is freed. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+bool} P\+I\+C\+A\+PI \textbf{ ps\+\_\+canvas\+\_\+get\+\_\+size} (const \textbf{ ps\+\_\+canvas} $\ast$canvas, \textbf{ ps\+\_\+size} $\ast$rsize)
+\begin{DoxyCompactList}\small\item\em Return the size of the canvas. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+color\+\_\+format} P\+I\+C\+A\+PI \textbf{ ps\+\_\+canvas\+\_\+get\+\_\+format} (const \textbf{ ps\+\_\+canvas} $\ast$canvas)
+\begin{DoxyCompactList}\small\item\em Return the pixel format of the canvas. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+canvas\+\_\+set\+\_\+mask} (\textbf{ ps\+\_\+canvas} $\ast$canvas, const \textbf{ ps\+\_\+mask} $\ast$mask)
+\begin{DoxyCompactList}\small\item\em Set a new mask into an existing canvas object. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+canvas\+\_\+reset\+\_\+mask} (\textbf{ ps\+\_\+canvas} $\ast$canvas)
+\begin{DoxyCompactList}\small\item\em Clear the mask from the canvas object. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+canvas\+\_\+bitblt} (\textbf{ ps\+\_\+canvas} $\ast$src, const \textbf{ ps\+\_\+rect} $\ast$rect, \textbf{ ps\+\_\+canvas} $\ast$dst, const \textbf{ ps\+\_\+point} $\ast$location)
+\begin{DoxyCompactList}\small\item\em Copy raster data between two canvas objects. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+
+
+\doxysubsection{Enumeration Type Documentation}
+\mbox{\label{group__canvas_ga5bdaa5d6c1e23f6f8f3200b424301665}} 
+\index{Canvas@{Canvas}!\_ps\_color\_format@{\_ps\_color\_format}}
+\index{\_ps\_color\_format@{\_ps\_color\_format}!Canvas@{Canvas}}
+\doxysubsubsection{\_ps\_color\_format}
+{\footnotesize\ttfamily enum \textbf{ \+\_\+ps\+\_\+color\+\_\+format}}
+
+
+
+Pixel formats of canvas or image. 
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COLOR\_FORMAT\_RGBA@{COLOR\_FORMAT\_RGBA}!Canvas@{Canvas}}\index{Canvas@{Canvas}!COLOR\_FORMAT\_RGBA@{COLOR\_FORMAT\_RGBA}}}\mbox{\label{group__canvas_gga5bdaa5d6c1e23f6f8f3200b424301665aee6b4d617bcbf36911dd6ffce53a8b72}} 
+C\+O\+L\+O\+R\+\_\+\+F\+O\+R\+M\+A\+T\+\_\+\+R\+G\+BA&32bpp, 8bpc, R\+G\+BA color space. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COLOR\_FORMAT\_ARGB@{COLOR\_FORMAT\_ARGB}!Canvas@{Canvas}}\index{Canvas@{Canvas}!COLOR\_FORMAT\_ARGB@{COLOR\_FORMAT\_ARGB}}}\mbox{\label{group__canvas_gga5bdaa5d6c1e23f6f8f3200b424301665ad2e8a4b92b0ffec09eb9a64a3a3fc1c6}} 
+C\+O\+L\+O\+R\+\_\+\+F\+O\+R\+M\+A\+T\+\_\+\+A\+R\+GB&32bpp, 8bpc, A\+R\+GB color space. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COLOR\_FORMAT\_ABGR@{COLOR\_FORMAT\_ABGR}!Canvas@{Canvas}}\index{Canvas@{Canvas}!COLOR\_FORMAT\_ABGR@{COLOR\_FORMAT\_ABGR}}}\mbox{\label{group__canvas_gga5bdaa5d6c1e23f6f8f3200b424301665ab028a931052271713c2e80c7a414697d}} 
+C\+O\+L\+O\+R\+\_\+\+F\+O\+R\+M\+A\+T\+\_\+\+A\+B\+GR&32bpp, 8bpc, A\+B\+GR color space. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COLOR\_FORMAT\_BGRA@{COLOR\_FORMAT\_BGRA}!Canvas@{Canvas}}\index{Canvas@{Canvas}!COLOR\_FORMAT\_BGRA@{COLOR\_FORMAT\_BGRA}}}\mbox{\label{group__canvas_gga5bdaa5d6c1e23f6f8f3200b424301665adeb38baa7bee05829e6f129e92e71185}} 
+C\+O\+L\+O\+R\+\_\+\+F\+O\+R\+M\+A\+T\+\_\+\+B\+G\+RA&32bpp, 8bpc, B\+G\+RA color space. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COLOR\_FORMAT\_RGB@{COLOR\_FORMAT\_RGB}!Canvas@{Canvas}}\index{Canvas@{Canvas}!COLOR\_FORMAT\_RGB@{COLOR\_FORMAT\_RGB}}}\mbox{\label{group__canvas_gga5bdaa5d6c1e23f6f8f3200b424301665aabf927e9b59e21238f4e27335cfb8890}} 
+C\+O\+L\+O\+R\+\_\+\+F\+O\+R\+M\+A\+T\+\_\+\+R\+GB&24bpp, 8bpc, R\+GB color space. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COLOR\_FORMAT\_BGR@{COLOR\_FORMAT\_BGR}!Canvas@{Canvas}}\index{Canvas@{Canvas}!COLOR\_FORMAT\_BGR@{COLOR\_FORMAT\_BGR}}}\mbox{\label{group__canvas_gga5bdaa5d6c1e23f6f8f3200b424301665a85fa8fa8cc29e59eb90537c07b8241fc}} 
+C\+O\+L\+O\+R\+\_\+\+F\+O\+R\+M\+A\+T\+\_\+\+B\+GR&24bpp, 8bpc, B\+GR color space. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COLOR\_FORMAT\_RGB565@{COLOR\_FORMAT\_RGB565}!Canvas@{Canvas}}\index{Canvas@{Canvas}!COLOR\_FORMAT\_RGB565@{COLOR\_FORMAT\_RGB565}}}\mbox{\label{group__canvas_gga5bdaa5d6c1e23f6f8f3200b424301665a0ccdaa00f0ca75ec6613d9bc7f106181}} 
+C\+O\+L\+O\+R\+\_\+\+F\+O\+R\+M\+A\+T\+\_\+\+R\+G\+B565&16bpp, 5/6bpc, R\+GB color space. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COLOR\_FORMAT\_RGB555@{COLOR\_FORMAT\_RGB555}!Canvas@{Canvas}}\index{Canvas@{Canvas}!COLOR\_FORMAT\_RGB555@{COLOR\_FORMAT\_RGB555}}}\mbox{\label{group__canvas_gga5bdaa5d6c1e23f6f8f3200b424301665a7d1aa54654f4d3700e7db3aa569b0bba}} 
+C\+O\+L\+O\+R\+\_\+\+F\+O\+R\+M\+A\+T\+\_\+\+R\+G\+B555&16bpp, 5bpc, R\+GB color space. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{COLOR\_FORMAT\_UNKNOWN@{COLOR\_FORMAT\_UNKNOWN}!Canvas@{Canvas}}\index{Canvas@{Canvas}!COLOR\_FORMAT\_UNKNOWN@{COLOR\_FORMAT\_UNKNOWN}}}\mbox{\label{group__canvas_gga5bdaa5d6c1e23f6f8f3200b424301665ab58141bf00d632ba06094d3c4b6446c2}} 
+C\+O\+L\+O\+R\+\_\+\+F\+O\+R\+M\+A\+T\+\_\+\+U\+N\+K\+N\+O\+WN&Unsupported color space. \\
+\hline
+
+\end{DoxyEnumFields}
+
+
+Definition at line 394 of file picasso.\+h.
+
+
+
+\doxysubsection{Function Documentation}
+\mbox{\label{group__canvas_ga3fd90de48e503abfb0e55f525fe43056}} 
+\index{Canvas@{Canvas}!ps\_canvas\_bitblt@{ps\_canvas\_bitblt}}
+\index{ps\_canvas\_bitblt@{ps\_canvas\_bitblt}!Canvas@{Canvas}}
+\doxysubsubsection{ps\_canvas\_bitblt()}
+{\footnotesize\ttfamily void ps\+\_\+canvas\+\_\+bitblt (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+canvas} $\ast$}]{src,  }\item[{const \textbf{ ps\+\_\+rect} $\ast$}]{rect,  }\item[{\textbf{ ps\+\_\+canvas} $\ast$}]{dst,  }\item[{const \textbf{ ps\+\_\+point} $\ast$}]{location }\end{DoxyParamCaption})}
+
+
+
+Copy raster data between two canvas objects. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em src} & The pointer to source canvas object. \\
+\hline
+{\em rect} & The rectangle area will be copied in source canvas, N\+U\+LL mean the whole area. \\
+\hline
+{\em dst} & The pointer to destination canvas object. \\
+\hline
+{\em location} & The location of the start point at destination canvas object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyNote}{Note}
+The two canvas\textquotesingle{}s color format must be equal, otherwish will be failed and {\itshape S\+T\+A\+T\+U\+S\+\_\+\+M\+I\+S\+M\+A\+T\+C\+H\+I\+N\+G\+\_\+\+F\+O\+R\+M\+AT} will be set.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+canvas\+\_\+get\+\_\+size}{p.}{group__canvas_gafa96f6f1f7093eb690da471db3d1221b}, \doxyref{ps\+\_\+canvas\+\_\+get\+\_\+format}{p.}{group__canvas_ga82f236a9d166347f3b1a8779e1af32b0} 
+\end{DoxySeeAlso}
+\mbox{\label{group__canvas_ga422a8fc62631fb6447e92924c78bc3b7}} 
+\index{Canvas@{Canvas}!ps\_canvas\_create@{ps\_canvas\_create}}
+\index{ps\_canvas\_create@{ps\_canvas\_create}!Canvas@{Canvas}}
+\doxysubsubsection{ps\_canvas\_create()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+canvas} $\ast$ ps\+\_\+canvas\+\_\+create (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+color\+\_\+format}}]{fmt,  }\item[{int}]{width,  }\item[{int}]{height }\end{DoxyParamCaption})}
+
+
+
+Create a new canvas using the given parameters. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em fmt} & The Pixel format to use for the canvas. \\
+\hline
+{\em width} & The width, in pixels, of the required canvas. \\
+\hline
+{\em height} & The height, in pixels, of the required canvas.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+If the function succeeds, the return value is the pointer to a new canvas object. If the function fails, the return value is N\+U\+LL.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+canvas\+\_\+create\+\_\+with\+\_\+data}{p.}{group__canvas_ga5764ae1f5e2ed6fd1dae2c01018651e2}, \doxyref{ps\+\_\+canvas\+\_\+create\+\_\+compatible}{p.}{group__canvas_ga2ea69fce3ac80798a1372fb4eb6fe374}, \doxyref{ps\+\_\+canvas\+\_\+create\+\_\+from\+\_\+canvas}{p.}{group__canvas_gadcd073449c2570fd165cfd51836a5e86}, \doxyref{ps\+\_\+canvas\+\_\+create\+\_\+from\+\_\+image}{p.}{group__canvas_gaf877dddf73ecc30ccbe87c31f5c5bf75}, \doxyref{ps\+\_\+canvas\+\_\+ref}{p.}{group__canvas_gaee1cef3d1e04d2a85cf5f3c19e94a69f}, \doxyref{ps\+\_\+canvas\+\_\+unref}{p.}{group__canvas_ga474f482e71cd737d2110168768c6a3d5} 
+\end{DoxySeeAlso}
+\mbox{\label{group__canvas_ga2ea69fce3ac80798a1372fb4eb6fe374}} 
+\index{Canvas@{Canvas}!ps\_canvas\_create\_compatible@{ps\_canvas\_create\_compatible}}
+\index{ps\_canvas\_create\_compatible@{ps\_canvas\_create\_compatible}!Canvas@{Canvas}}
+\doxysubsubsection{ps\_canvas\_create\_compatible()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+canvas} $\ast$ ps\+\_\+canvas\+\_\+create\+\_\+compatible (\begin{DoxyParamCaption}\item[{const \textbf{ ps\+\_\+canvas} $\ast$}]{canvas,  }\item[{int}]{width,  }\item[{int}]{height }\end{DoxyParamCaption})}
+
+
+
+Create a new canvas to compatible with an existing canvas. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em canvas} & A pointer to an existing canvas. \\
+\hline
+{\em width} & The width, in pixels, of the required canvas. If it is not more than zero, the width will be equal to the width of the reference canvas. \\
+\hline
+{\em height} & The height, in pixels, of the required canvas. If it is not more than zero, the height will be equal to the height of the reference canvas.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+If the function succeeds, the return value is the pointer to a new canvas object. If the function fails, the return value is N\+U\+LL.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+canvas\+\_\+create}{p.}{group__canvas_ga422a8fc62631fb6447e92924c78bc3b7}, \doxyref{ps\+\_\+canvas\+\_\+create\+\_\+with\+\_\+data}{p.}{group__canvas_ga5764ae1f5e2ed6fd1dae2c01018651e2}, \doxyref{ps\+\_\+canvas\+\_\+create\+\_\+from\+\_\+canvas}{p.}{group__canvas_gadcd073449c2570fd165cfd51836a5e86}, \doxyref{ps\+\_\+canvas\+\_\+create\+\_\+from\+\_\+image}{p.}{group__canvas_gaf877dddf73ecc30ccbe87c31f5c5bf75}, \doxyref{ps\+\_\+canvas\+\_\+ref}{p.}{group__canvas_gaee1cef3d1e04d2a85cf5f3c19e94a69f}, \doxyref{ps\+\_\+canvas\+\_\+unref}{p.}{group__canvas_ga474f482e71cd737d2110168768c6a3d5} 
+\end{DoxySeeAlso}
+\mbox{\label{group__canvas_gadcd073449c2570fd165cfd51836a5e86}} 
+\index{Canvas@{Canvas}!ps\_canvas\_create\_from\_canvas@{ps\_canvas\_create\_from\_canvas}}
+\index{ps\_canvas\_create\_from\_canvas@{ps\_canvas\_create\_from\_canvas}!Canvas@{Canvas}}
+\doxysubsubsection{ps\_canvas\_create\_from\_canvas()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+canvas} $\ast$ ps\+\_\+canvas\+\_\+create\+\_\+from\+\_\+canvas (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+canvas} $\ast$}]{canvas,  }\item[{const \textbf{ ps\+\_\+rect} $\ast$}]{rect }\end{DoxyParamCaption})}
+
+
+
+Create a new canvas using part of an existing canvas in same pixel buffer. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em canvas} & A pointer to an existing canvas. \\
+\hline
+{\em rect} & The rectangle area of the canvas from the parent canvas. If it is N\+U\+LL, the canvas\textquotesingle{}s width and height will be equal to the parant canvas.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+If the function succeeds, the return value is the pointer to a new canvas object. If the function fails, the return value is N\+U\+LL.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+canvas\+\_\+create}{p.}{group__canvas_ga422a8fc62631fb6447e92924c78bc3b7}, \doxyref{ps\+\_\+canvas\+\_\+create\+\_\+with\+\_\+data}{p.}{group__canvas_ga5764ae1f5e2ed6fd1dae2c01018651e2}, \doxyref{ps\+\_\+canvas\+\_\+create\+\_\+compatible}{p.}{group__canvas_ga2ea69fce3ac80798a1372fb4eb6fe374}, \doxyref{ps\+\_\+canvas\+\_\+create\+\_\+from\+\_\+image}{p.}{group__canvas_gaf877dddf73ecc30ccbe87c31f5c5bf75}, \doxyref{ps\+\_\+canvas\+\_\+ref}{p.}{group__canvas_gaee1cef3d1e04d2a85cf5f3c19e94a69f}, \doxyref{ps\+\_\+canvas\+\_\+unref}{p.}{group__canvas_ga474f482e71cd737d2110168768c6a3d5} 
+\end{DoxySeeAlso}
+\mbox{\label{group__canvas_gaf877dddf73ecc30ccbe87c31f5c5bf75}} 
+\index{Canvas@{Canvas}!ps\_canvas\_create\_from\_image@{ps\_canvas\_create\_from\_image}}
+\index{ps\_canvas\_create\_from\_image@{ps\_canvas\_create\_from\_image}!Canvas@{Canvas}}
+\doxysubsubsection{ps\_canvas\_create\_from\_image()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+canvas} $\ast$ ps\+\_\+canvas\+\_\+create\+\_\+from\+\_\+image (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+image} $\ast$}]{img,  }\item[{const \textbf{ ps\+\_\+rect} $\ast$}]{rect }\end{DoxyParamCaption})}
+
+
+
+Create a new canvas using part of an existing ps\+\_\+image object in same pixel buffer. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em img} & A pointer to an existing ps\+\_\+image object. \\
+\hline
+{\em rect} & The rectangle area of the canvas from the ps\+\_\+image. If it is N\+U\+LL, the canvas\textquotesingle{}s width and height will be equal to ps\+\_\+image object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+If the function succeeds, the return value is the pointer to a new canvas object. If the function fails, the return value is N\+U\+LL.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+canvas\+\_\+create}{p.}{group__canvas_ga422a8fc62631fb6447e92924c78bc3b7}, \doxyref{ps\+\_\+canvas\+\_\+create\+\_\+with\+\_\+data}{p.}{group__canvas_ga5764ae1f5e2ed6fd1dae2c01018651e2}, \doxyref{ps\+\_\+canvas\+\_\+create\+\_\+compatible}{p.}{group__canvas_ga2ea69fce3ac80798a1372fb4eb6fe374}, \doxyref{ps\+\_\+canvas\+\_\+create\+\_\+from\+\_\+canvas}{p.}{group__canvas_gadcd073449c2570fd165cfd51836a5e86}, \doxyref{ps\+\_\+canvas\+\_\+ref}{p.}{group__canvas_gaee1cef3d1e04d2a85cf5f3c19e94a69f}, \doxyref{ps\+\_\+canvas\+\_\+unref}{p.}{group__canvas_ga474f482e71cd737d2110168768c6a3d5} 
+\end{DoxySeeAlso}
+\mbox{\label{group__canvas_ga5764ae1f5e2ed6fd1dae2c01018651e2}} 
+\index{Canvas@{Canvas}!ps\_canvas\_create\_with\_data@{ps\_canvas\_create\_with\_data}}
+\index{ps\_canvas\_create\_with\_data@{ps\_canvas\_create\_with\_data}!Canvas@{Canvas}}
+\doxysubsubsection{ps\_canvas\_create\_with\_data()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+canvas} $\ast$ ps\+\_\+canvas\+\_\+create\+\_\+with\+\_\+data (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+byte} $\ast$}]{data,  }\item[{\textbf{ ps\+\_\+color\+\_\+format}}]{fmt,  }\item[{int}]{width,  }\item[{int}]{height,  }\item[{int}]{pitch }\end{DoxyParamCaption})}
+
+
+
+Create a new canvas using a given address in memory. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em data} & A pointer to the destination in memory where the drawing is to be rendered. The size of this memory block should be at least (pitch $\ast$ height) bytes. \\
+\hline
+{\em fmt} & The Pixel format to use for the canvas. \\
+\hline
+{\em width} & The width, in pixels, of the required canvas. \\
+\hline
+{\em height} & The height, in pixels, of the required canvas. \\
+\hline
+{\em pitch} & The number of bytes per row, of the required canvas.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+If the function succeeds, the return value is the pointer to a new canvas object. If the function fails, the return value is N\+U\+LL.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+canvas\+\_\+create}{p.}{group__canvas_ga422a8fc62631fb6447e92924c78bc3b7}, \doxyref{ps\+\_\+canvas\+\_\+create\+\_\+compatible}{p.}{group__canvas_ga2ea69fce3ac80798a1372fb4eb6fe374}, \doxyref{ps\+\_\+canvas\+\_\+create\+\_\+from\+\_\+canvas}{p.}{group__canvas_gadcd073449c2570fd165cfd51836a5e86}, \doxyref{ps\+\_\+canvas\+\_\+create\+\_\+from\+\_\+image}{p.}{group__canvas_gaf877dddf73ecc30ccbe87c31f5c5bf75}, \doxyref{ps\+\_\+canvas\+\_\+ref}{p.}{group__canvas_gaee1cef3d1e04d2a85cf5f3c19e94a69f}, \doxyref{ps\+\_\+canvas\+\_\+unref}{p.}{group__canvas_ga474f482e71cd737d2110168768c6a3d5}, \doxyref{ps\+\_\+canvas\+\_\+replace\+\_\+data}{p.}{group__canvas_ga5ffc739d55c6d314ad645df4916fec73} 
+\end{DoxySeeAlso}
+\mbox{\label{group__canvas_ga82f236a9d166347f3b1a8779e1af32b0}} 
+\index{Canvas@{Canvas}!ps\_canvas\_get\_format@{ps\_canvas\_get\_format}}
+\index{ps\_canvas\_get\_format@{ps\_canvas\_get\_format}!Canvas@{Canvas}}
+\doxysubsubsection{ps\_canvas\_get\_format()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+color\+\_\+format} ps\+\_\+canvas\+\_\+get\+\_\+format (\begin{DoxyParamCaption}\item[{const \textbf{ ps\+\_\+canvas} $\ast$}]{canvas }\end{DoxyParamCaption})}
+
+
+
+Return the pixel format of the canvas. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em canvas} & Pointer to an existing canvas object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+If the function succeeds, the return a valid color format. If the function fails, the return value is C\+O\+L\+O\+R\+\_\+\+F\+O\+R\+M\+A\+T\+\_\+\+U\+N\+K\+N\+O\+WN.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+canvas\+\_\+get\+\_\+size}{p.}{group__canvas_gafa96f6f1f7093eb690da471db3d1221b} 
+\end{DoxySeeAlso}
+\mbox{\label{group__canvas_gafa96f6f1f7093eb690da471db3d1221b}} 
+\index{Canvas@{Canvas}!ps\_canvas\_get\_size@{ps\_canvas\_get\_size}}
+\index{ps\_canvas\_get\_size@{ps\_canvas\_get\_size}!Canvas@{Canvas}}
+\doxysubsubsection{ps\_canvas\_get\_size()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+bool} ps\+\_\+canvas\+\_\+get\+\_\+size (\begin{DoxyParamCaption}\item[{const \textbf{ ps\+\_\+canvas} $\ast$}]{canvas,  }\item[{\textbf{ ps\+\_\+size} $\ast$}]{rsize }\end{DoxyParamCaption})}
+
+
+
+Return the size of the canvas. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em canvas} & Pointer to an existing canvas object. \\
+\hline
+{\em rsize} & Pointer to a buffer to receiving the size.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if is success, otherwise False.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+canvas\+\_\+get\+\_\+format}{p.}{group__canvas_ga82f236a9d166347f3b1a8779e1af32b0} 
+\end{DoxySeeAlso}
+\mbox{\label{group__canvas_gaee1cef3d1e04d2a85cf5f3c19e94a69f}} 
+\index{Canvas@{Canvas}!ps\_canvas\_ref@{ps\_canvas\_ref}}
+\index{ps\_canvas\_ref@{ps\_canvas\_ref}!Canvas@{Canvas}}
+\doxysubsubsection{ps\_canvas\_ref()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+canvas} $\ast$ ps\+\_\+canvas\+\_\+ref (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+canvas} $\ast$}]{canvas }\end{DoxyParamCaption})}
+
+
+
+Increases the reference count of the canvas by 1. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em canvas} & Pointer to an existing canvas object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+If the function succeeds, the return value is the pointer to the canvas object. If the function fails, the return value is N\+U\+LL.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+canvas\+\_\+create}{p.}{group__canvas_ga422a8fc62631fb6447e92924c78bc3b7}, \doxyref{ps\+\_\+canvas\+\_\+create\+\_\+with\+\_\+data}{p.}{group__canvas_ga5764ae1f5e2ed6fd1dae2c01018651e2}, \doxyref{ps\+\_\+canvas\+\_\+create\+\_\+compatible}{p.}{group__canvas_ga2ea69fce3ac80798a1372fb4eb6fe374}, \doxyref{ps\+\_\+canvas\+\_\+create\+\_\+from\+\_\+canvas}{p.}{group__canvas_gadcd073449c2570fd165cfd51836a5e86}, \doxyref{ps\+\_\+canvas\+\_\+create\+\_\+from\+\_\+image}{p.}{group__canvas_gaf877dddf73ecc30ccbe87c31f5c5bf75}, \doxyref{ps\+\_\+canvas\+\_\+unref}{p.}{group__canvas_ga474f482e71cd737d2110168768c6a3d5} 
+\end{DoxySeeAlso}
+\mbox{\label{group__canvas_ga5ffc739d55c6d314ad645df4916fec73}} 
+\index{Canvas@{Canvas}!ps\_canvas\_replace\_data@{ps\_canvas\_replace\_data}}
+\index{ps\_canvas\_replace\_data@{ps\_canvas\_replace\_data}!Canvas@{Canvas}}
+\doxysubsubsection{ps\_canvas\_replace\_data()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+canvas} $\ast$P\+I\+C\+A\+PI ps\+\_\+canvas\+\_\+replace\+\_\+data (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+canvas} $\ast$}]{canvas,  }\item[{\textbf{ ps\+\_\+byte} $\ast$}]{data,  }\item[{\textbf{ ps\+\_\+color\+\_\+format}}]{fmt,  }\item[{int}]{width,  }\item[{int}]{height,  }\item[{int}]{pitch }\end{DoxyParamCaption})}
+
+
+
+Replace a canvas target rendering buffer address in memory, which is only use for canvas create by {\itshape ps\+\_\+canvas\+\_\+create\+\_\+with\+\_\+data}. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em canvas} & Pointer to an existing canvas object. \\
+\hline
+{\em data} & A pointer to the destination in memory where the drawing is to be rendered. The size of this memory block should be at least (pitch $\ast$ height) bytes. \\
+\hline
+{\em fmt} & The Pixel format to use for the canvas. \\
+\hline
+{\em width} & The width, in pixels, of the required canvas. \\
+\hline
+{\em height} & The height, in pixels, of the required canvas. \\
+\hline
+{\em pitch} & The number of bytes per row, of the required canvas.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+If the function succeeds, the return value is the pointer to a new canvas object. If the function fails, the return value is N\+U\+LL.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+The data\textquotesingle{}s color format must be equal with target canvas, otherwish will be failed and {\itshape S\+T\+A\+T\+U\+S\+\_\+\+M\+I\+S\+M\+A\+T\+C\+H\+I\+N\+G\+\_\+\+F\+O\+R\+M\+AT} will be set.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+canvas\+\_\+create\+\_\+with\+\_\+data}{p.}{group__canvas_ga5764ae1f5e2ed6fd1dae2c01018651e2} 
+\end{DoxySeeAlso}
+\mbox{\label{group__canvas_ga7b52ce718da8798ce1823ed30c65d297}} 
+\index{Canvas@{Canvas}!ps\_canvas\_reset\_mask@{ps\_canvas\_reset\_mask}}
+\index{ps\_canvas\_reset\_mask@{ps\_canvas\_reset\_mask}!Canvas@{Canvas}}
+\doxysubsubsection{ps\_canvas\_reset\_mask()}
+{\footnotesize\ttfamily void ps\+\_\+canvas\+\_\+reset\+\_\+mask (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+canvas} $\ast$}]{canvas }\end{DoxyParamCaption})}
+
+
+
+Clear the mask from the canvas object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em canvas} & Pointer to an existing canvas object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+canvas\+\_\+set\+\_\+mask}{p.}{group__canvas_gae2c3473beecada34539bc9bcc61da3be} 
+\end{DoxySeeAlso}
+\mbox{\label{group__canvas_gae2c3473beecada34539bc9bcc61da3be}} 
+\index{Canvas@{Canvas}!ps\_canvas\_set\_mask@{ps\_canvas\_set\_mask}}
+\index{ps\_canvas\_set\_mask@{ps\_canvas\_set\_mask}!Canvas@{Canvas}}
+\doxysubsubsection{ps\_canvas\_set\_mask()}
+{\footnotesize\ttfamily void ps\+\_\+canvas\+\_\+set\+\_\+mask (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+canvas} $\ast$}]{canvas,  }\item[{const \textbf{ ps\+\_\+mask} $\ast$}]{mask }\end{DoxyParamCaption})}
+
+
+
+Set a new mask into an existing canvas object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em canvas} & Pointer to an existing canvas object. \\
+\hline
+{\em mask} & Pointer to an existing mask object to be set.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+canvas\+\_\+reset\+\_\+mask}{p.}{group__canvas_ga7b52ce718da8798ce1823ed30c65d297} 
+\end{DoxySeeAlso}
+\mbox{\label{group__canvas_ga474f482e71cd737d2110168768c6a3d5}} 
+\index{Canvas@{Canvas}!ps\_canvas\_unref@{ps\_canvas\_unref}}
+\index{ps\_canvas\_unref@{ps\_canvas\_unref}!Canvas@{Canvas}}
+\doxysubsubsection{ps\_canvas\_unref()}
+{\footnotesize\ttfamily void ps\+\_\+canvas\+\_\+unref (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+canvas} $\ast$}]{canvas }\end{DoxyParamCaption})}
+
+
+
+Decrements the reference count for the canvas object. If the reference count on the canvas falls to 0, the canvas is freed. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em canvas} & Pointer to an existing canvas object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+canvas\+\_\+create}{p.}{group__canvas_ga422a8fc62631fb6447e92924c78bc3b7}, \doxyref{ps\+\_\+canvas\+\_\+create\+\_\+with\+\_\+data}{p.}{group__canvas_ga5764ae1f5e2ed6fd1dae2c01018651e2}, \doxyref{ps\+\_\+canvas\+\_\+create\+\_\+compatible}{p.}{group__canvas_ga2ea69fce3ac80798a1372fb4eb6fe374}, \doxyref{ps\+\_\+canvas\+\_\+create\+\_\+from\+\_\+canvas}{p.}{group__canvas_gadcd073449c2570fd165cfd51836a5e86}, \doxyref{ps\+\_\+canvas\+\_\+create\+\_\+from\+\_\+image}{p.}{group__canvas_gaf877dddf73ecc30ccbe87c31f5c5bf75}, \doxyref{ps\+\_\+canvas\+\_\+ref}{p.}{group__canvas_gaee1cef3d1e04d2a85cf5f3c19e94a69f} 
+\end{DoxySeeAlso}

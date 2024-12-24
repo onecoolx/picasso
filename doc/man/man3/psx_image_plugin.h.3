@@ -1,0 +1,111 @@
+.TH "include/images/psx_image_plugin.h" 3 "Tue Dec 24 2024" "Version 2.8" "Picasso API" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+include/images/psx_image_plugin.h
+.SH SYNOPSIS
+.br
+.PP
+\fC#include 'picasso\&.h'\fP
+.br
+\fC#include 'psx_image\&.h'\fP
+.br
+
+.SS "Data Structures"
+
+.in +1c
+.ti -1c
+.RI "struct \fB_psx_image_header\fP"
+.br
+.RI "Image reader header define\&. "
+.ti -1c
+.RI "struct \fB_psx_image_operator\fP"
+.br
+.RI "The image operator define\&. "
+.in -1c
+.SS "Macros"
+
+.in +1c
+.ti -1c
+.RI "#define \fBMODULE_NAME\fP   1"
+.br
+.RI "Get module name\&. "
+.in -1c
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef struct \fB_psx_image_header\fP \fBpsx_image_header\fP"
+.br
+.RI "Image reader header define\&. "
+.ti -1c
+.RI "typedef struct \fB_psx_image_operator\fP \fBpsx_image_operator\fP"
+.br
+.RI "The image operator define\&. "
+.ti -1c
+.RI "typedef enum \fB_psx_priority_level\fP \fBpsx_priority_level\fP"
+.br
+.RI "Priority level for image_operator\&. "
+.in -1c
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum \fB_psx_priority_level\fP { \fBPRIORITY_EXTENTED\fP = -1, \fBPRIORITY_DEFAULT\fP = 0, \fBPRIORITY_MASTER\fP = 1 }"
+.br
+.RI "Priority level for image_operator\&. "
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "PEXPORT int \fBpsx_image_register_operator\fP (const char *type, const \fBps_byte\fP *signature, size_t sig_offset, size_t sig_len, \fBpsx_priority_level\fP level, \fBpsx_image_operator\fP *coder)"
+.br
+.RI "Register the image operator\&. "
+.ti -1c
+.RI "PEXPORT int \fBpsx_image_unregister_operator\fP (\fBpsx_image_operator\fP *coder)"
+.br
+.RI "Unregister the image operator\&. "
+.ti -1c
+.RI "PEXPORT void \fBpsx_image_module_init\fP (void)"
+.br
+.RI "Initialze the image module\&. "
+.ti -1c
+.RI "PEXPORT void \fBpsx_image_module_shutdown\fP (void)"
+.br
+.RI "Shutdown the image module\&. "
+.ti -1c
+.RI "const PEXPORT char * \fBpsx_image_module_get_string\fP (int id)"
+.br
+.RI "Get the string info about module\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.PP
+\fBAuthor\fP
+.RS 4
+Zhang Ji Peng onecoolx@gmail.com 
+.RE
+.PP
+\fBDate\fP
+.RS 4
+2012/1/31
+.RE
+.PP
+This file includes all interfaces of image decoder backend\&. 
+.PP
+.nf
+   Copyright (C) 2008 ~ 2024  Zhang Ji Peng
+
+   All rights reserved.
+
+   Picasso is a vector graphic library.
+.fi
+.PP
+ 
+.PP
+Definition in file \fBpsx_image_plugin\&.h\fP\&.
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Picasso API from the source code\&.

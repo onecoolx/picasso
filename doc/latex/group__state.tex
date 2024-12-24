@@ -1,0 +1,72 @@
+\doxysection{State}
+\label{group__state}\index{State@{State}}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+save} (\textbf{ ps\+\_\+context} $\ast$ctx)
+\begin{DoxyCompactList}\small\item\em Pushes a copy of the current graphics state on to stack for context. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+restore} (\textbf{ ps\+\_\+context} $\ast$ctx)
+\begin{DoxyCompactList}\small\item\em Set the current graphics state to the state most recently saved. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\label{group__state_gaf3b7528409d5bd0fc83b6609adea1d1a}} 
+\index{State@{State}!ps\_restore@{ps\_restore}}
+\index{ps\_restore@{ps\_restore}!State@{State}}
+\doxysubsubsection{ps\_restore()}
+{\footnotesize\ttfamily void ps\+\_\+restore (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx }\end{DoxyParamCaption})}
+
+
+
+Set the current graphics state to the state most recently saved. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+save}{p.}{group__state_gaf1ad684e2ab0ec406357af6900d10854} 
+\end{DoxySeeAlso}
+\mbox{\label{group__state_gaf1ad684e2ab0ec406357af6900d10854}} 
+\index{State@{State}!ps\_save@{ps\_save}}
+\index{ps\_save@{ps\_save}!State@{State}}
+\doxysubsubsection{ps\_save()}
+{\footnotesize\ttfamily void ps\+\_\+save (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx }\end{DoxyParamCaption})}
+
+
+
+Pushes a copy of the current graphics state on to stack for context. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. The graphics state saved are\+:
+\begin{DoxyItemize}
+\item Image filter
+\item Font object
+\item Gamma value
+\item Alpha value
+\item Blur value
+\item Text stroke color
+\item Text fill color
+\item Compositing method
+\item Transform matrix
+\item Line width
+\item Line cap
+\item Line join
+\item Line dash
+\item Stroke object
+\item Source object
+\item Fill color
+\item Fill rule
+\item Clip region
+\item Shadow parameters
+\end{DoxyItemize}\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+restore}{p.}{group__state_gaf3b7528409d5bd0fc83b6609adea1d1a} 
+\end{DoxySeeAlso}
