@@ -10,9 +10,8 @@
 #include <string.h>
 
 #include "picasso.h"
-#include "picasso_image.h"
-#include "picasso_image_plugin.h"
-
+#include "psx_image.h"
+#include "psx_image_plugin.h"
 #include "psx_image_io.h"
 #include "psx_image_modules.h"
 #include "psx_image_loader.h"

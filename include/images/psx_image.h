@@ -1,12 +1,12 @@
 /**
- * \file picasso_image.h
+ * \file psx_image.h
  * \author Zhang Ji Peng <onecoolx@gmail.com>
  * \date 2012/1/31
  *
  * This file includes all interfaces of picasso extended image decoders.
  \verbatim
 
-    Copyright (C) 2008 ~ 2018  Zhang Ji Peng
+    Copyright (C) 2008 ~ 2024  Zhang Ji Peng
 
     All rights reserved.
 
@@ -15,8 +15,8 @@
  \endverbatim
  */
 
-#ifndef _PICASSO_EXT_IMAGE_DECODERS_H_
-#define _PICASSO_EXT_IMAGE_DECODERS_H_
+#ifndef _PSX_IMAGE_DECODERS_H_
+#define _PSX_IMAGE_DECODERS_H_
 
 #include "picasso.h"
 
@@ -270,4 +270,4 @@ PEXPORT int PICAPI psx_image_destroy(psx_image* image);
 }
 #endif
 
-#endif /*_PICASSO_EXT_IMAGE_DECODERS_H_*/
+#endif /*_PSX_IMAGE_DECODERS_H_*/

@@ -1,12 +1,12 @@
 /**
- * \file picasso_image_plugin.h
+ * \file psx_image_plugin.h
  * \author Zhang Ji Peng <onecoolx@gmail.com>
  * \date 2012/1/31
  *
  * This file includes all interfaces of image decoder backend.
  \verbatim
 
-    Copyright (C) 2008 ~ 2018  Zhang Ji Peng
+    Copyright (C) 2008 ~ 2024  Zhang Ji Peng
 
     All rights reserved.
 
@@ -15,11 +15,11 @@
  \endverbatim
  */
 
-#ifndef _PICASSO_IMAGE_PLUGININ_INTERFACE_H_
-#define _PICASSO_IMAGE_PLUGININ_INTERFACE_H_
+#ifndef _PSX_IMAGE_PLUGININ_INTERFACE_H_
+#define _PSX_IMAGE_PLUGININ_INTERFACE_H_
 
 #include "picasso.h"
-#include "picasso_image.h"
+#include "psx_image.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -183,4 +183,4 @@ PEXPORT const char* psx_image_module_get_string(int id);
 }
 #endif
 
-#endif /*_PICASSO_IMAGE_PLUGININ_INTERFACE_H_*/
+#endif /*_PSX_IMAGE_PLUGININ_INTERFACE_H_*/

@@ -9,7 +9,7 @@
 
 #include "psx_list.h"
 #include "psx_image_io.h"
-#include "picasso_image_plugin.h"
+#include "psx_image_plugin.h"
 
 struct image_coder_node {
     struct list_hdr head;

@@ -3,7 +3,7 @@
 #include <string.h>
 
 #include "../include/picasso.h"
-#include "../include/picasso_image.h"
+#include "../include/images/psx_image.h"
 #include "drawFunc.h"
 #if defined(WIN32)
 #include <direct.h>
