@@ -53,6 +53,10 @@ int _bytes_per_color(ps_color_format fmt)
         case COLOR_FORMAT_RGB555:
             return 2;
 #endif
+#if ENABLE(FORMAT_A8)
+        case COLOR_FORMAT_A8:
+            return 1;
+#endif
         default:
             global_status = STATUS_NOT_SUPPORT;
             return 0;
@@ -93,6 +97,10 @@ static inline painter* get_painter_from_format(ps_color_format fmt)
 #if ENABLE(FORMAT_RGB555)
         case COLOR_FORMAT_RGB555:
             return new painter(pix_fmt_rgb555);
+#endif
+#if ENABLE(FORMAT_A8)
+        case COLOR_FORMAT_A8:
+            return new painter(pix_fmt_gray8);
 #endif
         default:
             global_status = STATUS_NOT_SUPPORT;

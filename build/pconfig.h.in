@@ -28,6 +28,9 @@
 /* Define if RGB565 color format is supported. */
 #cmakedefine ENABLE_FORMAT_RGB565 @ENABLE_FORMAT_RGB565@
 
+/* Define if A8 color format is supported. */
+#cmakedefine ENABLE_FORMAT_A8 @ENABLE_FORMAT_A8@
+
 /* Define if FreeType2 is supported. */
 #cmakedefine ENABLE_FREE_TYPE2 @ENABLE_FREE_TYPE2@
 

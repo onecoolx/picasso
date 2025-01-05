@@ -16,6 +16,7 @@
 #include "gfx_pixfmt_rgba.h"
 #include "gfx_pixfmt_rgb.h"
 #include "gfx_pixfmt_rgb16.h"
+#include "gfx_pixfmt_gray.h"
 
 namespace gfx {
 
@@ -66,6 +67,10 @@ abstract_painter* gfx_device::create_painter(pix_fmt fmt)
 #if ENABLE(FORMAT_RGB555)
         case pix_fmt_rgb555:
             return new gfx_painter<pixfmt_rgb555>;
+#endif
+#if ENABLE(FORMAT_A8)
+        case pix_fmt_gray8:
+            return new gfx_painter<pixfmt_gray8>;
 #endif
         default:
             return 0;

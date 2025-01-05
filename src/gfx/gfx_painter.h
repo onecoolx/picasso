@@ -1069,5 +1069,13 @@ inline pix_fmt gfx_painter<pixfmt_rgb555>::pixel_format(void) const
 }
 #endif
 
+#if ENABLE(FORMAT_A8)
+template <>
+inline pix_fmt gfx_painter<pixfmt_gray8>::pixel_format(void) const
+{
+    return pix_fmt_gray8;
+}
+#endif
+
 }
 #endif /*_GFX_PAINTER_H_*/

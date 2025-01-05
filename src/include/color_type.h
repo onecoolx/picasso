@@ -25,6 +25,8 @@ struct order_bgra { enum { B = 0, G = 1, R = 2, A = 3, rgba_tag }; }; // order_b
 struct order_rgb565 { enum {R = 5, G = 6, B = 5, rgbp_tag }; }; // order_rgb565
 struct order_rgb555 { enum {R = 5, G = 5, B = 5, rgbp_tag }; }; // order_rgb555
 
+struct order_gray { enum { gray_tag }; }; // order_gray
+
 // pixfmt type
 typedef enum {
     pix_fmt_rgba,
@@ -35,6 +37,7 @@ typedef enum {
     pix_fmt_bgr,
     pix_fmt_rgb565,
     pix_fmt_rgb555,
+    pix_fmt_gray8,
     pix_fmt_unknown,
 } pix_fmt;
 

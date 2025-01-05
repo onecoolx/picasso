@@ -20,6 +20,7 @@ option(OPT_FORMAT_RGB "Pixel format RGB support." ON)
 option(OPT_FORMAT_BGR "Pixel format BGR support." ON)
 option(OPT_FORMAT_RGB565 "Pixel format RGB565 support." ON)
 option(OPT_FORMAT_RGB555 "Pixel format RGB555 support." ON)
+option(OPT_FORMAT_A8 "Pixel format A8 support." ON)
 
 option(OPT_FAST_COPY "Build Fast Memory Copy used support." OFF)
 option(OPT_FREE_TYPE2 "Build FreeType2 is support." OFF)
@@ -100,6 +101,10 @@ endif(OPT_FORMAT_RGB565)
 if (OPT_FORMAT_RGB555)
     set(ENABLE_FORMAT_RGB555 1)
 endif(OPT_FORMAT_RGB555)
+
+if (OPT_FORMAT_A8)
+    set(ENABLE_FORMAT_A8 1)
+endif(OPT_FORMAT_A8)
 
 if (OPT_FAST_COPY)
     set(ENABLE_FAST_COPY 1)

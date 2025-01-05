@@ -425,6 +425,10 @@ typedef enum _ps_color_format {
      */
     COLOR_FORMAT_RGB555,
     /**
+     * 8bit, gray color space.
+     */
+    COLOR_FORMAT_A8,
+    /**
      * Unsupported color space.
      */
     COLOR_FORMAT_UNKNOWN,

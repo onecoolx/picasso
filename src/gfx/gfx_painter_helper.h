@@ -8,6 +8,7 @@
 #define _PAINTER_RASTER_H_
 
 #include "gfx_image_accessors.h"
+#include "gfx_pixfmt_gray.h"
 #include "gfx_pixfmt_rgb16.h"
 #include "gfx_pixfmt_rgb.h"
 #include "gfx_pixfmt_rgba.h"
