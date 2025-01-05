@@ -33,11 +33,12 @@ public:
                                          uint32_t cr, uint32_t cg, uint32_t cb,
                                          uint32_t ca, uint32_t cover)
     {
-        blend_op_table_packed<color_type, order_type, blend_op_adaptor_gray<rgba8>>::g_packed_blend_op_func[op]
-        (p, (cr * ca + base_mask) >> base_shift,
-         (cg * ca + base_mask) >> base_shift,
-         (cb * ca + base_mask) >> base_shift,
-         ca, cover);
+        blend_op_table_packed<color_type, order_type,
+                              blend_op_adaptor_gray<rgba8> >::g_packed_blend_op_func[op]
+                              (p, (cr * ca + base_mask) >> base_shift,
+                               (cg * ca + base_mask) >> base_shift,
+                               (cb * ca + base_mask) >> base_shift,
+                               ca, cover);
     }
 
     static pixel_type make_pix(uint32_t r, uint32_t g, uint32_t b)
