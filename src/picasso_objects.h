@@ -588,12 +588,12 @@ struct _ps_context {
 };
 
 enum {
-    buffer_alloc_none       = 0,
-    buffer_alloc_surface    = 1,
-    buffer_alloc_malloc     = 2,
-    buffer_alloc_image      = 3,
-    buffer_alloc_canvas     = 4,
-    buffer_alloc_mask       = 5,
+    buffer_alloc_none = 0,
+    buffer_alloc_surface = 1,
+    buffer_alloc_malloc = 2,
+    buffer_alloc_image = 3,
+    buffer_alloc_canvas = 4,
+    buffer_alloc_mask = 5,
 };
 
 struct _ps_canvas {
