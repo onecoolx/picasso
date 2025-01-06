@@ -61,6 +61,7 @@ void dini_context (ps_context* gc)
     ps_matrix_unref(pm);
     ps_pattern_unref(pt);
     ps_path_unref(pa);
+    ps_canvas_unref(pc);
 }
 
 void set_image_data(unsigned char* data, ps_color_format fmt, int w, int h, int p)

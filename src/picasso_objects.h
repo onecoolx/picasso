@@ -81,7 +81,7 @@ public:
             dstart = o.dstart;
             dashes = new scalar[ndashes];
             if (dashes) {
-                for (unsigned int i = 0; i < ndashes; i++) {
+                for (uint32_t i = 0; i < ndashes; i++) {
                     dashes[i] = o.dashes[i];
                 }
             } else {
@@ -129,7 +129,7 @@ public:
             dstart = o.dstart;
             dashes = new scalar[ndashes];
             if (dashes) {
-                for (unsigned int i = 0; i < ndashes; i++) {
+                for (uint32_t i = 0; i < ndashes; i++) {
                     dashes[i] = o.dashes[i];
                 }
             } else {
@@ -166,7 +166,7 @@ public:
         }
     }
 
-    void set_dash(float start, const float* da, unsigned int ndash)
+    void set_dash(float start, const float* da, uint32_t ndash)
     {
         is_dash = true;
         dstart = FLT_TO_SCALAR(start);
@@ -174,7 +174,7 @@ public:
         dashes = new scalar[ndashes];
         if (dashes) {
             memset(dashes, 0, ndashes * sizeof(scalar));
-            for (unsigned int i = 0; i < ndash; i++) {
+            for (uint32_t i = 0; i < ndash; i++) {
                 dashes[i] = FLT_TO_SCALAR(da[i]);
             }
         } else {
@@ -239,7 +239,7 @@ public:
         data = ps_canvas_ref(p);
     }
 
-    unsigned int style;
+    uint32_t style;
     scalar width;
     scalar miter_limit;
     line_cap cap;
@@ -250,7 +250,7 @@ public:
     //dash
     bool is_dash;
     scalar* dashes;
-    unsigned int ndashes;
+    uint32_t ndashes;
     scalar dstart;
 };
 
@@ -376,7 +376,7 @@ public:
         data = ps_canvas_ref(p);
     }
 
-    unsigned int style;
+    uint32_t style;
     void* data;
     filling_rule rule;
     rgba color;
@@ -475,7 +475,7 @@ public:
                (rect.y2 != o.rect.y2);
     }
 
-    unsigned int type;
+    uint32_t type;
     graphic_path path;
     filling_rule rule;
     rect_s rect;
@@ -588,18 +588,19 @@ struct _ps_context {
 };
 
 enum {
-    buffer_alloc_none = 0,
-    buffer_alloc_surface = 1,
-    buffer_alloc_malloc = 2,
-    buffer_alloc_image = 3,
-    buffer_alloc_canvas = 4,
+    buffer_alloc_none       = 0,
+    buffer_alloc_surface    = 1,
+    buffer_alloc_malloc     = 2,
+    buffer_alloc_image      = 3,
+    buffer_alloc_canvas     = 4,
+    buffer_alloc_mask       = 5,
 };
 
 struct _ps_canvas {
     int refcount;
     ps_color_format fmt;
     picasso::painter* p;
-    unsigned int flage;
+    uint32_t flage;
     void* host;
     ps_mask* mask;
     picasso::rendering_buffer buffer;
@@ -608,7 +609,7 @@ struct _ps_canvas {
 struct _ps_image {
     int refcount;
     ps_color_format fmt;
-    unsigned int flage;
+    uint32_t flage;
     void* host;
     picasso::rendering_buffer buffer;
 };
@@ -638,6 +639,7 @@ struct _ps_path {
 
 struct _ps_mask {
     int refcount;
+    uint32_t flage;
     picasso::mask_layer mask;
 };
 

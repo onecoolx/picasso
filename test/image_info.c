@@ -9,7 +9,7 @@
 #include <unistd.h>
 #define DIRPREFIX "/"
 #endif
-#include "psx_image.h"
+#include "images/psx_image.h"
 
 static char full_path[1024];
 

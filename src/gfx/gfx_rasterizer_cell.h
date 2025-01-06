@@ -236,7 +236,7 @@ public:
         incr = 1;
         if (dx == 0) {
             int ex = x1 >> poly_subpixel_shift;
-            int two_fx = (x1 - (ex << poly_subpixel_shift)) << 1;
+            int two_fx = (int32_t)((uint32_t)(x1 - (int32_t)((uint32_t)ex << poly_subpixel_shift)) << 1);
             int area;
 
             first = poly_subpixel_scale;
@@ -294,7 +294,7 @@ public:
         set_curr_cell(x_from >> poly_subpixel_shift, ey1);
 
         if (ey1 != ey2) {
-            p = dx << poly_subpixel_shift;
+            p = (int32_t)((uint32_t)dx << poly_subpixel_shift);
             lift = p / dy;
             rem = p % dy;
 
@@ -510,7 +510,7 @@ private:
         y1 += delta;
 
         if (ex1 != ex2) {
-            p = (y2 - y1 + delta) << poly_subpixel_shift;
+            p = (int32_t)((uint32_t)(y2 - y1 + delta) << poly_subpixel_shift);
             lift = p / dx;
             rem = p % dx;
 
@@ -530,7 +530,7 @@ private:
                 }
 
                 m_curr_cell.cover += delta;
-                m_curr_cell.area += (delta << poly_subpixel_shift);
+                m_curr_cell.area += (int32_t)((uint32_t)delta << poly_subpixel_shift);
                 y1 += delta;
                 ex1 += incr;
                 set_curr_cell(ex1, ey);

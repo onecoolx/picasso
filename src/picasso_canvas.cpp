@@ -342,6 +342,61 @@ ps_canvas* PICAPI ps_canvas_create_from_image(ps_image* i, const ps_rect* r)
     }
 }
 
+ps_canvas* PICAPI ps_canvas_create_from_mask(ps_mask* m, const ps_rect* r)
+{
+    if (!picasso::is_valid_system_device()) {
+        global_status = STATUS_DEVICE_ERROR;
+        return NULL;
+    }
+
+    if (!m) {
+        global_status = STATUS_INVALID_ARGUMENT;
+        return NULL;
+    }
+
+    ps_rect rc = {0, 0, (float)m->mask.width(), (float)m->mask.height()};
+    if (r) {
+        if (r->x > 0) {
+            rc.x = r->x;
+        }
+        if (r->y > 0) {
+            rc.y = r->y;
+        }
+        if (r->w > 0) {
+            rc.w = r->w;
+        }
+        if (r->h > 0) {
+            rc.h = r->h;
+        }
+    }
+
+    picasso::painter* pa = picasso::get_painter_from_format(COLOR_FORMAT_A8);
+    if (!pa) {
+        return NULL;
+    }
+
+    ps_canvas* p = (ps_canvas*)mem_malloc(sizeof(ps_canvas));
+    if (p) {
+        p->refcount = 1;
+        p->fmt = COLOR_FORMAT_A8;
+        p->p = pa;
+        p->flage = buffer_alloc_mask;
+        p->host = (void*)ps_mask_ref(m);
+        p->mask = NULL;
+        int bpp = picasso::_bytes_per_color(p->fmt);
+        new ((void*) & (p->buffer)) picasso::rendering_buffer;
+        p->buffer.attach(m->mask.buffer() + _iround(rc.y * m->mask.stride() + rc.x * bpp),
+                         _iround(rc.w), _iround(rc.h), m->mask.stride());
+        p->p->attach(p->buffer);
+        global_status = STATUS_SUCCEED;
+        return p;
+    } else {
+        delete pa; //mem_free painter on error
+        global_status = STATUS_OUT_OF_MEMORY;
+        return NULL;
+    }
+}
+
 ps_canvas* PICAPI ps_canvas_create_with_data(ps_byte* addr, ps_color_format fmt, int w, int h, int pitch)
 {
     if (!picasso::is_valid_system_device()) {
@@ -448,6 +503,8 @@ void PICAPI ps_canvas_unref(ps_canvas* canvas)
             ps_image_unref(static_cast<ps_image*>(canvas->host));
         } else if (canvas->flage == buffer_alloc_canvas) {
             ps_canvas_unref(static_cast<ps_canvas*>(canvas->host));
+        } else if (canvas->flage == buffer_alloc_mask) {
+            ps_mask_unref(static_cast<ps_mask*>(canvas->host));
         }
 
         if (canvas->mask) {

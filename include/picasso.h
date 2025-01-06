@@ -448,7 +448,7 @@ typedef enum _ps_color_format {
  * \note To get extended error information, call \a ps_last_status.
  *
  * \sa ps_canvas_create_with_data, ps_canvas_create_compatible, ps_canvas_create_from_canvas,
- *     ps_canvas_create_from_image, ps_canvas_ref, ps_canvas_unref
+ *     ps_canvas_create_from_image, ps_canvas_create_from_mask, ps_canvas_ref, ps_canvas_unref
  */
 PEXPORT ps_canvas* PICAPI ps_canvas_create(ps_color_format fmt, int width, int height);
 
@@ -469,7 +469,7 @@ PEXPORT ps_canvas* PICAPI ps_canvas_create(ps_color_format fmt, int width, int h
  * \note To get extended error information, call \a ps_last_status.
  *
  * \sa ps_canvas_create, ps_canvas_create_compatible, ps_canvas_create_from_canvas,
- *     ps_canvas_create_from_image, ps_canvas_ref, ps_canvas_unref, ps_canvas_replace_data
+ *     ps_canvas_create_from_image, ps_canvas_create_from_mask, ps_canvas_ref, ps_canvas_unref, ps_canvas_replace_data
  */
 PEXPORT ps_canvas* PICAPI ps_canvas_create_with_data(ps_byte* data, ps_color_format fmt,
                                                      int width, int height, int pitch);
@@ -490,7 +490,7 @@ PEXPORT ps_canvas* PICAPI ps_canvas_create_with_data(ps_byte* data, ps_color_for
  * \note To get extended error information, call \a ps_last_status.
  *
  * \sa ps_canvas_create, ps_canvas_create_with_data, ps_canvas_create_from_canvas,
- *     ps_canvas_create_from_image, ps_canvas_ref, ps_canvas_unref
+ *     ps_canvas_create_from_image, ps_canvas_create_from_mask, ps_canvas_ref, ps_canvas_unref
  */
 PEXPORT ps_canvas* PICAPI ps_canvas_create_compatible(const ps_canvas* canvas,
                                                       int width, int height);
@@ -509,7 +509,7 @@ PEXPORT ps_canvas* PICAPI ps_canvas_create_compatible(const ps_canvas* canvas,
  * \note To get extended error information, call \a ps_last_status.
  *
  * \sa ps_canvas_create, ps_canvas_create_with_data, ps_canvas_create_compatible,
- *     ps_canvas_create_from_image, ps_canvas_ref, ps_canvas_unref
+ *     ps_canvas_create_from_image, ps_canvas_create_from_mask, ps_canvas_ref, ps_canvas_unref
  */
 PEXPORT ps_canvas* PICAPI ps_canvas_create_from_canvas(ps_canvas* canvas, const ps_rect* rect);
 
@@ -527,9 +527,27 @@ PEXPORT ps_canvas* PICAPI ps_canvas_create_from_canvas(ps_canvas* canvas, const 
  * \note To get extended error information, call \a ps_last_status.
  *
  * \sa ps_canvas_create, ps_canvas_create_with_data, ps_canvas_create_compatible,
- *     ps_canvas_create_from_canvas, ps_canvas_ref, ps_canvas_unref
+ *     ps_canvas_create_from_canvas, ps_canvas_create_from_mask, ps_canvas_ref, ps_canvas_unref
  */
 PEXPORT ps_canvas* PICAPI ps_canvas_create_from_image(ps_image* img, const ps_rect* rect);
+
+/**
+ * \fn ps_canvas* ps_canvas_create_from_mask(ps_image* img, const ps_rect* rect)
+ * \brief Create a new canvas using part of an existing ps_mask object in same pixel buffer.
+ *
+ * \param mask    A pointer to an existing ps_mask object.
+ * \param rect    The rectangle area of the canvas from the ps_mask.
+ *                If it is NULL, the canvas's width and height will be equal to ps_mask object.
+ *
+ * \return If the function succeeds, the return value is the pointer to a new canvas object.
+ *         If the function fails, the return value is NULL.
+ *
+ * \note To get extended error information, call \a ps_last_status.
+ *
+ * \sa ps_canvas_create, ps_canvas_create_with_data, ps_canvas_create_compatible,
+ *     ps_canvas_create_from_canvas, ps_canvas_create_from_image, ps_canvas_ref, ps_canvas_unref
+ */
+PEXPORT ps_canvas* PICAPI ps_canvas_create_from_mask(ps_mask* mask, const ps_rect* rect);
 
 /**
  * \fn ps_canvas* PICAPI ps_canvas_replace_data(ps_canvas* canvas, ps_byte* data,
@@ -1089,6 +1107,22 @@ PEXPORT void PICAPI ps_gradient_clear_color_stops(ps_gradient* gradient);
  */
 
 /**
+ * \fn ps_mask* ps_mask_create(int width, int height)
+ * \brief Create a new mask.
+ *
+ * \param width   The width, in pixels, of the required mask.
+ * \param height  The height, in pixels, of the required mask.
+ *
+ * \return If the function succeeds, the return value is the pointer to a new mask object.
+ *         If the function fails, the return value is NULL.
+ *
+ * \note To get extended error information, call \a ps_last_status.
+ *
+ * \sa ps_mask_ref, ps_mask_unref, ps_canvas_set_mask, ps_canvas_reset_mask, ps_mask_create_with_data
+ */
+PEXPORT ps_mask* PICAPI ps_mask_create(int width, int height);
+
+/**
  * \fn ps_mask* ps_mask_create_with_data(ps_byte* data, int width, int height)
  * \brief Create a new mask using a given data block.
  *
@@ -1103,7 +1137,7 @@ PEXPORT void PICAPI ps_gradient_clear_color_stops(ps_gradient* gradient);
  *
  * \note To get extended error information, call \a ps_last_status.
  *
- * \sa ps_mask_ref, ps_mask_unref, ps_canvas_set_mask, ps_canvas_reset_mask
+ * \sa ps_mask_ref, ps_mask_unref, ps_canvas_set_mask, ps_canvas_reset_mask, ps_mask_create
  */
 PEXPORT ps_mask* PICAPI ps_mask_create_with_data(ps_byte* data, int width, int height);
 
@@ -1118,7 +1152,7 @@ PEXPORT ps_mask* PICAPI ps_mask_create_with_data(ps_byte* data, int width, int h
  *
  * \note To get extended error information, call \a ps_last_status.
  *
- * \sa ps_mask_create_with_data, ps_mask_unref, ps_canvas_set_mask, ps_canvas_reset_mask
+ * \sa ps_mask_create_with_data, ps_mask_unref, ps_canvas_set_mask, ps_canvas_reset_mask, ps_mask_create
  */
 PEXPORT ps_mask* PICAPI ps_mask_ref(ps_mask* mask);
 
@@ -1129,7 +1163,7 @@ PEXPORT ps_mask* PICAPI ps_mask_ref(ps_mask* mask);
  *
  * \param mask  Pointer to an existing mask object.
  *
- * \sa ps_mask_create_with_data, ps_mask_ref, ps_canvas_set_mask, ps_canvas_reset_mask
+ * \sa ps_mask_create_with_data, ps_mask_ref, ps_canvas_set_mask, ps_canvas_reset_mask, ps_mask_create
  */
 PEXPORT void PICAPI ps_mask_unref(ps_mask* mask);
 

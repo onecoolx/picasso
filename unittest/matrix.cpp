@@ -24,6 +24,12 @@ TEST(Matrix, CreateAndDestory)
 
     ps_matrix_unref(m);
     ASSERT_EQ(STATUS_SUCCEED, ps_last_status()); 
+
+    ps_matrix_unref(m2);
+    ASSERT_EQ(STATUS_SUCCEED, ps_last_status()); 
+
+    ps_matrix_unref(m3);
+    ASSERT_EQ(STATUS_SUCCEED, ps_last_status()); 
 }
 
 

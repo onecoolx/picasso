@@ -382,7 +382,7 @@ public:
                 const cell* cur_cell = *cells;
                 int x = cur_cell->x;
                 int area = cur_cell->area;
-                unsigned int alpha;
+                uint32_t alpha;
 
                 cover += cur_cell->cover;
 
@@ -397,7 +397,7 @@ public:
                 }
 
                 if (area) {
-                    alpha = calculate_alpha((cover << (poly_subpixel_shift + 1)) - area);
+                    alpha = calculate_alpha((int32_t)((uint32_t)cover << (poly_subpixel_shift + 1)) - area);
                     if (alpha) {
                         sl.add_cell(x, alpha);
                     }
@@ -405,7 +405,7 @@ public:
                 }
 
                 if (num_cells && cur_cell->x > x) {
-                    alpha = calculate_alpha(cover << (poly_subpixel_shift + 1));
+                    alpha = calculate_alpha((int32_t)((uint32_t)cover << (poly_subpixel_shift + 1)));
                     if (alpha) {
                         sl.add_span(x, cur_cell->x - x, alpha);
                     }
@@ -459,7 +459,7 @@ public:
 
             if (area) {
                 if (tx == x) {
-                    alpha = calculate_alpha((cover << (poly_subpixel_shift + 1)) - area);
+                    alpha = calculate_alpha((int32_t)((uint32_t)cover << (poly_subpixel_shift + 1)) - area);
                     if (alpha) {
                         sl.add_cell(x, alpha);
                         if (sl.hit()) {
@@ -473,7 +473,7 @@ public:
             if (num_cells && cur_cell->x > x) {
                 int sx = cur_cell->x - x;
                 if ((tx >= x) && (tx < (x + sx))) {
-                    alpha = calculate_alpha(cover << (poly_subpixel_shift + 1));
+                    alpha = calculate_alpha((int32_t)((uint32_t)cover << (poly_subpixel_shift + 1)));
                     if (alpha) {
                         sl.add_span(x, sx, alpha);
                         if (sl.hit()) {

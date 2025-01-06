@@ -228,7 +228,7 @@ TEST(Block_Allocater, BlockBaseAllocater)
 TEST(Pod_Array, CreateAndInitialize)
 {
     pod_array<unsigned int> iv;
-    pod_array<unsigned int> sv = iv;
+    pod_array<unsigned int> sv;
 
     EXPECT_EQ(0, (int)iv.size());
     EXPECT_EQ(0, (int)sv.size());
