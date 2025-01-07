@@ -13,19 +13,6 @@ struct data_test
     double d;
 };
 
-volatile int tmp;
-static int dummy[4096000];
-static void clear_cache(void)
-{
-    int sum = 0;
-    for(int i=0; i<4096000; i++)
-        dummy[i] = 2;
-    for(int i=0; i<4096000; i++)
-        sum += dummy[i];
-
-    tmp = sum;
-}
-
 TEST(Pod_Vector, CreateAndDestroy)
 {
     pod_vector<unsigned int> iv;
@@ -228,7 +215,7 @@ TEST(Block_Allocater, BlockBaseAllocater)
 TEST(Pod_Array, CreateAndInitialize)
 {
     pod_array<unsigned int> iv;
-    pod_array<unsigned int> sv;
+    pod_array<unsigned int> sv = iv;
 
     EXPECT_EQ(0, (int)iv.size());
     EXPECT_EQ(0, (int)sv.size());

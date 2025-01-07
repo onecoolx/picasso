@@ -5,4 +5,5 @@
 #include "picasso.h"
 #include "gtest/gtest.h"
 
+void clear_dcache(void);
 #endif
