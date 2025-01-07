@@ -25,10 +25,12 @@ target_link_libraries(${UNIT_TESTS} PRIVATE GTest::GTest ${LIB_NAME})
 
 if (WIN32)
     add_custom_command(
-        TARGET unit_test POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_RUNTIME_DLLS:unit_test> $<TARGET_FILE_DIR:unit_test>
+        TARGET ${UNIT_TESTS} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_RUNTIME_DLLS:unit_tests> $<TARGET_FILE_DIR:unit_tests>
         COMMAND_EXPAND_LISTS
     )
+else()
+    target_compile_options(${UNIT_TESTS} PRIVATE -std=c++17)
 endif()
 
 add_test(NAME unittest COMMAND ${UNIT_TESTS})
