@@ -14,8 +14,8 @@ namespace picasso {
 
 template <typename T>
 struct pod_allocator {
-    static T* allocate(unsigned int num) { return new T [num]; }
-    static void deallocate(T* ptr, unsigned int) { delete [] ptr; }
+    static T* allocate(uint32_t num) { return new T [num]; }
+    static void deallocate(T* ptr, uint32_t) { delete [] ptr; }
 };
 
 // pod array
@@ -35,7 +35,7 @@ public:
         pod_allocator<T>::deallocate(m_array, m_capacity);
     }
 
-    pod_array(unsigned int size)
+    pod_array(uint32_t size)
         : m_size(size)
         , m_capacity(size)
         , m_array(pod_allocator<T>::allocate(m_capacity))
@@ -50,7 +50,7 @@ public:
         mem_copy(m_array, o.m_array, sizeof(T) * m_size);
     }
 
-    void resize(unsigned int size)
+    void resize(uint32_t size)
     {
         if (size > m_size) { // resize will invalid the old data.
             if (size > m_capacity) {
@@ -74,7 +74,7 @@ public:
         return *this;
     }
 
-    unsigned int size(void) const { return m_size; }
+    uint32_t size(void) const { return m_size; }
 
     const T& operator [] (unsigned i) const { return m_array[i]; }
     T& operator [] (unsigned i) { return m_array[i]; }
@@ -87,8 +87,8 @@ public:
     const T* data() const { return m_array; }
     T* data(void) { return m_array; }
 private:
-    unsigned int m_size;
-    unsigned int m_capacity;
+    uint32_t m_size;
+    uint32_t m_capacity;
     T* m_array;
 };
 
@@ -112,7 +112,7 @@ public:
         pod_allocator<T>::deallocate(m_array, m_capacity);
     }
 
-    pod_vector(unsigned int cap);
+    pod_vector(uint32_t cap);
 
     // Copying
     pod_vector(const pod_vector<T>&);
@@ -120,15 +120,15 @@ public:
     const pod_vector<T>& operator = (const pod_vector<T>&);
 
     // Set new capacity. All data is lost, size is set to zero.
-    void capacity(unsigned int cap);
-    unsigned int capacity(void) const { return m_capacity; }
-    unsigned int size(void) const { return m_size; }
+    void capacity(uint32_t cap);
+    uint32_t capacity(void) const { return m_capacity; }
+    uint32_t size(void) const { return m_size; }
 
     // Allocate n elements. All data is lost,
     // but elements can be accessed in range 0...size-1.
-    void allocate(unsigned int size);
+    void allocate(uint32_t size);
     // Resize keeping the content.
-    void resize(unsigned int new_size);
+    void resize(uint32_t new_size);
 
     bool push_back(const T& v);
 
@@ -136,27 +136,27 @@ public:
 
     bool is_full(void) const { return m_size == m_capacity;}
 
-    bool insert_at(unsigned int pos, const T& val);
+    bool insert_at(uint32_t pos, const T& val);
 
-    bool set_data(unsigned int num, T* data);
+    bool set_data(uint32_t num, T* data);
 
-    const T& operator [] (unsigned int i) const { return m_array[i]; }
-    T& operator [] (unsigned int i) { return m_array[i]; }
+    const T& operator [] (uint32_t i) const { return m_array[i]; }
+    T& operator [] (uint32_t i) { return m_array[i]; }
 
     const T* data(void) const { return m_array; }
     T* data(void) { return m_array; }
 
     void clear(void) { m_size = 0; }
     void remove_last(void) { if (m_size) --m_size; }
-    void cut_at(unsigned int num) { if (num < m_size) m_size = num; }
+    void cut_at(uint32_t num) { if (num < m_size) m_size = num; }
 
 protected:
-    unsigned int m_size;
-    unsigned int m_capacity;
+    uint32_t m_size;
+    uint32_t m_capacity;
     T* m_array;
 };
 
-template <typename T> pod_vector<T>::pod_vector(unsigned int cap)
+template <typename T> pod_vector<T>::pod_vector(uint32_t cap)
     : m_size(0)
     , m_capacity(cap)
     , m_array(pod_allocator<T>::allocate(m_capacity))
@@ -174,7 +174,7 @@ template <typename T> pod_vector<T>::pod_vector(const pod_vector<T>& v)
 }
 
 template <typename T>
-inline void pod_vector<T>::capacity(unsigned int cap)
+inline void pod_vector<T>::capacity(uint32_t cap)
 {
     m_size = 0;
     if (cap > m_capacity) {
@@ -185,7 +185,7 @@ inline void pod_vector<T>::capacity(unsigned int cap)
 }
 
 template <typename T>
-inline void pod_vector<T>::resize(unsigned int new_size)
+inline void pod_vector<T>::resize(uint32_t new_size)
 {
     if (new_size > m_size) {
         if (new_size > m_capacity) {
@@ -201,7 +201,7 @@ inline void pod_vector<T>::resize(unsigned int new_size)
 }
 
 template <typename T>
-inline void pod_vector<T>::allocate(unsigned int new_size)
+inline void pod_vector<T>::allocate(uint32_t new_size)
 {
     capacity(new_size);
     m_size = new_size;
@@ -248,7 +248,7 @@ inline bool pod_vector<T>::push_back(const T& v)
 }
 
 template <typename T>
-inline bool pod_vector<T>::insert_at(unsigned int pos, const T& val)
+inline bool pod_vector<T>::insert_at(uint32_t pos, const T& val)
 {
     if (pos >= m_capacity) {
         return false;
@@ -265,7 +265,7 @@ inline bool pod_vector<T>::insert_at(unsigned int pos, const T& val)
 }
 
 template <typename T>
-inline bool pod_vector<T>::set_data(unsigned int num, T* data)
+inline bool pod_vector<T>::set_data(uint32_t num, T* data)
 {
     if (!num || !data) {
         return false;
@@ -281,7 +281,7 @@ inline bool pod_vector<T>::set_data(unsigned int num, T* data)
 }
 
 // pod_bvector  default S = 5, mean block size 32
-template <typename T, unsigned int S = 5> class pod_bvector
+template <typename T, uint32_t S = 5> class pod_bvector
 {
 public:
     enum {
@@ -293,7 +293,7 @@ public:
     typedef T value_type;
 
     pod_bvector();
-    pod_bvector(unsigned int block_ptr_inc);
+    pod_bvector(uint32_t block_ptr_inc);
     pod_bvector(const pod_bvector<T, S>& o);
     ~pod_bvector();
 
@@ -303,47 +303,47 @@ public:
     void modify_last(const T& v);
     void remove_all(void);
 
-    T& at(unsigned int i)
+    T& at(uint32_t i)
     {
         return m_blocks[i >> block_shift][i & block_mask];
     }
 
-    const T& operator [] (unsigned int i) const
+    const T& operator [] (uint32_t i) const
     {
         return m_blocks[i >> block_shift][i & block_mask];
     }
 
-    T& operator [] (unsigned int i)
+    T& operator [] (uint32_t i)
     {
         return m_blocks[i >> block_shift][i & block_mask];
     }
 
-    const T& curr(unsigned int idx) const
+    const T& curr(uint32_t idx) const
     {
         return (*this)[idx];
     }
 
-    T& curr(unsigned int idx)
+    T& curr(uint32_t idx)
     {
         return (*this)[idx];
     }
 
-    const T& prev(unsigned int idx) const
+    const T& prev(uint32_t idx) const
     {
         return (*this)[(idx + m_size - 1) % m_size];
     }
 
-    T& prev(unsigned int idx)
+    T& prev(uint32_t idx)
     {
         return (*this)[(idx + m_size - 1) % m_size];
     }
 
-    const T& next(unsigned int idx) const
+    const T& next(uint32_t idx) const
     {
         return (*this)[(idx + 1) % m_size];
     }
 
-    T& next(unsigned int idx)
+    T& next(uint32_t idx)
     {
         return (*this)[(idx + 1) % m_size];
     }
@@ -358,22 +358,22 @@ public:
         return (*this)[m_size - 1];
     }
 
-    unsigned int size(void) const { return m_size; }
-    unsigned int capacity(void) const { return m_num_blocks * block_size; }
+    uint32_t size(void) const { return m_size; }
+    uint32_t capacity(void) const { return m_num_blocks * block_size; }
     void clear(void) { m_size = 0; }
     void remove_last(void) { if (m_size) --m_size; }
-    void cut_at(unsigned int size) { if (size < m_size) m_size = size; }
+    void cut_at(uint32_t size) { if (size < m_size) m_size = size; }
 private:
-    void allocate_block(unsigned int num_block);
+    void allocate_block(uint32_t num_block);
 
-    unsigned int m_size;
-    unsigned int m_num_blocks;
-    unsigned int m_max_blocks;
+    uint32_t m_size;
+    uint32_t m_num_blocks;
+    uint32_t m_max_blocks;
     T** m_blocks;
-    unsigned int m_block_ptr_inc;
+    uint32_t m_block_ptr_inc;
 };
 
-template <typename T, unsigned int S> pod_bvector<T, S>::~pod_bvector()
+template <typename T, uint32_t S> pod_bvector<T, S>::~pod_bvector()
 {
     if (m_num_blocks) {
         T** block = m_blocks + m_num_blocks - 1;
@@ -387,7 +387,7 @@ template <typename T, unsigned int S> pod_bvector<T, S>::~pod_bvector()
     }
 }
 
-template <typename T, unsigned int S> pod_bvector<T, S>::pod_bvector()
+template <typename T, uint32_t S> pod_bvector<T, S>::pod_bvector()
     : m_size(0)
     , m_num_blocks(0)
     , m_max_blocks(0)
@@ -396,7 +396,7 @@ template <typename T, unsigned int S> pod_bvector<T, S>::pod_bvector()
 {
 }
 
-template <typename T, unsigned int S> pod_bvector<T, S>::pod_bvector(unsigned int block_ptr_inc)
+template <typename T, uint32_t S> pod_bvector<T, S>::pod_bvector(uint32_t block_ptr_inc)
     : m_size(0)
     , m_num_blocks(0)
     , m_max_blocks(0)
@@ -405,20 +405,20 @@ template <typename T, unsigned int S> pod_bvector<T, S>::pod_bvector(unsigned in
 {
 }
 
-template <typename T, unsigned int S> pod_bvector<T, S>::pod_bvector(const pod_bvector<T, S>& o)
+template <typename T, uint32_t S> pod_bvector<T, S>::pod_bvector(const pod_bvector<T, S>& o)
     : m_size(o.m_size)
     , m_num_blocks(o.m_num_blocks)
     , m_max_blocks(o.m_max_blocks)
     , m_blocks(o.m_max_blocks ? pod_allocator<T*>::allocate(o.m_max_blocks) : 0)
     , m_block_ptr_inc(o.m_block_ptr_inc)
 {
-    for (unsigned int i = 0; i < o.m_num_blocks; ++i) {
+    for (uint32_t i = 0; i < o.m_num_blocks; ++i) {
         m_blocks[i] = pod_allocator<T>::allocate(block_size);
         mem_copy(m_blocks[i], o.m_blocks[i], block_size * sizeof(T));
     }
 }
 
-template <typename T, unsigned int S>
+template <typename T, uint32_t S>
 const pod_bvector<T, S>& pod_bvector<T, S>::operator = (const pod_bvector<T, S>& o)
 {
     if (this == &o) {
@@ -433,7 +433,7 @@ const pod_bvector<T, S>& pod_bvector<T, S>::operator = (const pod_bvector<T, S>&
     m_blocks = o.m_max_blocks ? pod_allocator<T*>::allocate(o.m_max_blocks) : 0;
     m_block_ptr_inc = o.m_block_ptr_inc;
 
-    for (unsigned int i = 0; i < o.m_num_blocks; ++i) {
+    for (uint32_t i = 0; i < o.m_num_blocks; ++i) {
         m_blocks[i] = pod_allocator<T>::allocate(block_size);
         mem_copy(m_blocks[i], o.m_blocks[i], block_size * sizeof(T));
     }
@@ -441,10 +441,10 @@ const pod_bvector<T, S>& pod_bvector<T, S>::operator = (const pod_bvector<T, S>&
     return *this;
 }
 
-template <typename T, unsigned int S>
+template <typename T, uint32_t S>
 inline void pod_bvector<T, S>::add(const T& v)
 {
-    _REGISTER_ unsigned int nb = m_size >> block_shift;
+    _REGISTER_ uint32_t nb = m_size >> block_shift;
     if (unlikely(nb >= m_num_blocks)) {
         allocate_block(nb);
     }
@@ -454,8 +454,8 @@ inline void pod_bvector<T, S>::add(const T& v)
     ++m_size;
 }
 
-template <typename T, unsigned int S>
-inline void pod_bvector<T, S>::allocate_block(unsigned int nb)
+template <typename T, uint32_t S>
+inline void pod_bvector<T, S>::allocate_block(uint32_t nb)
 {
     if (unlikely(nb >= m_max_blocks)) {
         T** new_blocks = pod_allocator<T*>::allocate(m_max_blocks + m_block_ptr_inc);
@@ -472,15 +472,15 @@ inline void pod_bvector<T, S>::allocate_block(unsigned int nb)
     m_num_blocks++;
 }
 
-template <typename T, unsigned int S>
+template <typename T, uint32_t S>
 inline void pod_bvector<T, S>::modify_last(const T& v)
 {
-    _REGISTER_ unsigned int idx = m_size - 1;
+    _REGISTER_ uint32_t idx = m_size - 1;
     T& val = m_blocks[idx >> block_shift][idx & block_mask];
     val = v;
 }
 
-template <typename T, unsigned int S>
+template <typename T, uint32_t S>
 inline void pod_bvector<T, S>::remove_all(void)
 {
     if (m_num_blocks) {
@@ -500,7 +500,7 @@ class block_allocator
 {
     typedef struct {
         byte* data;
-        unsigned int size;
+        uint32_t size;
     } block_type;
 
 public:
@@ -524,7 +524,7 @@ public:
         remove_all();
     }
 
-    byte* allocate(unsigned int size, unsigned int alignment = 1)
+    byte* allocate(uint32_t size, uint32_t alignment = 1)
     {
         if (!size) {
             return 0;
@@ -533,7 +533,7 @@ public:
         if (size <= m_remain_size) {
             byte* ptr = m_buf_ptr;
             if (alignment > 1) {
-                unsigned int align = (unsigned int)((alignment - ((intptr_t)(ptr)) % alignment) % alignment);
+                uint32_t align = (uint32_t)((alignment - ((intptr_t)(ptr)) % alignment) % alignment);
 
                 size += align;
                 ptr += align;
@@ -578,14 +578,14 @@ public:
     }
 
 #if _DEBUG
-    unsigned int all_mem_used(void) const { return m_all_mem;}
+    uint32_t all_mem_used(void) const { return m_all_mem;}
 #endif
 
 private:
     block_allocator(const block_allocator&);
     block_allocator& operator=(block_allocator&);
 
-    void allocate_block(unsigned int size)
+    void allocate_block(uint32_t size)
     {
         if (size < m_block_size) {
             size = m_block_size;
@@ -618,15 +618,15 @@ private:
 #endif
     }
 
-    unsigned int m_block_size;
-    unsigned int m_block_ptr_inc;
-    unsigned int m_num_blocks;
-    unsigned int m_max_blocks;
+    uint32_t m_block_size;
+    uint32_t m_block_ptr_inc;
+    uint32_t m_num_blocks;
+    uint32_t m_max_blocks;
     block_type* m_blocks;
     byte* m_buf_ptr;
-    unsigned int m_remain_size;
+    uint32_t m_remain_size;
 #if _DEBUG
-    unsigned int m_all_mem;
+    uint32_t m_all_mem;
 #endif
 };
 
@@ -640,7 +640,7 @@ template <typename T> inline void swap_elements(T& a, T& b)
     b = temp;
 }
 
-const int quick_sort_threshold = 9;
+const int32_t quick_sort_threshold = 9;
 
 // quick_sort
 template <typename Array, typename LessFunc>
@@ -653,17 +653,17 @@ void quick_sort(Array& array, LessFunc less)
     typename Array::value_type* e1;
     typename Array::value_type* e2;
 
-    int stack[80];
-    int* top = stack;
-    int limit = array.size();
-    int base = 0;
+    int32_t stack[80];
+    int32_t* top = stack;
+    int32_t limit = array.size();
+    int32_t base = 0;
 
     while (true) {
-        int len = limit - base;
+        int32_t len = limit - base;
 
-        int i;
-        int j;
-        int pivot;
+        int32_t i;
+        int32_t j;
+        int32_t pivot;
 
         if (len > quick_sort_threshold) {
             // we use base + len/2 as the pivot
@@ -753,7 +753,7 @@ unsigned remove_duplicates(Array& array, EqualFunc equal)
         return array.size();
     }
 
-    unsigned int i, j;
+    uint32_t i, j;
     for (i = 1, j = 1; i < array.size(); i++) {
         typename Array::value_type& e = array[i];
         if (!equal(e, array[i - 1])) {

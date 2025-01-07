@@ -33,7 +33,8 @@ option(OPT_EXTENSIONS "Build extension libraries." ON)
 option(OPT_TESTS "Build test apps" ON)
 option(OPT_DEMOS "Build example demos" ON)
 option(OPT_UNITTEST "Build unit tests" OFF)
-option(OPT_SANITIZE "Build with Sanitizer on DEBUG mode" OFF)
+option(OPT_SANITIZE "Build with Sanitizer" OFF)
+option(OPT_COVERAGE "Build with Coverage" OFF)
 
 if (NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Debug CACHE STRING "Build type" FORCE)
@@ -60,7 +61,7 @@ endif()
 
 if (OPT_UNITTEST)
 enable_testing()
-include (${CMAKE_CURRENT_LIST_DIR}/unittest/unittest.cmake)
+include (${CMAKE_CURRENT_LIST_DIR}/unit_tests/unit_tests.cmake)
 endif(OPT_UNITTEST)
 
 include(CheckIncludeFile)

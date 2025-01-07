@@ -15,11 +15,13 @@ FetchContent_MakeAvailable(googletest)
 add_library(GTest::GTest INTERFACE IMPORTED)
 target_link_libraries(GTest::GTest INTERFACE gtest_main)
 
-file(GLOB_RECURSE UNIT_SOURCES ${PROJECT_ROOT}/unittest/*.cpp)
+file(GLOB_RECURSE UNIT_SOURCES ${PROJECT_ROOT}/unit_tests/*.cpp)
+
+set(UNIT_TESTS unit_tests)
 
 include_directories(${PROJECT_ROOT})
-add_executable(unit_test ${UNIT_SOURCES})
-target_link_libraries(unit_test PRIVATE GTest::GTest ${LIB_NAME})
+add_executable(${UNIT_TESTS} ${UNIT_SOURCES})
+target_link_libraries(${UNIT_TESTS} PRIVATE GTest::GTest ${LIB_NAME})
 
 if (WIN32)
     add_custom_command(
@@ -29,5 +31,5 @@ if (WIN32)
     )
 endif()
 
-add_test(NAME unittest COMMAND unit_test)
+add_test(NAME unittest COMMAND ${UNIT_TESTS})
 
