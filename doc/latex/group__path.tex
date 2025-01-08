@@ -1,0 +1,767 @@
+\doxysection{Path}
+\label{group__path}\index{Path@{Path}}
+\doxysubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\label{group__path_ga838bdd450d89cf57e318f63aad3c0157}} 
+typedef enum \textbf{ \+\_\+ps\+\_\+path\+\_\+cmd} \textbf{ ps\+\_\+path\+\_\+cmd}
+\begin{DoxyCompactList}\small\item\em Path command for vertices. \end{DoxyCompactList}\item 
+\mbox{\label{group__path_gaa7a42f9878355aa3312570bd68524a15}} 
+typedef enum \textbf{ \+\_\+ps\+\_\+path\+\_\+op} \textbf{ ps\+\_\+path\+\_\+operation}
+\begin{DoxyCompactList}\small\item\em Path clipping operations. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \textbf{ \+\_\+ps\+\_\+path\+\_\+cmd} \{ \newline
+\textbf{ P\+A\+T\+H\+\_\+\+C\+M\+D\+\_\+\+S\+T\+OP} = 0, 
+\textbf{ P\+A\+T\+H\+\_\+\+C\+M\+D\+\_\+\+M\+O\+V\+E\+\_\+\+TO} = 1, 
+\textbf{ P\+A\+T\+H\+\_\+\+C\+M\+D\+\_\+\+L\+I\+N\+E\+\_\+\+TO} = 2, 
+\textbf{ P\+A\+T\+H\+\_\+\+C\+M\+D\+\_\+\+C\+U\+R\+V\+E3} = 3, 
+\newline
+\textbf{ P\+A\+T\+H\+\_\+\+C\+M\+D\+\_\+\+C\+U\+R\+V\+E4} = 4, 
+\textbf{ P\+A\+T\+H\+\_\+\+C\+M\+D\+\_\+\+E\+N\+D\+\_\+\+P\+O\+LY} = 0x0F
+ \}
+\begin{DoxyCompactList}\small\item\em Path command for vertices. \end{DoxyCompactList}\item 
+enum \textbf{ \+\_\+ps\+\_\+path\+\_\+op} \{ \textbf{ P\+A\+T\+H\+\_\+\+O\+P\+\_\+\+U\+N\+I\+ON}, 
+\textbf{ P\+A\+T\+H\+\_\+\+O\+P\+\_\+\+I\+N\+T\+E\+R\+S\+E\+CT}, 
+\textbf{ P\+A\+T\+H\+\_\+\+O\+P\+\_\+\+X\+OR}, 
+\textbf{ P\+A\+T\+H\+\_\+\+O\+P\+\_\+\+D\+I\+FF}
+ \}
+\begin{DoxyCompactList}\small\item\em Path clipping operations. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+path} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+path\+\_\+create} (void)
+\begin{DoxyCompactList}\small\item\em Create a new empty path object. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+path} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+path\+\_\+create\+\_\+copy} (const \textbf{ ps\+\_\+path} $\ast$path)
+\begin{DoxyCompactList}\small\item\em Create a copy from an existing path object. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+path} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+path\+\_\+ref} (\textbf{ ps\+\_\+path} $\ast$path)
+\begin{DoxyCompactList}\small\item\em Increases the reference count of the path by 1. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+path\+\_\+unref} (\textbf{ ps\+\_\+path} $\ast$path)
+\begin{DoxyCompactList}\small\item\em Decrements the reference count for the path object. If the reference count on the path falls to 0, the path is freed. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+path\+\_\+move\+\_\+to} (\textbf{ ps\+\_\+path} $\ast$path, const \textbf{ ps\+\_\+point} $\ast$point)
+\begin{DoxyCompactList}\small\item\em Begin a new sub path, and set the current point in the path. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+path\+\_\+line\+\_\+to} (\textbf{ ps\+\_\+path} $\ast$path, const \textbf{ ps\+\_\+point} $\ast$point)
+\begin{DoxyCompactList}\small\item\em Add a line to the path from the current point to given point. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+path\+\_\+tangent\+\_\+arc\+\_\+to} (\textbf{ ps\+\_\+path} $\ast$path, float radius, const \textbf{ ps\+\_\+point} $\ast$tp, const \textbf{ ps\+\_\+point} $\ast$ep)
+\begin{DoxyCompactList}\small\item\em Add an arc to the path which tangent at two line. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+path\+\_\+arc\+\_\+to} (\textbf{ ps\+\_\+path} $\ast$path, float radiusX, float radiusY, float angle, \textbf{ ps\+\_\+bool} large\+\_\+arc, \textbf{ ps\+\_\+bool} clockwise, const \textbf{ ps\+\_\+point} $\ast$ep)
+\begin{DoxyCompactList}\small\item\em Add an arc to the path, using radius, angle and end point. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+path\+\_\+bezier\+\_\+to} (\textbf{ ps\+\_\+path} $\ast$path, const \textbf{ ps\+\_\+point} $\ast$fcp, const \textbf{ ps\+\_\+point} $\ast$scp, const \textbf{ ps\+\_\+point} $\ast$ep)
+\begin{DoxyCompactList}\small\item\em Add a cubic bezier spline to the path from current point to end point. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+path\+\_\+quad\+\_\+to} (\textbf{ ps\+\_\+path} $\ast$path, const \textbf{ ps\+\_\+point} $\ast$cp, const \textbf{ ps\+\_\+point} $\ast$ep)
+\begin{DoxyCompactList}\small\item\em Add a quadratic bezier spline to the path from current point to end point. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+path\+\_\+sub\+\_\+close} (\textbf{ ps\+\_\+path} $\ast$path)
+\begin{DoxyCompactList}\small\item\em Close the sub path, and begin a new one. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT float P\+I\+C\+A\+PI \textbf{ ps\+\_\+path\+\_\+get\+\_\+length} (const \textbf{ ps\+\_\+path} $\ast$path)
+\begin{DoxyCompactList}\small\item\em Return The length of the path. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+path\+\_\+clear} (\textbf{ ps\+\_\+path} $\ast$path)
+\begin{DoxyCompactList}\small\item\em Clear the path to empty. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+bool} P\+I\+C\+A\+PI \textbf{ ps\+\_\+path\+\_\+is\+\_\+empty} (const \textbf{ ps\+\_\+path} $\ast$path)
+\begin{DoxyCompactList}\small\item\em Checks whether the path is empty. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT unsigned int P\+I\+C\+A\+PI \textbf{ ps\+\_\+path\+\_\+get\+\_\+vertex\+\_\+count} (const \textbf{ ps\+\_\+path} $\ast$path)
+\begin{DoxyCompactList}\small\item\em Return the count of vertices in the path. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+path\+\_\+cmd} P\+I\+C\+A\+PI \textbf{ ps\+\_\+path\+\_\+get\+\_\+vertex} (const \textbf{ ps\+\_\+path} $\ast$path, unsigned int index, \textbf{ ps\+\_\+point} $\ast$point)
+\begin{DoxyCompactList}\small\item\em Get a vertex from the path by index, and return the vertex command. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+bool} P\+I\+C\+A\+PI \textbf{ ps\+\_\+path\+\_\+bounding\+\_\+rect} (const \textbf{ ps\+\_\+path} $\ast$path, \textbf{ ps\+\_\+rect} $\ast$rect)
+\begin{DoxyCompactList}\small\item\em Get the bounding rectangle of the path. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+bool} P\+I\+C\+A\+PI \textbf{ ps\+\_\+path\+\_\+contains} (const \textbf{ ps\+\_\+path} $\ast$path, const \textbf{ ps\+\_\+point} $\ast$point, \textbf{ ps\+\_\+fill\+\_\+rule} rule)
+\begin{DoxyCompactList}\small\item\em Check whether a point is contained in the path by fill method. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+bool} P\+I\+C\+A\+PI \textbf{ ps\+\_\+path\+\_\+stroke\+\_\+contains} (const \textbf{ ps\+\_\+path} $\ast$path, const \textbf{ ps\+\_\+point} $\ast$point, float width)
+\begin{DoxyCompactList}\small\item\em Check whether a point is contained in the path by stroke method. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+path\+\_\+add\+\_\+line} (\textbf{ ps\+\_\+path} $\ast$path, const \textbf{ ps\+\_\+point} $\ast$p1, const \textbf{ ps\+\_\+point} $\ast$p2)
+\begin{DoxyCompactList}\small\item\em Add a line to the path. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+path\+\_\+add\+\_\+arc} (\textbf{ ps\+\_\+path} $\ast$path, const \textbf{ ps\+\_\+point} $\ast$cp, float radius, float sangle, float eangle, \textbf{ ps\+\_\+bool} clockwise)
+\begin{DoxyCompactList}\small\item\em Add a arc to the path. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+path\+\_\+add\+\_\+rect} (\textbf{ ps\+\_\+path} $\ast$path, const \textbf{ ps\+\_\+rect} $\ast$rect)
+\begin{DoxyCompactList}\small\item\em Add a rectangle to the path. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+path\+\_\+add\+\_\+ellipse} (\textbf{ ps\+\_\+path} $\ast$path, const \textbf{ ps\+\_\+rect} $\ast$rect)
+\begin{DoxyCompactList}\small\item\em Add an ellipse to the path. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+path\+\_\+add\+\_\+rounded\+\_\+rect} (\textbf{ ps\+\_\+path} $\ast$path, const \textbf{ ps\+\_\+rect} $\ast$rect, float ltx, float lty, float rtx, float rty, float lbx, float lby, float rbx, float rby)
+\begin{DoxyCompactList}\small\item\em Add a rounded rectangle to the path. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+path\+\_\+add\+\_\+sub\+\_\+path} (\textbf{ ps\+\_\+path} $\ast$path, const \textbf{ ps\+\_\+path} $\ast$spath)
+\begin{DoxyCompactList}\small\item\em Add an sub path to the path. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+path\+\_\+clipping} (\textbf{ ps\+\_\+path} $\ast$result, \textbf{ ps\+\_\+path\+\_\+operation} op, const \textbf{ ps\+\_\+path} $\ast$a, const \textbf{ ps\+\_\+path} $\ast$b)
+\begin{DoxyCompactList}\small\item\em Clipping two path with the operation and get the result path. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+
+
+\doxysubsection{Enumeration Type Documentation}
+\mbox{\label{group__path_ga7e3b1c8bfcf2b95300f3b1f25f2ffdf6}} 
+\index{Path@{Path}!\_ps\_path\_cmd@{\_ps\_path\_cmd}}
+\index{\_ps\_path\_cmd@{\_ps\_path\_cmd}!Path@{Path}}
+\doxysubsubsection{\_ps\_path\_cmd}
+{\footnotesize\ttfamily enum \textbf{ \+\_\+ps\+\_\+path\+\_\+cmd}}
+
+
+
+Path command for vertices. 
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{PATH\_CMD\_STOP@{PATH\_CMD\_STOP}!Path@{Path}}\index{Path@{Path}!PATH\_CMD\_STOP@{PATH\_CMD\_STOP}}}\mbox{\label{group__path_gga7e3b1c8bfcf2b95300f3b1f25f2ffdf6aeda0c6630855d116e1265db2e4b9b5e5}} 
+P\+A\+T\+H\+\_\+\+C\+M\+D\+\_\+\+S\+T\+OP&Stop command. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{PATH\_CMD\_MOVE\_TO@{PATH\_CMD\_MOVE\_TO}!Path@{Path}}\index{Path@{Path}!PATH\_CMD\_MOVE\_TO@{PATH\_CMD\_MOVE\_TO}}}\mbox{\label{group__path_gga7e3b1c8bfcf2b95300f3b1f25f2ffdf6a1df79d06252a2c8a0e19c1769487657b}} 
+P\+A\+T\+H\+\_\+\+C\+M\+D\+\_\+\+M\+O\+V\+E\+\_\+\+TO&Move to command. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{PATH\_CMD\_LINE\_TO@{PATH\_CMD\_LINE\_TO}!Path@{Path}}\index{Path@{Path}!PATH\_CMD\_LINE\_TO@{PATH\_CMD\_LINE\_TO}}}\mbox{\label{group__path_gga7e3b1c8bfcf2b95300f3b1f25f2ffdf6a30ad00a964df29b78a19839db15dccea}} 
+P\+A\+T\+H\+\_\+\+C\+M\+D\+\_\+\+L\+I\+N\+E\+\_\+\+TO&Line to command. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{PATH\_CMD\_CURVE3@{PATH\_CMD\_CURVE3}!Path@{Path}}\index{Path@{Path}!PATH\_CMD\_CURVE3@{PATH\_CMD\_CURVE3}}}\mbox{\label{group__path_gga7e3b1c8bfcf2b95300f3b1f25f2ffdf6aca4a14ed6fc19013f0c52655ecb1bc64}} 
+P\+A\+T\+H\+\_\+\+C\+M\+D\+\_\+\+C\+U\+R\+V\+E3&Quad curve to command. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{PATH\_CMD\_CURVE4@{PATH\_CMD\_CURVE4}!Path@{Path}}\index{Path@{Path}!PATH\_CMD\_CURVE4@{PATH\_CMD\_CURVE4}}}\mbox{\label{group__path_gga7e3b1c8bfcf2b95300f3b1f25f2ffdf6ae08e58bb35199ee27b7e7de4c954b71e}} 
+P\+A\+T\+H\+\_\+\+C\+M\+D\+\_\+\+C\+U\+R\+V\+E4&Bezier curve to command. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{PATH\_CMD\_END\_POLY@{PATH\_CMD\_END\_POLY}!Path@{Path}}\index{Path@{Path}!PATH\_CMD\_END\_POLY@{PATH\_CMD\_END\_POLY}}}\mbox{\label{group__path_gga7e3b1c8bfcf2b95300f3b1f25f2ffdf6a919213cca4025864fc0f529be5b870ff}} 
+P\+A\+T\+H\+\_\+\+C\+M\+D\+\_\+\+E\+N\+D\+\_\+\+P\+O\+LY&End polyline command. \\
+\hline
+
+\end{DoxyEnumFields}
+
+
+Definition at line 3301 of file picasso.\+h.
+
+\mbox{\label{group__path_gae6007109d33fd12e3900ac6da459bf88}} 
+\index{Path@{Path}!\_ps\_path\_op@{\_ps\_path\_op}}
+\index{\_ps\_path\_op@{\_ps\_path\_op}!Path@{Path}}
+\doxysubsubsection{\_ps\_path\_op}
+{\footnotesize\ttfamily enum \textbf{ \+\_\+ps\+\_\+path\+\_\+op}}
+
+
+
+Path clipping operations. 
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{PATH\_OP\_UNION@{PATH\_OP\_UNION}!Path@{Path}}\index{Path@{Path}!PATH\_OP\_UNION@{PATH\_OP\_UNION}}}\mbox{\label{group__path_ggae6007109d33fd12e3900ac6da459bf88a83fdf2541b52d22cdf11c0df15369bf2}} 
+P\+A\+T\+H\+\_\+\+O\+P\+\_\+\+U\+N\+I\+ON&Union. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{PATH\_OP\_INTERSECT@{PATH\_OP\_INTERSECT}!Path@{Path}}\index{Path@{Path}!PATH\_OP\_INTERSECT@{PATH\_OP\_INTERSECT}}}\mbox{\label{group__path_ggae6007109d33fd12e3900ac6da459bf88a6961f8d15b6508d2881e7010ded7d193}} 
+P\+A\+T\+H\+\_\+\+O\+P\+\_\+\+I\+N\+T\+E\+R\+S\+E\+CT&Intersection. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{PATH\_OP\_XOR@{PATH\_OP\_XOR}!Path@{Path}}\index{Path@{Path}!PATH\_OP\_XOR@{PATH\_OP\_XOR}}}\mbox{\label{group__path_ggae6007109d33fd12e3900ac6da459bf88aff58d5d380ec319172c3f98cd990f040}} 
+P\+A\+T\+H\+\_\+\+O\+P\+\_\+\+X\+OR&Exclusive or. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{PATH\_OP\_DIFF@{PATH\_OP\_DIFF}!Path@{Path}}\index{Path@{Path}!PATH\_OP\_DIFF@{PATH\_OP\_DIFF}}}\mbox{\label{group__path_ggae6007109d33fd12e3900ac6da459bf88a905c39231d4f801b60e158962daba058}} 
+P\+A\+T\+H\+\_\+\+O\+P\+\_\+\+D\+I\+FF&Difference. \\
+\hline
+
+\end{DoxyEnumFields}
+
+
+Definition at line 3477 of file picasso.\+h.
+
+
+
+\doxysubsection{Function Documentation}
+\mbox{\label{group__path_ga4a80afa36939fa41a0d288adaead0067}} 
+\index{Path@{Path}!ps\_path\_add\_arc@{ps\_path\_add\_arc}}
+\index{ps\_path\_add\_arc@{ps\_path\_add\_arc}!Path@{Path}}
+\doxysubsubsection{ps\_path\_add\_arc()}
+{\footnotesize\ttfamily void ps\+\_\+path\+\_\+add\+\_\+arc (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+path} $\ast$}]{path,  }\item[{const \textbf{ ps\+\_\+point} $\ast$}]{cp,  }\item[{float}]{radius,  }\item[{float}]{sangle,  }\item[{float}]{eangle,  }\item[{\textbf{ ps\+\_\+bool}}]{clockwise }\end{DoxyParamCaption})}
+
+
+
+Add a arc to the path. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em path} & Pointer to an existing path object. \\
+\hline
+{\em cp} & The center point of the arc. \\
+\hline
+{\em radius} & The radius of the arc. \\
+\hline
+{\em sangle} & The start angle, in radians. \\
+\hline
+{\em eangle} & The end angle, in radians. \\
+\hline
+{\em clockwise} & True is clockwise, False is counter clockwise.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+path\+\_\+add\+\_\+line}{p.}{group__path_gae05db304c5c79f243d4827206f0a61b4}, \doxyref{ps\+\_\+path\+\_\+add\+\_\+rect}{p.}{group__path_ga1b21042aa06276a5fb4fbe9d00e68cea}, \doxyref{ps\+\_\+path\+\_\+add\+\_\+ellipse}{p.}{group__path_ga22d76078132b064b8b53a6a7662cc618}, \doxyref{ps\+\_\+path\+\_\+add\+\_\+rounded\+\_\+rect}{p.}{group__path_gaf96913ad1feb83ac48a6c543d5217726}, \doxyref{ps\+\_\+path\+\_\+add\+\_\+sub\+\_\+path}{p.}{group__path_ga49c46824273b0f69457d53eff2a8a75b} 
+\end{DoxySeeAlso}
+\mbox{\label{group__path_ga22d76078132b064b8b53a6a7662cc618}} 
+\index{Path@{Path}!ps\_path\_add\_ellipse@{ps\_path\_add\_ellipse}}
+\index{ps\_path\_add\_ellipse@{ps\_path\_add\_ellipse}!Path@{Path}}
+\doxysubsubsection{ps\_path\_add\_ellipse()}
+{\footnotesize\ttfamily void ps\+\_\+path\+\_\+add\+\_\+ellipse (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+path} $\ast$}]{path,  }\item[{const \textbf{ ps\+\_\+rect} $\ast$}]{rect }\end{DoxyParamCaption})}
+
+
+
+Add an ellipse to the path. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em path} & Pointer to an existing path object. \\
+\hline
+{\em rect} & The rectangle to enclose the ellipse.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+path\+\_\+add\+\_\+arc}{p.}{group__path_ga4a80afa36939fa41a0d288adaead0067}, \doxyref{ps\+\_\+path\+\_\+add\+\_\+line}{p.}{group__path_gae05db304c5c79f243d4827206f0a61b4}, \doxyref{ps\+\_\+path\+\_\+add\+\_\+rect}{p.}{group__path_ga1b21042aa06276a5fb4fbe9d00e68cea}, \doxyref{ps\+\_\+path\+\_\+add\+\_\+rounded\+\_\+rect}{p.}{group__path_gaf96913ad1feb83ac48a6c543d5217726}, \doxyref{ps\+\_\+path\+\_\+add\+\_\+sub\+\_\+path}{p.}{group__path_ga49c46824273b0f69457d53eff2a8a75b} 
+\end{DoxySeeAlso}
+\mbox{\label{group__path_gae05db304c5c79f243d4827206f0a61b4}} 
+\index{Path@{Path}!ps\_path\_add\_line@{ps\_path\_add\_line}}
+\index{ps\_path\_add\_line@{ps\_path\_add\_line}!Path@{Path}}
+\doxysubsubsection{ps\_path\_add\_line()}
+{\footnotesize\ttfamily void ps\+\_\+path\+\_\+add\+\_\+line (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+path} $\ast$}]{path,  }\item[{const \textbf{ ps\+\_\+point} $\ast$}]{p1,  }\item[{const \textbf{ ps\+\_\+point} $\ast$}]{p2 }\end{DoxyParamCaption})}
+
+
+
+Add a line to the path. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em path} & Pointer to an existing path object. \\
+\hline
+{\em p1} & The start point for the line. \\
+\hline
+{\em p2} & The end point for the line.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+path\+\_\+add\+\_\+arc}{p.}{group__path_ga4a80afa36939fa41a0d288adaead0067}, \doxyref{ps\+\_\+path\+\_\+add\+\_\+rect}{p.}{group__path_ga1b21042aa06276a5fb4fbe9d00e68cea}, \doxyref{ps\+\_\+path\+\_\+add\+\_\+ellipse}{p.}{group__path_ga22d76078132b064b8b53a6a7662cc618}, \doxyref{ps\+\_\+path\+\_\+add\+\_\+rounded\+\_\+rect}{p.}{group__path_gaf96913ad1feb83ac48a6c543d5217726}, \doxyref{ps\+\_\+path\+\_\+add\+\_\+sub\+\_\+path}{p.}{group__path_ga49c46824273b0f69457d53eff2a8a75b} 
+\end{DoxySeeAlso}
+\mbox{\label{group__path_ga1b21042aa06276a5fb4fbe9d00e68cea}} 
+\index{Path@{Path}!ps\_path\_add\_rect@{ps\_path\_add\_rect}}
+\index{ps\_path\_add\_rect@{ps\_path\_add\_rect}!Path@{Path}}
+\doxysubsubsection{ps\_path\_add\_rect()}
+{\footnotesize\ttfamily void ps\+\_\+path\+\_\+add\+\_\+rect (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+path} $\ast$}]{path,  }\item[{const \textbf{ ps\+\_\+rect} $\ast$}]{rect }\end{DoxyParamCaption})}
+
+
+
+Add a rectangle to the path. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em path} & Pointer to an existing path object. \\
+\hline
+{\em rect} & The rectangle to be added.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+path\+\_\+add\+\_\+arc}{p.}{group__path_ga4a80afa36939fa41a0d288adaead0067}, \doxyref{ps\+\_\+path\+\_\+add\+\_\+line}{p.}{group__path_gae05db304c5c79f243d4827206f0a61b4}, \doxyref{ps\+\_\+path\+\_\+add\+\_\+ellipse}{p.}{group__path_ga22d76078132b064b8b53a6a7662cc618}, \doxyref{ps\+\_\+path\+\_\+add\+\_\+rounded\+\_\+rect}{p.}{group__path_gaf96913ad1feb83ac48a6c543d5217726}, \doxyref{ps\+\_\+path\+\_\+add\+\_\+sub\+\_\+path}{p.}{group__path_ga49c46824273b0f69457d53eff2a8a75b} 
+\end{DoxySeeAlso}
+\mbox{\label{group__path_gaf96913ad1feb83ac48a6c543d5217726}} 
+\index{Path@{Path}!ps\_path\_add\_rounded\_rect@{ps\_path\_add\_rounded\_rect}}
+\index{ps\_path\_add\_rounded\_rect@{ps\_path\_add\_rounded\_rect}!Path@{Path}}
+\doxysubsubsection{ps\_path\_add\_rounded\_rect()}
+{\footnotesize\ttfamily void ps\+\_\+path\+\_\+add\+\_\+rounded\+\_\+rect (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+path} $\ast$}]{path,  }\item[{const \textbf{ ps\+\_\+rect} $\ast$}]{rect,  }\item[{float}]{ltx,  }\item[{float}]{lty,  }\item[{float}]{rtx,  }\item[{float}]{rty,  }\item[{float}]{lbx,  }\item[{float}]{lby,  }\item[{float}]{rbx,  }\item[{float}]{rby }\end{DoxyParamCaption})}
+
+
+
+Add a rounded rectangle to the path. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em path} & Pointer to an existing path object. \\
+\hline
+{\em rect} & The rectangle which will be added. \\
+\hline
+{\em ltx} & The left top horizontal radius. \\
+\hline
+{\em lty} & The left top vertical radius. \\
+\hline
+{\em rtx} & The right top horizontal radius. \\
+\hline
+{\em rty} & The right top vertical radius. \\
+\hline
+{\em lbx} & The left bottom horizontal radius. \\
+\hline
+{\em lby} & The left bottom vertical radius. \\
+\hline
+{\em rbx} & The right bottom horizontal radius. \\
+\hline
+{\em rby} & The right bottom vertical radius.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+path\+\_\+add\+\_\+arc}{p.}{group__path_ga4a80afa36939fa41a0d288adaead0067}, \doxyref{ps\+\_\+path\+\_\+add\+\_\+line}{p.}{group__path_gae05db304c5c79f243d4827206f0a61b4}, \doxyref{ps\+\_\+path\+\_\+add\+\_\+rect}{p.}{group__path_ga1b21042aa06276a5fb4fbe9d00e68cea}, \doxyref{ps\+\_\+path\+\_\+add\+\_\+ellipse}{p.}{group__path_ga22d76078132b064b8b53a6a7662cc618}, \doxyref{ps\+\_\+path\+\_\+add\+\_\+sub\+\_\+path}{p.}{group__path_ga49c46824273b0f69457d53eff2a8a75b} 
+\end{DoxySeeAlso}
+\mbox{\label{group__path_ga49c46824273b0f69457d53eff2a8a75b}} 
+\index{Path@{Path}!ps\_path\_add\_sub\_path@{ps\_path\_add\_sub\_path}}
+\index{ps\_path\_add\_sub\_path@{ps\_path\_add\_sub\_path}!Path@{Path}}
+\doxysubsubsection{ps\_path\_add\_sub\_path()}
+{\footnotesize\ttfamily void ps\+\_\+path\+\_\+add\+\_\+sub\+\_\+path (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+path} $\ast$}]{path,  }\item[{const \textbf{ ps\+\_\+path} $\ast$}]{spath }\end{DoxyParamCaption})}
+
+
+
+Add an sub path to the path. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em path} & Pointer to an existing path object. \\
+\hline
+{\em spath} & The path will be added.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+path\+\_\+add\+\_\+arc}{p.}{group__path_ga4a80afa36939fa41a0d288adaead0067}, \doxyref{ps\+\_\+path\+\_\+add\+\_\+line}{p.}{group__path_gae05db304c5c79f243d4827206f0a61b4}, \doxyref{ps\+\_\+path\+\_\+add\+\_\+rect}{p.}{group__path_ga1b21042aa06276a5fb4fbe9d00e68cea}, \doxyref{ps\+\_\+path\+\_\+add\+\_\+rounded\+\_\+rect}{p.}{group__path_gaf96913ad1feb83ac48a6c543d5217726}, \doxyref{ps\+\_\+path\+\_\+add\+\_\+ellipse}{p.}{group__path_ga22d76078132b064b8b53a6a7662cc618} 
+\end{DoxySeeAlso}
+\mbox{\label{group__path_gaa70c71f36ee733b655730e9c9281d2de}} 
+\index{Path@{Path}!ps\_path\_arc\_to@{ps\_path\_arc\_to}}
+\index{ps\_path\_arc\_to@{ps\_path\_arc\_to}!Path@{Path}}
+\doxysubsubsection{ps\_path\_arc\_to()}
+{\footnotesize\ttfamily void ps\+\_\+path\+\_\+arc\+\_\+to (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+path} $\ast$}]{path,  }\item[{float}]{radiusX,  }\item[{float}]{radiusY,  }\item[{float}]{angle,  }\item[{\textbf{ ps\+\_\+bool}}]{large\+\_\+arc,  }\item[{\textbf{ ps\+\_\+bool}}]{clockwise,  }\item[{const \textbf{ ps\+\_\+point} $\ast$}]{ep }\end{DoxyParamCaption})}
+
+
+
+Add an arc to the path, using radius, angle and end point. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em path} & Pointer to an existing path object. \\
+\hline
+{\em radiusX} & The horizontal radius of arc. \\
+\hline
+{\em radiusY} & The vertical radius of arc. \\
+\hline
+{\em angle} & The angle of arc, in radians. \\
+\hline
+{\em large\+\_\+arc} & True is large arc, False is small arc. \\
+\hline
+{\em clockwise} & True is clockwise, False is counter clockwise. \\
+\hline
+{\em ep} & The end point of the arc.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+path\+\_\+move\+\_\+to}{p.}{group__path_ga954a589403b65e3f801bec4df75aa8d7}, \doxyref{ps\+\_\+path\+\_\+bezier\+\_\+to}{p.}{group__path_ga654d584f8ba6d3b176e8ae79b0b3d66d}, \doxyref{ps\+\_\+path\+\_\+quad\+\_\+to}{p.}{group__path_ga1f39765e67617217af9716957a2384cb} \doxyref{ps\+\_\+path\+\_\+tangent\+\_\+arc\+\_\+to}{p.}{group__path_gaed6543961c56b224c8e55eb67a9c307d}, \doxyref{ps\+\_\+path\+\_\+line\+\_\+to}{p.}{group__path_gaf84c699925f5d8d27a80c1edfb0f5563} 
+\end{DoxySeeAlso}
+\mbox{\label{group__path_ga654d584f8ba6d3b176e8ae79b0b3d66d}} 
+\index{Path@{Path}!ps\_path\_bezier\_to@{ps\_path\_bezier\_to}}
+\index{ps\_path\_bezier\_to@{ps\_path\_bezier\_to}!Path@{Path}}
+\doxysubsubsection{ps\_path\_bezier\_to()}
+{\footnotesize\ttfamily void ps\+\_\+path\+\_\+bezier\+\_\+to (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+path} $\ast$}]{path,  }\item[{const \textbf{ ps\+\_\+point} $\ast$}]{fcp,  }\item[{const \textbf{ ps\+\_\+point} $\ast$}]{scp,  }\item[{const \textbf{ ps\+\_\+point} $\ast$}]{ep }\end{DoxyParamCaption})}
+
+
+
+Add a cubic bezier spline to the path from current point to end point. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em path} & Pointer to an existing path object. \\
+\hline
+{\em fcp} & The first control point of the curve. \\
+\hline
+{\em scp} & The second control point of the curve. \\
+\hline
+{\em ep} & The end point of the curve.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+path\+\_\+move\+\_\+to}{p.}{group__path_ga954a589403b65e3f801bec4df75aa8d7}, \doxyref{ps\+\_\+path\+\_\+arc\+\_\+to}{p.}{group__path_gaa70c71f36ee733b655730e9c9281d2de}, \doxyref{ps\+\_\+path\+\_\+quad\+\_\+to}{p.}{group__path_ga1f39765e67617217af9716957a2384cb} \doxyref{ps\+\_\+path\+\_\+tangent\+\_\+arc\+\_\+to}{p.}{group__path_gaed6543961c56b224c8e55eb67a9c307d}, \doxyref{ps\+\_\+path\+\_\+line\+\_\+to}{p.}{group__path_gaf84c699925f5d8d27a80c1edfb0f5563} 
+\end{DoxySeeAlso}
+\mbox{\label{group__path_gad73761a49225721353dbf33ddac8f09b}} 
+\index{Path@{Path}!ps\_path\_bounding\_rect@{ps\_path\_bounding\_rect}}
+\index{ps\_path\_bounding\_rect@{ps\_path\_bounding\_rect}!Path@{Path}}
+\doxysubsubsection{ps\_path\_bounding\_rect()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+bool} ps\+\_\+path\+\_\+bounding\+\_\+rect (\begin{DoxyParamCaption}\item[{const \textbf{ ps\+\_\+path} $\ast$}]{path,  }\item[{\textbf{ ps\+\_\+rect} $\ast$}]{rect }\end{DoxyParamCaption})}
+
+
+
+Get the bounding rectangle of the path. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em path} & Pointer to an existing path object. \\
+\hline
+{\em rect} & Pointer to a buffer to receiving the rect.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if is success, otherwise False.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+path\+\_\+get\+\_\+vertex\+\_\+count}{p.}{group__path_ga5f38d7b21720e6ce0d233eccf352d8e0}, \doxyref{ps\+\_\+path\+\_\+get\+\_\+vertex}{p.}{group__path_ga420531dae755417305bb4092659bab53}, \doxyref{ps\+\_\+path\+\_\+contains}{p.}{group__path_gaf026a4a1760f350873c1a8a9e3a7e8f2}, \doxyref{ps\+\_\+path\+\_\+stroke\+\_\+contains}{p.}{group__path_gaca11c82acc68f1a5cdf886727b3f50d9} 
+\end{DoxySeeAlso}
+\mbox{\label{group__path_ga2966ad40d07c9f5f52f2dc6516107115}} 
+\index{Path@{Path}!ps\_path\_clear@{ps\_path\_clear}}
+\index{ps\_path\_clear@{ps\_path\_clear}!Path@{Path}}
+\doxysubsubsection{ps\_path\_clear()}
+{\footnotesize\ttfamily void ps\+\_\+path\+\_\+clear (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+path} $\ast$}]{path }\end{DoxyParamCaption})}
+
+
+
+Clear the path to empty. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em path} & Pointer to an existing path object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+path\+\_\+sub\+\_\+close}{p.}{group__path_gac19ea77b0228e57be93ebc43e7ed2fad}, \doxyref{ps\+\_\+path\+\_\+get\+\_\+length}{p.}{group__path_gaa8a887153c3eb81649a7a67410329aea}, \doxyref{ps\+\_\+path\+\_\+is\+\_\+empty}{p.}{group__path_ga0640542247094b43cdde639ded93e85e} 
+\end{DoxySeeAlso}
+\mbox{\label{group__path_gad2e602bf42ffba80251c4658197aac62}} 
+\index{Path@{Path}!ps\_path\_clipping@{ps\_path\_clipping}}
+\index{ps\_path\_clipping@{ps\_path\_clipping}!Path@{Path}}
+\doxysubsubsection{ps\_path\_clipping()}
+{\footnotesize\ttfamily void ps\+\_\+path\+\_\+clipping (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+path} $\ast$}]{result,  }\item[{\textbf{ ps\+\_\+path\+\_\+operation}}]{op,  }\item[{const \textbf{ ps\+\_\+path} $\ast$}]{a,  }\item[{const \textbf{ ps\+\_\+path} $\ast$}]{b }\end{DoxyParamCaption})}
+
+
+
+Clipping two path with the operation and get the result path. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em result} & Pointer to an existing path object for result. \\
+\hline
+{\em op} & The specified operation for clipping. \\
+\hline
+{\em a} & The source path for clipping. \\
+\hline
+{\em b} & The path which will be clipping.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+path\+\_\+get\+\_\+vertex}{p.}{group__path_ga420531dae755417305bb4092659bab53}, \doxyref{ps\+\_\+path\+\_\+get\+\_\+vertex\+\_\+count}{p.}{group__path_ga5f38d7b21720e6ce0d233eccf352d8e0} 
+\end{DoxySeeAlso}
+\mbox{\label{group__path_gaf026a4a1760f350873c1a8a9e3a7e8f2}} 
+\index{Path@{Path}!ps\_path\_contains@{ps\_path\_contains}}
+\index{ps\_path\_contains@{ps\_path\_contains}!Path@{Path}}
+\doxysubsubsection{ps\_path\_contains()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+bool} ps\+\_\+path\+\_\+contains (\begin{DoxyParamCaption}\item[{const \textbf{ ps\+\_\+path} $\ast$}]{path,  }\item[{const \textbf{ ps\+\_\+point} $\ast$}]{point,  }\item[{\textbf{ ps\+\_\+fill\+\_\+rule}}]{rule }\end{DoxyParamCaption})}
+
+
+
+Check whether a point is contained in the path by fill method. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em path} & Pointer to an existing path object. \\
+\hline
+{\em point} & The point to be checked. \\
+\hline
+{\em rule} & The filling rule for the path.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if the point is contained, otherwise False.
+\end{DoxyReturn}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+path\+\_\+get\+\_\+vertex\+\_\+count}{p.}{group__path_ga5f38d7b21720e6ce0d233eccf352d8e0}, \doxyref{ps\+\_\+path\+\_\+get\+\_\+vertex}{p.}{group__path_ga420531dae755417305bb4092659bab53}, \doxyref{ps\+\_\+path\+\_\+bounding\+\_\+rect}{p.}{group__path_gad73761a49225721353dbf33ddac8f09b}, \doxyref{ps\+\_\+path\+\_\+stroke\+\_\+contains}{p.}{group__path_gaca11c82acc68f1a5cdf886727b3f50d9} 
+\end{DoxySeeAlso}
+\mbox{\label{group__path_ga1f455e0614bbd5c99aa5bdb9b57b53cc}} 
+\index{Path@{Path}!ps\_path\_create@{ps\_path\_create}}
+\index{ps\_path\_create@{ps\_path\_create}!Path@{Path}}
+\doxysubsubsection{ps\_path\_create()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+path} $\ast$ ps\+\_\+path\+\_\+create (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+Create a new empty path object. 
+
+\begin{DoxyReturn}{Returns}
+If the function succeeds, the return value is the pointer to a new path object. If the function fails, the return value is N\+U\+LL.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+path\+\_\+create\+\_\+copy}{p.}{group__path_ga5e21c22823d578d76d8dd4d4ab9e8907}, \doxyref{ps\+\_\+path\+\_\+ref}{p.}{group__path_ga09741627ed2d69456d3ab2300f45d82b}, \doxyref{ps\+\_\+path\+\_\+unref}{p.}{group__path_gac4035cc40b4c9883947cf4430fd99521} 
+\end{DoxySeeAlso}
+\mbox{\label{group__path_ga5e21c22823d578d76d8dd4d4ab9e8907}} 
+\index{Path@{Path}!ps\_path\_create\_copy@{ps\_path\_create\_copy}}
+\index{ps\_path\_create\_copy@{ps\_path\_create\_copy}!Path@{Path}}
+\doxysubsubsection{ps\_path\_create\_copy()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+path} $\ast$ ps\+\_\+path\+\_\+create\+\_\+copy (\begin{DoxyParamCaption}\item[{const \textbf{ ps\+\_\+path} $\ast$}]{path }\end{DoxyParamCaption})}
+
+
+
+Create a copy from an existing path object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em path} & Pointer to an existing path object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+If the function succeeds, the return value is the pointer to a new path object. If the function fails, the return value is N\+U\+LL.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+path\+\_\+create}{p.}{group__path_ga1f455e0614bbd5c99aa5bdb9b57b53cc}, \doxyref{ps\+\_\+path\+\_\+ref}{p.}{group__path_ga09741627ed2d69456d3ab2300f45d82b}, \doxyref{ps\+\_\+path\+\_\+unref}{p.}{group__path_gac4035cc40b4c9883947cf4430fd99521} 
+\end{DoxySeeAlso}
+\mbox{\label{group__path_gaa8a887153c3eb81649a7a67410329aea}} 
+\index{Path@{Path}!ps\_path\_get\_length@{ps\_path\_get\_length}}
+\index{ps\_path\_get\_length@{ps\_path\_get\_length}!Path@{Path}}
+\doxysubsubsection{ps\_path\_get\_length()}
+{\footnotesize\ttfamily float ps\+\_\+path\+\_\+get\+\_\+length (\begin{DoxyParamCaption}\item[{const \textbf{ ps\+\_\+path} $\ast$}]{path }\end{DoxyParamCaption})}
+
+
+
+Return The length of the path. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em path} & Pointer to an existing path object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+If the function succeeds, the return value is the length of the path object. If the function fails, the return value is 0.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+path\+\_\+sub\+\_\+close}{p.}{group__path_gac19ea77b0228e57be93ebc43e7ed2fad}, \doxyref{ps\+\_\+path\+\_\+clear}{p.}{group__path_ga2966ad40d07c9f5f52f2dc6516107115}, \doxyref{ps\+\_\+path\+\_\+is\+\_\+empty}{p.}{group__path_ga0640542247094b43cdde639ded93e85e} 
+\end{DoxySeeAlso}
+\mbox{\label{group__path_ga420531dae755417305bb4092659bab53}} 
+\index{Path@{Path}!ps\_path\_get\_vertex@{ps\_path\_get\_vertex}}
+\index{ps\_path\_get\_vertex@{ps\_path\_get\_vertex}!Path@{Path}}
+\doxysubsubsection{ps\_path\_get\_vertex()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+path\+\_\+cmd} ps\+\_\+path\+\_\+get\+\_\+vertex (\begin{DoxyParamCaption}\item[{const \textbf{ ps\+\_\+path} $\ast$}]{path,  }\item[{unsigned int}]{index,  }\item[{\textbf{ ps\+\_\+point} $\ast$}]{point }\end{DoxyParamCaption})}
+
+
+
+Get a vertex from the path by index, and return the vertex command. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em path} & Pointer to an existing path object. \\
+\hline
+{\em index} & The index of the vertex. \\
+\hline
+{\em point} & Pointer to a structure to receiving the vertex.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+If the function succeeds, the return value is the command of the vertex. If the function fails, the return value is P\+A\+T\+H\+\_\+\+C\+M\+D\+\_\+\+S\+T\+OP.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+path\+\_\+get\+\_\+vertex\+\_\+count}{p.}{group__path_ga5f38d7b21720e6ce0d233eccf352d8e0}, \doxyref{ps\+\_\+path\+\_\+bounding\+\_\+rect}{p.}{group__path_gad73761a49225721353dbf33ddac8f09b}, \doxyref{ps\+\_\+path\+\_\+contains}{p.}{group__path_gaf026a4a1760f350873c1a8a9e3a7e8f2}, \doxyref{ps\+\_\+path\+\_\+stroke\+\_\+contains}{p.}{group__path_gaca11c82acc68f1a5cdf886727b3f50d9} 
+\end{DoxySeeAlso}
+\mbox{\label{group__path_ga5f38d7b21720e6ce0d233eccf352d8e0}} 
+\index{Path@{Path}!ps\_path\_get\_vertex\_count@{ps\_path\_get\_vertex\_count}}
+\index{ps\_path\_get\_vertex\_count@{ps\_path\_get\_vertex\_count}!Path@{Path}}
+\doxysubsubsection{ps\_path\_get\_vertex\_count()}
+{\footnotesize\ttfamily unsigned int ps\+\_\+path\+\_\+get\+\_\+vertex\+\_\+count (\begin{DoxyParamCaption}\item[{const \textbf{ ps\+\_\+path} $\ast$}]{path }\end{DoxyParamCaption})}
+
+
+
+Return the count of vertices in the path. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em path} & Pointer to an existing path object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+If the function succeeds, the return value is the vertices count in the path object. If the function fails, the return value is 0.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+path\+\_\+get\+\_\+vertex}{p.}{group__path_ga420531dae755417305bb4092659bab53}, \doxyref{ps\+\_\+path\+\_\+bounding\+\_\+rect}{p.}{group__path_gad73761a49225721353dbf33ddac8f09b}, \doxyref{ps\+\_\+path\+\_\+contains}{p.}{group__path_gaf026a4a1760f350873c1a8a9e3a7e8f2}, \doxyref{ps\+\_\+path\+\_\+stroke\+\_\+contains}{p.}{group__path_gaca11c82acc68f1a5cdf886727b3f50d9} 
+\end{DoxySeeAlso}
+\mbox{\label{group__path_ga0640542247094b43cdde639ded93e85e}} 
+\index{Path@{Path}!ps\_path\_is\_empty@{ps\_path\_is\_empty}}
+\index{ps\_path\_is\_empty@{ps\_path\_is\_empty}!Path@{Path}}
+\doxysubsubsection{ps\_path\_is\_empty()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+bool} ps\+\_\+path\+\_\+is\+\_\+empty (\begin{DoxyParamCaption}\item[{const \textbf{ ps\+\_\+path} $\ast$}]{path }\end{DoxyParamCaption})}
+
+
+
+Checks whether the path is empty. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em path} & Pointer to an existing path object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+path\+\_\+sub\+\_\+close}{p.}{group__path_gac19ea77b0228e57be93ebc43e7ed2fad}, \doxyref{ps\+\_\+path\+\_\+get\+\_\+length}{p.}{group__path_gaa8a887153c3eb81649a7a67410329aea}, \doxyref{ps\+\_\+path\+\_\+clear}{p.}{group__path_ga2966ad40d07c9f5f52f2dc6516107115} 
+\end{DoxySeeAlso}
+\mbox{\label{group__path_gaf84c699925f5d8d27a80c1edfb0f5563}} 
+\index{Path@{Path}!ps\_path\_line\_to@{ps\_path\_line\_to}}
+\index{ps\_path\_line\_to@{ps\_path\_line\_to}!Path@{Path}}
+\doxysubsubsection{ps\_path\_line\_to()}
+{\footnotesize\ttfamily void ps\+\_\+path\+\_\+line\+\_\+to (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+path} $\ast$}]{path,  }\item[{const \textbf{ ps\+\_\+point} $\ast$}]{point }\end{DoxyParamCaption})}
+
+
+
+Add a line to the path from the current point to given point. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em path} & Pointer to an existing path object. \\
+\hline
+{\em point} & The point which will be set.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+path\+\_\+move\+\_\+to}{p.}{group__path_ga954a589403b65e3f801bec4df75aa8d7}, \doxyref{ps\+\_\+path\+\_\+bezier\+\_\+to}{p.}{group__path_ga654d584f8ba6d3b176e8ae79b0b3d66d}, \doxyref{ps\+\_\+path\+\_\+quad\+\_\+to}{p.}{group__path_ga1f39765e67617217af9716957a2384cb} \doxyref{ps\+\_\+path\+\_\+arc\+\_\+to}{p.}{group__path_gaa70c71f36ee733b655730e9c9281d2de}, \doxyref{ps\+\_\+path\+\_\+tangent\+\_\+arc\+\_\+to}{p.}{group__path_gaed6543961c56b224c8e55eb67a9c307d} 
+\end{DoxySeeAlso}
+\mbox{\label{group__path_ga954a589403b65e3f801bec4df75aa8d7}} 
+\index{Path@{Path}!ps\_path\_move\_to@{ps\_path\_move\_to}}
+\index{ps\_path\_move\_to@{ps\_path\_move\_to}!Path@{Path}}
+\doxysubsubsection{ps\_path\_move\_to()}
+{\footnotesize\ttfamily void ps\+\_\+path\+\_\+move\+\_\+to (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+path} $\ast$}]{path,  }\item[{const \textbf{ ps\+\_\+point} $\ast$}]{point }\end{DoxyParamCaption})}
+
+
+
+Begin a new sub path, and set the current point in the path. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em path} & Pointer to an existing path object. \\
+\hline
+{\em point} & The point which will be set.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+path\+\_\+line\+\_\+to}{p.}{group__path_gaf84c699925f5d8d27a80c1edfb0f5563}, \doxyref{ps\+\_\+path\+\_\+bezier\+\_\+to}{p.}{group__path_ga654d584f8ba6d3b176e8ae79b0b3d66d}, \doxyref{ps\+\_\+path\+\_\+quad\+\_\+to}{p.}{group__path_ga1f39765e67617217af9716957a2384cb} \doxyref{ps\+\_\+path\+\_\+arc\+\_\+to}{p.}{group__path_gaa70c71f36ee733b655730e9c9281d2de}, \doxyref{ps\+\_\+path\+\_\+tangent\+\_\+arc\+\_\+to}{p.}{group__path_gaed6543961c56b224c8e55eb67a9c307d} 
+\end{DoxySeeAlso}
+\mbox{\label{group__path_ga1f39765e67617217af9716957a2384cb}} 
+\index{Path@{Path}!ps\_path\_quad\_to@{ps\_path\_quad\_to}}
+\index{ps\_path\_quad\_to@{ps\_path\_quad\_to}!Path@{Path}}
+\doxysubsubsection{ps\_path\_quad\_to()}
+{\footnotesize\ttfamily void ps\+\_\+path\+\_\+quad\+\_\+to (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+path} $\ast$}]{path,  }\item[{const \textbf{ ps\+\_\+point} $\ast$}]{cp,  }\item[{const \textbf{ ps\+\_\+point} $\ast$}]{ep }\end{DoxyParamCaption})}
+
+
+
+Add a quadratic bezier spline to the path from current point to end point. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em path} & Pointer to an existing path object. \\
+\hline
+{\em cp} & The control point of the curve. \\
+\hline
+{\em ep} & The end point of the curve.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+path\+\_\+move\+\_\+to}{p.}{group__path_ga954a589403b65e3f801bec4df75aa8d7}, \doxyref{ps\+\_\+path\+\_\+arc\+\_\+to}{p.}{group__path_gaa70c71f36ee733b655730e9c9281d2de}, \doxyref{ps\+\_\+path\+\_\+bezier\+\_\+to}{p.}{group__path_ga654d584f8ba6d3b176e8ae79b0b3d66d} \doxyref{ps\+\_\+path\+\_\+tangent\+\_\+arc\+\_\+to}{p.}{group__path_gaed6543961c56b224c8e55eb67a9c307d}, \doxyref{ps\+\_\+path\+\_\+line\+\_\+to}{p.}{group__path_gaf84c699925f5d8d27a80c1edfb0f5563} 
+\end{DoxySeeAlso}
+\mbox{\label{group__path_ga09741627ed2d69456d3ab2300f45d82b}} 
+\index{Path@{Path}!ps\_path\_ref@{ps\_path\_ref}}
+\index{ps\_path\_ref@{ps\_path\_ref}!Path@{Path}}
+\doxysubsubsection{ps\_path\_ref()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+path} $\ast$ ps\+\_\+path\+\_\+ref (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+path} $\ast$}]{path }\end{DoxyParamCaption})}
+
+
+
+Increases the reference count of the path by 1. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em path} & Pointer to an existing path object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+If the function succeeds, the return value is the pointer to the path object. If the function fails, the return value is N\+U\+LL.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+path\+\_\+create}{p.}{group__path_ga1f455e0614bbd5c99aa5bdb9b57b53cc}, \doxyref{ps\+\_\+path\+\_\+create\+\_\+copy}{p.}{group__path_ga5e21c22823d578d76d8dd4d4ab9e8907}, \doxyref{ps\+\_\+path\+\_\+unref}{p.}{group__path_gac4035cc40b4c9883947cf4430fd99521} 
+\end{DoxySeeAlso}
+\mbox{\label{group__path_gaca11c82acc68f1a5cdf886727b3f50d9}} 
+\index{Path@{Path}!ps\_path\_stroke\_contains@{ps\_path\_stroke\_contains}}
+\index{ps\_path\_stroke\_contains@{ps\_path\_stroke\_contains}!Path@{Path}}
+\doxysubsubsection{ps\_path\_stroke\_contains()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+bool} ps\+\_\+path\+\_\+stroke\+\_\+contains (\begin{DoxyParamCaption}\item[{const \textbf{ ps\+\_\+path} $\ast$}]{path,  }\item[{const \textbf{ ps\+\_\+point} $\ast$}]{point,  }\item[{float}]{width }\end{DoxyParamCaption})}
+
+
+
+Check whether a point is contained in the path by stroke method. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em path} & Pointer to an existing path object. \\
+\hline
+{\em point} & The point to be checked. \\
+\hline
+{\em width} & The line width to use, in pixels, must be greater than 0.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if the point is contained, otherwise False.
+\end{DoxyReturn}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+path\+\_\+get\+\_\+vertex\+\_\+count}{p.}{group__path_ga5f38d7b21720e6ce0d233eccf352d8e0}, \doxyref{ps\+\_\+path\+\_\+get\+\_\+vertex}{p.}{group__path_ga420531dae755417305bb4092659bab53}, \doxyref{ps\+\_\+path\+\_\+bounding\+\_\+rect}{p.}{group__path_gad73761a49225721353dbf33ddac8f09b}, \doxyref{ps\+\_\+path\+\_\+contains}{p.}{group__path_gaf026a4a1760f350873c1a8a9e3a7e8f2} 
+\end{DoxySeeAlso}
+\mbox{\label{group__path_gac19ea77b0228e57be93ebc43e7ed2fad}} 
+\index{Path@{Path}!ps\_path\_sub\_close@{ps\_path\_sub\_close}}
+\index{ps\_path\_sub\_close@{ps\_path\_sub\_close}!Path@{Path}}
+\doxysubsubsection{ps\_path\_sub\_close()}
+{\footnotesize\ttfamily void ps\+\_\+path\+\_\+sub\+\_\+close (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+path} $\ast$}]{path }\end{DoxyParamCaption})}
+
+
+
+Close the sub path, and begin a new one. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em path} & Pointer to an existing path object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+path\+\_\+get\+\_\+length}{p.}{group__path_gaa8a887153c3eb81649a7a67410329aea}, \doxyref{ps\+\_\+path\+\_\+clear}{p.}{group__path_ga2966ad40d07c9f5f52f2dc6516107115}, \doxyref{ps\+\_\+path\+\_\+is\+\_\+empty}{p.}{group__path_ga0640542247094b43cdde639ded93e85e} 
+\end{DoxySeeAlso}
+\mbox{\label{group__path_gaed6543961c56b224c8e55eb67a9c307d}} 
+\index{Path@{Path}!ps\_path\_tangent\_arc\_to@{ps\_path\_tangent\_arc\_to}}
+\index{ps\_path\_tangent\_arc\_to@{ps\_path\_tangent\_arc\_to}!Path@{Path}}
+\doxysubsubsection{ps\_path\_tangent\_arc\_to()}
+{\footnotesize\ttfamily void ps\+\_\+path\+\_\+tangent\+\_\+arc\+\_\+to (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+path} $\ast$}]{path,  }\item[{float}]{radius,  }\item[{const \textbf{ ps\+\_\+point} $\ast$}]{tp,  }\item[{const \textbf{ ps\+\_\+point} $\ast$}]{ep }\end{DoxyParamCaption})}
+
+
+
+Add an arc to the path which tangent at two line. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em path} & Pointer to an existing path object. \\
+\hline
+{\em radius} & The radius of the arc. \\
+\hline
+{\em tp} & The point which the first tangent line from current point to. \\
+\hline
+{\em ep} & The point which the second tangent line from {\itshape tp} to.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+path\+\_\+move\+\_\+to}{p.}{group__path_ga954a589403b65e3f801bec4df75aa8d7}, \doxyref{ps\+\_\+path\+\_\+bezier\+\_\+to}{p.}{group__path_ga654d584f8ba6d3b176e8ae79b0b3d66d}, \doxyref{ps\+\_\+path\+\_\+quad\+\_\+to}{p.}{group__path_ga1f39765e67617217af9716957a2384cb} \doxyref{ps\+\_\+path\+\_\+arc\+\_\+to}{p.}{group__path_gaa70c71f36ee733b655730e9c9281d2de}, \doxyref{ps\+\_\+path\+\_\+line\+\_\+to}{p.}{group__path_gaf84c699925f5d8d27a80c1edfb0f5563} 
+\end{DoxySeeAlso}
+\mbox{\label{group__path_gac4035cc40b4c9883947cf4430fd99521}} 
+\index{Path@{Path}!ps\_path\_unref@{ps\_path\_unref}}
+\index{ps\_path\_unref@{ps\_path\_unref}!Path@{Path}}
+\doxysubsubsection{ps\_path\_unref()}
+{\footnotesize\ttfamily void ps\+\_\+path\+\_\+unref (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+path} $\ast$}]{path }\end{DoxyParamCaption})}
+
+
+
+Decrements the reference count for the path object. If the reference count on the path falls to 0, the path is freed. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em path} & Pointer to an existing path object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+path\+\_\+create}{p.}{group__path_ga1f455e0614bbd5c99aa5bdb9b57b53cc}, \doxyref{ps\+\_\+path\+\_\+create\+\_\+copy}{p.}{group__path_ga5e21c22823d578d76d8dd4d4ab9e8907}, \doxyref{ps\+\_\+path\+\_\+ref}{p.}{group__path_ga09741627ed2d69456d3ab2300f45d82b} 
+\end{DoxySeeAlso}

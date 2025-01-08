@@ -1,0 +1,164 @@
+.TH "context" 3 "Tue Dec 24 2024" "Version 2.8" "Picasso API" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+context
+.SH SYNOPSIS
+.br
+.PP
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "PEXPORT \fBps_context\fP *PICAPI \fBps_context_create\fP (\fBps_canvas\fP *canvas, \fBps_context\fP *shared_context)"
+.br
+.RI "Create a new graphic context for a canvas\&. "
+.ti -1c
+.RI "PEXPORT \fBps_context\fP *PICAPI \fBps_context_ref\fP (\fBps_context\fP *ctx)"
+.br
+.RI "Increases the reference count of the context by 1\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_context_unref\fP (\fBps_context\fP *ctx)"
+.br
+.RI "Decrements the reference count for the context object\&. If the reference count on the context falls to 0, the context is freed\&. "
+.ti -1c
+.RI "PEXPORT \fBps_canvas\fP *PICAPI \fBps_context_set_canvas\fP (\fBps_context\fP *ctx, \fBps_canvas\fP *canvas)"
+.br
+.RI "Set a new canvas into a context, and return the old one\&. "
+.ti -1c
+.RI "PEXPORT \fBps_canvas\fP *PICAPI \fBps_context_get_canvas\fP (\fBps_context\fP *ctx)"
+.br
+.RI "Get the canvas from the context\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.SH "Function Documentation"
+.PP 
+.SS "\fBps_context\fP * ps_context_create (\fBps_canvas\fP * canvas, \fBps_context\fP * shared_context)"
+
+.PP
+Create a new graphic context for a canvas\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIcanvas\fP Pointer to an existing canvas object\&. 
+.br
+\fIshared_context\fP Resources shared context, NULL mean resources not shared\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+If the function succeeds, the return value is the pointer to a new context object\&. If the function fails, the return value is NULL\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+To get extended error information, call \fIps_last_status\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_context_set_canvas\fP, \fBps_context_get_canvas\fP, \fBps_context_ref\fP, \fBps_context_unref\fP 
+.RE
+.PP
+
+.SS "\fBps_canvas\fP * ps_context_get_canvas (\fBps_context\fP * ctx)"
+
+.PP
+Get the canvas from the context\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+If the function succeeds, the return value is a pointer to the canvas\&. If the function fails, the return value is NULL\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+To get extended error information, call \fIps_last_status\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_context_create\fP, \fBps_context_ref\fP, \fBps_context_unref\fP, \fBps_context_set_canvas\fP 
+.RE
+.PP
+
+.SS "\fBps_context\fP * ps_context_ref (\fBps_context\fP * ctx)"
+
+.PP
+Increases the reference count of the context by 1\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+If the function succeeds, the return value is the pointer to the context object\&. If the function fails, the return value is NULL\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+To get extended error information, call \fIps_last_status\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_context_set_canvas\fP, \fBps_context_get_canvas\fP, \fBps_context_create\fP, \fBps_context_unref\fP 
+.RE
+.PP
+
+.SS "\fBps_canvas\fP * ps_context_set_canvas (\fBps_context\fP * ctx, \fBps_canvas\fP * canvas)"
+
+.PP
+Set a new canvas into a context, and return the old one\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fIcanvas\fP Pointer to an existing canvas object to be set\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+If the function succeeds, the return value is a pointer to the canvas being replaced\&. If the function fails, the return value is NULL\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+To get extended error information, call \fIps_last_status\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_context_create\fP, \fBps_context_ref\fP, \fBps_context_unref\fP, \fBps_context_get_canvas\fP 
+.RE
+.PP
+
+.SS "void ps_context_unref (\fBps_context\fP * ctx)"
+
+.PP
+Decrements the reference count for the context object\&. If the reference count on the context falls to 0, the context is freed\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_context_set_canvas\fP, \fBps_context_get_canvas\fP, \fBps_context_create\fP, \fBps_context_ref\fP 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Picasso API from the source code\&.

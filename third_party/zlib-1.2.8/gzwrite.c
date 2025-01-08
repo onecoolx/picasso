@@ -4,6 +4,10 @@
  */
 
 #include "gzguts.h"
+#if defined(_WIN32) && !defined(__BORLANDC__)
+#  define write _write
+#  define close _close
+#endif
 
 /* Local functions */
 local int gz_init OF((gz_statep));

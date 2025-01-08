@@ -1,0 +1,61 @@
+\doxysection{include/images/psx\+\_\+image\+\_\+plugin.h File Reference}
+\label{psx__image__plugin_8h}\index{include/images/psx\_image\_plugin.h@{include/images/psx\_image\_plugin.h}}
+{\ttfamily \#include \char`\"{}picasso.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}psx\+\_\+image.\+h\char`\"{}}\newline
+\doxysubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \textbf{ \+\_\+psx\+\_\+image\+\_\+header}
+\begin{DoxyCompactList}\small\item\em Image reader header define. \end{DoxyCompactList}\item 
+struct \textbf{ \+\_\+psx\+\_\+image\+\_\+operator}
+\begin{DoxyCompactList}\small\item\em The image operator define. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \textbf{ M\+O\+D\+U\+L\+E\+\_\+\+N\+A\+ME}~1
+\begin{DoxyCompactList}\small\item\em Get module name. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef struct \textbf{ \+\_\+psx\+\_\+image\+\_\+header} \textbf{ psx\+\_\+image\+\_\+header}
+\begin{DoxyCompactList}\small\item\em Image reader header define. \end{DoxyCompactList}\item 
+typedef struct \textbf{ \+\_\+psx\+\_\+image\+\_\+operator} \textbf{ psx\+\_\+image\+\_\+operator}
+\begin{DoxyCompactList}\small\item\em The image operator define. \end{DoxyCompactList}\item 
+typedef enum \textbf{ \+\_\+psx\+\_\+priority\+\_\+level} \textbf{ psx\+\_\+priority\+\_\+level}
+\begin{DoxyCompactList}\small\item\em Priority level for image\+\_\+operator. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \textbf{ \+\_\+psx\+\_\+priority\+\_\+level} \{ \textbf{ P\+R\+I\+O\+R\+I\+T\+Y\+\_\+\+E\+X\+T\+E\+N\+T\+ED} = -\/1, 
+\textbf{ P\+R\+I\+O\+R\+I\+T\+Y\+\_\+\+D\+E\+F\+A\+U\+LT} = 0, 
+\textbf{ P\+R\+I\+O\+R\+I\+T\+Y\+\_\+\+M\+A\+S\+T\+ER} = 1
+ \}
+\begin{DoxyCompactList}\small\item\em Priority level for image\+\_\+operator. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+P\+E\+X\+P\+O\+RT int \textbf{ psx\+\_\+image\+\_\+register\+\_\+operator} (const char $\ast$type, const \textbf{ ps\+\_\+byte} $\ast$signature, size\+\_\+t sig\+\_\+offset, size\+\_\+t sig\+\_\+len, \textbf{ psx\+\_\+priority\+\_\+level} level, \textbf{ psx\+\_\+image\+\_\+operator} $\ast$coder)
+\begin{DoxyCompactList}\small\item\em Register the image operator. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT int \textbf{ psx\+\_\+image\+\_\+unregister\+\_\+operator} (\textbf{ psx\+\_\+image\+\_\+operator} $\ast$coder)
+\begin{DoxyCompactList}\small\item\em Unregister the image operator. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void \textbf{ psx\+\_\+image\+\_\+module\+\_\+init} (void)
+\begin{DoxyCompactList}\small\item\em Initialze the image module. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void \textbf{ psx\+\_\+image\+\_\+module\+\_\+shutdown} (void)
+\begin{DoxyCompactList}\small\item\em Shutdown the image module. \end{DoxyCompactList}\item 
+const P\+E\+X\+P\+O\+RT char $\ast$ \textbf{ psx\+\_\+image\+\_\+module\+\_\+get\+\_\+string} (int id)
+\begin{DoxyCompactList}\small\item\em Get the string info about module. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyAuthor}{Author}
+Zhang Ji Peng {\texttt{ onecoolx@gmail.\+com}} 
+\end{DoxyAuthor}
+\begin{DoxyDate}{Date}
+2012/1/31
+\end{DoxyDate}
+This file includes all interfaces of image decoder backend. \begin{DoxyVerb}   Copyright (C) 2008 ~ 2024  Zhang Ji Peng
+
+   All rights reserved.
+
+   Picasso is a vector graphic library.\end{DoxyVerb}
+ 

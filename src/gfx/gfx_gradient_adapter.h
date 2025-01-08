@@ -9,10 +9,10 @@
 
 #include "common.h"
 #include "interfaces.h"
+#include "matrix.h"
 
 #include "gfx_pixfmt_wrapper.h"
 #include "gfx_span_generator.h"
-#include "gfx_trans_affine.h"
 
 #include "picasso_gradient.h"
 
@@ -46,11 +46,13 @@ private:
         color_point(scalar off, const color_type& c)
             : offset(off), color(c)
         {
-            if (offset < FLT_TO_SCALAR(0.0f))
+            if (offset < FLT_TO_SCALAR(0.0f)) {
                 offset = FLT_TO_SCALAR(0.0f);
+            }
 
-            if (offset > FLT_TO_SCALAR(1.0f))
+            if (offset > FLT_TO_SCALAR(1.0f)) {
                 offset = FLT_TO_SCALAR(1.0f);
+            }
         }
     };
 
@@ -115,7 +117,7 @@ public:
     };
 
     gfx_span_gradient(interpolator_type& inter, const gradient_type& gradient_function,
-                                        const color_func& color_function, scalar d1, scalar d2)
+                      const color_func& color_function, scalar d1, scalar d2)
         : m_interpolator(&inter)
         , m_gradient_function(&gradient_function)
         , m_color_function(&color_function)
@@ -132,26 +134,29 @@ public:
     void generate(color_type* span, int x, int y, unsigned int len)
     {
         int dd = m_d2 - m_d1;
-        if (dd < 1)
+        if (dd < 1) {
             dd = 1;
+        }
 
-        m_interpolator->begin(INT_TO_SCALAR(x)+FLT_TO_SCALAR(0.5f),
-                              INT_TO_SCALAR(y)+FLT_TO_SCALAR(0.5f), len);
+        m_interpolator->begin(INT_TO_SCALAR(x) + FLT_TO_SCALAR(0.5f),
+                              INT_TO_SCALAR(y) + FLT_TO_SCALAR(0.5f), len);
         do {
             m_interpolator->coordinates(&x, &y);
             int d = m_gradient_function->calculate(x >> downscale_shift,
-                    y >> downscale_shift, m_d2);
+                                                   y >> downscale_shift, m_d2);
             d = ((d - m_d1) * (int)m_color_function->size()) / dd;
 
-            if (d < 0)
+            if (d < 0) {
                 d = 0;
+            }
 
-            if (d >= (int)m_color_function->size())
+            if (d >= (int)m_color_function->size()) {
                 d = m_color_function->size() - 1;
+            }
 
             *span++ = (*m_color_function)[d];
             ++(*m_interpolator);
-        } while(--len);
+        } while (--len);
     }
 
 private:
@@ -176,14 +181,15 @@ public:
 
     virtual ~gfx_gradient_adapter()
     {
-        if (m_wrapper)
+        if (m_wrapper) {
             delete m_wrapper;
+        }
     }
 
     virtual void init_linear(int spread, scalar x1, scalar y1, scalar x2, scalar y2);
 
     virtual void init_radial(int spread, scalar x1, scalar y1, scalar radius1,
-                                               scalar x2, scalar y2, scalar radius2);
+                             scalar x2, scalar y2, scalar radius2);
 
     virtual void init_conic(int spread, scalar x, scalar y, scalar angle);
 
@@ -199,10 +205,9 @@ public:
         m_build = false;
     }
 
-    virtual void transform(const abstract_trans_affine* mtx)
+    virtual void transform(const trans_affine* mtx)
     {
-        register const gfx_trans_affine* m = static_cast<const gfx_trans_affine*>(mtx);
-        m_matrix *= (*const_cast<gfx_trans_affine*>(m));
+        m_matrix *= (*mtx);
     }
 
     void build(void)
@@ -217,13 +222,13 @@ public:
     scalar start(void) { return m_start; }
     scalar length(void) { return m_length; }
     gfx_gradient_table& colors(void) { return m_colors; }
-    gfx_trans_affine& matrix(void) { return m_matrix; }
+    trans_affine& matrix(void) { return m_matrix; }
 private:
     gfx_gradient_wrapper* m_wrapper;
     scalar m_start;
     scalar m_length;
     bool m_build;
-    gfx_trans_affine m_matrix;
+    trans_affine m_matrix;
     gfx_gradient_table m_colors;
 };
 

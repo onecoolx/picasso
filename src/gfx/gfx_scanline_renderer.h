@@ -46,10 +46,11 @@ public:
         typename Scanline::const_iterator span = sl.begin();
         for (;;) {
             m_ren->blend_hline(span->x, sl.y(),
-                   span->x - 1 + ((span->len < 0) ? -span->len : span->len), m_color, cover_full);
+                               span->x - 1 + ((span->len < 0) ? -span->len : span->len), m_color, cover_full);
 
-            if (--num_spans == 0)
+            if (--num_spans == 0) {
                 break;
+            }
 
             ++span;
         }
@@ -59,7 +60,6 @@ private:
     ren_type* m_ren;
     color_type m_color;
 };
-
 
 // renderer scanline antialias with solid color
 template <typename BaseRenderer>
@@ -105,8 +105,9 @@ public:
                 m_ren->blend_hline(x, y, (unsigned int)(x - span->len - 1), m_color, *(span->covers));
             }
 
-            if (--num_spans == 0)
+            if (--num_spans == 0) {
                 break;
+            }
 
             ++span;
         }
@@ -116,7 +117,6 @@ private:
     ren_type* m_ren;
     color_type m_color;
 };
-
 
 // render scanlines
 template <typename Rasterizer, typename Scanline, typename Renderer>
@@ -131,12 +131,11 @@ void gfx_render_scanlines(Rasterizer& ras, Scanline& sl, Renderer& ren)
     }
 }
 
-
 // render scanlines antialias
 template <typename Rasterizer, typename Scanline, typename Renderer,
           typename SpanAllocator, typename SpanGenerator>
 void gfx_render_scanlines_aa(Rasterizer& ras, Scanline& sl, Renderer& ren,
-                         SpanAllocator& alloc, SpanGenerator& span_gen)
+                             SpanAllocator& alloc, SpanGenerator& span_gen)
 {
     if (ras.rewind_scanlines()) {
         sl.reset(ras.min_x(), ras.max_x());
@@ -151,16 +150,18 @@ void gfx_render_scanlines_aa(Rasterizer& ras, Scanline& sl, Renderer& ren,
                 int len = span->len;
                 const typename Scanline::cover_type* covers = span->covers;
 
-                if (len < 0)
+                if (len < 0) {
                     len = -len;
+                }
 
                 typename Renderer::color_type* colors = alloc.allocate(len);
                 span_gen.generate(colors, x, y, len);
 
                 ren.blend_color_hspan(x, y, len, colors, (span->len < 0) ? 0 : covers, *covers);
 
-                if (--num_spans == 0)
+                if (--num_spans == 0) {
                     break;
+                }
 
                 ++span;
             }

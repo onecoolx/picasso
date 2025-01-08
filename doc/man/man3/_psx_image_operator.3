@@ -1,0 +1,77 @@
+.TH "_psx_image_operator" 3 "Tue Dec 24 2024" "Version 2.8" "Picasso API" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+_psx_image_operator \- The image operator define\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <psx_image_plugin\&.h>\fP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int(* \fBread_header_info\fP )(const \fBps_byte\fP *data, size_t data_len, \fBpsx_image_header\fP *header)"
+.br
+.ti -1c
+.RI "int(* \fBdecode_image_data\fP )(\fBpsx_image_header\fP *header, const \fBpsx_image\fP *image, \fBpsx_image_frame\fP *frame, int idx, \fBps_byte\fP *buffer, size_t buffer_len)"
+.br
+.ti -1c
+.RI "int(* \fBrelease_read_header_info\fP )(\fBpsx_image_header\fP *header)"
+.br
+.ti -1c
+.RI "int(* \fBwrite_header_info\fP )(const \fBpsx_image\fP *image, \fBimage_writer_fn\fP func, void *param, float quality, \fBpsx_image_header\fP *header)"
+.br
+.ti -1c
+.RI "int(* \fBencode_image_data\fP )(\fBpsx_image_header\fP *header, const \fBpsx_image\fP *image, \fBpsx_image_frame\fP *frame, int idx, const \fBps_byte\fP *buffer, size_t buffer_len, int *ret)"
+.br
+.ti -1c
+.RI "int(* \fBrelease_write_header_info\fP )(\fBpsx_image_header\fP *header)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+The image operator define\&. 
+
+
+.PP
+\fBSee also\fP
+.RS 4
+\fBpsx_image_register_operator\fP \fBpsx_image_unregister_operator\fP 
+.RE
+.PP
+
+.PP
+Definition at line 69 of file psx_image_plugin\&.h\&.
+.SH "Field Documentation"
+.PP 
+.SS "int(* _psx_image_operator::decode_image_data) (\fBpsx_image_header\fP *header, const \fBpsx_image\fP *image, \fBpsx_image_frame\fP *frame, int idx, \fBps_byte\fP *buffer, size_t buffer_len)"
+Read a frame of raw data\&. 
+.PP
+Definition at line 73 of file psx_image_plugin\&.h\&.
+.SS "int(* _psx_image_operator::encode_image_data) (\fBpsx_image_header\fP *header, const \fBpsx_image\fP *image, \fBpsx_image_frame\fP *frame, int idx, const \fBps_byte\fP *buffer, size_t buffer_len, int *ret)"
+Write image data frames\&. 
+.PP
+Definition at line 80 of file psx_image_plugin\&.h\&.
+.SS "int(* _psx_image_operator::read_header_info) (const \fBps_byte\fP *data, size_t data_len, \fBpsx_image_header\fP *header)"
+Create a image reader header\&. 
+.PP
+Definition at line 71 of file psx_image_plugin\&.h\&.
+.SS "int(* _psx_image_operator::release_read_header_info) (\fBpsx_image_header\fP *header)"
+Release reader resources\&. 
+.PP
+Definition at line 75 of file psx_image_plugin\&.h\&.
+.SS "int(* _psx_image_operator::release_write_header_info) (\fBpsx_image_header\fP *header)"
+Release writer resources\&. 
+.PP
+Definition at line 82 of file psx_image_plugin\&.h\&.
+.SS "int(* _psx_image_operator::write_header_info) (const \fBpsx_image\fP *image, \fBimage_writer_fn\fP func, void *param, float quality, \fBpsx_image_header\fP *header)"
+Create a image writer header\&. 
+.PP
+Definition at line 77 of file psx_image_plugin\&.h\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Picasso API from the source code\&.

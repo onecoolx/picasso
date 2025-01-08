@@ -1,0 +1,469 @@
+.TH "canvas" 3 "Tue Dec 24 2024" "Version 2.8" "Picasso API" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+canvas
+.SH SYNOPSIS
+.br
+.PP
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef enum \fB_ps_color_format\fP \fBps_color_format\fP"
+.br
+.RI "Pixel formats of canvas or image\&. "
+.in -1c
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum \fB_ps_color_format\fP { \fBCOLOR_FORMAT_RGBA\fP, \fBCOLOR_FORMAT_ARGB\fP, \fBCOLOR_FORMAT_ABGR\fP, \fBCOLOR_FORMAT_BGRA\fP, \fBCOLOR_FORMAT_RGB\fP, \fBCOLOR_FORMAT_BGR\fP, \fBCOLOR_FORMAT_RGB565\fP, \fBCOLOR_FORMAT_RGB555\fP, \fBCOLOR_FORMAT_UNKNOWN\fP }"
+.br
+.RI "Pixel formats of canvas or image\&. "
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "PEXPORT \fBps_canvas\fP *PICAPI \fBps_canvas_create\fP (\fBps_color_format\fP fmt, int width, int height)"
+.br
+.RI "Create a new canvas using the given parameters\&. "
+.ti -1c
+.RI "PEXPORT \fBps_canvas\fP *PICAPI \fBps_canvas_create_with_data\fP (\fBps_byte\fP *data, \fBps_color_format\fP fmt, int width, int height, int pitch)"
+.br
+.RI "Create a new canvas using a given address in memory\&. "
+.ti -1c
+.RI "PEXPORT \fBps_canvas\fP *PICAPI \fBps_canvas_create_compatible\fP (const \fBps_canvas\fP *canvas, int width, int height)"
+.br
+.RI "Create a new canvas to compatible with an existing canvas\&. "
+.ti -1c
+.RI "PEXPORT \fBps_canvas\fP *PICAPI \fBps_canvas_create_from_canvas\fP (\fBps_canvas\fP *canvas, const \fBps_rect\fP *rect)"
+.br
+.RI "Create a new canvas using part of an existing canvas in same pixel buffer\&. "
+.ti -1c
+.RI "PEXPORT \fBps_canvas\fP *PICAPI \fBps_canvas_create_from_image\fP (\fBps_image\fP *img, const \fBps_rect\fP *rect)"
+.br
+.RI "Create a new canvas using part of an existing ps_image object in same pixel buffer\&. "
+.ti -1c
+.RI "PEXPORT \fBps_canvas\fP *PICAPI \fBps_canvas_replace_data\fP (\fBps_canvas\fP *canvas, \fBps_byte\fP *data, \fBps_color_format\fP fmt, int width, int height, int pitch)"
+.br
+.RI "Replace a canvas target rendering buffer address in memory, which is only use for canvas create by \fIps_canvas_create_with_data\fP\&. "
+.ti -1c
+.RI "PEXPORT \fBps_canvas\fP *PICAPI \fBps_canvas_ref\fP (\fBps_canvas\fP *canvas)"
+.br
+.RI "Increases the reference count of the canvas by 1\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_canvas_unref\fP (\fBps_canvas\fP *canvas)"
+.br
+.RI "Decrements the reference count for the canvas object\&. If the reference count on the canvas falls to 0, the canvas is freed\&. "
+.ti -1c
+.RI "PEXPORT \fBps_bool\fP PICAPI \fBps_canvas_get_size\fP (const \fBps_canvas\fP *canvas, \fBps_size\fP *rsize)"
+.br
+.RI "Return the size of the canvas\&. "
+.ti -1c
+.RI "PEXPORT \fBps_color_format\fP PICAPI \fBps_canvas_get_format\fP (const \fBps_canvas\fP *canvas)"
+.br
+.RI "Return the pixel format of the canvas\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_canvas_set_mask\fP (\fBps_canvas\fP *canvas, const \fBps_mask\fP *mask)"
+.br
+.RI "Set a new mask into an existing canvas object\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_canvas_reset_mask\fP (\fBps_canvas\fP *canvas)"
+.br
+.RI "Clear the mask from the canvas object\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_canvas_bitblt\fP (\fBps_canvas\fP *src, const \fBps_rect\fP *rect, \fBps_canvas\fP *dst, const \fBps_point\fP *location)"
+.br
+.RI "Copy raster data between two canvas objects\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.SH "Enumeration Type Documentation"
+.PP 
+.SS "enum \fB_ps_color_format\fP"
+
+.PP
+Pixel formats of canvas or image\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fICOLOR_FORMAT_RGBA \fP\fP
+32bpp, 8bpc, RGBA color space\&. 
+.TP
+\fB\fICOLOR_FORMAT_ARGB \fP\fP
+32bpp, 8bpc, ARGB color space\&. 
+.TP
+\fB\fICOLOR_FORMAT_ABGR \fP\fP
+32bpp, 8bpc, ABGR color space\&. 
+.TP
+\fB\fICOLOR_FORMAT_BGRA \fP\fP
+32bpp, 8bpc, BGRA color space\&. 
+.TP
+\fB\fICOLOR_FORMAT_RGB \fP\fP
+24bpp, 8bpc, RGB color space\&. 
+.TP
+\fB\fICOLOR_FORMAT_BGR \fP\fP
+24bpp, 8bpc, BGR color space\&. 
+.TP
+\fB\fICOLOR_FORMAT_RGB565 \fP\fP
+16bpp, 5/6bpc, RGB color space\&. 
+.TP
+\fB\fICOLOR_FORMAT_RGB555 \fP\fP
+16bpp, 5bpc, RGB color space\&. 
+.TP
+\fB\fICOLOR_FORMAT_UNKNOWN \fP\fP
+Unsupported color space\&. 
+.PP
+Definition at line 394 of file picasso\&.h\&.
+.SH "Function Documentation"
+.PP 
+.SS "void ps_canvas_bitblt (\fBps_canvas\fP * src, const \fBps_rect\fP * rect, \fBps_canvas\fP * dst, const \fBps_point\fP * location)"
+
+.PP
+Copy raster data between two canvas objects\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIsrc\fP The pointer to source canvas object\&. 
+.br
+\fIrect\fP The rectangle area will be copied in source canvas, NULL mean the whole area\&. 
+.br
+\fIdst\fP The pointer to destination canvas object\&. 
+.br
+\fIlocation\fP The location of the start point at destination canvas object\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+The two canvas's color format must be equal, otherwish will be failed and \fISTATUS_MISMATCHING_FORMAT\fP will be set\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_canvas_get_size\fP, \fBps_canvas_get_format\fP 
+.RE
+.PP
+
+.SS "\fBps_canvas\fP * ps_canvas_create (\fBps_color_format\fP fmt, int width, int height)"
+
+.PP
+Create a new canvas using the given parameters\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIfmt\fP The Pixel format to use for the canvas\&. 
+.br
+\fIwidth\fP The width, in pixels, of the required canvas\&. 
+.br
+\fIheight\fP The height, in pixels, of the required canvas\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+If the function succeeds, the return value is the pointer to a new canvas object\&. If the function fails, the return value is NULL\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+To get extended error information, call \fIps_last_status\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_canvas_create_with_data\fP, \fBps_canvas_create_compatible\fP, \fBps_canvas_create_from_canvas\fP, \fBps_canvas_create_from_image\fP, \fBps_canvas_ref\fP, \fBps_canvas_unref\fP 
+.RE
+.PP
+
+.SS "\fBps_canvas\fP * ps_canvas_create_compatible (const \fBps_canvas\fP * canvas, int width, int height)"
+
+.PP
+Create a new canvas to compatible with an existing canvas\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIcanvas\fP A pointer to an existing canvas\&. 
+.br
+\fIwidth\fP The width, in pixels, of the required canvas\&. If it is not more than zero, the width will be equal to the width of the reference canvas\&. 
+.br
+\fIheight\fP The height, in pixels, of the required canvas\&. If it is not more than zero, the height will be equal to the height of the reference canvas\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+If the function succeeds, the return value is the pointer to a new canvas object\&. If the function fails, the return value is NULL\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+To get extended error information, call \fIps_last_status\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_canvas_create\fP, \fBps_canvas_create_with_data\fP, \fBps_canvas_create_from_canvas\fP, \fBps_canvas_create_from_image\fP, \fBps_canvas_ref\fP, \fBps_canvas_unref\fP 
+.RE
+.PP
+
+.SS "\fBps_canvas\fP * ps_canvas_create_from_canvas (\fBps_canvas\fP * canvas, const \fBps_rect\fP * rect)"
+
+.PP
+Create a new canvas using part of an existing canvas in same pixel buffer\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIcanvas\fP A pointer to an existing canvas\&. 
+.br
+\fIrect\fP The rectangle area of the canvas from the parent canvas\&. If it is NULL, the canvas's width and height will be equal to the parant canvas\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+If the function succeeds, the return value is the pointer to a new canvas object\&. If the function fails, the return value is NULL\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+To get extended error information, call \fIps_last_status\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_canvas_create\fP, \fBps_canvas_create_with_data\fP, \fBps_canvas_create_compatible\fP, \fBps_canvas_create_from_image\fP, \fBps_canvas_ref\fP, \fBps_canvas_unref\fP 
+.RE
+.PP
+
+.SS "\fBps_canvas\fP * ps_canvas_create_from_image (\fBps_image\fP * img, const \fBps_rect\fP * rect)"
+
+.PP
+Create a new canvas using part of an existing ps_image object in same pixel buffer\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIimg\fP A pointer to an existing ps_image object\&. 
+.br
+\fIrect\fP The rectangle area of the canvas from the ps_image\&. If it is NULL, the canvas's width and height will be equal to ps_image object\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+If the function succeeds, the return value is the pointer to a new canvas object\&. If the function fails, the return value is NULL\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+To get extended error information, call \fIps_last_status\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_canvas_create\fP, \fBps_canvas_create_with_data\fP, \fBps_canvas_create_compatible\fP, \fBps_canvas_create_from_canvas\fP, \fBps_canvas_ref\fP, \fBps_canvas_unref\fP 
+.RE
+.PP
+
+.SS "\fBps_canvas\fP * ps_canvas_create_with_data (\fBps_byte\fP * data, \fBps_color_format\fP fmt, int width, int height, int pitch)"
+
+.PP
+Create a new canvas using a given address in memory\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIdata\fP A pointer to the destination in memory where the drawing is to be rendered\&. The size of this memory block should be at least (pitch * height) bytes\&. 
+.br
+\fIfmt\fP The Pixel format to use for the canvas\&. 
+.br
+\fIwidth\fP The width, in pixels, of the required canvas\&. 
+.br
+\fIheight\fP The height, in pixels, of the required canvas\&. 
+.br
+\fIpitch\fP The number of bytes per row, of the required canvas\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+If the function succeeds, the return value is the pointer to a new canvas object\&. If the function fails, the return value is NULL\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+To get extended error information, call \fIps_last_status\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_canvas_create\fP, \fBps_canvas_create_compatible\fP, \fBps_canvas_create_from_canvas\fP, \fBps_canvas_create_from_image\fP, \fBps_canvas_ref\fP, \fBps_canvas_unref\fP, \fBps_canvas_replace_data\fP 
+.RE
+.PP
+
+.SS "\fBps_color_format\fP ps_canvas_get_format (const \fBps_canvas\fP * canvas)"
+
+.PP
+Return the pixel format of the canvas\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIcanvas\fP Pointer to an existing canvas object\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+If the function succeeds, the return a valid color format\&. If the function fails, the return value is COLOR_FORMAT_UNKNOWN\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+To get extended error information, call \fIps_last_status\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_canvas_get_size\fP 
+.RE
+.PP
+
+.SS "\fBps_bool\fP ps_canvas_get_size (const \fBps_canvas\fP * canvas, \fBps_size\fP * rsize)"
+
+.PP
+Return the size of the canvas\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIcanvas\fP Pointer to an existing canvas object\&. 
+.br
+\fIrsize\fP Pointer to a buffer to receiving the size\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+True if is success, otherwise False\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+To get extended error information, call \fIps_last_status\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_canvas_get_format\fP 
+.RE
+.PP
+
+.SS "\fBps_canvas\fP * ps_canvas_ref (\fBps_canvas\fP * canvas)"
+
+.PP
+Increases the reference count of the canvas by 1\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIcanvas\fP Pointer to an existing canvas object\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+If the function succeeds, the return value is the pointer to the canvas object\&. If the function fails, the return value is NULL\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+To get extended error information, call \fIps_last_status\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_canvas_create\fP, \fBps_canvas_create_with_data\fP, \fBps_canvas_create_compatible\fP, \fBps_canvas_create_from_canvas\fP, \fBps_canvas_create_from_image\fP, \fBps_canvas_unref\fP 
+.RE
+.PP
+
+.SS "\fBps_canvas\fP *PICAPI ps_canvas_replace_data (\fBps_canvas\fP * canvas, \fBps_byte\fP * data, \fBps_color_format\fP fmt, int width, int height, int pitch)"
+
+.PP
+Replace a canvas target rendering buffer address in memory, which is only use for canvas create by \fIps_canvas_create_with_data\fP\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIcanvas\fP Pointer to an existing canvas object\&. 
+.br
+\fIdata\fP A pointer to the destination in memory where the drawing is to be rendered\&. The size of this memory block should be at least (pitch * height) bytes\&. 
+.br
+\fIfmt\fP The Pixel format to use for the canvas\&. 
+.br
+\fIwidth\fP The width, in pixels, of the required canvas\&. 
+.br
+\fIheight\fP The height, in pixels, of the required canvas\&. 
+.br
+\fIpitch\fP The number of bytes per row, of the required canvas\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+If the function succeeds, the return value is the pointer to a new canvas object\&. If the function fails, the return value is NULL\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+The data's color format must be equal with target canvas, otherwish will be failed and \fISTATUS_MISMATCHING_FORMAT\fP will be set\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_canvas_create_with_data\fP 
+.RE
+.PP
+
+.SS "void ps_canvas_reset_mask (\fBps_canvas\fP * canvas)"
+
+.PP
+Clear the mask from the canvas object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIcanvas\fP Pointer to an existing canvas object\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_canvas_set_mask\fP 
+.RE
+.PP
+
+.SS "void ps_canvas_set_mask (\fBps_canvas\fP * canvas, const \fBps_mask\fP * mask)"
+
+.PP
+Set a new mask into an existing canvas object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIcanvas\fP Pointer to an existing canvas object\&. 
+.br
+\fImask\fP Pointer to an existing mask object to be set\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_canvas_reset_mask\fP 
+.RE
+.PP
+
+.SS "void ps_canvas_unref (\fBps_canvas\fP * canvas)"
+
+.PP
+Decrements the reference count for the canvas object\&. If the reference count on the canvas falls to 0, the canvas is freed\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIcanvas\fP Pointer to an existing canvas object\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_canvas_create\fP, \fBps_canvas_create_with_data\fP, \fBps_canvas_create_compatible\fP, \fBps_canvas_create_from_canvas\fP, \fBps_canvas_create_from_image\fP, \fBps_canvas_ref\fP 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Picasso API from the source code\&.

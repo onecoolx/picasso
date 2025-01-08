@@ -24,7 +24,7 @@ public:
     typedef Interpolator interpolator_type;
 
     explicit gfx_span_image_filter(source_type& src,
-        interpolator_type& interpolator, const image_filter_adapter* filter)
+                                   interpolator_type& interpolator, const image_filter_adapter* filter)
         : m_src(&src)
         , m_interpolator(&interpolator)
         , m_filter(filter)
@@ -47,8 +47,8 @@ public:
     scalar filter_dx_flt(void) const { return m_dx_flt; }
     scalar filter_dy_flt(void) const { return m_dy_flt; }
 
-    void interpolator(interpolator_type& v)  { m_interpolator = &v; }
-    void filter(const image_filter_adapter& v)   { m_filter = &v; }
+    void interpolator(interpolator_type& v) { m_interpolator = &v; }
+    void filter(const image_filter_adapter& v) { m_filter = &v; }
     void filter_offset(scalar d) { filter_offset(d, d); }
     void filter_offset(scalar dx, scalar dy)
     {
@@ -68,7 +68,6 @@ private:
     unsigned int m_dy_int;
 };
 
-
 // rgba color format filters
 // span image filter rgba
 template <typename ColorType, typename Source, typename Interpolator>
@@ -85,11 +84,11 @@ public:
 
     enum {
         base_shift = color_type::base_shift,
-        base_mask  = color_type::base_mask,
+        base_mask = color_type::base_mask,
     };
 
     explicit gfx_span_image_filter_rgba(source_type& src,
-        interpolator_type& inter, const image_filter_adapter& filter)
+                                        interpolator_type& inter, const image_filter_adapter& filter)
         : base_type(src, inter, &filter)
     {
     }
@@ -100,7 +99,7 @@ public:
                                         y + base_type::filter_dy_flt(), len);
 
         int fg[4];
-        const value_type *fg_ptr;
+        const value_type* fg_ptr;
 
         unsigned int diameter = base_type::filter().diameter();
         int start = base_type::filter().start();
@@ -135,7 +134,7 @@ public:
                 x_hr = image_subpixel_mask - x_fract;
                 for (;;) {
                     int weight = (weight_y * weight_array[x_hr] +
-                                 image_filter_scale / 2) >>
+                                  image_filter_scale / 2) >>
                                  image_filter_shift;
 
                     fg[0] += weight * *fg_ptr++;
@@ -143,15 +142,17 @@ public:
                     fg[2] += weight * *fg_ptr++;
                     fg[3] += weight * *fg_ptr;
 
-                    if (--x_count == 0)
+                    if (--x_count == 0) {
                         break;
+                    }
 
                     x_hr += image_subpixel_scale;
                     fg_ptr = (const value_type*)base_type::source().next_x();
                 }
 
-                if (--y_count == 0)
+                if (--y_count == 0) {
                     break;
+                }
 
                 y_hr += image_subpixel_scale;
                 fg_ptr = (const value_type*)base_type::source().next_y();
@@ -162,15 +163,15 @@ public:
             fg[2] >>= image_filter_shift;
             fg[3] >>= image_filter_shift;
 
-            if (fg[0] < 0) fg[0] = 0;
-            if (fg[1] < 0) fg[1] = 0;
-            if (fg[2] < 0) fg[2] = 0;
-            if (fg[3] < 0) fg[3] = 0;
+            if (fg[0] < 0) { fg[0] = 0; }
+            if (fg[1] < 0) { fg[1] = 0; }
+            if (fg[2] < 0) { fg[2] = 0; }
+            if (fg[3] < 0) { fg[3] = 0; }
 
-            if (fg[order_type::A] > base_mask)         fg[order_type::A] = base_mask;
-            if (fg[order_type::R] > fg[order_type::A]) fg[order_type::R] = fg[order_type::A];
-            if (fg[order_type::G] > fg[order_type::A]) fg[order_type::G] = fg[order_type::A];
-            if (fg[order_type::B] > fg[order_type::A]) fg[order_type::B] = fg[order_type::A];
+            if (fg[order_type::A] > base_mask) { fg[order_type::A] = base_mask; }
+            if (fg[order_type::R] > fg[order_type::A]) { fg[order_type::R] = fg[order_type::A]; }
+            if (fg[order_type::G] > fg[order_type::A]) { fg[order_type::G] = fg[order_type::A]; }
+            if (fg[order_type::B] > fg[order_type::A]) { fg[order_type::B] = fg[order_type::A]; }
 
             span->r = (value_type)fg[order_type::R];
             span->g = (value_type)fg[order_type::G];
@@ -179,7 +180,7 @@ public:
             ++span;
             ++base_type::interpolator();
 
-        } while(--len);
+        } while (--len);
     }
 };
 
@@ -198,11 +199,11 @@ public:
 
     enum {
         base_shift = color_type::base_shift,
-        base_mask  = color_type::base_mask,
+        base_mask = color_type::base_mask,
     };
 
     explicit gfx_span_image_filter_rgba_nb(source_type& src,
-        interpolator_type& inter, const image_filter_adapter& filter)
+                                           interpolator_type& inter, const image_filter_adapter& filter)
         : base_type(src, inter, &filter)
     {
     }
@@ -213,7 +214,7 @@ public:
                                         y + base_type::filter_dy_flt(), len);
 
         int fg[4];
-        const value_type *fg_ptr;
+        const value_type* fg_ptr;
 
         unsigned int diameter = base_type::filter().diameter();
         int start = base_type::filter().start();
@@ -248,7 +249,7 @@ public:
                 x_hr = image_subpixel_mask - x_fract;
                 for (;;) {
                     int weight = (weight_y * weight_array[x_hr] +
-                                 image_filter_scale / 2) >>
+                                  image_filter_scale / 2) >>
                                  image_filter_shift;
 
                     fg[0] += weight * *fg_ptr++;
@@ -256,15 +257,17 @@ public:
                     fg[2] += weight * *fg_ptr++;
                     fg[3] += weight * *fg_ptr;
 
-                    if (--x_count == 0)
+                    if (--x_count == 0) {
                         break;
+                    }
 
-                    x_hr  += image_subpixel_scale;
+                    x_hr += image_subpixel_scale;
                     fg_ptr = (const value_type*)base_type::source().next_x();
                 }
 
-                if (--y_count == 0)
+                if (--y_count == 0) {
                     break;
+                }
 
                 y_hr += image_subpixel_scale;
                 fg_ptr = (const value_type*)base_type::source().next_y();
@@ -275,10 +278,10 @@ public:
             fg[2] >>= image_filter_shift;
             fg[3] >>= image_filter_shift;
 
-            if (fg[0] < 0) fg[0] = 0;
-            if (fg[1] < 0) fg[1] = 0;
-            if (fg[2] < 0) fg[2] = 0;
-            if (fg[3] < 0) fg[3] = 0;
+            if (fg[0] < 0) { fg[0] = 0; }
+            if (fg[1] < 0) { fg[1] = 0; }
+            if (fg[2] < 0) { fg[2] = 0; }
+            if (fg[3] < 0) { fg[3] = 0; }
 
             span->r = (value_type)fg[order_type::R];
             span->g = (value_type)fg[order_type::G];
@@ -286,10 +289,9 @@ public:
             span->a = base_mask;
             ++span;
             ++base_type::interpolator();
-        } while(--len);
+        } while (--len);
     }
 };
-
 
 //span image filter rgba nearest
 template <typename ColorType, typename Source, typename Interpolator>
@@ -306,7 +308,7 @@ public:
 
     enum {
         base_shift = color_type::base_shift,
-        base_mask  = color_type::base_mask,
+        base_mask = color_type::base_mask,
     };
 
     explicit gfx_span_image_filter_rgba_nn(source_type& src, interpolator_type& inter)
@@ -321,8 +323,8 @@ public:
         do {
             base_type::interpolator().coordinates(&x, &y);
             const value_type* fg_ptr = (const value_type*)
-                base_type::source().span(x >> image_subpixel_shift,
-                                         y >> image_subpixel_shift, 1);
+                                       base_type::source().span(x >> image_subpixel_shift,
+                                                                y >> image_subpixel_shift, 1);
 
             span->r = fg_ptr[order_type::R];
             span->g = fg_ptr[order_type::G];
@@ -331,7 +333,7 @@ public:
             ++span;
             ++base_type::interpolator();
 
-        } while(--len);
+        } while (--len);
     }
 };
 
@@ -350,7 +352,7 @@ public:
 
     enum {
         base_shift = color_type::base_shift,
-        base_mask  = color_type::base_mask,
+        base_mask = color_type::base_mask,
     };
 
     explicit gfx_span_image_filter_rgba_nn_nb(source_type& src, interpolator_type& inter)
@@ -365,8 +367,8 @@ public:
         do {
             base_type::interpolator().coordinates(&x, &y);
             const value_type* fg_ptr = (const value_type*)
-                base_type::source().span(x >> image_subpixel_shift,
-                                         y >> image_subpixel_shift, 1);
+                                       base_type::source().span(x >> image_subpixel_shift,
+                                                                y >> image_subpixel_shift, 1);
 
             span->r = fg_ptr[order_type::R];
             span->g = fg_ptr[order_type::G];
@@ -375,10 +377,9 @@ public:
             ++span;
             ++base_type::interpolator();
 
-        } while(--len);
+        } while (--len);
     }
 };
-
 
 // span image filter rgb
 template <typename ColorType, typename Source, typename Interpolator>
@@ -395,11 +396,11 @@ public:
 
     enum {
         base_shift = color_type::base_shift,
-        base_mask  = color_type::base_mask,
+        base_mask = color_type::base_mask,
     };
 
     explicit gfx_span_image_filter_rgb(source_type& src,
-        interpolator_type& inter, const image_filter_adapter& filter)
+                                       interpolator_type& inter, const image_filter_adapter& filter)
         : base_type(src, inter, &filter)
     {
     }
@@ -410,7 +411,7 @@ public:
                                         y + base_type::filter_dy_flt(), len);
 
         int fg[3];
-        const value_type *fg_ptr;
+        const value_type* fg_ptr;
 
         unsigned int diameter = base_type::filter().diameter();
         int start = base_type::filter().start();
@@ -440,28 +441,30 @@ public:
             fg_ptr = (const value_type*)base_type::source().span(x_lr + start, y_lr + start, diameter);
 
             for (;;) {
-                x_count  = diameter;
+                x_count = diameter;
                 weight_y = weight_array[y_hr];
                 x_hr = image_subpixel_mask - x_fract;
 
                 for (;;) {
                     int weight = (weight_y * weight_array[x_hr] +
-                                 image_filter_scale / 2) >>
+                                  image_filter_scale / 2) >>
                                  image_filter_shift;
 
                     fg[0] += weight * *fg_ptr++;
                     fg[1] += weight * *fg_ptr++;
                     fg[2] += weight * *fg_ptr;
 
-                    if (--x_count == 0)
+                    if (--x_count == 0) {
                         break;
+                    }
 
                     x_hr += image_subpixel_scale;
                     fg_ptr = (const value_type*)base_type::source().next_x();
                 }
 
-                if (--y_count == 0)
+                if (--y_count == 0) {
                     break;
+                }
 
                 y_hr += image_subpixel_scale;
                 fg_ptr = (const value_type*)base_type::source().next_y();
@@ -471,13 +474,13 @@ public:
             fg[1] >>= image_filter_shift;
             fg[2] >>= image_filter_shift;
 
-            if (fg[0] < 0) fg[0] = 0;
-            if (fg[1] < 0) fg[1] = 0;
-            if (fg[2] < 0) fg[2] = 0;
+            if (fg[0] < 0) { fg[0] = 0; }
+            if (fg[1] < 0) { fg[1] = 0; }
+            if (fg[2] < 0) { fg[2] = 0; }
 
-            if (fg[order_type::R] > base_mask) fg[order_type::R] = base_mask;
-            if (fg[order_type::G] > base_mask) fg[order_type::G] = base_mask;
-            if (fg[order_type::B] > base_mask) fg[order_type::B] = base_mask;
+            if (fg[order_type::R] > base_mask) { fg[order_type::R] = base_mask; }
+            if (fg[order_type::G] > base_mask) { fg[order_type::G] = base_mask; }
+            if (fg[order_type::B] > base_mask) { fg[order_type::B] = base_mask; }
 
             span->r = (value_type)fg[order_type::R];
             span->g = (value_type)fg[order_type::G];
@@ -487,7 +490,7 @@ public:
             ++span;
             ++base_type::interpolator();
 
-        } while(--len);
+        } while (--len);
     }
 };
 
@@ -506,7 +509,7 @@ public:
 
     enum {
         base_shift = color_type::base_shift,
-        base_mask  = color_type::base_mask,
+        base_mask = color_type::base_mask,
     };
 
     explicit gfx_span_image_filter_rgb_nn(source_type& src, interpolator_type& inter)
@@ -521,8 +524,8 @@ public:
         do {
             base_type::interpolator().coordinates(&x, &y);
             const value_type* fg_ptr = (const value_type*)
-                base_type::source().span(x >> image_subpixel_shift,
-                                         y >> image_subpixel_shift, 1);
+                                       base_type::source().span(x >> image_subpixel_shift,
+                                                                y >> image_subpixel_shift, 1);
 
             span->r = fg_ptr[order_type::R];
             span->g = fg_ptr[order_type::G];
@@ -531,10 +534,9 @@ public:
             ++span;
             ++base_type::interpolator();
 
-        } while(--len);
+        } while (--len);
     }
 };
-
 
 // span image filter rgb16
 template <typename ColorType, typename Source, typename Interpolator>
@@ -552,7 +554,7 @@ public:
 
     enum {
         base_shift = color_type::base_shift,
-        base_mask  = color_type::base_mask,
+        base_mask = color_type::base_mask,
         color_mask = 0xFFFFFFFF,
         r_mask = (color_mask >> (order_type::G + order_type::B)) << (order_type::G + order_type::B),
         g_mask = (((color_mask) & (~r_mask)) >> (order_type::B)) << (order_type::B),
@@ -560,7 +562,7 @@ public:
     };
 
     explicit gfx_span_image_filter_rgb16(source_type& src,
-        interpolator_type& inter, const image_filter_adapter& filter)
+                                         interpolator_type& inter, const image_filter_adapter& filter)
         : base_type(src, inter, &filter)
     {
     }
@@ -571,7 +573,7 @@ public:
                                         y + base_type::filter_dy_flt(), len);
 
         int fg[3];
-        const value_type *fg_ptr;
+        const value_type* fg_ptr;
 
         unsigned int diameter = base_type::filter().diameter();
         int start = base_type::filter().start();
@@ -610,7 +612,7 @@ public:
 
                 for (;;) {
                     int weight = (weight_y * weight_array[x_hr] +
-                                 (image_filter_scale>>1)) >>
+                                  (image_filter_scale >> 1)) >>
                                  image_filter_shift;
 
                     fg[0] += weight * ((rgb_pixel & r_mask) >> (order_type::G + order_type::B));
@@ -618,16 +620,18 @@ public:
                     fg[2] += weight * (rgb_pixel & b_mask);
                     fg_ptr += 2;
 
-                    if (--x_count == 0)
+                    if (--x_count == 0) {
                         break;
+                    }
 
                     x_hr += image_subpixel_scale;
                     fg_ptr = (const value_type*)base_type::source().next_x();
                     rgb_pixel = *reinterpret_cast<const pixel_type*>(fg_ptr);
                 }
 
-                if (--y_count == 0)
+                if (--y_count == 0) {
                     break;
+                }
 
                 y_hr += image_subpixel_scale;
                 fg_ptr = (const value_type*)base_type::source().next_y();
@@ -638,23 +642,23 @@ public:
             fg[1] >>= image_filter_shift;
             fg[2] >>= image_filter_shift;
 
-            if (fg[0] < 0) fg[0] = 0;
-            if (fg[1] < 0) fg[1] = 0;
-            if (fg[2] < 0) fg[2] = 0;
+            if (fg[0] < 0) { fg[0] = 0; }
+            if (fg[1] < 0) { fg[1] = 0; }
+            if (fg[2] < 0) { fg[2] = 0; }
 
-            if (fg[0] > (int)base_mask) fg[0] = base_mask;
-            if (fg[1] > (int)base_mask) fg[1] = base_mask;
-            if (fg[2] > (int)base_mask) fg[2] = base_mask;
+            if (fg[0] > (int)base_mask) { fg[0] = base_mask; }
+            if (fg[1] > (int)base_mask) { fg[1] = base_mask; }
+            if (fg[2] > (int)base_mask) { fg[2] = base_mask; }
 
-            span->r = (value_type)(fg[0]<<(base_shift-order_type::R));
-            span->g = (value_type)(fg[1]<<(base_shift-order_type::G));
-            span->b = (value_type)(fg[2]<<(base_shift-order_type::B));
+            span->r = (value_type)(fg[0] << (base_shift - order_type::R));
+            span->g = (value_type)(fg[1] << (base_shift - order_type::G));
+            span->b = (value_type)(fg[2] << (base_shift - order_type::B));
             span->a = base_mask;
 
             ++span;
             ++base_type::interpolator();
 
-        } while(--len);
+        } while (--len);
     }
 };
 
@@ -674,7 +678,7 @@ public:
 
     enum {
         base_shift = color_type::base_shift,
-        base_mask  = color_type::base_mask,
+        base_mask = color_type::base_mask,
         color_mask = 0xFFFFFFFF,
         r_mask = (color_mask >> (order_type::G + order_type::B)) << (order_type::G + order_type::B),
         g_mask = (((color_mask) & (~r_mask)) >> (order_type::B)) << (order_type::B),
@@ -693,18 +697,18 @@ public:
         do {
             base_type::interpolator().coordinates(&x, &y);
             const value_type* fg_ptr = (const value_type*)
-                base_type::source().span(x >> image_subpixel_shift,
-                                         y >> image_subpixel_shift, 1);
+                                       base_type::source().span(x >> image_subpixel_shift,
+                                                                y >> image_subpixel_shift, 1);
 
-            register pixel_type rgb = *reinterpret_cast<const pixel_type*>(fg_ptr);
-            span->r = (rgb & r_mask) >> (base_shift-(16-order_type::R-order_type::G-order_type::B));
-            span->g = (rgb & g_mask) >> (order_type::G+order_type::B-base_shift);
-            span->b = (rgb & b_mask) << (base_shift-order_type::B);
+            _REGISTER_ pixel_type rgb = *reinterpret_cast<const pixel_type*>(fg_ptr);
+            span->r = (rgb & r_mask) >> (base_shift - (16 - order_type::R - order_type::G - order_type::B));
+            span->g = (rgb & g_mask) >> (order_type::G + order_type::B - base_shift);
+            span->b = (rgb & b_mask) << (base_shift - order_type::B);
             span->a = base_mask;
             ++span;
             ++base_type::interpolator();
 
-        } while(--len);
+        } while (--len);
     }
 };
 

@@ -22,7 +22,7 @@ bool _init_default_font(void)
         ps_font* f = (ps_font*)mem_malloc(sizeof(ps_font));
         if (f) {
             f->refcount = 1;
-            new ((void*)&(f->desc)) font_desc("Arial");
+            new ((void*) & (f->desc)) font_desc("Arial");
             f->desc.set_charset(CHARSET_ANSI);
             f->desc.set_height(12);
             f->desc.set_weight(400);
@@ -55,8 +55,9 @@ static bool inline create_device_font(ps_context* ctx)
 
     // same with current font.
     if (!ctx->fonts->stamp_change() && ctx->fonts->current_font()
-        && (ctx->fonts->current_font()->desc() == ctx->state->font->desc))
+        && (ctx->fonts->current_font()->desc() == ctx->state->font->desc)) {
         return true;
+    }
 
     if (ctx->fonts->create_font(ctx->state->font->desc)) {
         return true;
@@ -75,10 +76,11 @@ static inline void _add_glyph_to_path(ps_context* ctx, picasso::graphic_path& pa
     while (true) {
         unsigned int cmd = curve.vertex(&x, &y);
         if (picasso::is_stop(cmd)) {
-            path.add_vertex(x, y, picasso::path_cmd_end_poly|picasso::path_flags_close);
+            path.add_vertex(x, y, picasso::path_cmd_end_poly | picasso::path_flags_close);
             break;
-        } else
+        } else {
             path.add_vertex(x, y, cmd);
+        }
     }
 }
 
@@ -101,7 +103,7 @@ ps_font* PICAPI ps_font_create_copy(const ps_font* font)
     ps_font* f = (ps_font*)mem_malloc(sizeof(ps_font));
     if (f) {
         f->refcount = 1;
-        new ((void*)&(f->desc)) picasso::font_desc(font->desc.name());
+        new ((void*) & (f->desc)) picasso::font_desc(font->desc.name());
         f->desc.set_charset(font->desc.charset());
         f->desc.set_height(font->desc.height());
         f->desc.set_weight(font->desc.weight());
@@ -131,11 +133,11 @@ ps_font* PICAPI ps_font_create(const char* name, ps_charset c, float s, int w, p
     ps_font* f = (ps_font*)mem_malloc(sizeof(ps_font));
     if (f) {
         f->refcount = 1;
-        new ((void*)&(f->desc)) picasso::font_desc(name);
+        new ((void*) & (f->desc)) picasso::font_desc(name);
         f->desc.set_charset(c);
         f->desc.set_height(FLT_TO_SCALAR(s));
         f->desc.set_weight(FLT_TO_SCALAR(w));
-        f->desc.set_italic(i ? true: false);
+        f->desc.set_italic(i ? true : false);
         f->desc.set_hint(true);
         f->desc.set_flip_y(true);
         global_status = STATUS_SUCCEED;
@@ -300,14 +302,14 @@ void PICAPI ps_text_out_length(ps_context* ctx, float x, float y, const char* te
 
         const char* p = text;
         while (*p && len) {
-            register char c = *p;
+            _REGISTER_ char c = *p;
             const picasso::glyph* glyph = ctx->fonts->current_font()->get_glyph(c);
             if (glyph) {
                 if (ctx->font_kerning) {
                     ctx->fonts->current_font()->add_kerning(&gx, &gy);
                 }
                 if (ctx->fonts->current_font()->generate_raster(glyph, gx, gy)) {
-                   ctx->canvas->p->render_glyph(ctx->state, ctx->raster, ctx->fonts->current_font(), glyph->type);
+                    ctx->canvas->p->render_glyph(ctx->state, ctx->raster, ctx->fonts->current_font(), glyph->type);
                 }
 
                 gx += glyph->advance_x;
@@ -341,14 +343,14 @@ void PICAPI ps_wide_text_out_length(ps_context* ctx, float x, float y, const ps_
 
         const ps_uchar16* p = text;
         while (*p && len) {
-            register ps_uchar16 c = *p;
+            _REGISTER_ ps_uchar16 c = *p;
             const picasso::glyph* glyph = ctx->fonts->current_font()->get_glyph(c);
             if (glyph) {
                 if (ctx->font_kerning) {
                     ctx->fonts->current_font()->add_kerning(&gx, &gy);
                 }
                 if (ctx->fonts->current_font()->generate_raster(glyph, gx, gy)) {
-                   ctx->canvas->p->render_glyph(ctx->state, ctx->raster, ctx->fonts->current_font(), glyph->type);
+                    ctx->canvas->p->render_glyph(ctx->state, ctx->raster, ctx->fonts->current_font(), glyph->type);
                 }
 
                 gx += glyph->advance_x;
@@ -363,7 +365,7 @@ void PICAPI ps_wide_text_out_length(ps_context* ctx, float x, float y, const ps_
 }
 
 void PICAPI ps_draw_text(ps_context* ctx, const ps_rect* area, const void* text, unsigned int len,
-                                                                ps_draw_text_type type, ps_text_align align)
+                         ps_draw_text_type type, ps_text_align align)
 {
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;
@@ -408,7 +410,7 @@ void PICAPI ps_draw_text(ps_context* ctx, const ps_rect* area, const void* text,
         } else if (align & TEXT_ALIGN_RIGHT) {
             x = FLT_TO_SCALAR(area->x + (area->w - w));
         } else {
-            x = FLT_TO_SCALAR(area->x + (area->w - w)/2);
+            x = FLT_TO_SCALAR(area->x + (area->w - w) / 2);
         }
 
         if (align & TEXT_ALIGN_TOP) {
@@ -418,15 +420,15 @@ void PICAPI ps_draw_text(ps_context* ctx, const ps_rect* area, const void* text,
             y = FLT_TO_SCALAR(area->y + (area->h - SCALAR_TO_FLT(h)));
             y -= ctx->fonts->current_font()->descent();
         } else {
-            y = FLT_TO_SCALAR(area->y + (area->h - SCALAR_TO_FLT(h))/2);
-            y += (ctx->fonts->current_font()->ascent() - ctx->fonts->current_font()->descent())/2;
+            y = FLT_TO_SCALAR(area->y + (area->h - SCALAR_TO_FLT(h)) / 2);
+            y += (ctx->fonts->current_font()->ascent() - ctx->fonts->current_font()->descent()) / 2;
         }
 
         // draw the text
         if (ctx->state->font->desc.charset() == CHARSET_ANSI) {
             const char* p = (const char*)text;
-            while (*p && len) {
-                register char c = *p;
+            while (len && *p) {
+                _REGISTER_ char c = *p;
                 const picasso::glyph* glyph = ctx->fonts->current_font()->get_glyph(c);
                 if (glyph) {
                     if (ctx->font_kerning) {
@@ -444,8 +446,8 @@ void PICAPI ps_draw_text(ps_context* ctx, const ps_rect* area, const void* text,
             }
         } else {
             const ps_uchar16* p = (const ps_uchar16*)text;
-            while (*p && len) {
-                register ps_uchar16 c = *p;
+            while (len && *p) {
+                _REGISTER_ ps_uchar16 c = *p;
                 const picasso::glyph* glyph = ctx->fonts->current_font()->get_glyph(c);
                 if (glyph) {
                     if (ctx->font_kerning) {
@@ -516,7 +518,7 @@ ps_bool PICAPI ps_get_text_extent(ps_context* ctx, const void* text, unsigned in
         if (ctx->state->font->desc.charset() == CHARSET_ANSI) {
             const char* p = (const char*)text;
             while (*p && len) {
-                register char c = *p;
+                _REGISTER_ char c = *p;
                 const picasso::glyph* glyph = ctx->fonts->current_font()->get_glyph(c);
                 if (glyph) {
                     width += glyph->advance_x;
@@ -528,7 +530,7 @@ ps_bool PICAPI ps_get_text_extent(ps_context* ctx, const void* text, unsigned in
         } else {
             const ps_uchar16* p = (const ps_uchar16*)text;
             while (*p && len) {
-                register ps_uchar16 c = *p;
+                _REGISTER_ ps_uchar16 c = *p;
                 const picasso::glyph* glyph = ctx->fonts->current_font()->get_glyph(c);
                 if (glyph) {
                     width += glyph->advance_x;
@@ -570,7 +572,7 @@ void PICAPI ps_show_glyphs(ps_context* ctx, float x, float y, ps_glyph* g, unsig
                     ctx->fonts->current_font()->add_kerning(&gx, &gy);
                 }
                 if (ctx->fonts->current_font()->generate_raster(glyph, gx, gy)) {
-                   ctx->canvas->p->render_glyph(ctx->state, ctx->raster, ctx->fonts->current_font(), glyph->type);
+                    ctx->canvas->p->render_glyph(ctx->state, ctx->raster, ctx->fonts->current_font(), glyph->type);
                 }
 
                 gx += glyph->advance_x;
@@ -779,7 +781,7 @@ void PICAPI ps_set_text_color(ps_context* ctx, const ps_color* c)
     }
 
     ctx->state->font_fcolor =
-         picasso::rgba(FLT_TO_SCALAR(c->r), FLT_TO_SCALAR(c->g), FLT_TO_SCALAR(c->b), FLT_TO_SCALAR(c->a));
+        picasso::rgba(FLT_TO_SCALAR(c->r), FLT_TO_SCALAR(c->g), FLT_TO_SCALAR(c->b), FLT_TO_SCALAR(c->a));
     global_status = STATUS_SUCCEED;
 }
 
@@ -796,7 +798,7 @@ void PICAPI ps_set_text_stroke_color(ps_context* ctx, const ps_color* c)
     }
 
     ctx->state->font_scolor =
-         picasso::rgba(FLT_TO_SCALAR(c->r), FLT_TO_SCALAR(c->g), FLT_TO_SCALAR(c->b), FLT_TO_SCALAR(c->a));
+        picasso::rgba(FLT_TO_SCALAR(c->r), FLT_TO_SCALAR(c->g), FLT_TO_SCALAR(c->b), FLT_TO_SCALAR(c->a));
     global_status = STATUS_SUCCEED;
 }
 

@@ -46,8 +46,7 @@ private:
 };
 
 // stack blur calc
-struct stack_blur_calc_rgba
-{
+struct stack_blur_calc_rgba {
     typedef uint32_t value_type;
     value_type r;
     value_type g;
@@ -117,8 +116,9 @@ public:
     template <typename Img>
     void blur_x(Img& img, unsigned int radius)
     {
-        if (radius < 1)
+        if (radius < 1) {
             return;
+        }
 
         unsigned int x, y, xp, i;
         unsigned int stack_ptr;
@@ -173,8 +173,9 @@ public:
 
                 stack_start = stack_ptr + div - radius;
 
-                if (stack_start >= div)
+                if (stack_start >= div) {
                     stack_start -= div;
+                }
 
                 stack_pix = &m_stack[stack_start];
 
@@ -182,13 +183,13 @@ public:
 
                 xp = x + radius + 1;
 
-                if (xp > wm)
+                if (xp > wm) {
                     xp = wm;
+                }
                 pix = img.pixel(xp, y);
 
                 if ((pix.r == 0) && (pix.g == 0)
-                  && (pix.b == 0) && (pix.a == 0))
-                {
+                    && (pix.b == 0) && (pix.a == 0)) {
                     pix.r = m_shading.r;
                     pix.g = m_shading.g;
                     pix.b = m_shading.b;
@@ -202,8 +203,9 @@ public:
 
                 ++stack_ptr;
 
-                if (stack_ptr >= div)
+                if (stack_ptr >= div) {
                     stack_ptr = 0;
+                }
 
                 stack_pix = &m_stack[stack_ptr];
 

@@ -14,16 +14,18 @@
 namespace picasso {
 
 // supported byte orders for RGB and RGBA pixel formats
-struct order_rgb  { enum { R=0, G=1, B=2, rgb_tag }; }; // order_rgb
-struct order_bgr  { enum { B=0, G=1, R=2, rgb_tag }; }; // order_bgr
-struct order_rgba { enum { R=0, G=1, B=2, A=3, rgba_tag }; }; // order_rgba
-struct order_argb { enum { A=0, R=1, G=2, B=3, rgba_tag }; }; // order_argb
-struct order_abgr { enum { A=0, B=1, G=2, R=3, rgba_tag }; }; // order_abgr
-struct order_bgra { enum { B=0, G=1, R=2, A=3, rgba_tag }; }; // order_bgra
+struct order_rgb { enum { R = 0, G = 1, B = 2, rgb_tag }; }; // order_rgb
+struct order_bgr { enum { B = 0, G = 1, R = 2, rgb_tag }; }; // order_bgr
+struct order_rgba { enum { R = 0, G = 1, B = 2, A = 3, rgba_tag }; }; // order_rgba
+struct order_argb { enum { A = 0, R = 1, G = 2, B = 3, rgba_tag }; }; // order_argb
+struct order_abgr { enum { A = 0, B = 1, G = 2, R = 3, rgba_tag }; }; // order_abgr
+struct order_bgra { enum { B = 0, G = 1, R = 2, A = 3, rgba_tag }; }; // order_bgra
 //packed color order
 //packed color is bitset not index
-struct order_rgb565 { enum {R=5, G=6, B=5, rgbp_tag }; }; // order_rgb565
-struct order_rgb555 { enum {R=5, G=5, B=5, rgbp_tag }; }; // order_rgb555
+struct order_rgb565 { enum {R = 5, G = 6, B = 5, rgbp_tag }; }; // order_rgb565
+struct order_rgb555 { enum {R = 5, G = 5, B = 5, rgbp_tag }; }; // order_rgb555
+
+struct order_gray { enum { gray_tag }; }; // order_gray
 
 // pixfmt type
 typedef enum {
@@ -35,12 +37,12 @@ typedef enum {
     pix_fmt_bgr,
     pix_fmt_rgb565,
     pix_fmt_rgb555,
+    pix_fmt_gray8,
     pix_fmt_unknown,
 } pix_fmt;
 
 // color rgba 0 ~ 1
-struct rgba
-{
+struct rgba {
     scalar r;
     scalar g;
     scalar b;
@@ -58,8 +60,7 @@ struct rgba
 };
 
 // color rgba8 0 ~ 255
-struct rgba8
-{
+struct rgba8 {
     typedef byte value_type;
     typedef uint32_t calc_type;
     typedef int32_t long_type;
@@ -67,7 +68,7 @@ struct rgba8
     enum {
         base_shift = 8,
         base_scale = 1 << base_shift,
-        base_mask  = base_scale - 1
+        base_mask = base_scale - 1
     };
 
     value_type r;
@@ -94,7 +95,6 @@ struct rgba8
     }
 };
 
-
 #define C_MIN(r, g, b) ((r) < (g) ? ((r) < (b) ? (r) : (b)) : ((g) < (b) ? (g) : (b)))
 #define C_MAX(r, g, b) ((r) > (g) ? ((r) > (b) ? (r) : (b)) : ((g) > (b) ? (g) : (b)))
 #define C_SAT(r, g, b) (C_MAX(r, g, b) - C_MIN(r, g, b))
@@ -103,7 +103,7 @@ struct rgba8
 #define C_LUM(r, g, b, type) ((r) * (type)(0.3f) + (g) * (type)(0.59f) + (b) * (type)(0.11f))
 
 template <typename T>
-static _FORCE_INLINE_ void _set_sat_real(T * cmin, T * cmid, T * cmax, T sat)
+static _FORCE_INLINE_ void _set_sat_real(T* cmin, T* cmid, T* cmax, T sat)
 {
     if (*cmax > *cmin) {
         *cmid = ((*cmid - *cmin) * sat) / (*cmax - *cmin);
@@ -116,7 +116,7 @@ static _FORCE_INLINE_ void _set_sat_real(T * cmin, T * cmid, T * cmax, T sat)
 }
 
 template <typename T>
-static _FORCE_INLINE_ void color_set_sat(T * sr, T * sg, T * sb, T sat)
+static _FORCE_INLINE_ void color_set_sat(T* sr, T* sg, T* sb, T sat)
 {
     if (*sr <= *sg) {
         if (*sg <= *sb) {
@@ -136,9 +136,9 @@ static _FORCE_INLINE_ void color_set_sat(T * sr, T * sg, T * sb, T sat)
 }
 
 template <typename T>
-static _FORCE_INLINE_ void _clip_color(T * sr, T * sg, T * sb, T sa)
+static _FORCE_INLINE_ void _clip_color(T* sr, T* sg, T* sb, T sa)
 {
-    register T L = C_LUM(*sr, *sg, *sb, T);
+    _REGISTER_ T L = C_LUM(*sr, *sg, *sb, T);
     T n = C_MIN(*sr, *sg, *sb);
     T x = C_MAX(*sr, *sg, *sb);
 
@@ -158,10 +158,12 @@ static _FORCE_INLINE_ void _clip_color(T * sr, T * sg, T * sb, T sa)
 }
 
 template <typename T>
-static _FORCE_INLINE_ void color_set_lum(T * sr, T * sg, T * sb, T sa, T lum)
+static _FORCE_INLINE_ void color_set_lum(T* sr, T* sg, T* sb, T sa, T lum)
 {
-    register T d = lum - C_LUM(*sr, *sg, *sb, T);
-    *sr += d; *sg += d; *sb += d;
+    _REGISTER_ T d = lum - C_LUM(*sr, *sg, *sb, T);
+    *sr += d;
+    *sg += d;
+    *sb += d;
     _clip_color(sr, sg, sb, sa);
 }
 

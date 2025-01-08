@@ -14,26 +14,25 @@ namespace picasso {
 
 // path command
 typedef enum {
-    path_cmd_stop     = 0,        //path_cmd_stop
-    path_cmd_move_to  = 1,        //path_cmd_move_to
-    path_cmd_line_to  = 2,        //path_cmd_line_to
-    path_cmd_curve3   = 3,        //path_cmd_curve3
-    path_cmd_curve4   = 4,        //path_cmd_curve4
-    path_cmd_curveN   = 5,        //path_cmd_curveN
-    path_cmd_catrom   = 6,        //path_cmd_catrom
-    path_cmd_ubspline = 7,        //path_cmd_ubspline
-    path_cmd_end_poly = 0x0F,     //path_cmd_end_poly
-    path_cmd_mask     = 0x0F      //path_cmd_mask
+    path_cmd_stop = 0, //path_cmd_stop
+    path_cmd_move_to = 1, //path_cmd_move_to
+    path_cmd_line_to = 2, //path_cmd_line_to
+    path_cmd_curve3 = 3, //path_cmd_curve3
+    path_cmd_curve4 = 4, //path_cmd_curve4
+    path_cmd_curveN = 5, //path_cmd_curveN
+    path_cmd_catrom = 6, //path_cmd_catrom
+    path_cmd_ubspline = 7, //path_cmd_ubspline
+    path_cmd_end_poly = 0x0F, //path_cmd_end_poly
+    path_cmd_mask = 0x0F //path_cmd_mask
 } path_cmd;
 
 typedef enum {
-    path_flags_none  = 0,         //path_flags_none
-    path_flags_ccw   = 0x10,      //path_flags_ccw
-    path_flags_cw    = 0x20,      //path_flags_cw
-    path_flags_close = 0x40,      //path_flags_close
-    path_flags_mask  = 0xF0       //path_flags_mask
+    path_flags_none = 0, //path_flags_none
+    path_flags_ccw = 0x10, //path_flags_ccw
+    path_flags_cw = 0x20, //path_flags_cw
+    path_flags_close = 0x40, //path_flags_close
+    path_flags_mask = 0xF0 //path_flags_mask
 } path_flags;
-
 
 inline bool is_vertex(unsigned int c)
 {
@@ -83,7 +82,7 @@ inline bool is_end_poly(unsigned int c)
 inline bool is_close(unsigned int c)
 {
     return (c & ~(path_flags_cw | path_flags_ccw)) ==
-        (path_cmd_end_poly | path_flags_close);
+           (path_cmd_end_poly | path_flags_close);
 }
 
 inline bool is_next_poly(unsigned int c)
@@ -140,8 +139,8 @@ const scalar intersection_epsilon = FLT_TO_SCALAR(1.0e-30f);
 // math function
 inline scalar calc_distance(scalar x1, scalar y1, scalar x2, scalar y2)
 {
-    scalar dx = x2-x1;
-    scalar dy = y2-y1;
+    scalar dx = x2 - x1;
+    scalar dy = y2 - y1;
     return Sqrt(dx * dx + dy * dy);
 }
 
@@ -149,28 +148,29 @@ inline scalar calc_distance(scalar x1, scalar y1, scalar x2, scalar y2)
 inline bool calc_intersection(scalar ax, scalar ay, scalar bx, scalar by,
                               scalar cx, scalar cy, scalar dx, scalar dy, scalar* x, scalar* y)
 {
-    scalar num = (ay-cy) * (dx-cx) - (ax-cx) * (dy-cy);
-    scalar den = (bx-ax) * (dy-cy) - (by-ay) * (dx-cx);
+    scalar num = (ay - cy) * (dx - cx) - (ax - cx) * (dy - cy);
+    scalar den = (bx - ax) * (dy - cy) - (by - ay) * (dx - cx);
 
-    if (Fabs(den) < intersection_epsilon)
+    if (Fabs(den) < intersection_epsilon) {
         return false;
+    }
 
     scalar r = num / den;
-    *x = ax + r * (bx-ax);
-    *y = ay + r * (by-ay);
+    *x = ax + r * (bx - ax);
+    *y = ay + r * (by - ay);
     return true;
 }
 
 //cross product
-inline scalar cross_product(scalar x1, scalar y1, scalar x2, scalar y2, scalar x,  scalar y)
+inline scalar cross_product(scalar x1, scalar y1, scalar x2, scalar y2, scalar x, scalar y)
 {
     return (x - x2) * (y2 - y1) - (y - y2) * (x2 - x1);
 }
 
 inline scalar calc_sq_distance(scalar x1, scalar y1, scalar x2, scalar y2)
 {
-    scalar dx = x2-x1;
-    scalar dy = y2-y1;
+    scalar dx = x2 - x1;
+    scalar dy = y2 - y1;
     return dx * dx + dy * dy;
 }
 
@@ -213,9 +213,9 @@ inline bool is_boxer(scalar rad)
 {
     scalar a = Fmod(rad2deg(rad), FLT_TO_SCALAR(360.0f));
     return (a == FLT_TO_SCALAR(0.0f))
-        || (a == FLT_TO_SCALAR(90.0f))
-        || (a == FLT_TO_SCALAR(180.0f))
-        || (a == FLT_TO_SCALAR(270.0f));
+           || (a == FLT_TO_SCALAR(90.0f))
+           || (a == FLT_TO_SCALAR(180.0f))
+           || (a == FLT_TO_SCALAR(270.0f));
 }
 
 // These constants determine the subpixel accuracy, to be more precise,
@@ -224,30 +224,30 @@ inline bool is_boxer(scalar rad)
 // sizeof(int) * 8 - poly_subpixel_shift, i.e, for 32-bit integers and
 // 8-bits fractional part the capacity is 24 bits.
 enum {
-    poly_subpixel_shift = 8,                        // poly_subpixel_shift
+    poly_subpixel_shift = 8, // poly_subpixel_shift
     poly_subpixel_scale = 1 << poly_subpixel_shift, // poly_subpixel_scale
-    poly_subpixel_mask  = poly_subpixel_scale - 1,  // poly_subpixel_mask
+    poly_subpixel_mask = poly_subpixel_scale - 1, // poly_subpixel_mask
 };
 
 // gradient subpixel
 enum {
-    gradient_subpixel_shift = 4,                            // gradient_subpixel_shift
+    gradient_subpixel_shift = 4, // gradient_subpixel_shift
     gradient_subpixel_scale = 1 << gradient_subpixel_shift, // gradient_subpixel_scale
-    gradient_subpixel_mask  = gradient_subpixel_scale - 1   // gradient_subpixel_mask
+    gradient_subpixel_mask = gradient_subpixel_scale - 1 // gradient_subpixel_mask
 };
 
 // image filter scale
 enum {
-    image_filter_shift = 14,                      // image_filter_shift
+    image_filter_shift = 14, // image_filter_shift
     image_filter_scale = 1 << image_filter_shift, // image_filter_scale
-    image_filter_mask  = image_filter_scale - 1   // image_filter_mask
+    image_filter_mask = image_filter_scale - 1 // image_filter_mask
 };
 
 // image subpixel
 enum {
-    image_subpixel_shift = 8,                         // image_subpixel_shift
+    image_subpixel_shift = 8, // image_subpixel_shift
     image_subpixel_scale = 1 << image_subpixel_shift, // image_subpixel_scale
-    image_subpixel_mask  = image_subpixel_scale - 1   // image_subpixel_mask
+    image_subpixel_mask = image_subpixel_scale - 1 // image_subpixel_mask
 };
 
 // line style define
@@ -258,11 +258,11 @@ typedef enum {
 } line_cap;
 
 typedef enum {
-    miter_join         = 0,
-    miter_join_revert  = 1,
-    round_join         = 2,
-    bevel_join         = 3,
-    miter_join_round   = 4,
+    miter_join = 0,
+    miter_join_revert = 1,
+    round_join = 2,
+    bevel_join = 3,
+    miter_join_round = 4,
 } line_join;
 
 typedef enum {
@@ -286,44 +286,43 @@ typedef enum {
 
 // composite operators
 typedef enum {
-    comp_op_clear,         //comp_op_clear
-    comp_op_src,           //comp_op_src
-    comp_op_src_over,      //comp_op_src_over
-    comp_op_src_in,        //comp_op_src_in
-    comp_op_src_out,       //comp_op_src_out
-    comp_op_src_atop,      //comp_op_src_atop
-    comp_op_dst,           //comp_op_dst
-    comp_op_dst_over,      //comp_op_dst_over
-    comp_op_dst_in,        //comp_op_dst_in
-    comp_op_dst_out,       //comp_op_dst_out
-    comp_op_dst_atop,      //comp_op_dst_atop
-    comp_op_xor,           //comp_op_xor
-    comp_op_darken,        //comp_op_darken
-    comp_op_lighten,       //comp_op_lighten
-    comp_op_overlay,       //comp_op_overlay
-    comp_op_screen,        //comp_op_screen
-    comp_op_multiply,      //comp_op_multiply
-    comp_op_plus,          //comp_op_plus
-    comp_op_minus,         //comp_op_minus
-    comp_op_exclusion,     //comp_op_exclusion
-    comp_op_difference,    //comp_op_difference
-    comp_op_soft_light,    //comp_op_soft_light
-    comp_op_hard_light,    //comp_op_hard_light
-    comp_op_color_burn,    //comp_op_color_burn
-    comp_op_color_dodge,   //comp_op_color_dodge
-    comp_op_contrast,      //comp_op_contrast
-    comp_op_invert,        //comp_op_invert
-    comp_op_invert_rgb,    //comp_op_invert_rgb
-    comp_op_hue,           //comp_op_hue
-    comp_op_saturation,    //comp_op_saturation
-    comp_op_color,         //comp_op_color
-    comp_op_luminosity,    //comp_op_luminosity
+    comp_op_clear, //comp_op_clear
+    comp_op_src, //comp_op_src
+    comp_op_src_over, //comp_op_src_over
+    comp_op_src_in, //comp_op_src_in
+    comp_op_src_out, //comp_op_src_out
+    comp_op_src_atop, //comp_op_src_atop
+    comp_op_dst, //comp_op_dst
+    comp_op_dst_over, //comp_op_dst_over
+    comp_op_dst_in, //comp_op_dst_in
+    comp_op_dst_out, //comp_op_dst_out
+    comp_op_dst_atop, //comp_op_dst_atop
+    comp_op_xor, //comp_op_xor
+    comp_op_darken, //comp_op_darken
+    comp_op_lighten, //comp_op_lighten
+    comp_op_overlay, //comp_op_overlay
+    comp_op_screen, //comp_op_screen
+    comp_op_multiply, //comp_op_multiply
+    comp_op_plus, //comp_op_plus
+    comp_op_minus, //comp_op_minus
+    comp_op_exclusion, //comp_op_exclusion
+    comp_op_difference, //comp_op_difference
+    comp_op_soft_light, //comp_op_soft_light
+    comp_op_hard_light, //comp_op_hard_light
+    comp_op_color_burn, //comp_op_color_burn
+    comp_op_color_dodge, //comp_op_color_dodge
+    comp_op_contrast, //comp_op_contrast
+    comp_op_invert, //comp_op_invert
+    comp_op_invert_rgb, //comp_op_invert_rgb
+    comp_op_hue, //comp_op_hue
+    comp_op_saturation, //comp_op_saturation
+    comp_op_color, //comp_op_color
+    comp_op_luminosity, //comp_op_luminosity
     end_of_comp_op,
 } comp_op;
 
 // rectangle
-template<typename T> struct rect_base
-{
+template<typename T> struct rect_base {
     typedef rect_base<T> self_type;
     T x1; // left
     T y1; // top
@@ -350,50 +349,50 @@ template<typename T> struct rect_base
 
     bool clip(const self_type& r)
     {
-        if (x2 > r.x2) x2 = r.x2;
-        if (y2 > r.y2) y2 = r.y2;
-        if (x1 < r.x1) x1 = r.x1;
-        if (y1 < r.y1) y1 = r.y1;
+        if (x2 > r.x2) { x2 = r.x2; }
+        if (y2 > r.y2) { y2 = r.y2; }
+        if (x1 < r.x1) { x1 = r.x1; }
+        if (y1 < r.y1) { y1 = r.y1; }
         return x1 <= x2 && y1 <= y2;
     }
 
     T x(void) { return x1; }
     T y(void) { return y1; }
-    T width(void) { return (x2-x1); }
-    T height(void) { return (y2-y1); }
+    T width(void) { return (x2 - x1); }
+    T height(void) { return (y2 - y1); }
 };
 
-typedef rect_base<int>    rect; //integer
+typedef rect_base<int> rect; //integer
 typedef rect_base<scalar> rect_s; //scalar
 
 // color cover
 typedef unsigned char cover_type;
 typedef enum {
-    cover_shift = 8,                 //cover_shift
-    cover_size  = 1 << cover_shift,  //cover_size
-    cover_mask  = cover_size - 1,    //cover_mask
-    cover_none  = 0,                 //cover_none
-    cover_full  = cover_mask         //cover_full
+    cover_shift = 8, //cover_shift
+    cover_size = 1 << cover_shift, //cover_size
+    cover_mask = cover_size - 1, //cover_mask
+    cover_none = 0, //cover_none
+    cover_full = cover_mask //cover_full
 } cover_scale;
 
 // glyph
 typedef enum {
     glyph_type_invalid = 0,
-    glyph_type_mono    = 1,
-    glyph_type_gray    = 2,
+    glyph_type_mono = 1,
+    glyph_type_gray = 2,
     glyph_type_outline = 3,
 } glyph_type;
 
 typedef struct _glyph {
-    unsigned int  code;
-    unsigned int  index;
-    glyph_type    type;
-    byte*         data;
-    unsigned int  data_size;
-    rect          bounds;
-    scalar        height;
-    scalar        advance_x;
-    scalar        advance_y;
+    unsigned int code;
+    unsigned int index;
+    glyph_type type;
+    byte* data;
+    unsigned int data_size;
+    rect bounds;
+    scalar height;
+    scalar advance_x;
+    scalar advance_y;
 } glyph;
 
 // text style
@@ -403,9 +402,14 @@ typedef enum {
     text_stroke,
 } text_style;
 
-}
+// charset type
+typedef enum {
+    charset_latin1,
+    charset_unicode,
+} charset_type;
+
+} // namespace picasso
 
 using namespace picasso;
 
 #endif /*_GRAPHIC_BASE_H_*/
-

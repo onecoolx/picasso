@@ -1,0 +1,79 @@
+\doxysection{Shadow}
+\label{group__shadow}\index{Shadow@{Shadow}}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+set\+\_\+shadow} (\textbf{ ps\+\_\+context} $\ast$ctx, float x\+\_\+offset, float y\+\_\+offset, float blur)
+\begin{DoxyCompactList}\small\item\em Enables shadowing in a context. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+set\+\_\+shadow\+\_\+color} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+color} $\ast$color)
+\begin{DoxyCompactList}\small\item\em Set the color of shadow. Default is a black color with 1/3 alpha. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+reset\+\_\+shadow} (\textbf{ ps\+\_\+context} $\ast$ctx)
+\begin{DoxyCompactList}\small\item\em Disables shadowing in a context. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\label{group__shadow_ga41b33a18f9daaafc4359ebc6875af5ea}} 
+\index{Shadow@{Shadow}!ps\_reset\_shadow@{ps\_reset\_shadow}}
+\index{ps\_reset\_shadow@{ps\_reset\_shadow}!Shadow@{Shadow}}
+\doxysubsubsection{ps\_reset\_shadow()}
+{\footnotesize\ttfamily void ps\+\_\+reset\+\_\+shadow (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx }\end{DoxyParamCaption})}
+
+
+
+Disables shadowing in a context. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+set\+\_\+shadow\+\_\+color}{p.}{group__shadow_ga475d69bb4ab0a3d28e15b994b9cefb2f}, \doxyref{ps\+\_\+set\+\_\+shadow}{p.}{group__shadow_ga6c83e2dd73888bea4f478ea8af2e5df9} 
+\end{DoxySeeAlso}
+\mbox{\label{group__shadow_ga6c83e2dd73888bea4f478ea8af2e5df9}} 
+\index{Shadow@{Shadow}!ps\_set\_shadow@{ps\_set\_shadow}}
+\index{ps\_set\_shadow@{ps\_set\_shadow}!Shadow@{Shadow}}
+\doxysubsubsection{ps\_set\_shadow()}
+{\footnotesize\ttfamily void ps\+\_\+set\+\_\+shadow (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{float}]{x\+\_\+offset,  }\item[{float}]{y\+\_\+offset,  }\item[{float}]{blur }\end{DoxyParamCaption})}
+
+
+
+Enables shadowing in a context. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em x\+\_\+offset} & Offset on horizontal from origin (0,0). \\
+\hline
+{\em y\+\_\+offset} & Offset on vertical from origin (0,0). \\
+\hline
+{\em blur} & Specifying the amount of blur (0 $\sim$ 1).\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+set\+\_\+shadow\+\_\+color}{p.}{group__shadow_ga475d69bb4ab0a3d28e15b994b9cefb2f}, \doxyref{ps\+\_\+reset\+\_\+shadow}{p.}{group__shadow_ga41b33a18f9daaafc4359ebc6875af5ea} 
+\end{DoxySeeAlso}
+\mbox{\label{group__shadow_ga475d69bb4ab0a3d28e15b994b9cefb2f}} 
+\index{Shadow@{Shadow}!ps\_set\_shadow\_color@{ps\_set\_shadow\_color}}
+\index{ps\_set\_shadow\_color@{ps\_set\_shadow\_color}!Shadow@{Shadow}}
+\doxysubsubsection{ps\_set\_shadow\_color()}
+{\footnotesize\ttfamily void ps\+\_\+set\+\_\+shadow\+\_\+color (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{const \textbf{ ps\+\_\+color} $\ast$}]{color }\end{DoxyParamCaption})}
+
+
+
+Set the color of shadow. Default is a black color with 1/3 alpha. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em color} & Specifies the color of the shadow.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+set\+\_\+shadow}{p.}{group__shadow_ga6c83e2dd73888bea4f478ea8af2e5df9}, \doxyref{ps\+\_\+reset\+\_\+shadow}{p.}{group__shadow_ga41b33a18f9daaafc4359ebc6875af5ea} 
+\end{DoxySeeAlso}

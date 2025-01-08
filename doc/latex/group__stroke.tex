@@ -1,0 +1,423 @@
+\doxysection{Stroke}
+\label{group__stroke}\index{Stroke@{Stroke}}
+\doxysubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\label{group__stroke_ga1c0d5411b21fcd5d49964059183f07cb}} 
+typedef enum \textbf{ \+\_\+ps\+\_\+line\+\_\+cap} \textbf{ ps\+\_\+line\+\_\+cap}
+\begin{DoxyCompactList}\small\item\em Styles for rendering the endpoint of a stroked line. \end{DoxyCompactList}\item 
+\mbox{\label{group__stroke_gadb58833800fc62f3da63618554f29ab3}} 
+typedef enum \textbf{ \+\_\+ps\+\_\+line\+\_\+join} \textbf{ ps\+\_\+line\+\_\+join}
+\begin{DoxyCompactList}\small\item\em Junction types for stroked lines. \end{DoxyCompactList}\item 
+\mbox{\label{group__stroke_ga6fb9e7c25d715510f0274c7fc65d40c3}} 
+typedef enum \textbf{ \+\_\+ps\+\_\+line\+\_\+inner\+\_\+join} \textbf{ ps\+\_\+line\+\_\+inner\+\_\+join}
+\begin{DoxyCompactList}\small\item\em Inner junction types for stroked lines. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \textbf{ \+\_\+ps\+\_\+line\+\_\+cap} \{ \textbf{ L\+I\+N\+E\+\_\+\+C\+A\+P\+\_\+\+B\+U\+TT}, 
+\textbf{ L\+I\+N\+E\+\_\+\+C\+A\+P\+\_\+\+R\+O\+U\+ND}, 
+\textbf{ L\+I\+N\+E\+\_\+\+C\+A\+P\+\_\+\+S\+Q\+U\+A\+RE}
+ \}
+\begin{DoxyCompactList}\small\item\em Styles for rendering the endpoint of a stroked line. \end{DoxyCompactList}\item 
+enum \textbf{ \+\_\+ps\+\_\+line\+\_\+join} \{ \newline
+\textbf{ L\+I\+N\+E\+\_\+\+J\+O\+I\+N\+\_\+\+M\+I\+T\+ER}, 
+\textbf{ L\+I\+N\+E\+\_\+\+J\+O\+I\+N\+\_\+\+M\+I\+T\+E\+R\+\_\+\+R\+E\+V\+E\+RT}, 
+\textbf{ L\+I\+N\+E\+\_\+\+J\+O\+I\+N\+\_\+\+M\+I\+T\+E\+R\+\_\+\+R\+O\+U\+ND}, 
+\textbf{ L\+I\+N\+E\+\_\+\+J\+O\+I\+N\+\_\+\+R\+O\+U\+ND}, 
+\newline
+\textbf{ L\+I\+N\+E\+\_\+\+J\+O\+I\+N\+\_\+\+B\+E\+V\+EL}
+ \}
+\begin{DoxyCompactList}\small\item\em Junction types for stroked lines. \end{DoxyCompactList}\item 
+enum \textbf{ \+\_\+ps\+\_\+line\+\_\+inner\+\_\+join} \{ \textbf{ L\+I\+N\+E\+\_\+\+I\+N\+N\+E\+R\+\_\+\+M\+I\+T\+ER}, 
+\textbf{ L\+I\+N\+E\+\_\+\+I\+N\+N\+E\+R\+\_\+\+B\+E\+V\+EL}, 
+\textbf{ L\+I\+N\+E\+\_\+\+I\+N\+N\+E\+R\+\_\+\+J\+AG}, 
+\textbf{ L\+I\+N\+E\+\_\+\+I\+N\+N\+E\+R\+\_\+\+R\+O\+U\+ND}
+ \}
+\begin{DoxyCompactList}\small\item\em Inner junction types for stroked lines. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+set\+\_\+line\+\_\+cap} (\textbf{ ps\+\_\+context} $\ast$ctx, \textbf{ ps\+\_\+line\+\_\+cap} line\+\_\+cap)
+\begin{DoxyCompactList}\small\item\em Set the style for the endpoint of lines in a graphics context. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+set\+\_\+line\+\_\+join} (\textbf{ ps\+\_\+context} $\ast$ctx, \textbf{ ps\+\_\+line\+\_\+join} line\+\_\+join)
+\begin{DoxyCompactList}\small\item\em Set the style for the joins of connected lines in a graphics context. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+set\+\_\+line\+\_\+inner\+\_\+join} (\textbf{ ps\+\_\+context} $\ast$ctx, \textbf{ ps\+\_\+line\+\_\+inner\+\_\+join} line\+\_\+inner\+\_\+join)
+\begin{DoxyCompactList}\small\item\em Set the style for the inner joins of connected lines in a graphics context. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT float P\+I\+C\+A\+PI \textbf{ ps\+\_\+set\+\_\+line\+\_\+width} (\textbf{ ps\+\_\+context} $\ast$ctx, float width)
+\begin{DoxyCompactList}\small\item\em Set the line width for a graphics context. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT float P\+I\+C\+A\+PI \textbf{ ps\+\_\+set\+\_\+miter\+\_\+limit} (\textbf{ ps\+\_\+context} $\ast$ctx, float limit)
+\begin{DoxyCompactList}\small\item\em Set the miter limit for the joins of connected lines in a graphics context. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+set\+\_\+stroke\+\_\+color} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+color} $\ast$color)
+\begin{DoxyCompactList}\small\item\em Set a color to the context, it is used to stroke a graphic object. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+set\+\_\+stroke\+\_\+image} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+image} $\ast$image)
+\begin{DoxyCompactList}\small\item\em Set a image to the context, it is used to stroke a graphic object. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+set\+\_\+stroke\+\_\+pattern} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+pattern} $\ast$pattern)
+\begin{DoxyCompactList}\small\item\em Set a pattern to the context, it is used to stroke a graphic object. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+set\+\_\+stroke\+\_\+gradient} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+gradient} $\ast$gradient)
+\begin{DoxyCompactList}\small\item\em Set a gradient to the context, it is used to stroke a graphic object. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+set\+\_\+stroke\+\_\+canvas} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+canvas} $\ast$canvas)
+\begin{DoxyCompactList}\small\item\em Set a canvas to the context, it is used to stroke a graphic object. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+set\+\_\+line\+\_\+dash} (\textbf{ ps\+\_\+context} $\ast$ctx, float start, const float $\ast$dashes, unsigned int num\+\_\+dashes)
+\begin{DoxyCompactList}\small\item\em Set the pattern for dashed lines in the context. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+reset\+\_\+line\+\_\+dash} (\textbf{ ps\+\_\+context} $\ast$ctx)
+\begin{DoxyCompactList}\small\item\em Clear the dashs from the context, and set to solid. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+
+
+\doxysubsection{Enumeration Type Documentation}
+\mbox{\label{group__stroke_gad06e1eb6d05a3774d8f937e22946ca21}} 
+\index{Stroke@{Stroke}!\_ps\_line\_cap@{\_ps\_line\_cap}}
+\index{\_ps\_line\_cap@{\_ps\_line\_cap}!Stroke@{Stroke}}
+\doxysubsubsection{\_ps\_line\_cap}
+{\footnotesize\ttfamily enum \textbf{ \+\_\+ps\+\_\+line\+\_\+cap}}
+
+
+
+Styles for rendering the endpoint of a stroked line. 
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{LINE\_CAP\_BUTT@{LINE\_CAP\_BUTT}!Stroke@{Stroke}}\index{Stroke@{Stroke}!LINE\_CAP\_BUTT@{LINE\_CAP\_BUTT}}}\mbox{\label{group__stroke_ggad06e1eb6d05a3774d8f937e22946ca21a8910eb5475ca75588a31eba74a76f4db}} 
+L\+I\+N\+E\+\_\+\+C\+A\+P\+\_\+\+B\+U\+TT&A line with a squared-\/off end. The line to extend only to the endpoint.(Default) \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{LINE\_CAP\_ROUND@{LINE\_CAP\_ROUND}!Stroke@{Stroke}}\index{Stroke@{Stroke}!LINE\_CAP\_ROUND@{LINE\_CAP\_ROUND}}}\mbox{\label{group__stroke_ggad06e1eb6d05a3774d8f937e22946ca21ae96cdf9710bc89f885e66cc56a6f069f}} 
+L\+I\+N\+E\+\_\+\+C\+A\+P\+\_\+\+R\+O\+U\+ND&A line with a rounded end. The line to extend beyond the endpoint. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{LINE\_CAP\_SQUARE@{LINE\_CAP\_SQUARE}!Stroke@{Stroke}}\index{Stroke@{Stroke}!LINE\_CAP\_SQUARE@{LINE\_CAP\_SQUARE}}}\mbox{\label{group__stroke_ggad06e1eb6d05a3774d8f937e22946ca21a609139315e4f1e69bd3353960f481bad}} 
+L\+I\+N\+E\+\_\+\+C\+A\+P\+\_\+\+S\+Q\+U\+A\+RE&A line with a squared-\/off end. The line to extend beyond the endpoint. \\
+\hline
+
+\end{DoxyEnumFields}
+
+
+Definition at line 1231 of file picasso.\+h.
+
+\mbox{\label{group__stroke_ga3e82d0c5809ff0fd87c09490c1245db1}} 
+\index{Stroke@{Stroke}!\_ps\_line\_inner\_join@{\_ps\_line\_inner\_join}}
+\index{\_ps\_line\_inner\_join@{\_ps\_line\_inner\_join}!Stroke@{Stroke}}
+\doxysubsubsection{\_ps\_line\_inner\_join}
+{\footnotesize\ttfamily enum \textbf{ \+\_\+ps\+\_\+line\+\_\+inner\+\_\+join}}
+
+
+
+Inner junction types for stroked lines. 
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{LINE\_INNER\_MITER@{LINE\_INNER\_MITER}!Stroke@{Stroke}}\index{Stroke@{Stroke}!LINE\_INNER\_MITER@{LINE\_INNER\_MITER}}}\mbox{\label{group__stroke_gga3e82d0c5809ff0fd87c09490c1245db1a193d472a29f40401f17ba960ba853a26}} 
+L\+I\+N\+E\+\_\+\+I\+N\+N\+E\+R\+\_\+\+M\+I\+T\+ER&A inner join with a sharp corner.(Default) \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{LINE\_INNER\_BEVEL@{LINE\_INNER\_BEVEL}!Stroke@{Stroke}}\index{Stroke@{Stroke}!LINE\_INNER\_BEVEL@{LINE\_INNER\_BEVEL}}}\mbox{\label{group__stroke_gga3e82d0c5809ff0fd87c09490c1245db1aa069b15b856f5a0c307bd62d8bc82f8a}} 
+L\+I\+N\+E\+\_\+\+I\+N\+N\+E\+R\+\_\+\+B\+E\+V\+EL&A inner join with a squared-\/off end. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{LINE\_INNER\_JAG@{LINE\_INNER\_JAG}!Stroke@{Stroke}}\index{Stroke@{Stroke}!LINE\_INNER\_JAG@{LINE\_INNER\_JAG}}}\mbox{\label{group__stroke_gga3e82d0c5809ff0fd87c09490c1245db1a70ce45d1e12e9451460504c70c78e215}} 
+L\+I\+N\+E\+\_\+\+I\+N\+N\+E\+R\+\_\+\+J\+AG&A inner join with a jag end. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{LINE\_INNER\_ROUND@{LINE\_INNER\_ROUND}!Stroke@{Stroke}}\index{Stroke@{Stroke}!LINE\_INNER\_ROUND@{LINE\_INNER\_ROUND}}}\mbox{\label{group__stroke_gga3e82d0c5809ff0fd87c09490c1245db1acf9f45f258b750ebb39cbfb903da1e4f}} 
+L\+I\+N\+E\+\_\+\+I\+N\+N\+E\+R\+\_\+\+R\+O\+U\+ND&A inner join with a rounded end. \\
+\hline
+
+\end{DoxyEnumFields}
+
+
+Definition at line 1299 of file picasso.\+h.
+
+\mbox{\label{group__stroke_gab18ffd06505620c2063013630acb4497}} 
+\index{Stroke@{Stroke}!\_ps\_line\_join@{\_ps\_line\_join}}
+\index{\_ps\_line\_join@{\_ps\_line\_join}!Stroke@{Stroke}}
+\doxysubsubsection{\_ps\_line\_join}
+{\footnotesize\ttfamily enum \textbf{ \+\_\+ps\+\_\+line\+\_\+join}}
+
+
+
+Junction types for stroked lines. 
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{LINE\_JOIN\_MITER@{LINE\_JOIN\_MITER}!Stroke@{Stroke}}\index{Stroke@{Stroke}!LINE\_JOIN\_MITER@{LINE\_JOIN\_MITER}}}\mbox{\label{group__stroke_ggab18ffd06505620c2063013630acb4497a01a1a0463b45ecab78b9dbdaecac8ffa}} 
+L\+I\+N\+E\+\_\+\+J\+O\+I\+N\+\_\+\+M\+I\+T\+ER&A join with a sharp corner.(Default) \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{LINE\_JOIN\_MITER\_REVERT@{LINE\_JOIN\_MITER\_REVERT}!Stroke@{Stroke}}\index{Stroke@{Stroke}!LINE\_JOIN\_MITER\_REVERT@{LINE\_JOIN\_MITER\_REVERT}}}\mbox{\label{group__stroke_ggab18ffd06505620c2063013630acb4497ab09d0f418528b767fc1fe1db27859158}} 
+L\+I\+N\+E\+\_\+\+J\+O\+I\+N\+\_\+\+M\+I\+T\+E\+R\+\_\+\+R\+E\+V\+E\+RT&A join with a sharp corner revert. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{LINE\_JOIN\_MITER\_ROUND@{LINE\_JOIN\_MITER\_ROUND}!Stroke@{Stroke}}\index{Stroke@{Stroke}!LINE\_JOIN\_MITER\_ROUND@{LINE\_JOIN\_MITER\_ROUND}}}\mbox{\label{group__stroke_ggab18ffd06505620c2063013630acb4497a3c27fd4871a8faef3a187a01b53b3764}} 
+L\+I\+N\+E\+\_\+\+J\+O\+I\+N\+\_\+\+M\+I\+T\+E\+R\+\_\+\+R\+O\+U\+ND&A join with a miter rounded end. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{LINE\_JOIN\_ROUND@{LINE\_JOIN\_ROUND}!Stroke@{Stroke}}\index{Stroke@{Stroke}!LINE\_JOIN\_ROUND@{LINE\_JOIN\_ROUND}}}\mbox{\label{group__stroke_ggab18ffd06505620c2063013630acb4497aeddde88638157f20507d690e544d3a64}} 
+L\+I\+N\+E\+\_\+\+J\+O\+I\+N\+\_\+\+R\+O\+U\+ND&A join with a rounded end. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{LINE\_JOIN\_BEVEL@{LINE\_JOIN\_BEVEL}!Stroke@{Stroke}}\index{Stroke@{Stroke}!LINE\_JOIN\_BEVEL@{LINE\_JOIN\_BEVEL}}}\mbox{\label{group__stroke_ggab18ffd06505620c2063013630acb4497acc86470d4d8002843ded335755e9dda2}} 
+L\+I\+N\+E\+\_\+\+J\+O\+I\+N\+\_\+\+B\+E\+V\+EL&A join with a squared-\/off end. \\
+\hline
+
+\end{DoxyEnumFields}
+
+
+Definition at line 1261 of file picasso.\+h.
+
+
+
+\doxysubsection{Function Documentation}
+\mbox{\label{group__stroke_ga6d9522c011d21ff17a4c5f6e5ef7f914}} 
+\index{Stroke@{Stroke}!ps\_reset\_line\_dash@{ps\_reset\_line\_dash}}
+\index{ps\_reset\_line\_dash@{ps\_reset\_line\_dash}!Stroke@{Stroke}}
+\doxysubsubsection{ps\_reset\_line\_dash()}
+{\footnotesize\ttfamily void ps\+\_\+reset\+\_\+line\+\_\+dash (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx }\end{DoxyParamCaption})}
+
+
+
+Clear the dashs from the context, and set to solid. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+set\+\_\+line\+\_\+cap}{p.}{group__stroke_gadb1c82ca13abac1c02f09e0e4804b33a}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+join}{p.}{group__stroke_ga502a7abc4f46bbd8ba54b187a9f05220}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+width}{p.}{group__stroke_gaa7c2102304123fab38eb57b68af23440}, \doxyref{ps\+\_\+set\+\_\+miter\+\_\+limit}{p.}{group__stroke_ga83568c0d29c26a834d05c93e48909328}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+color}{p.}{group__stroke_gacc37293e8d7ceda573a0a3625b169076}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+dash}{p.}{group__stroke_ga14690c35aae12a4262af1bfb2fbdd96e}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+inner\+\_\+join}{p.}{group__stroke_ga14303807813ac01122f298e5212fb5fc} 
+\end{DoxySeeAlso}
+\mbox{\label{group__stroke_gadb1c82ca13abac1c02f09e0e4804b33a}} 
+\index{Stroke@{Stroke}!ps\_set\_line\_cap@{ps\_set\_line\_cap}}
+\index{ps\_set\_line\_cap@{ps\_set\_line\_cap}!Stroke@{Stroke}}
+\doxysubsubsection{ps\_set\_line\_cap()}
+{\footnotesize\ttfamily void ps\+\_\+set\+\_\+line\+\_\+cap (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{\textbf{ ps\+\_\+line\+\_\+cap}}]{line\+\_\+cap }\end{DoxyParamCaption})}
+
+
+
+Set the style for the endpoint of lines in a graphics context. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em line\+\_\+cap} & The cap style of the lines.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+set\+\_\+line\+\_\+join}{p.}{group__stroke_ga502a7abc4f46bbd8ba54b187a9f05220}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+width}{p.}{group__stroke_gaa7c2102304123fab38eb57b68af23440}, \doxyref{ps\+\_\+set\+\_\+miter\+\_\+limit}{p.}{group__stroke_ga83568c0d29c26a834d05c93e48909328}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+color}{p.}{group__stroke_gacc37293e8d7ceda573a0a3625b169076}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+dash}{p.}{group__stroke_ga14690c35aae12a4262af1bfb2fbdd96e}, \doxyref{ps\+\_\+reset\+\_\+line\+\_\+dash}{p.}{group__stroke_ga6d9522c011d21ff17a4c5f6e5ef7f914}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+inner\+\_\+join}{p.}{group__stroke_ga14303807813ac01122f298e5212fb5fc} 
+\end{DoxySeeAlso}
+\mbox{\label{group__stroke_ga14690c35aae12a4262af1bfb2fbdd96e}} 
+\index{Stroke@{Stroke}!ps\_set\_line\_dash@{ps\_set\_line\_dash}}
+\index{ps\_set\_line\_dash@{ps\_set\_line\_dash}!Stroke@{Stroke}}
+\doxysubsubsection{ps\_set\_line\_dash()}
+{\footnotesize\ttfamily void ps\+\_\+set\+\_\+line\+\_\+dash (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{float}]{start,  }\item[{const float $\ast$}]{dashes,  }\item[{unsigned int}]{num\+\_\+dashes }\end{DoxyParamCaption})}
+
+
+
+Set the pattern for dashed lines in the context. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em start} & A value that specifies how far into the dash pattern the line start. \\
+\hline
+{\em dashes} & An array of values that specify the length of the painted segments and unpainted segments. \\
+\hline
+{\em num\+\_\+dashes} & The number of elements in the array.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+set\+\_\+line\+\_\+cap}{p.}{group__stroke_gadb1c82ca13abac1c02f09e0e4804b33a}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+join}{p.}{group__stroke_ga502a7abc4f46bbd8ba54b187a9f05220}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+width}{p.}{group__stroke_gaa7c2102304123fab38eb57b68af23440}, \doxyref{ps\+\_\+set\+\_\+miter\+\_\+limit}{p.}{group__stroke_ga83568c0d29c26a834d05c93e48909328}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+color}{p.}{group__stroke_gacc37293e8d7ceda573a0a3625b169076}, \doxyref{ps\+\_\+reset\+\_\+line\+\_\+dash}{p.}{group__stroke_ga6d9522c011d21ff17a4c5f6e5ef7f914}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+inner\+\_\+join}{p.}{group__stroke_ga14303807813ac01122f298e5212fb5fc} 
+\end{DoxySeeAlso}
+\mbox{\label{group__stroke_ga14303807813ac01122f298e5212fb5fc}} 
+\index{Stroke@{Stroke}!ps\_set\_line\_inner\_join@{ps\_set\_line\_inner\_join}}
+\index{ps\_set\_line\_inner\_join@{ps\_set\_line\_inner\_join}!Stroke@{Stroke}}
+\doxysubsubsection{ps\_set\_line\_inner\_join()}
+{\footnotesize\ttfamily void ps\+\_\+set\+\_\+line\+\_\+inner\+\_\+join (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{\textbf{ ps\+\_\+line\+\_\+inner\+\_\+join}}]{line\+\_\+inner\+\_\+join }\end{DoxyParamCaption})}
+
+
+
+Set the style for the inner joins of connected lines in a graphics context. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em line\+\_\+inner\+\_\+join} & The inner join style of the lines.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+set\+\_\+line\+\_\+cap}{p.}{group__stroke_gadb1c82ca13abac1c02f09e0e4804b33a}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+width}{p.}{group__stroke_gaa7c2102304123fab38eb57b68af23440}, \doxyref{ps\+\_\+set\+\_\+miter\+\_\+limit}{p.}{group__stroke_ga83568c0d29c26a834d05c93e48909328}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+color}{p.}{group__stroke_gacc37293e8d7ceda573a0a3625b169076}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+dash}{p.}{group__stroke_ga14690c35aae12a4262af1bfb2fbdd96e}, \doxyref{ps\+\_\+reset\+\_\+line\+\_\+dash}{p.}{group__stroke_ga6d9522c011d21ff17a4c5f6e5ef7f914}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+join}{p.}{group__stroke_ga502a7abc4f46bbd8ba54b187a9f05220} 
+\end{DoxySeeAlso}
+\mbox{\label{group__stroke_ga502a7abc4f46bbd8ba54b187a9f05220}} 
+\index{Stroke@{Stroke}!ps\_set\_line\_join@{ps\_set\_line\_join}}
+\index{ps\_set\_line\_join@{ps\_set\_line\_join}!Stroke@{Stroke}}
+\doxysubsubsection{ps\_set\_line\_join()}
+{\footnotesize\ttfamily void ps\+\_\+set\+\_\+line\+\_\+join (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{\textbf{ ps\+\_\+line\+\_\+join}}]{line\+\_\+join }\end{DoxyParamCaption})}
+
+
+
+Set the style for the joins of connected lines in a graphics context. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em line\+\_\+join} & The join style of the lines.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+set\+\_\+line\+\_\+cap}{p.}{group__stroke_gadb1c82ca13abac1c02f09e0e4804b33a}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+width}{p.}{group__stroke_gaa7c2102304123fab38eb57b68af23440}, \doxyref{ps\+\_\+set\+\_\+miter\+\_\+limit}{p.}{group__stroke_ga83568c0d29c26a834d05c93e48909328}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+color}{p.}{group__stroke_gacc37293e8d7ceda573a0a3625b169076}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+dash}{p.}{group__stroke_ga14690c35aae12a4262af1bfb2fbdd96e}, \doxyref{ps\+\_\+reset\+\_\+line\+\_\+dash}{p.}{group__stroke_ga6d9522c011d21ff17a4c5f6e5ef7f914}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+inner\+\_\+join}{p.}{group__stroke_ga14303807813ac01122f298e5212fb5fc} 
+\end{DoxySeeAlso}
+\mbox{\label{group__stroke_gaa7c2102304123fab38eb57b68af23440}} 
+\index{Stroke@{Stroke}!ps\_set\_line\_width@{ps\_set\_line\_width}}
+\index{ps\_set\_line\_width@{ps\_set\_line\_width}!Stroke@{Stroke}}
+\doxysubsubsection{ps\_set\_line\_width()}
+{\footnotesize\ttfamily float ps\+\_\+set\+\_\+line\+\_\+width (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{float}]{width }\end{DoxyParamCaption})}
+
+
+
+Set the line width for a graphics context. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em width} & The line width to use, in pixels, must be greater than 0. Default value is 1.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+If the function succeeds, the return value is the old width. If the function fails, the return value is 0.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+set\+\_\+line\+\_\+cap}{p.}{group__stroke_gadb1c82ca13abac1c02f09e0e4804b33a}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+join}{p.}{group__stroke_ga502a7abc4f46bbd8ba54b187a9f05220}, \doxyref{ps\+\_\+set\+\_\+miter\+\_\+limit}{p.}{group__stroke_ga83568c0d29c26a834d05c93e48909328}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+color}{p.}{group__stroke_gacc37293e8d7ceda573a0a3625b169076}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+dash}{p.}{group__stroke_ga14690c35aae12a4262af1bfb2fbdd96e}, \doxyref{ps\+\_\+reset\+\_\+line\+\_\+dash}{p.}{group__stroke_ga6d9522c011d21ff17a4c5f6e5ef7f914}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+inner\+\_\+join}{p.}{group__stroke_ga14303807813ac01122f298e5212fb5fc} 
+\end{DoxySeeAlso}
+\mbox{\label{group__stroke_ga83568c0d29c26a834d05c93e48909328}} 
+\index{Stroke@{Stroke}!ps\_set\_miter\_limit@{ps\_set\_miter\_limit}}
+\index{ps\_set\_miter\_limit@{ps\_set\_miter\_limit}!Stroke@{Stroke}}
+\doxysubsubsection{ps\_set\_miter\_limit()}
+{\footnotesize\ttfamily float ps\+\_\+set\+\_\+miter\+\_\+limit (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{float}]{limit }\end{DoxyParamCaption})}
+
+
+
+Set the miter limit for the joins of connected lines in a graphics context. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em limit} & The miter limit to use, must be greater than 0. Default value is 4.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+If the function succeeds, the return value is the old miter limit. If the function fails, the return value is 0.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+set\+\_\+line\+\_\+cap}{p.}{group__stroke_gadb1c82ca13abac1c02f09e0e4804b33a}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+join}{p.}{group__stroke_ga502a7abc4f46bbd8ba54b187a9f05220}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+width}{p.}{group__stroke_gaa7c2102304123fab38eb57b68af23440}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+color}{p.}{group__stroke_gacc37293e8d7ceda573a0a3625b169076}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+dash}{p.}{group__stroke_ga14690c35aae12a4262af1bfb2fbdd96e}, \doxyref{ps\+\_\+reset\+\_\+line\+\_\+dash}{p.}{group__stroke_ga6d9522c011d21ff17a4c5f6e5ef7f914}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+inner\+\_\+join}{p.}{group__stroke_ga14303807813ac01122f298e5212fb5fc} 
+\end{DoxySeeAlso}
+\mbox{\label{group__stroke_ga6ddddfdba22f22a1583119e1b150e6fb}} 
+\index{Stroke@{Stroke}!ps\_set\_stroke\_canvas@{ps\_set\_stroke\_canvas}}
+\index{ps\_set\_stroke\_canvas@{ps\_set\_stroke\_canvas}!Stroke@{Stroke}}
+\doxysubsubsection{ps\_set\_stroke\_canvas()}
+{\footnotesize\ttfamily void ps\+\_\+set\+\_\+stroke\+\_\+canvas (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{const \textbf{ ps\+\_\+canvas} $\ast$}]{canvas }\end{DoxyParamCaption})}
+
+
+
+Set a canvas to the context, it is used to stroke a graphic object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em canvas} & The canvas to be set.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+set\+\_\+line\+\_\+cap}{p.}{group__stroke_gadb1c82ca13abac1c02f09e0e4804b33a}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+join}{p.}{group__stroke_ga502a7abc4f46bbd8ba54b187a9f05220}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+width}{p.}{group__stroke_gaa7c2102304123fab38eb57b68af23440}, \doxyref{ps\+\_\+set\+\_\+miter\+\_\+limit}{p.}{group__stroke_ga83568c0d29c26a834d05c93e48909328}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+dash}{p.}{group__stroke_ga14690c35aae12a4262af1bfb2fbdd96e}, \doxyref{ps\+\_\+reset\+\_\+line\+\_\+dash}{p.}{group__stroke_ga6d9522c011d21ff17a4c5f6e5ef7f914}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+inner\+\_\+join}{p.}{group__stroke_ga14303807813ac01122f298e5212fb5fc}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+color}{p.}{group__stroke_gacc37293e8d7ceda573a0a3625b169076} \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+image}{p.}{group__stroke_ga0cd821b1abab722e43fda7c48e01bca6}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+pattern}{p.}{group__stroke_ga87c581e0da2e0e66c0e6f3037ba64e40}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+gradient}{p.}{group__stroke_gaeea9b60ea7eabf6ff291a3a7d002770e} 
+\end{DoxySeeAlso}
+\mbox{\label{group__stroke_gacc37293e8d7ceda573a0a3625b169076}} 
+\index{Stroke@{Stroke}!ps\_set\_stroke\_color@{ps\_set\_stroke\_color}}
+\index{ps\_set\_stroke\_color@{ps\_set\_stroke\_color}!Stroke@{Stroke}}
+\doxysubsubsection{ps\_set\_stroke\_color()}
+{\footnotesize\ttfamily void ps\+\_\+set\+\_\+stroke\+\_\+color (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{const \textbf{ ps\+\_\+color} $\ast$}]{color }\end{DoxyParamCaption})}
+
+
+
+Set a color to the context, it is used to stroke a graphic object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em color} & The color to be set.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+set\+\_\+line\+\_\+cap}{p.}{group__stroke_gadb1c82ca13abac1c02f09e0e4804b33a}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+join}{p.}{group__stroke_ga502a7abc4f46bbd8ba54b187a9f05220}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+width}{p.}{group__stroke_gaa7c2102304123fab38eb57b68af23440}, \doxyref{ps\+\_\+set\+\_\+miter\+\_\+limit}{p.}{group__stroke_ga83568c0d29c26a834d05c93e48909328}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+dash}{p.}{group__stroke_ga14690c35aae12a4262af1bfb2fbdd96e}, \doxyref{ps\+\_\+reset\+\_\+line\+\_\+dash}{p.}{group__stroke_ga6d9522c011d21ff17a4c5f6e5ef7f914}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+inner\+\_\+join}{p.}{group__stroke_ga14303807813ac01122f298e5212fb5fc}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+image}{p.}{group__stroke_ga0cd821b1abab722e43fda7c48e01bca6} \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+pattern}{p.}{group__stroke_ga87c581e0da2e0e66c0e6f3037ba64e40}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+gradient}{p.}{group__stroke_gaeea9b60ea7eabf6ff291a3a7d002770e}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+canvas}{p.}{group__stroke_ga6ddddfdba22f22a1583119e1b150e6fb} 
+\end{DoxySeeAlso}
+\mbox{\label{group__stroke_gaeea9b60ea7eabf6ff291a3a7d002770e}} 
+\index{Stroke@{Stroke}!ps\_set\_stroke\_gradient@{ps\_set\_stroke\_gradient}}
+\index{ps\_set\_stroke\_gradient@{ps\_set\_stroke\_gradient}!Stroke@{Stroke}}
+\doxysubsubsection{ps\_set\_stroke\_gradient()}
+{\footnotesize\ttfamily void ps\+\_\+set\+\_\+stroke\+\_\+gradient (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{const \textbf{ ps\+\_\+gradient} $\ast$}]{gradient }\end{DoxyParamCaption})}
+
+
+
+Set a gradient to the context, it is used to stroke a graphic object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em gradient} & The gradient to be set.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+set\+\_\+line\+\_\+cap}{p.}{group__stroke_gadb1c82ca13abac1c02f09e0e4804b33a}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+join}{p.}{group__stroke_ga502a7abc4f46bbd8ba54b187a9f05220}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+width}{p.}{group__stroke_gaa7c2102304123fab38eb57b68af23440}, \doxyref{ps\+\_\+set\+\_\+miter\+\_\+limit}{p.}{group__stroke_ga83568c0d29c26a834d05c93e48909328}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+dash}{p.}{group__stroke_ga14690c35aae12a4262af1bfb2fbdd96e}, \doxyref{ps\+\_\+reset\+\_\+line\+\_\+dash}{p.}{group__stroke_ga6d9522c011d21ff17a4c5f6e5ef7f914}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+inner\+\_\+join}{p.}{group__stroke_ga14303807813ac01122f298e5212fb5fc}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+color}{p.}{group__stroke_gacc37293e8d7ceda573a0a3625b169076} \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+image}{p.}{group__stroke_ga0cd821b1abab722e43fda7c48e01bca6}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+pattern}{p.}{group__stroke_ga87c581e0da2e0e66c0e6f3037ba64e40}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+canvas}{p.}{group__stroke_ga6ddddfdba22f22a1583119e1b150e6fb} 
+\end{DoxySeeAlso}
+\mbox{\label{group__stroke_ga0cd821b1abab722e43fda7c48e01bca6}} 
+\index{Stroke@{Stroke}!ps\_set\_stroke\_image@{ps\_set\_stroke\_image}}
+\index{ps\_set\_stroke\_image@{ps\_set\_stroke\_image}!Stroke@{Stroke}}
+\doxysubsubsection{ps\_set\_stroke\_image()}
+{\footnotesize\ttfamily void ps\+\_\+set\+\_\+stroke\+\_\+image (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{const \textbf{ ps\+\_\+image} $\ast$}]{image }\end{DoxyParamCaption})}
+
+
+
+Set a image to the context, it is used to stroke a graphic object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em image} & The image to be set.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+set\+\_\+line\+\_\+cap}{p.}{group__stroke_gadb1c82ca13abac1c02f09e0e4804b33a}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+join}{p.}{group__stroke_ga502a7abc4f46bbd8ba54b187a9f05220}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+width}{p.}{group__stroke_gaa7c2102304123fab38eb57b68af23440}, \doxyref{ps\+\_\+set\+\_\+miter\+\_\+limit}{p.}{group__stroke_ga83568c0d29c26a834d05c93e48909328}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+dash}{p.}{group__stroke_ga14690c35aae12a4262af1bfb2fbdd96e}, \doxyref{ps\+\_\+reset\+\_\+line\+\_\+dash}{p.}{group__stroke_ga6d9522c011d21ff17a4c5f6e5ef7f914}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+inner\+\_\+join}{p.}{group__stroke_ga14303807813ac01122f298e5212fb5fc}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+color}{p.}{group__stroke_gacc37293e8d7ceda573a0a3625b169076} \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+pattern}{p.}{group__stroke_ga87c581e0da2e0e66c0e6f3037ba64e40}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+gradient}{p.}{group__stroke_gaeea9b60ea7eabf6ff291a3a7d002770e}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+canvas}{p.}{group__stroke_ga6ddddfdba22f22a1583119e1b150e6fb} 
+\end{DoxySeeAlso}
+\mbox{\label{group__stroke_ga87c581e0da2e0e66c0e6f3037ba64e40}} 
+\index{Stroke@{Stroke}!ps\_set\_stroke\_pattern@{ps\_set\_stroke\_pattern}}
+\index{ps\_set\_stroke\_pattern@{ps\_set\_stroke\_pattern}!Stroke@{Stroke}}
+\doxysubsubsection{ps\_set\_stroke\_pattern()}
+{\footnotesize\ttfamily void ps\+\_\+set\+\_\+stroke\+\_\+pattern (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{const \textbf{ ps\+\_\+pattern} $\ast$}]{pattern }\end{DoxyParamCaption})}
+
+
+
+Set a pattern to the context, it is used to stroke a graphic object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em pattern} & The pattern to be set.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+set\+\_\+line\+\_\+cap}{p.}{group__stroke_gadb1c82ca13abac1c02f09e0e4804b33a}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+join}{p.}{group__stroke_ga502a7abc4f46bbd8ba54b187a9f05220}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+width}{p.}{group__stroke_gaa7c2102304123fab38eb57b68af23440}, \doxyref{ps\+\_\+set\+\_\+miter\+\_\+limit}{p.}{group__stroke_ga83568c0d29c26a834d05c93e48909328}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+dash}{p.}{group__stroke_ga14690c35aae12a4262af1bfb2fbdd96e}, \doxyref{ps\+\_\+reset\+\_\+line\+\_\+dash}{p.}{group__stroke_ga6d9522c011d21ff17a4c5f6e5ef7f914}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+inner\+\_\+join}{p.}{group__stroke_ga14303807813ac01122f298e5212fb5fc}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+color}{p.}{group__stroke_gacc37293e8d7ceda573a0a3625b169076} \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+image}{p.}{group__stroke_ga0cd821b1abab722e43fda7c48e01bca6}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+gradient}{p.}{group__stroke_gaeea9b60ea7eabf6ff291a3a7d002770e}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+canvas}{p.}{group__stroke_ga6ddddfdba22f22a1583119e1b150e6fb} 
+\end{DoxySeeAlso}

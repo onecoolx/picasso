@@ -1,0 +1,157 @@
+.TH "clip" 3 "Tue Dec 24 2024" "Version 2.8" "Picasso API" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+clip
+.SH SYNOPSIS
+.br
+.PP
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_clip\fP (\fBps_context\fP *ctx)"
+.br
+.RI "Clipping the current path, using the current fill rule\&. After called, the current path will be cleared from the context\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_clip_path\fP (\fBps_context\fP *ctx, const \fBps_path\fP *path, \fBps_fill_rule\fP rule)"
+.br
+.RI "Clipping specified path, using the given fill rule\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_clip_rect\fP (\fBps_context\fP *ctx, const \fBps_rect\fP *rect)"
+.br
+.RI "Clipping specified rectangle\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_scissor_rect\fP (\fBps_context\fP *ctx, const \fBps_rect\fP *rect)"
+.br
+.RI "The fast way to clipping specified rectangle, the clip rect can not be transformed by world matrix\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_clip_rects\fP (\fBps_context\fP *ctx, const \fBps_rect\fP *rects, unsigned int num_rects)"
+.br
+.RI "Clipping specified area defined by an array of rectangles\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_reset_clip\fP (\fBps_context\fP *ctx)"
+.br
+.RI "Clear the clipping area from the context\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.SH "Function Documentation"
+.PP 
+.SS "void ps_clip (\fBps_context\fP * ctx)"
+
+.PP
+Clipping the current path, using the current fill rule\&. After called, the current path will be cleared from the context\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_clip_path\fP, \fBps_clip_rect\fP, \fBps_clip_rects\fP, \fBps_reset_clip\fP 
+.RE
+.PP
+
+.SS "void ps_clip_path (\fBps_context\fP * ctx, const \fBps_path\fP * path, \fBps_fill_rule\fP rule)"
+
+.PP
+Clipping specified path, using the given fill rule\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fIpath\fP The path which will be clipped\&. 
+.br
+\fIrule\fP The rule of the path\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_clip\fP, \fBps_clip_rect\fP, \fBps_clip_rects\fP, \fBps_reset_clip\fP 
+.RE
+.PP
+
+.SS "void ps_clip_rect (\fBps_context\fP * ctx, const \fBps_rect\fP * rect)"
+
+.PP
+Clipping specified rectangle\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fIrect\fP The rectangle which will be clipped\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_clip\fP, \fBps_clip_path\fP, \fBps_clip_rects\fP, \fBps_reset_clip\fP, \fBps_scissor_rect\fP 
+.RE
+.PP
+
+.SS "void ps_clip_rects (\fBps_context\fP * ctx, const \fBps_rect\fP * rects, unsigned int num_rects)"
+
+.PP
+Clipping specified area defined by an array of rectangles\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fIrects\fP The array of rectangles which will be clipped\&. 
+.br
+\fInum_rects\fP The number of array entries\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_clip\fP, \fBps_clip_path\fP, \fBps_clip_rect\fP, \fBps_reset_clip\fP 
+.RE
+.PP
+
+.SS "void ps_reset_clip (\fBps_context\fP * ctx)"
+
+.PP
+Clear the clipping area from the context\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_clip\fP, \fBps_clip_path\fP, \fBps_clip_rect\fP, \fBps_clip_rects\fP 
+.RE
+.PP
+
+.SS "void ps_scissor_rect (\fBps_context\fP * ctx, const \fBps_rect\fP * rect)"
+
+.PP
+The fast way to clipping specified rectangle, the clip rect can not be transformed by world matrix\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fIrect\fP The rectangle which will be clipped\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+This function is deprecated, will be remove feature\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_clip\fP, \fBps_clip_path\fP, \fBps_clip_rects\fP, \fBps_reset_clip\fP, \fBps_clip_rect\fP 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Picasso API from the source code\&.

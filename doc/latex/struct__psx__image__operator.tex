@@ -1,0 +1,106 @@
+\doxysection{\+\_\+psx\+\_\+image\+\_\+operator Struct Reference}
+\label{struct__psx__image__operator}\index{\_psx\_image\_operator@{\_psx\_image\_operator}}
+
+
+The image operator define.  
+
+
+
+
+{\ttfamily \#include $<$psx\+\_\+image\+\_\+plugin.\+h$>$}
+
+\doxysubsection*{Data Fields}
+\begin{DoxyCompactItemize}
+\item 
+int($\ast$ \textbf{ read\+\_\+header\+\_\+info} )(const \textbf{ ps\+\_\+byte} $\ast$data, size\+\_\+t data\+\_\+len, \textbf{ psx\+\_\+image\+\_\+header} $\ast$header)
+\item 
+int($\ast$ \textbf{ decode\+\_\+image\+\_\+data} )(\textbf{ psx\+\_\+image\+\_\+header} $\ast$header, const \textbf{ psx\+\_\+image} $\ast$image, \textbf{ psx\+\_\+image\+\_\+frame} $\ast$frame, int idx, \textbf{ ps\+\_\+byte} $\ast$buffer, size\+\_\+t buffer\+\_\+len)
+\item 
+int($\ast$ \textbf{ release\+\_\+read\+\_\+header\+\_\+info} )(\textbf{ psx\+\_\+image\+\_\+header} $\ast$header)
+\item 
+int($\ast$ \textbf{ write\+\_\+header\+\_\+info} )(const \textbf{ psx\+\_\+image} $\ast$image, \textbf{ image\+\_\+writer\+\_\+fn} func, void $\ast$param, float quality, \textbf{ psx\+\_\+image\+\_\+header} $\ast$header)
+\item 
+int($\ast$ \textbf{ encode\+\_\+image\+\_\+data} )(\textbf{ psx\+\_\+image\+\_\+header} $\ast$header, const \textbf{ psx\+\_\+image} $\ast$image, \textbf{ psx\+\_\+image\+\_\+frame} $\ast$frame, int idx, const \textbf{ ps\+\_\+byte} $\ast$buffer, size\+\_\+t buffer\+\_\+len, int $\ast$ret)
+\item 
+int($\ast$ \textbf{ release\+\_\+write\+\_\+header\+\_\+info} )(\textbf{ psx\+\_\+image\+\_\+header} $\ast$header)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+The image operator define. 
+
+\begin{DoxySeeAlso}{See also}
+\doxyref{psx\+\_\+image\+\_\+register\+\_\+operator}{p.}{group__interface_gac2c1fc7d317f49ee5c246f9aff61e13a} \doxyref{psx\+\_\+image\+\_\+unregister\+\_\+operator}{p.}{group__interface_ga50213dff3b0bec9b77c059bb85126bed} 
+\end{DoxySeeAlso}
+
+
+Definition at line 69 of file psx\+\_\+image\+\_\+plugin.\+h.
+
+
+
+\doxysubsection{Field Documentation}
+\mbox{\label{struct__psx__image__operator_ad43beb69abe6dd4ea4eb0bfbeb9f8e76}} 
+\index{\_psx\_image\_operator@{\_psx\_image\_operator}!decode\_image\_data@{decode\_image\_data}}
+\index{decode\_image\_data@{decode\_image\_data}!\_psx\_image\_operator@{\_psx\_image\_operator}}
+\doxysubsubsection{decode\_image\_data}
+{\footnotesize\ttfamily int($\ast$ \+\_\+psx\+\_\+image\+\_\+operator\+::decode\+\_\+image\+\_\+data) (\textbf{ psx\+\_\+image\+\_\+header} $\ast$header, const \textbf{ psx\+\_\+image} $\ast$image, \textbf{ psx\+\_\+image\+\_\+frame} $\ast$frame, int idx, \textbf{ ps\+\_\+byte} $\ast$buffer, size\+\_\+t buffer\+\_\+len)}
+
+Read a frame of raw data. 
+
+Definition at line 73 of file psx\+\_\+image\+\_\+plugin.\+h.
+
+\mbox{\label{struct__psx__image__operator_a1bb95a9c85e49747118a9e275d415afb}} 
+\index{\_psx\_image\_operator@{\_psx\_image\_operator}!encode\_image\_data@{encode\_image\_data}}
+\index{encode\_image\_data@{encode\_image\_data}!\_psx\_image\_operator@{\_psx\_image\_operator}}
+\doxysubsubsection{encode\_image\_data}
+{\footnotesize\ttfamily int($\ast$ \+\_\+psx\+\_\+image\+\_\+operator\+::encode\+\_\+image\+\_\+data) (\textbf{ psx\+\_\+image\+\_\+header} $\ast$header, const \textbf{ psx\+\_\+image} $\ast$image, \textbf{ psx\+\_\+image\+\_\+frame} $\ast$frame, int idx, const \textbf{ ps\+\_\+byte} $\ast$buffer, size\+\_\+t buffer\+\_\+len, int $\ast$ret)}
+
+Write image data frames. 
+
+Definition at line 80 of file psx\+\_\+image\+\_\+plugin.\+h.
+
+\mbox{\label{struct__psx__image__operator_ad24e7780a840a4721ae96f8df0a7272e}} 
+\index{\_psx\_image\_operator@{\_psx\_image\_operator}!read\_header\_info@{read\_header\_info}}
+\index{read\_header\_info@{read\_header\_info}!\_psx\_image\_operator@{\_psx\_image\_operator}}
+\doxysubsubsection{read\_header\_info}
+{\footnotesize\ttfamily int($\ast$ \+\_\+psx\+\_\+image\+\_\+operator\+::read\+\_\+header\+\_\+info) (const \textbf{ ps\+\_\+byte} $\ast$data, size\+\_\+t data\+\_\+len, \textbf{ psx\+\_\+image\+\_\+header} $\ast$header)}
+
+Create a image reader header. 
+
+Definition at line 71 of file psx\+\_\+image\+\_\+plugin.\+h.
+
+\mbox{\label{struct__psx__image__operator_aac2971af3561f4e0302bbcd3598e18fd}} 
+\index{\_psx\_image\_operator@{\_psx\_image\_operator}!release\_read\_header\_info@{release\_read\_header\_info}}
+\index{release\_read\_header\_info@{release\_read\_header\_info}!\_psx\_image\_operator@{\_psx\_image\_operator}}
+\doxysubsubsection{release\_read\_header\_info}
+{\footnotesize\ttfamily int($\ast$ \+\_\+psx\+\_\+image\+\_\+operator\+::release\+\_\+read\+\_\+header\+\_\+info) (\textbf{ psx\+\_\+image\+\_\+header} $\ast$header)}
+
+Release reader resources. 
+
+Definition at line 75 of file psx\+\_\+image\+\_\+plugin.\+h.
+
+\mbox{\label{struct__psx__image__operator_aeecc5bc533d285593e35a8c07fa7ba3a}} 
+\index{\_psx\_image\_operator@{\_psx\_image\_operator}!release\_write\_header\_info@{release\_write\_header\_info}}
+\index{release\_write\_header\_info@{release\_write\_header\_info}!\_psx\_image\_operator@{\_psx\_image\_operator}}
+\doxysubsubsection{release\_write\_header\_info}
+{\footnotesize\ttfamily int($\ast$ \+\_\+psx\+\_\+image\+\_\+operator\+::release\+\_\+write\+\_\+header\+\_\+info) (\textbf{ psx\+\_\+image\+\_\+header} $\ast$header)}
+
+Release writer resources. 
+
+Definition at line 82 of file psx\+\_\+image\+\_\+plugin.\+h.
+
+\mbox{\label{struct__psx__image__operator_a596a03722fa7bad5be660b351c35d7ed}} 
+\index{\_psx\_image\_operator@{\_psx\_image\_operator}!write\_header\_info@{write\_header\_info}}
+\index{write\_header\_info@{write\_header\_info}!\_psx\_image\_operator@{\_psx\_image\_operator}}
+\doxysubsubsection{write\_header\_info}
+{\footnotesize\ttfamily int($\ast$ \+\_\+psx\+\_\+image\+\_\+operator\+::write\+\_\+header\+\_\+info) (const \textbf{ psx\+\_\+image} $\ast$image, \textbf{ image\+\_\+writer\+\_\+fn} func, void $\ast$param, float quality, \textbf{ psx\+\_\+image\+\_\+header} $\ast$header)}
+
+Create a image writer header. 
+
+Definition at line 77 of file psx\+\_\+image\+\_\+plugin.\+h.
+
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/images/\textbf{ psx\+\_\+image\+\_\+plugin.\+h}\end{DoxyCompactItemize}

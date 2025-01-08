@@ -1,0 +1,6 @@
+cwrap
+ccall
+setValue
+getValue
+AsciiToString
+writeStringToMemory

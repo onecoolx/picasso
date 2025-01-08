@@ -65,11 +65,14 @@ void qsort_cells(Cell** start, unsigned int num)
 
             for (;;) {
                 int x = (*base)->x;
-                do { i++; } while ( (*i)->x < x );
-                do { j--; } while ( x < (*j)->x );
+                do { i++; }
+                while ( (*i)->x < x );
+                do { j--; }
+                while ( x < (*j)->x );
 
-                if (i > j)
+                if (i > j) {
                     break;
+                }
 
                 swap_cells(i, j);
             }
@@ -80,11 +83,11 @@ void qsort_cells(Cell** start, unsigned int num)
             if (j - base > limit - i) {
                 top[0] = base;
                 top[1] = j;
-                base   = i;
+                base = i;
             } else {
                 top[0] = i;
                 top[1] = limit;
-                limit  = j;
+                limit = j;
             }
             top += 2;
         } else {
@@ -95,14 +98,15 @@ void qsort_cells(Cell** start, unsigned int num)
             for (; i < limit; j = i, i++) {
                 for (; j[1]->x < (*j)->x; j--) {
                     swap_cells(j + 1, j);
-                    if (j == base)
+                    if (j == base) {
                         break;
+                    }
                 }
             }
 
             if (top > stack) {
-                top  -= 2;
-                base  = top[0];
+                top -= 2;
+                base = top[0];
                 limit = top[1];
             } else {
                 break;
@@ -122,9 +126,9 @@ public:
 
     enum {
         cell_block_shift = 12,
-        cell_block_size  = 1 << cell_block_shift,
-        cell_block_mask  = cell_block_size - 1,
-        cell_block_pool  = 256,
+        cell_block_size = 1 << cell_block_shift,
+        cell_block_mask = cell_block_size - 1,
+        cell_block_pool = 256,
         cell_block_limit = 1024,
     };
 
@@ -175,8 +179,8 @@ public:
         m_curr_cell.initial();
         m_style_cell.initial();
         m_sorted = false;
-        m_min_x =  0x7FFFFFFF;
-        m_min_y =  0x7FFFFFFF;
+        m_min_x = 0x7FFFFFFF;
+        m_min_y = 0x7FFFFFFF;
         m_max_x = -0x7FFFFFFF;
         m_max_y = -0x7FFFFFFF;
     }
@@ -208,14 +212,14 @@ public:
         int x_from, x_to;
         int p, rem, mod, lift, delta, first, incr;
 
-        if (ex1 < m_min_x) m_min_x = ex1;
-        if (ex1 > m_max_x) m_max_x = ex1;
-        if (ey1 < m_min_y) m_min_y = ey1;
-        if (ey1 > m_max_y) m_max_y = ey1;
-        if (ex2 < m_min_x) m_min_x = ex2;
-        if (ex2 > m_max_x) m_max_x = ex2;
-        if (ey2 < m_min_y) m_min_y = ey2;
-        if (ey2 > m_max_y) m_max_y = ey2;
+        if (ex1 < m_min_x) { m_min_x = ex1; }
+        if (ex1 > m_max_x) { m_max_x = ex1; }
+        if (ey1 < m_min_y) { m_min_y = ey1; }
+        if (ey1 > m_max_y) { m_max_y = ey1; }
+        if (ex2 < m_min_x) { m_min_x = ex2; }
+        if (ex2 > m_max_x) { m_max_x = ex2; }
+        if (ey2 < m_min_y) { m_min_y = ey2; }
+        if (ey2 > m_max_y) { m_max_y = ey2; }
 
         set_curr_cell(ex1, ey1);
 
@@ -232,7 +236,7 @@ public:
         incr = 1;
         if (dx == 0) {
             int ex = x1 >> poly_subpixel_shift;
-            int two_fx = (x1 - (ex << poly_subpixel_shift)) << 1;
+            int two_fx = (int32_t)((uint32_t)(x1 - (int32_t)((uint32_t)ex << poly_subpixel_shift)) << 1);
             int area;
 
             first = poly_subpixel_scale;
@@ -254,13 +258,13 @@ public:
             area = two_fx * delta;
             while (ey1 != ey2) {
                 m_curr_cell.cover = delta;
-                m_curr_cell.area  = area;
+                m_curr_cell.area = area;
                 ey1 += incr;
                 set_curr_cell(ex, ey1);
             }
             delta = fy2 - poly_subpixel_scale + first;
             m_curr_cell.cover += delta;
-            m_curr_cell.area  += two_fx * delta;
+            m_curr_cell.area += two_fx * delta;
             return;
         }
 
@@ -290,7 +294,7 @@ public:
         set_curr_cell(x_from >> poly_subpixel_shift, ey1);
 
         if (ey1 != ey2) {
-            p = dx << poly_subpixel_shift;
+            p = (int32_t)((uint32_t)dx << poly_subpixel_shift);
             lift = p / dy;
             rem = p % dy;
 
@@ -326,17 +330,19 @@ public:
 
     void sort_cells(void)
     {
-        if (m_sorted)
+        if (m_sorted) {
             return; //Perform sort only the first time.
+        }
 
         add_curr_cell();
         m_curr_cell.x = 0x7FFFFFFF;
         m_curr_cell.y = 0x7FFFFFFF;
         m_curr_cell.cover = 0;
-        m_curr_cell.area  = 0;
+        m_curr_cell.area = 0;
 
-        if (m_num_cells == 0)
+        if (m_num_cells == 0) {
             return;
+        }
 
         // Allocate the array of cell pointers
         m_sorted_cells.allocate(m_num_cells + 16);
@@ -433,7 +439,7 @@ private:
             m_curr_cell.x = x;
             m_curr_cell.y = y;
             m_curr_cell.cover = 0;
-            m_curr_cell.area  = 0;
+            m_curr_cell.area = 0;
         }
     }
 
@@ -441,8 +447,9 @@ private:
     {
         if (m_curr_cell.area | m_curr_cell.cover) {
             if ((m_num_cells & cell_block_mask) == 0) {
-                if (m_num_blocks >= cell_block_limit)
+                if (m_num_blocks >= cell_block_limit) {
                     return;
+                }
                 allocate_block();
             }
             *m_curr_cell_ptr++ = m_curr_cell;
@@ -470,7 +477,7 @@ private:
         if (ex1 == ex2) {
             delta = y2 - y1;
             m_curr_cell.cover += delta;
-            m_curr_cell.area  += (fx1 + fx2) * delta;
+            m_curr_cell.area += (fx1 + fx2) * delta;
             return;
         }
 
@@ -496,14 +503,14 @@ private:
         }
 
         m_curr_cell.cover += delta;
-        m_curr_cell.area  += (fx1 + first) * delta;
+        m_curr_cell.area += (fx1 + first) * delta;
 
         ex1 += incr;
         set_curr_cell(ex1, ey);
         y1 += delta;
 
         if (ex1 != ex2) {
-            p = (y2 - y1 + delta) << poly_subpixel_shift;
+            p = (int32_t)((uint32_t)(y2 - y1 + delta) << poly_subpixel_shift);
             lift = p / dx;
             rem = p % dx;
 
@@ -523,7 +530,7 @@ private:
                 }
 
                 m_curr_cell.cover += delta;
-                m_curr_cell.area += (delta << poly_subpixel_shift);
+                m_curr_cell.area += (int32_t)((uint32_t)delta << poly_subpixel_shift);
                 y1 += delta;
                 ex1 += incr;
                 set_curr_cell(ex1, ey);

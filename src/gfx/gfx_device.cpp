@@ -12,12 +12,11 @@
 #include "gfx_painter.h"
 #include "gfx_raster_adapter.h"
 #include "gfx_gradient_adapter.h"
-#include "gfx_font_adapter.h"
 #include "gfx_mask_layer.h"
-#include "gfx_trans_affine.h"
 #include "gfx_pixfmt_rgba.h"
 #include "gfx_pixfmt_rgb.h"
 #include "gfx_pixfmt_rgb16.h"
+#include "gfx_pixfmt_gray.h"
 
 namespace gfx {
 
@@ -34,21 +33,9 @@ gfx_device::~gfx_device()
 {
 }
 
-abstract_trans_affine* gfx_device::create_trans_affine(scalar sx, scalar shy,
-                                                        scalar shx, scalar sy, scalar tx, scalar ty)
-{
-    return new gfx_trans_affine(sx, shy, shx, sy, tx, ty);
-}
-
-void gfx_device::destroy_trans_affine(abstract_trans_affine* m)
-{
-    delete m;
-}
-
 abstract_painter* gfx_device::create_painter(pix_fmt fmt)
 {
-    switch (fmt)
-    {
+    switch (fmt) {
 #if ENABLE(FORMAT_RGBA)
         case pix_fmt_rgba:
             return new gfx_painter<pixfmt_rgba32>;
@@ -81,6 +68,10 @@ abstract_painter* gfx_device::create_painter(pix_fmt fmt)
         case pix_fmt_rgb555:
             return new gfx_painter<pixfmt_rgb555>;
 #endif
+#if ENABLE(FORMAT_A8)
+        case pix_fmt_gray8:
+            return new gfx_painter<pixfmt_gray8>;
+#endif
         default:
             return 0;
     }
@@ -102,7 +93,7 @@ void gfx_device::destroy_raster_adapter(abstract_raster_adapter* d)
 }
 
 abstract_rendering_buffer* gfx_device::create_rendering_buffer(byte* buf,
-                                        unsigned int width, unsigned int height, int stride)
+                                                               unsigned int width, unsigned int height, int stride)
 {
     return new gfx_rendering_buffer(buf, width, height, stride);
 }
@@ -113,7 +104,7 @@ void gfx_device::destroy_rendering_buffer(abstract_rendering_buffer* b)
 }
 
 abstract_mask_layer* gfx_device::create_mask_layer(byte* buf,
-                                        unsigned int width, unsigned int height, int stride)
+                                                   unsigned int width, unsigned int height, int stride)
 {
     return new gfx_mask_layer(buf, width, height, stride);
 }
@@ -133,15 +124,4 @@ void gfx_device::destroy_gradient_adapter(abstract_gradient_adapter* g)
     delete g;
 }
 
-abstract_font_adapter* gfx_device::create_font_adapter(const char* name, int charset, scalar height, scalar weight,
-                                bool italic, bool hint, bool flip, bool antialias, const abstract_trans_affine* mtx)
-{
-    return new gfx_font_adapter(name, charset, height, weight, italic, hint, flip, antialias, mtx);
-}
-
-void gfx_device::destroy_font_adapter(abstract_font_adapter* f)
-{
-    delete f;
-}
-
-}
+} //namespace gfx

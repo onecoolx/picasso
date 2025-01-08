@@ -6,13 +6,13 @@
 
 #include "common.h"
 #include "device.h"
+#include "matrix.h"
 #include "interfaces.h"
 
 #include "picasso.h"
 #include "picasso_global.h"
 #include "picasso_raster_adapter.h"
 #include "picasso_objects.h"
-#include "picasso_matrix.h"
 
 namespace picasso {
 
@@ -78,7 +78,7 @@ void raster_adapter::set_raster_method(unsigned int m)
 
 void raster_adapter::set_transform(const trans_affine& mtx)
 {
-    m_impl->set_transform(mtx.impl());
+    m_impl->set_transform(&mtx);
 }
 
 void raster_adapter::commit(void)
@@ -95,7 +95,7 @@ bool raster_adapter::fill_contents_point(const vertex_source& vs, scalar x, scal
     if (rs) {
         rs->set_raster_method(raster_fill);
         rs->set_fill_attr(FIA_FILL_RULE, rule);
-        rs->set_transform(mtx.impl());
+        rs->set_transform(&mtx);
         rs->add_shape(vs, 0);
         rs->commit();
         ret = rs->contains(x, y);
@@ -112,7 +112,7 @@ bool raster_adapter::stroke_contents_point(const vertex_source& vs, scalar x, sc
     if (rs) {
         rs->set_raster_method(raster_stroke);
         rs->set_stroke_attr_val(STA_WIDTH, w);
-        rs->set_transform(mtx.impl());
+        rs->set_transform(&mtx);
         rs->add_shape(vs, 0);
         rs->commit();
         ret = rs->contains(x, y);

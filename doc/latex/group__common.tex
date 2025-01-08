@@ -1,0 +1,145 @@
+\doxysection{Common Functions}
+\label{group__common}\index{Common Functions@{Common Functions}}
+\doxysubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\label{group__common_ga329bb6930cb4bfd022ace14e30e8dee7}} 
+typedef enum \textbf{ \+\_\+ps\+\_\+status} \textbf{ ps\+\_\+status}
+\begin{DoxyCompactList}\small\item\em Status code return by call ps\+\_\+last\+\_\+status function. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \textbf{ \+\_\+ps\+\_\+status} \{ \newline
+\textbf{ S\+T\+A\+T\+U\+S\+\_\+\+S\+U\+C\+C\+E\+ED}, 
+\textbf{ S\+T\+A\+T\+U\+S\+\_\+\+O\+U\+T\+\_\+\+O\+F\+\_\+\+M\+E\+M\+O\+RY}, 
+\textbf{ S\+T\+A\+T\+U\+S\+\_\+\+I\+N\+V\+A\+L\+I\+D\+\_\+\+A\+R\+G\+U\+M\+E\+NT}, 
+\textbf{ S\+T\+A\+T\+U\+S\+\_\+\+N\+O\+T\+\_\+\+S\+U\+P\+P\+O\+RT}, 
+\newline
+\textbf{ S\+T\+A\+T\+U\+S\+\_\+\+D\+E\+V\+I\+C\+E\+\_\+\+E\+R\+R\+OR}, 
+\textbf{ S\+T\+A\+T\+U\+S\+\_\+\+M\+I\+S\+M\+A\+T\+C\+H\+I\+N\+G\+\_\+\+F\+O\+R\+M\+AT}, 
+\textbf{ S\+T\+A\+T\+U\+S\+\_\+\+U\+N\+K\+N\+O\+W\+N\+\_\+\+E\+R\+R\+OR}
+ \}
+\begin{DoxyCompactList}\small\item\em Status code return by call ps\+\_\+last\+\_\+status function. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+P\+E\+X\+P\+O\+RT int P\+I\+C\+A\+PI \textbf{ ps\+\_\+version} (void)
+\begin{DoxyCompactList}\small\item\em Return current version of picasso. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+bool} P\+I\+C\+A\+PI \textbf{ ps\+\_\+initialize} (void)
+\begin{DoxyCompactList}\small\item\em Initialize the picasso drawing environment. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+shutdown} (void)
+\begin{DoxyCompactList}\small\item\em Shutdown the picasso drawing environment. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+status} P\+I\+C\+A\+PI \textbf{ ps\+\_\+last\+\_\+status} (void)
+\begin{DoxyCompactList}\small\item\em Return the last status code of picasso. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+
+
+\doxysubsection{Enumeration Type Documentation}
+\mbox{\label{group__common_gaa0326a5d1401e410f5a5d306ff58057c}} 
+\index{Common Functions@{Common Functions}!\_ps\_status@{\_ps\_status}}
+\index{\_ps\_status@{\_ps\_status}!Common Functions@{Common Functions}}
+\doxysubsubsection{\_ps\_status}
+{\footnotesize\ttfamily enum \textbf{ \+\_\+ps\+\_\+status}}
+
+
+
+Status code return by call ps\+\_\+last\+\_\+status function. 
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{STATUS\_SUCCEED@{STATUS\_SUCCEED}!Common Functions@{Common Functions}}\index{Common Functions@{Common Functions}!STATUS\_SUCCEED@{STATUS\_SUCCEED}}}\mbox{\label{group__common_ggaa0326a5d1401e410f5a5d306ff58057caf2f748842c6754bca4b31ce38ee1989b}} 
+S\+T\+A\+T\+U\+S\+\_\+\+S\+U\+C\+C\+E\+ED&The successful status no errors. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{STATUS\_OUT\_OF\_MEMORY@{STATUS\_OUT\_OF\_MEMORY}!Common Functions@{Common Functions}}\index{Common Functions@{Common Functions}!STATUS\_OUT\_OF\_MEMORY@{STATUS\_OUT\_OF\_MEMORY}}}\mbox{\label{group__common_ggaa0326a5d1401e410f5a5d306ff58057ca1dd49a9b0813cb5a290438e39968a71d}} 
+S\+T\+A\+T\+U\+S\+\_\+\+O\+U\+T\+\_\+\+O\+F\+\_\+\+M\+E\+M\+O\+RY&Out of memory. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{STATUS\_INVALID\_ARGUMENT@{STATUS\_INVALID\_ARGUMENT}!Common Functions@{Common Functions}}\index{Common Functions@{Common Functions}!STATUS\_INVALID\_ARGUMENT@{STATUS\_INVALID\_ARGUMENT}}}\mbox{\label{group__common_ggaa0326a5d1401e410f5a5d306ff58057ca5b98786751fa3cebde33511b7c4c3c3f}} 
+S\+T\+A\+T\+U\+S\+\_\+\+I\+N\+V\+A\+L\+I\+D\+\_\+\+A\+R\+G\+U\+M\+E\+NT&Invalid argument input. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{STATUS\_NOT\_SUPPORT@{STATUS\_NOT\_SUPPORT}!Common Functions@{Common Functions}}\index{Common Functions@{Common Functions}!STATUS\_NOT\_SUPPORT@{STATUS\_NOT\_SUPPORT}}}\mbox{\label{group__common_ggaa0326a5d1401e410f5a5d306ff58057ca7f14fea68b0f0afde4a0146babe60ac1}} 
+S\+T\+A\+T\+U\+S\+\_\+\+N\+O\+T\+\_\+\+S\+U\+P\+P\+O\+RT&Not support this feature. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{STATUS\_DEVICE\_ERROR@{STATUS\_DEVICE\_ERROR}!Common Functions@{Common Functions}}\index{Common Functions@{Common Functions}!STATUS\_DEVICE\_ERROR@{STATUS\_DEVICE\_ERROR}}}\mbox{\label{group__common_ggaa0326a5d1401e410f5a5d306ff58057ca9cc7c369c4b8b5d9c416528f1c6b0e73}} 
+S\+T\+A\+T\+U\+S\+\_\+\+D\+E\+V\+I\+C\+E\+\_\+\+E\+R\+R\+OR&Device is not ready. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{STATUS\_MISMATCHING\_FORMAT@{STATUS\_MISMATCHING\_FORMAT}!Common Functions@{Common Functions}}\index{Common Functions@{Common Functions}!STATUS\_MISMATCHING\_FORMAT@{STATUS\_MISMATCHING\_FORMAT}}}\mbox{\label{group__common_ggaa0326a5d1401e410f5a5d306ff58057cadea69ea0278ac21563ef125c441ce1c7}} 
+S\+T\+A\+T\+U\+S\+\_\+\+M\+I\+S\+M\+A\+T\+C\+H\+I\+N\+G\+\_\+\+F\+O\+R\+M\+AT&Mismatching error. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{STATUS\_UNKNOWN\_ERROR@{STATUS\_UNKNOWN\_ERROR}!Common Functions@{Common Functions}}\index{Common Functions@{Common Functions}!STATUS\_UNKNOWN\_ERROR@{STATUS\_UNKNOWN\_ERROR}}}\mbox{\label{group__common_ggaa0326a5d1401e410f5a5d306ff58057ca72023c12a04f6d3aa9e165bf92223986}} 
+S\+T\+A\+T\+U\+S\+\_\+\+U\+N\+K\+N\+O\+W\+N\+\_\+\+E\+R\+R\+OR&Unknown error. \\
+\hline
+
+\end{DoxyEnumFields}
+
+
+Definition at line 262 of file picasso.\+h.
+
+
+
+\doxysubsection{Function Documentation}
+\mbox{\label{group__common_ga3186522b34123b27e5cedfa7ba74d253}} 
+\index{Common Functions@{Common Functions}!ps\_initialize@{ps\_initialize}}
+\index{ps\_initialize@{ps\_initialize}!Common Functions@{Common Functions}}
+\doxysubsubsection{ps\_initialize()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+bool} ps\+\_\+initialize (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+Initialize the picasso drawing environment. 
+
+It must be the first to be call.
+
+\begin{DoxyReturn}{Returns}
+True if is initialized, otherwise False.
+\end{DoxyReturn}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+shutdown}{p.}{group__common_ga3aaa8a7e19432e1135e166ddbd495c6a} 
+\end{DoxySeeAlso}
+\mbox{\label{group__common_gacb568fd9b1c7b6f16850b7e7aa774dca}} 
+\index{Common Functions@{Common Functions}!ps\_last\_status@{ps\_last\_status}}
+\index{ps\_last\_status@{ps\_last\_status}!Common Functions@{Common Functions}}
+\doxysubsubsection{ps\_last\_status()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+status} ps\+\_\+last\+\_\+status (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+Return the last status code of picasso. 
+
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+version}{p.}{group__common_gaeddba2468ff4e22be45c7d1923d5b551} 
+\end{DoxySeeAlso}
+\mbox{\label{group__common_ga3aaa8a7e19432e1135e166ddbd495c6a}} 
+\index{Common Functions@{Common Functions}!ps\_shutdown@{ps\_shutdown}}
+\index{ps\_shutdown@{ps\_shutdown}!Common Functions@{Common Functions}}
+\doxysubsubsection{ps\_shutdown()}
+{\footnotesize\ttfamily void ps\+\_\+shutdown (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+Shutdown the picasso drawing environment. 
+
+It must be call in the end.
+
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+initialize}{p.}{group__common_ga3186522b34123b27e5cedfa7ba74d253} 
+\end{DoxySeeAlso}
+\mbox{\label{group__common_gaeddba2468ff4e22be45c7d1923d5b551}} 
+\index{Common Functions@{Common Functions}!ps\_version@{ps\_version}}
+\index{ps\_version@{ps\_version}!Common Functions@{Common Functions}}
+\doxysubsubsection{ps\_version()}
+{\footnotesize\ttfamily int ps\+\_\+version (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+Return current version of picasso. 
+
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+last\+\_\+status}{p.}{group__common_gacb568fd9b1c7b6f16850b7e7aa774dca} 
+\end{DoxySeeAlso}

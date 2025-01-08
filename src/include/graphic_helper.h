@@ -62,14 +62,16 @@ inline bool bounding_rect(vertex_source& vs, unsigned int path_id, scalar* x1, s
     while (!is_stop(cmd = vs.vertex(&x, &y))) {
         if (is_vertex(cmd)) {
             if (first) {
-                *x1 = x; *y1 = y;
-                *x2 = x; *y2 = y;
+                *x1 = x;
+                *y1 = y;
+                *x2 = x;
+                *y2 = y;
                 first = false;
             } else {
-                if (x < *x1) *x1 = x;
-                if (y < *y1) *y1 = y;
-                if (x > *x2) *x2 = x;
-                if (y > *y2) *y2 = y;
+                if (x < *x1) { *x1 = x; }
+                if (y < *y1) { *y1 = y; }
+                if (x > *x2) { *x2 = x; }
+                if (y > *y2) { *y2 = y; }
             }
         }
     }
@@ -101,9 +103,8 @@ public:
 
 private:
     const byte* m_bits;
-    byte        m_mask;
+    byte m_mask;
 };
 
 }
 #endif /*_GRAPHIC_HELPER_H_*/
-

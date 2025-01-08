@@ -8,12 +8,10 @@ on:
 
 jobs:
   build:
-
     runs-on: macos-latest
-
     steps:
     - uses: actions/checkout@v2
-    - name: gen proj
+    - name: Generate Project
       run: ./build_macosx.sh
     - name: build
       run: xcodebuild -project ./proj/picasso.xcodeproj

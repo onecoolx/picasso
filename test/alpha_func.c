@@ -61,6 +61,7 @@ void dini_context (ps_context* gc)
     ps_matrix_unref(pm);
     ps_pattern_unref(pt);
     ps_path_unref(pa);
+    ps_canvas_unref(pc);
 }
 
 void set_image_data(unsigned char* data, ps_color_format fmt, int w, int h, int p)
@@ -85,6 +86,7 @@ void set_pattern_data(unsigned char* data, ps_color_format fmt, int w, int h, in
 {
     ps_image* pam = ps_image_create_with_data(data, fmt, w, h, p);
     pt = ps_pattern_create_image(pam, WRAP_TYPE_REPEAT, WRAP_TYPE_REPEAT, pm);
+    ps_image_unref(pam);
 }
 
 void timer_action(ps_context* gc)

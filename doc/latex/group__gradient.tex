@@ -1,0 +1,262 @@
+\doxysection{Gradient}
+\label{group__gradient}\index{Gradient@{Gradient}}
+\doxysubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\label{group__gradient_ga20b6778fb804bfd7067574add8a40641}} 
+typedef enum \textbf{ \+\_\+ps\+\_\+gradient\+\_\+spread} \textbf{ ps\+\_\+gradient\+\_\+spread}
+\begin{DoxyCompactList}\small\item\em Fill type of outside the gradient area. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \textbf{ \+\_\+ps\+\_\+gradient\+\_\+spread} \{ \textbf{ G\+R\+A\+D\+I\+E\+N\+T\+\_\+\+S\+P\+R\+E\+A\+D\+\_\+\+P\+AD}, 
+\textbf{ G\+R\+A\+D\+I\+E\+N\+T\+\_\+\+S\+P\+R\+E\+A\+D\+\_\+\+R\+E\+P\+E\+AT}, 
+\textbf{ G\+R\+A\+D\+I\+E\+N\+T\+\_\+\+S\+P\+R\+E\+A\+D\+\_\+\+R\+E\+F\+L\+E\+CT}
+ \}
+\begin{DoxyCompactList}\small\item\em Fill type of outside the gradient area. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+gradient} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+gradient\+\_\+create\+\_\+linear} (\textbf{ ps\+\_\+gradient\+\_\+spread} spread, const \textbf{ ps\+\_\+point} $\ast$start, const \textbf{ ps\+\_\+point} $\ast$end)
+\begin{DoxyCompactList}\small\item\em Create a new gradient that varies along the line defined by provided starting and ending points. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+gradient} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+gradient\+\_\+create\+\_\+radial} (\textbf{ ps\+\_\+gradient\+\_\+spread} spread, const \textbf{ ps\+\_\+point} $\ast$start, float sradius, const \textbf{ ps\+\_\+point} $\ast$end, float eradius)
+\begin{DoxyCompactList}\small\item\em Create a new gradient that varies along the area defined by provided starting and ending circles. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+gradient} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+gradient\+\_\+create\+\_\+conic} (\textbf{ ps\+\_\+gradient\+\_\+spread} spread, const \textbf{ ps\+\_\+point} $\ast$origin, float sangle)
+\begin{DoxyCompactList}\small\item\em Create a new gradient that varies along the area defined by provided concentric circles. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+gradient\+\_\+transform} (\textbf{ ps\+\_\+gradient} $\ast$gradient, const \textbf{ ps\+\_\+matrix} $\ast$matrix)
+\begin{DoxyCompactList}\small\item\em Transform the gradient object. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+gradient} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+gradient\+\_\+ref} (\textbf{ ps\+\_\+gradient} $\ast$gradient)
+\begin{DoxyCompactList}\small\item\em Increases the reference count of the gradient by 1. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+gradient\+\_\+unref} (\textbf{ ps\+\_\+gradient} $\ast$gradient)
+\begin{DoxyCompactList}\small\item\em Decrements the reference count for the gradient object. If the reference count on the gradient falls to 0, the gradient is freed. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+gradient\+\_\+add\+\_\+color\+\_\+stop} (\textbf{ ps\+\_\+gradient} $\ast$gradient, float offset, const \textbf{ ps\+\_\+color} $\ast$color)
+\begin{DoxyCompactList}\small\item\em Add a color stop to a gradient. The offset specifies the location along the gradient\textquotesingle{}s control vector. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+gradient\+\_\+clear\+\_\+color\+\_\+stops} (\textbf{ ps\+\_\+gradient} $\ast$gradient)
+\begin{DoxyCompactList}\small\item\em Clear color stops from gradient\textquotesingle{}s control vector. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+
+
+\doxysubsection{Enumeration Type Documentation}
+\mbox{\label{group__gradient_gadf16bb97bdb191574bfeda9495dc3f21}} 
+\index{Gradient@{Gradient}!\_ps\_gradient\_spread@{\_ps\_gradient\_spread}}
+\index{\_ps\_gradient\_spread@{\_ps\_gradient\_spread}!Gradient@{Gradient}}
+\doxysubsubsection{\_ps\_gradient\_spread}
+{\footnotesize\ttfamily enum \textbf{ \+\_\+ps\+\_\+gradient\+\_\+spread}}
+
+
+
+Fill type of outside the gradient area. 
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{GRADIENT\_SPREAD\_PAD@{GRADIENT\_SPREAD\_PAD}!Gradient@{Gradient}}\index{Gradient@{Gradient}!GRADIENT\_SPREAD\_PAD@{GRADIENT\_SPREAD\_PAD}}}\mbox{\label{group__gradient_ggadf16bb97bdb191574bfeda9495dc3f21ae754f4cda8353ac60745ebcd6d982045}} 
+G\+R\+A\+D\+I\+E\+N\+T\+\_\+\+S\+P\+R\+E\+A\+D\+\_\+\+P\+AD&Spread pad, the area is filled with closest stop color. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{GRADIENT\_SPREAD\_REPEAT@{GRADIENT\_SPREAD\_REPEAT}!Gradient@{Gradient}}\index{Gradient@{Gradient}!GRADIENT\_SPREAD\_REPEAT@{GRADIENT\_SPREAD\_REPEAT}}}\mbox{\label{group__gradient_ggadf16bb97bdb191574bfeda9495dc3f21a08a8ba7cf6120118aaea4f8930f87f64}} 
+G\+R\+A\+D\+I\+E\+N\+T\+\_\+\+S\+P\+R\+E\+A\+D\+\_\+\+R\+E\+P\+E\+AT&Spread repeat, the gradient is repeated outside the area. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{GRADIENT\_SPREAD\_REFLECT@{GRADIENT\_SPREAD\_REFLECT}!Gradient@{Gradient}}\index{Gradient@{Gradient}!GRADIENT\_SPREAD\_REFLECT@{GRADIENT\_SPREAD\_REFLECT}}}\mbox{\label{group__gradient_ggadf16bb97bdb191574bfeda9495dc3f21a21e42305ecb3c08719715eba97511895}} 
+G\+R\+A\+D\+I\+E\+N\+T\+\_\+\+S\+P\+R\+E\+A\+D\+\_\+\+R\+E\+F\+L\+E\+CT&Spread reflect, the gradient is reflected outside the area. \\
+\hline
+
+\end{DoxyEnumFields}
+
+
+Definition at line 942 of file picasso.\+h.
+
+
+
+\doxysubsection{Function Documentation}
+\mbox{\label{group__gradient_ga44299d67fa3c4b40a676f1eeec2276b9}} 
+\index{Gradient@{Gradient}!ps\_gradient\_add\_color\_stop@{ps\_gradient\_add\_color\_stop}}
+\index{ps\_gradient\_add\_color\_stop@{ps\_gradient\_add\_color\_stop}!Gradient@{Gradient}}
+\doxysubsubsection{ps\_gradient\_add\_color\_stop()}
+{\footnotesize\ttfamily void ps\+\_\+gradient\+\_\+add\+\_\+color\+\_\+stop (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+gradient} $\ast$}]{gradient,  }\item[{float}]{offset,  }\item[{const \textbf{ ps\+\_\+color} $\ast$}]{color }\end{DoxyParamCaption})}
+
+
+
+Add a color stop to a gradient. The offset specifies the location along the gradient\textquotesingle{}s control vector. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em gradient} & Pointer to an existing gradient object. \\
+\hline
+{\em offset} & An offset position in control vector (range 0 $\sim$ 1). \\
+\hline
+{\em color} & Color for the stop.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+gradient\+\_\+clear\+\_\+color\+\_\+stops}{p.}{group__gradient_ga3e405804fbffeb4288c5e954e5a683d0} 
+\end{DoxySeeAlso}
+\mbox{\label{group__gradient_ga3e405804fbffeb4288c5e954e5a683d0}} 
+\index{Gradient@{Gradient}!ps\_gradient\_clear\_color\_stops@{ps\_gradient\_clear\_color\_stops}}
+\index{ps\_gradient\_clear\_color\_stops@{ps\_gradient\_clear\_color\_stops}!Gradient@{Gradient}}
+\doxysubsubsection{ps\_gradient\_clear\_color\_stops()}
+{\footnotesize\ttfamily void ps\+\_\+gradient\+\_\+clear\+\_\+color\+\_\+stops (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+gradient} $\ast$}]{gradient }\end{DoxyParamCaption})}
+
+
+
+Clear color stops from gradient\textquotesingle{}s control vector. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em gradient} & Pointer to an existing gradient object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+gradient\+\_\+add\+\_\+color\+\_\+stop}{p.}{group__gradient_ga44299d67fa3c4b40a676f1eeec2276b9} 
+\end{DoxySeeAlso}
+\mbox{\label{group__gradient_ga8b0b46af82c47ac8b57951c9655a9ba1}} 
+\index{Gradient@{Gradient}!ps\_gradient\_create\_conic@{ps\_gradient\_create\_conic}}
+\index{ps\_gradient\_create\_conic@{ps\_gradient\_create\_conic}!Gradient@{Gradient}}
+\doxysubsubsection{ps\_gradient\_create\_conic()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+gradient} $\ast$ ps\+\_\+gradient\+\_\+create\+\_\+conic (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+gradient\+\_\+spread}}]{spread,  }\item[{const \textbf{ ps\+\_\+point} $\ast$}]{origin,  }\item[{float}]{sangle }\end{DoxyParamCaption})}
+
+
+
+Create a new gradient that varies along the area defined by provided concentric circles. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em spread} & The spread type of the gradient. \\
+\hline
+{\em origin} & The center point of conic, of the required gradient. \\
+\hline
+{\em sangle} & The angle, int radians, which the first color.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+If the function succeeds, the return value is the pointer to a new gradient object. If the function fails, the return value is N\+U\+LL.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+Conic Gradient support reflect and pad mode only, paramter spread repeat will be supposed pad. To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+gradient\+\_\+create\+\_\+linear}{p.}{group__gradient_gad7184e7643f0d7f7c33adc2e9b7f1cea}, \doxyref{ps\+\_\+gradient\+\_\+create\+\_\+radial}{p.}{group__gradient_ga2d65ff8fdf01b1d38d03ad630e68895c}, \doxyref{ps\+\_\+gradient\+\_\+ref}{p.}{group__gradient_gab08a488cf1e2a474b49cdacd22709d34}, \doxyref{ps\+\_\+gradient\+\_\+unref}{p.}{group__gradient_ga1fef654286aebf79d27a2615731f1b19} 
+\end{DoxySeeAlso}
+\mbox{\label{group__gradient_gad7184e7643f0d7f7c33adc2e9b7f1cea}} 
+\index{Gradient@{Gradient}!ps\_gradient\_create\_linear@{ps\_gradient\_create\_linear}}
+\index{ps\_gradient\_create\_linear@{ps\_gradient\_create\_linear}!Gradient@{Gradient}}
+\doxysubsubsection{ps\_gradient\_create\_linear()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+gradient} $\ast$ ps\+\_\+gradient\+\_\+create\+\_\+linear (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+gradient\+\_\+spread}}]{spread,  }\item[{const \textbf{ ps\+\_\+point} $\ast$}]{start,  }\item[{const \textbf{ ps\+\_\+point} $\ast$}]{end }\end{DoxyParamCaption})}
+
+
+
+Create a new gradient that varies along the line defined by provided starting and ending points. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em spread} & The spread type of the gradient. \\
+\hline
+{\em start} & The starting point , of the required gradient. \\
+\hline
+{\em end} & The ending point, of the required gradient.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+If the function succeeds, the return value is the pointer to a new gradient object. If the function fails, the return value is N\+U\+LL.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+gradient\+\_\+create\+\_\+radial}{p.}{group__gradient_ga2d65ff8fdf01b1d38d03ad630e68895c}, \doxyref{ps\+\_\+gradient\+\_\+create\+\_\+conic}{p.}{group__gradient_ga8b0b46af82c47ac8b57951c9655a9ba1}, \doxyref{ps\+\_\+gradient\+\_\+ref}{p.}{group__gradient_gab08a488cf1e2a474b49cdacd22709d34}, \doxyref{ps\+\_\+gradient\+\_\+unref}{p.}{group__gradient_ga1fef654286aebf79d27a2615731f1b19} 
+\end{DoxySeeAlso}
+\mbox{\label{group__gradient_ga2d65ff8fdf01b1d38d03ad630e68895c}} 
+\index{Gradient@{Gradient}!ps\_gradient\_create\_radial@{ps\_gradient\_create\_radial}}
+\index{ps\_gradient\_create\_radial@{ps\_gradient\_create\_radial}!Gradient@{Gradient}}
+\doxysubsubsection{ps\_gradient\_create\_radial()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+gradient} $\ast$ ps\+\_\+gradient\+\_\+create\+\_\+radial (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+gradient\+\_\+spread}}]{spread,  }\item[{const \textbf{ ps\+\_\+point} $\ast$}]{start,  }\item[{float}]{sradius,  }\item[{const \textbf{ ps\+\_\+point} $\ast$}]{end,  }\item[{float}]{eradius }\end{DoxyParamCaption})}
+
+
+
+Create a new gradient that varies along the area defined by provided starting and ending circles. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em spread} & The spread type of the gradient. \\
+\hline
+{\em start} & The center point of the starting circle, of the required gradient. \\
+\hline
+{\em sradius} & The radius of the starting circle, of the required gradient. \\
+\hline
+{\em end} & The center point of the ending circle, of the required gradient. \\
+\hline
+{\em eradius} & The radius of the ending circle, of the required gradient.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+If the function succeeds, the return value is the pointer to a new gradient object. If the function fails, the return value is N\+U\+LL.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+gradient\+\_\+create\+\_\+linear}{p.}{group__gradient_gad7184e7643f0d7f7c33adc2e9b7f1cea}, \doxyref{ps\+\_\+gradient\+\_\+create\+\_\+conic}{p.}{group__gradient_ga8b0b46af82c47ac8b57951c9655a9ba1}, \doxyref{ps\+\_\+gradient\+\_\+ref}{p.}{group__gradient_gab08a488cf1e2a474b49cdacd22709d34}, \doxyref{ps\+\_\+gradient\+\_\+unref}{p.}{group__gradient_ga1fef654286aebf79d27a2615731f1b19} 
+\end{DoxySeeAlso}
+\mbox{\label{group__gradient_gab08a488cf1e2a474b49cdacd22709d34}} 
+\index{Gradient@{Gradient}!ps\_gradient\_ref@{ps\_gradient\_ref}}
+\index{ps\_gradient\_ref@{ps\_gradient\_ref}!Gradient@{Gradient}}
+\doxysubsubsection{ps\_gradient\_ref()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+gradient} $\ast$ ps\+\_\+gradient\+\_\+ref (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+gradient} $\ast$}]{gradient }\end{DoxyParamCaption})}
+
+
+
+Increases the reference count of the gradient by 1. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em gradient} & Pointer to an existing gradient object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+If the function succeeds, the return value is the pointer to the gradient object. If the function fails, the return value is N\+U\+LL.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+gradient\+\_\+create\+\_\+linear}{p.}{group__gradient_gad7184e7643f0d7f7c33adc2e9b7f1cea}, \doxyref{ps\+\_\+gradient\+\_\+create\+\_\+radial}{p.}{group__gradient_ga2d65ff8fdf01b1d38d03ad630e68895c}, \doxyref{ps\+\_\+gradient\+\_\+create\+\_\+conic}{p.}{group__gradient_ga8b0b46af82c47ac8b57951c9655a9ba1}, \doxyref{ps\+\_\+gradient\+\_\+unref}{p.}{group__gradient_ga1fef654286aebf79d27a2615731f1b19} 
+\end{DoxySeeAlso}
+\mbox{\label{group__gradient_ga47b742a23ffba17e390b402ba1d12361}} 
+\index{Gradient@{Gradient}!ps\_gradient\_transform@{ps\_gradient\_transform}}
+\index{ps\_gradient\_transform@{ps\_gradient\_transform}!Gradient@{Gradient}}
+\doxysubsubsection{ps\_gradient\_transform()}
+{\footnotesize\ttfamily void ps\+\_\+gradient\+\_\+transform (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+gradient} $\ast$}]{gradient,  }\item[{const \textbf{ ps\+\_\+matrix} $\ast$}]{matrix }\end{DoxyParamCaption})}
+
+
+
+Transform the gradient object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em gradient} & Pointer to an existing gradient object. \\
+\hline
+{\em matrix} & Pointer to an existing matrix object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+gradient\+\_\+create\+\_\+linear}{p.}{group__gradient_gad7184e7643f0d7f7c33adc2e9b7f1cea}, \doxyref{ps\+\_\+gradient\+\_\+create\+\_\+radial}{p.}{group__gradient_ga2d65ff8fdf01b1d38d03ad630e68895c}, \doxyref{ps\+\_\+gradient\+\_\+create\+\_\+conic}{p.}{group__gradient_ga8b0b46af82c47ac8b57951c9655a9ba1}, \doxyref{ps\+\_\+gradient\+\_\+ref}{p.}{group__gradient_gab08a488cf1e2a474b49cdacd22709d34}, \doxyref{ps\+\_\+gradient\+\_\+unref}{p.}{group__gradient_ga1fef654286aebf79d27a2615731f1b19} 
+\end{DoxySeeAlso}
+\mbox{\label{group__gradient_ga1fef654286aebf79d27a2615731f1b19}} 
+\index{Gradient@{Gradient}!ps\_gradient\_unref@{ps\_gradient\_unref}}
+\index{ps\_gradient\_unref@{ps\_gradient\_unref}!Gradient@{Gradient}}
+\doxysubsubsection{ps\_gradient\_unref()}
+{\footnotesize\ttfamily void ps\+\_\+gradient\+\_\+unref (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+gradient} $\ast$}]{gradient }\end{DoxyParamCaption})}
+
+
+
+Decrements the reference count for the gradient object. If the reference count on the gradient falls to 0, the gradient is freed. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em gradient} & Pointer to an existing gradient object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+gradient\+\_\+create\+\_\+linear}{p.}{group__gradient_gad7184e7643f0d7f7c33adc2e9b7f1cea}, \doxyref{ps\+\_\+gradient\+\_\+create\+\_\+radial}{p.}{group__gradient_ga2d65ff8fdf01b1d38d03ad630e68895c}, \doxyref{ps\+\_\+gradient\+\_\+create\+\_\+conic}{p.}{group__gradient_ga8b0b46af82c47ac8b57951c9655a9ba1}, \doxyref{ps\+\_\+gradient\+\_\+ref}{p.}{group__gradient_gab08a488cf1e2a474b49cdacd22709d34} 
+\end{DoxySeeAlso}

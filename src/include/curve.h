@@ -19,7 +19,6 @@ typedef enum {
     curve_div,
 } curve_approximation_method;
 
-
 //curve3_inc
 class curve3_inc : public vertex_source
 {
@@ -58,25 +57,24 @@ public:
     virtual unsigned int vertex(scalar* x, scalar* y);
 
 private:
-    int      m_num_steps;
-    int      m_step;
-    scalar   m_scale;
-    scalar   m_start_x;
-    scalar   m_start_y;
-    scalar   m_end_x;
-    scalar   m_end_y;
-    scalar   m_fx;
-    scalar   m_fy;
-    scalar   m_dfx;
-    scalar   m_dfy;
-    scalar   m_ddfx;
-    scalar   m_ddfy;
-    scalar   m_saved_fx;
-    scalar   m_saved_fy;
-    scalar   m_saved_dfx;
-    scalar   m_saved_dfy;
+    int m_num_steps;
+    int m_step;
+    scalar m_scale;
+    scalar m_start_x;
+    scalar m_start_y;
+    scalar m_end_x;
+    scalar m_end_y;
+    scalar m_fx;
+    scalar m_fy;
+    scalar m_dfx;
+    scalar m_dfy;
+    scalar m_ddfx;
+    scalar m_ddfy;
+    scalar m_saved_fx;
+    scalar m_saved_fy;
+    scalar m_saved_dfx;
+    scalar m_saved_dfy;
 };
-
 
 //curve3_div
 class curve3_div : public vertex_source
@@ -108,10 +106,10 @@ public:
     curve_approximation_method approximation_method() const { return curve_div; }
 
     void approximation_scale(scalar s) { m_approximation_scale = s; }
-    scalar approximation_scale() const { return m_approximation_scale;  }
+    scalar approximation_scale() const { return m_approximation_scale; }
 
     void angle_tolerance(scalar a) { m_angle_tolerance = a; }
-    scalar angle_tolerance(void) const { return m_angle_tolerance;  }
+    scalar angle_tolerance(void) const { return m_angle_tolerance; }
 
     void cusp_limit(scalar) {}
     scalar cusp_limit(void) const { return FLT_TO_SCALAR(0.0f); }
@@ -123,18 +121,20 @@ public:
 
     virtual unsigned int vertex(scalar* x, scalar* y)
     {
-        if (m_count >= m_points.size())
+        if (m_count >= m_points.size()) {
             return path_cmd_stop;
+        }
 
         const vertex_s& p = m_points[m_count++];
-        *x = p.x;  *y = p.y;
+        *x = p.x;
+        *y = p.y;
         return (m_count == 1) ? path_cmd_move_to : path_cmd_line_to;
     }
 
 private:
     void bezier(scalar x1, scalar y1, scalar x2, scalar y2, scalar x3, scalar y3);
     void recursive_bezier(scalar x1, scalar y1, scalar x2, scalar y2,
-                                        scalar x3, scalar y3, unsigned int level);
+                          scalar x3, scalar y3, unsigned int level);
 
     scalar m_approximation_scale;
     scalar m_distance_tolerance_square;
@@ -142,7 +142,6 @@ private:
     unsigned int m_count;
     pod_bvector<vertex_s> m_points;
 };
-
 
 //curve4_inc
 class curve4_inc : public vertex_source
@@ -153,7 +152,7 @@ public:
     {
     }
 
-    curve4_inc(scalar x1, scalar y1, scalar x2, scalar y2, scalar x3, scalar y3,scalar x4, scalar y4)
+    curve4_inc(scalar x1, scalar y1, scalar x2, scalar y2, scalar x3, scalar y3, scalar x4, scalar y4)
         : m_num_steps(0), m_step(0), m_scale(FLT_TO_SCALAR(1.0f))
     {
         init(x1, y1, x2, y2, x3, y3, x4, y4);
@@ -183,27 +182,27 @@ public:
     virtual unsigned int vertex(scalar* x, scalar* y);
 
 private:
-    int      m_num_steps;
-    int      m_step;
-    scalar   m_scale;
-    scalar   m_start_x;
-    scalar   m_start_y;
-    scalar   m_end_x;
-    scalar   m_end_y;
-    scalar   m_fx;
-    scalar   m_fy;
-    scalar   m_dfx;
-    scalar   m_dfy;
-    scalar   m_ddfx;
-    scalar   m_ddfy;
-    scalar   m_dddfx;
-    scalar   m_dddfy;
-    scalar   m_saved_fx;
-    scalar   m_saved_fy;
-    scalar   m_saved_dfx;
-    scalar   m_saved_dfy;
-    scalar   m_saved_ddfx;
-    scalar   m_saved_ddfy;
+    int m_num_steps;
+    int m_step;
+    scalar m_scale;
+    scalar m_start_x;
+    scalar m_start_y;
+    scalar m_end_x;
+    scalar m_end_y;
+    scalar m_fx;
+    scalar m_fy;
+    scalar m_dfx;
+    scalar m_dfy;
+    scalar m_ddfx;
+    scalar m_ddfy;
+    scalar m_dddfx;
+    scalar m_dddfy;
+    scalar m_saved_fx;
+    scalar m_saved_fy;
+    scalar m_saved_dfx;
+    scalar m_saved_dfy;
+    scalar m_saved_ddfx;
+    scalar m_saved_ddfy;
 };
 
 //curve4_div
@@ -219,7 +218,7 @@ public:
     {
     }
 
-    curve4_div(scalar x1, scalar y1, scalar x2, scalar y2, scalar x3, scalar y3,scalar x4, scalar y4)
+    curve4_div(scalar x1, scalar y1, scalar x2, scalar y2, scalar x3, scalar y3, scalar x4, scalar y4)
         : m_approximation_scale(FLT_TO_SCALAR(1.0f))
         , m_angle_tolerance(FLT_TO_SCALAR(0.0f))
         , m_cusp_limit(FLT_TO_SCALAR(0.0f))
@@ -241,10 +240,10 @@ public:
     curve_approximation_method approximation_method() const { return curve_div; }
 
     void approximation_scale(scalar s) { m_approximation_scale = s; }
-    scalar approximation_scale(void) const { return m_approximation_scale;  }
+    scalar approximation_scale(void) const { return m_approximation_scale; }
 
     void angle_tolerance(scalar a) { m_angle_tolerance = a; }
-    scalar angle_tolerance(void) const { return m_angle_tolerance;  }
+    scalar angle_tolerance(void) const { return m_angle_tolerance; }
 
     void cusp_limit(scalar v)
     {
@@ -263,11 +262,13 @@ public:
 
     virtual unsigned int vertex(scalar* x, scalar* y)
     {
-        if (m_count >= m_points.size())
+        if (m_count >= m_points.size()) {
             return path_cmd_stop;
+        }
 
         const vertex_s& p = m_points[m_count++];
-        *x = p.x; *y = p.y;
+        *x = p.x;
+        *y = p.y;
         return (m_count == 1) ? path_cmd_move_to : path_cmd_line_to;
     }
 

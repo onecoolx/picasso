@@ -157,7 +157,7 @@ static gboolean key_release(GtkWidget *widget, GdkEventKey *event)
 
 static gboolean mouse_button_press(GtkWidget *widget, GdkEventButton *event)
 {
-    mouse_event_type type;
+    mouse_event_type type = EVENT_TYPE_UNKNOWN;
     unsigned int key = 0;
     switch(event->button){
         case 1:
@@ -183,7 +183,7 @@ static gboolean mouse_button_press(GtkWidget *widget, GdkEventButton *event)
 
 static gboolean mouse_button_release(GtkWidget *widget, GdkEventButton *event)
 {
-    mouse_event_type type;
+    mouse_event_type type = EVENT_TYPE_UNKNOWN;
     unsigned int key = 0;
     switch(event->button){
         case 1:

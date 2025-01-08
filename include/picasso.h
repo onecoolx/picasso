@@ -7,7 +7,7 @@
  *
  \verbatim
 
-    Copyright (C) 2008 ~ 2020  Zhang Ji Peng
+    Copyright (C) 2008 ~ 2024  Zhang Ji Peng
 
     All rights reserved.
 
@@ -37,11 +37,10 @@
         #endif
     #endif
 #else
-#define PICAPI
-#define PEXPORT
+    #define PICAPI
+    #define PEXPORT
 #endif
 
-#include "pconfig.h"
 #include <stdint.h>
 
 #ifdef __cplusplus
@@ -171,7 +170,7 @@ typedef struct _ps_font ps_font;
 typedef struct _ps_glyph {
     /** private glyph data. */
     void* glyph;
-}ps_glyph;
+} ps_glyph;
 
 /**
  * \brief A structure that contains width and height values.
@@ -181,7 +180,7 @@ typedef struct _ps_size {
     float w;
     /** height value. */
     float h;
-}ps_size;
+} ps_size;
 
 /**
  * \brief A structure that contains location and dimensions of a rectangle.
@@ -195,7 +194,7 @@ typedef struct _ps_rect {
     float w;
     /** the height of the rectangle. */
     float h;
-}ps_rect;
+} ps_rect;
 
 /**
  * \brief A structure that contains a point in a two-dimensional coordinate system.
@@ -205,7 +204,7 @@ typedef struct _ps_point {
     float x;
     /** the y coordinate of the point. */
     float y;
-}ps_point;
+} ps_point;
 
 /**
  * \brief A structure that contains rgba values for a color.
@@ -219,10 +218,9 @@ typedef struct _ps_color {
     float b;
     /** the alpha component for a color (0 ~ 1). */
     float a;
-}ps_color;
+} ps_color;
 
 /** @} end of graphic object types*/
-
 
 /**
  * \defgroup common Common Functions
@@ -290,7 +288,7 @@ typedef enum _ps_status {
      * Unknown error.
      */
     STATUS_UNKNOWN_ERROR,
-}ps_status;
+} ps_status;
 
 /**
  * \fn ps_status ps_last_status(void)
@@ -299,7 +297,6 @@ typedef enum _ps_status {
  */
 PEXPORT ps_status PICAPI ps_last_status(void);
 /** @} end of common functions*/
-
 
 /**
  * \defgroup graphic Graphic Functions
@@ -428,10 +425,14 @@ typedef enum _ps_color_format {
      */
     COLOR_FORMAT_RGB555,
     /**
+     * 8bit, gray color space.
+     */
+    COLOR_FORMAT_A8,
+    /**
      * Unsupported color space.
      */
     COLOR_FORMAT_UNKNOWN,
-}ps_color_format;
+} ps_color_format;
 
 /**
  * \fn ps_canvas* ps_canvas_create(ps_color_format fmt, int width, int height)
@@ -447,7 +448,7 @@ typedef enum _ps_color_format {
  * \note To get extended error information, call \a ps_last_status.
  *
  * \sa ps_canvas_create_with_data, ps_canvas_create_compatible, ps_canvas_create_from_canvas,
- *     ps_canvas_create_from_image, ps_canvas_ref, ps_canvas_unref
+ *     ps_canvas_create_from_image, ps_canvas_create_from_mask, ps_canvas_ref, ps_canvas_unref
  */
 PEXPORT ps_canvas* PICAPI ps_canvas_create(ps_color_format fmt, int width, int height);
 
@@ -468,10 +469,10 @@ PEXPORT ps_canvas* PICAPI ps_canvas_create(ps_color_format fmt, int width, int h
  * \note To get extended error information, call \a ps_last_status.
  *
  * \sa ps_canvas_create, ps_canvas_create_compatible, ps_canvas_create_from_canvas,
- *     ps_canvas_create_from_image, ps_canvas_ref, ps_canvas_unref, ps_canvas_replace_data
+ *     ps_canvas_create_from_image, ps_canvas_create_from_mask, ps_canvas_ref, ps_canvas_unref, ps_canvas_replace_data
  */
 PEXPORT ps_canvas* PICAPI ps_canvas_create_with_data(ps_byte* data, ps_color_format fmt,
-                                                            int width, int height, int pitch);
+                                                     int width, int height, int pitch);
 
 /**
  * \fn ps_canvas* ps_canvas_create_compatible(const ps_canvas* canvas, int width, int height)
@@ -489,10 +490,10 @@ PEXPORT ps_canvas* PICAPI ps_canvas_create_with_data(ps_byte* data, ps_color_for
  * \note To get extended error information, call \a ps_last_status.
  *
  * \sa ps_canvas_create, ps_canvas_create_with_data, ps_canvas_create_from_canvas,
- *     ps_canvas_create_from_image, ps_canvas_ref, ps_canvas_unref
+ *     ps_canvas_create_from_image, ps_canvas_create_from_mask, ps_canvas_ref, ps_canvas_unref
  */
 PEXPORT ps_canvas* PICAPI ps_canvas_create_compatible(const ps_canvas* canvas,
-                                                                int width, int height);
+                                                      int width, int height);
 
 /**
  * \fn ps_canvas* ps_canvas_create_from_canvas(ps_canvas* canvas, const ps_rect* rect)
@@ -508,7 +509,7 @@ PEXPORT ps_canvas* PICAPI ps_canvas_create_compatible(const ps_canvas* canvas,
  * \note To get extended error information, call \a ps_last_status.
  *
  * \sa ps_canvas_create, ps_canvas_create_with_data, ps_canvas_create_compatible,
- *     ps_canvas_create_from_image, ps_canvas_ref, ps_canvas_unref
+ *     ps_canvas_create_from_image, ps_canvas_create_from_mask, ps_canvas_ref, ps_canvas_unref
  */
 PEXPORT ps_canvas* PICAPI ps_canvas_create_from_canvas(ps_canvas* canvas, const ps_rect* rect);
 
@@ -526,9 +527,27 @@ PEXPORT ps_canvas* PICAPI ps_canvas_create_from_canvas(ps_canvas* canvas, const 
  * \note To get extended error information, call \a ps_last_status.
  *
  * \sa ps_canvas_create, ps_canvas_create_with_data, ps_canvas_create_compatible,
- *     ps_canvas_create_from_canvas, ps_canvas_ref, ps_canvas_unref
+ *     ps_canvas_create_from_canvas, ps_canvas_create_from_mask, ps_canvas_ref, ps_canvas_unref
  */
 PEXPORT ps_canvas* PICAPI ps_canvas_create_from_image(ps_image* img, const ps_rect* rect);
+
+/**
+ * \fn ps_canvas* ps_canvas_create_from_mask(ps_image* img, const ps_rect* rect)
+ * \brief Create a new canvas using part of an existing ps_mask object in same pixel buffer.
+ *
+ * \param mask    A pointer to an existing ps_mask object.
+ * \param rect    The rectangle area of the canvas from the ps_mask.
+ *                If it is NULL, the canvas's width and height will be equal to ps_mask object.
+ *
+ * \return If the function succeeds, the return value is the pointer to a new canvas object.
+ *         If the function fails, the return value is NULL.
+ *
+ * \note To get extended error information, call \a ps_last_status.
+ *
+ * \sa ps_canvas_create, ps_canvas_create_with_data, ps_canvas_create_compatible,
+ *     ps_canvas_create_from_canvas, ps_canvas_create_from_image, ps_canvas_ref, ps_canvas_unref
+ */
+PEXPORT ps_canvas* PICAPI ps_canvas_create_from_mask(ps_mask* mask, const ps_rect* rect);
 
 /**
  * \fn ps_canvas* PICAPI ps_canvas_replace_data(ps_canvas* canvas, ps_byte* data,
@@ -650,7 +669,7 @@ PEXPORT void PICAPI ps_canvas_reset_mask(ps_canvas* canvas);
  * \sa ps_canvas_get_size, ps_canvas_get_format
  */
 PEXPORT void PICAPI ps_canvas_bitblt(ps_canvas* src, const ps_rect* rect,
-                                                ps_canvas* dst, const ps_point* location);
+                                     ps_canvas* dst, const ps_point* location);
 /** @} end of canvas functions*/
 
 /**
@@ -696,7 +715,7 @@ PEXPORT ps_image* PICAPI ps_image_create(ps_color_format fmt, int width, int hei
  *     ps_image_create_from_data, ps_image_create_from_image, ps_image_ref, ps_image_unref
  */
 PEXPORT ps_image* PICAPI ps_image_create_with_data(ps_byte* data, ps_color_format fmt,
-                                int width, int height, int pitch);
+                                                   int width, int height, int pitch);
 /**
  * \fn ps_image* ps_image_create_from_data(ps_byte* data, ps_color_format fmt, int width, int height, int pitch)
  * \brief Create a new image using a copy of given address in memory.
@@ -717,7 +736,7 @@ PEXPORT ps_image* PICAPI ps_image_create_with_data(ps_byte* data, ps_color_forma
  *     ps_image_create_with_data, ps_image_create_from_image, ps_image_ref, ps_image_unref
  */
 PEXPORT ps_image* PICAPI ps_image_create_from_data(ps_byte* data, ps_color_format fmt,
-                                int width, int height, int pitch);
+                                                   int width, int height, int pitch);
 /**
  * \fn ps_image* ps_image_create_compatible(const ps_canvas* canvas, int width, int height)
  * \brief Create a new image to compatible with an existing canvas.
@@ -873,7 +892,7 @@ typedef enum _ps_wrap_type {
      * Wrap reflect the pattern is reflected.
      */
     WRAP_TYPE_REFLECT,
-}ps_wrap_type;
+} ps_wrap_type;
 
 /**
  * \fn ps_pattern* ps_pattern_create_image(const ps_image* img, ps_wrap_type x_wrap,
@@ -893,7 +912,7 @@ typedef enum _ps_wrap_type {
  * \sa ps_pattern_ref, ps_pattern_unref
  */
 PEXPORT ps_pattern* PICAPI ps_pattern_create_image(const ps_image* img, ps_wrap_type x_wrap,
-                                                ps_wrap_type y_wrap, const ps_matrix* transform);
+                                                   ps_wrap_type y_wrap, const ps_matrix* transform);
 
 /**
  * \fn void ps_pattern_transform(ps_pattern* pattern, const ps_matrix* matrix)
@@ -955,7 +974,7 @@ typedef enum _ps_gradient_spread {
      * Spread reflect, the gradient is reflected outside the area.
      */
     GRADIENT_SPREAD_REFLECT,
-}ps_gradient_spread;
+} ps_gradient_spread;
 
 /**
  * \fn ps_gradient* ps_gradient_create_linear(ps_gradient_spread spread,
@@ -974,7 +993,7 @@ typedef enum _ps_gradient_spread {
  * \sa ps_gradient_create_radial, ps_gradient_create_conic, ps_gradient_ref, ps_gradient_unref
  */
 PEXPORT ps_gradient* PICAPI ps_gradient_create_linear(ps_gradient_spread spread,
-                                                    const ps_point* start, const ps_point* end);
+                                                      const ps_point* start, const ps_point* end);
 
 /**
  * \fn ps_gradient* ps_gradient_create_radial(ps_gradient_spread spread,
@@ -995,7 +1014,7 @@ PEXPORT ps_gradient* PICAPI ps_gradient_create_linear(ps_gradient_spread spread,
  * \sa ps_gradient_create_linear, ps_gradient_create_conic, ps_gradient_ref, ps_gradient_unref
  */
 PEXPORT ps_gradient* PICAPI ps_gradient_create_radial(ps_gradient_spread spread,
-                        const ps_point* start, float sradius, const ps_point* end, float eradius);
+                                                      const ps_point* start, float sradius, const ps_point* end, float eradius);
 
 /**
  * \fn ps_gradient* ps_gradient_create_conic(ps_gradient_spread spread,
@@ -1015,7 +1034,7 @@ PEXPORT ps_gradient* PICAPI ps_gradient_create_radial(ps_gradient_spread spread,
  * \sa ps_gradient_create_linear, ps_gradient_create_radial, ps_gradient_ref, ps_gradient_unref
  */
 PEXPORT ps_gradient* PICAPI ps_gradient_create_conic(ps_gradient_spread spread,
-                                    const ps_point* origin, float sangle);
+                                                     const ps_point* origin, float sangle);
 
 /**
  * \fn void ps_gradient_transform(ps_gradient* gradient, const ps_matrix* matrix)
@@ -1068,7 +1087,7 @@ PEXPORT void PICAPI ps_gradient_unref(ps_gradient* gradient);
  * \sa ps_gradient_clear_color_stops
  */
 PEXPORT void PICAPI ps_gradient_add_color_stop(ps_gradient* gradient,
-                                                float offset, const ps_color* color);
+                                               float offset, const ps_color* color);
 
 /**
  * \fn void ps_gradient_clear_color_stops(ps_gradient* gradient)
@@ -1088,6 +1107,22 @@ PEXPORT void PICAPI ps_gradient_clear_color_stops(ps_gradient* gradient);
  */
 
 /**
+ * \fn ps_mask* ps_mask_create(int width, int height)
+ * \brief Create a new mask.
+ *
+ * \param width   The width, in pixels, of the required mask.
+ * \param height  The height, in pixels, of the required mask.
+ *
+ * \return If the function succeeds, the return value is the pointer to a new mask object.
+ *         If the function fails, the return value is NULL.
+ *
+ * \note To get extended error information, call \a ps_last_status.
+ *
+ * \sa ps_mask_ref, ps_mask_unref, ps_canvas_set_mask, ps_canvas_reset_mask, ps_mask_create_with_data
+ */
+PEXPORT ps_mask* PICAPI ps_mask_create(int width, int height);
+
+/**
  * \fn ps_mask* ps_mask_create_with_data(ps_byte* data, int width, int height)
  * \brief Create a new mask using a given data block.
  *
@@ -1102,7 +1137,7 @@ PEXPORT void PICAPI ps_gradient_clear_color_stops(ps_gradient* gradient);
  *
  * \note To get extended error information, call \a ps_last_status.
  *
- * \sa ps_mask_ref, ps_mask_unref, ps_canvas_set_mask, ps_canvas_reset_mask
+ * \sa ps_mask_ref, ps_mask_unref, ps_canvas_set_mask, ps_canvas_reset_mask, ps_mask_create
  */
 PEXPORT ps_mask* PICAPI ps_mask_create_with_data(ps_byte* data, int width, int height);
 
@@ -1117,7 +1152,7 @@ PEXPORT ps_mask* PICAPI ps_mask_create_with_data(ps_byte* data, int width, int h
  *
  * \note To get extended error information, call \a ps_last_status.
  *
- * \sa ps_mask_create_with_data, ps_mask_unref, ps_canvas_set_mask, ps_canvas_reset_mask
+ * \sa ps_mask_create_with_data, ps_mask_unref, ps_canvas_set_mask, ps_canvas_reset_mask, ps_mask_create
  */
 PEXPORT ps_mask* PICAPI ps_mask_ref(ps_mask* mask);
 
@@ -1128,7 +1163,7 @@ PEXPORT ps_mask* PICAPI ps_mask_ref(ps_mask* mask);
  *
  * \param mask  Pointer to an existing mask object.
  *
- * \sa ps_mask_create_with_data, ps_mask_ref, ps_canvas_set_mask, ps_canvas_reset_mask
+ * \sa ps_mask_create_with_data, ps_mask_ref, ps_canvas_set_mask, ps_canvas_reset_mask, ps_mask_create
  */
 PEXPORT void PICAPI ps_mask_unref(ps_mask* mask);
 
@@ -1244,7 +1279,7 @@ typedef enum _ps_line_cap {
      * A line with a squared-off end. The line to extend beyond the endpoint.
      */
     LINE_CAP_SQUARE,
-}ps_line_cap;
+} ps_line_cap;
 
 /**
  * \fn void ps_set_line_cap(ps_context* ctx, ps_line_cap line_cap)
@@ -1282,7 +1317,7 @@ typedef enum _ps_line_join {
      * A join with a squared-off end.
      */
     LINE_JOIN_BEVEL,
-}ps_line_join;
+} ps_line_join;
 
 /**
  * \fn void ps_set_line_join(ps_context* ctx, ps_line_join line_join)
@@ -1316,7 +1351,7 @@ typedef enum _ps_line_inner_join {
      * A inner join with a rounded end.
      */
     LINE_INNER_ROUND,
-}ps_line_inner_join;
+} ps_line_inner_join;
 
 /**
  * \fn void ps_set_line_inner_join(ps_context* ctx, ps_line_inner_join line_inner_join)
@@ -1336,6 +1371,7 @@ PEXPORT void PICAPI ps_set_line_inner_join(ps_context* ctx, ps_line_inner_join l
  *
  * \param ctx     Pointer to an existing context object.
  * \param width   The line width to use, in pixels, must be greater than 0.
+ *                   Default value is 1.
  *
  * \return If the function succeeds, the return value is the old width.
  *         If the function fails, the return value is 0.
@@ -1352,7 +1388,8 @@ PEXPORT float PICAPI ps_set_line_width(ps_context* ctx, float width);
  * \brief Set the miter limit for the joins of connected lines in a graphics context.
  *
  * \param ctx     Pointer to an existing context object.
- * \param limit   The miter limit to use.
+ * \param limit   The miter limit to use, must be greater than 0.
+ *                   Default value is 4.
  *
  * \return If the function succeeds, the return value is the old miter limit.
  *         If the function fails, the return value is 0.
@@ -1443,7 +1480,7 @@ PEXPORT void PICAPI ps_set_stroke_canvas(ps_context* ctx, const ps_canvas* canva
  *     ps_set_stroke_color, ps_reset_line_dash, ps_set_line_inner_join
  */
 PEXPORT void PICAPI ps_set_line_dash(ps_context* ctx, float start,
-                                        const float* dashes, unsigned int num_dashes);
+                                     const float* dashes, unsigned int num_dashes);
 
 /**
  * \fn void ps_reset_line_dash(ps_context* ctx)
@@ -1573,7 +1610,7 @@ typedef enum _ps_composite {
     COMPOSITE_LUMINOSITY,
     /** Error value. */
     COMPOSITE_ERROR,
-}ps_composite;
+} ps_composite;
 
 /**
  * \fn ps_composite ps_set_composite_operator(ps_context* ctx, ps_composite composite)
@@ -1619,7 +1656,7 @@ typedef enum _ps_filter {
      * Error value.
      */
     FILTER_UNKNOWN,
-}ps_filter;
+} ps_filter;
 
 /**
  * \fn ps_filter ps_set_filter(ps_context* ctx, ps_filter filter)
@@ -1653,7 +1690,7 @@ typedef enum _ps_fill_rule {
      * Error value.
      */
     FILL_RULE_ERROR,
-}ps_fill_rule;
+} ps_fill_rule;
 
 /**
  * \fn ps_fill_rule ps_set_fill_rule(ps_context* ctx, ps_fill_rule rule)
@@ -1820,14 +1857,14 @@ PEXPORT void PICAPI ps_clip_path(ps_context* ctx, const ps_path* path, ps_fill_r
  * \param ctx  Pointer to an existing context object.
  * \param rect The rectangle which will be clipped.
  *
- * \sa ps_clip, ps_clip_path, ps_clip_rects, ps_reset_clip, ps_clip_device_rect
+ * \sa ps_clip, ps_clip_path, ps_clip_rects, ps_reset_clip, ps_scissor_rect
  */
 PEXPORT void PICAPI ps_clip_rect(ps_context* ctx, const ps_rect* rect);
 
 /**
- * \fn void ps_clip_device_rect(ps_context* ctx, const ps_rect* rect)
- * \brief The fast way to clipping specified rectangle, the clip rect can not be rotated
- *           by world matrix. (Deprecated)
+ * \fn void ps_scissor_rect(ps_context* ctx, const ps_rect* rect)
+ * \brief The fast way to clipping specified rectangle, the clip rect can not be transformed
+ *           by world matrix.
  *
  * \param ctx  Pointer to an existing context object.
  * \param rect The rectangle which will be clipped.
@@ -1836,7 +1873,7 @@ PEXPORT void PICAPI ps_clip_rect(ps_context* ctx, const ps_rect* rect);
  *
  * \sa ps_clip, ps_clip_path, ps_clip_rects, ps_reset_clip, ps_clip_rect
  */
-PEXPORT void PICAPI ps_clip_device_rect(ps_context* ctx, const ps_rect* rect);
+PEXPORT void PICAPI ps_scissor_rect(ps_context* ctx, const ps_rect* rect);
 
 /**
  * \fn void ps_clip_rects(ps_context* ctx, const ps_rect* rects, unsigned int num_rects)
@@ -1926,7 +1963,7 @@ typedef enum _ps_charset {
      * Unicode UCS-2 charset
      */
     CHARSET_UNICODE,
-}ps_charset;
+} ps_charset;
 
 /**
  * \brief Font weight
@@ -1948,7 +1985,7 @@ typedef enum _ps_font_weight {
      * Heavy weight.
      */
     FONT_WEIGHT_HEAVY = 900,
-}ps_font_weight;
+} ps_font_weight;
 
 /**
  * \fn ps_font* ps_font_create(const char* name, ps_charset charset, float size, int weight, ps_bool italic)
@@ -1968,7 +2005,7 @@ typedef enum _ps_font_weight {
  * \sa ps_font_create_copy, ps_font_ref, ps_font_unref
  */
 PEXPORT ps_font* PICAPI ps_font_create(const char* name, ps_charset charset,
-                                                    float size, int weight, ps_bool italic);
+                                       float size, int weight, ps_bool italic);
 
 /**
  * \fn ps_font* ps_font_create_copy(const ps_font* font)
@@ -2107,7 +2144,7 @@ typedef struct _ps_font_info {
      * UnitsEm, the number of glyph space units per em.
      */
     unsigned int unitsEM;
-}ps_font_info;
+} ps_font_info;
 
 /**
  * \fn ps_bool ps_get_font_info(ps_context* ctx, ps_font_info* info)
@@ -2161,7 +2198,7 @@ typedef enum _ps_text_type {
      * OutLine rendering.
      */
     TEXT_TYPE_STROKE,
-}ps_text_type;
+} ps_text_type;
 
 /**
  * \fn ps_bool ps_get_text_extent(ps_context* ctx, const void* text, unsigned int length, ps_size* rsize)
@@ -2190,7 +2227,7 @@ PEXPORT ps_bool PICAPI ps_get_text_extent(ps_context* ctx, const void* text, uns
  * \sa ps_transform, ps_set_text_matrix, ps_set_text_antialias,
  *     ps_set_text_stroke_color, ps_set_text_render_type, ps_set_text_kerning
  */
-PEXPORT void PICAPI ps_set_text_color(ps_context* ctx, const ps_color * color);
+PEXPORT void PICAPI ps_set_text_color(ps_context* ctx, const ps_color* color);
 
 /**
  * \fn void ps_set_text_stroke_color(ps_context* ctx, const ps_color * color)
@@ -2202,7 +2239,7 @@ PEXPORT void PICAPI ps_set_text_color(ps_context* ctx, const ps_color * color);
  * \sa ps_set_text_color, ps_set_text_matrix, ps_set_text_antialias,
  *     ps_text_transform, ps_set_text_render_type, ps_set_text_kerning
  */
-PEXPORT void PICAPI ps_set_text_stroke_color(ps_context* ctx, const ps_color * color);
+PEXPORT void PICAPI ps_set_text_stroke_color(ps_context* ctx, const ps_color* color);
 
 /**
  * \fn void ps_text_transform(ps_context* ctx, const ps_matrix* matrix)
@@ -2281,7 +2318,7 @@ PEXPORT void PICAPI ps_set_text_kerning(ps_context* ctx, ps_bool kerning);
  * \sa ps_wide_text_out_length, ps_draw_text
  */
 PEXPORT void PICAPI ps_text_out_length(ps_context* ctx, float x, float y,
-                                                const char* text, unsigned int length);
+                                       const char* text, unsigned int length);
 
 /**
  * \fn void ps_wide_text_out_length(ps_context* ctx, float x, float y, const ps_uchar16* text, unsigned int length)
@@ -2296,7 +2333,7 @@ PEXPORT void PICAPI ps_text_out_length(ps_context* ctx, float x, float y,
  * \sa ps_text_out_length, ps_draw_text
  */
 PEXPORT void PICAPI ps_wide_text_out_length(ps_context* ctx, float x, float y,
-                                                const ps_uchar16* text, unsigned int length);
+                                            const ps_uchar16* text, unsigned int length);
 /**
  * \brief Draw mode for rending text.
  */
@@ -2313,7 +2350,7 @@ typedef enum _ps_draw_text_type {
      * Perform fill,then stroke operation on the text.
      */
     DRAW_TEXT_BOTH,
-}ps_draw_text_type;
+} ps_draw_text_type;
 
 /**
  * \brief Text align mode for drawing text.
@@ -2326,7 +2363,7 @@ typedef enum _ps_text_align {
     /**
      * Justifies the text to the top of the rectangle.
      */
-    TEXT_ALIGN_TOP    = 1,
+    TEXT_ALIGN_TOP = 1,
     /**
      * Justifies the text to the bottom of the rectangle.
      */
@@ -2334,12 +2371,12 @@ typedef enum _ps_text_align {
     /**
      * Aligns text to left.
      */
-    TEXT_ALIGN_LEFT   = 4,
+    TEXT_ALIGN_LEFT = 4,
     /**
      * Aligns text to right.
      */
-    TEXT_ALIGN_RIGHT  = 8,
-}ps_text_align;
+    TEXT_ALIGN_RIGHT = 8,
+} ps_text_align;
 
 /**
  * \fn void ps_draw_text(ps_context* ctx, const ps_rect* area, const void* text, unsigned int length,
@@ -2356,7 +2393,7 @@ typedef enum _ps_text_align {
  * \sa ps_text_out_length, ps_wide_text_out_length
  */
 PEXPORT void PICAPI ps_draw_text(ps_context* ctx, const ps_rect* area, const void* text,
-                                unsigned int length, ps_draw_text_type type, ps_text_align align);
+                                 unsigned int length, ps_draw_text_type type, ps_text_align align);
 
 /**
  * \fn ps_bool ps_get_glyph(ps_context* ctx, int ch, ps_glyph* glyph)
@@ -2385,7 +2422,7 @@ PEXPORT ps_bool PICAPI ps_get_glyph(ps_context* ctx, int ch, ps_glyph* glyph);
  * \sa ps_get_path_from_glyph
  */
 PEXPORT void PICAPI ps_show_glyphs(ps_context* ctx, float x, float y,
-                                                    ps_glyph* glyphs, unsigned int length);
+                                   ps_glyph* glyphs, unsigned int length);
 
 /**
  * \fn ps_bool ps_get_path_from_glyph(ps_context* ctx, const ps_glyph* glyph, ps_path* path)
@@ -2400,7 +2437,7 @@ PEXPORT void PICAPI ps_show_glyphs(ps_context* ctx, float x, float y,
  * \sa ps_show_glyphs
  */
 PEXPORT ps_bool PICAPI ps_get_path_from_glyph(ps_context* ctx,
-                                        const ps_glyph* glyph, ps_path* path);
+                                              const ps_glyph* glyph, ps_path* path);
 
 /**
  * \fn ps_bool ps_glyph_get_extent(const ps_glyph* glyph, ps_size* rsize)
@@ -2578,7 +2615,7 @@ PEXPORT ps_matrix* PICAPI ps_matrix_create(void);
  * \sa ps_matrix_create, ps_matrix_create_copy, ps_matrix_ref, ps_matrix_unref
  */
 PEXPORT ps_matrix* PICAPI ps_matrix_create_init(float sx, float shy, float shx,
-                                                            float sy, float tx, float ty);
+                                                float sy, float tx, float ty);
 
 /**
  * \fn ps_matrix* ps_matrix_create_copy(const ps_matrix* matrix)
@@ -2637,7 +2674,7 @@ PEXPORT void PICAPI ps_matrix_unref(ps_matrix* matrix);
  * \sa ps_matrix_translate, ps_matrix_scale, ps_matrix_shear, ps_matrix_rotate
  */
 PEXPORT void PICAPI ps_matrix_init(ps_matrix* matrix, float sx, float shy,
-                                            float shx, float sy, float tx, float ty);
+                                   float shx, float sy, float tx, float ty);
 
 /**
  * \fn void ps_matrix_translate(ps_matrix* matrix, float tx, float ty)
@@ -2692,19 +2729,19 @@ PEXPORT void PICAPI ps_matrix_shear(ps_matrix* matrix, float shx, float shy);
  *
  * \param matrix  Pointer to an existing matrix object.
  *
- * \sa ps_matrix_flip_x, ps_matrix_flip_y, ps_matrix_reset
+ * \sa ps_matrix_flip_x, ps_matrix_flip_y, ps_matrix_identity
  */
 PEXPORT void PICAPI ps_matrix_invert(ps_matrix* matrix);
 
 /**
- * \fn void ps_matrix_reset(ps_matrix* matrix)
+ * \fn void ps_matrix_identity(ps_matrix* matrix)
  * \brief Reset a matrix to identity matrix.
  *
  * \param matrix  Pointer to an existing matrix object.
  *
  * \sa ps_matrix_flip_x, ps_matrix_flip_y, ps_matrix_invert
  */
-PEXPORT void PICAPI ps_matrix_reset(ps_matrix* matrix);
+PEXPORT void PICAPI ps_matrix_identity(ps_matrix* matrix);
 
 /**
  * \fn void ps_matrix_flip_x(ps_matrix* matrix)
@@ -2712,7 +2749,7 @@ PEXPORT void PICAPI ps_matrix_reset(ps_matrix* matrix);
  *
  * \param matrix  Pointer to an existing matrix object.
  *
- * \sa ps_matrix_reset, ps_matrix_flip_y, ps_matrix_invert
+ * \sa ps_matrix_identity, ps_matrix_flip_y, ps_matrix_invert
  */
 PEXPORT void PICAPI ps_matrix_flip_x(ps_matrix* matrix);
 
@@ -2722,7 +2759,7 @@ PEXPORT void PICAPI ps_matrix_flip_x(ps_matrix* matrix);
  *
  * \param matrix  Pointer to an existing matrix object.
  *
- * \sa ps_matrix_reset, ps_matrix_flip_x, ps_matrix_invert
+ * \sa ps_matrix_identity, ps_matrix_flip_x, ps_matrix_invert
  */
 PEXPORT void PICAPI ps_matrix_flip_y(ps_matrix* matrix);
 
@@ -2799,7 +2836,7 @@ PEXPORT void PICAPI ps_matrix_set_translate_factor(ps_matrix* matrix, float tx, 
  *
  * \sa ps_matrix_set_translate_factor
  */
-PEXPORT ps_bool PICAPI ps_matrix_get_translate_factor(ps_matrix* matrix, float *tx, float *ty);
+PEXPORT ps_bool PICAPI ps_matrix_get_translate_factor(ps_matrix* matrix, float* tx, float* ty);
 
 /**
  * \fn void ps_matrix_set_scale_factor(ps_matrix* matrix, float sx, float sy)
@@ -2825,7 +2862,7 @@ PEXPORT void PICAPI ps_matrix_set_scale_factor(ps_matrix* matrix, float sx, floa
  *
  * \sa ps_matrix_set_scale_factor
  */
-PEXPORT ps_bool PICAPI ps_matrix_get_scale_factor(ps_matrix* matrix, float *sx, float *sy);
+PEXPORT ps_bool PICAPI ps_matrix_get_scale_factor(ps_matrix* matrix, float* sx, float* sy);
 
 /**
  * \fn void ps_matrix_set_shear_factor(ps_matrix* matrix, float shx, float shy)
@@ -2851,7 +2888,7 @@ PEXPORT void PICAPI ps_matrix_set_shear_factor(ps_matrix* matrix, float shx, flo
  *
  * \sa ps_matrix_set_shear_factor
  */
-PEXPORT ps_bool PICAPI ps_matrix_get_shear_factor(ps_matrix* matrix, float *shx, float *shy);
+PEXPORT ps_bool PICAPI ps_matrix_get_shear_factor(ps_matrix* matrix, float* shx, float* shy);
 
 /**
  * \fn void ps_matrix_transform_point(const ps_matrix* matrix, ps_point* point)
@@ -2996,7 +3033,7 @@ PEXPORT void PICAPI ps_line_to(ps_context* ctx, const ps_point* point);
  *     ps_tangent_arc, ps_rectangle, ps_rounded_rect, ps_ellipse
  */
 PEXPORT void PICAPI ps_bezier_curve_to(ps_context* ctx, const ps_point* fcp,
-                                           const ps_point* scp, const ps_point* ep);
+                                       const ps_point* scp, const ps_point* ep);
 
 /**
  * \fn void ps_quad_curve_to(ps_context* ctx, const ps_point* cp, const ps_point* ep)
@@ -3027,7 +3064,7 @@ PEXPORT void PICAPI ps_quad_curve_to(ps_context* ctx, const ps_point* cp, const 
  *     ps_tangent_arc, ps_rectangle, ps_rounded_rect, ps_ellipse
  */
 PEXPORT void PICAPI ps_arc(ps_context* ctx, const ps_point* cp, float radius,
-                                           float sangle, float eangle, ps_bool clockwise);
+                           float sangle, float eangle, ps_bool clockwise);
 
 /**
  * \fn void ps_tangent_arc(ps_context* ctx, const ps_rect* rect, float sangle, float sweep)
@@ -3075,7 +3112,7 @@ PEXPORT void PICAPI ps_rectangle(ps_context* ctx, const ps_rect* rect);
  *     ps_arc, ps_tangent_arc, ps_rectangle, ps_ellipse
  */
 PEXPORT void PICAPI ps_rounded_rect(ps_context* ctx, const ps_rect* rect, float ltx,
-                      float lty, float rtx, float rty, float lbx, float lby, float rbx, float rby);
+                                    float lty, float rtx, float rty, float lbx, float lby, float rbx, float rby);
 
 /**
  * \fn void ps_ellipse(ps_context* ctx, const ps_rect* rect)
@@ -3187,7 +3224,7 @@ PEXPORT void PICAPI ps_path_line_to(ps_path* path, const ps_point* point);
  *     ps_path_arc_to, ps_path_line_to
  */
 PEXPORT void PICAPI ps_path_tangent_arc_to(ps_path* path, float radius,
-                                            const ps_point* tp, const ps_point* ep);
+                                           const ps_point* tp, const ps_point* ep);
 
 /**
  * \fn void ps_path_arc_to(ps_path* path, float radiusX, float radiusY, float angle,
@@ -3206,7 +3243,7 @@ PEXPORT void PICAPI ps_path_tangent_arc_to(ps_path* path, float radius,
  *     ps_path_tangent_arc_to, ps_path_line_to
  */
 PEXPORT void PICAPI ps_path_arc_to(ps_path* path, float radiusX, float radiusY, float angle,
-                                        ps_bool large_arc, ps_bool clockwise, const ps_point* ep);
+                                   ps_bool large_arc, ps_bool clockwise, const ps_point* ep);
 
 /**
  * \fn void ps_path_bezier_to(ps_path* path, const ps_point* fcp, const ps_point* scp, const ps_point* ep)
@@ -3221,7 +3258,7 @@ PEXPORT void PICAPI ps_path_arc_to(ps_path* path, float radiusX, float radiusY, 
  *     ps_path_tangent_arc_to, ps_path_line_to
  */
 PEXPORT void PICAPI ps_path_bezier_to(ps_path* path, const ps_point* fcp,
-                                                 const ps_point* scp, const ps_point* ep);
+                                      const ps_point* scp, const ps_point* ep);
 
 /**
  * \fn void ps_path_quad_to(ps_path* path, const ps_point* cp, const ps_point* ep)
@@ -3303,28 +3340,28 @@ typedef enum _ps_path_cmd {
     /**
      * Stop command.
      */
-    PATH_CMD_STOP     = 0,
+    PATH_CMD_STOP = 0,
     /**
      * Move to command.
      */
-    PATH_CMD_MOVE_TO  = 1,
+    PATH_CMD_MOVE_TO = 1,
     /**
      * Line to command.
      */
-    PATH_CMD_LINE_TO  = 2,
+    PATH_CMD_LINE_TO = 2,
     /**
      * Quad curve to command.
      */
-    PATH_CMD_CURVE3   = 3,
+    PATH_CMD_CURVE3 = 3,
     /**
      * Bezier curve to command.
      */
-    PATH_CMD_CURVE4   = 4,
+    PATH_CMD_CURVE4 = 4,
     /**
      * End polyline command.
      */
     PATH_CMD_END_POLY = 0x0F,
-}ps_path_cmd;
+} ps_path_cmd;
 
 /**
  * \fn ps_path_cmd ps_path_get_vertex(const ps_path* path, unsigned int index, ps_point * point)
@@ -3342,7 +3379,7 @@ typedef enum _ps_path_cmd {
  * \sa ps_path_get_vertex_count, ps_path_bounding_rect, ps_path_contains, ps_path_stroke_contains
  */
 PEXPORT ps_path_cmd PICAPI ps_path_get_vertex(const ps_path* path,
-                                                unsigned int index, ps_point * point);
+                                              unsigned int index, ps_point* point);
 
 /**
  * \fn ps_bool ps_path_bounding_rect(const ps_path* path, ps_rect* rect)
@@ -3387,7 +3424,7 @@ PEXPORT ps_bool PICAPI ps_path_contains(const ps_path* path,
  * \sa ps_path_get_vertex_count, ps_path_get_vertex, ps_path_bounding_rect, ps_path_contains
  */
 PEXPORT ps_bool PICAPI ps_path_stroke_contains(const ps_path* path,
-                                        const ps_point* point, float width);
+                                               const ps_point* point, float width);
 
 /**
  * \fn void ps_path_add_line(ps_path* path, const ps_point* p1, const ps_point* p2)
@@ -3416,7 +3453,7 @@ PEXPORT void PICAPI ps_path_add_line(ps_path* path, const ps_point* p1, const ps
  * \sa ps_path_add_line, ps_path_add_rect, ps_path_add_ellipse, ps_path_add_rounded_rect, ps_path_add_sub_path
  */
 PEXPORT void PICAPI ps_path_add_arc(ps_path* path, const ps_point* cp, float radius,
-                                            float sangle, float eangle, ps_bool clockwise);
+                                    float sangle, float eangle, ps_bool clockwise);
 
 /**
  * \fn void ps_path_add_rect(ps_path* path, const ps_rect* rect)
@@ -3459,7 +3496,7 @@ PEXPORT void PICAPI ps_path_add_ellipse(ps_path* path, const ps_rect* rect);
  * \sa ps_path_add_arc, ps_path_add_line, ps_path_add_rect, ps_path_add_ellipse, ps_path_add_sub_path
  */
 PEXPORT void PICAPI ps_path_add_rounded_rect(ps_path* path, const ps_rect* rect, float ltx,
-                      float lty, float rtx, float rty, float lbx, float lby, float rbx, float rby);
+                                             float lty, float rtx, float rty, float lbx, float lby, float rbx, float rby);
 
 /**
  * \fn void ps_path_add_sub_path(ps_path* path, const ps_path* spath)
@@ -3492,7 +3529,7 @@ typedef enum _ps_path_op {
      * Difference.
      */
     PATH_OP_DIFF,
-}ps_path_operation;
+} ps_path_operation;
 
 /**
  * \fn void ps_path_clipping(ps_path* result, ps_path_operation op, const ps_path* a, const ps_path* b)
@@ -3507,7 +3544,7 @@ typedef enum _ps_path_op {
  * \sa ps_path_get_vertex, ps_path_get_vertex_count
  */
 PEXPORT void PICAPI ps_path_clipping(ps_path* result, ps_path_operation op,
-                                                const ps_path* a, const ps_path* b);
+                                     const ps_path* a, const ps_path* b);
 
 /** @} end of path functions*/
 /** @} end of graphic functions*/

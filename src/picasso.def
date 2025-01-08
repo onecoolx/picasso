@@ -85,9 +85,9 @@ EXPORTS
     ps_clip
     ps_clip_path
     ps_clip_rect
-    ps_clip_device_rect
     ps_clip_rects
     ps_reset_clip
+    ps_scissor_rect
     ps_save
     ps_restore
     ps_font_create
@@ -138,7 +138,7 @@ EXPORTS
     ps_matrix_rotate
     ps_matrix_shear
     ps_matrix_invert
-    ps_matrix_reset
+    ps_matrix_identity
     ps_matrix_flip_x
     ps_matrix_flip_y
     ps_matrix_multiply

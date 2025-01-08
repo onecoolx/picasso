@@ -1,0 +1,100 @@
+.TH "paint" 3 "Tue Dec 24 2024" "Version 2.8" "Picasso API" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+paint
+.SH SYNOPSIS
+.br
+.PP
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_stroke\fP (\fBps_context\fP *ctx)"
+.br
+.RI "Stroke the current path according to the line attributes\&. After called, the current path will be cleared from the context\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_fill\fP (\fBps_context\fP *ctx)"
+.br
+.RI "Fill the current path according to the source attributes\&. After called, the current path will be cleared from the context\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_paint\fP (\fBps_context\fP *ctx)"
+.br
+.RI "Fill and stroke the current path according to the source and line attributes\&. After called, the current path will be cleared from the context\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_clear\fP (\fBps_context\fP *ctx)"
+.br
+.RI "Clear the current context with source color\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.SH "Function Documentation"
+.PP 
+.SS "void ps_clear (\fBps_context\fP * ctx)"
+
+.PP
+Clear the current context with source color\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_stroke\fP, \fBps_fill\fP, \fBps_paint\fP 
+.RE
+.PP
+
+.SS "void ps_fill (\fBps_context\fP * ctx)"
+
+.PP
+Fill the current path according to the source attributes\&. After called, the current path will be cleared from the context\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_stroke\fP, \fBps_paint\fP, \fBps_clear\fP 
+.RE
+.PP
+
+.SS "void ps_paint (\fBps_context\fP * ctx)"
+
+.PP
+Fill and stroke the current path according to the source and line attributes\&. After called, the current path will be cleared from the context\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_stroke\fP, \fBps_fill\fP, \fBps_clear\fP 
+.RE
+.PP
+
+.SS "void ps_stroke (\fBps_context\fP * ctx)"
+
+.PP
+Stroke the current path according to the line attributes\&. After called, the current path will be cleared from the context\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_fill\fP, \fBps_paint\fP, \fBps_clear\fP 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Picasso API from the source code\&.

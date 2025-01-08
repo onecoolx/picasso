@@ -1,0 +1,248 @@
+.TH "functions" 3 "Tue Dec 24 2024" "Version 2.8" "Picasso API" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+functions
+.SH SYNOPSIS
+.br
+.PP
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef int(* \fBimage_writer_fn\fP) (void *param, const \fBps_byte\fP *data, size_t length)"
+.br
+.RI "Callback function for saving image data\&. "
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "PEXPORT int PICAPI \fBpsx_image_init\fP (void)"
+.br
+.RI "Initialze the library and load resources\&. "
+.ti -1c
+.RI "PEXPORT int PICAPI \fBpsx_image_shutdown\fP (void)"
+.br
+.RI "Release resources and shutdoen\&. "
+.ti -1c
+.RI "PEXPORT \fBpsx_image\fP *PICAPI \fBpsx_image_create_from_data\fP (\fBps_byte\fP *data, \fBps_color_format\fP fmt, int width, int height, int pitch, int *err_code)"
+.br
+.RI "Create a new psx_image using a copy of given address in memory\&. "
+.ti -1c
+.RI "PEXPORT \fBpsx_image\fP *PICAPI \fBpsx_image_load\fP (const char *file_name, int *err_code)"
+.br
+.RI "Create a new psx_image object and load from file\&. "
+.ti -1c
+.RI "PEXPORT \fBpsx_image\fP *PICAPI \fBpsx_image_load_from_memory\fP (const \fBps_byte\fP *data, size_t length, int *err_code)"
+.br
+.RI "Create a new psx_image object and load data from memory\&. "
+.ti -1c
+.RI "PEXPORT int PICAPI \fBpsx_image_save\fP (const \fBpsx_image\fP *image, \fBimage_writer_fn\fP func, void *param, const char *type, float quality)"
+.br
+.RI "Encoding psx_image to a gaving format and output it\&. "
+.ti -1c
+.RI "PEXPORT int PICAPI \fBpsx_image_save_to_file\fP (const \fBpsx_image\fP *image, const char *file_name, const char *type, float quality)"
+.br
+.RI "Encoding psx_image to a gaving format and output to a file\&. "
+.ti -1c
+.RI "PEXPORT int PICAPI \fBpsx_image_destroy\fP (\fBpsx_image\fP *image)"
+.br
+.RI "Destroy the psx_image object and release resources\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.SH "Function Documentation"
+.PP 
+.SS "\fBpsx_image\fP * psx_image_create_from_data (\fBps_byte\fP * data, \fBps_color_format\fP fmt, int width, int height, int pitch, int * err_code)"
+
+.PP
+Create a new psx_image using a copy of given address in memory\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIdata\fP A pointer to the destination in memory where the drawing is to be rendered\&. The size of this memory block should be at least (pitch * height) bytes\&. 
+.br
+\fIfmt\fP The Pixel format to use for the image\&. 
+.br
+\fIwidth\fP The width, in pixels, of the required image\&. 
+.br
+\fIheight\fP The height, in pixels, of the required image\&. 
+.br
+\fIpitch\fP The number of bytes per row, of the required image\&. 
+.br
+\fIerr_code\fP Pointer to a value to receiving the result code\&. can be NULL\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+If the function succeeds, the return value is the pointer to a new psx_image object\&. If the function fails, the return value is NULL\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBpsx_image_load\fP \fBpsx_image_load_from_memory\fP \fBpsx_image_destroy\fP 
+.RE
+.PP
+
+.SS "int psx_image_destroy (\fBpsx_image\fP * image)"
+
+.PP
+Destroy the psx_image object and release resources\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIimage\fP Pointer to an existing psx_image object\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Result code returned\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBpsx_image_load\fP \fBpsx_image_load_from_memory\fP 
+.RE
+.PP
+
+.SS "int psx_image_init (void)"
+
+.PP
+Initialze the library and load resources\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Result code returned\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBpsx_image_shutdown\fP 
+.RE
+.PP
+
+.SS "\fBpsx_image\fP * psx_image_load (const char * file_name, int * err_code)"
+
+.PP
+Create a new psx_image object and load from file\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIfile_name\fP The image file path which will be loaded, which is encoded by utf8\&. 
+.br
+\fIerr_code\fP Pointer to a value to receiving the result code\&. can be NULL\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+If successs, the return value is the pointer to new psx_image object\&. If fails, the return value is NULL, and result will be return by \fIerr_code\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBpsx_image_destroy\fP \fBpsx_image_load_from_memory\fP \fBpsx_image_create_from_data\fP 
+.RE
+.PP
+
+.SS "\fBpsx_image\fP * psx_image_load_from_memory (const \fBps_byte\fP * data, size_t length, int * err_code)"
+
+.PP
+Create a new psx_image object and load data from memory\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIdata\fP Pointer to data buffer in memeory\&. 
+.br
+\fIlength\fP Data length bytes\&. 
+.br
+\fIerr_code\fP Pointer to a value to receiving the result code\&. can be NULL\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+If successs, the return value is the pointer to new psx_image object\&. If fails, the return value is NULL, and result will be return by \fIerr_code\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBpsx_image_destroy\fP \fBpsx_image_load\fP 
+.RE
+.PP
+
+.SS "int psx_image_save (const \fBpsx_image\fP * image, \fBimage_writer_fn\fP func, void * param, const char * type, float quality)"
+
+.PP
+Encoding psx_image to a gaving format and output it\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIimage\fP Pointer to an psx_image object\&. 
+.br
+\fIfunc\fP User define saving callback function\&. 
+.br
+\fIparam\fP User define saving callback param\&. 
+.br
+\fItype\fP Image type short name\&. (i\&.e 'png' 'jpg' 'bmp') 
+.br
+\fIquality\fP Image encoding quality\&. (0\&.1 ~ 1\&.0)
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Result code returned\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBpsx_image_save_to_file\fP 
+.RE
+.PP
+
+.SS "int psx_image_save_to_file (const \fBpsx_image\fP * image, const char * file_name, const char * type, float quality)"
+
+.PP
+Encoding psx_image to a gaving format and output to a file\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIimage\fP Pointer to an psx_image object\&. 
+.br
+\fIfile_name\fP The image file path which will be output, which is encoded by utf8\&. 
+.br
+\fItype\fP Image type short name\&. (i\&.e 'png' 'jpg' 'bmp') 
+.br
+\fIquality\fP Image encoding quality\&. (0\&.1 ~ 1\&.0)
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Result code returned\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBpsx_image_save\fP 
+.RE
+.PP
+
+.SS "int psx_image_shutdown (void)"
+
+.PP
+Release resources and shutdoen\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Result code returned\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBpsx_image_init\fP 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Picasso API from the source code\&.

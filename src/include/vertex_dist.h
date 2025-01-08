@@ -13,8 +13,7 @@
 
 namespace picasso {
 
-struct vertex_dist
-{
+struct vertex_dist {
     scalar x;
     scalar y;
     scalar d;
@@ -25,8 +24,9 @@ struct vertex_dist
     bool operator() (const vertex_dist& t)
     {
         bool ret = (d = calc_distance(x, y, t.x, t.y)) > vertex_dist_epsilon;
-        if (!ret)
+        if (!ret) {
             d = FLT_TO_SCALAR(1.0f) / vertex_dist_epsilon;
+        }
         return ret;
     }
 };
@@ -56,9 +56,10 @@ public:
 
     void close(bool closed)
     {
-        while(base_type::size() > 1) {
-            if ((*this)[base_type::size() - 2]((*this)[base_type::size() - 1]))
+        while (base_type::size() > 1) {
+            if ((*this)[base_type::size() - 2]((*this)[base_type::size() - 1])) {
                 break;
+            }
 
             T t = (*this)[base_type::size() - 1];
             base_type::remove_last();
@@ -66,9 +67,10 @@ public:
         }
 
         if (closed) {
-            while(base_type::size() > 1) {
-                if ((*this)[base_type::size() - 1]((*this)[0]))
+            while (base_type::size() > 1) {
+                if ((*this)[base_type::size() - 1]((*this)[0])) {
                     break;
+                }
 
                 base_type::remove_last();
             }
@@ -88,8 +90,9 @@ void shorten_path(VertexSequence& vs, scalar s, unsigned int closed = 0)
 
         while (n) {
             d = vs[n].d;
-            if (d > s)
+            if (d > s) {
                 break;
+            }
 
             vs.remove_last();
             s -= d;
@@ -100,7 +103,7 @@ void shorten_path(VertexSequence& vs, scalar s, unsigned int closed = 0)
             vs.clear();
         } else {
             n = vs.size() - 1;
-            vertex_type& prev = vs[n-1];
+            vertex_type& prev = vs[n - 1];
             vertex_type& last = vs[n];
             d = (prev.d - s) / prev.d;
             scalar x = prev.x + (last.x - prev.x) * d;
@@ -108,8 +111,9 @@ void shorten_path(VertexSequence& vs, scalar s, unsigned int closed = 0)
             last.x = x;
             last.y = y;
 
-            if (!prev(last))
+            if (!prev(last)) {
                 vs.remove_last();
+            }
 
             vs.close(closed != 0);
         }

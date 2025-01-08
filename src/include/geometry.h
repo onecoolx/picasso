@@ -26,7 +26,7 @@ public:
     {
     }
 
-    arc(scalar x,  scalar y, scalar rx, scalar ry, scalar a1, scalar a2, bool ccw = true)
+    arc(scalar x, scalar y, scalar rx, scalar ry, scalar a1, scalar a2, bool ccw = true)
         : m_x(x), m_y(y), m_rx(rx), m_ry(ry)
         , m_start(FLT_TO_SCALAR(0)), m_end(FLT_TO_SCALAR(0))
         , m_scale(FLT_TO_SCALAR(1.0f)), m_da(FLT_TO_SCALAR(0)), m_angle(FLT_TO_SCALAR(0))
@@ -35,10 +35,12 @@ public:
         normalize(a1, a2, ccw);
     }
 
-    void init(scalar x,  scalar y, scalar rx, scalar ry, scalar a1, scalar a2, bool ccw = true)
+    void init(scalar x, scalar y, scalar rx, scalar ry, scalar a1, scalar a2, bool ccw = true)
     {
-        m_x = x;  m_y = y;
-        m_rx = rx; m_ry = ry;
+        m_x = x;
+        m_y = y;
+        m_rx = rx;
+        m_ry = ry;
         normalize(a1, a2, ccw);
     }
 
@@ -63,10 +65,11 @@ public:
 
     virtual unsigned int vertex(scalar* x, scalar* y)
     {
-        if (is_stop(m_path_cmd))
+        if (is_stop(m_path_cmd)) {
             return path_cmd_stop;
+        }
 
-        if ((m_angle < (m_end - m_da/4)) != m_ccw) {
+        if ((m_angle < (m_end - m_da / 4)) != m_ccw) {
             *x = m_x + Cos(m_end) * m_rx;
             *y = m_y + Sin(m_end) * m_ry;
             m_path_cmd = path_cmd_stop;
@@ -89,29 +92,29 @@ private:
         scalar ra = (Fabs(m_rx) + Fabs(m_ry)) / 2;
         m_da = Acos(ra / (ra + FLT_TO_SCALAR(0.125f) / m_scale)) * 2;
         if (ccw) {
-            while(a2 < a1) a2 += _2PI;
+            while (a2 < a1) { a2 += _2PI; }
         } else {
-            while(a1 < a2) a1 += _2PI;
+            while (a1 < a2) { a1 += _2PI; }
             m_da = -m_da;
         }
-        m_ccw   = ccw;
+        m_ccw = ccw;
         m_start = a1;
-        m_end   = a2;
+        m_end = a2;
         m_initialized = true;
     }
 
-    scalar   m_x;
-    scalar   m_y;
-    scalar   m_rx;
-    scalar   m_ry;
-    scalar   m_start;
-    scalar   m_end;
-    scalar   m_scale;
-    scalar   m_da;
+    scalar m_x;
+    scalar m_y;
+    scalar m_rx;
+    scalar m_ry;
+    scalar m_start;
+    scalar m_end;
+    scalar m_scale;
+    scalar m_da;
     scalar m_angle;
     unsigned int m_path_cmd;
-    bool     m_ccw;
-    bool     m_initialized;
+    bool m_ccw;
+    bool m_initialized;
 };
 
 // Bezier arc geometry
@@ -127,19 +130,21 @@ public:
     {
     }
 
-    bezier_arc(scalar x,  scalar y, scalar rx, scalar ry, scalar start_angle, scalar sweep_angle)
+    bezier_arc(scalar x, scalar y, scalar rx, scalar ry, scalar start_angle, scalar sweep_angle)
     {
         init(x, y, rx, ry, start_angle, sweep_angle);
     }
 
-    void init(scalar x,  scalar y, scalar rx, scalar ry, scalar start_angle, scalar sweep_angle)
+    void init(scalar x, scalar y, scalar rx, scalar ry, scalar start_angle, scalar sweep_angle)
     {
         start_angle = Fmod(start_angle, _2PI);
-        if (sweep_angle >= _2PI)
+        if (sweep_angle >= _2PI) {
             sweep_angle = _2PI;
+        }
 
-        if (sweep_angle <= -_2PI)
+        if (sweep_angle <= -_2PI) {
             sweep_angle = -_2PI;
+        }
 
         if (Fabs(sweep_angle) < FLT_TO_SCALAR(1e-10f)) {
             m_num_vertices = 4;
@@ -159,7 +164,7 @@ public:
         bool done = false;
         do {
             if (sweep_angle < FLT_TO_SCALAR(0.0f)) {
-                prev_sweep  = total_sweep;
+                prev_sweep = total_sweep;
                 local_sweep = -_PIdiv2;
                 total_sweep -= _PIdiv2;
                 if (total_sweep <= sweep_angle + FLT_TO_SCALAR(0.01f)) {
@@ -167,8 +172,8 @@ public:
                     done = true;
                 }
             } else {
-                prev_sweep  = total_sweep;
-                local_sweep =  _PIdiv2;
+                prev_sweep = total_sweep;
+                local_sweep = _PIdiv2;
                 total_sweep += _PIdiv2;
                 if (total_sweep >= sweep_angle - FLT_TO_SCALAR(0.01f)) {
                     local_sweep = sweep_angle - prev_sweep;
@@ -194,8 +199,9 @@ public:
 
     virtual unsigned int vertex(scalar* x, scalar* y)
     {
-        if (m_vertex >= m_num_vertices)
+        if (m_vertex >= m_num_vertices) {
             return path_cmd_stop;
+        }
 
         *x = m_vertices[m_vertex];
         *y = m_vertices[m_vertex + 1];
@@ -212,27 +218,27 @@ private:
         scalar ty = y0 - tx * x0 / y0;
         scalar px[4];
         scalar py[4];
-        px[0] =  x0;
+        px[0] = x0;
         py[0] = -y0;
-        px[1] =  x0 + tx;
+        px[1] = x0 + tx;
         py[1] = -ty;
-        px[2] =  x0 + tx;
-        py[2] =  ty;
-        px[3] =  x0;
-        py[3] =  y0;
+        px[2] = x0 + tx;
+        py[2] = ty;
+        px[3] = x0;
+        py[3] = y0;
 
         scalar sn = Sin(start_angle + sweep_angle / FLT_TO_SCALAR(2.0f));
         scalar cs = Cos(start_angle + sweep_angle / FLT_TO_SCALAR(2.0f));
 
         for (unsigned int i = 0; i < 4; i++) {
-            curve[i * 2]     = cx + rx * (px[i] * cs - py[i] * sn);
+            curve[i * 2] = cx + rx * (px[i] * cs - py[i] * sn);
             curve[i * 2 + 1] = cy + ry * (px[i] * sn + py[i] * cs);
         }
     }
 
     unsigned int m_vertex;
     unsigned int m_num_vertices;
-    scalar        m_vertices[vertex_max_num];
+    scalar m_vertices[vertex_max_num];
     unsigned int m_cmd;
 };
 
@@ -246,7 +252,7 @@ public:
     }
 
     bezier_arc_svg(scalar x1, scalar y1, scalar rx, scalar ry,
-            scalar angle, bool large_arc_flag, bool sweep_flag, scalar x2, scalar y2)
+                   scalar angle, bool large_arc_flag, bool sweep_flag, scalar x2, scalar y2)
         : m_radii_ok(false)
     {
         init(x1, y1, rx, ry, angle, large_arc_flag, sweep_flag, x2, y2);
@@ -255,12 +261,12 @@ public:
     bool radii_ok(void) const { return m_radii_ok; }
 
     void init(scalar x0, scalar y0, scalar rx, scalar ry,
-            scalar angle, bool large_arc_flag, bool sweep_flag, scalar x2, scalar y2)
+              scalar angle, bool large_arc_flag, bool sweep_flag, scalar x2, scalar y2)
     {
         m_radii_ok = true;
 
-        if (rx < FLT_TO_SCALAR(0.0f)) rx = -rx;
-        if (ry < FLT_TO_SCALAR(0.0f)) ry = -rx;
+        if (rx < FLT_TO_SCALAR(0.0f)) { rx = -rx; }
+        if (ry < FLT_TO_SCALAR(0.0f)) { ry = -rx; }
 
         // Calculate the middle point between
         // the current and the final points
@@ -273,7 +279,7 @@ public:
 
         // Calculate (x1, y1)
         //------------------------
-        scalar x1 =  cos_a * dx2 + sin_a * dy2;
+        scalar x1 = cos_a * dx2 + sin_a * dy2;
         scalar y1 = -sin_a * dx2 + cos_a * dy2;
 
         // Ensure radii are large enough
@@ -285,22 +291,22 @@ public:
 
         // Check that radii are large enough
         //------------------------
-        scalar radii_check = px1/prx + py1/pry;
+        scalar radii_check = px1 / prx + py1 / pry;
         if (radii_check > FLT_TO_SCALAR(1.0f)) {
             rx = Sqrt(radii_check) * rx;
             ry = Sqrt(radii_check) * ry;
             prx = rx * rx;
             pry = ry * ry;
-            if (radii_check > FLT_TO_SCALAR(10.0f)) m_radii_ok = false;
+            if (radii_check > FLT_TO_SCALAR(10.0f)) { m_radii_ok = false; }
         }
 
         // Calculate (cx1, cy1)
         //------------------------
         scalar sign = (large_arc_flag == sweep_flag) ? -FLT_TO_SCALAR(1.0f) : FLT_TO_SCALAR(1.0f);
-        scalar sq   = (prx*pry - prx*py1 - pry*px1) / (prx*py1 + pry*px1);
+        scalar sq = (prx * pry - prx * py1 - pry * px1) / (prx * py1 + pry * px1);
         scalar coef = sign * Sqrt((sq < 0) ? 0 : sq);
-        scalar cx1  = coef *  ((rx * y1) / ry);
-        scalar cy1  = coef * -((ry * x1) / rx);
+        scalar cx1 = coef * ((rx * y1) / ry);
+        scalar cy1 = coef * -((ry * x1) / rx);
 
         //
         // Calculate (cx, cy) from (cx1, cy1)
@@ -312,30 +318,30 @@ public:
 
         // Calculate the start_angle (angle1) and the sweep_angle (dangle)
         //------------------------
-        scalar ux =  (x1 - cx1) / rx;
-        scalar uy =  (y1 - cy1) / ry;
+        scalar ux = (x1 - cx1) / rx;
+        scalar uy = (y1 - cy1) / ry;
         scalar vx = (-x1 - cx1) / rx;
         scalar vy = (-y1 - cy1) / ry;
         scalar p, n;
 
         // Calculate the angle start
         //------------------------
-        n = Sqrt(ux*ux + uy*uy);
+        n = Sqrt(ux * ux + uy * uy);
         p = ux; // (1 * ux) + (0 * uy)
         sign = (uy < 0) ? -FLT_TO_SCALAR(1.0f) : FLT_TO_SCALAR(1.0f);
         scalar v = p / n;
-        if (v < -FLT_TO_SCALAR(1.0f)) v = -FLT_TO_SCALAR(1.0f);
-        if (v > FLT_TO_SCALAR(1.0f)) v = FLT_TO_SCALAR(1.0f);
+        if (v < -FLT_TO_SCALAR(1.0f)) { v = -FLT_TO_SCALAR(1.0f); }
+        if (v > FLT_TO_SCALAR(1.0f)) { v = FLT_TO_SCALAR(1.0f); }
         scalar start_angle = sign * Acos(v);
 
         // Calculate the sweep angle
         //------------------------
-        n = Sqrt((ux*ux + uy*uy) * (vx*vx + vy*vy));
+        n = Sqrt((ux * ux + uy * uy) * (vx * vx + vy * vy));
         p = ux * vx + uy * vy;
         sign = (ux * vy - uy * vx < 0) ? -FLT_TO_SCALAR(1.0f) : FLT_TO_SCALAR(1.0f);
         v = p / n;
-        if (v < -FLT_TO_SCALAR(1.0f)) v = -FLT_TO_SCALAR(1.0f);
-        if (v > FLT_TO_SCALAR(1.0f)) v = FLT_TO_SCALAR(1.0f);
+        if (v < -FLT_TO_SCALAR(1.0f)) { v = -FLT_TO_SCALAR(1.0f); }
+        if (v > FLT_TO_SCALAR(1.0f)) { v = FLT_TO_SCALAR(1.0f); }
         scalar sweep_angle = sign * Acos(v);
         if (!sweep_flag && sweep_angle > 0) {
             sweep_angle -= _2PI;
@@ -353,17 +359,17 @@ public:
         scalar shy = Sin(angle);
         scalar shx = -Sin(angle);
         scalar sy = Cos(angle);
-           scalar tx = cx;
+        scalar tx = cx;
         scalar ty = cy;
 
-        for (unsigned i = 2; i < m_arc.num_vertices()-2; i += 2) {
-            scalar *x = m_arc.vertices() + i;
-            scalar *y = m_arc.vertices() + i + 1;
+        for (unsigned i = 2; i < m_arc.num_vertices() - 2; i += 2) {
+            scalar* x = m_arc.vertices() + i;
+            scalar* y = m_arc.vertices() + i + 1;
 
             // matrix transform
             scalar tmp = *x;
-            *x = tmp * sx  + *y * shx + tx;
-            *y = tmp * shy + *y * sy  + ty;
+            *x = tmp * sx + *y * shx + tx;
+            *y = tmp * shy + *y * sy + ty;
         }
 
         // We must make sure that the starting and ending points
@@ -392,7 +398,7 @@ public:
 
 private:
     bezier_arc m_arc;
-    bool       m_radii_ok;
+    bool m_radii_ok;
 };
 
 // Rounded rectangle geometry
@@ -445,8 +451,14 @@ public:
     void radius(scalar rx1, scalar ry1, scalar rx2, scalar ry2,
                 scalar rx3, scalar ry3, scalar rx4, scalar ry4)
     {
-        m_rx1 = rx1; m_ry1 = ry1; m_rx2 = rx2; m_ry2 = ry2;
-        m_rx3 = rx3; m_ry3 = ry3; m_rx4 = rx4; m_ry4 = ry4;
+        m_rx1 = rx1;
+        m_ry1 = ry1;
+        m_rx2 = rx2;
+        m_ry2 = ry2;
+        m_rx3 = rx3;
+        m_ry3 = ry3;
+        m_rx4 = rx4;
+        m_ry4 = ry4;
     }
 
     void normalize_radius(void)
@@ -456,14 +468,24 @@ public:
 
         scalar k = FLT_TO_SCALAR(1.0f);
         scalar t;
-        t = dx / (m_rx1 + m_rx2); if(t < k) k = t;
-        t = dx / (m_rx3 + m_rx4); if(t < k) k = t;
-        t = dy / (m_ry1 + m_ry2); if(t < k) k = t;
-        t = dy / (m_ry3 + m_ry4); if(t < k) k = t;
+        t = dx / (m_rx1 + m_rx2);
+        if (t < k) { k = t; }
+        t = dx / (m_rx3 + m_rx4);
+        if (t < k) { k = t; }
+        t = dy / (m_ry1 + m_ry2);
+        if (t < k) { k = t; }
+        t = dy / (m_ry3 + m_ry4);
+        if (t < k) { k = t; }
 
         if (k < FLT_TO_SCALAR(1.0f)) {
-            m_rx1 *= k; m_ry1 *= k; m_rx2 *= k; m_ry2 *= k;
-            m_rx3 *= k; m_ry3 *= k; m_rx4 *= k; m_ry4 *= k;
+            m_rx1 *= k;
+            m_ry1 *= k;
+            m_rx2 *= k;
+            m_ry2 *= k;
+            m_rx3 *= k;
+            m_ry3 *= k;
+            m_rx4 *= k;
+            m_ry4 *= k;
         }
     }
 
@@ -485,31 +507,32 @@ public:
     virtual unsigned int vertex(scalar* x, scalar* y)
     {
         unsigned int cmd = path_cmd_stop;
-        switch(m_status)
-        {
+        switch (m_status) {
             case 0:
-                m_arc.init(m_x1 + m_rx1, m_y1 + m_ry1, m_rx1, m_ry1, PI, PI+_PIdiv2);
+                m_arc.init(m_x1 + m_rx1, m_y1 + m_ry1, m_rx1, m_ry1, PI, PI + _PIdiv2);
                 m_arc.rewind(0);
                 m_status++;
 
             case 1:
                 cmd = m_arc.vertex(x, y);
-                if (is_stop(cmd))
+                if (is_stop(cmd)) {
                     m_status++;
-                else
+                } else {
                     return cmd;
+                }
 
             case 2:
-                m_arc.init(m_x2 - m_rx2, m_y1 + m_ry2, m_rx2, m_ry2, PI+_PIdiv2, FLT_TO_SCALAR(0.0f));
+                m_arc.init(m_x2 - m_rx2, m_y1 + m_ry2, m_rx2, m_ry2, PI + _PIdiv2, FLT_TO_SCALAR(0.0f));
                 m_arc.rewind(0);
                 m_status++;
 
             case 3:
                 cmd = m_arc.vertex(x, y);
-                if (is_stop(cmd))
+                if (is_stop(cmd)) {
                     m_status++;
-                else
+                } else {
                     return path_cmd_line_to;
+                }
 
             case 4:
                 m_arc.init(m_x2 - m_rx3, m_y2 - m_ry3, m_rx3, m_ry3, FLT_TO_SCALAR(0.0f), _PIdiv2);
@@ -518,10 +541,11 @@ public:
 
             case 5:
                 cmd = m_arc.vertex(x, y);
-                if (is_stop(cmd))
+                if (is_stop(cmd)) {
                     m_status++;
-                else
+                } else {
                     return path_cmd_line_to;
+                }
 
             case 6:
                 m_arc.init(m_x1 + m_rx4, m_y2 - m_ry4, m_rx4, m_ry4, _PIdiv2, PI);
@@ -530,10 +554,11 @@ public:
 
             case 7:
                 cmd = m_arc.vertex(x, y);
-                if (is_stop(cmd))
+                if (is_stop(cmd)) {
                     m_status++;
-                else
+                } else {
                     return path_cmd_line_to;
+                }
 
             case 8:
                 cmd = path_cmd_end_poly | path_flags_close | path_flags_ccw;
@@ -574,8 +599,9 @@ public:
         : m_x(x), m_y(y), m_rx(rx), m_ry(ry), m_scale(FLT_TO_SCALAR(1.0f))
         , m_num(num_steps), m_step(0), m_cw(cw)
     {
-        if (0 == m_num)
+        if (0 == m_num) {
             calc_num_steps();
+        }
     }
 
     void init(scalar x, scalar y, scalar rx, scalar ry, unsigned int num_steps = 0, bool cw = false)
@@ -587,8 +613,9 @@ public:
         m_num = num_steps;
         m_step = 0;
         m_cw = cw;
-        if (0 == m_num)
+        if (0 == m_num) {
             calc_num_steps();
+        }
     }
 
     void approximation_scale(scalar scale)
@@ -614,13 +641,15 @@ public:
             return path_cmd_end_poly | path_flags_close | path_flags_ccw;
         }
 
-        if (m_step > m_num)
+        if (m_step > m_num) {
             return path_cmd_stop;
+        }
 
         scalar angle = scalar(m_step) / scalar(m_num) * _2PI;
 
-        if (m_cw)
+        if (m_cw) {
             angle = _2PI - angle;
+        }
 
         *x = m_x + Cos(angle) * m_rx;
         *y = m_y + Sin(angle) * m_ry;
@@ -690,7 +719,7 @@ public:
 
     scalar approximation_scale(void) const
     {
-           return m_curve_inc.approximation_scale();
+        return m_curve_inc.approximation_scale();
     }
 
     void angle_tolerance(scalar v)
@@ -736,7 +765,6 @@ private:
     curve_approximation_method m_approximation_method;
 };
 
-
 // Curve4 geometry
 class curve4 : public vertex_source
 {
@@ -744,7 +772,7 @@ public:
     curve4() : m_approximation_method(curve_div) {}
 
     curve4(scalar x1, scalar y1, scalar x2, scalar y2,
-                scalar x3, scalar y3, scalar x4, scalar y4)
+           scalar x3, scalar y3, scalar x4, scalar y4)
         : m_approximation_method(curve_div)
     {
         init(x1, y1, x2, y2, x3, y3, x4, y4);
@@ -757,7 +785,7 @@ public:
     }
 
     void init(scalar x1, scalar y1, scalar x2, scalar y2,
-                            scalar x3, scalar y3, scalar x4, scalar y4)
+              scalar x3, scalar y3, scalar x4, scalar y4)
     {
         if (m_approximation_method == curve_inc) {
             m_curve_inc.init(x1, y1, x2, y2, x3, y3, x4, y4);
@@ -784,7 +812,7 @@ public:
 
     scalar approximation_scale(void) const
     {
-           return m_curve_inc.approximation_scale();
+        return m_curve_inc.approximation_scale();
     }
 
     void angle_tolerance(scalar v)
@@ -833,4 +861,3 @@ private:
 }
 
 #endif /*_GEOMETRY_H_*/
-

@@ -51,8 +51,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2,5,0,1
- PRODUCTVERSION 2,5,0,1
+ FILEVERSION 2,8,0,1
+ PRODUCTVERSION 2,8,0,1
  FILEFLAGSMASK 0x1fL
 #ifdef _DEBUG
  FILEFLAGS 0x9L
@@ -70,13 +70,13 @@ BEGIN
             VALUE "Comments", "Vector 2D Graphic library"
             VALUE "CompanyName", "picasso.inc"
             VALUE "FileDescription", "picasso2 动态链接库"
-            VALUE "FileVersion", "2.5.0.1"
+            VALUE "FileVersion", "2.8.0.1"
             VALUE "InternalName", "picasso2"
             VALUE "LegalCopyright", "Copyright (C) 2023"
             VALUE "OriginalFilename", "picasso2_sw.dll"
-            VALUE "PrivateBuild", "2257"
+            VALUE "PrivateBuild", "2296"
             VALUE "ProductName", "picasso2 动态链接库"
-            VALUE "ProductVersion", "2.5.0.1"
+            VALUE "ProductVersion", "2.8.0.1"
         END
     END
     BLOCK "VarFileInfo"

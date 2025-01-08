@@ -1,0 +1,210 @@
+\doxysection{Graphic Object Types}
+\label{group__objects}\index{Graphic Object Types@{Graphic Object Types}}
+\doxysubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \textbf{ \+\_\+ps\+\_\+glyph}
+\begin{DoxyCompactList}\small\item\em A character glyph of a font. \end{DoxyCompactList}\item 
+struct \textbf{ \+\_\+ps\+\_\+size}
+\begin{DoxyCompactList}\small\item\em A structure that contains width and height values. \end{DoxyCompactList}\item 
+struct \textbf{ \+\_\+ps\+\_\+rect}
+\begin{DoxyCompactList}\small\item\em A structure that contains location and dimensions of a rectangle. \end{DoxyCompactList}\item 
+struct \textbf{ \+\_\+ps\+\_\+point}
+\begin{DoxyCompactList}\small\item\em A structure that contains a point in a two-\/dimensional coordinate system. \end{DoxyCompactList}\item 
+struct \textbf{ \+\_\+ps\+\_\+color}
+\begin{DoxyCompactList}\small\item\em A structure that contains rgba values for a color. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef struct \+\_\+ps\+\_\+context \textbf{ ps\+\_\+context}
+\begin{DoxyCompactList}\small\item\em An opaque type represents a Picasso drawing environment. \end{DoxyCompactList}\item 
+typedef struct \+\_\+ps\+\_\+canvas \textbf{ ps\+\_\+canvas}
+\begin{DoxyCompactList}\small\item\em An opaque type represents a pixel buffer. \end{DoxyCompactList}\item 
+typedef struct \+\_\+ps\+\_\+image \textbf{ ps\+\_\+image}
+\begin{DoxyCompactList}\small\item\em An opaque type represents an image. \end{DoxyCompactList}\item 
+typedef struct \+\_\+ps\+\_\+pattern \textbf{ ps\+\_\+pattern}
+\begin{DoxyCompactList}\small\item\em An opaque type represents a pattern. \end{DoxyCompactList}\item 
+typedef struct \+\_\+ps\+\_\+gradient \textbf{ ps\+\_\+gradient}
+\begin{DoxyCompactList}\small\item\em An opaque type represents a gradient. \end{DoxyCompactList}\item 
+typedef struct \+\_\+ps\+\_\+matrix \textbf{ ps\+\_\+matrix}
+\begin{DoxyCompactList}\small\item\em An opaque type represents a transform matrix. \end{DoxyCompactList}\item 
+typedef struct \+\_\+ps\+\_\+path \textbf{ ps\+\_\+path}
+\begin{DoxyCompactList}\small\item\em An opaque type represents a graphic path. \end{DoxyCompactList}\item 
+typedef struct \+\_\+ps\+\_\+mask \textbf{ ps\+\_\+mask}
+\begin{DoxyCompactList}\small\item\em An opaque type represents an alpha mask. \end{DoxyCompactList}\item 
+typedef struct \+\_\+ps\+\_\+font \textbf{ ps\+\_\+font}
+\begin{DoxyCompactList}\small\item\em An opaque type represents a font. \end{DoxyCompactList}\item 
+\mbox{\label{group__objects_gaa30ffeb35a078e431987fce5fa8b06ff}} 
+typedef struct \textbf{ \+\_\+ps\+\_\+glyph} \textbf{ ps\+\_\+glyph}
+\begin{DoxyCompactList}\small\item\em A character glyph of a font. \end{DoxyCompactList}\item 
+\mbox{\label{group__objects_gae446712406e54b010a113e6f8f22d5f6}} 
+typedef struct \textbf{ \+\_\+ps\+\_\+size} \textbf{ ps\+\_\+size}
+\begin{DoxyCompactList}\small\item\em A structure that contains width and height values. \end{DoxyCompactList}\item 
+\mbox{\label{group__objects_ga6acefae8e0866450753775eb9424dea7}} 
+typedef struct \textbf{ \+\_\+ps\+\_\+rect} \textbf{ ps\+\_\+rect}
+\begin{DoxyCompactList}\small\item\em A structure that contains location and dimensions of a rectangle. \end{DoxyCompactList}\item 
+\mbox{\label{group__objects_ga5b009b12407769aca1bc58223deeda7f}} 
+typedef struct \textbf{ \+\_\+ps\+\_\+point} \textbf{ ps\+\_\+point}
+\begin{DoxyCompactList}\small\item\em A structure that contains a point in a two-\/dimensional coordinate system. \end{DoxyCompactList}\item 
+\mbox{\label{group__objects_gacdacc8fa6a9c402bf92de370d723ade6}} 
+typedef struct \textbf{ \+\_\+ps\+\_\+color} \textbf{ ps\+\_\+color}
+\begin{DoxyCompactList}\small\item\em A structure that contains rgba values for a color. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+
+
+\doxysubsection{Typedef Documentation}
+\mbox{\label{group__objects_ga3bfe40359f5735c28409d200e20f1d5d}} 
+\index{Graphic Object Types@{Graphic Object Types}!ps\_canvas@{ps\_canvas}}
+\index{ps\_canvas@{ps\_canvas}!Graphic Object Types@{Graphic Object Types}}
+\doxysubsubsection{ps\_canvas}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+canvas}}
+
+
+
+An opaque type represents a pixel buffer. 
+
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+context}{p.}{group__objects_ga4a70d4a51cfa38485adf65620e5a0ec9}, \doxyref{ps\+\_\+image}{p.}{group__objects_ga29ff73b2e4d6395ac53d9a203ad7f5ca} 
+\end{DoxySeeAlso}
+
+
+Definition at line 116 of file picasso.\+h.
+
+\mbox{\label{group__objects_ga4a70d4a51cfa38485adf65620e5a0ec9}} 
+\index{Graphic Object Types@{Graphic Object Types}!ps\_context@{ps\_context}}
+\index{ps\_context@{ps\_context}!Graphic Object Types@{Graphic Object Types}}
+\doxysubsubsection{ps\_context}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+context}}
+
+
+
+An opaque type represents a Picasso drawing environment. 
+
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+canvas}{p.}{group__objects_ga3bfe40359f5735c28409d200e20f1d5d} 
+\end{DoxySeeAlso}
+
+
+Definition at line 109 of file picasso.\+h.
+
+\mbox{\label{group__objects_ga2bfb2ab959ceb77dd895419a6c204b1c}} 
+\index{Graphic Object Types@{Graphic Object Types}!ps\_font@{ps\_font}}
+\index{ps\_font@{ps\_font}!Graphic Object Types@{Graphic Object Types}}
+\doxysubsubsection{ps\_font}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+font}}
+
+
+
+An opaque type represents a font. 
+
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+context}{p.}{group__objects_ga4a70d4a51cfa38485adf65620e5a0ec9} 
+\end{DoxySeeAlso}
+
+
+Definition at line 165 of file picasso.\+h.
+
+\mbox{\label{group__objects_gaed379382c1d4e59b5cc98ec18bbdfeb7}} 
+\index{Graphic Object Types@{Graphic Object Types}!ps\_gradient@{ps\_gradient}}
+\index{ps\_gradient@{ps\_gradient}!Graphic Object Types@{Graphic Object Types}}
+\doxysubsubsection{ps\_gradient}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+gradient}}
+
+
+
+An opaque type represents a gradient. 
+
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+path}{p.}{group__objects_ga0dad506d890c9cd5f8753ccc4da67c0d}, \doxyref{ps\+\_\+matrix}{p.}{group__objects_ga38ccd82f0c7cb9896723aeb6dbc76e4a} 
+\end{DoxySeeAlso}
+
+
+Definition at line 137 of file picasso.\+h.
+
+\mbox{\label{group__objects_ga29ff73b2e4d6395ac53d9a203ad7f5ca}} 
+\index{Graphic Object Types@{Graphic Object Types}!ps\_image@{ps\_image}}
+\index{ps\_image@{ps\_image}!Graphic Object Types@{Graphic Object Types}}
+\doxysubsubsection{ps\_image}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+image}}
+
+
+
+An opaque type represents an image. 
+
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+canvas}{p.}{group__objects_ga3bfe40359f5735c28409d200e20f1d5d}, \doxyref{ps\+\_\+pattern}{p.}{group__objects_gad1e6fe0a47ab5ea036555c64cb791538} 
+\end{DoxySeeAlso}
+
+
+Definition at line 123 of file picasso.\+h.
+
+\mbox{\label{group__objects_ga092f94fd838b031395acbda684394b63}} 
+\index{Graphic Object Types@{Graphic Object Types}!ps\_mask@{ps\_mask}}
+\index{ps\_mask@{ps\_mask}!Graphic Object Types@{Graphic Object Types}}
+\doxysubsubsection{ps\_mask}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+mask}}
+
+
+
+An opaque type represents an alpha mask. 
+
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+path}{p.}{group__objects_ga0dad506d890c9cd5f8753ccc4da67c0d}, \doxyref{ps\+\_\+image}{p.}{group__objects_ga29ff73b2e4d6395ac53d9a203ad7f5ca}, \doxyref{ps\+\_\+canvas}{p.}{group__objects_ga3bfe40359f5735c28409d200e20f1d5d} 
+\end{DoxySeeAlso}
+
+
+Definition at line 158 of file picasso.\+h.
+
+\mbox{\label{group__objects_ga38ccd82f0c7cb9896723aeb6dbc76e4a}} 
+\index{Graphic Object Types@{Graphic Object Types}!ps\_matrix@{ps\_matrix}}
+\index{ps\_matrix@{ps\_matrix}!Graphic Object Types@{Graphic Object Types}}
+\doxysubsubsection{ps\_matrix}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+matrix}}
+
+
+
+An opaque type represents a transform matrix. 
+
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+path}{p.}{group__objects_ga0dad506d890c9cd5f8753ccc4da67c0d}, \doxyref{ps\+\_\+context}{p.}{group__objects_ga4a70d4a51cfa38485adf65620e5a0ec9} 
+\end{DoxySeeAlso}
+
+
+Definition at line 144 of file picasso.\+h.
+
+\mbox{\label{group__objects_ga0dad506d890c9cd5f8753ccc4da67c0d}} 
+\index{Graphic Object Types@{Graphic Object Types}!ps\_path@{ps\_path}}
+\index{ps\_path@{ps\_path}!Graphic Object Types@{Graphic Object Types}}
+\doxysubsubsection{ps\_path}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+path}}
+
+
+
+An opaque type represents a graphic path. 
+
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+matrix}{p.}{group__objects_ga38ccd82f0c7cb9896723aeb6dbc76e4a}, \doxyref{ps\+\_\+context}{p.}{group__objects_ga4a70d4a51cfa38485adf65620e5a0ec9} 
+\end{DoxySeeAlso}
+
+
+Definition at line 151 of file picasso.\+h.
+
+\mbox{\label{group__objects_gad1e6fe0a47ab5ea036555c64cb791538}} 
+\index{Graphic Object Types@{Graphic Object Types}!ps\_pattern@{ps\_pattern}}
+\index{ps\_pattern@{ps\_pattern}!Graphic Object Types@{Graphic Object Types}}
+\doxysubsubsection{ps\_pattern}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+pattern}}
+
+
+
+An opaque type represents a pattern. 
+
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+canvas}{p.}{group__objects_ga3bfe40359f5735c28409d200e20f1d5d}, \doxyref{ps\+\_\+image}{p.}{group__objects_ga29ff73b2e4d6395ac53d9a203ad7f5ca} 
+\end{DoxySeeAlso}
+
+
+Definition at line 130 of file picasso.\+h.
+

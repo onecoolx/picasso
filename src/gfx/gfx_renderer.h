@@ -106,8 +106,9 @@ public:
         if (m_is_path_clip) { // copy for per pixel.
             for (unsigned i = 0; i < height(); i++)
                 for (unsigned j = 0; j < width(); j++)
-                    if (pixel_in_path(j, i))
+                    if (pixel_in_path(j, i)) {
                         m_pixfmt->copy_pixel(j, i, c);
+                    }
         } else {
             int x = m_clip_rect.x1;
             int y = m_clip_rect.y1;
@@ -123,7 +124,7 @@ public:
     }
 
     void copy_absolute_from(const gfx_rendering_buffer& from,
-            const rect* rect_src_ptr = 0, int dx = 0, int dy = 0)
+                            const rect* rect_src_ptr = 0, int dx = 0, int dy = 0)
     {
         rect rsrc(0, 0, from.width(), from.height());
         if (rect_src_ptr) {
@@ -260,12 +261,12 @@ public:
 
                         if (rw.x1 > x1src) {
                             x1dst += rw.x1 - x1src;
-                            len   -= rw.x1 - x1src;
-                            x1src  = rw.x1;
+                            len -= rw.x1 - x1src;
+                            x1src = rw.x1;
                         }
 
                         if (len > 0) {
-                            if (x1src + len-1 > rw.x2) {
+                            if (x1src + len - 1 > rw.x2) {
                                 len -= x1src + len - rw.x2 - 1;
                             }
 
@@ -287,21 +288,26 @@ public:
     {
         normalize(x1, x2);
         if (m_is_path_clip) { // blend for per pixel.
-            for (int i = 0; i < (x2-x1) + 1; i++)
-                if (pixel_in_path(x1 + i, y))
+            for (int i = 0; i < (x2 - x1) + 1; i++)
+                if (pixel_in_path(x1 + i, y)) {
                     m_pixfmt->blend_pixel(x1 + i, y, c, cover);
+                }
         } else {
-            if (y > ymax() || y < ymin())
+            if (y > ymax() || y < ymin()) {
                 return;
+            }
 
-            if (x1 > xmax() || x2 < xmin())
+            if (x1 > xmax() || x2 < xmin()) {
                 return;
+            }
 
-            if (x1 < xmin())
+            if (x1 < xmin()) {
                 x1 = xmin();
+            }
 
-            if (x2 > xmax())
+            if (x2 > xmax()) {
                 x2 = xmax();
+            }
 
             m_pixfmt->blend_hline(x1, y, x2 - x1 + 1, c, cover);
         }
@@ -311,16 +317,19 @@ public:
     {
         if (m_is_path_clip) {
             for (int i = 0; i < len; i++)
-                if (pixel_in_path(x + i, y))
+                if (pixel_in_path(x + i, y)) {
                     m_pixfmt->blend_pixel(x + i, y, c, covers[i]);
+                }
         } else {
-            if (y > ymax() || y < ymin())
+            if (y > ymax() || y < ymin()) {
                 return;
+            }
 
             if (x < xmin()) {
                 len -= (xmin() - x);
-                if (len <= 0)
+                if (len <= 0) {
                     return;
+                }
 
                 covers += (xmin() - x);
                 x = xmin();
@@ -328,8 +337,9 @@ public:
 
             if (x + len > xmax()) {
                 len = xmax() - x + 1;
-                if (len <= 0)
+                if (len <= 0) {
                     return;
+                }
             }
 
             m_pixfmt->blend_solid_hspan(x, y, len, c, covers);
@@ -337,24 +347,28 @@ public:
     }
 
     void blend_color_hspan(int x, int y, int len, const color_type* colors,
-                            const cover_type* covers, cover_type cover = cover_full)
+                           const cover_type* covers, cover_type cover = cover_full)
     {
         if (m_is_path_clip) {
             for (int i = 0; i < len; i++)
-                if (pixel_in_path(x + i, y))
-                    m_pixfmt->blend_pixel(x+i, y, colors[i], covers[i]);
+                if (pixel_in_path(x + i, y)) {
+                    m_pixfmt->blend_pixel(x + i, y, colors[i], covers[i]);
+                }
         } else {
-            if (y > ymax() || y < ymin())
+            if (y > ymax() || y < ymin()) {
                 return;
+            }
 
             if (x < xmin()) {
                 int d = xmin() - x;
                 len -= d;
-                if (len <= 0)
+                if (len <= 0) {
                     return;
+                }
 
-                if (covers)
+                if (covers) {
                     covers += d;
+                }
 
                 colors += d;
                 x = xmin();
@@ -362,8 +376,9 @@ public:
 
             if (x + len > xmax()) {
                 len = xmax() - x + 1;
-                if (len <= 0)
+                if (len <= 0) {
                     return;
+                }
             }
 
             m_pixfmt->blend_color_hspan(x, y, len, colors, covers, cover);
@@ -383,23 +398,25 @@ private:
     bool inbox(int x, int y) const
     {
         return x >= m_clip_rect.x1 && y >= m_clip_rect.y1
-            && x <= m_clip_rect.x2 && y <= m_clip_rect.y2;
+               && x <= m_clip_rect.x2 && y <= m_clip_rect.y2;
     }
 
     bool pixel_in_path(int x, int y)
     {
-        if (!inbox(x, y))
+        if (!inbox(x, y)) {
             return false;
+        }
 
-        if (!m_clip_path.hit_test(x, y))
+        if (!m_clip_path.hit_test(x, y)) {
             return false;
+        }
 
         return true;
     }
 
     rect clip_rect_area(rect& dst, rect& src, int wsrc, int hsrc) const
     {
-        rect rc(0,0,0,0);
+        rect rc(0, 0, 0, 0);
         rect cb = clip_rect();
         ++cb.x2;
         ++cb.y2;
@@ -414,8 +431,8 @@ private:
             src.y1 = 0;
         }
 
-        if (src.x2 > wsrc) src.x2 = wsrc;
-        if (src.y2 > hsrc) src.y2 = hsrc;
+        if (src.x2 > wsrc) { src.x2 = wsrc; }
+        if (src.y2 > hsrc) { src.y2 = hsrc; }
 
         if (dst.x1 < cb.x1) {
             src.x1 += cb.x1 - dst.x1;
@@ -427,14 +444,14 @@ private:
             dst.y1 = cb.y1;
         }
 
-        if (dst.x2 > cb.x2) dst.x2 = cb.x2;
-        if (dst.y2 > cb.y2) dst.y2 = cb.y2;
+        if (dst.x2 > cb.x2) { dst.x2 = cb.x2; }
+        if (dst.y2 > cb.y2) { dst.y2 = cb.y2; }
 
         rc.x2 = dst.x2 - dst.x1;
         rc.y2 = dst.y2 - dst.y1;
 
-        if (rc.x2 > src.x2 - src.x1) rc.x2 = src.x2 - src.x1;
-        if (rc.y2 > src.y2 - src.y1) rc.y2 = src.y2 - src.y1;
+        if (rc.x2 > src.x2 - src.x1) { rc.x2 = src.x2 - src.x1; }
+        if (rc.y2 > src.y2 - src.y1) { rc.y2 = src.y2 - src.y1; }
 
         return rc;
     }

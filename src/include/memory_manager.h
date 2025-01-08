@@ -23,7 +23,7 @@
 #define mem_deep_copy(d, s, l)    memmove(d, s, l)
 #define mem_copy(d, s, l)         fastcopy(d, s, l)
 
-#if !ENABLE(SYSTEM_MALLOC)
+#if !ENABLE(SYSTEM_MALLOC) && !COMPILER(CLANG)
 #undef new
 #undef delete
 

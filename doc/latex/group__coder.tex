@@ -1,0 +1,70 @@
+\doxysection{X\+Image Coders Plugin side functions}
+\label{group__coder}\index{XImage Coders Plugin side functions@{XImage Coders Plugin side functions}}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\label{group__coder_ga14ded244c47bbba850a8a4be6d16c7e3}} 
+\#define \textbf{ M\+O\+D\+U\+L\+E\+\_\+\+N\+A\+ME}~1
+\begin{DoxyCompactList}\small\item\em Get module name. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+P\+E\+X\+P\+O\+RT void \textbf{ psx\+\_\+image\+\_\+module\+\_\+init} (void)
+\begin{DoxyCompactList}\small\item\em Initialze the image module. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void \textbf{ psx\+\_\+image\+\_\+module\+\_\+shutdown} (void)
+\begin{DoxyCompactList}\small\item\em Shutdown the image module. \end{DoxyCompactList}\item 
+const P\+E\+X\+P\+O\+RT char $\ast$ \textbf{ psx\+\_\+image\+\_\+module\+\_\+get\+\_\+string} (int id)
+\begin{DoxyCompactList}\small\item\em Get the string info about module. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\label{group__coder_ga6126f92a9ed2bde05a70d23304646b9b}} 
+\index{XImage Coders Plugin side functions@{XImage Coders Plugin side functions}!psx\_image\_module\_get\_string@{psx\_image\_module\_get\_string}}
+\index{psx\_image\_module\_get\_string@{psx\_image\_module\_get\_string}!XImage Coders Plugin side functions@{XImage Coders Plugin side functions}}
+\doxysubsubsection{psx\_image\_module\_get\_string()}
+{\footnotesize\ttfamily char $\ast$ psx\+\_\+image\+\_\+module\+\_\+get\+\_\+string (\begin{DoxyParamCaption}\item[{int}]{id }\end{DoxyParamCaption})}
+
+
+
+Get the string info about module. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em id} & The information index.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+If successs, return the pointer of string. Can not be modify and free. If fails, return N\+U\+LL.
+\end{DoxyReturn}
+\begin{DoxySeeAlso}{See also}
+\doxyref{psx\+\_\+image\+\_\+module\+\_\+init}{p.}{group__coder_gab79a1526ed3284dae85ad73be7e7eb97} \doxyref{psx\+\_\+image\+\_\+module\+\_\+shutdown}{p.}{group__coder_ga7bce88a706a2fb89e4846f769be24aa3} 
+\end{DoxySeeAlso}
+\mbox{\label{group__coder_gab79a1526ed3284dae85ad73be7e7eb97}} 
+\index{XImage Coders Plugin side functions@{XImage Coders Plugin side functions}!psx\_image\_module\_init@{psx\_image\_module\_init}}
+\index{psx\_image\_module\_init@{psx\_image\_module\_init}!XImage Coders Plugin side functions@{XImage Coders Plugin side functions}}
+\doxysubsubsection{psx\_image\_module\_init()}
+{\footnotesize\ttfamily void psx\+\_\+image\+\_\+module\+\_\+init (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+Initialze the image module. 
+
+\begin{DoxySeeAlso}{See also}
+\doxyref{psx\+\_\+image\+\_\+module\+\_\+shutdown}{p.}{group__coder_ga7bce88a706a2fb89e4846f769be24aa3} \doxyref{psx\+\_\+image\+\_\+module\+\_\+get\+\_\+string}{p.}{group__coder_ga6126f92a9ed2bde05a70d23304646b9b} 
+\end{DoxySeeAlso}
+\mbox{\label{group__coder_ga7bce88a706a2fb89e4846f769be24aa3}} 
+\index{XImage Coders Plugin side functions@{XImage Coders Plugin side functions}!psx\_image\_module\_shutdown@{psx\_image\_module\_shutdown}}
+\index{psx\_image\_module\_shutdown@{psx\_image\_module\_shutdown}!XImage Coders Plugin side functions@{XImage Coders Plugin side functions}}
+\doxysubsubsection{psx\_image\_module\_shutdown()}
+{\footnotesize\ttfamily void psx\+\_\+image\+\_\+module\+\_\+shutdown (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+Shutdown the image module. 
+
+\begin{DoxySeeAlso}{See also}
+\doxyref{psx\+\_\+image\+\_\+module\+\_\+init}{p.}{group__coder_gab79a1526ed3284dae85ad73be7e7eb97} \doxyref{psx\+\_\+image\+\_\+module\+\_\+get\+\_\+string}{p.}{group__coder_ga6126f92a9ed2bde05a70d23304646b9b} 
+\end{DoxySeeAlso}

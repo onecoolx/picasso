@@ -1,0 +1,508 @@
+.TH "text" 3 "Tue Dec 24 2024" "Version 2.8" "Picasso API" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+text
+.SH SYNOPSIS
+.br
+.PP
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef enum \fB_ps_text_type\fP \fBps_text_type\fP"
+.br
+.RI "Text rendering type\&. "
+.ti -1c
+.RI "typedef enum \fB_ps_draw_text_type\fP \fBps_draw_text_type\fP"
+.br
+.RI "Draw mode for rending text\&. "
+.ti -1c
+.RI "typedef enum \fB_ps_text_align\fP \fBps_text_align\fP"
+.br
+.RI "Text align mode for drawing text\&. "
+.in -1c
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum \fB_ps_text_type\fP { \fBTEXT_TYPE_SMOOTH\fP, \fBTEXT_TYPE_MONO\fP, \fBTEXT_TYPE_STROKE\fP }"
+.br
+.RI "Text rendering type\&. "
+.ti -1c
+.RI "enum \fB_ps_draw_text_type\fP { \fBDRAW_TEXT_FILL\fP, \fBDRAW_TEXT_STROKE\fP, \fBDRAW_TEXT_BOTH\fP }"
+.br
+.RI "Draw mode for rending text\&. "
+.ti -1c
+.RI "enum \fB_ps_text_align\fP { \fBTEXT_ALIGN_CENTER\fP = 0, \fBTEXT_ALIGN_TOP\fP = 1, \fBTEXT_ALIGN_BOTTOM\fP = 2, \fBTEXT_ALIGN_LEFT\fP = 4, \fBTEXT_ALIGN_RIGHT\fP = 8 }"
+.br
+.RI "Text align mode for drawing text\&. "
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "PEXPORT \fBps_bool\fP PICAPI \fBps_get_text_extent\fP (\fBps_context\fP *ctx, const void *text, unsigned int length, \fBps_size\fP *rsize)"
+.br
+.RI "Get extent for text using current font which selected to graphic context\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_set_text_color\fP (\fBps_context\fP *ctx, const \fBps_color\fP *color)"
+.br
+.RI "Set the text fill color for the graphic context\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_set_text_stroke_color\fP (\fBps_context\fP *ctx, const \fBps_color\fP *color)"
+.br
+.RI "Set the text stroke color for the graphic context\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_text_transform\fP (\fBps_context\fP *ctx, const \fBps_matrix\fP *matrix)"
+.br
+.RI "Transform text matrix for the graphic context\&. The text matrix is not a part of graphic state -- saving and restoring has no effect on the text matrix\&. The text matrix is an attribute of graphic context\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_set_text_matrix\fP (\fBps_context\fP *ctx, const \fBps_matrix\fP *matrix)"
+.br
+.RI "Set text matrix for the graphic context\&. The text matrix is not a part of graphic state -- saving and restoring has no effect on the text matrix\&. The text matrix is an attribute of graphic context\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_set_text_render_type\fP (\fBps_context\fP *ctx, \fBps_text_type\fP type)"
+.br
+.RI "Set rendering type for text\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_set_text_antialias\fP (\fBps_context\fP *ctx, \fBps_bool\fP antialias)"
+.br
+.RI "Set whether the font allowed be anti-aliasing\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_set_text_kerning\fP (\fBps_context\fP *ctx, \fBps_bool\fP kerning)"
+.br
+.RI "Set whether the font auto kerning is allowed\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_text_out_length\fP (\fBps_context\fP *ctx, float x, float y, const char *text, unsigned int length)"
+.br
+.RI "Draw single byte characters (latin-1) at location in user space\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_wide_text_out_length\fP (\fBps_context\fP *ctx, float x, float y, const \fBps_uchar16\fP *text, unsigned int length)"
+.br
+.RI "Draw unicode characters (ucs-2) at location in user space\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_draw_text\fP (\fBps_context\fP *ctx, const \fBps_rect\fP *area, const void *text, unsigned int length, \fBps_draw_text_type\fP type, \fBps_text_align\fP align)"
+.br
+.RI "Draw text in a rectangle area, using font object which is selected in graphic context\&. "
+.ti -1c
+.RI "PEXPORT \fBps_bool\fP PICAPI \fBps_get_glyph\fP (\fBps_context\fP *ctx, int ch, \fBps_glyph\fP *glyph)"
+.br
+.RI "Get the glyph from a given character, using font object which is selected in graphic context\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_show_glyphs\fP (\fBps_context\fP *ctx, float x, float y, \fBps_glyph\fP *glyphs, unsigned int length)"
+.br
+.RI "Draw an array of glyphs at location in user space\&. "
+.ti -1c
+.RI "PEXPORT \fBps_bool\fP PICAPI \fBps_get_path_from_glyph\fP (\fBps_context\fP *ctx, const \fBps_glyph\fP *glyph, \fBps_path\fP *path)"
+.br
+.RI "Get the path from a given glyph object\&. "
+.ti -1c
+.RI "PEXPORT \fBps_bool\fP PICAPI \fBps_glyph_get_extent\fP (const \fBps_glyph\fP *glyph, \fBps_size\fP *rsize)"
+.br
+.RI "Get extent for a glyph object\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.SH "Enumeration Type Documentation"
+.PP 
+.SS "enum \fB_ps_draw_text_type\fP"
+
+.PP
+Draw mode for rending text\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIDRAW_TEXT_FILL \fP\fP
+Perform a fill operation on the text\&. 
+.TP
+\fB\fIDRAW_TEXT_STROKE \fP\fP
+Perform a stroke operation on the text\&. 
+.TP
+\fB\fIDRAW_TEXT_BOTH \fP\fP
+Perform fill,then stroke operation on the text\&. 
+.PP
+Definition at line 2302 of file picasso\&.h\&.
+.SS "enum \fB_ps_text_align\fP"
+
+.PP
+Text align mode for drawing text\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fITEXT_ALIGN_CENTER \fP\fP
+Centers text horizontally in the rectangle\&. 
+.TP
+\fB\fITEXT_ALIGN_TOP \fP\fP
+Justifies the text to the top of the rectangle\&. 
+.TP
+\fB\fITEXT_ALIGN_BOTTOM \fP\fP
+Justifies the text to the bottom of the rectangle\&. 
+.TP
+\fB\fITEXT_ALIGN_LEFT \fP\fP
+Aligns text to left\&. 
+.TP
+\fB\fITEXT_ALIGN_RIGHT \fP\fP
+Aligns text to right\&. 
+.PP
+Definition at line 2320 of file picasso\&.h\&.
+.SS "enum \fB_ps_text_type\fP"
+
+.PP
+Text rendering type\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fITEXT_TYPE_SMOOTH \fP\fP
+Smooth rendering\&. 
+.TP
+\fB\fITEXT_TYPE_MONO \fP\fP
+Mono rendering\&. 
+.TP
+\fB\fITEXT_TYPE_STROKE \fP\fP
+OutLine rendering\&. 
+.PP
+Definition at line 2150 of file picasso\&.h\&.
+.SH "Function Documentation"
+.PP 
+.SS "void ps_draw_text (\fBps_context\fP * ctx, const \fBps_rect\fP * area, const void * text, unsigned int length, \fBps_draw_text_type\fP type, \fBps_text_align\fP align)"
+
+.PP
+Draw text in a rectangle area, using font object which is selected in graphic context\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fIarea\fP The rectangle area which text to be drawn\&. 
+.br
+\fItext\fP The unicode text string to be draw\&. 
+.br
+\fIlength\fP The length of the text string\&. 
+.br
+\fItype\fP The rending type of text\&. 
+.br
+\fIalign\fP The text align mode\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_text_out_length\fP, \fBps_wide_text_out_length\fP 
+.RE
+.PP
+
+.SS "\fBps_bool\fP ps_get_glyph (\fBps_context\fP * ctx, int ch, \fBps_glyph\fP * glyph)"
+
+.PP
+Get the glyph from a given character, using font object which is selected in graphic context\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fIch\fP The character value\&. 
+.br
+\fIglyph\fP Pointer to a structure to receiving the glyph\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+True if is success, otherwise False\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_show_glyphs\fP, \fBps_get_path_from_glyph\fP 
+.RE
+.PP
+
+.SS "\fBps_bool\fP ps_get_path_from_glyph (\fBps_context\fP * ctx, const \fBps_glyph\fP * glyph, \fBps_path\fP * path)"
+
+.PP
+Get the path from a given glyph object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fIglyph\fP The glyph object\&. 
+.br
+\fIpath\fP Pointer to a structure to receiving the path\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+True if is success, otherwise False\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_show_glyphs\fP 
+.RE
+.PP
+
+.SS "\fBps_bool\fP ps_get_text_extent (\fBps_context\fP * ctx, const void * text, unsigned int length, \fBps_size\fP * rsize)"
+
+.PP
+Get extent for text using current font which selected to graphic context\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fItext\fP Text which being tested\&. It can be latin-1 or unicode encoding\&. 
+.br
+\fIlength\fP Length of the text\&. 
+.br
+\fIrsize\fP Pointer to a buffer to receiving the size\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+True if is success, otherwise False\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+To get extended error information, call \fIps_last_status\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_glyph_get_extent\fP 
+.RE
+.PP
+
+.SS "\fBps_bool\fP ps_glyph_get_extent (const \fBps_glyph\fP * glyph, \fBps_size\fP * rsize)"
+
+.PP
+Get extent for a glyph object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIglyph\fP Pointer to an existing glyph object\&. 
+.br
+\fIrsize\fP Pointer to a buffer to receiving the size\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+True if is success, otherwise False\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+To get extended error information, call \fIps_last_status\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_get_text_extent\fP 
+.RE
+.PP
+
+.SS "void ps_set_text_antialias (\fBps_context\fP * ctx, \fBps_bool\fP antialias)"
+
+.PP
+Set whether the font allowed be anti-aliasing\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fIantialias\fP Boolean value whether anti-aliasing is allowed\&. (True default)
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_set_text_matrix\fP, \fBps_set_text_color\fP, \fBps_set_text_stroke_color\fP, \fBps_set_text_render_type\fP, \fBps_text_transform\fP, \fBps_set_text_kerning\fP 
+.RE
+.PP
+
+.SS "void ps_set_text_color (\fBps_context\fP * ctx, const \fBps_color\fP * color)"
+
+.PP
+Set the text fill color for the graphic context\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fIcolor\fP The text fill color\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_transform\fP, \fBps_set_text_matrix\fP, \fBps_set_text_antialias\fP, \fBps_set_text_stroke_color\fP, \fBps_set_text_render_type\fP, \fBps_set_text_kerning\fP 
+.RE
+.PP
+
+.SS "void ps_set_text_kerning (\fBps_context\fP * ctx, \fBps_bool\fP kerning)"
+
+.PP
+Set whether the font auto kerning is allowed\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fIkerning\fP Boolean value whether auto kerning is allowed\&. (True default)
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_set_text_matrix\fP, \fBps_set_text_color\fP, \fBps_set_text_stroke_color\fP, \fBps_set_text_render_type\fP, \fBps_text_transform\fP, \fBps_set_text_antialias\fP 
+.RE
+.PP
+
+.SS "void ps_set_text_matrix (\fBps_context\fP * ctx, const \fBps_matrix\fP * matrix)"
+
+.PP
+Set text matrix for the graphic context\&. The text matrix is not a part of graphic state -- saving and restoring has no effect on the text matrix\&. The text matrix is an attribute of graphic context\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fImatrix\fP Pointer to an existing matrix object\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_text_transform\fP, \fBps_set_text_antialias\fP, \fBps_set_text_color\fP, \fBps_set_text_stroke_color\fP, \fBps_set_text_render_type\fP, \fBps_set_text_kerning\fP 
+.RE
+.PP
+
+.SS "void ps_set_text_render_type (\fBps_context\fP * ctx, \fBps_text_type\fP type)"
+
+.PP
+Set rendering type for text\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fItype\fP Rendering type for the text\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_set_text_matrix\fP, \fBps_set_text_color\fP, \fBps_set_text_stroke_color\fP, \fBps_set_text_antialias\fP, \fBps_text_transform\fP, \fBps_set_text_kerning\fP 
+.RE
+.PP
+
+.SS "void ps_set_text_stroke_color (\fBps_context\fP * ctx, const \fBps_color\fP * color)"
+
+.PP
+Set the text stroke color for the graphic context\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fIcolor\fP The text stroke color\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_set_text_color\fP, \fBps_set_text_matrix\fP, \fBps_set_text_antialias\fP, \fBps_text_transform\fP, \fBps_set_text_render_type\fP, \fBps_set_text_kerning\fP 
+.RE
+.PP
+
+.SS "void ps_show_glyphs (\fBps_context\fP * ctx, float x, float y, \fBps_glyph\fP * glyphs, unsigned int length)"
+
+.PP
+Draw an array of glyphs at location in user space\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fIx\fP The X-coordinate at which to draw the glyphs\&. 
+.br
+\fIy\fP The Y-coordinate at which to draw the glyphs\&. 
+.br
+\fIglyphs\fP The array of glyphs\&. 
+.br
+\fIlength\fP The length of array\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_get_path_from_glyph\fP 
+.RE
+.PP
+
+.SS "void ps_text_out_length (\fBps_context\fP * ctx, float x, float y, const char * text, unsigned int length)"
+
+.PP
+Draw single byte characters (latin-1) at location in user space\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fIx\fP The X-coordinate at which to draw the text\&. 
+.br
+\fIy\fP The Y-coordinate at which to draw the text\&. 
+.br
+\fItext\fP The text string to be draw\&. 
+.br
+\fIlength\fP The length of the text string\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_wide_text_out_length\fP, \fBps_draw_text\fP 
+.RE
+.PP
+
+.SS "void ps_text_transform (\fBps_context\fP * ctx, const \fBps_matrix\fP * matrix)"
+
+.PP
+Transform text matrix for the graphic context\&. The text matrix is not a part of graphic state -- saving and restoring has no effect on the text matrix\&. The text matrix is an attribute of graphic context\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fImatrix\fP Pointer to an existing matrix object\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_set_text_matrix\fP, \fBps_set_text_antialias\fP, \fBps_set_text_color\fP, \fBps_set_text_stroke_color\fP, \fBps_set_text_render_type\fP, \fBps_set_text_kerning\fP 
+.RE
+.PP
+
+.SS "void ps_wide_text_out_length (\fBps_context\fP * ctx, float x, float y, const \fBps_uchar16\fP * text, unsigned int length)"
+
+.PP
+Draw unicode characters (ucs-2) at location in user space\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fIx\fP The X-coordinate at which to draw the text\&. 
+.br
+\fIy\fP The Y-coordinate at which to draw the text\&. 
+.br
+\fItext\fP The unicode text string to be draw\&. 
+.br
+\fIlength\fP The length of the text string\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_text_out_length\fP, \fBps_draw_text\fP 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Picasso API from the source code\&.

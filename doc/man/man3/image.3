@@ -1,0 +1,384 @@
+.TH "image" 3 "Tue Dec 24 2024" "Version 2.8" "Picasso API" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+image
+.SH SYNOPSIS
+.br
+.PP
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "PEXPORT \fBps_image\fP *PICAPI \fBps_image_create\fP (\fBps_color_format\fP fmt, int width, int height)"
+.br
+.RI "Create a new image using the given parameters\&. "
+.ti -1c
+.RI "PEXPORT \fBps_image\fP *PICAPI \fBps_image_create_with_data\fP (\fBps_byte\fP *data, \fBps_color_format\fP fmt, int width, int height, int pitch)"
+.br
+.RI "Create a new image using a given address in memory\&. "
+.ti -1c
+.RI "PEXPORT \fBps_image\fP *PICAPI \fBps_image_create_from_data\fP (\fBps_byte\fP *data, \fBps_color_format\fP fmt, int width, int height, int pitch)"
+.br
+.RI "Create a new image using a copy of given address in memory\&. "
+.ti -1c
+.RI "PEXPORT \fBps_image\fP *PICAPI \fBps_image_create_compatible\fP (const \fBps_canvas\fP *canvas, int width, int height)"
+.br
+.RI "Create a new image to compatible with an existing canvas\&. "
+.ti -1c
+.RI "PEXPORT \fBps_image\fP *PICAPI \fBps_image_create_from_canvas\fP (\fBps_canvas\fP *canvas, const \fBps_rect\fP *rect)"
+.br
+.RI "Create a new image using part of an existing canvas in same pixel buffer\&. "
+.ti -1c
+.RI "PEXPORT \fBps_image\fP *PICAPI \fBps_image_create_from_image\fP (\fBps_image\fP *img, const \fBps_rect\fP *rect)"
+.br
+.RI "Create a new image using part of an existing ps_image object in same pixel buffer\&. "
+.ti -1c
+.RI "PEXPORT \fBps_image\fP *PICAPI \fBps_image_ref\fP (\fBps_image\fP *img)"
+.br
+.RI "Increases the reference count of the image by 1\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_image_unref\fP (\fBps_image\fP *img)"
+.br
+.RI "Decrements the reference count for the image object\&. If the reference count on the image falls to 0, the image is freed\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_image_set_allow_transparent\fP (\fBps_image\fP *img, \fBps_bool\fP allow)"
+.br
+.RI "Set whether the image allowed be transparent, False is default\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_image_set_transparent_color\fP (\fBps_image\fP *img, const \fBps_color\fP *color)"
+.br
+.RI "Set the transparent color for the image\&. "
+.ti -1c
+.RI "PEXPORT \fBps_bool\fP PICAPI \fBps_image_get_size\fP (const \fBps_image\fP *img, \fBps_size\fP *rsize)"
+.br
+.RI "Return the size of the image\&. "
+.ti -1c
+.RI "PEXPORT \fBps_color_format\fP PICAPI \fBps_image_get_format\fP (const \fBps_image\fP *img)"
+.br
+.RI "Return the pixel format of the image\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.SH "Function Documentation"
+.PP 
+.SS "\fBps_image\fP * ps_image_create (\fBps_color_format\fP fmt, int width, int height)"
+
+.PP
+Create a new image using the given parameters\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIfmt\fP The Pixel format to use for the image\&. 
+.br
+\fIwidth\fP The width, in pixels, of the required image\&. 
+.br
+\fIheight\fP The height, in pixels, of the required image\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+If the function succeeds, the return value is the pointer to a new image object\&. If the function fails, the return value is NULL\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+To get extended error information, call \fIps_last_status\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_image_create_with_data\fP, \fBps_image_create_compatible\fP, \fBps_image_create_from_canvas\fP, \fBps_image_create_from_data\fP, \fBps_image_create_from_image\fP, \fBps_image_ref\fP, \fBps_image_unref\fP 
+.RE
+.PP
+
+.SS "\fBps_image\fP * ps_image_create_compatible (const \fBps_canvas\fP * canvas, int width, int height)"
+
+.PP
+Create a new image to compatible with an existing canvas\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIcanvas\fP A pointer to an existing canvas\&. 
+.br
+\fIwidth\fP The width, in pixels, of the required canvas\&. If it is not more than zero, the width will be equal to the width of the reference canvas\&. 
+.br
+\fIheight\fP The height, in pixels, of the required canvas\&. If it is not more than zero, the height will be equal to the height of the reference canvas\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+If the function succeeds, the return value is the pointer to a new image object\&. If the function fails, the return value is NULL\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+To get extended error information, call \fIps_last_status\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_image_create\fP, \fBps_image_create_with_data\fP, \fBps_image_create_from_canvas\fP, \fBps_image_create_from_image\fP, \fBps_image_ref\fP, \fBps_image_unref\fP 
+.RE
+.PP
+
+.SS "\fBps_image\fP * ps_image_create_from_canvas (\fBps_canvas\fP * canvas, const \fBps_rect\fP * rect)"
+
+.PP
+Create a new image using part of an existing canvas in same pixel buffer\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIcanvas\fP A pointer to an existing canvas\&. 
+.br
+\fIrect\fP The rectangle area of the image from the ps_canvas\&. If it is NULL, the image's width and height will be equal to the parant canvas\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+If the function succeeds, the return value is the pointer to a new image object\&. If the function fails, the return value is NULL\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+To get extended error information, call \fIps_last_status\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_image_create\fP, \fBps_image_create_with_data\fP, \fBps_image_create_compatible\fP, \fBps_image_create_from_data\fP, \fBps_image_create_from_image\fP, \fBps_image_ref\fP, \fBps_image_unref\fP 
+.RE
+.PP
+
+.SS "\fBps_image\fP * ps_image_create_from_data (\fBps_byte\fP * data, \fBps_color_format\fP fmt, int width, int height, int pitch)"
+
+.PP
+Create a new image using a copy of given address in memory\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIdata\fP A pointer to the destination in memory where the drawing is to be rendered\&. The size of this memory block should be at least (pitch * height) bytes\&. 
+.br
+\fIfmt\fP The Pixel format to use for the image\&. 
+.br
+\fIwidth\fP The width, in pixels, of the required image\&. 
+.br
+\fIheight\fP The height, in pixels, of the required image\&. 
+.br
+\fIpitch\fP The number of bytes per row, of the required image\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+If the function succeeds, the return value is the pointer to a new image object\&. If the function fails, the return value is NULL\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+To get extended error information, call \fIps_last_status\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_image_create\fP, \fBps_image_create_compatible\fP, \fBps_image_create_from_canvas\fP, \fBps_image_create_with_data\fP, \fBps_image_create_from_image\fP, \fBps_image_ref\fP, \fBps_image_unref\fP 
+.RE
+.PP
+
+.SS "\fBps_image\fP * ps_image_create_from_image (\fBps_image\fP * img, const \fBps_rect\fP * rect)"
+
+.PP
+Create a new image using part of an existing ps_image object in same pixel buffer\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIimg\fP A pointer to an existing ps_image object\&. 
+.br
+\fIrect\fP The rectangle area of the image from the parent image\&. If it is NULL, the image's width and height will be equal to parent image object\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+If the function succeeds, the return value is the pointer to a new image object\&. If the function fails, the return value is NULL\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+To get extended error information, call \fIps_last_status\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_image_create\fP, \fBps_image_create_with_data\fP, \fBps_image_create_compatible\fP, \fBps_image_create_from_data\fP, \fBps_image_create_from_canvas\fP, \fBps_image_ref\fP, \fBps_image_unref\fP 
+.RE
+.PP
+
+.SS "\fBps_image\fP * ps_image_create_with_data (\fBps_byte\fP * data, \fBps_color_format\fP fmt, int width, int height, int pitch)"
+
+.PP
+Create a new image using a given address in memory\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIdata\fP A pointer to the destination in memory where the drawing is to be rendered\&. The size of this memory block should be at least (pitch * height) bytes\&. 
+.br
+\fIfmt\fP The Pixel format to use for the image\&. 
+.br
+\fIwidth\fP The width, in pixels, of the required image\&. 
+.br
+\fIheight\fP The height, in pixels, of the required image\&. 
+.br
+\fIpitch\fP The number of bytes per row, of the required image\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+If the function succeeds, the return value is the pointer to a new image object\&. If the function fails, the return value is NULL\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+To get extended error information, call \fIps_last_status\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_image_create\fP, \fBps_image_create_compatible\fP, \fBps_image_create_from_canvas\fP, \fBps_image_create_from_data\fP, \fBps_image_create_from_image\fP, \fBps_image_ref\fP, \fBps_image_unref\fP 
+.RE
+.PP
+
+.SS "\fBps_color_format\fP ps_image_get_format (const \fBps_image\fP * img)"
+
+.PP
+Return the pixel format of the image\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIimg\fP Pointer to an existing image object\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+If the function succeeds, the return a valid color format\&. If the function fails, the return value is COLOR_FORMAT_UNKNOWN\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+To get extended error information, call \fIps_last_status\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_image_get_size\fP, \fBps_image_set_allow_transparent\fP 
+.RE
+.PP
+
+.SS "\fBps_bool\fP ps_image_get_size (const \fBps_image\fP * img, \fBps_size\fP * rsize)"
+
+.PP
+Return the size of the image\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIimg\fP Pointer to an existing image object\&. 
+.br
+\fIrsize\fP Pointer to a buffer to receiving the size\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+True if is success, otherwise False\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+To get extended error information, call \fIps_last_status\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_image_get_format\fP, \fBps_image_set_allow_transparent\fP 
+.RE
+.PP
+
+.SS "\fBps_image\fP * ps_image_ref (\fBps_image\fP * img)"
+
+.PP
+Increases the reference count of the image by 1\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIimg\fP Pointer to an existing image object\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+If the function succeeds, the return value is the pointer to the image object\&. If the function fails, the return value is NULL\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+To get extended error information, call \fIps_last_status\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_image_create\fP, \fBps_image_create_with_data\fP, \fBps_image_create_compatible\fP, \fBps_image_create_from_data\fP, \fBps_image_create_from_canvas\fP, \fBps_image_create_from_image\fP, \fBps_image_unref\fP 
+.RE
+.PP
+
+.SS "void ps_image_set_allow_transparent (\fBps_image\fP * img, \fBps_bool\fP allow)"
+
+.PP
+Set whether the image allowed be transparent, False is default\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIimg\fP Pointer to an existing image object\&. 
+.br
+\fIallow\fP Boolean value whether transparent is allowed\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_image_get_format\fP, \fBps_image_get_size\fP 
+.RE
+.PP
+
+.SS "void ps_image_set_transparent_color (\fBps_image\fP * img, const \fBps_color\fP * color)"
+
+.PP
+Set the transparent color for the image\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIimg\fP Pointer to an existing image object\&. 
+.br
+\fIcolor\fP The color for the transparent, NULL for disable\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_image_get_format\fP, \fBps_image_get_size\fP 
+.RE
+.PP
+
+.SS "void ps_image_unref (\fBps_image\fP * img)"
+
+.PP
+Decrements the reference count for the image object\&. If the reference count on the image falls to 0, the image is freed\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIimg\fP Pointer to an existing image object\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_image_create\fP, \fBps_image_create_with_data\fP, \fBps_image_create_compatible\fP, \fBps_image_create_from_data\fP, \fBps_image_create_from_canvas\fP, \fBps_image_create_from_image\fP, \fBps_image_ref\fP 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Picasso API from the source code\&.

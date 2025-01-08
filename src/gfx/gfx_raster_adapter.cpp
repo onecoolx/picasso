@@ -6,10 +6,10 @@
 
 #include "common.h"
 #include "convert.h"
+#include "matrix.h"
 
 #include "gfx_gamma_function.h"
 #include "gfx_raster_adapter.h"
-#include "gfx_trans_affine.h"
 
 #include "picasso_raster_adapter.h"
 
@@ -21,7 +21,7 @@ public:
     enum {
         aa_shift = 8,
         aa_scale = 1 << aa_shift,
-        aa_mask  = aa_scale - 1,
+        aa_mask = aa_scale - 1,
     };
 
     gfx_raster_adapter_impl()
@@ -40,8 +40,9 @@ public:
         , m_inner_join(inner_miter)
         , m_filling_rule(fill_non_zero)
     {
-        for (int i = 0; i < aa_scale; i++)
+        for (int i = 0; i < aa_scale; i++) {
             m_gamma[i] = i;
+        }
     }
 
     ~gfx_raster_adapter_impl()
@@ -76,7 +77,7 @@ public:
     }
 
     const vertex_source* m_source;
-    const gfx_trans_affine* m_transform;
+    const trans_affine* m_transform;
     unsigned int m_method;
     bool m_antialias;
     bool m_dashline;
@@ -121,17 +122,18 @@ void gfx_raster_adapter::set_antialias(bool b)
     m_impl->m_antialias = b;
 }
 
-void gfx_raster_adapter::set_transform(const abstract_trans_affine* mtx)
+void gfx_raster_adapter::set_transform(const trans_affine* mtx)
 {
-    m_impl->m_transform = static_cast<const gfx_trans_affine*>(mtx);
+    m_impl->m_transform = mtx;
 }
 
-gfx_trans_affine gfx_raster_adapter::transformation(void) const
+trans_affine gfx_raster_adapter::transformation(void) const
 {
-    if (m_impl->m_transform)
-        return *const_cast<gfx_trans_affine*>(m_impl->m_transform);
-    else
-        return gfx_trans_affine();
+    if (m_impl->m_transform) {
+        return *(m_impl->m_transform);
+    } else {
+        return trans_affine();
+    }
 }
 
 void gfx_raster_adapter::set_raster_method(unsigned int m)
@@ -211,15 +213,16 @@ void gfx_raster_adapter::setup_stroke_raster(void)
     if (m_impl->m_dashline) {
         picasso::conv_dash c(*const_cast<vertex_source*>(m_impl->m_source));
 
-        for (unsigned int i = 0; i < m_impl->m_dash_num; i += 2)
-            c.add_dash(m_impl->m_dash_data[i], m_impl->m_dash_data[i+1]);
+        for (unsigned int i = 0; i < m_impl->m_dash_num; i += 2) {
+            c.add_dash(m_impl->m_dash_data[i], m_impl->m_dash_data[i + 1]);
+        }
 
         c.dash_start(m_impl->m_dash_start);
 
         picasso::conv_stroke p(c);
 
-        gfx_trans_affine adjmtx = stable_matrix(*const_cast<gfx_trans_affine*>(m_impl->m_transform));
-        adjmtx *= gfx_trans_affine_translation(FLT_TO_SCALAR(0.5f), FLT_TO_SCALAR(0.5f)); //adjust edge
+        trans_affine adjmtx = stable_matrix(*const_cast<trans_affine*>(m_impl->m_transform));
+        adjmtx *= trans_affine_translation(FLT_TO_SCALAR(0.5f), FLT_TO_SCALAR(0.5f)); //adjust edge
 
         picasso::conv_transform t(p, &adjmtx);
 
@@ -234,8 +237,8 @@ void gfx_raster_adapter::setup_stroke_raster(void)
         picasso::conv_curve c(*const_cast<vertex_source*>(m_impl->m_source));
         picasso::conv_stroke p(c);
 
-        gfx_trans_affine adjmtx = stable_matrix(*const_cast<gfx_trans_affine*>(m_impl->m_transform));
-        adjmtx *= gfx_trans_affine_translation(FLT_TO_SCALAR(0.5f), FLT_TO_SCALAR(0.5f)); //adjust edge
+        trans_affine adjmtx = stable_matrix(*const_cast<trans_affine*>(m_impl->m_transform));
+        adjmtx *= trans_affine_translation(FLT_TO_SCALAR(0.5f), FLT_TO_SCALAR(0.5f)); //adjust edge
 
         picasso::conv_transform t(p, &adjmtx);
 
@@ -252,7 +255,7 @@ void gfx_raster_adapter::setup_stroke_raster(void)
 void gfx_raster_adapter::setup_fill_raster(void)
 {
     m_fraster.filling(m_impl->m_filling_rule);
-    gfx_trans_affine adjmtx = stable_matrix(*const_cast<gfx_trans_affine*>(m_impl->m_transform));
+    trans_affine adjmtx = stable_matrix(*const_cast<trans_affine*>(m_impl->m_transform));
 
     conv_transform mt(*const_cast<vertex_source*>(m_impl->m_source), &adjmtx);
     m_fraster.add_path(mt);
@@ -261,11 +264,13 @@ void gfx_raster_adapter::setup_fill_raster(void)
 void gfx_raster_adapter::commit(void)
 {
     if (m_impl->m_source) {
-        if (m_impl->m_method & raster_stroke)
+        if (m_impl->m_method & raster_stroke) {
             setup_stroke_raster();
+        }
 
-        if (m_impl->m_method & raster_fill)
+        if (m_impl->m_method & raster_fill) {
             setup_fill_raster();
+        }
     }
 }
 
@@ -277,12 +282,13 @@ void gfx_raster_adapter::add_shape(const vertex_source& vs, unsigned int id)
 bool gfx_raster_adapter::contains(scalar x, scalar y)
 {
     if (m_impl->m_source) {
-        if (m_impl->m_method & raster_stroke)
+        if (m_impl->m_method & raster_stroke) {
             return m_sraster.hit_test(iround(x), iround(y));
-        else if (m_impl->m_method & raster_fill)
+        } else if (m_impl->m_method & raster_fill) {
             return m_fraster.hit_test(iround(x), iround(y));
-        else
+        } else {
             return false;
+        }
     } else {
         return false;
     }

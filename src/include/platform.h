@@ -16,30 +16,29 @@
 /* CPU() - the target CPU architecture */
 #define CPU(FEATURE) (defined CPU_##FEATURE  && CPU_##FEATURE)
 
-
 /* COMPILER(MSVC) - Microsoft Visual C++ */
 #if defined(_MSC_VER)
-#define COMPILER_MSVC 1
+    #define COMPILER_MSVC 1
 #endif
 
 /* COMPILER(GCC) - GNU Compiler Collection */
 #if defined(__GNUC__)
-#define COMPILER_GCC 1
+    #define COMPILER_GCC 1
 #endif
 
 /* COMPILER(INTEL) - Intel C++ Compiler */
 #if defined(__INTEL_COMPILER)
-#define COMPILER_INTEL 1
+    #define COMPILER_INTEL 1
 #endif
 
 /* COMPILER(WATCOM) - Watcom C/C++ Compiler */
 #if defined(__WATCOMC__)
-#define COMPILER_WATCOM 1
+    #define COMPILER_WATCOM 1
 #endif
 
 /* COMPILER(CLANG) - llvm/clang C/C++ Compiler */
 #if defined(__clang__)
-#define COMPILER_CLANG 1
+    #define COMPILER_CLANG 1
 #endif
 
 /* CPU(X86) - i386 / x86 32-bit */
@@ -48,84 +47,90 @@
     || defined(_M_IX86)  \
     || defined(_X86_)    \
     || defined(__THW_INTEL)
-#define CPU_X86 1
+    #define CPU_X86 1
 #endif
 
 /* CPU(X86_64) - AMD64 / Intel64 / x86_64 64-bit */
 #if   defined(__x86_64__) \
     || defined(_M_X64)
-#define CPU_X86_64 1
+    #define CPU_X86_64 1
 #endif
 
 /* CPU(ARM) - ARM any version */
 #if   defined(arm) \
-     || defined(__arm__) \
-     || defined(ARM) \
-     || defined(_ARM_)
-#define CPU_ARM 1
+    || defined(__arm__) \
+    || defined(ARM) \
+    || defined(_ARM_)
+    #define CPU_ARM 1
 #endif
 
 #if defined(__ARM_NEON__)
-#define CPU_ARM_NEON 1
+    #define CPU_ARM_NEON 1
 #endif
 
 #if (defined(__VFP_FP__) && !defined(__SOFTFP__))
-#define CPU_ARM_VFP 1
+    #define CPU_ARM_VFP 1
 #endif
 
 #if defined(WINCE) || defined(__WATCOMC__)
-/* math.h */
-#define sinf(x) ((float)sin(x))
-#define cosf(x) ((float)cos(x))
-#define acosf(x) ((float)acos(x))
-#define tanf(x) ((float)tan(x))
-#define asinf(x) ((float)asin(x))
-#define atan2f(x, y) ((float)atan2((x), (y)))
-#define powf(x, y) ((float)pow((x), (y)))
-#if defined(__WATCOMC__)
-#define sqrtf(x) ((float)sqrt((x)))
-#define fabsf(x) ((float)fabs((x)))
-#define fmodf(x, y) ((float)fmod((x), (y)))
-#define floorf(x) ((float)floor((x)))
-#define ceilf(x) ((float)ceil((x)))
-#endif
+    /* math.h */
+    #define sinf(x) ((float)sin(x))
+    #define cosf(x) ((float)cos(x))
+    #define acosf(x) ((float)acos(x))
+    #define tanf(x) ((float)tan(x))
+    #define asinf(x) ((float)asin(x))
+    #define atan2f(x, y) ((float)atan2((x), (y)))
+    #define powf(x, y) ((float)pow((x), (y)))
+    #if defined(__WATCOMC__)
+        #define sqrtf(x) ((float)sqrt((x)))
+        #define fabsf(x) ((float)fabs((x)))
+        #define fmodf(x, y) ((float)fmod((x), (y)))
+        #define floorf(x) ((float)floor((x)))
+        #define ceilf(x) ((float)ceil((x)))
+    #endif
 #endif
 
 #if COMPILER(GCC)
-#if __GNUC__ == 2 && __GNUC_MINOR__ < 96
-#define __builtin_expect(x, expected_value) (x)
-#endif
-#define likely(x) __builtin_expect((x),1)
-#define unlikely(x) __builtin_expect((x),0)
+    #if __GNUC__ == 2 && __GNUC_MINOR__ < 96
+        #define __builtin_expect(x, expected_value) (x)
+    #endif
+    #define likely(x) __builtin_expect((x),1)
+    #define unlikely(x) __builtin_expect((x),0)
 #else
-#define likely(X)  (X)
-#define unlikely(X)  (X)
+    #define likely(X)  (X)
+    #define unlikely(X)  (X)
 #endif
 
 // aligned attribute
 #if COMPILER(MSVC)
-#define ALIGNED(x)  __declspec(align(x))
+    #define ALIGNED(x)  __declspec(align(x))
 #elif COMPILER(GCC)
-#define ALIGNED(x)  __attribute__((aligned((x))))
+    #define ALIGNED(x)  __attribute__((aligned((x))))
 #else
-#define ALIGNED(x)
+    #define ALIGNED(x)
 #endif
 
 // force inline
 #if COMPILER(MSVC)
-#define _FORCE_INLINE_  __forceinline
+    #define _FORCE_INLINE_  __forceinline
 #elif COMPILER(GCC)
-#if __GNUC__ == 2 && __GNUC_MINOR__ < 96
-#define _FORCE_INLINE_  inline
-#else
-#define _FORCE_INLINE_  __attribute__((always_inline))
-#endif
+    #if __GNUC__ == 2 && __GNUC_MINOR__ < 96
+        #define _FORCE_INLINE_  inline
+    #else
+        #define _FORCE_INLINE_  __attribute__((always_inline))
+    #endif
 #endif
 
 #if COMPILER(CLANG)
-#define MAYBE_INLINE
+    #define MAYBE_INLINE
 #else
-#define MAYBE_INLINE  inline
+    #define MAYBE_INLINE  inline
+#endif
+
+#if __cplusplus >= 201103L
+    #define _REGISTER_
+#else
+    #define _REGISTER_ register
 #endif
 
 #endif /*_PLATFORM_H_*/

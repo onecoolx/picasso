@@ -1,0 +1,391 @@
+\doxysection{Font}
+\label{group__font}\index{Font@{Font}}
+\doxysubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \textbf{ \+\_\+ps\+\_\+font\+\_\+info}
+\begin{DoxyCompactList}\small\item\em A structure that contains font information. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\label{group__font_ga685798dde7574587e4f97fec9212ffc5}} 
+typedef enum \textbf{ \+\_\+ps\+\_\+charset} \textbf{ ps\+\_\+charset}
+\begin{DoxyCompactList}\small\item\em Charset for a font. \end{DoxyCompactList}\item 
+\mbox{\label{group__font_gac3a9d719ec125b42f239cf29225fc118}} 
+typedef enum \textbf{ \+\_\+ps\+\_\+font\+\_\+weight} \textbf{ ps\+\_\+font\+\_\+weight}
+\begin{DoxyCompactList}\small\item\em Font weight. \end{DoxyCompactList}\item 
+\mbox{\label{group__font_ga110742303260852264a3ca1a0849acbb}} 
+typedef struct \textbf{ \+\_\+ps\+\_\+font\+\_\+info} \textbf{ ps\+\_\+font\+\_\+info}
+\begin{DoxyCompactList}\small\item\em A structure that contains font information. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \textbf{ \+\_\+ps\+\_\+charset} \{ \textbf{ C\+H\+A\+R\+S\+E\+T\+\_\+\+A\+N\+SI}, 
+\textbf{ C\+H\+A\+R\+S\+E\+T\+\_\+\+U\+N\+I\+C\+O\+DE}
+ \}
+\begin{DoxyCompactList}\small\item\em Charset for a font. \end{DoxyCompactList}\item 
+enum \textbf{ \+\_\+ps\+\_\+font\+\_\+weight} \{ \textbf{ F\+O\+N\+T\+\_\+\+W\+E\+I\+G\+H\+T\+\_\+\+R\+E\+G\+U\+L\+AR} = 400, 
+\textbf{ F\+O\+N\+T\+\_\+\+W\+E\+I\+G\+H\+T\+\_\+\+M\+E\+D\+I\+UM} = 500, 
+\textbf{ F\+O\+N\+T\+\_\+\+W\+E\+I\+G\+H\+T\+\_\+\+B\+O\+LD} = 700, 
+\textbf{ F\+O\+N\+T\+\_\+\+W\+E\+I\+G\+H\+T\+\_\+\+H\+E\+A\+VY} = 900
+ \}
+\begin{DoxyCompactList}\small\item\em Font weight. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+font} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+font\+\_\+create} (const char $\ast$name, \textbf{ ps\+\_\+charset} charset, float size, int weight, \textbf{ ps\+\_\+bool} italic)
+\begin{DoxyCompactList}\small\item\em Create a font object using the given parameters. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+font} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+font\+\_\+create\+\_\+copy} (const \textbf{ ps\+\_\+font} $\ast$font)
+\begin{DoxyCompactList}\small\item\em Create a copy from an existing font object. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+font} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+font\+\_\+ref} (\textbf{ ps\+\_\+font} $\ast$font)
+\begin{DoxyCompactList}\small\item\em Increases the reference count of the font by 1. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+font\+\_\+unref} (\textbf{ ps\+\_\+font} $\ast$font)
+\begin{DoxyCompactList}\small\item\em Decrements the reference count for the font object. If the reference count on the font falls to 0, the font is freed. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+font\+\_\+set\+\_\+size} (\textbf{ ps\+\_\+font} $\ast$font, float size)
+\begin{DoxyCompactList}\small\item\em Set size for a font object. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+font\+\_\+set\+\_\+weight} (\textbf{ ps\+\_\+font} $\ast$font, int weight)
+\begin{DoxyCompactList}\small\item\em Set weight for a font object. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+font\+\_\+set\+\_\+italic} (\textbf{ ps\+\_\+font} $\ast$font, \textbf{ ps\+\_\+bool} italic)
+\begin{DoxyCompactList}\small\item\em Set italic for a font object. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+font\+\_\+set\+\_\+charset} (\textbf{ ps\+\_\+font} $\ast$font, \textbf{ ps\+\_\+charset} charset)
+\begin{DoxyCompactList}\small\item\em Set charset for a font object. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+font\+\_\+set\+\_\+hint} (\textbf{ ps\+\_\+font} $\ast$font, \textbf{ ps\+\_\+bool} hint)
+\begin{DoxyCompactList}\small\item\em Set hiting for a font object. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+font\+\_\+set\+\_\+flip} (\textbf{ ps\+\_\+font} $\ast$font, \textbf{ ps\+\_\+bool} flip)
+\begin{DoxyCompactList}\small\item\em Set flip for a font object. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+bool} P\+I\+C\+A\+PI \textbf{ ps\+\_\+get\+\_\+font\+\_\+info} (\textbf{ ps\+\_\+context} $\ast$ctx, \textbf{ ps\+\_\+font\+\_\+info} $\ast$info)
+\begin{DoxyCompactList}\small\item\em Return the font information from the graphics context. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+font} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+set\+\_\+font} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+font} $\ast$font)
+\begin{DoxyCompactList}\small\item\em Set a new font to graphics context. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+
+
+\doxysubsection{Enumeration Type Documentation}
+\mbox{\label{group__font_gadbe156942bf075c2ce7cc12cce978bf9}} 
+\index{Font@{Font}!\_ps\_charset@{\_ps\_charset}}
+\index{\_ps\_charset@{\_ps\_charset}!Font@{Font}}
+\doxysubsubsection{\_ps\_charset}
+{\footnotesize\ttfamily enum \textbf{ \+\_\+ps\+\_\+charset}}
+
+
+
+Charset for a font. 
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{CHARSET\_ANSI@{CHARSET\_ANSI}!Font@{Font}}\index{Font@{Font}!CHARSET\_ANSI@{CHARSET\_ANSI}}}\mbox{\label{group__font_ggadbe156942bf075c2ce7cc12cce978bf9aa7b80de7dbeff419ac5754a29679a1f1}} 
+C\+H\+A\+R\+S\+E\+T\+\_\+\+A\+N\+SI&Ansi I\+S\+O-\/8859-\/x charset \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{CHARSET\_UNICODE@{CHARSET\_UNICODE}!Font@{Font}}\index{Font@{Font}!CHARSET\_UNICODE@{CHARSET\_UNICODE}}}\mbox{\label{group__font_ggadbe156942bf075c2ce7cc12cce978bf9ad01787de9642b347bde7423b1d7954f9}} 
+C\+H\+A\+R\+S\+E\+T\+\_\+\+U\+N\+I\+C\+O\+DE&Unicode U\+C\+S-\/2 charset \\
+\hline
+
+\end{DoxyEnumFields}
+
+
+Definition at line 1919 of file picasso.\+h.
+
+\mbox{\label{group__font_ga025f88d2a6171a1e298b4a9e8aace679}} 
+\index{Font@{Font}!\_ps\_font\_weight@{\_ps\_font\_weight}}
+\index{\_ps\_font\_weight@{\_ps\_font\_weight}!Font@{Font}}
+\doxysubsubsection{\_ps\_font\_weight}
+{\footnotesize\ttfamily enum \textbf{ \+\_\+ps\+\_\+font\+\_\+weight}}
+
+
+
+Font weight. 
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{FONT\_WEIGHT\_REGULAR@{FONT\_WEIGHT\_REGULAR}!Font@{Font}}\index{Font@{Font}!FONT\_WEIGHT\_REGULAR@{FONT\_WEIGHT\_REGULAR}}}\mbox{\label{group__font_gga025f88d2a6171a1e298b4a9e8aace679a944015c5aed3ba8a1ec4d8cf93267d0c}} 
+F\+O\+N\+T\+\_\+\+W\+E\+I\+G\+H\+T\+\_\+\+R\+E\+G\+U\+L\+AR&Regular weight. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{FONT\_WEIGHT\_MEDIUM@{FONT\_WEIGHT\_MEDIUM}!Font@{Font}}\index{Font@{Font}!FONT\_WEIGHT\_MEDIUM@{FONT\_WEIGHT\_MEDIUM}}}\mbox{\label{group__font_gga025f88d2a6171a1e298b4a9e8aace679aecf0727c44f4af4f58003c3dccb5c183}} 
+F\+O\+N\+T\+\_\+\+W\+E\+I\+G\+H\+T\+\_\+\+M\+E\+D\+I\+UM&Medium weight. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{FONT\_WEIGHT\_BOLD@{FONT\_WEIGHT\_BOLD}!Font@{Font}}\index{Font@{Font}!FONT\_WEIGHT\_BOLD@{FONT\_WEIGHT\_BOLD}}}\mbox{\label{group__font_gga025f88d2a6171a1e298b4a9e8aace679a93a1a52f2b15d038d4cf9029fbaacac2}} 
+F\+O\+N\+T\+\_\+\+W\+E\+I\+G\+H\+T\+\_\+\+B\+O\+LD&Bold weight. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{FONT\_WEIGHT\_HEAVY@{FONT\_WEIGHT\_HEAVY}!Font@{Font}}\index{Font@{Font}!FONT\_WEIGHT\_HEAVY@{FONT\_WEIGHT\_HEAVY}}}\mbox{\label{group__font_gga025f88d2a6171a1e298b4a9e8aace679a2ad01ff6f2164644cace5268ddd7c2ec}} 
+F\+O\+N\+T\+\_\+\+W\+E\+I\+G\+H\+T\+\_\+\+H\+E\+A\+VY&Heavy weight. \\
+\hline
+
+\end{DoxyEnumFields}
+
+
+Definition at line 1933 of file picasso.\+h.
+
+
+
+\doxysubsection{Function Documentation}
+\mbox{\label{group__font_gaaefcec3ece8daac5bc135aaff941e322}} 
+\index{Font@{Font}!ps\_font\_create@{ps\_font\_create}}
+\index{ps\_font\_create@{ps\_font\_create}!Font@{Font}}
+\doxysubsubsection{ps\_font\_create()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+font} $\ast$ ps\+\_\+font\+\_\+create (\begin{DoxyParamCaption}\item[{const char $\ast$}]{name,  }\item[{\textbf{ ps\+\_\+charset}}]{charset,  }\item[{float}]{size,  }\item[{int}]{weight,  }\item[{\textbf{ ps\+\_\+bool}}]{italic }\end{DoxyParamCaption})}
+
+
+
+Create a font object using the given parameters. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & The font family name. \\
+\hline
+{\em charset} & The charset type. \\
+\hline
+{\em size} & The font size. \\
+\hline
+{\em weight} & The font weight. \\
+\hline
+{\em italic} & Whether or not it is italic.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+If the function succeeds, the return value is the pointer to a new font object. If the function fails, the return value is N\+U\+LL.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+font\+\_\+create\+\_\+copy}{p.}{group__font_ga3aa562cc7f467a41a214e526778601d0}, \doxyref{ps\+\_\+font\+\_\+ref}{p.}{group__font_gaa3f4ad222ac03a2f017fde3eaa462c33}, \doxyref{ps\+\_\+font\+\_\+unref}{p.}{group__font_ga64ab9cf8ac1d102894407f4b3bcbd1be} 
+\end{DoxySeeAlso}
+\mbox{\label{group__font_ga3aa562cc7f467a41a214e526778601d0}} 
+\index{Font@{Font}!ps\_font\_create\_copy@{ps\_font\_create\_copy}}
+\index{ps\_font\_create\_copy@{ps\_font\_create\_copy}!Font@{Font}}
+\doxysubsubsection{ps\_font\_create\_copy()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+font} $\ast$ ps\+\_\+font\+\_\+create\+\_\+copy (\begin{DoxyParamCaption}\item[{const \textbf{ ps\+\_\+font} $\ast$}]{font }\end{DoxyParamCaption})}
+
+
+
+Create a copy from an existing font object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em font} & Pointer to an existing font object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+If the function succeeds, the return value is the pointer to a new font object. If the function fails, the return value is N\+U\+LL.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+font\+\_\+create}{p.}{group__font_gaaefcec3ece8daac5bc135aaff941e322}, \doxyref{ps\+\_\+font\+\_\+ref}{p.}{group__font_gaa3f4ad222ac03a2f017fde3eaa462c33}, \doxyref{ps\+\_\+font\+\_\+unref}{p.}{group__font_ga64ab9cf8ac1d102894407f4b3bcbd1be} 
+\end{DoxySeeAlso}
+\mbox{\label{group__font_gaa3f4ad222ac03a2f017fde3eaa462c33}} 
+\index{Font@{Font}!ps\_font\_ref@{ps\_font\_ref}}
+\index{ps\_font\_ref@{ps\_font\_ref}!Font@{Font}}
+\doxysubsubsection{ps\_font\_ref()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+font} $\ast$ ps\+\_\+font\+\_\+ref (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+font} $\ast$}]{font }\end{DoxyParamCaption})}
+
+
+
+Increases the reference count of the font by 1. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em font} & Pointer to an existing font object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+If the function succeeds, the return value is the pointer to the font object. If the function fails, the return value is N\+U\+LL.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+font\+\_\+create}{p.}{group__font_gaaefcec3ece8daac5bc135aaff941e322}, \doxyref{ps\+\_\+font\+\_\+create\+\_\+copy}{p.}{group__font_ga3aa562cc7f467a41a214e526778601d0}, \doxyref{ps\+\_\+font\+\_\+unref}{p.}{group__font_ga64ab9cf8ac1d102894407f4b3bcbd1be} 
+\end{DoxySeeAlso}
+\mbox{\label{group__font_ga0abc4de193c6c512b6131b1c890167d5}} 
+\index{Font@{Font}!ps\_font\_set\_charset@{ps\_font\_set\_charset}}
+\index{ps\_font\_set\_charset@{ps\_font\_set\_charset}!Font@{Font}}
+\doxysubsubsection{ps\_font\_set\_charset()}
+{\footnotesize\ttfamily void ps\+\_\+font\+\_\+set\+\_\+charset (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+font} $\ast$}]{font,  }\item[{\textbf{ ps\+\_\+charset}}]{charset }\end{DoxyParamCaption})}
+
+
+
+Set charset for a font object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em font} & Pointer to an existing font object. \\
+\hline
+{\em charset} & Charset for the font.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+font\+\_\+set\+\_\+size}{p.}{group__font_gad71cc608b2259f1bde9fb86aca205695}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+weight}{p.}{group__font_ga32c69b4397b77bdac151c829a3121aad}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+italic}{p.}{group__font_gaeaf6470fd1661ef158d09c8b84d029ca}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+hint}{p.}{group__font_ga54faab6d1e061307be5b12db4e46a17d}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+flip}{p.}{group__font_ga25507395e231d29567f4cda01242419e} 
+\end{DoxySeeAlso}
+\mbox{\label{group__font_ga25507395e231d29567f4cda01242419e}} 
+\index{Font@{Font}!ps\_font\_set\_flip@{ps\_font\_set\_flip}}
+\index{ps\_font\_set\_flip@{ps\_font\_set\_flip}!Font@{Font}}
+\doxysubsubsection{ps\_font\_set\_flip()}
+{\footnotesize\ttfamily void ps\+\_\+font\+\_\+set\+\_\+flip (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+font} $\ast$}]{font,  }\item[{\textbf{ ps\+\_\+bool}}]{flip }\end{DoxyParamCaption})}
+
+
+
+Set flip for a font object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em font} & Pointer to an existing font object. \\
+\hline
+{\em flip} & Whether or not flip y for the font. (False default)\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+font\+\_\+set\+\_\+size}{p.}{group__font_gad71cc608b2259f1bde9fb86aca205695}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+weight}{p.}{group__font_ga32c69b4397b77bdac151c829a3121aad}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+italic}{p.}{group__font_gaeaf6470fd1661ef158d09c8b84d029ca}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+charset}{p.}{group__font_ga0abc4de193c6c512b6131b1c890167d5}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+hint}{p.}{group__font_ga54faab6d1e061307be5b12db4e46a17d} 
+\end{DoxySeeAlso}
+\mbox{\label{group__font_ga54faab6d1e061307be5b12db4e46a17d}} 
+\index{Font@{Font}!ps\_font\_set\_hint@{ps\_font\_set\_hint}}
+\index{ps\_font\_set\_hint@{ps\_font\_set\_hint}!Font@{Font}}
+\doxysubsubsection{ps\_font\_set\_hint()}
+{\footnotesize\ttfamily void ps\+\_\+font\+\_\+set\+\_\+hint (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+font} $\ast$}]{font,  }\item[{\textbf{ ps\+\_\+bool}}]{hint }\end{DoxyParamCaption})}
+
+
+
+Set hiting for a font object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em font} & Pointer to an existing font object. \\
+\hline
+{\em hint} & Whether or not auto hiting for the font. (True default)\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+font\+\_\+set\+\_\+size}{p.}{group__font_gad71cc608b2259f1bde9fb86aca205695}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+weight}{p.}{group__font_ga32c69b4397b77bdac151c829a3121aad}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+italic}{p.}{group__font_gaeaf6470fd1661ef158d09c8b84d029ca}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+charset}{p.}{group__font_ga0abc4de193c6c512b6131b1c890167d5}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+flip}{p.}{group__font_ga25507395e231d29567f4cda01242419e} 
+\end{DoxySeeAlso}
+\mbox{\label{group__font_gaeaf6470fd1661ef158d09c8b84d029ca}} 
+\index{Font@{Font}!ps\_font\_set\_italic@{ps\_font\_set\_italic}}
+\index{ps\_font\_set\_italic@{ps\_font\_set\_italic}!Font@{Font}}
+\doxysubsubsection{ps\_font\_set\_italic()}
+{\footnotesize\ttfamily void ps\+\_\+font\+\_\+set\+\_\+italic (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+font} $\ast$}]{font,  }\item[{\textbf{ ps\+\_\+bool}}]{italic }\end{DoxyParamCaption})}
+
+
+
+Set italic for a font object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em font} & Pointer to an existing font object. \\
+\hline
+{\em italic} & Whether or not italic for the font. (False default)\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+font\+\_\+set\+\_\+size}{p.}{group__font_gad71cc608b2259f1bde9fb86aca205695}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+weight}{p.}{group__font_ga32c69b4397b77bdac151c829a3121aad}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+charset}{p.}{group__font_ga0abc4de193c6c512b6131b1c890167d5}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+hint}{p.}{group__font_ga54faab6d1e061307be5b12db4e46a17d}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+flip}{p.}{group__font_ga25507395e231d29567f4cda01242419e} 
+\end{DoxySeeAlso}
+\mbox{\label{group__font_gad71cc608b2259f1bde9fb86aca205695}} 
+\index{Font@{Font}!ps\_font\_set\_size@{ps\_font\_set\_size}}
+\index{ps\_font\_set\_size@{ps\_font\_set\_size}!Font@{Font}}
+\doxysubsubsection{ps\_font\_set\_size()}
+{\footnotesize\ttfamily void ps\+\_\+font\+\_\+set\+\_\+size (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+font} $\ast$}]{font,  }\item[{float}]{size }\end{DoxyParamCaption})}
+
+
+
+Set size for a font object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em font} & Pointer to an existing font object. \\
+\hline
+{\em size} & Size for the font.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+font\+\_\+set\+\_\+weight}{p.}{group__font_ga32c69b4397b77bdac151c829a3121aad}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+italic}{p.}{group__font_gaeaf6470fd1661ef158d09c8b84d029ca}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+charset}{p.}{group__font_ga0abc4de193c6c512b6131b1c890167d5}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+hint}{p.}{group__font_ga54faab6d1e061307be5b12db4e46a17d}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+flip}{p.}{group__font_ga25507395e231d29567f4cda01242419e} 
+\end{DoxySeeAlso}
+\mbox{\label{group__font_ga32c69b4397b77bdac151c829a3121aad}} 
+\index{Font@{Font}!ps\_font\_set\_weight@{ps\_font\_set\_weight}}
+\index{ps\_font\_set\_weight@{ps\_font\_set\_weight}!Font@{Font}}
+\doxysubsubsection{ps\_font\_set\_weight()}
+{\footnotesize\ttfamily void ps\+\_\+font\+\_\+set\+\_\+weight (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+font} $\ast$}]{font,  }\item[{int}]{weight }\end{DoxyParamCaption})}
+
+
+
+Set weight for a font object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em font} & Pointer to an existing font object. \\
+\hline
+{\em weight} & Weight for the font.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+font\+\_\+set\+\_\+size}{p.}{group__font_gad71cc608b2259f1bde9fb86aca205695}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+italic}{p.}{group__font_gaeaf6470fd1661ef158d09c8b84d029ca}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+charset}{p.}{group__font_ga0abc4de193c6c512b6131b1c890167d5}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+hint}{p.}{group__font_ga54faab6d1e061307be5b12db4e46a17d}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+flip}{p.}{group__font_ga25507395e231d29567f4cda01242419e} 
+\end{DoxySeeAlso}
+\mbox{\label{group__font_ga64ab9cf8ac1d102894407f4b3bcbd1be}} 
+\index{Font@{Font}!ps\_font\_unref@{ps\_font\_unref}}
+\index{ps\_font\_unref@{ps\_font\_unref}!Font@{Font}}
+\doxysubsubsection{ps\_font\_unref()}
+{\footnotesize\ttfamily void ps\+\_\+font\+\_\+unref (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+font} $\ast$}]{font }\end{DoxyParamCaption})}
+
+
+
+Decrements the reference count for the font object. If the reference count on the font falls to 0, the font is freed. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em font} & Pointer to an existing font object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+font\+\_\+create}{p.}{group__font_gaaefcec3ece8daac5bc135aaff941e322}, \doxyref{ps\+\_\+font\+\_\+create\+\_\+copy}{p.}{group__font_ga3aa562cc7f467a41a214e526778601d0}, \doxyref{ps\+\_\+font\+\_\+ref}{p.}{group__font_gaa3f4ad222ac03a2f017fde3eaa462c33} 
+\end{DoxySeeAlso}
+\mbox{\label{group__font_ga774a7aa9bdf9357bd395589c6fde5575}} 
+\index{Font@{Font}!ps\_get\_font\_info@{ps\_get\_font\_info}}
+\index{ps\_get\_font\_info@{ps\_get\_font\_info}!Font@{Font}}
+\doxysubsubsection{ps\_get\_font\_info()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+bool} ps\+\_\+get\+\_\+font\+\_\+info (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{\textbf{ ps\+\_\+font\+\_\+info} $\ast$}]{info }\end{DoxyParamCaption})}
+
+
+
+Return the font information from the graphics context. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em info} & Pointer to a structure to receiving the font information.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if is success, otherwise False.
+\end{DoxyReturn}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+set\+\_\+font}{p.}{group__font_gaee84f9f5831581387d200ec408358c51} 
+\end{DoxySeeAlso}
+\mbox{\label{group__font_gaee84f9f5831581387d200ec408358c51}} 
+\index{Font@{Font}!ps\_set\_font@{ps\_set\_font}}
+\index{ps\_set\_font@{ps\_set\_font}!Font@{Font}}
+\doxysubsubsection{ps\_set\_font()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+font} $\ast$ ps\+\_\+set\+\_\+font (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{const \textbf{ ps\+\_\+font} $\ast$}]{font }\end{DoxyParamCaption})}
+
+
+
+Set a new font to graphics context. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em font} & The new font to be set.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+If the function succeeds, the return value is the pointer to old font object. If the function fails, the return value is N\+U\+LL.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+get\+\_\+font\+\_\+info}{p.}{group__font_ga774a7aa9bdf9357bd395589c6fde5575} 
+\end{DoxySeeAlso}

@@ -15,26 +15,26 @@
 namespace picasso {
 
 typedef enum {
-    POLY_UNION,            // union
-    POLY_INTERSECT,        // intersection
-    POLY_XOR,              // exclusive or
-    POLY_DIFF,             // difference
+    POLY_UNION, // union
+    POLY_INTERSECT, // intersection
+    POLY_XOR, // exclusive or
+    POLY_DIFF, // difference
 } polygon_op;
 
 typedef struct {
-    int num_vertices;     // number of vertices in list
-    vertex_s *vertex;     // vertex array pointer
+    int num_vertices; // number of vertices in list
+    vertex_s* vertex; // vertex array pointer
 } vertex_list;
 
 typedef struct {
-    int num_contours;     // number of contours in polygon
-    vertex_list *contour; // contour vector pointer
+    int num_contours; // number of contours in polygon
+    vertex_list* contour; // contour vector pointer
 } polygon;
 
-void polygon_clip(polygon_op set_operation, polygon *subject_polygon,
-                                polygon *clip_polygon, polygon *result_polygon);
+void polygon_clip(polygon_op set_operation, polygon* subject_polygon,
+                  polygon* clip_polygon, polygon* result_polygon);
 
-void free_polygon(polygon *polygon);
+void free_polygon(polygon* polygon);
 
 }
 #endif /*_CLIPPER_H_*/

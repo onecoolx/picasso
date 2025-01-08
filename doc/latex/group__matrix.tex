@@ -1,0 +1,660 @@
+\doxysection{Matrix}
+\label{group__matrix}\index{Matrix@{Matrix}}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+matrix} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+matrix\+\_\+create} (void)
+\begin{DoxyCompactList}\small\item\em Create a identity matrix object. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+matrix} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+matrix\+\_\+create\+\_\+init} (float sx, float shy, float shx, float sy, float tx, float ty)
+\begin{DoxyCompactList}\small\item\em Create a matrix with given parameters. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+matrix} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+matrix\+\_\+create\+\_\+copy} (const \textbf{ ps\+\_\+matrix} $\ast$matrix)
+\begin{DoxyCompactList}\small\item\em Create a matrix copy from an exist one. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+matrix} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+matrix\+\_\+ref} (\textbf{ ps\+\_\+matrix} $\ast$matrix)
+\begin{DoxyCompactList}\small\item\em Increases the reference count of the matrix by 1. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+matrix\+\_\+unref} (\textbf{ ps\+\_\+matrix} $\ast$matrix)
+\begin{DoxyCompactList}\small\item\em Decrements the reference count for the matrix object. If the reference count on the matrix falls to 0, the matrix is freed. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+matrix\+\_\+init} (\textbf{ ps\+\_\+matrix} $\ast$matrix, float sx, float shy, float shx, float sy, float tx, float ty)
+\begin{DoxyCompactList}\small\item\em Initialize an existing matrix object with given parameters. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+matrix\+\_\+translate} (\textbf{ ps\+\_\+matrix} $\ast$matrix, float tx, float ty)
+\begin{DoxyCompactList}\small\item\em Modify a matrix by translating. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+matrix\+\_\+scale} (\textbf{ ps\+\_\+matrix} $\ast$matrix, float sx, float sy)
+\begin{DoxyCompactList}\small\item\em Modify a matrix by scaling. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+matrix\+\_\+rotate} (\textbf{ ps\+\_\+matrix} $\ast$matrix, float angle)
+\begin{DoxyCompactList}\small\item\em Modify a matrix by rotating. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+matrix\+\_\+shear} (\textbf{ ps\+\_\+matrix} $\ast$matrix, float shx, float shy)
+\begin{DoxyCompactList}\small\item\em Modify a matrix by shearing. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+matrix\+\_\+invert} (\textbf{ ps\+\_\+matrix} $\ast$matrix)
+\begin{DoxyCompactList}\small\item\em Modify a matrix by inverting. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+matrix\+\_\+identity} (\textbf{ ps\+\_\+matrix} $\ast$matrix)
+\begin{DoxyCompactList}\small\item\em Reset a matrix to identity matrix. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+matrix\+\_\+flip\+\_\+x} (\textbf{ ps\+\_\+matrix} $\ast$matrix)
+\begin{DoxyCompactList}\small\item\em Flip a matrix in the horizontal direction. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+matrix\+\_\+flip\+\_\+y} (\textbf{ ps\+\_\+matrix} $\ast$matrix)
+\begin{DoxyCompactList}\small\item\em Flip a matrix in the vertical direction. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+matrix\+\_\+multiply} (\textbf{ ps\+\_\+matrix} $\ast$result, const \textbf{ ps\+\_\+matrix} $\ast$a, const \textbf{ ps\+\_\+matrix} $\ast$b)
+\begin{DoxyCompactList}\small\item\em Multiplies the matrix in a and b together and stores the result in result. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+bool} P\+I\+C\+A\+PI \textbf{ ps\+\_\+matrix\+\_\+is\+\_\+identity} (const \textbf{ ps\+\_\+matrix} $\ast$matrix)
+\begin{DoxyCompactList}\small\item\em Checks whether the matrix is the identity transform matrix. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+bool} P\+I\+C\+A\+PI \textbf{ ps\+\_\+matrix\+\_\+is\+\_\+equal} (const \textbf{ ps\+\_\+matrix} $\ast$a, const \textbf{ ps\+\_\+matrix} $\ast$b)
+\begin{DoxyCompactList}\small\item\em Checks whether two matrix are equal. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT float P\+I\+C\+A\+PI \textbf{ ps\+\_\+matrix\+\_\+get\+\_\+determinant} (const \textbf{ ps\+\_\+matrix} $\ast$matrix)
+\begin{DoxyCompactList}\small\item\em Return the determinant from a matrix. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+matrix\+\_\+set\+\_\+translate\+\_\+factor} (\textbf{ ps\+\_\+matrix} $\ast$matrix, float tx, float ty)
+\begin{DoxyCompactList}\small\item\em Set the translate factors to the matrix. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+bool} P\+I\+C\+A\+PI \textbf{ ps\+\_\+matrix\+\_\+get\+\_\+translate\+\_\+factor} (\textbf{ ps\+\_\+matrix} $\ast$matrix, float $\ast$tx, float $\ast$ty)
+\begin{DoxyCompactList}\small\item\em Get the translate factors from the matrix. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+matrix\+\_\+set\+\_\+scale\+\_\+factor} (\textbf{ ps\+\_\+matrix} $\ast$matrix, float sx, float sy)
+\begin{DoxyCompactList}\small\item\em Set the scale factors to the matrix. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+bool} P\+I\+C\+A\+PI \textbf{ ps\+\_\+matrix\+\_\+get\+\_\+scale\+\_\+factor} (\textbf{ ps\+\_\+matrix} $\ast$matrix, float $\ast$sx, float $\ast$sy)
+\begin{DoxyCompactList}\small\item\em Get the scale factors from the matrix. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+matrix\+\_\+set\+\_\+shear\+\_\+factor} (\textbf{ ps\+\_\+matrix} $\ast$matrix, float shx, float shy)
+\begin{DoxyCompactList}\small\item\em Set the shear factors to the matrix. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+bool} P\+I\+C\+A\+PI \textbf{ ps\+\_\+matrix\+\_\+get\+\_\+shear\+\_\+factor} (\textbf{ ps\+\_\+matrix} $\ast$matrix, float $\ast$shx, float $\ast$shy)
+\begin{DoxyCompactList}\small\item\em Get the shear factors from the matrix. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+matrix\+\_\+transform\+\_\+point} (const \textbf{ ps\+\_\+matrix} $\ast$matrix, \textbf{ ps\+\_\+point} $\ast$point)
+\begin{DoxyCompactList}\small\item\em Transform an existing point using the matrix. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+matrix\+\_\+transform\+\_\+rect} (const \textbf{ ps\+\_\+matrix} $\ast$matrix, \textbf{ ps\+\_\+rect} $\ast$rect)
+\begin{DoxyCompactList}\small\item\em Transform an existing rectangle using the matrix. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+matrix\+\_\+transform\+\_\+path} (const \textbf{ ps\+\_\+matrix} $\ast$matrix, \textbf{ ps\+\_\+path} $\ast$path)
+\begin{DoxyCompactList}\small\item\em Transform an existing path using the matrix. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\label{group__matrix_gadbacb61c46d84fbf556aedbf5e6ea259}} 
+\index{Matrix@{Matrix}!ps\_matrix\_create@{ps\_matrix\_create}}
+\index{ps\_matrix\_create@{ps\_matrix\_create}!Matrix@{Matrix}}
+\doxysubsubsection{ps\_matrix\_create()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+matrix} $\ast$ ps\+\_\+matrix\+\_\+create (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+Create a identity matrix object. 
+
+\begin{DoxyReturn}{Returns}
+If the function succeeds, the return value is the pointer to a new matrix object. If the function fails, the return value is N\+U\+LL.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+matrix\+\_\+create\+\_\+init}{p.}{group__matrix_ga69ede69a9ec2a9ab6f261eb316a6a234}, \doxyref{ps\+\_\+matrix\+\_\+create\+\_\+copy}{p.}{group__matrix_gac7c82a5f8aa0c78afec9a8db112d36a4}, \doxyref{ps\+\_\+matrix\+\_\+ref}{p.}{group__matrix_gaedf54a96b2ecf6f1d042c18bb2e92160}, \doxyref{ps\+\_\+matrix\+\_\+unref}{p.}{group__matrix_gad0aad436eff055216cfb61e920d2d14d} 
+\end{DoxySeeAlso}
+\mbox{\label{group__matrix_gac7c82a5f8aa0c78afec9a8db112d36a4}} 
+\index{Matrix@{Matrix}!ps\_matrix\_create\_copy@{ps\_matrix\_create\_copy}}
+\index{ps\_matrix\_create\_copy@{ps\_matrix\_create\_copy}!Matrix@{Matrix}}
+\doxysubsubsection{ps\_matrix\_create\_copy()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+matrix} $\ast$ ps\+\_\+matrix\+\_\+create\+\_\+copy (\begin{DoxyParamCaption}\item[{const \textbf{ ps\+\_\+matrix} $\ast$}]{matrix }\end{DoxyParamCaption})}
+
+
+
+Create a matrix copy from an exist one. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em matrix} & Pointer to an existing matrix object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+If the function succeeds, the return value is the pointer to a new matrix object. If the function fails, the return value is N\+U\+LL.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+matrix\+\_\+create\+\_\+init}{p.}{group__matrix_ga69ede69a9ec2a9ab6f261eb316a6a234}, \doxyref{ps\+\_\+matrix\+\_\+create}{p.}{group__matrix_gadbacb61c46d84fbf556aedbf5e6ea259}, \doxyref{ps\+\_\+matrix\+\_\+ref}{p.}{group__matrix_gaedf54a96b2ecf6f1d042c18bb2e92160}, \doxyref{ps\+\_\+matrix\+\_\+unref}{p.}{group__matrix_gad0aad436eff055216cfb61e920d2d14d} 
+\end{DoxySeeAlso}
+\mbox{\label{group__matrix_ga69ede69a9ec2a9ab6f261eb316a6a234}} 
+\index{Matrix@{Matrix}!ps\_matrix\_create\_init@{ps\_matrix\_create\_init}}
+\index{ps\_matrix\_create\_init@{ps\_matrix\_create\_init}!Matrix@{Matrix}}
+\doxysubsubsection{ps\_matrix\_create\_init()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+matrix} $\ast$ ps\+\_\+matrix\+\_\+create\+\_\+init (\begin{DoxyParamCaption}\item[{float}]{sx,  }\item[{float}]{shy,  }\item[{float}]{shx,  }\item[{float}]{sy,  }\item[{float}]{tx,  }\item[{float}]{ty }\end{DoxyParamCaption})}
+
+
+
+Create a matrix with given parameters. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em sx} & The horizontal scaling factor. \\
+\hline
+{\em shy} & The vertical skewing factor. \\
+\hline
+{\em shx} & The horizontal skewing factor. \\
+\hline
+{\em sy} & The vertical scaling factor. \\
+\hline
+{\em tx} & The horizontal translating factor. \\
+\hline
+{\em ty} & The vertical translating factor.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+If the function succeeds, the return value is the pointer to a new matrix object. If the function fails, the return value is N\+U\+LL.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+matrix\+\_\+create}{p.}{group__matrix_gadbacb61c46d84fbf556aedbf5e6ea259}, \doxyref{ps\+\_\+matrix\+\_\+create\+\_\+copy}{p.}{group__matrix_gac7c82a5f8aa0c78afec9a8db112d36a4}, \doxyref{ps\+\_\+matrix\+\_\+ref}{p.}{group__matrix_gaedf54a96b2ecf6f1d042c18bb2e92160}, \doxyref{ps\+\_\+matrix\+\_\+unref}{p.}{group__matrix_gad0aad436eff055216cfb61e920d2d14d} 
+\end{DoxySeeAlso}
+\mbox{\label{group__matrix_ga467cb6031d14de3db45eead248eefcbd}} 
+\index{Matrix@{Matrix}!ps\_matrix\_flip\_x@{ps\_matrix\_flip\_x}}
+\index{ps\_matrix\_flip\_x@{ps\_matrix\_flip\_x}!Matrix@{Matrix}}
+\doxysubsubsection{ps\_matrix\_flip\_x()}
+{\footnotesize\ttfamily void ps\+\_\+matrix\+\_\+flip\+\_\+x (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+matrix} $\ast$}]{matrix }\end{DoxyParamCaption})}
+
+
+
+Flip a matrix in the horizontal direction. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em matrix} & Pointer to an existing matrix object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+matrix\+\_\+identity}{p.}{group__matrix_gaf99eaf47dbc1432592fb87a1d6a99f96}, \doxyref{ps\+\_\+matrix\+\_\+flip\+\_\+y}{p.}{group__matrix_gad5a6b0ac0ff6d02e7e4480ed0c40e40f}, \doxyref{ps\+\_\+matrix\+\_\+invert}{p.}{group__matrix_ga59be9cd4b5ba1c4ed73283e04efd2f91} 
+\end{DoxySeeAlso}
+\mbox{\label{group__matrix_gad5a6b0ac0ff6d02e7e4480ed0c40e40f}} 
+\index{Matrix@{Matrix}!ps\_matrix\_flip\_y@{ps\_matrix\_flip\_y}}
+\index{ps\_matrix\_flip\_y@{ps\_matrix\_flip\_y}!Matrix@{Matrix}}
+\doxysubsubsection{ps\_matrix\_flip\_y()}
+{\footnotesize\ttfamily void ps\+\_\+matrix\+\_\+flip\+\_\+y (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+matrix} $\ast$}]{matrix }\end{DoxyParamCaption})}
+
+
+
+Flip a matrix in the vertical direction. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em matrix} & Pointer to an existing matrix object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+matrix\+\_\+identity}{p.}{group__matrix_gaf99eaf47dbc1432592fb87a1d6a99f96}, \doxyref{ps\+\_\+matrix\+\_\+flip\+\_\+x}{p.}{group__matrix_ga467cb6031d14de3db45eead248eefcbd}, \doxyref{ps\+\_\+matrix\+\_\+invert}{p.}{group__matrix_ga59be9cd4b5ba1c4ed73283e04efd2f91} 
+\end{DoxySeeAlso}
+\mbox{\label{group__matrix_gaf24da79783f772f8cf317c3e4fb01e60}} 
+\index{Matrix@{Matrix}!ps\_matrix\_get\_determinant@{ps\_matrix\_get\_determinant}}
+\index{ps\_matrix\_get\_determinant@{ps\_matrix\_get\_determinant}!Matrix@{Matrix}}
+\doxysubsubsection{ps\_matrix\_get\_determinant()}
+{\footnotesize\ttfamily float ps\+\_\+matrix\+\_\+get\+\_\+determinant (\begin{DoxyParamCaption}\item[{const \textbf{ ps\+\_\+matrix} $\ast$}]{matrix }\end{DoxyParamCaption})}
+
+
+
+Return the determinant from a matrix. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em matrix} & Pointer to an existing matrix object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The determinant of the matrix.
+\end{DoxyReturn}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+matrix\+\_\+is\+\_\+equal}{p.}{group__matrix_ga07a2b7e798baf626f463a3fdf710a4c8}, \doxyref{ps\+\_\+matrix\+\_\+is\+\_\+identity}{p.}{group__matrix_ga1d82817780c82ee01aefca12d13d54b3}, \doxyref{ps\+\_\+matrix\+\_\+multiply}{p.}{group__matrix_ga8119629b46c53745a78e02f0ea5eb806} 
+\end{DoxySeeAlso}
+\mbox{\label{group__matrix_ga12b2687f49092b49087f4957d392f81e}} 
+\index{Matrix@{Matrix}!ps\_matrix\_get\_scale\_factor@{ps\_matrix\_get\_scale\_factor}}
+\index{ps\_matrix\_get\_scale\_factor@{ps\_matrix\_get\_scale\_factor}!Matrix@{Matrix}}
+\doxysubsubsection{ps\_matrix\_get\_scale\_factor()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+bool} ps\+\_\+matrix\+\_\+get\+\_\+scale\+\_\+factor (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+matrix} $\ast$}]{matrix,  }\item[{float $\ast$}]{sx,  }\item[{float $\ast$}]{sy }\end{DoxyParamCaption})}
+
+
+
+Get the scale factors from the matrix. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em matrix} & Pointer to an existing matrix object. \\
+\hline
+{\em sx} & Pointer to a buffer to receiving the scale factor in x dimension. \\
+\hline
+{\em sy} & Pointer to a buffer to receiving the scale factor in y dimension.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if is success, otherwise False.
+\end{DoxyReturn}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+matrix\+\_\+set\+\_\+scale\+\_\+factor}{p.}{group__matrix_gac3b95f23aefc14e10ba631e24049d22f} 
+\end{DoxySeeAlso}
+\mbox{\label{group__matrix_gaf3c36f3ba1aa416c32ee85eba67d7529}} 
+\index{Matrix@{Matrix}!ps\_matrix\_get\_shear\_factor@{ps\_matrix\_get\_shear\_factor}}
+\index{ps\_matrix\_get\_shear\_factor@{ps\_matrix\_get\_shear\_factor}!Matrix@{Matrix}}
+\doxysubsubsection{ps\_matrix\_get\_shear\_factor()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+bool} ps\+\_\+matrix\+\_\+get\+\_\+shear\+\_\+factor (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+matrix} $\ast$}]{matrix,  }\item[{float $\ast$}]{shx,  }\item[{float $\ast$}]{shy }\end{DoxyParamCaption})}
+
+
+
+Get the shear factors from the matrix. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em matrix} & Pointer to an existing matrix object. \\
+\hline
+{\em shx} & Pointer to a buffer to receiving the shear factor in horizontal. \\
+\hline
+{\em shy} & Pointer to a buffer to receiving the shear factor in vertical.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if is success, otherwise False.
+\end{DoxyReturn}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+matrix\+\_\+set\+\_\+shear\+\_\+factor}{p.}{group__matrix_ga586e87bb4af468c588f8b461ac53aca5} 
+\end{DoxySeeAlso}
+\mbox{\label{group__matrix_ga9a69fad772fb6c698981078df4892f75}} 
+\index{Matrix@{Matrix}!ps\_matrix\_get\_translate\_factor@{ps\_matrix\_get\_translate\_factor}}
+\index{ps\_matrix\_get\_translate\_factor@{ps\_matrix\_get\_translate\_factor}!Matrix@{Matrix}}
+\doxysubsubsection{ps\_matrix\_get\_translate\_factor()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+bool} ps\+\_\+matrix\+\_\+get\+\_\+translate\+\_\+factor (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+matrix} $\ast$}]{matrix,  }\item[{float $\ast$}]{tx,  }\item[{float $\ast$}]{ty }\end{DoxyParamCaption})}
+
+
+
+Get the translate factors from the matrix. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em matrix} & Pointer to an existing matrix object. \\
+\hline
+{\em tx} & Pointer to a buffer to receiving the translate factor in x direction. \\
+\hline
+{\em ty} & Pointer to a buffer to receiving the translate factor in y direction.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if is success, otherwise False.
+\end{DoxyReturn}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+matrix\+\_\+set\+\_\+translate\+\_\+factor}{p.}{group__matrix_ga5fba883620ceeca442f20c5b2a0a78f7} 
+\end{DoxySeeAlso}
+\mbox{\label{group__matrix_gaf99eaf47dbc1432592fb87a1d6a99f96}} 
+\index{Matrix@{Matrix}!ps\_matrix\_identity@{ps\_matrix\_identity}}
+\index{ps\_matrix\_identity@{ps\_matrix\_identity}!Matrix@{Matrix}}
+\doxysubsubsection{ps\_matrix\_identity()}
+{\footnotesize\ttfamily void ps\+\_\+matrix\+\_\+identity (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+matrix} $\ast$}]{matrix }\end{DoxyParamCaption})}
+
+
+
+Reset a matrix to identity matrix. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em matrix} & Pointer to an existing matrix object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+matrix\+\_\+flip\+\_\+x}{p.}{group__matrix_ga467cb6031d14de3db45eead248eefcbd}, \doxyref{ps\+\_\+matrix\+\_\+flip\+\_\+y}{p.}{group__matrix_gad5a6b0ac0ff6d02e7e4480ed0c40e40f}, \doxyref{ps\+\_\+matrix\+\_\+invert}{p.}{group__matrix_ga59be9cd4b5ba1c4ed73283e04efd2f91} 
+\end{DoxySeeAlso}
+\mbox{\label{group__matrix_gac80dad82387926fee28330271666c014}} 
+\index{Matrix@{Matrix}!ps\_matrix\_init@{ps\_matrix\_init}}
+\index{ps\_matrix\_init@{ps\_matrix\_init}!Matrix@{Matrix}}
+\doxysubsubsection{ps\_matrix\_init()}
+{\footnotesize\ttfamily void ps\+\_\+matrix\+\_\+init (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+matrix} $\ast$}]{matrix,  }\item[{float}]{sx,  }\item[{float}]{shy,  }\item[{float}]{shx,  }\item[{float}]{sy,  }\item[{float}]{tx,  }\item[{float}]{ty }\end{DoxyParamCaption})}
+
+
+
+Initialize an existing matrix object with given parameters. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em matrix} & Pointer to an existing matrix object. \\
+\hline
+{\em sx} & The horizontal scaling factor. \\
+\hline
+{\em shy} & The vertical skewing factor. \\
+\hline
+{\em shx} & The horizontal skewing factor. \\
+\hline
+{\em sy} & The vertical scaling factor. \\
+\hline
+{\em tx} & The horizontal translating factor. \\
+\hline
+{\em ty} & The vertical translating factor.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+matrix\+\_\+translate}{p.}{group__matrix_gaa463cde9e371d3a64bfde5cb596f5d4b}, \doxyref{ps\+\_\+matrix\+\_\+scale}{p.}{group__matrix_ga80519e826c14b23da56802220371a8cb}, \doxyref{ps\+\_\+matrix\+\_\+shear}{p.}{group__matrix_ga462484036f58c406f0153ec244d12e7a}, \doxyref{ps\+\_\+matrix\+\_\+rotate}{p.}{group__matrix_ga9c40abd2d698d542f35b0debbc272e54} 
+\end{DoxySeeAlso}
+\mbox{\label{group__matrix_ga59be9cd4b5ba1c4ed73283e04efd2f91}} 
+\index{Matrix@{Matrix}!ps\_matrix\_invert@{ps\_matrix\_invert}}
+\index{ps\_matrix\_invert@{ps\_matrix\_invert}!Matrix@{Matrix}}
+\doxysubsubsection{ps\_matrix\_invert()}
+{\footnotesize\ttfamily void ps\+\_\+matrix\+\_\+invert (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+matrix} $\ast$}]{matrix }\end{DoxyParamCaption})}
+
+
+
+Modify a matrix by inverting. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em matrix} & Pointer to an existing matrix object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+matrix\+\_\+flip\+\_\+x}{p.}{group__matrix_ga467cb6031d14de3db45eead248eefcbd}, \doxyref{ps\+\_\+matrix\+\_\+flip\+\_\+y}{p.}{group__matrix_gad5a6b0ac0ff6d02e7e4480ed0c40e40f}, \doxyref{ps\+\_\+matrix\+\_\+identity}{p.}{group__matrix_gaf99eaf47dbc1432592fb87a1d6a99f96} 
+\end{DoxySeeAlso}
+\mbox{\label{group__matrix_ga07a2b7e798baf626f463a3fdf710a4c8}} 
+\index{Matrix@{Matrix}!ps\_matrix\_is\_equal@{ps\_matrix\_is\_equal}}
+\index{ps\_matrix\_is\_equal@{ps\_matrix\_is\_equal}!Matrix@{Matrix}}
+\doxysubsubsection{ps\_matrix\_is\_equal()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+bool} ps\+\_\+matrix\+\_\+is\+\_\+equal (\begin{DoxyParamCaption}\item[{const \textbf{ ps\+\_\+matrix} $\ast$}]{a,  }\item[{const \textbf{ ps\+\_\+matrix} $\ast$}]{b }\end{DoxyParamCaption})}
+
+
+
+Checks whether two matrix are equal. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em a} & Pointer to an existing matrix object. \\
+\hline
+{\em b} & Pointer to an existing matrix object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if a and b are equal, otherwise False.
+\end{DoxyReturn}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+matrix\+\_\+is\+\_\+identity}{p.}{group__matrix_ga1d82817780c82ee01aefca12d13d54b3}, \doxyref{ps\+\_\+matrix\+\_\+get\+\_\+determinant}{p.}{group__matrix_gaf24da79783f772f8cf317c3e4fb01e60}, \doxyref{ps\+\_\+matrix\+\_\+multiply}{p.}{group__matrix_ga8119629b46c53745a78e02f0ea5eb806} 
+\end{DoxySeeAlso}
+\mbox{\label{group__matrix_ga1d82817780c82ee01aefca12d13d54b3}} 
+\index{Matrix@{Matrix}!ps\_matrix\_is\_identity@{ps\_matrix\_is\_identity}}
+\index{ps\_matrix\_is\_identity@{ps\_matrix\_is\_identity}!Matrix@{Matrix}}
+\doxysubsubsection{ps\_matrix\_is\_identity()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+bool} ps\+\_\+matrix\+\_\+is\+\_\+identity (\begin{DoxyParamCaption}\item[{const \textbf{ ps\+\_\+matrix} $\ast$}]{matrix }\end{DoxyParamCaption})}
+
+
+
+Checks whether the matrix is the identity transform matrix. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em matrix} & Pointer to an existing matrix object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if is identity, otherwise False.
+\end{DoxyReturn}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+matrix\+\_\+is\+\_\+equal}{p.}{group__matrix_ga07a2b7e798baf626f463a3fdf710a4c8}, \doxyref{ps\+\_\+matrix\+\_\+get\+\_\+determinant}{p.}{group__matrix_gaf24da79783f772f8cf317c3e4fb01e60}, \doxyref{ps\+\_\+matrix\+\_\+multiply}{p.}{group__matrix_ga8119629b46c53745a78e02f0ea5eb806} 
+\end{DoxySeeAlso}
+\mbox{\label{group__matrix_ga8119629b46c53745a78e02f0ea5eb806}} 
+\index{Matrix@{Matrix}!ps\_matrix\_multiply@{ps\_matrix\_multiply}}
+\index{ps\_matrix\_multiply@{ps\_matrix\_multiply}!Matrix@{Matrix}}
+\doxysubsubsection{ps\_matrix\_multiply()}
+{\footnotesize\ttfamily void ps\+\_\+matrix\+\_\+multiply (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+matrix} $\ast$}]{result,  }\item[{const \textbf{ ps\+\_\+matrix} $\ast$}]{a,  }\item[{const \textbf{ ps\+\_\+matrix} $\ast$}]{b }\end{DoxyParamCaption})}
+
+
+
+Multiplies the matrix in a and b together and stores the result in result. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em result} & Pointer to an existing matrix object in which to store the result. \\
+\hline
+{\em a} & Pointer to an existing matrix object. \\
+\hline
+{\em b} & Pointer to an existing matrix object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+matrix\+\_\+is\+\_\+identity}{p.}{group__matrix_ga1d82817780c82ee01aefca12d13d54b3}, \doxyref{ps\+\_\+matrix\+\_\+is\+\_\+equal}{p.}{group__matrix_ga07a2b7e798baf626f463a3fdf710a4c8} \doxyref{ps\+\_\+matrix\+\_\+get\+\_\+determinant}{p.}{group__matrix_gaf24da79783f772f8cf317c3e4fb01e60} 
+\end{DoxySeeAlso}
+\mbox{\label{group__matrix_gaedf54a96b2ecf6f1d042c18bb2e92160}} 
+\index{Matrix@{Matrix}!ps\_matrix\_ref@{ps\_matrix\_ref}}
+\index{ps\_matrix\_ref@{ps\_matrix\_ref}!Matrix@{Matrix}}
+\doxysubsubsection{ps\_matrix\_ref()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+matrix} $\ast$ ps\+\_\+matrix\+\_\+ref (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+matrix} $\ast$}]{matrix }\end{DoxyParamCaption})}
+
+
+
+Increases the reference count of the matrix by 1. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em matrix} & Pointer to an existing matrix object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+If the function succeeds, the return value is the pointer to the matrix object. If the function fails, the return value is N\+U\+LL.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+matrix\+\_\+create\+\_\+init}{p.}{group__matrix_ga69ede69a9ec2a9ab6f261eb316a6a234}, \doxyref{ps\+\_\+matrix\+\_\+create}{p.}{group__matrix_gadbacb61c46d84fbf556aedbf5e6ea259}, \doxyref{ps\+\_\+matrix\+\_\+create\+\_\+copy}{p.}{group__matrix_gac7c82a5f8aa0c78afec9a8db112d36a4}, \doxyref{ps\+\_\+matrix\+\_\+unref}{p.}{group__matrix_gad0aad436eff055216cfb61e920d2d14d} 
+\end{DoxySeeAlso}
+\mbox{\label{group__matrix_ga9c40abd2d698d542f35b0debbc272e54}} 
+\index{Matrix@{Matrix}!ps\_matrix\_rotate@{ps\_matrix\_rotate}}
+\index{ps\_matrix\_rotate@{ps\_matrix\_rotate}!Matrix@{Matrix}}
+\doxysubsubsection{ps\_matrix\_rotate()}
+{\footnotesize\ttfamily void ps\+\_\+matrix\+\_\+rotate (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+matrix} $\ast$}]{matrix,  }\item[{float}]{angle }\end{DoxyParamCaption})}
+
+
+
+Modify a matrix by rotating. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em matrix} & Pointer to an existing matrix object. \\
+\hline
+{\em angle} & The angle, in radians, which to rotate the specified matrix.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+matrix\+\_\+translate}{p.}{group__matrix_gaa463cde9e371d3a64bfde5cb596f5d4b}, \doxyref{ps\+\_\+matrix\+\_\+shear}{p.}{group__matrix_ga462484036f58c406f0153ec244d12e7a}, \doxyref{ps\+\_\+matrix\+\_\+scale}{p.}{group__matrix_ga80519e826c14b23da56802220371a8cb} 
+\end{DoxySeeAlso}
+\mbox{\label{group__matrix_ga80519e826c14b23da56802220371a8cb}} 
+\index{Matrix@{Matrix}!ps\_matrix\_scale@{ps\_matrix\_scale}}
+\index{ps\_matrix\_scale@{ps\_matrix\_scale}!Matrix@{Matrix}}
+\doxysubsubsection{ps\_matrix\_scale()}
+{\footnotesize\ttfamily void ps\+\_\+matrix\+\_\+scale (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+matrix} $\ast$}]{matrix,  }\item[{float}]{sx,  }\item[{float}]{sy }\end{DoxyParamCaption})}
+
+
+
+Modify a matrix by scaling. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em matrix} & Pointer to an existing matrix object. \\
+\hline
+{\em sx} & The scale factor for the X dimension. \\
+\hline
+{\em sy} & The scale factor for the Y dimension.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+matrix\+\_\+translate}{p.}{group__matrix_gaa463cde9e371d3a64bfde5cb596f5d4b}, \doxyref{ps\+\_\+matrix\+\_\+shear}{p.}{group__matrix_ga462484036f58c406f0153ec244d12e7a}, \doxyref{ps\+\_\+matrix\+\_\+rotate}{p.}{group__matrix_ga9c40abd2d698d542f35b0debbc272e54} 
+\end{DoxySeeAlso}
+\mbox{\label{group__matrix_gac3b95f23aefc14e10ba631e24049d22f}} 
+\index{Matrix@{Matrix}!ps\_matrix\_set\_scale\_factor@{ps\_matrix\_set\_scale\_factor}}
+\index{ps\_matrix\_set\_scale\_factor@{ps\_matrix\_set\_scale\_factor}!Matrix@{Matrix}}
+\doxysubsubsection{ps\_matrix\_set\_scale\_factor()}
+{\footnotesize\ttfamily void ps\+\_\+matrix\+\_\+set\+\_\+scale\+\_\+factor (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+matrix} $\ast$}]{matrix,  }\item[{float}]{sx,  }\item[{float}]{sy }\end{DoxyParamCaption})}
+
+
+
+Set the scale factors to the matrix. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em matrix} & Pointer to an existing matrix object. \\
+\hline
+{\em sx} & The scale factor in x dimension. \\
+\hline
+{\em sy} & The scale factor in y dimension.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+matrix\+\_\+get\+\_\+scale\+\_\+factor}{p.}{group__matrix_ga12b2687f49092b49087f4957d392f81e} 
+\end{DoxySeeAlso}
+\mbox{\label{group__matrix_ga586e87bb4af468c588f8b461ac53aca5}} 
+\index{Matrix@{Matrix}!ps\_matrix\_set\_shear\_factor@{ps\_matrix\_set\_shear\_factor}}
+\index{ps\_matrix\_set\_shear\_factor@{ps\_matrix\_set\_shear\_factor}!Matrix@{Matrix}}
+\doxysubsubsection{ps\_matrix\_set\_shear\_factor()}
+{\footnotesize\ttfamily void ps\+\_\+matrix\+\_\+set\+\_\+shear\+\_\+factor (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+matrix} $\ast$}]{matrix,  }\item[{float}]{shx,  }\item[{float}]{shy }\end{DoxyParamCaption})}
+
+
+
+Set the shear factors to the matrix. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em matrix} & Pointer to an existing matrix object. \\
+\hline
+{\em shx} & The shear factor for the horizontal. \\
+\hline
+{\em shy} & The shear factor for the vertical.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+matrix\+\_\+get\+\_\+shear\+\_\+factor}{p.}{group__matrix_gaf3c36f3ba1aa416c32ee85eba67d7529} 
+\end{DoxySeeAlso}
+\mbox{\label{group__matrix_ga5fba883620ceeca442f20c5b2a0a78f7}} 
+\index{Matrix@{Matrix}!ps\_matrix\_set\_translate\_factor@{ps\_matrix\_set\_translate\_factor}}
+\index{ps\_matrix\_set\_translate\_factor@{ps\_matrix\_set\_translate\_factor}!Matrix@{Matrix}}
+\doxysubsubsection{ps\_matrix\_set\_translate\_factor()}
+{\footnotesize\ttfamily void ps\+\_\+matrix\+\_\+set\+\_\+translate\+\_\+factor (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+matrix} $\ast$}]{matrix,  }\item[{float}]{tx,  }\item[{float}]{ty }\end{DoxyParamCaption})}
+
+
+
+Set the translate factors to the matrix. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em matrix} & Pointer to an existing matrix object. \\
+\hline
+{\em tx} & The amount, in pixels, which the translate factor in x direction. \\
+\hline
+{\em ty} & The amount, in pixels, which the translate factor in y direction.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+matrix\+\_\+get\+\_\+translate\+\_\+factor}{p.}{group__matrix_ga9a69fad772fb6c698981078df4892f75} 
+\end{DoxySeeAlso}
+\mbox{\label{group__matrix_ga462484036f58c406f0153ec244d12e7a}} 
+\index{Matrix@{Matrix}!ps\_matrix\_shear@{ps\_matrix\_shear}}
+\index{ps\_matrix\_shear@{ps\_matrix\_shear}!Matrix@{Matrix}}
+\doxysubsubsection{ps\_matrix\_shear()}
+{\footnotesize\ttfamily void ps\+\_\+matrix\+\_\+shear (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+matrix} $\ast$}]{matrix,  }\item[{float}]{shx,  }\item[{float}]{shy }\end{DoxyParamCaption})}
+
+
+
+Modify a matrix by shearing. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em matrix} & Pointer to an existing matrix object. \\
+\hline
+{\em shx} & The shear factor for the horizontal. \\
+\hline
+{\em shy} & The shear factor for the vertical.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+matrix\+\_\+translate}{p.}{group__matrix_gaa463cde9e371d3a64bfde5cb596f5d4b}, \doxyref{ps\+\_\+matrix\+\_\+scale}{p.}{group__matrix_ga80519e826c14b23da56802220371a8cb}, \doxyref{ps\+\_\+matrix\+\_\+rotate}{p.}{group__matrix_ga9c40abd2d698d542f35b0debbc272e54} 
+\end{DoxySeeAlso}
+\mbox{\label{group__matrix_ga4ef7bd25510bb5a6ed2072bba6be4bf8}} 
+\index{Matrix@{Matrix}!ps\_matrix\_transform\_path@{ps\_matrix\_transform\_path}}
+\index{ps\_matrix\_transform\_path@{ps\_matrix\_transform\_path}!Matrix@{Matrix}}
+\doxysubsubsection{ps\_matrix\_transform\_path()}
+{\footnotesize\ttfamily void ps\+\_\+matrix\+\_\+transform\+\_\+path (\begin{DoxyParamCaption}\item[{const \textbf{ ps\+\_\+matrix} $\ast$}]{matrix,  }\item[{\textbf{ ps\+\_\+path} $\ast$}]{path }\end{DoxyParamCaption})}
+
+
+
+Transform an existing path using the matrix. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em matrix} & Pointer to an existing matrix object. \\
+\hline
+{\em path} & An existing path which will be transformed.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+matrix\+\_\+transform\+\_\+point}{p.}{group__matrix_ga300ed15804faa1a770a24cd2024480dc}, \doxyref{ps\+\_\+matrix\+\_\+transform\+\_\+rect}{p.}{group__matrix_ga3d552bbf5434d45a8972b6bae2eb0c1e} 
+\end{DoxySeeAlso}
+\mbox{\label{group__matrix_ga300ed15804faa1a770a24cd2024480dc}} 
+\index{Matrix@{Matrix}!ps\_matrix\_transform\_point@{ps\_matrix\_transform\_point}}
+\index{ps\_matrix\_transform\_point@{ps\_matrix\_transform\_point}!Matrix@{Matrix}}
+\doxysubsubsection{ps\_matrix\_transform\_point()}
+{\footnotesize\ttfamily void ps\+\_\+matrix\+\_\+transform\+\_\+point (\begin{DoxyParamCaption}\item[{const \textbf{ ps\+\_\+matrix} $\ast$}]{matrix,  }\item[{\textbf{ ps\+\_\+point} $\ast$}]{point }\end{DoxyParamCaption})}
+
+
+
+Transform an existing point using the matrix. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em matrix} & Pointer to an existing matrix object. \\
+\hline
+{\em point} & An existing point which will be transformed.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+matrix\+\_\+transform\+\_\+rect}{p.}{group__matrix_ga3d552bbf5434d45a8972b6bae2eb0c1e}, \doxyref{ps\+\_\+matrix\+\_\+transform\+\_\+path}{p.}{group__matrix_ga4ef7bd25510bb5a6ed2072bba6be4bf8} 
+\end{DoxySeeAlso}
+\mbox{\label{group__matrix_ga3d552bbf5434d45a8972b6bae2eb0c1e}} 
+\index{Matrix@{Matrix}!ps\_matrix\_transform\_rect@{ps\_matrix\_transform\_rect}}
+\index{ps\_matrix\_transform\_rect@{ps\_matrix\_transform\_rect}!Matrix@{Matrix}}
+\doxysubsubsection{ps\_matrix\_transform\_rect()}
+{\footnotesize\ttfamily void ps\+\_\+matrix\+\_\+transform\+\_\+rect (\begin{DoxyParamCaption}\item[{const \textbf{ ps\+\_\+matrix} $\ast$}]{matrix,  }\item[{\textbf{ ps\+\_\+rect} $\ast$}]{rect }\end{DoxyParamCaption})}
+
+
+
+Transform an existing rectangle using the matrix. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em matrix} & Pointer to an existing matrix object. \\
+\hline
+{\em rect} & An existing rectangle which will be transformed.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+matrix\+\_\+transform\+\_\+point}{p.}{group__matrix_ga300ed15804faa1a770a24cd2024480dc}, \doxyref{ps\+\_\+matrix\+\_\+transform\+\_\+path}{p.}{group__matrix_ga4ef7bd25510bb5a6ed2072bba6be4bf8} 
+\end{DoxySeeAlso}
+\mbox{\label{group__matrix_gaa463cde9e371d3a64bfde5cb596f5d4b}} 
+\index{Matrix@{Matrix}!ps\_matrix\_translate@{ps\_matrix\_translate}}
+\index{ps\_matrix\_translate@{ps\_matrix\_translate}!Matrix@{Matrix}}
+\doxysubsubsection{ps\_matrix\_translate()}
+{\footnotesize\ttfamily void ps\+\_\+matrix\+\_\+translate (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+matrix} $\ast$}]{matrix,  }\item[{float}]{tx,  }\item[{float}]{ty }\end{DoxyParamCaption})}
+
+
+
+Modify a matrix by translating. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em matrix} & Pointer to an existing matrix object. \\
+\hline
+{\em tx} & The amount, in pixels, which to translate in x direction. \\
+\hline
+{\em ty} & The amount, in pixels, which to translate in y direction.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+matrix\+\_\+scale}{p.}{group__matrix_ga80519e826c14b23da56802220371a8cb}, \doxyref{ps\+\_\+matrix\+\_\+shear}{p.}{group__matrix_ga462484036f58c406f0153ec244d12e7a}, \doxyref{ps\+\_\+matrix\+\_\+rotate}{p.}{group__matrix_ga9c40abd2d698d542f35b0debbc272e54} 
+\end{DoxySeeAlso}
+\mbox{\label{group__matrix_gad0aad436eff055216cfb61e920d2d14d}} 
+\index{Matrix@{Matrix}!ps\_matrix\_unref@{ps\_matrix\_unref}}
+\index{ps\_matrix\_unref@{ps\_matrix\_unref}!Matrix@{Matrix}}
+\doxysubsubsection{ps\_matrix\_unref()}
+{\footnotesize\ttfamily void ps\+\_\+matrix\+\_\+unref (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+matrix} $\ast$}]{matrix }\end{DoxyParamCaption})}
+
+
+
+Decrements the reference count for the matrix object. If the reference count on the matrix falls to 0, the matrix is freed. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em matrix} & Pointer to an existing matrix object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+matrix\+\_\+create\+\_\+init}{p.}{group__matrix_ga69ede69a9ec2a9ab6f261eb316a6a234}, \doxyref{ps\+\_\+matrix\+\_\+create}{p.}{group__matrix_gadbacb61c46d84fbf556aedbf5e6ea259}, \doxyref{ps\+\_\+matrix\+\_\+create\+\_\+copy}{p.}{group__matrix_gac7c82a5f8aa0c78afec9a8db112d36a4}, \doxyref{ps\+\_\+matrix\+\_\+ref}{p.}{group__matrix_gaedf54a96b2ecf6f1d042c18bb2e92160} 
+\end{DoxySeeAlso}

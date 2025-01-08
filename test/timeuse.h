@@ -50,4 +50,49 @@ static inline double get_clock_used_ms(LARGE_INTEGER t1, LARGE_INTEGER t2)
 
 #endif
 
+#if defined(ARM)
+static inline uint64_t arm_rdtsc(void)
+{
+    uint64_t tsc;
+    asm volatile("mrs %0, cntvct_el0" : "=r"(tsc));
+    return tsc;
+}
+
+static inline uint64_t
+arm64_cntfrq(void)
+{
+   uint64_t freq;
+   asm volatile("mrs %0, cntfrq_el0" : "=r" (freq));
+   return freq;
+}
+
+static inline uint64_t
+arm64_pmccntr(void)
+{
+   uint64_t tsc;
+   asm volatile("mrs %0, pmccntr_el0" : "=r"(tsc));
+   return tsc;
+}
+
+static inline uint64_t
+rdtsc(void)
+{
+   return arm64_pmccntr();
+}
+
+static void enable_pmu_pmccntr(void)
+{
+   u64 val = 0;
+   asm volatile("msr pmintenset_el1, %0" : : "r" ((u64)(0 << 31)));
+   asm volatile("msr pmcntenset_el0, %0" :: "r" ((u64)(1 << 31)));
+   asm volatile("msr pmuserenr_el0, %0" : : "r"((u64)(1 << 0) | (u64)(1 << 2)));
+   asm volatile("mrs %0, pmcr_el0" : "=r" (val));
+   val |= ((u64)(1 << 0) | (u64)(1 << 2));
+   isb();
+   asm volatile("msr pmcr_el0, %0" : : "r" (val));
+}
+#endif
+
+
+
 #endif

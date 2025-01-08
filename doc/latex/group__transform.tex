@@ -1,0 +1,238 @@
+\doxysection{Transform}
+\label{group__transform}\index{Transform@{Transform}}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+translate} (\textbf{ ps\+\_\+context} $\ast$ctx, float tx, float ty)
+\begin{DoxyCompactList}\small\item\em Changes the origin of the user coordinate system in graphic context. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+scale} (\textbf{ ps\+\_\+context} $\ast$ctx, float sx, float sy)
+\begin{DoxyCompactList}\small\item\em Changes the scale of the user coordinate system in graphic context. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+shear} (\textbf{ ps\+\_\+context} $\ast$ctx, float shx, float shy)
+\begin{DoxyCompactList}\small\item\em Changes the shear of the user coordinate system in graphic context. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+rotate} (\textbf{ ps\+\_\+context} $\ast$ctx, float angle)
+\begin{DoxyCompactList}\small\item\em Rotates the user coordinate system in graphic context. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+identity} (\textbf{ ps\+\_\+context} $\ast$ctx)
+\begin{DoxyCompactList}\small\item\em Reset the current transformation matrix to identity matrix. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+transform} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+matrix} $\ast$matrix)
+\begin{DoxyCompactList}\small\item\em Transforms the user coordinate system in graphic context using a specified matrix. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+set\+\_\+matrix} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+matrix} $\ast$matrix)
+\begin{DoxyCompactList}\small\item\em Modifies the current transformation matrix to the given matrix. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+bool} P\+I\+C\+A\+PI \textbf{ ps\+\_\+get\+\_\+matrix} (\textbf{ ps\+\_\+context} $\ast$ctx, \textbf{ ps\+\_\+matrix} $\ast$matrix)
+\begin{DoxyCompactList}\small\item\em Get the current transformation matrix from graphic context. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+world\+\_\+to\+\_\+viewport} (\textbf{ ps\+\_\+context} $\ast$ctx, \textbf{ ps\+\_\+point} $\ast$point)
+\begin{DoxyCompactList}\small\item\em Transform a coordinate from device space to user space. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+viewport\+\_\+to\+\_\+world} (\textbf{ ps\+\_\+context} $\ast$ctx, \textbf{ ps\+\_\+point} $\ast$point)
+\begin{DoxyCompactList}\small\item\em Transform a coordinate from user space to device space. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\label{group__transform_ga6fc44d5bc6960f17d9585cb460230b29}} 
+\index{Transform@{Transform}!ps\_get\_matrix@{ps\_get\_matrix}}
+\index{ps\_get\_matrix@{ps\_get\_matrix}!Transform@{Transform}}
+\doxysubsubsection{ps\_get\_matrix()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+bool} ps\+\_\+get\+\_\+matrix (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{\textbf{ ps\+\_\+matrix} $\ast$}]{matrix }\end{DoxyParamCaption})}
+
+
+
+Get the current transformation matrix from graphic context. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em matrix} & Pointer to a matrix object to receiving the current transformation.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if is success, otherwise False.
+\end{DoxyReturn}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+set\+\_\+matrix}{p.}{group__transform_gafdd79be45c9dd686968a28e26dad197a} 
+\end{DoxySeeAlso}
+\mbox{\label{group__transform_ga5b70ca1210e0c47d3c600ddb0be28d36}} 
+\index{Transform@{Transform}!ps\_identity@{ps\_identity}}
+\index{ps\_identity@{ps\_identity}!Transform@{Transform}}
+\doxysubsubsection{ps\_identity()}
+{\footnotesize\ttfamily void ps\+\_\+identity (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx }\end{DoxyParamCaption})}
+
+
+
+Reset the current transformation matrix to identity matrix. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+translate}{p.}{group__transform_ga70d073a90a6c15ec6fb724294169ed61}, \doxyref{ps\+\_\+scale}{p.}{group__transform_ga0edb5a79c27a2c74110aa73172be60c2}, \doxyref{ps\+\_\+shear}{p.}{group__transform_ga57d6341a69881c51eee52598a6fd2a55}, \doxyref{ps\+\_\+rotate}{p.}{group__transform_ga540c9dad7b1755d283dbe5b9c197e82c}, \doxyref{ps\+\_\+transform}{p.}{group__transform_ga3c2ad1c918dcd43eb68b42e60a4ff136} 
+\end{DoxySeeAlso}
+\mbox{\label{group__transform_ga540c9dad7b1755d283dbe5b9c197e82c}} 
+\index{Transform@{Transform}!ps\_rotate@{ps\_rotate}}
+\index{ps\_rotate@{ps\_rotate}!Transform@{Transform}}
+\doxysubsubsection{ps\_rotate()}
+{\footnotesize\ttfamily void ps\+\_\+rotate (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{float}]{angle }\end{DoxyParamCaption})}
+
+
+
+Rotates the user coordinate system in graphic context. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em angle} & The angle, in radians, which to rotate the specified context.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+translate}{p.}{group__transform_ga70d073a90a6c15ec6fb724294169ed61}, \doxyref{ps\+\_\+scale}{p.}{group__transform_ga0edb5a79c27a2c74110aa73172be60c2}, \doxyref{ps\+\_\+shear}{p.}{group__transform_ga57d6341a69881c51eee52598a6fd2a55}, \doxyref{ps\+\_\+identity}{p.}{group__transform_ga5b70ca1210e0c47d3c600ddb0be28d36}, \doxyref{ps\+\_\+transform}{p.}{group__transform_ga3c2ad1c918dcd43eb68b42e60a4ff136} 
+\end{DoxySeeAlso}
+\mbox{\label{group__transform_ga0edb5a79c27a2c74110aa73172be60c2}} 
+\index{Transform@{Transform}!ps\_scale@{ps\_scale}}
+\index{ps\_scale@{ps\_scale}!Transform@{Transform}}
+\doxysubsubsection{ps\_scale()}
+{\footnotesize\ttfamily void ps\+\_\+scale (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{float}]{sx,  }\item[{float}]{sy }\end{DoxyParamCaption})}
+
+
+
+Changes the scale of the user coordinate system in graphic context. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em sx} & The scale factor for the X dimension. \\
+\hline
+{\em sy} & The scale factor for the Y dimension.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+translate}{p.}{group__transform_ga70d073a90a6c15ec6fb724294169ed61}, \doxyref{ps\+\_\+shear}{p.}{group__transform_ga57d6341a69881c51eee52598a6fd2a55}, \doxyref{ps\+\_\+rotate}{p.}{group__transform_ga540c9dad7b1755d283dbe5b9c197e82c}, \doxyref{ps\+\_\+identity}{p.}{group__transform_ga5b70ca1210e0c47d3c600ddb0be28d36}, \doxyref{ps\+\_\+transform}{p.}{group__transform_ga3c2ad1c918dcd43eb68b42e60a4ff136} 
+\end{DoxySeeAlso}
+\mbox{\label{group__transform_gafdd79be45c9dd686968a28e26dad197a}} 
+\index{Transform@{Transform}!ps\_set\_matrix@{ps\_set\_matrix}}
+\index{ps\_set\_matrix@{ps\_set\_matrix}!Transform@{Transform}}
+\doxysubsubsection{ps\_set\_matrix()}
+{\footnotesize\ttfamily void ps\+\_\+set\+\_\+matrix (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{const \textbf{ ps\+\_\+matrix} $\ast$}]{matrix }\end{DoxyParamCaption})}
+
+
+
+Modifies the current transformation matrix to the given matrix. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em matrix} & The transformation matrix to be set.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+get\+\_\+matrix}{p.}{group__transform_ga6fc44d5bc6960f17d9585cb460230b29} 
+\end{DoxySeeAlso}
+\mbox{\label{group__transform_ga57d6341a69881c51eee52598a6fd2a55}} 
+\index{Transform@{Transform}!ps\_shear@{ps\_shear}}
+\index{ps\_shear@{ps\_shear}!Transform@{Transform}}
+\doxysubsubsection{ps\_shear()}
+{\footnotesize\ttfamily void ps\+\_\+shear (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{float}]{shx,  }\item[{float}]{shy }\end{DoxyParamCaption})}
+
+
+
+Changes the shear of the user coordinate system in graphic context. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em shx} & The shear factor for the horizontal. \\
+\hline
+{\em shy} & The shear factor for the vertical.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+translate}{p.}{group__transform_ga70d073a90a6c15ec6fb724294169ed61}, \doxyref{ps\+\_\+scale}{p.}{group__transform_ga0edb5a79c27a2c74110aa73172be60c2}, \doxyref{ps\+\_\+rotate}{p.}{group__transform_ga540c9dad7b1755d283dbe5b9c197e82c}, \doxyref{ps\+\_\+identity}{p.}{group__transform_ga5b70ca1210e0c47d3c600ddb0be28d36}, \doxyref{ps\+\_\+transform}{p.}{group__transform_ga3c2ad1c918dcd43eb68b42e60a4ff136} 
+\end{DoxySeeAlso}
+\mbox{\label{group__transform_ga3c2ad1c918dcd43eb68b42e60a4ff136}} 
+\index{Transform@{Transform}!ps\_transform@{ps\_transform}}
+\index{ps\_transform@{ps\_transform}!Transform@{Transform}}
+\doxysubsubsection{ps\_transform()}
+{\footnotesize\ttfamily void ps\+\_\+transform (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{const \textbf{ ps\+\_\+matrix} $\ast$}]{matrix }\end{DoxyParamCaption})}
+
+
+
+Transforms the user coordinate system in graphic context using a specified matrix. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em matrix} & The matrix to apply to the specified context\textquotesingle{}s current transformation matrix.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+translate}{p.}{group__transform_ga70d073a90a6c15ec6fb724294169ed61}, \doxyref{ps\+\_\+scale}{p.}{group__transform_ga0edb5a79c27a2c74110aa73172be60c2}, \doxyref{ps\+\_\+shear}{p.}{group__transform_ga57d6341a69881c51eee52598a6fd2a55}, \doxyref{ps\+\_\+rotate}{p.}{group__transform_ga540c9dad7b1755d283dbe5b9c197e82c}, \doxyref{ps\+\_\+identity}{p.}{group__transform_ga5b70ca1210e0c47d3c600ddb0be28d36} 
+\end{DoxySeeAlso}
+\mbox{\label{group__transform_ga70d073a90a6c15ec6fb724294169ed61}} 
+\index{Transform@{Transform}!ps\_translate@{ps\_translate}}
+\index{ps\_translate@{ps\_translate}!Transform@{Transform}}
+\doxysubsubsection{ps\_translate()}
+{\footnotesize\ttfamily void ps\+\_\+translate (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{float}]{tx,  }\item[{float}]{ty }\end{DoxyParamCaption})}
+
+
+
+Changes the origin of the user coordinate system in graphic context. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em tx} & The amount, in pixels, which to translate in x direction. \\
+\hline
+{\em ty} & The amount, in pixels, which to translate in y direction.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+scale}{p.}{group__transform_ga0edb5a79c27a2c74110aa73172be60c2}, \doxyref{ps\+\_\+shear}{p.}{group__transform_ga57d6341a69881c51eee52598a6fd2a55}, \doxyref{ps\+\_\+rotate}{p.}{group__transform_ga540c9dad7b1755d283dbe5b9c197e82c}, \doxyref{ps\+\_\+identity}{p.}{group__transform_ga5b70ca1210e0c47d3c600ddb0be28d36}, \doxyref{ps\+\_\+transform}{p.}{group__transform_ga3c2ad1c918dcd43eb68b42e60a4ff136} 
+\end{DoxySeeAlso}
+\mbox{\label{group__transform_gabce5a2c20dc021f94fe02de38ba13563}} 
+\index{Transform@{Transform}!ps\_viewport\_to\_world@{ps\_viewport\_to\_world}}
+\index{ps\_viewport\_to\_world@{ps\_viewport\_to\_world}!Transform@{Transform}}
+\doxysubsubsection{ps\_viewport\_to\_world()}
+{\footnotesize\ttfamily void ps\+\_\+viewport\+\_\+to\+\_\+world (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{\textbf{ ps\+\_\+point} $\ast$}]{point }\end{DoxyParamCaption})}
+
+
+
+Transform a coordinate from user space to device space. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em point} & The point which to be transformed.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+world\+\_\+to\+\_\+viewport}{p.}{group__transform_ga5fc9c185a38b1a5e79a8fd7c14cbc40c} 
+\end{DoxySeeAlso}
+\mbox{\label{group__transform_ga5fc9c185a38b1a5e79a8fd7c14cbc40c}} 
+\index{Transform@{Transform}!ps\_world\_to\_viewport@{ps\_world\_to\_viewport}}
+\index{ps\_world\_to\_viewport@{ps\_world\_to\_viewport}!Transform@{Transform}}
+\doxysubsubsection{ps\_world\_to\_viewport()}
+{\footnotesize\ttfamily void ps\+\_\+world\+\_\+to\+\_\+viewport (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{\textbf{ ps\+\_\+point} $\ast$}]{point }\end{DoxyParamCaption})}
+
+
+
+Transform a coordinate from device space to user space. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object. \\
+\hline
+{\em point} & The point which to be transformed.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+viewport\+\_\+to\+\_\+world}{p.}{group__transform_gabce5a2c20dc021f94fe02de38ba13563} 
+\end{DoxySeeAlso}

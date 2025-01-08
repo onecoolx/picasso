@@ -1,0 +1,99 @@
+.TH "state" 3 "Tue Dec 24 2024" "Version 2.8" "Picasso API" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+state
+.SH SYNOPSIS
+.br
+.PP
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_save\fP (\fBps_context\fP *ctx)"
+.br
+.RI "Pushes a copy of the current graphics state on to stack for context\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_restore\fP (\fBps_context\fP *ctx)"
+.br
+.RI "Set the current graphics state to the state most recently saved\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.SH "Function Documentation"
+.PP 
+.SS "void ps_restore (\fBps_context\fP * ctx)"
+
+.PP
+Set the current graphics state to the state most recently saved\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_save\fP 
+.RE
+.PP
+
+.SS "void ps_save (\fBps_context\fP * ctx)"
+
+.PP
+Pushes a copy of the current graphics state on to stack for context\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. The graphics state saved are:
+.IP "\(bu" 2
+Image filter
+.IP "\(bu" 2
+Font object
+.IP "\(bu" 2
+Gamma value
+.IP "\(bu" 2
+Alpha value
+.IP "\(bu" 2
+Blur value
+.IP "\(bu" 2
+Text stroke color
+.IP "\(bu" 2
+Text fill color
+.IP "\(bu" 2
+Compositing method
+.IP "\(bu" 2
+Transform matrix
+.IP "\(bu" 2
+Line width
+.IP "\(bu" 2
+Line cap
+.IP "\(bu" 2
+Line join
+.IP "\(bu" 2
+Line dash
+.IP "\(bu" 2
+Stroke object
+.IP "\(bu" 2
+Source object
+.IP "\(bu" 2
+Fill color
+.IP "\(bu" 2
+Fill rule
+.IP "\(bu" 2
+Clip region
+.IP "\(bu" 2
+Shadow parameters
+.PP
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_restore\fP 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Picasso API from the source code\&.

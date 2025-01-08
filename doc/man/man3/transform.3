@@ -1,0 +1,249 @@
+.TH "transform" 3 "Tue Dec 24 2024" "Version 2.8" "Picasso API" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+transform
+.SH SYNOPSIS
+.br
+.PP
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_translate\fP (\fBps_context\fP *ctx, float tx, float ty)"
+.br
+.RI "Changes the origin of the user coordinate system in graphic context\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_scale\fP (\fBps_context\fP *ctx, float sx, float sy)"
+.br
+.RI "Changes the scale of the user coordinate system in graphic context\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_shear\fP (\fBps_context\fP *ctx, float shx, float shy)"
+.br
+.RI "Changes the shear of the user coordinate system in graphic context\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_rotate\fP (\fBps_context\fP *ctx, float angle)"
+.br
+.RI "Rotates the user coordinate system in graphic context\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_identity\fP (\fBps_context\fP *ctx)"
+.br
+.RI "Reset the current transformation matrix to identity matrix\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_transform\fP (\fBps_context\fP *ctx, const \fBps_matrix\fP *matrix)"
+.br
+.RI "Transforms the user coordinate system in graphic context using a specified matrix\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_set_matrix\fP (\fBps_context\fP *ctx, const \fBps_matrix\fP *matrix)"
+.br
+.RI "Modifies the current transformation matrix to the given matrix\&. "
+.ti -1c
+.RI "PEXPORT \fBps_bool\fP PICAPI \fBps_get_matrix\fP (\fBps_context\fP *ctx, \fBps_matrix\fP *matrix)"
+.br
+.RI "Get the current transformation matrix from graphic context\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_world_to_viewport\fP (\fBps_context\fP *ctx, \fBps_point\fP *point)"
+.br
+.RI "Transform a coordinate from device space to user space\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_viewport_to_world\fP (\fBps_context\fP *ctx, \fBps_point\fP *point)"
+.br
+.RI "Transform a coordinate from user space to device space\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.SH "Function Documentation"
+.PP 
+.SS "\fBps_bool\fP ps_get_matrix (\fBps_context\fP * ctx, \fBps_matrix\fP * matrix)"
+
+.PP
+Get the current transformation matrix from graphic context\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fImatrix\fP Pointer to a matrix object to receiving the current transformation\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+True if is success, otherwise False\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_set_matrix\fP 
+.RE
+.PP
+
+.SS "void ps_identity (\fBps_context\fP * ctx)"
+
+.PP
+Reset the current transformation matrix to identity matrix\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_translate\fP, \fBps_scale\fP, \fBps_shear\fP, \fBps_rotate\fP, \fBps_transform\fP 
+.RE
+.PP
+
+.SS "void ps_rotate (\fBps_context\fP * ctx, float angle)"
+
+.PP
+Rotates the user coordinate system in graphic context\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fIangle\fP The angle, in radians, which to rotate the specified context\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_translate\fP, \fBps_scale\fP, \fBps_shear\fP, \fBps_identity\fP, \fBps_transform\fP 
+.RE
+.PP
+
+.SS "void ps_scale (\fBps_context\fP * ctx, float sx, float sy)"
+
+.PP
+Changes the scale of the user coordinate system in graphic context\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fIsx\fP The scale factor for the X dimension\&. 
+.br
+\fIsy\fP The scale factor for the Y dimension\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_translate\fP, \fBps_shear\fP, \fBps_rotate\fP, \fBps_identity\fP, \fBps_transform\fP 
+.RE
+.PP
+
+.SS "void ps_set_matrix (\fBps_context\fP * ctx, const \fBps_matrix\fP * matrix)"
+
+.PP
+Modifies the current transformation matrix to the given matrix\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fImatrix\fP The transformation matrix to be set\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_get_matrix\fP 
+.RE
+.PP
+
+.SS "void ps_shear (\fBps_context\fP * ctx, float shx, float shy)"
+
+.PP
+Changes the shear of the user coordinate system in graphic context\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fIshx\fP The shear factor for the horizontal\&. 
+.br
+\fIshy\fP The shear factor for the vertical\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_translate\fP, \fBps_scale\fP, \fBps_rotate\fP, \fBps_identity\fP, \fBps_transform\fP 
+.RE
+.PP
+
+.SS "void ps_transform (\fBps_context\fP * ctx, const \fBps_matrix\fP * matrix)"
+
+.PP
+Transforms the user coordinate system in graphic context using a specified matrix\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fImatrix\fP The matrix to apply to the specified context's current transformation matrix\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_translate\fP, \fBps_scale\fP, \fBps_shear\fP, \fBps_rotate\fP, \fBps_identity\fP 
+.RE
+.PP
+
+.SS "void ps_translate (\fBps_context\fP * ctx, float tx, float ty)"
+
+.PP
+Changes the origin of the user coordinate system in graphic context\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fItx\fP The amount, in pixels, which to translate in x direction\&. 
+.br
+\fIty\fP The amount, in pixels, which to translate in y direction\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_scale\fP, \fBps_shear\fP, \fBps_rotate\fP, \fBps_identity\fP, \fBps_transform\fP 
+.RE
+.PP
+
+.SS "void ps_viewport_to_world (\fBps_context\fP * ctx, \fBps_point\fP * point)"
+
+.PP
+Transform a coordinate from user space to device space\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fIpoint\fP The point which to be transformed\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_world_to_viewport\fP 
+.RE
+.PP
+
+.SS "void ps_world_to_viewport (\fBps_context\fP * ctx, \fBps_point\fP * point)"
+
+.PP
+Transform a coordinate from device space to user space\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fIpoint\fP The point which to be transformed\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_viewport_to_world\fP 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Picasso API from the source code\&.

@@ -1,0 +1,403 @@
+.TH "stroke" 3 "Tue Dec 24 2024" "Version 2.8" "Picasso API" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+stroke
+.SH SYNOPSIS
+.br
+.PP
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef enum \fB_ps_line_cap\fP \fBps_line_cap\fP"
+.br
+.RI "Styles for rendering the endpoint of a stroked line\&. "
+.ti -1c
+.RI "typedef enum \fB_ps_line_join\fP \fBps_line_join\fP"
+.br
+.RI "Junction types for stroked lines\&. "
+.ti -1c
+.RI "typedef enum \fB_ps_line_inner_join\fP \fBps_line_inner_join\fP"
+.br
+.RI "Inner junction types for stroked lines\&. "
+.in -1c
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum \fB_ps_line_cap\fP { \fBLINE_CAP_BUTT\fP, \fBLINE_CAP_ROUND\fP, \fBLINE_CAP_SQUARE\fP }"
+.br
+.RI "Styles for rendering the endpoint of a stroked line\&. "
+.ti -1c
+.RI "enum \fB_ps_line_join\fP { \fBLINE_JOIN_MITER\fP, \fBLINE_JOIN_MITER_REVERT\fP, \fBLINE_JOIN_MITER_ROUND\fP, \fBLINE_JOIN_ROUND\fP, \fBLINE_JOIN_BEVEL\fP }"
+.br
+.RI "Junction types for stroked lines\&. "
+.ti -1c
+.RI "enum \fB_ps_line_inner_join\fP { \fBLINE_INNER_MITER\fP, \fBLINE_INNER_BEVEL\fP, \fBLINE_INNER_JAG\fP, \fBLINE_INNER_ROUND\fP }"
+.br
+.RI "Inner junction types for stroked lines\&. "
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_set_line_cap\fP (\fBps_context\fP *ctx, \fBps_line_cap\fP line_cap)"
+.br
+.RI "Set the style for the endpoint of lines in a graphics context\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_set_line_join\fP (\fBps_context\fP *ctx, \fBps_line_join\fP line_join)"
+.br
+.RI "Set the style for the joins of connected lines in a graphics context\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_set_line_inner_join\fP (\fBps_context\fP *ctx, \fBps_line_inner_join\fP line_inner_join)"
+.br
+.RI "Set the style for the inner joins of connected lines in a graphics context\&. "
+.ti -1c
+.RI "PEXPORT float PICAPI \fBps_set_line_width\fP (\fBps_context\fP *ctx, float width)"
+.br
+.RI "Set the line width for a graphics context\&. "
+.ti -1c
+.RI "PEXPORT float PICAPI \fBps_set_miter_limit\fP (\fBps_context\fP *ctx, float limit)"
+.br
+.RI "Set the miter limit for the joins of connected lines in a graphics context\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_set_stroke_color\fP (\fBps_context\fP *ctx, const \fBps_color\fP *color)"
+.br
+.RI "Set a color to the context, it is used to stroke a graphic object\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_set_stroke_image\fP (\fBps_context\fP *ctx, const \fBps_image\fP *image)"
+.br
+.RI "Set a image to the context, it is used to stroke a graphic object\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_set_stroke_pattern\fP (\fBps_context\fP *ctx, const \fBps_pattern\fP *pattern)"
+.br
+.RI "Set a pattern to the context, it is used to stroke a graphic object\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_set_stroke_gradient\fP (\fBps_context\fP *ctx, const \fBps_gradient\fP *gradient)"
+.br
+.RI "Set a gradient to the context, it is used to stroke a graphic object\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_set_stroke_canvas\fP (\fBps_context\fP *ctx, const \fBps_canvas\fP *canvas)"
+.br
+.RI "Set a canvas to the context, it is used to stroke a graphic object\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_set_line_dash\fP (\fBps_context\fP *ctx, float start, const float *dashes, unsigned int num_dashes)"
+.br
+.RI "Set the pattern for dashed lines in the context\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_reset_line_dash\fP (\fBps_context\fP *ctx)"
+.br
+.RI "Clear the dashs from the context, and set to solid\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.SH "Enumeration Type Documentation"
+.PP 
+.SS "enum \fB_ps_line_cap\fP"
+
+.PP
+Styles for rendering the endpoint of a stroked line\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fILINE_CAP_BUTT \fP\fP
+A line with a squared-off end\&. The line to extend only to the endpoint\&.(Default) 
+.TP
+\fB\fILINE_CAP_ROUND \fP\fP
+A line with a rounded end\&. The line to extend beyond the endpoint\&. 
+.TP
+\fB\fILINE_CAP_SQUARE \fP\fP
+A line with a squared-off end\&. The line to extend beyond the endpoint\&. 
+.PP
+Definition at line 1231 of file picasso\&.h\&.
+.SS "enum \fB_ps_line_inner_join\fP"
+
+.PP
+Inner junction types for stroked lines\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fILINE_INNER_MITER \fP\fP
+A inner join with a sharp corner\&.(Default) 
+.TP
+\fB\fILINE_INNER_BEVEL \fP\fP
+A inner join with a squared-off end\&. 
+.TP
+\fB\fILINE_INNER_JAG \fP\fP
+A inner join with a jag end\&. 
+.TP
+\fB\fILINE_INNER_ROUND \fP\fP
+A inner join with a rounded end\&. 
+.PP
+Definition at line 1299 of file picasso\&.h\&.
+.SS "enum \fB_ps_line_join\fP"
+
+.PP
+Junction types for stroked lines\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fILINE_JOIN_MITER \fP\fP
+A join with a sharp corner\&.(Default) 
+.TP
+\fB\fILINE_JOIN_MITER_REVERT \fP\fP
+A join with a sharp corner revert\&. 
+.TP
+\fB\fILINE_JOIN_MITER_ROUND \fP\fP
+A join with a miter rounded end\&. 
+.TP
+\fB\fILINE_JOIN_ROUND \fP\fP
+A join with a rounded end\&. 
+.TP
+\fB\fILINE_JOIN_BEVEL \fP\fP
+A join with a squared-off end\&. 
+.PP
+Definition at line 1261 of file picasso\&.h\&.
+.SH "Function Documentation"
+.PP 
+.SS "void ps_reset_line_dash (\fBps_context\fP * ctx)"
+
+.PP
+Clear the dashs from the context, and set to solid\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_set_line_cap\fP, \fBps_set_line_join\fP, \fBps_set_line_width\fP, \fBps_set_miter_limit\fP, \fBps_set_stroke_color\fP, \fBps_set_line_dash\fP, \fBps_set_line_inner_join\fP 
+.RE
+.PP
+
+.SS "void ps_set_line_cap (\fBps_context\fP * ctx, \fBps_line_cap\fP line_cap)"
+
+.PP
+Set the style for the endpoint of lines in a graphics context\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fIline_cap\fP The cap style of the lines\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_set_line_join\fP, \fBps_set_line_width\fP, \fBps_set_miter_limit\fP, \fBps_set_stroke_color\fP, \fBps_set_line_dash\fP, \fBps_reset_line_dash\fP, \fBps_set_line_inner_join\fP 
+.RE
+.PP
+
+.SS "void ps_set_line_dash (\fBps_context\fP * ctx, float start, const float * dashes, unsigned int num_dashes)"
+
+.PP
+Set the pattern for dashed lines in the context\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fIstart\fP A value that specifies how far into the dash pattern the line start\&. 
+.br
+\fIdashes\fP An array of values that specify the length of the painted segments and unpainted segments\&. 
+.br
+\fInum_dashes\fP The number of elements in the array\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_set_line_cap\fP, \fBps_set_line_join\fP, \fBps_set_line_width\fP, \fBps_set_miter_limit\fP, \fBps_set_stroke_color\fP, \fBps_reset_line_dash\fP, \fBps_set_line_inner_join\fP 
+.RE
+.PP
+
+.SS "void ps_set_line_inner_join (\fBps_context\fP * ctx, \fBps_line_inner_join\fP line_inner_join)"
+
+.PP
+Set the style for the inner joins of connected lines in a graphics context\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fIline_inner_join\fP The inner join style of the lines\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_set_line_cap\fP, \fBps_set_line_width\fP, \fBps_set_miter_limit\fP, \fBps_set_stroke_color\fP, \fBps_set_line_dash\fP, \fBps_reset_line_dash\fP, \fBps_set_line_join\fP 
+.RE
+.PP
+
+.SS "void ps_set_line_join (\fBps_context\fP * ctx, \fBps_line_join\fP line_join)"
+
+.PP
+Set the style for the joins of connected lines in a graphics context\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fIline_join\fP The join style of the lines\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_set_line_cap\fP, \fBps_set_line_width\fP, \fBps_set_miter_limit\fP, \fBps_set_stroke_color\fP, \fBps_set_line_dash\fP, \fBps_reset_line_dash\fP, \fBps_set_line_inner_join\fP 
+.RE
+.PP
+
+.SS "float ps_set_line_width (\fBps_context\fP * ctx, float width)"
+
+.PP
+Set the line width for a graphics context\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fIwidth\fP The line width to use, in pixels, must be greater than 0\&. Default value is 1\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+If the function succeeds, the return value is the old width\&. If the function fails, the return value is 0\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+To get extended error information, call \fIps_last_status\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_set_line_cap\fP, \fBps_set_line_join\fP, \fBps_set_miter_limit\fP, \fBps_set_stroke_color\fP, \fBps_set_line_dash\fP, \fBps_reset_line_dash\fP, \fBps_set_line_inner_join\fP 
+.RE
+.PP
+
+.SS "float ps_set_miter_limit (\fBps_context\fP * ctx, float limit)"
+
+.PP
+Set the miter limit for the joins of connected lines in a graphics context\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fIlimit\fP The miter limit to use, must be greater than 0\&. Default value is 4\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+If the function succeeds, the return value is the old miter limit\&. If the function fails, the return value is 0\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+To get extended error information, call \fIps_last_status\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_set_line_cap\fP, \fBps_set_line_join\fP, \fBps_set_line_width\fP, \fBps_set_stroke_color\fP, \fBps_set_line_dash\fP, \fBps_reset_line_dash\fP, \fBps_set_line_inner_join\fP 
+.RE
+.PP
+
+.SS "void ps_set_stroke_canvas (\fBps_context\fP * ctx, const \fBps_canvas\fP * canvas)"
+
+.PP
+Set a canvas to the context, it is used to stroke a graphic object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fIcanvas\fP The canvas to be set\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_set_line_cap\fP, \fBps_set_line_join\fP, \fBps_set_line_width\fP, \fBps_set_miter_limit\fP, \fBps_set_line_dash\fP, \fBps_reset_line_dash\fP, \fBps_set_line_inner_join\fP, \fBps_set_stroke_color\fP \fBps_set_stroke_image\fP, \fBps_set_stroke_pattern\fP, \fBps_set_stroke_gradient\fP 
+.RE
+.PP
+
+.SS "void ps_set_stroke_color (\fBps_context\fP * ctx, const \fBps_color\fP * color)"
+
+.PP
+Set a color to the context, it is used to stroke a graphic object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fIcolor\fP The color to be set\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_set_line_cap\fP, \fBps_set_line_join\fP, \fBps_set_line_width\fP, \fBps_set_miter_limit\fP, \fBps_set_line_dash\fP, \fBps_reset_line_dash\fP, \fBps_set_line_inner_join\fP, \fBps_set_stroke_image\fP \fBps_set_stroke_pattern\fP, \fBps_set_stroke_gradient\fP, \fBps_set_stroke_canvas\fP 
+.RE
+.PP
+
+.SS "void ps_set_stroke_gradient (\fBps_context\fP * ctx, const \fBps_gradient\fP * gradient)"
+
+.PP
+Set a gradient to the context, it is used to stroke a graphic object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fIgradient\fP The gradient to be set\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_set_line_cap\fP, \fBps_set_line_join\fP, \fBps_set_line_width\fP, \fBps_set_miter_limit\fP, \fBps_set_line_dash\fP, \fBps_reset_line_dash\fP, \fBps_set_line_inner_join\fP, \fBps_set_stroke_color\fP \fBps_set_stroke_image\fP, \fBps_set_stroke_pattern\fP, \fBps_set_stroke_canvas\fP 
+.RE
+.PP
+
+.SS "void ps_set_stroke_image (\fBps_context\fP * ctx, const \fBps_image\fP * image)"
+
+.PP
+Set a image to the context, it is used to stroke a graphic object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fIimage\fP The image to be set\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_set_line_cap\fP, \fBps_set_line_join\fP, \fBps_set_line_width\fP, \fBps_set_miter_limit\fP, \fBps_set_line_dash\fP, \fBps_reset_line_dash\fP, \fBps_set_line_inner_join\fP, \fBps_set_stroke_color\fP \fBps_set_stroke_pattern\fP, \fBps_set_stroke_gradient\fP, \fBps_set_stroke_canvas\fP 
+.RE
+.PP
+
+.SS "void ps_set_stroke_pattern (\fBps_context\fP * ctx, const \fBps_pattern\fP * pattern)"
+
+.PP
+Set a pattern to the context, it is used to stroke a graphic object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fIpattern\fP The pattern to be set\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_set_line_cap\fP, \fBps_set_line_join\fP, \fBps_set_line_width\fP, \fBps_set_miter_limit\fP, \fBps_set_line_dash\fP, \fBps_reset_line_dash\fP, \fBps_set_line_inner_join\fP, \fBps_set_stroke_color\fP \fBps_set_stroke_image\fP, \fBps_set_stroke_gradient\fP, \fBps_set_stroke_canvas\fP 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Picasso API from the source code\&.

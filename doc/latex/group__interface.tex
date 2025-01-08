@@ -1,0 +1,67 @@
+\doxysection{X\+Image Coders Register functions}
+\label{group__interface}\index{XImage Coders Register functions@{XImage Coders Register functions}}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+P\+E\+X\+P\+O\+RT int \textbf{ psx\+\_\+image\+\_\+register\+\_\+operator} (const char $\ast$type, const \textbf{ ps\+\_\+byte} $\ast$signature, size\+\_\+t sig\+\_\+offset, size\+\_\+t sig\+\_\+len, \textbf{ psx\+\_\+priority\+\_\+level} level, \textbf{ psx\+\_\+image\+\_\+operator} $\ast$coder)
+\begin{DoxyCompactList}\small\item\em Register the image operator. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT int \textbf{ psx\+\_\+image\+\_\+unregister\+\_\+operator} (\textbf{ psx\+\_\+image\+\_\+operator} $\ast$coder)
+\begin{DoxyCompactList}\small\item\em Unregister the image operator. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\label{group__interface_gac2c1fc7d317f49ee5c246f9aff61e13a}} 
+\index{XImage Coders Register functions@{XImage Coders Register functions}!psx\_image\_register\_operator@{psx\_image\_register\_operator}}
+\index{psx\_image\_register\_operator@{psx\_image\_register\_operator}!XImage Coders Register functions@{XImage Coders Register functions}}
+\doxysubsubsection{psx\_image\_register\_operator()}
+{\footnotesize\ttfamily int psx\+\_\+image\+\_\+register\+\_\+operator (\begin{DoxyParamCaption}\item[{const char $\ast$}]{type,  }\item[{const \textbf{ ps\+\_\+byte} $\ast$}]{signature,  }\item[{size\+\_\+t}]{sig\+\_\+offset,  }\item[{size\+\_\+t}]{sig\+\_\+len,  }\item[{\textbf{ psx\+\_\+priority\+\_\+level}}]{level,  }\item[{\textbf{ psx\+\_\+image\+\_\+operator} $\ast$}]{coder }\end{DoxyParamCaption})}
+
+
+
+Register the image operator. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em type} & The image operator short name. (i.\+e \char`\"{}png\char`\"{} \char`\"{}jpg\char`\"{} \char`\"{}gif\char`\"{} \char`\"{}bmp\char`\"{}) \\
+\hline
+{\em signature} & The image signature. \\
+\hline
+{\em sig\+\_\+offset} & The image signature offset from the beginning of the image data. (usually is 0) \\
+\hline
+{\em sig\+\_\+len} & The image signature length. \\
+\hline
+{\em level} & The image operator priority level. \\
+\hline
+{\em coder} & The pointer to a image\+\_\+operator object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Result code returned.
+\end{DoxyReturn}
+\begin{DoxySeeAlso}{See also}
+\doxyref{psx\+\_\+image\+\_\+unregister\+\_\+operator}{p.}{group__interface_ga50213dff3b0bec9b77c059bb85126bed} 
+\end{DoxySeeAlso}
+\mbox{\label{group__interface_ga50213dff3b0bec9b77c059bb85126bed}} 
+\index{XImage Coders Register functions@{XImage Coders Register functions}!psx\_image\_unregister\_operator@{psx\_image\_unregister\_operator}}
+\index{psx\_image\_unregister\_operator@{psx\_image\_unregister\_operator}!XImage Coders Register functions@{XImage Coders Register functions}}
+\doxysubsubsection{psx\_image\_unregister\_operator()}
+{\footnotesize\ttfamily int psx\+\_\+image\+\_\+unregister\+\_\+operator (\begin{DoxyParamCaption}\item[{\textbf{ psx\+\_\+image\+\_\+operator} $\ast$}]{coder }\end{DoxyParamCaption})}
+
+
+
+Unregister the image operator. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em coder} & The image operator which will be unregister.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Result code returned.
+\end{DoxyReturn}
+\begin{DoxySeeAlso}{See also}
+\doxyref{psx\+\_\+image\+\_\+register\+\_\+operator}{p.}{group__interface_gac2c1fc7d317f49ee5c246f9aff61e13a} 
+\end{DoxySeeAlso}

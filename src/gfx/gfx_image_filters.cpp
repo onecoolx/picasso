@@ -54,11 +54,12 @@ public:
     scalar radius(void) const { return FLT_TO_SCALAR(1.5f); }
     scalar calc_weight(scalar x) const
     {
-        if (x < FLT_TO_SCALAR(0.5f))
+        if (x < FLT_TO_SCALAR(0.5f)) {
             return FLT_TO_SCALAR(0.75f) - x * x;
+        }
 
         if (x < FLT_TO_SCALAR(1.5f)) {
-            scalar t = x - FLT_TO_SCALAR(1.5f); 
+            scalar t = x - FLT_TO_SCALAR(1.5f);
             return FLT_TO_SCALAR(0.5f) * t * t;
         }
         return FLT_TO_SCALAR(0.0f);

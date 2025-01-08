@@ -30,7 +30,7 @@ public:
     }
 
     gfx_scanline_cell_storage()
-        : m_cells(128-2)
+        : m_cells(128 - 2)
     {
     }
 
@@ -40,11 +40,11 @@ public:
         copy_extra_storage(v);
     }
 
-    const gfx_scanline_cell_storage<T>&
-    operator = (const gfx_scanline_cell_storage<T>& v)
+    const gfx_scanline_cell_storage<T>& operator = (const gfx_scanline_cell_storage<T>& v)
     {
-        if (this == &v)
+        if (this == &v) {
             return *this;
+        }
 
         remove_all();
         m_cells = v.m_cells;
@@ -54,7 +54,7 @@ public:
 
     void remove_all(void)
     {
-        for (int i = m_extra_storage.size()-1; i >= 0; --i) {
+        for (int i = m_extra_storage.size() - 1; i >= 0; --i) {
             pod_allocator<T>::deallocate(m_extra_storage[i].ptr,
                                          m_extra_storage[i].len);
         }
@@ -81,26 +81,30 @@ public:
     const T* operator [] (int idx) const
     {
         if (idx >= 0) {
-            if ((unsigned int)idx >= m_cells.size())
+            if ((unsigned int)idx >= m_cells.size()) {
                 return 0;
+            }
             return &m_cells[(unsigned int)idx];
         }
         unsigned int i = (unsigned int)(-idx - 1);
-        if (i >= m_extra_storage.size())
+        if (i >= m_extra_storage.size()) {
             return 0;
+        }
         return m_extra_storage[i].ptr;
     }
 
     T* operator [] (int idx)
     {
         if (idx >= 0) {
-            if ((unsigned int)idx >= m_cells.size())
+            if ((unsigned int)idx >= m_cells.size()) {
                 return 0;
+            }
             return &m_cells[(unsigned int)idx];
         }
         unsigned int i = (unsigned int)(-idx - 1);
-        if (i >= m_extra_storage.size())
+        if (i >= m_extra_storage.size()) {
             return 0;
+        }
         return m_extra_storage[i].ptr;
     }
 
@@ -213,7 +217,7 @@ public:
 
     // scanline storage
     gfx_scanline_storage_aa()
-        : m_spans(256-2)         // block increment size
+        : m_spans(256 - 2) // block increment size
         , m_cur_scanline(0)
         , m_min_x(0x7FFFFFFF)
         , m_min_y(0x7FFFFFFF)
@@ -247,8 +251,8 @@ public:
         scanline_data sl_this;
 
         int y = sl.y();
-        if (y < m_min_y) m_min_y = y;
-        if (y > m_max_y) m_max_y = y;
+        if (y < m_min_y) { m_min_y = y; }
+        if (y > m_max_y) { m_max_y = y; }
 
         sl_this.y = y;
         sl_this.num_spans = sl.num_spans();
@@ -266,9 +270,9 @@ public:
             m_spans.add(sp);
             int x1 = sp.x;
             int x2 = sp.x + len - 1;
-            if (x1 < m_min_x) m_min_x = x1;
-            if (x2 > m_max_x) m_max_x = x2;
-            if (--num_spans == 0) break;
+            if (x1 < m_min_x) { m_min_x = x1; }
+            if (x2 > m_max_x) { m_max_x = x2; }
+            if (--num_spans == 0) { break; }
             ++span_iterator;
         }
         m_scanlines.add(sl_this);
@@ -291,8 +295,9 @@ public:
     {
         sl.reset_spans();
         for (;;) {
-            if (m_cur_scanline >= m_scanlines.size())
+            if (m_cur_scanline >= m_scanlines.size()) {
                 return false;
+            }
             const scanline_data& sl_this = m_scanlines[m_cur_scanline];
 
             unsigned int num_spans = sl_this.num_spans;
@@ -305,7 +310,7 @@ public:
                 } else {
                     sl.add_cells(sp.x, sp.len, covers);
                 }
-            } while(--num_spans);
+            } while (--num_spans);
 
             ++m_cur_scanline;
             if (sl.num_spans()) {
@@ -320,11 +325,12 @@ public:
     bool sweep_scanline(embedded_scanline& sl)
     {
         do {
-            if (m_cur_scanline >= m_scanlines.size())
+            if (m_cur_scanline >= m_scanlines.size()) {
                 return false;
+            }
             sl.init(m_cur_scanline);
             ++m_cur_scanline;
-        } while(sl.num_spans() == 0);
+        } while (sl.num_spans() == 0);
         return true;
     }
 
@@ -338,7 +344,7 @@ public:
             const scanline_data& sl_this = m_scanlines[i];
 
             unsigned int num_spans = sl_this.num_spans;
-            unsigned int span_idx  = sl_this.start_span;
+            unsigned int span_idx = sl_this.start_span;
             do {
                 const span_data& sp = m_spans[span_idx++];
 
@@ -348,7 +354,7 @@ public:
                 } else {
                     size += sizeof(T) * (unsigned int)sp.len; // covers
                 }
-            } while(--num_spans);
+            } while (--num_spans);
         }
         return size;
     }
@@ -376,12 +382,12 @@ public:
             const scanline_data& sl_this = m_scanlines[i];
 
             uint8_t* size_ptr = data;
-            data += sizeof(int32_t);  // reserve space for scanline size in bytes
+            data += sizeof(int32_t); // reserve space for scanline size in bytes
 
-            write_int32(data, sl_this.y);  // Y
+            write_int32(data, sl_this.y); // Y
             data += sizeof(int32_t);
 
-            write_int32(data, sl_this.num_spans);    // num_spans
+            write_int32(data, sl_this.num_spans); // num_spans
             data += sizeof(int32_t);
 
             unsigned int num_spans = sl_this.num_spans;
@@ -390,10 +396,10 @@ public:
                 const span_data& sp = m_spans[span_idx++];
                 const T* covers = covers_by_index(sp.covers_id);
 
-                write_int32(data, sp.x);            // X
+                write_int32(data, sp.x); // X
                 data += sizeof(int32_t);
 
-                write_int32(data, sp.len);          // span_len
+                write_int32(data, sp.len); // span_len
                 data += sizeof(int32_t);
 
                 if (sp.len < 0) {
@@ -403,7 +409,7 @@ public:
                     mem_copy(data, covers, unsigned(sp.len) * sizeof(T));
                     data += sizeof(T) * unsigned(sp.len);
                 }
-            } while(--num_spans);
+            } while (--num_spans);
             write_int32(size_ptr, (int32_t)((unsigned int)(data - size_ptr)));
         }
     }
@@ -437,8 +443,7 @@ private:
 };
 
 // scanline storage antialias
-typedef gfx_scanline_storage_aa<uint8_t>  gfx_scanline_storage_aa_u8;
-
+typedef gfx_scanline_storage_aa<uint8_t> gfx_scanline_storage_aa_u8;
 
 // serialized scanlines adaptor antialias
 template <typename T>
@@ -470,7 +475,7 @@ public:
                 init_span();
             }
 
-            const span& operator*() const { return m_span;  }
+            const span& operator*() const { return m_span; }
             const span* operator->() const { return &m_span; }
 
             void operator ++ ()
@@ -628,10 +633,11 @@ public:
     {
         sl.reset_spans();
         for (;;) {
-            if (m_ptr >= m_end)
+            if (m_ptr >= m_end) {
                 return false;
+            }
 
-            read_int32();      // Skip scanline size in bytes
+            read_int32(); // Skip scanline size in bytes
             int y = read_int32() + m_dy;
             unsigned int num_spans = read_int32();
 
@@ -646,7 +652,7 @@ public:
                     sl.add_cells(x, len, m_ptr);
                     m_ptr += len * sizeof(T);
                 }
-            } while(--num_spans);
+            } while (--num_spans);
 
             if (sl.num_spans()) {
                 sl.finalize(y);
@@ -660,13 +666,14 @@ public:
     bool sweep_scanline(embedded_scanline& sl)
     {
         do {
-            if (m_ptr >= m_end)
+            if (m_ptr >= m_end) {
                 return false;
+            }
 
             unsigned int byte_size = read_int32u();
             sl.init(m_ptr, m_dx, m_dy);
             m_ptr += byte_size - sizeof(int32_t);
-        } while(sl.num_spans() == 0);
+        } while (sl.num_spans() == 0);
         return true;
     }
 
@@ -683,9 +690,7 @@ private:
 };
 
 // serialized scanlines adaptor antialias uint8_t
-typedef gfx_serialized_scanlines_adaptor_aa<uint8_t>  gfx_serialized_scanlines_adaptor_aa_u8;
-
-
+typedef gfx_serialized_scanlines_adaptor_aa<uint8_t> gfx_serialized_scanlines_adaptor_aa_u8;
 
 // scanline storage binary
 class gfx_scanline_storage_bin
@@ -761,7 +766,7 @@ public:
 
     // scanline storage
     gfx_scanline_storage_bin()
-        : m_spans(256-2)         // block increment size
+        : m_spans(256 - 2) // block increment size
         , m_cur_scanline(0)
         , m_min_x(0x7FFFFFFF)
         , m_min_y(0x7FFFFFFF)
@@ -793,8 +798,8 @@ public:
         scanline_data sl_this;
 
         int y = sl.y();
-        if (y < m_min_y) m_min_y = y;
-        if (y > m_max_y) m_max_y = y;
+        if (y < m_min_y) { m_min_y = y; }
+        if (y > m_max_y) { m_max_y = y; }
 
         sl_this.y = y;
         sl_this.num_spans = sl.num_spans();
@@ -809,9 +814,9 @@ public:
             m_spans.add(sp);
             int x1 = sp.x;
             int x2 = sp.x + sp.len - 1;
-            if (x1 < m_min_x) m_min_x = x1;
-            if (x2 > m_max_x) m_max_x = x2;
-            if (--num_spans == 0) break;
+            if (x1 < m_min_x) { m_min_x = x1; }
+            if (x2 > m_max_x) { m_max_x = x2; }
+            if (--num_spans == 0) { break; }
             ++span_iterator;
         }
         m_scanlines.add(sl_this);
@@ -834,8 +839,9 @@ public:
     {
         sl.reset_spans();
         for (;;) {
-            if (m_cur_scanline >= m_scanlines.size())
+            if (m_cur_scanline >= m_scanlines.size()) {
                 return false;
+            }
             const scanline_data& sl_this = m_scanlines[m_cur_scanline];
 
             unsigned int num_spans = sl_this.num_spans;
@@ -843,7 +849,7 @@ public:
             do {
                 const span_data& sp = m_spans[span_idx++];
                 sl.add_span(sp.x, sp.len, cover_full);
-            } while(--num_spans);
+            } while (--num_spans);
 
             ++m_cur_scanline;
             if (sl.num_spans()) {
@@ -858,11 +864,12 @@ public:
     bool sweep_scanline(embedded_scanline& sl)
     {
         do {
-            if (m_cur_scanline >= m_scanlines.size())
+            if (m_cur_scanline >= m_scanlines.size()) {
                 return false;
+            }
             sl.init(m_cur_scanline);
             ++m_cur_scanline;
-        } while(sl.num_spans() == 0);
+        } while (sl.num_spans() == 0);
         return true;
     }
 
@@ -915,7 +922,7 @@ public:
 
                 write_int32(data, sp.len); // len
                 data += sizeof(int32_t);
-            } while(--num_spans);
+            } while (--num_spans);
         }
     }
 
@@ -940,7 +947,6 @@ private:
     int m_max_x;
     int m_max_y;
 };
-
 
 // serialized scanlines adaptor binary
 class gfx_serialized_scanlines_adaptor_bin
@@ -970,7 +976,7 @@ public:
                 m_span.len = read_int32();
             }
 
-            const span& operator*() const { return m_span;  }
+            const span& operator*() const { return m_span; }
             const span* operator->() const { return &m_span; }
 
             void operator ++ ()
@@ -1111,8 +1117,9 @@ public:
     {
         sl.reset_spans();
         for (;;) {
-            if (m_ptr >= m_end)
+            if (m_ptr >= m_end) {
                 return false;
+            }
 
             int y = read_int32() + m_dy;
             unsigned int num_spans = read_int32();
@@ -1121,8 +1128,9 @@ public:
                 int x = read_int32() + m_dx;
                 int len = read_int32();
 
-                if (len < 0)
+                if (len < 0) {
                     len = -len;
+                }
                 sl.add_span(x, (unsigned int)len, cover_full);
             } while (--num_spans);
 
@@ -1138,8 +1146,9 @@ public:
     bool sweep_scanline(embedded_scanline& sl)
     {
         do {
-            if (m_ptr >= m_end)
+            if (m_ptr >= m_end) {
                 return false;
+            }
 
             sl.init(m_ptr, m_dx, m_dy);
 
@@ -1147,7 +1156,7 @@ public:
             read_int32(); // Y
             int num_spans = read_int32(); // num_spans
             m_ptr += num_spans * sizeof(int32_t) * 2;
-        } while(sl.num_spans() == 0);
+        } while (sl.num_spans() == 0);
         return true;
     }
 

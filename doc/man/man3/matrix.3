@@ -1,0 +1,697 @@
+.TH "matrix" 3 "Tue Dec 24 2024" "Version 2.8" "Picasso API" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+matrix
+.SH SYNOPSIS
+.br
+.PP
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "PEXPORT \fBps_matrix\fP *PICAPI \fBps_matrix_create\fP (void)"
+.br
+.RI "Create a identity matrix object\&. "
+.ti -1c
+.RI "PEXPORT \fBps_matrix\fP *PICAPI \fBps_matrix_create_init\fP (float sx, float shy, float shx, float sy, float tx, float ty)"
+.br
+.RI "Create a matrix with given parameters\&. "
+.ti -1c
+.RI "PEXPORT \fBps_matrix\fP *PICAPI \fBps_matrix_create_copy\fP (const \fBps_matrix\fP *matrix)"
+.br
+.RI "Create a matrix copy from an exist one\&. "
+.ti -1c
+.RI "PEXPORT \fBps_matrix\fP *PICAPI \fBps_matrix_ref\fP (\fBps_matrix\fP *matrix)"
+.br
+.RI "Increases the reference count of the matrix by 1\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_matrix_unref\fP (\fBps_matrix\fP *matrix)"
+.br
+.RI "Decrements the reference count for the matrix object\&. If the reference count on the matrix falls to 0, the matrix is freed\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_matrix_init\fP (\fBps_matrix\fP *matrix, float sx, float shy, float shx, float sy, float tx, float ty)"
+.br
+.RI "Initialize an existing matrix object with given parameters\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_matrix_translate\fP (\fBps_matrix\fP *matrix, float tx, float ty)"
+.br
+.RI "Modify a matrix by translating\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_matrix_scale\fP (\fBps_matrix\fP *matrix, float sx, float sy)"
+.br
+.RI "Modify a matrix by scaling\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_matrix_rotate\fP (\fBps_matrix\fP *matrix, float angle)"
+.br
+.RI "Modify a matrix by rotating\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_matrix_shear\fP (\fBps_matrix\fP *matrix, float shx, float shy)"
+.br
+.RI "Modify a matrix by shearing\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_matrix_invert\fP (\fBps_matrix\fP *matrix)"
+.br
+.RI "Modify a matrix by inverting\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_matrix_identity\fP (\fBps_matrix\fP *matrix)"
+.br
+.RI "Reset a matrix to identity matrix\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_matrix_flip_x\fP (\fBps_matrix\fP *matrix)"
+.br
+.RI "Flip a matrix in the horizontal direction\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_matrix_flip_y\fP (\fBps_matrix\fP *matrix)"
+.br
+.RI "Flip a matrix in the vertical direction\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_matrix_multiply\fP (\fBps_matrix\fP *result, const \fBps_matrix\fP *a, const \fBps_matrix\fP *b)"
+.br
+.RI "Multiplies the matrix in a and b together and stores the result in result\&. "
+.ti -1c
+.RI "PEXPORT \fBps_bool\fP PICAPI \fBps_matrix_is_identity\fP (const \fBps_matrix\fP *matrix)"
+.br
+.RI "Checks whether the matrix is the identity transform matrix\&. "
+.ti -1c
+.RI "PEXPORT \fBps_bool\fP PICAPI \fBps_matrix_is_equal\fP (const \fBps_matrix\fP *a, const \fBps_matrix\fP *b)"
+.br
+.RI "Checks whether two matrix are equal\&. "
+.ti -1c
+.RI "PEXPORT float PICAPI \fBps_matrix_get_determinant\fP (const \fBps_matrix\fP *matrix)"
+.br
+.RI "Return the determinant from a matrix\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_matrix_set_translate_factor\fP (\fBps_matrix\fP *matrix, float tx, float ty)"
+.br
+.RI "Set the translate factors to the matrix\&. "
+.ti -1c
+.RI "PEXPORT \fBps_bool\fP PICAPI \fBps_matrix_get_translate_factor\fP (\fBps_matrix\fP *matrix, float *tx, float *ty)"
+.br
+.RI "Get the translate factors from the matrix\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_matrix_set_scale_factor\fP (\fBps_matrix\fP *matrix, float sx, float sy)"
+.br
+.RI "Set the scale factors to the matrix\&. "
+.ti -1c
+.RI "PEXPORT \fBps_bool\fP PICAPI \fBps_matrix_get_scale_factor\fP (\fBps_matrix\fP *matrix, float *sx, float *sy)"
+.br
+.RI "Get the scale factors from the matrix\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_matrix_set_shear_factor\fP (\fBps_matrix\fP *matrix, float shx, float shy)"
+.br
+.RI "Set the shear factors to the matrix\&. "
+.ti -1c
+.RI "PEXPORT \fBps_bool\fP PICAPI \fBps_matrix_get_shear_factor\fP (\fBps_matrix\fP *matrix, float *shx, float *shy)"
+.br
+.RI "Get the shear factors from the matrix\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_matrix_transform_point\fP (const \fBps_matrix\fP *matrix, \fBps_point\fP *point)"
+.br
+.RI "Transform an existing point using the matrix\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_matrix_transform_rect\fP (const \fBps_matrix\fP *matrix, \fBps_rect\fP *rect)"
+.br
+.RI "Transform an existing rectangle using the matrix\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_matrix_transform_path\fP (const \fBps_matrix\fP *matrix, \fBps_path\fP *path)"
+.br
+.RI "Transform an existing path using the matrix\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.SH "Function Documentation"
+.PP 
+.SS "\fBps_matrix\fP * ps_matrix_create (void)"
+
+.PP
+Create a identity matrix object\&. 
+.PP
+\fBReturns\fP
+.RS 4
+If the function succeeds, the return value is the pointer to a new matrix object\&. If the function fails, the return value is NULL\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+To get extended error information, call \fIps_last_status\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_matrix_create_init\fP, \fBps_matrix_create_copy\fP, \fBps_matrix_ref\fP, \fBps_matrix_unref\fP 
+.RE
+.PP
+
+.SS "\fBps_matrix\fP * ps_matrix_create_copy (const \fBps_matrix\fP * matrix)"
+
+.PP
+Create a matrix copy from an exist one\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fImatrix\fP Pointer to an existing matrix object\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+If the function succeeds, the return value is the pointer to a new matrix object\&. If the function fails, the return value is NULL\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+To get extended error information, call \fIps_last_status\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_matrix_create_init\fP, \fBps_matrix_create\fP, \fBps_matrix_ref\fP, \fBps_matrix_unref\fP 
+.RE
+.PP
+
+.SS "\fBps_matrix\fP * ps_matrix_create_init (float sx, float shy, float shx, float sy, float tx, float ty)"
+
+.PP
+Create a matrix with given parameters\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIsx\fP The horizontal scaling factor\&. 
+.br
+\fIshy\fP The vertical skewing factor\&. 
+.br
+\fIshx\fP The horizontal skewing factor\&. 
+.br
+\fIsy\fP The vertical scaling factor\&. 
+.br
+\fItx\fP The horizontal translating factor\&. 
+.br
+\fIty\fP The vertical translating factor\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+If the function succeeds, the return value is the pointer to a new matrix object\&. If the function fails, the return value is NULL\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+To get extended error information, call \fIps_last_status\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_matrix_create\fP, \fBps_matrix_create_copy\fP, \fBps_matrix_ref\fP, \fBps_matrix_unref\fP 
+.RE
+.PP
+
+.SS "void ps_matrix_flip_x (\fBps_matrix\fP * matrix)"
+
+.PP
+Flip a matrix in the horizontal direction\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fImatrix\fP Pointer to an existing matrix object\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_matrix_identity\fP, \fBps_matrix_flip_y\fP, \fBps_matrix_invert\fP 
+.RE
+.PP
+
+.SS "void ps_matrix_flip_y (\fBps_matrix\fP * matrix)"
+
+.PP
+Flip a matrix in the vertical direction\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fImatrix\fP Pointer to an existing matrix object\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_matrix_identity\fP, \fBps_matrix_flip_x\fP, \fBps_matrix_invert\fP 
+.RE
+.PP
+
+.SS "float ps_matrix_get_determinant (const \fBps_matrix\fP * matrix)"
+
+.PP
+Return the determinant from a matrix\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fImatrix\fP Pointer to an existing matrix object\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The determinant of the matrix\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_matrix_is_equal\fP, \fBps_matrix_is_identity\fP, \fBps_matrix_multiply\fP 
+.RE
+.PP
+
+.SS "\fBps_bool\fP ps_matrix_get_scale_factor (\fBps_matrix\fP * matrix, float * sx, float * sy)"
+
+.PP
+Get the scale factors from the matrix\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fImatrix\fP Pointer to an existing matrix object\&. 
+.br
+\fIsx\fP Pointer to a buffer to receiving the scale factor in x dimension\&. 
+.br
+\fIsy\fP Pointer to a buffer to receiving the scale factor in y dimension\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+True if is success, otherwise False\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_matrix_set_scale_factor\fP 
+.RE
+.PP
+
+.SS "\fBps_bool\fP ps_matrix_get_shear_factor (\fBps_matrix\fP * matrix, float * shx, float * shy)"
+
+.PP
+Get the shear factors from the matrix\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fImatrix\fP Pointer to an existing matrix object\&. 
+.br
+\fIshx\fP Pointer to a buffer to receiving the shear factor in horizontal\&. 
+.br
+\fIshy\fP Pointer to a buffer to receiving the shear factor in vertical\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+True if is success, otherwise False\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_matrix_set_shear_factor\fP 
+.RE
+.PP
+
+.SS "\fBps_bool\fP ps_matrix_get_translate_factor (\fBps_matrix\fP * matrix, float * tx, float * ty)"
+
+.PP
+Get the translate factors from the matrix\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fImatrix\fP Pointer to an existing matrix object\&. 
+.br
+\fItx\fP Pointer to a buffer to receiving the translate factor in x direction\&. 
+.br
+\fIty\fP Pointer to a buffer to receiving the translate factor in y direction\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+True if is success, otherwise False\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_matrix_set_translate_factor\fP 
+.RE
+.PP
+
+.SS "void ps_matrix_identity (\fBps_matrix\fP * matrix)"
+
+.PP
+Reset a matrix to identity matrix\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fImatrix\fP Pointer to an existing matrix object\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_matrix_flip_x\fP, \fBps_matrix_flip_y\fP, \fBps_matrix_invert\fP 
+.RE
+.PP
+
+.SS "void ps_matrix_init (\fBps_matrix\fP * matrix, float sx, float shy, float shx, float sy, float tx, float ty)"
+
+.PP
+Initialize an existing matrix object with given parameters\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fImatrix\fP Pointer to an existing matrix object\&. 
+.br
+\fIsx\fP The horizontal scaling factor\&. 
+.br
+\fIshy\fP The vertical skewing factor\&. 
+.br
+\fIshx\fP The horizontal skewing factor\&. 
+.br
+\fIsy\fP The vertical scaling factor\&. 
+.br
+\fItx\fP The horizontal translating factor\&. 
+.br
+\fIty\fP The vertical translating factor\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_matrix_translate\fP, \fBps_matrix_scale\fP, \fBps_matrix_shear\fP, \fBps_matrix_rotate\fP 
+.RE
+.PP
+
+.SS "void ps_matrix_invert (\fBps_matrix\fP * matrix)"
+
+.PP
+Modify a matrix by inverting\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fImatrix\fP Pointer to an existing matrix object\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_matrix_flip_x\fP, \fBps_matrix_flip_y\fP, \fBps_matrix_identity\fP 
+.RE
+.PP
+
+.SS "\fBps_bool\fP ps_matrix_is_equal (const \fBps_matrix\fP * a, const \fBps_matrix\fP * b)"
+
+.PP
+Checks whether two matrix are equal\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIa\fP Pointer to an existing matrix object\&. 
+.br
+\fIb\fP Pointer to an existing matrix object\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+True if a and b are equal, otherwise False\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_matrix_is_identity\fP, \fBps_matrix_get_determinant\fP, \fBps_matrix_multiply\fP 
+.RE
+.PP
+
+.SS "\fBps_bool\fP ps_matrix_is_identity (const \fBps_matrix\fP * matrix)"
+
+.PP
+Checks whether the matrix is the identity transform matrix\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fImatrix\fP Pointer to an existing matrix object\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+True if is identity, otherwise False\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_matrix_is_equal\fP, \fBps_matrix_get_determinant\fP, \fBps_matrix_multiply\fP 
+.RE
+.PP
+
+.SS "void ps_matrix_multiply (\fBps_matrix\fP * result, const \fBps_matrix\fP * a, const \fBps_matrix\fP * b)"
+
+.PP
+Multiplies the matrix in a and b together and stores the result in result\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIresult\fP Pointer to an existing matrix object in which to store the result\&. 
+.br
+\fIa\fP Pointer to an existing matrix object\&. 
+.br
+\fIb\fP Pointer to an existing matrix object\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_matrix_is_identity\fP, \fBps_matrix_is_equal\fP \fBps_matrix_get_determinant\fP 
+.RE
+.PP
+
+.SS "\fBps_matrix\fP * ps_matrix_ref (\fBps_matrix\fP * matrix)"
+
+.PP
+Increases the reference count of the matrix by 1\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fImatrix\fP Pointer to an existing matrix object\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+If the function succeeds, the return value is the pointer to the matrix object\&. If the function fails, the return value is NULL\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+To get extended error information, call \fIps_last_status\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_matrix_create_init\fP, \fBps_matrix_create\fP, \fBps_matrix_create_copy\fP, \fBps_matrix_unref\fP 
+.RE
+.PP
+
+.SS "void ps_matrix_rotate (\fBps_matrix\fP * matrix, float angle)"
+
+.PP
+Modify a matrix by rotating\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fImatrix\fP Pointer to an existing matrix object\&. 
+.br
+\fIangle\fP The angle, in radians, which to rotate the specified matrix\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_matrix_translate\fP, \fBps_matrix_shear\fP, \fBps_matrix_scale\fP 
+.RE
+.PP
+
+.SS "void ps_matrix_scale (\fBps_matrix\fP * matrix, float sx, float sy)"
+
+.PP
+Modify a matrix by scaling\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fImatrix\fP Pointer to an existing matrix object\&. 
+.br
+\fIsx\fP The scale factor for the X dimension\&. 
+.br
+\fIsy\fP The scale factor for the Y dimension\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_matrix_translate\fP, \fBps_matrix_shear\fP, \fBps_matrix_rotate\fP 
+.RE
+.PP
+
+.SS "void ps_matrix_set_scale_factor (\fBps_matrix\fP * matrix, float sx, float sy)"
+
+.PP
+Set the scale factors to the matrix\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fImatrix\fP Pointer to an existing matrix object\&. 
+.br
+\fIsx\fP The scale factor in x dimension\&. 
+.br
+\fIsy\fP The scale factor in y dimension\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_matrix_get_scale_factor\fP 
+.RE
+.PP
+
+.SS "void ps_matrix_set_shear_factor (\fBps_matrix\fP * matrix, float shx, float shy)"
+
+.PP
+Set the shear factors to the matrix\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fImatrix\fP Pointer to an existing matrix object\&. 
+.br
+\fIshx\fP The shear factor for the horizontal\&. 
+.br
+\fIshy\fP The shear factor for the vertical\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_matrix_get_shear_factor\fP 
+.RE
+.PP
+
+.SS "void ps_matrix_set_translate_factor (\fBps_matrix\fP * matrix, float tx, float ty)"
+
+.PP
+Set the translate factors to the matrix\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fImatrix\fP Pointer to an existing matrix object\&. 
+.br
+\fItx\fP The amount, in pixels, which the translate factor in x direction\&. 
+.br
+\fIty\fP The amount, in pixels, which the translate factor in y direction\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_matrix_get_translate_factor\fP 
+.RE
+.PP
+
+.SS "void ps_matrix_shear (\fBps_matrix\fP * matrix, float shx, float shy)"
+
+.PP
+Modify a matrix by shearing\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fImatrix\fP Pointer to an existing matrix object\&. 
+.br
+\fIshx\fP The shear factor for the horizontal\&. 
+.br
+\fIshy\fP The shear factor for the vertical\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_matrix_translate\fP, \fBps_matrix_scale\fP, \fBps_matrix_rotate\fP 
+.RE
+.PP
+
+.SS "void ps_matrix_transform_path (const \fBps_matrix\fP * matrix, \fBps_path\fP * path)"
+
+.PP
+Transform an existing path using the matrix\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fImatrix\fP Pointer to an existing matrix object\&. 
+.br
+\fIpath\fP An existing path which will be transformed\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_matrix_transform_point\fP, \fBps_matrix_transform_rect\fP 
+.RE
+.PP
+
+.SS "void ps_matrix_transform_point (const \fBps_matrix\fP * matrix, \fBps_point\fP * point)"
+
+.PP
+Transform an existing point using the matrix\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fImatrix\fP Pointer to an existing matrix object\&. 
+.br
+\fIpoint\fP An existing point which will be transformed\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_matrix_transform_rect\fP, \fBps_matrix_transform_path\fP 
+.RE
+.PP
+
+.SS "void ps_matrix_transform_rect (const \fBps_matrix\fP * matrix, \fBps_rect\fP * rect)"
+
+.PP
+Transform an existing rectangle using the matrix\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fImatrix\fP Pointer to an existing matrix object\&. 
+.br
+\fIrect\fP An existing rectangle which will be transformed\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_matrix_transform_point\fP, \fBps_matrix_transform_path\fP 
+.RE
+.PP
+
+.SS "void ps_matrix_translate (\fBps_matrix\fP * matrix, float tx, float ty)"
+
+.PP
+Modify a matrix by translating\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fImatrix\fP Pointer to an existing matrix object\&. 
+.br
+\fItx\fP The amount, in pixels, which to translate in x direction\&. 
+.br
+\fIty\fP The amount, in pixels, which to translate in y direction\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_matrix_scale\fP, \fBps_matrix_shear\fP, \fBps_matrix_rotate\fP 
+.RE
+.PP
+
+.SS "void ps_matrix_unref (\fBps_matrix\fP * matrix)"
+
+.PP
+Decrements the reference count for the matrix object\&. If the reference count on the matrix falls to 0, the matrix is freed\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fImatrix\fP Pointer to an existing matrix object\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_matrix_create_init\fP, \fBps_matrix_create\fP, \fBps_matrix_create_copy\fP, \fBps_matrix_ref\fP 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Picasso API from the source code\&.

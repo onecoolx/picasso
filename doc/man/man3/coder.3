@@ -1,0 +1,83 @@
+.TH "coder" 3 "Tue Dec 24 2024" "Version 2.8" "Picasso API" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+coder
+.SH SYNOPSIS
+.br
+.PP
+.SS "Macros"
+
+.in +1c
+.ti -1c
+.RI "#define \fBMODULE_NAME\fP   1"
+.br
+.RI "Get module name\&. "
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "PEXPORT void \fBpsx_image_module_init\fP (void)"
+.br
+.RI "Initialze the image module\&. "
+.ti -1c
+.RI "PEXPORT void \fBpsx_image_module_shutdown\fP (void)"
+.br
+.RI "Shutdown the image module\&. "
+.ti -1c
+.RI "const PEXPORT char * \fBpsx_image_module_get_string\fP (int id)"
+.br
+.RI "Get the string info about module\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.SH "Function Documentation"
+.PP 
+.SS "char * psx_image_module_get_string (int id)"
+
+.PP
+Get the string info about module\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIid\fP The information index\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+If successs, return the pointer of string\&. Can not be modify and free\&. If fails, return NULL\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBpsx_image_module_init\fP \fBpsx_image_module_shutdown\fP 
+.RE
+.PP
+
+.SS "void psx_image_module_init (void)"
+
+.PP
+Initialze the image module\&. 
+.PP
+\fBSee also\fP
+.RS 4
+\fBpsx_image_module_shutdown\fP \fBpsx_image_module_get_string\fP 
+.RE
+.PP
+
+.SS "void psx_image_module_shutdown (void)"
+
+.PP
+Shutdown the image module\&. 
+.PP
+\fBSee also\fP
+.RS 4
+\fBpsx_image_module_init\fP \fBpsx_image_module_get_string\fP 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Picasso API from the source code\&.

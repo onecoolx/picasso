@@ -12,6 +12,7 @@ extern "C" {
 #endif /* __cplusplus */
 
 typedef enum {
+    EVENT_TYPE_UNKNOWN = -1,
     LEFT_BUTTON_DOWN,
     LEFT_BUTTON_UP,
     RIGHT_BUTTON_DOWN,

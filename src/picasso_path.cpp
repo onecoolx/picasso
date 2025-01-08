@@ -8,12 +8,12 @@
 #include "device.h"
 #include "geometry.h"
 #include "convert.h"
+#include "matrix.h"
 #include "graphic_path.h"
 #include "graphic_helper.h"
 
 #include "picasso.h"
 #include "picasso_global.h"
-#include "picasso_matrix.h"
 #include "picasso_objects.h"
 
 namespace picasso {
@@ -21,9 +21,12 @@ namespace picasso {
 static ps_rect _path_bounding_rect(const graphic_path& path)
 {
     ps_rect r = {1, 1, 0, 0};
-    scalar x1 = 1, y1 = 1, x2 = 0 ,y2 = 0;
+    scalar x1 = 1, y1 = 1, x2 = 0, y2 = 0;
     if (bounding_rect(const_cast<graphic_path&>(path), 0, &x1, &y1, &x2, &y2)) {
-        r.x = x1;  r.y = y1;  r.w = x2-x1;  r.h = y2-y1;
+        r.x = x1;
+        r.y = y1;
+        r.w = x2 - x1;
+        r.h = y2 - y1;
     }
     return r;
 }
@@ -56,7 +59,7 @@ ps_path* PICAPI ps_path_create(void)
     ps_path* p = (ps_path*)mem_malloc(sizeof(ps_path));
     if (p) {
         p->refcount = 1;
-        new ((void*)&(p->path)) picasso::graphic_path;
+        new ((void*) & (p->path)) picasso::graphic_path;
         global_status = STATUS_SUCCEED;
         return p;
     } else {
@@ -80,7 +83,7 @@ ps_path* PICAPI ps_path_create_copy(const ps_path* path)
     ps_path* p = (ps_path*)mem_malloc(sizeof(ps_path));
     if (p) {
         p->refcount = 1;
-        new ((void*)&(p->path)) picasso::graphic_path;
+        new ((void*) & (p->path)) picasso::graphic_path;
         p->path = path->path;
         global_status = STATUS_SUCCEED;
         return p;
@@ -195,12 +198,11 @@ void PICAPI ps_path_tangent_arc_to(ps_path* path, float r, const ps_point* tp, c
         // add infinite far away point
         unsigned int max_length = 65535;
         float factor_max = max_length / p1p0_length;
-        ps_point np  = {(sp.x + factor_max * p1p0.x), (sp.y + factor_max * p1p0.y)};
+        ps_point np = {(sp.x + factor_max * p1p0.x), (sp.y + factor_max * p1p0.y)};
         ps_path_line_to(path, &np);
         global_status = STATUS_SUCCEED;
         return;
     }
-
 
     float tangent = r / tanf(acosf(cos_phi) / 2);
     float factor_p1p0 = tangent / p1p0_length;
@@ -232,7 +234,7 @@ void PICAPI ps_path_tangent_arc_to(ps_path* path, float r, const ps_point* tp, c
 
     float factor_p1p2 = tangent / p1p2_length;
     ps_point t_p1p2 = {(tp->x + factor_p1p2 * p1p2.x), (tp->y + factor_p1p2 * p1p2.y)};
-    ps_point orth_p1p2 = {(t_p1p2.x - p.x),(t_p1p2.y - p.y)};
+    ps_point orth_p1p2 = {(t_p1p2.x - p.x), (t_p1p2.y - p.y)};
     float orth_p1p2_length = sqrtf(orth_p1p2.x * orth_p1p2.x + orth_p1p2.y * orth_p1p2.y);
     float ea = acosf(orth_p1p2.x / orth_p1p2_length);
 
@@ -268,7 +270,7 @@ void PICAPI ps_path_arc_to(ps_path* path, float rx, float ry, float a, ps_bool l
     scalar y1 = path->path.last_y();
 
     picasso::bezier_arc_svg arc(x1, y1, FLT_TO_SCALAR(rx), FLT_TO_SCALAR(ry), FLT_TO_SCALAR(a),
-                            (large ? true : false), (cw ? true : false), FLT_TO_SCALAR(ep->x), FLT_TO_SCALAR(ep->y));
+                                (large ? true : false), (cw ? true : false), FLT_TO_SCALAR(ep->x), FLT_TO_SCALAR(ep->y));
     picasso::conv_curve cr(arc);
     if (picasso::_is_closed_path(path->path)) {
         path->path.concat_path(cr, 0);
@@ -291,7 +293,7 @@ void PICAPI ps_path_bezier_to(ps_path* path, const ps_point* cp1, const ps_point
     }
 
     picasso::curve4 c(path->path.last_x(), path->path.last_y(), FLT_TO_SCALAR(cp1->x), FLT_TO_SCALAR(cp1->y),
-                    FLT_TO_SCALAR(cp2->x), FLT_TO_SCALAR(cp2->y), FLT_TO_SCALAR(ep->x), FLT_TO_SCALAR(ep->y));
+                      FLT_TO_SCALAR(cp2->x), FLT_TO_SCALAR(cp2->y), FLT_TO_SCALAR(ep->x), FLT_TO_SCALAR(ep->y));
     if (picasso::_is_closed_path(path->path)) {
         path->path.concat_path(c, 0);
     } else {
@@ -313,7 +315,7 @@ void PICAPI ps_path_quad_to(ps_path* path, const ps_point* cp, const ps_point* e
     }
 
     picasso::curve3 c(path->path.last_x(), path->path.last_y(), FLT_TO_SCALAR(cp->x),
-                    FLT_TO_SCALAR(cp->y), FLT_TO_SCALAR(ep->x), FLT_TO_SCALAR(ep->y));
+                      FLT_TO_SCALAR(cp->y), FLT_TO_SCALAR(ep->x), FLT_TO_SCALAR(ep->y));
 
     if (picasso::_is_closed_path(path->path)) {
         path->path.concat_path(c, 0);
@@ -378,7 +380,7 @@ ps_path_cmd PICAPI ps_path_get_vertex(const ps_path* path, unsigned int index, p
         return PATH_CMD_STOP;
     }
 
-    if (!path || !point || (index > path->path.total_vertices()-1)) {
+    if (!path || !point || (index > path->path.total_vertices() - 1)) {
         global_status = STATUS_INVALID_ARGUMENT;
         return PATH_CMD_STOP;
     }
@@ -457,7 +459,7 @@ ps_bool PICAPI ps_path_stroke_contains(const ps_path* path, const ps_point* p, f
     }
 
     ps_rect br = picasso::_path_bounding_rect(path->path);
-    if ((p->x < br.x) || (p->y < br.y) || (p->x > (br.x+br.w)) || (p->y > (br.y+br.h))) {
+    if ((p->x < br.x) || (p->y < br.y) || (p->x > (br.x + br.w)) || (p->y > (br.y + br.h))) {
         //out of bounding rect
         global_status = STATUS_SUCCEED;
         return False;
@@ -465,7 +467,7 @@ ps_bool PICAPI ps_path_stroke_contains(const ps_path* path, const ps_point* p, f
 
     global_status = STATUS_SUCCEED;
     return picasso::raster_adapter::stroke_contents_point(path->path,
-                FLT_TO_SCALAR(p->x), FLT_TO_SCALAR(p->y), FLT_TO_SCALAR(width)) ? True : False;
+                                                          FLT_TO_SCALAR(p->x), FLT_TO_SCALAR(p->y), FLT_TO_SCALAR(width)) ? True : False;
 }
 
 ps_bool PICAPI ps_path_contains(const ps_path* path, const ps_point* p, ps_fill_rule rule)
@@ -486,7 +488,7 @@ ps_bool PICAPI ps_path_contains(const ps_path* path, const ps_point* p, ps_fill_
     }
 
     ps_rect br = picasso::_path_bounding_rect(path->path);
-    if ((p->x < br.x) || (p->y < br.y) || (p->x > (br.x+br.w)) || (p->y > (br.y+br.h))) {
+    if ((p->x < br.x) || (p->y < br.y) || (p->x > (br.x + br.w)) || (p->y > (br.y + br.h))) {
         //out of bounding rect
         global_status = STATUS_SUCCEED;
         return False;
@@ -494,7 +496,7 @@ ps_bool PICAPI ps_path_contains(const ps_path* path, const ps_point* p, ps_fill_
 
     global_status = STATUS_SUCCEED;
     return picasso::raster_adapter::fill_contents_point(path->path,
-                FLT_TO_SCALAR(p->x), FLT_TO_SCALAR(p->y), (picasso::filling_rule)rule) ? True : False;
+                                                        FLT_TO_SCALAR(p->x), FLT_TO_SCALAR(p->y), (picasso::filling_rule)rule) ? True : False;
 }
 
 void PICAPI ps_path_add_line(ps_path* path, const ps_point* p1, const ps_point* p2)
@@ -532,7 +534,7 @@ void PICAPI ps_path_add_arc(ps_path* path, const ps_point* cp, float r, float sa
     }
 
     picasso::arc a(FLT_TO_SCALAR(cp->x), FLT_TO_SCALAR(cp->y), FLT_TO_SCALAR(r), FLT_TO_SCALAR(r),
-                FLT_TO_SCALAR(sa), FLT_TO_SCALAR(ea), (cw ? true : false));
+                   FLT_TO_SCALAR(sa), FLT_TO_SCALAR(ea), (cw ? true : false));
 
     if (picasso::_is_closed_path(path->path)) {
         path->path.concat_path(a, 0);
@@ -574,8 +576,8 @@ void PICAPI ps_path_add_ellipse(ps_path* path, const ps_rect* r)
         return;
     }
 
-    picasso::ellipse e(FLT_TO_SCALAR(r->x+r->w/2), FLT_TO_SCALAR(r->y+r->h/2),
-                            FLT_TO_SCALAR(r->w/2), FLT_TO_SCALAR(r->h/2));
+    picasso::ellipse e(FLT_TO_SCALAR(r->x + r->w / 2), FLT_TO_SCALAR(r->y + r->h / 2),
+                       FLT_TO_SCALAR(r->w / 2), FLT_TO_SCALAR(r->h / 2));
     if (picasso::_is_closed_path(path->path)) {
         path->path.concat_path(e, 0);
     } else {
@@ -584,9 +586,8 @@ void PICAPI ps_path_add_ellipse(ps_path* path, const ps_rect* r)
     global_status = STATUS_SUCCEED;
 }
 
-
-void PICAPI ps_path_add_rounded_rect(ps_path*path, const ps_rect* r, float ltx, float lty, float rtx, float rty,
-                                                                        float lbx, float lby, float rbx, float rby)
+void PICAPI ps_path_add_rounded_rect(ps_path* path, const ps_rect* r, float ltx, float lty, float rtx, float rty,
+                                     float lbx, float lby, float rbx, float rby)
 {
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;
@@ -599,9 +600,9 @@ void PICAPI ps_path_add_rounded_rect(ps_path*path, const ps_rect* r, float ltx, 
     }
 
     picasso::rounded_rect rr;
-    rr.rect(FLT_TO_SCALAR(r->x), FLT_TO_SCALAR(r->y), FLT_TO_SCALAR(r->x+r->w), FLT_TO_SCALAR(r->y+r->h));
+    rr.rect(FLT_TO_SCALAR(r->x), FLT_TO_SCALAR(r->y), FLT_TO_SCALAR(r->x + r->w), FLT_TO_SCALAR(r->y + r->h));
     rr.radius(FLT_TO_SCALAR(ltx), FLT_TO_SCALAR(lty), FLT_TO_SCALAR(rtx), FLT_TO_SCALAR(rty),
-                FLT_TO_SCALAR(lbx), FLT_TO_SCALAR(lby), FLT_TO_SCALAR(rbx), FLT_TO_SCALAR(rby));
+              FLT_TO_SCALAR(lbx), FLT_TO_SCALAR(lby), FLT_TO_SCALAR(rbx), FLT_TO_SCALAR(rby));
     rr.normalize_radius();
     if (picasso::_is_closed_path(path->path)) {
         path->path.concat_path(rr, 0);

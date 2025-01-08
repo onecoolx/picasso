@@ -1,0 +1,278 @@
+.TH "gradient" 3 "Tue Dec 24 2024" "Version 2.8" "Picasso API" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+gradient
+.SH SYNOPSIS
+.br
+.PP
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef enum \fB_ps_gradient_spread\fP \fBps_gradient_spread\fP"
+.br
+.RI "Fill type of outside the gradient area\&. "
+.in -1c
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum \fB_ps_gradient_spread\fP { \fBGRADIENT_SPREAD_PAD\fP, \fBGRADIENT_SPREAD_REPEAT\fP, \fBGRADIENT_SPREAD_REFLECT\fP }"
+.br
+.RI "Fill type of outside the gradient area\&. "
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "PEXPORT \fBps_gradient\fP *PICAPI \fBps_gradient_create_linear\fP (\fBps_gradient_spread\fP spread, const \fBps_point\fP *start, const \fBps_point\fP *end)"
+.br
+.RI "Create a new gradient that varies along the line defined by provided starting and ending points\&. "
+.ti -1c
+.RI "PEXPORT \fBps_gradient\fP *PICAPI \fBps_gradient_create_radial\fP (\fBps_gradient_spread\fP spread, const \fBps_point\fP *start, float sradius, const \fBps_point\fP *end, float eradius)"
+.br
+.RI "Create a new gradient that varies along the area defined by provided starting and ending circles\&. "
+.ti -1c
+.RI "PEXPORT \fBps_gradient\fP *PICAPI \fBps_gradient_create_conic\fP (\fBps_gradient_spread\fP spread, const \fBps_point\fP *origin, float sangle)"
+.br
+.RI "Create a new gradient that varies along the area defined by provided concentric circles\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_gradient_transform\fP (\fBps_gradient\fP *gradient, const \fBps_matrix\fP *matrix)"
+.br
+.RI "Transform the gradient object\&. "
+.ti -1c
+.RI "PEXPORT \fBps_gradient\fP *PICAPI \fBps_gradient_ref\fP (\fBps_gradient\fP *gradient)"
+.br
+.RI "Increases the reference count of the gradient by 1\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_gradient_unref\fP (\fBps_gradient\fP *gradient)"
+.br
+.RI "Decrements the reference count for the gradient object\&. If the reference count on the gradient falls to 0, the gradient is freed\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_gradient_add_color_stop\fP (\fBps_gradient\fP *gradient, float offset, const \fBps_color\fP *color)"
+.br
+.RI "Add a color stop to a gradient\&. The offset specifies the location along the gradient's control vector\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_gradient_clear_color_stops\fP (\fBps_gradient\fP *gradient)"
+.br
+.RI "Clear color stops from gradient's control vector\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.SH "Enumeration Type Documentation"
+.PP 
+.SS "enum \fB_ps_gradient_spread\fP"
+
+.PP
+Fill type of outside the gradient area\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIGRADIENT_SPREAD_PAD \fP\fP
+Spread pad, the area is filled with closest stop color\&. 
+.TP
+\fB\fIGRADIENT_SPREAD_REPEAT \fP\fP
+Spread repeat, the gradient is repeated outside the area\&. 
+.TP
+\fB\fIGRADIENT_SPREAD_REFLECT \fP\fP
+Spread reflect, the gradient is reflected outside the area\&. 
+.PP
+Definition at line 942 of file picasso\&.h\&.
+.SH "Function Documentation"
+.PP 
+.SS "void ps_gradient_add_color_stop (\fBps_gradient\fP * gradient, float offset, const \fBps_color\fP * color)"
+
+.PP
+Add a color stop to a gradient\&. The offset specifies the location along the gradient's control vector\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIgradient\fP Pointer to an existing gradient object\&. 
+.br
+\fIoffset\fP An offset position in control vector (range 0 ~ 1)\&. 
+.br
+\fIcolor\fP Color for the stop\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_gradient_clear_color_stops\fP 
+.RE
+.PP
+
+.SS "void ps_gradient_clear_color_stops (\fBps_gradient\fP * gradient)"
+
+.PP
+Clear color stops from gradient's control vector\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIgradient\fP Pointer to an existing gradient object\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_gradient_add_color_stop\fP 
+.RE
+.PP
+
+.SS "\fBps_gradient\fP * ps_gradient_create_conic (\fBps_gradient_spread\fP spread, const \fBps_point\fP * origin, float sangle)"
+
+.PP
+Create a new gradient that varies along the area defined by provided concentric circles\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIspread\fP The spread type of the gradient\&. 
+.br
+\fIorigin\fP The center point of conic, of the required gradient\&. 
+.br
+\fIsangle\fP The angle, int radians, which the first color\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+If the function succeeds, the return value is the pointer to a new gradient object\&. If the function fails, the return value is NULL\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+Conic Gradient support reflect and pad mode only, paramter spread repeat will be supposed pad\&. To get extended error information, call \fIps_last_status\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_gradient_create_linear\fP, \fBps_gradient_create_radial\fP, \fBps_gradient_ref\fP, \fBps_gradient_unref\fP 
+.RE
+.PP
+
+.SS "\fBps_gradient\fP * ps_gradient_create_linear (\fBps_gradient_spread\fP spread, const \fBps_point\fP * start, const \fBps_point\fP * end)"
+
+.PP
+Create a new gradient that varies along the line defined by provided starting and ending points\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIspread\fP The spread type of the gradient\&. 
+.br
+\fIstart\fP The starting point , of the required gradient\&. 
+.br
+\fIend\fP The ending point, of the required gradient\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+If the function succeeds, the return value is the pointer to a new gradient object\&. If the function fails, the return value is NULL\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+To get extended error information, call \fIps_last_status\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_gradient_create_radial\fP, \fBps_gradient_create_conic\fP, \fBps_gradient_ref\fP, \fBps_gradient_unref\fP 
+.RE
+.PP
+
+.SS "\fBps_gradient\fP * ps_gradient_create_radial (\fBps_gradient_spread\fP spread, const \fBps_point\fP * start, float sradius, const \fBps_point\fP * end, float eradius)"
+
+.PP
+Create a new gradient that varies along the area defined by provided starting and ending circles\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIspread\fP The spread type of the gradient\&. 
+.br
+\fIstart\fP The center point of the starting circle, of the required gradient\&. 
+.br
+\fIsradius\fP The radius of the starting circle, of the required gradient\&. 
+.br
+\fIend\fP The center point of the ending circle, of the required gradient\&. 
+.br
+\fIeradius\fP The radius of the ending circle, of the required gradient\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+If the function succeeds, the return value is the pointer to a new gradient object\&. If the function fails, the return value is NULL\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+To get extended error information, call \fIps_last_status\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_gradient_create_linear\fP, \fBps_gradient_create_conic\fP, \fBps_gradient_ref\fP, \fBps_gradient_unref\fP 
+.RE
+.PP
+
+.SS "\fBps_gradient\fP * ps_gradient_ref (\fBps_gradient\fP * gradient)"
+
+.PP
+Increases the reference count of the gradient by 1\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIgradient\fP Pointer to an existing gradient object\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+If the function succeeds, the return value is the pointer to the gradient object\&. If the function fails, the return value is NULL\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+To get extended error information, call \fIps_last_status\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_gradient_create_linear\fP, \fBps_gradient_create_radial\fP, \fBps_gradient_create_conic\fP, \fBps_gradient_unref\fP 
+.RE
+.PP
+
+.SS "void ps_gradient_transform (\fBps_gradient\fP * gradient, const \fBps_matrix\fP * matrix)"
+
+.PP
+Transform the gradient object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIgradient\fP Pointer to an existing gradient object\&. 
+.br
+\fImatrix\fP Pointer to an existing matrix object\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_gradient_create_linear\fP, \fBps_gradient_create_radial\fP, \fBps_gradient_create_conic\fP, \fBps_gradient_ref\fP, \fBps_gradient_unref\fP 
+.RE
+.PP
+
+.SS "void ps_gradient_unref (\fBps_gradient\fP * gradient)"
+
+.PP
+Decrements the reference count for the gradient object\&. If the reference count on the gradient falls to 0, the gradient is freed\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIgradient\fP Pointer to an existing gradient object\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_gradient_create_linear\fP, \fBps_gradient_create_radial\fP, \fBps_gradient_create_conic\fP, \fBps_gradient_ref\fP 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Picasso API from the source code\&.

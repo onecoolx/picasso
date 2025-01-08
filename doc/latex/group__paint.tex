@@ -1,0 +1,91 @@
+\doxysection{Paint}
+\label{group__paint}\index{Paint@{Paint}}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+stroke} (\textbf{ ps\+\_\+context} $\ast$ctx)
+\begin{DoxyCompactList}\small\item\em Stroke the current path according to the line attributes. After called, the current path will be cleared from the context. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+fill} (\textbf{ ps\+\_\+context} $\ast$ctx)
+\begin{DoxyCompactList}\small\item\em Fill the current path according to the source attributes. After called, the current path will be cleared from the context. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+paint} (\textbf{ ps\+\_\+context} $\ast$ctx)
+\begin{DoxyCompactList}\small\item\em Fill and stroke the current path according to the source and line attributes. After called, the current path will be cleared from the context. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+clear} (\textbf{ ps\+\_\+context} $\ast$ctx)
+\begin{DoxyCompactList}\small\item\em Clear the current context with source color. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\label{group__paint_ga793a1c39729d5aed04780c236c42c980}} 
+\index{Paint@{Paint}!ps\_clear@{ps\_clear}}
+\index{ps\_clear@{ps\_clear}!Paint@{Paint}}
+\doxysubsubsection{ps\_clear()}
+{\footnotesize\ttfamily void ps\+\_\+clear (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx }\end{DoxyParamCaption})}
+
+
+
+Clear the current context with source color. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+stroke}{p.}{group__paint_ga70cb382dcc89af84f5ff35a0f0edec9d}, \doxyref{ps\+\_\+fill}{p.}{group__paint_ga0f751ef4beb90e8173c9daeae11d5b1b}, \doxyref{ps\+\_\+paint}{p.}{group__paint_gaff82a5d08a92ffe819136c91bb0c0bf7} 
+\end{DoxySeeAlso}
+\mbox{\label{group__paint_ga0f751ef4beb90e8173c9daeae11d5b1b}} 
+\index{Paint@{Paint}!ps\_fill@{ps\_fill}}
+\index{ps\_fill@{ps\_fill}!Paint@{Paint}}
+\doxysubsubsection{ps\_fill()}
+{\footnotesize\ttfamily void ps\+\_\+fill (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx }\end{DoxyParamCaption})}
+
+
+
+Fill the current path according to the source attributes. After called, the current path will be cleared from the context. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+stroke}{p.}{group__paint_ga70cb382dcc89af84f5ff35a0f0edec9d}, \doxyref{ps\+\_\+paint}{p.}{group__paint_gaff82a5d08a92ffe819136c91bb0c0bf7}, \doxyref{ps\+\_\+clear}{p.}{group__paint_ga793a1c39729d5aed04780c236c42c980} 
+\end{DoxySeeAlso}
+\mbox{\label{group__paint_gaff82a5d08a92ffe819136c91bb0c0bf7}} 
+\index{Paint@{Paint}!ps\_paint@{ps\_paint}}
+\index{ps\_paint@{ps\_paint}!Paint@{Paint}}
+\doxysubsubsection{ps\_paint()}
+{\footnotesize\ttfamily void ps\+\_\+paint (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx }\end{DoxyParamCaption})}
+
+
+
+Fill and stroke the current path according to the source and line attributes. After called, the current path will be cleared from the context. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+stroke}{p.}{group__paint_ga70cb382dcc89af84f5ff35a0f0edec9d}, \doxyref{ps\+\_\+fill}{p.}{group__paint_ga0f751ef4beb90e8173c9daeae11d5b1b}, \doxyref{ps\+\_\+clear}{p.}{group__paint_ga793a1c39729d5aed04780c236c42c980} 
+\end{DoxySeeAlso}
+\mbox{\label{group__paint_ga70cb382dcc89af84f5ff35a0f0edec9d}} 
+\index{Paint@{Paint}!ps\_stroke@{ps\_stroke}}
+\index{ps\_stroke@{ps\_stroke}!Paint@{Paint}}
+\doxysubsubsection{ps\_stroke()}
+{\footnotesize\ttfamily void ps\+\_\+stroke (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx }\end{DoxyParamCaption})}
+
+
+
+Stroke the current path according to the line attributes. After called, the current path will be cleared from the context. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & Pointer to an existing context object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+fill}{p.}{group__paint_ga0f751ef4beb90e8173c9daeae11d5b1b}, \doxyref{ps\+\_\+paint}{p.}{group__paint_gaff82a5d08a92ffe819136c91bb0c0bf7}, \doxyref{ps\+\_\+clear}{p.}{group__paint_ga793a1c39729d5aed04780c236c42c980} 
+\end{DoxySeeAlso}

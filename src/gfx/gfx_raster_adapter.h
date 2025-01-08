@@ -9,9 +9,9 @@
 
 #include "common.h"
 #include "interfaces.h"
+#include "matrix.h"
 
 #include "gfx_rasterizer_scanline.h"
-#include "gfx_trans_affine.h"
 
 namespace gfx {
 
@@ -25,7 +25,7 @@ public:
 
     virtual void set_gamma_power(scalar g);
     virtual void set_antialias(bool b);
-    virtual void set_transform(const abstract_trans_affine* mtx);
+    virtual void set_transform(const trans_affine* mtx);
     virtual void set_raster_method(unsigned int m);
 
     virtual void add_shape(const vertex_source& vs, unsigned int id);
@@ -43,12 +43,12 @@ public:
     unsigned int raster_method(void) const;
     gfx_rasterizer_scanline_aa<>& stroke_impl(void) { return m_sraster; }
     gfx_rasterizer_scanline_aa<>& fill_impl(void) { return m_fraster; }
-    gfx_trans_affine transformation(void) const;
+    trans_affine transformation(void) const;
 private:
     void setup_stroke_raster(void);
     void setup_fill_raster(void);
 
-    gfx_raster_adapter_impl * m_impl;
+    gfx_raster_adapter_impl* m_impl;
     gfx_rasterizer_scanline_aa<> m_sraster;
     gfx_rasterizer_scanline_aa<> m_fraster;
 };

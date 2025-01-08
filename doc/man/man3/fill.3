@@ -1,0 +1,130 @@
+.TH "fill" 3 "Tue Dec 24 2024" "Version 2.8" "Picasso API" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+fill
+.SH SYNOPSIS
+.br
+.PP
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_set_source_color\fP (\fBps_context\fP *ctx, const \fBps_color\fP *color)"
+.br
+.RI "Set a Color to the context, it is used to fill a graphic object\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_set_source_image\fP (\fBps_context\fP *ctx, const \fBps_image\fP *image)"
+.br
+.RI "Set a image to the context, it is used to fill a graphic object\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_set_source_pattern\fP (\fBps_context\fP *ctx, const \fBps_pattern\fP *pattern)"
+.br
+.RI "Set a pattern to the context, it is used to fill a graphic object\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_set_source_gradient\fP (\fBps_context\fP *ctx, const \fBps_gradient\fP *gradient)"
+.br
+.RI "Set a gradient to the context, it is used to fill a graphic object\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBps_set_source_canvas\fP (\fBps_context\fP *ctx, const \fBps_canvas\fP *canvas)"
+.br
+.RI "Set a canvas to the context, it is used to fill a graphic object\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.SH "Function Documentation"
+.PP 
+.SS "void ps_set_source_canvas (\fBps_context\fP * ctx, const \fBps_canvas\fP * canvas)"
+
+.PP
+Set a canvas to the context, it is used to fill a graphic object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fIcanvas\fP The canvas to be set\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_set_source_color\fP, \fBps_set_source_image\fP, \fBps_set_source_pattern\fP, \fBps_set_source_gradient\fP 
+.RE
+.PP
+
+.SS "void ps_set_source_color (\fBps_context\fP * ctx, const \fBps_color\fP * color)"
+
+.PP
+Set a Color to the context, it is used to fill a graphic object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fIcolor\fP The color to be set\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_set_source_image\fP, \fBps_set_source_pattern\fP, \fBps_set_source_gradient\fP, \fBps_set_source_canvas\fP 
+.RE
+.PP
+
+.SS "void ps_set_source_gradient (\fBps_context\fP * ctx, const \fBps_gradient\fP * gradient)"
+
+.PP
+Set a gradient to the context, it is used to fill a graphic object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fIgradient\fP The gradient to be set\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_set_source_color\fP, \fBps_set_source_image\fP, \fBps_set_source_pattern\fP, \fBps_set_source_canvas\fP 
+.RE
+.PP
+
+.SS "void ps_set_source_image (\fBps_context\fP * ctx, const \fBps_image\fP * image)"
+
+.PP
+Set a image to the context, it is used to fill a graphic object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fIimage\fP The image to be set\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_set_source_color\fP, \fBps_set_source_pattern\fP, \fBps_set_source_gradient\fP, \fBps_set_source_canvas\fP 
+.RE
+.PP
+
+.SS "void ps_set_source_pattern (\fBps_context\fP * ctx, const \fBps_pattern\fP * pattern)"
+
+.PP
+Set a pattern to the context, it is used to fill a graphic object\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fIpattern\fP The pattern to be set\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_set_source_color\fP, \fBps_set_source_image\fP, \fBps_set_source_gradient\fP, \fBps_set_source_canvas\fP 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Picasso API from the source code\&.

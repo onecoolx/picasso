@@ -1,0 +1,217 @@
+.TH "objects" 3 "Tue Dec 24 2024" "Version 2.8" "Picasso API" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+objects
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Structures"
+
+.in +1c
+.ti -1c
+.RI "struct \fB_ps_glyph\fP"
+.br
+.RI "A character glyph of a font\&. "
+.ti -1c
+.RI "struct \fB_ps_size\fP"
+.br
+.RI "A structure that contains width and height values\&. "
+.ti -1c
+.RI "struct \fB_ps_rect\fP"
+.br
+.RI "A structure that contains location and dimensions of a rectangle\&. "
+.ti -1c
+.RI "struct \fB_ps_point\fP"
+.br
+.RI "A structure that contains a point in a two-dimensional coordinate system\&. "
+.ti -1c
+.RI "struct \fB_ps_color\fP"
+.br
+.RI "A structure that contains rgba values for a color\&. "
+.in -1c
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef struct _ps_context \fBps_context\fP"
+.br
+.RI "An opaque type represents a Picasso drawing environment\&. "
+.ti -1c
+.RI "typedef struct _ps_canvas \fBps_canvas\fP"
+.br
+.RI "An opaque type represents a pixel buffer\&. "
+.ti -1c
+.RI "typedef struct _ps_image \fBps_image\fP"
+.br
+.RI "An opaque type represents an image\&. "
+.ti -1c
+.RI "typedef struct _ps_pattern \fBps_pattern\fP"
+.br
+.RI "An opaque type represents a pattern\&. "
+.ti -1c
+.RI "typedef struct _ps_gradient \fBps_gradient\fP"
+.br
+.RI "An opaque type represents a gradient\&. "
+.ti -1c
+.RI "typedef struct _ps_matrix \fBps_matrix\fP"
+.br
+.RI "An opaque type represents a transform matrix\&. "
+.ti -1c
+.RI "typedef struct _ps_path \fBps_path\fP"
+.br
+.RI "An opaque type represents a graphic path\&. "
+.ti -1c
+.RI "typedef struct _ps_mask \fBps_mask\fP"
+.br
+.RI "An opaque type represents an alpha mask\&. "
+.ti -1c
+.RI "typedef struct _ps_font \fBps_font\fP"
+.br
+.RI "An opaque type represents a font\&. "
+.ti -1c
+.RI "typedef struct \fB_ps_glyph\fP \fBps_glyph\fP"
+.br
+.RI "A character glyph of a font\&. "
+.ti -1c
+.RI "typedef struct \fB_ps_size\fP \fBps_size\fP"
+.br
+.RI "A structure that contains width and height values\&. "
+.ti -1c
+.RI "typedef struct \fB_ps_rect\fP \fBps_rect\fP"
+.br
+.RI "A structure that contains location and dimensions of a rectangle\&. "
+.ti -1c
+.RI "typedef struct \fB_ps_point\fP \fBps_point\fP"
+.br
+.RI "A structure that contains a point in a two-dimensional coordinate system\&. "
+.ti -1c
+.RI "typedef struct \fB_ps_color\fP \fBps_color\fP"
+.br
+.RI "A structure that contains rgba values for a color\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.SH "Typedef Documentation"
+.PP 
+.SS "\fBps_canvas\fP"
+
+.PP
+An opaque type represents a pixel buffer\&. 
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_context\fP, \fBps_image\fP 
+.RE
+.PP
+
+.PP
+Definition at line 116 of file picasso\&.h\&.
+.SS "\fBps_context\fP"
+
+.PP
+An opaque type represents a Picasso drawing environment\&. 
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_canvas\fP 
+.RE
+.PP
+
+.PP
+Definition at line 109 of file picasso\&.h\&.
+.SS "\fBps_font\fP"
+
+.PP
+An opaque type represents a font\&. 
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_context\fP 
+.RE
+.PP
+
+.PP
+Definition at line 165 of file picasso\&.h\&.
+.SS "\fBps_gradient\fP"
+
+.PP
+An opaque type represents a gradient\&. 
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_path\fP, \fBps_matrix\fP 
+.RE
+.PP
+
+.PP
+Definition at line 137 of file picasso\&.h\&.
+.SS "\fBps_image\fP"
+
+.PP
+An opaque type represents an image\&. 
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_canvas\fP, \fBps_pattern\fP 
+.RE
+.PP
+
+.PP
+Definition at line 123 of file picasso\&.h\&.
+.SS "\fBps_mask\fP"
+
+.PP
+An opaque type represents an alpha mask\&. 
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_path\fP, \fBps_image\fP, \fBps_canvas\fP 
+.RE
+.PP
+
+.PP
+Definition at line 158 of file picasso\&.h\&.
+.SS "\fBps_matrix\fP"
+
+.PP
+An opaque type represents a transform matrix\&. 
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_path\fP, \fBps_context\fP 
+.RE
+.PP
+
+.PP
+Definition at line 144 of file picasso\&.h\&.
+.SS "\fBps_path\fP"
+
+.PP
+An opaque type represents a graphic path\&. 
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_matrix\fP, \fBps_context\fP 
+.RE
+.PP
+
+.PP
+Definition at line 151 of file picasso\&.h\&.
+.SS "\fBps_pattern\fP"
+
+.PP
+An opaque type represents a pattern\&. 
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_canvas\fP, \fBps_image\fP 
+.RE
+.PP
+
+.PP
+Definition at line 130 of file picasso\&.h\&.
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Picasso API from the source code\&.

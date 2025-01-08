@@ -9,10 +9,10 @@
 
 #include "common.h"
 #include "math_type.h"
+#include "matrix.h"
 #include "data_vector.h"
 #include "graphic_base.h"
 #include "graphic_path.h"
-#include "picasso_matrix.h"
 #include "picasso_mask.h"
 #include "picasso_font.h"
 #include "picasso_gradient.h"
@@ -25,11 +25,11 @@ namespace picasso {
 
 // pen object
 enum {
-    pen_style_solid    = 0,
-    pen_style_image    = 1,
-    pen_style_pattern  = 2,
+    pen_style_solid = 0,
+    pen_style_image = 1,
+    pen_style_pattern = 2,
     pen_style_gradient = 3,
-    pen_style_canvas   = 4,
+    pen_style_canvas = 4,
 };
 
 class graphic_pen
@@ -42,7 +42,7 @@ public:
         , cap(butt_cap)
         , join(miter_join)
         , inner(inner_miter)
-        , color(0,0,0)
+        , color(0, 0, 0)
         , data(NULL)
         , is_dash(false)
         , dashes(NULL)
@@ -81,7 +81,7 @@ public:
             dstart = o.dstart;
             dashes = new scalar[ndashes];
             if (dashes) {
-                for (unsigned int i = 0; i < ndashes; i++) {
+                for (uint32_t i = 0; i < ndashes; i++) {
                     dashes[i] = o.dashes[i];
                 }
             } else {
@@ -129,7 +129,7 @@ public:
             dstart = o.dstart;
             dashes = new scalar[ndashes];
             if (dashes) {
-                for (unsigned int i = 0; i < ndashes; i++) {
+                for (uint32_t i = 0; i < ndashes; i++) {
                     dashes[i] = o.dashes[i];
                 }
             } else {
@@ -166,15 +166,15 @@ public:
         }
     }
 
-    void set_dash(float start, const float* da, unsigned int ndash)
+    void set_dash(float start, const float* da, uint32_t ndash)
     {
         is_dash = true;
         dstart = FLT_TO_SCALAR(start);
-        ndashes = (ndash+1)&~1;
+        ndashes = (ndash + 1) & ~1;
         dashes = new scalar[ndashes];
         if (dashes) {
             memset(dashes, 0, ndashes * sizeof(scalar));
-            for (unsigned int i = 0; i < ndash; i++) {
+            for (uint32_t i = 0; i < ndash; i++) {
                 dashes[i] = FLT_TO_SCALAR(da[i]);
             }
         } else {
@@ -239,7 +239,7 @@ public:
         data = ps_canvas_ref(p);
     }
 
-    unsigned int style;
+    uint32_t style;
     scalar width;
     scalar miter_limit;
     line_cap cap;
@@ -250,17 +250,17 @@ public:
     //dash
     bool is_dash;
     scalar* dashes;
-    unsigned int ndashes;
+    uint32_t ndashes;
     scalar dstart;
 };
 
 // brush object
 enum {
-    brush_style_solid    = 0,
-    brush_style_image    = 1,
-    brush_style_pattern  = 2,
+    brush_style_solid = 0,
+    brush_style_image = 1,
+    brush_style_pattern = 2,
     brush_style_gradient = 3,
-    brush_style_canvas   = 4,
+    brush_style_canvas = 4,
 };
 
 class graphic_brush
@@ -270,7 +270,7 @@ public:
         : style(brush_style_solid)
         , data(NULL)
         , rule(fill_non_zero)
-        , color(0,0,0)
+        , color(0, 0, 0)
     {
     }
 
@@ -293,8 +293,9 @@ public:
 
     graphic_brush& operator = (const graphic_brush& o)
     {
-        if (this == &o)
+        if (this == &o) {
             return *this;
+        }
 
         clear(); // free old data
 
@@ -375,12 +376,11 @@ public:
         data = ps_canvas_ref(p);
     }
 
-    unsigned int style;
+    uint32_t style;
     void* data;
     filling_rule rule;
     rgba color;
 };
-
 
 //shadow object
 class shadow_state
@@ -391,7 +391,7 @@ public:
         , x_offset(FLT_TO_SCALAR(0.0f))
         , y_offset(FLT_TO_SCALAR(0.0f))
         , blur(FLT_TO_SCALAR(0.375f)) /* 0 ~ 1 */
-        , color(0,0,0,FLT_TO_SCALAR(0.33f))
+        , color(0, 0, 0, FLT_TO_SCALAR(0.33f))
     {
     }
 
@@ -406,8 +406,9 @@ public:
 
     shadow_state& operator = (const shadow_state& o)
     {
-        if (this == &o)
+        if (this == &o) {
             return *this;
+        }
 
         use_shadow = o.use_shadow;
         x_offset = o.x_offset;
@@ -425,10 +426,10 @@ public:
 };
 
 // clip area object
-enum  {
-    clip_none    = 0,
+enum {
+    clip_none = 0,
     clip_content = 1,
-    clip_device  = 2,
+    clip_device = 2,
 };
 
 class clip_area
@@ -437,7 +438,7 @@ public:
     clip_area()
         : type(clip_none)
         , rule(fill_non_zero)
-        , rect(0,0,0,0)
+        , rect(0, 0, 0, 0)
     {
     }
 
@@ -451,8 +452,9 @@ public:
 
     clip_area& operator = (const clip_area& o)
     {
-        if (this == &o)
+        if (this == &o) {
             return *this;
+        }
 
         type = o.type;
         path = o.path;
@@ -473,12 +475,11 @@ public:
                (rect.y2 != o.rect.y2);
     }
 
-    unsigned int type;
+    uint32_t type;
     graphic_path path;
     filling_rule rule;
-    rect_s       rect;
+    rect_s rect;
 };
-
 
 // context state object
 class context_state
@@ -492,8 +493,8 @@ public:
         , gamma(FLT_TO_SCALAR(1.0f))
         , alpha(FLT_TO_SCALAR(1.0f))
         , blur(FLT_TO_SCALAR(0.0f))
-        , font_scolor(0,0,0)
-        , font_fcolor(0,0,0)
+        , font_scolor(0, 0, 0)
+        , font_fcolor(0, 0, 0)
         , composite(comp_op_src_over)
     {
     }
@@ -524,8 +525,9 @@ public:
 
     context_state& operator = (const context_state& o)
     {
-        if (this == &o)
+        if (this == &o) {
             return *this;
+        }
 
         next = 0;
         filter = o.filter;
@@ -586,18 +588,19 @@ struct _ps_context {
 };
 
 enum {
-    buffer_alloc_none      = 0,
-    buffer_alloc_surface   = 1,
-    buffer_alloc_malloc    = 2,
-    buffer_alloc_image     = 3,
-    buffer_alloc_canvas    = 4,
+    buffer_alloc_none = 0,
+    buffer_alloc_surface = 1,
+    buffer_alloc_malloc = 2,
+    buffer_alloc_image = 3,
+    buffer_alloc_canvas = 4,
+    buffer_alloc_mask = 5,
 };
 
 struct _ps_canvas {
     int refcount;
     ps_color_format fmt;
     picasso::painter* p;
-    unsigned int flage;
+    uint32_t flage;
     void* host;
     ps_mask* mask;
     picasso::rendering_buffer buffer;
@@ -606,7 +609,7 @@ struct _ps_canvas {
 struct _ps_image {
     int refcount;
     ps_color_format fmt;
-    unsigned int flage;
+    uint32_t flage;
     void* host;
     picasso::rendering_buffer buffer;
 };
@@ -636,6 +639,7 @@ struct _ps_path {
 
 struct _ps_mask {
     int refcount;
+    uint32_t flage;
     picasso::mask_layer mask;
 };
 

@@ -1,0 +1,5 @@
+
+#define ENABLE_SYSTEM_MALLOC 1
+
+#define ENABLE_FORMAT_RGBA 1
+

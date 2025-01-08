@@ -18,8 +18,7 @@ class gfx_rendering_buffer : public abstract_rendering_buffer
 {
 public:
     // const_row_info
-    typedef struct const_row_info
-    {
+    typedef struct const_row_info {
         int x1, x2;
         const byte* ptr;
 
@@ -55,7 +54,7 @@ public:
     virtual void clear_color_channel(void)
     {
         m_has_colorkey = false;
-        m_colorkey = rgba(0,0,0,0);
+        m_colorkey = rgba(0, 0, 0, 0);
     }
 
     virtual rgba get_color_channel(void) const { return m_colorkey; }
@@ -68,7 +67,7 @@ public:
 public:
     byte* row_ptr(int y) const { return m_rows[y]; }
     byte* row_ptr(int, int y, unsigned int) const { return m_rows[y]; }
-    row_data row (int y) const { return row_data(0, m_width-1, row_ptr(y)); }
+    row_data row (int y) const { return row_data(0, m_width - 1, row_ptr(y)); }
     // for optimization
     unsigned int internal_width(void) const { return m_width; }
     unsigned int internal_height(void) const { return m_height; }
@@ -81,7 +80,7 @@ private:
     gfx_rendering_buffer& operator=(const gfx_rendering_buffer&);
 
     byte* m_buffer;
-    gfx_buffer_observer*  m_observer;
+    gfx_buffer_observer* m_observer;
     pod_array<byte*> m_rows;
     unsigned int m_width; // width in pixels
     unsigned int m_height; // height in pixels
