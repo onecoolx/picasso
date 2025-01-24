@@ -15,7 +15,7 @@
 #include "psx_image_io.h"
 #include "psx_color_convert.h"
 #if defined(WIN32) && defined(_MSC_VER)
-#include <windows.h>
+    #include <windows.h>
 #endif
 #include "webp/decode.h"
 #include "webp/encode.h"
@@ -25,7 +25,7 @@ struct webp_image_ctx {
     WebPDecoderConfig dconfig;
     WebPDecBuffer* output_buffer;
     uint8_t* data;
-    size_t   data_len;
+    size_t data_len;
     // write
     WebPConfig econfig;
     WebPPicture pic;
@@ -43,12 +43,12 @@ static int read_webp_info(const ps_byte* data, size_t len, psx_image_header* hea
     if (!ctx) {
         return -1; // out of memory.
     }
-    
+
     if (!WebPInitDecoderConfig(&ctx->dconfig)) {
         free(ctx);
         return -1;
     }
-    
+
     if (ctx->dconfig.input.has_animation) {
         free(ctx);// not support animation
         return -1;
@@ -62,7 +62,7 @@ static int read_webp_info(const ps_byte* data, size_t len, psx_image_header* hea
         free(ctx);
         return -1;
     }
-    
+
     if (bitstream->has_alpha) {
         color_mode = MODE_RGBA;
     } else {
@@ -95,7 +95,7 @@ static int decode_webp_data(psx_image_header* header, const psx_image* image, ps
     if (status != VP8_STATUS_OK) {
         return -1;
     }
-    
+
     stride = ctx->output_buffer->u.RGBA.stride;
 
     for (y = 0; y < ctx->output_buffer->height; y++) {
@@ -118,38 +118,38 @@ static int release_read_webp_info(psx_image_header* header)
 static int get_bpp(ps_color_format fmt)
 {
     switch (fmt) {
-    case COLOR_FORMAT_RGBA:
-    case COLOR_FORMAT_BGRA:
-    case COLOR_FORMAT_ARGB:
-    case COLOR_FORMAT_ABGR:
-        return 4;
-    case COLOR_FORMAT_RGB:
-    case COLOR_FORMAT_BGR:
-        return 3;
-    case COLOR_FORMAT_RGB565:
-    case COLOR_FORMAT_RGB555:
-        return 2;
-    default:
-        return 4;
+        case COLOR_FORMAT_RGBA:
+        case COLOR_FORMAT_BGRA:
+        case COLOR_FORMAT_ARGB:
+        case COLOR_FORMAT_ABGR:
+            return 4;
+        case COLOR_FORMAT_RGB:
+        case COLOR_FORMAT_BGR:
+            return 3;
+        case COLOR_FORMAT_RGB565:
+        case COLOR_FORMAT_RGB555:
+            return 2;
+        default:
+            return 4;
     }
 }
 
 static int get_depth(ps_color_format fmt)
 {
     switch (fmt) {
-    case COLOR_FORMAT_RGBA:
-    case COLOR_FORMAT_BGRA:
-    case COLOR_FORMAT_ARGB:
-    case COLOR_FORMAT_ABGR:
-        return 32;
-    case COLOR_FORMAT_RGB:
-    case COLOR_FORMAT_BGR:
-        return 24;
-    case COLOR_FORMAT_RGB565:
-    case COLOR_FORMAT_RGB555:
-        return 16;
-    default:
-        return 32;
+        case COLOR_FORMAT_RGBA:
+        case COLOR_FORMAT_BGRA:
+        case COLOR_FORMAT_ARGB:
+        case COLOR_FORMAT_ABGR:
+            return 32;
+        case COLOR_FORMAT_RGB:
+        case COLOR_FORMAT_BGR:
+            return 24;
+        case COLOR_FORMAT_RGB565:
+        case COLOR_FORMAT_RGB555:
+            return 16;
+        default:
+            return 32;
     }
 }
 
@@ -207,8 +207,9 @@ static int webp_convert_32bit(psx_image_header* header, const ps_byte* buffer, s
 
     struct webp_image_ctx* ctx = (struct webp_image_ctx*)header->priv;
 
-    if (!WebPPictureAlloc(&ctx->pic))
+    if (!WebPPictureAlloc(&ctx->pic)) {
         return 0;
+    }
 
     if (is_argb) {
         for (y = 0; y < height; ++y) {
@@ -248,26 +249,27 @@ static int webp_convert_16bit(psx_image_header* header, const ps_byte* buffer, s
 
     struct webp_image_ctx* ctx = (struct webp_image_ctx*)header->priv;
 
-    if (!WebPPictureAlloc(&ctx->pic))
+    if (!WebPPictureAlloc(&ctx->pic)) {
         return 0;
+    }
 
     for (y = 0; y < height; ++y) {
         uint32_t* const dst = &ctx->pic.argb[y * ctx->pic.argb_stride];
         const int offset = y * header->pitch;
-            for (x = 0; x < width; ++x) {
-                uint8_t cbuf[4] = {0};
-                uint8_t* argb = (uint8_t*)dst + x * 4;
-                const uint8_t* pix = buffer + offset + x * header->bpp;
-                if (is_rgb565) {
-                    _rgb565_to_rgb(cbuf, pix, 1);
-                } else {
-                    _rgb555_to_rgb(cbuf, pix, 1);
-                }
-                argb[3] = 0xFF;
-                argb[2] = cbuf[0];
-                argb[1] = cbuf[1];
-                argb[0] = cbuf[2];
+        for (x = 0; x < width; ++x) {
+            uint8_t cbuf[4] = {0};
+            uint8_t* argb = (uint8_t*)dst + x * 4;
+            const uint8_t* pix = buffer + offset + x * header->bpp;
+            if (is_rgb565) {
+                _rgb565_to_rgb(cbuf, pix, 1);
+            } else {
+                _rgb555_to_rgb(cbuf, pix, 1);
             }
+            argb[3] = 0xFF;
+            argb[2] = cbuf[0];
+            argb[1] = cbuf[1];
+            argb[0] = cbuf[2];
+        }
     }
     return 1;
 }
@@ -304,13 +306,13 @@ static int encode_webp_data(psx_image_header* header, const psx_image* image, ps
             ok = webp_convert_16bit(header, buffer, buffer_len, 0); // 1 is rgb555
             break;
         default:
-            if (ret) *ret = S_NOT_SUPPORT;
+            if (ret) { *ret = S_NOT_SUPPORT; }
             return -1;
     }
 
     ok = WebPEncode(&ctx->econfig, &ctx->pic);
     if (!ok) {
-        if (ret) *ret = S_OUT_OF_MEMORY;
+        if (ret) { *ret = S_OUT_OF_MEMORY; }
         return -1;
     }
     return 0;
@@ -324,7 +326,7 @@ static int release_write_webp_info(psx_image_header* header)
     return 0;
 }
 
-static psx_image_operator * webp_coder = NULL;
+static psx_image_operator* webp_coder = NULL;
 static module_handle lib_image = INVALID_HANDLE;
 
 typedef int (*register_func)(const char*, const ps_byte*, size_t, size_t, psx_priority_level, psx_image_operator*);
@@ -334,11 +336,12 @@ typedef int (*unregister_func)(psx_image_operator*);
 static wchar_t g_path[MAX_PATH];
 static wchar_t* get_library_path(void)
 {
-    wchar_t *p = 0;
+    wchar_t* p = 0;
     memset(g_path, 0, sizeof(wchar_t) * MAX_PATH);
     GetModuleFileName(NULL, g_path, MAX_PATH);
     p = wcsrchr(g_path, '\\');
-    p++; *p = 0;
+    p++;
+    *p = 0;
     lstrcat(g_path, L"psx_image.dll");
     return g_path;
 }
@@ -353,16 +356,19 @@ void psx_image_module_init(void)
 #else
     lib_image = _module_load("libpsx_image.so");
 #endif
-    if (lib_image == INVALID_HANDLE)
+    if (lib_image == INVALID_HANDLE) {
         return;
+    }
 
     func = _module_get_symbol(lib_image, "psx_image_register_operator");
-    if (!func)
+    if (!func) {
         return;
+    }
 
     webp_coder = (psx_image_operator*)calloc(1, sizeof(psx_image_operator));
-    if (!webp_coder)
+    if (!webp_coder) {
         return;
+    }
 
     webp_coder->read_header_info = read_webp_info;
     webp_coder->decode_image_data = decode_webp_data;
@@ -387,8 +393,9 @@ void psx_image_module_shutdown(void)
         }
     }
 
-    if (lib_image != INVALID_HANDLE)
+    if (lib_image != INVALID_HANDLE) {
         _module_unload(lib_image);
+    }
 }
 
 const char* psx_image_module_get_string(int idx)

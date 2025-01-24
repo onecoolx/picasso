@@ -6,7 +6,6 @@
 set(PXIMG_DIR ${PROJECT_ROOT}/ext/image_coders)
 
 set(PXIMG_SOURCES
-    ${PXIMG_DIR}/psx_list.h
     ${PXIMG_DIR}/psx_image_io.h
     ${PXIMG_DIR}/psx_image_io.c
     ${PXIMG_DIR}/psx_image_loader.h
@@ -31,11 +30,11 @@ add_library(${LIBX_IMAGE} ${PXIMG_SOURCES})
 install(TARGETS ${LIBX_IMAGE} LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
 set_target_properties(${LIBX_IMAGE} PROPERTIES VERSION ${VERSION_INFO} SOVERSION 1)
 
-include_directories(${PXIMG_DIR} ${PROJECT_ROOT}/include ${PROJECT_ROOT}/include/images)
-target_link_libraries(psx_image PRIVATE ${LIB_NAME})
+include_directories(${PXIMG_DIR} ${PROJECT_ROOT}/ext/common ${PROJECT_ROOT}/include ${PROJECT_ROOT}/include/images)
+target_link_libraries(${LIBX_IMAGE} PRIVATE ${LIB_NAME})
 
 if (UNIX AND NOT APPLE)
-target_link_libraries(psx_image PUBLIC dl)
+target_link_libraries(${LIBX_IMAGE} PUBLIC dl)
 endif()
 
 if (NOT APPLE)
