@@ -32,9 +32,11 @@
 #ifdef HAVE_STDBOOL_H
     #include <stdbool.h>
 #else
-    typedef int bool;
-    #define true 1;
-    #define false 0;
+    #if !defined(_MSC_VER)
+        typedef int bool;
+        #define true 1;
+        #define false 0;
+    #endif
 #endif
 
 #if defined(__GNUC__)
