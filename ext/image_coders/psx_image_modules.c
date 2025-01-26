@@ -227,7 +227,7 @@ int psx_image_unregister_operator(psx_image_operator* coder)
         return S_INIT_FAILURE;
     }
 
-    if (list_empty(&(mgr->coders)) == 0) {
+    if (list_empty(&(mgr->coders))) {
         return S_OK;
     }
 

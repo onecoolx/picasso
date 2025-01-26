@@ -27,13 +27,7 @@
 #ifndef _PSX_LIST_H_
 #define _PSX_LIST_H_
 
-#if defined(__GNUC__)
-    #define INLINE inline
-#elif defined(_MSC_VER)
-    #define INLINE __inline
-#else
-    #define INLINE
-#endif
+#include "psx_common.h"
 
 struct list_hdr {
     struct list_hdr* next;
@@ -48,9 +42,9 @@ static INLINE void list_init(struct list_hdr* head)
     head->prev = head;
 }
 
-static INLINE int list_empty(const struct list_hdr* head)
+static INLINE bool list_empty(const struct list_hdr* head)
 {
-    return head->next == head ? 0 : -1;
+    return head->next == head;
 }
 
 #define list_add(head, value) \
