@@ -23,9 +23,6 @@ extern "C" {
 #include <stdbool.h>
 #else
 #include <windows.h>
-#define bool BOOL
-#define false FALSE
-#define true TRUE
 #endif
 
 #define GIF_STAMP "GIFVER"          /* First chars in file - GIF stamp.  */
