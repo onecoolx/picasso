@@ -29,12 +29,18 @@
 
 #include "psx_common.h"
 
-struct list_hdr {
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/**
+ *  Doubly linked list implementation.
+ *  Must be the first field of a data struct
+ */
+typedef struct list_hdr {
     struct list_hdr* next;
     struct list_hdr* prev;
-};
-
-/* all function return 0 is success or true, -1 is fail or false. */
+} list_hdr_t;
 
 static INLINE void list_init(struct list_hdr* head)
 {
@@ -88,5 +94,9 @@ static INLINE void list_remove_entry(struct list_hdr* entry)
 
 #define list_for_each_start_with(head, start, iterator) \
     for ((iterator) = ((struct list_hdr*)(start))->next; (iterator) != (head); (iterator) = (iterator)->next)
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /*_PSX_LIST_H_*/
