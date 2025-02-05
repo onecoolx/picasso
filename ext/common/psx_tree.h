@@ -81,9 +81,58 @@ public:
 private:
     tree_node* m_parent;
     tree_node** m_children;
-    uint32_t m_count;
-    uint32_t m_capacity;
-    uint32_t m_index;
+    uint32_t m_count : 16;
+    uint32_t m_capacity : 16;
+    uint32_t m_index : 16;
 };
+
+typedef enum {
+    PSX_TREE_WALK_PRE_ORDER,
+    PSX_TREE_WALK_POST_ORDER,
+} PSX_TREE_WALK_MODE;
+
+typedef bool (*psx_tree_traversal_callback)(const tree_node* node, void* ctx);
+
+template <PSX_TREE_WALK_MODE mode>
+static bool psx_tree_traversal(const tree_node* tree_head, void* ctx, psx_tree_traversal_callback cb,
+                               psx_tree_traversal_callback before = NULL,
+                               psx_tree_traversal_callback after = NULL)
+{
+    if (tree_head && cb) {
+        if (mode == PSX_TREE_WALK_PRE_ORDER) {
+            if (before && !before(tree_head, ctx)) {
+                return false;
+            }
+            if (!cb(tree_head, ctx)) {
+                return false;
+            }
+        }
+
+        for (uint32_t i = 0; i < tree_head->child_count(); i++) {
+            if (!psx_tree_traversal<mode>(tree_head->get_child(i), ctx, cb, before, after)) {
+                return false;
+            }
+        }
+
+        if (mode == PSX_TREE_WALK_PRE_ORDER) {
+            if (after && !after(tree_head, ctx)) {
+                return false;
+            }
+        }
+
+        if (mode == PSX_TREE_WALK_POST_ORDER) {
+            if (before && !before(tree_head, ctx)) {
+                return false;
+            }
+            if (!cb(tree_head, ctx)) {
+                return false;
+            }
+            if (after && !after(tree_head, ctx)) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
 
 #endif /*_PSX_TREE_H_*/
