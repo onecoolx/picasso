@@ -48,12 +48,13 @@ static inline bool b_work(const tree_node* node, void * data)
     return true;
 }
 
-
 static inline bool tree_work(const tree_node* node, void * data)
 {
     tree_node ** p = (tree_node**)data;
-    if (node == *p)
+    printf("node access : %p  === %p\n", *p, node);
+    if (node == *p) {
         return true;
+    }
     return false;
 }
 
@@ -64,6 +65,22 @@ static inline bool a_work(const tree_node* node, void * data)
     return true;
 }
 
+static inline bool b_work2(const tree_node* node, void * data)
+{
+    return true;
+}
+
+static inline bool tree_work2(const tree_node* node, void * data)
+{
+    uint32_t * p = (uint32_t*)data;
+    (*p)++;
+    return true;
+}
+
+static inline bool a_work2(const tree_node* node, void * data)
+{
+    return true;
+}
 
 TEST(ExtTree, TreeWalk)
 {
@@ -80,6 +97,11 @@ TEST(ExtTree, TreeWalk)
     psx_tree_traversal<PSX_TREE_WALK_PRE_ORDER>(p1, (void*)&com_ptr, tree_work, b_work, a_work);
 
     EXPECT_EQ(com_ptr, nullptr);
+
+    uint32_t c = 0;
+    psx_tree_traversal<PSX_TREE_WALK_POST_ORDER>(p1, (void*)&c, tree_work2, b_work2, a_work2);
+
+    EXPECT_EQ(c, 7);
 
     EXPECT_EQ(p1->get_child(0), p2);
     EXPECT_EQ(p1->get_child(1), p3);

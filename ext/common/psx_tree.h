@@ -70,6 +70,8 @@ public:
 
     uint32_t child_count(void) const { return m_count; }
 
+    tree_node* parent(void) const { return m_parent; }
+
     tree_node* get_child(uint32_t idx) const
     {
         if (idx >= m_count) {
