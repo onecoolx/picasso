@@ -42,8 +42,22 @@
 
 /* Define if System memory allocator is supported. */
 #cmakedefine ENABLE_SYSTEM_MALLOC @ENABLE_SYSTEM_MALLOC@
-    
+
 /* Have stdint.h */
 #cmakedefine HAVE_STDINT_H @HAVE_STDINT_H@
 
+/* Have stdlib.h */
+#cmakedefine HAVE_STDLIB_H @HAVE_STDLIB_H@
+
+/* Have stddef.h */
+#cmakedefine HAVE_STDDEF_H @HAVE_STDDEF_H@
+
+/* Have stdbool.h */
+#cmakedefine HAVE_STDBOOL_H @HAVE_STDBOOL_H@
+
+/* Have string.h */
+#cmakedefine HAVE_STRING_H @HAVE_STRING_H@
+
+/* Have memory.h */
+#cmakedefine HAVE_MEMORY_H @HAVE_MEMORY_H@
 #endif /*_CONFIGURATION_HEADER_PCONFIG_H_*/
