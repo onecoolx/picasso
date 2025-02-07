@@ -16,8 +16,7 @@ struct data_test
 TEST(Pod_Vector, CreateAndDestroy)
 {
     pod_vector<unsigned int> iv;
-
-    pod_vector<unsigned int> sv;
+    pod_vector<unsigned int> sv = iv;
 
     EXPECT_EQ(0, (int)iv.size());
     EXPECT_EQ(0, (int)iv.capacity());
@@ -36,7 +35,7 @@ TEST(Pod_Vector, CreateAndDestroy)
 TEST(Pod_Vector, PushAndInsert)
 {
     pod_vector<unsigned int> iv;
-    pod_vector<unsigned int> sv;
+    pod_vector<unsigned int> sv = iv;
 
     iv.resize(3);
     sv.resize(5);

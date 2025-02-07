@@ -3,10 +3,10 @@
 
 #include "psx_tree.h"
 
-class test_tree : public tree_node {
+class test_tree : public psx_tree_node {
 public:
     test_tree(test_tree * parent)
-        : tree_node(parent)
+        : psx_tree_node(parent)
     {
         printf("create tree node [%p] : size [%zd]\n", this, sizeof(test_tree));
     }
@@ -41,16 +41,16 @@ TEST(ExtTree, CreateAndDestroy)
 }
 
 
-static inline bool b_work(const tree_node* node, void * data)
+static inline bool b_work(const psx_tree_node* node, void * data)
 {
-    tree_node ** p = (tree_node**)data;
-    *p = (tree_node*)node;
+    psx_tree_node ** p = (psx_tree_node**)data;
+    *p = (psx_tree_node*)node;
     return true;
 }
 
-static inline bool tree_work(const tree_node* node, void * data)
+static inline bool tree_work(const psx_tree_node* node, void * data)
 {
-    tree_node ** p = (tree_node**)data;
+    psx_tree_node ** p = (psx_tree_node**)data;
     printf("node access : %p  === %p\n", *p, node);
     if (node == *p) {
         return true;
@@ -58,26 +58,26 @@ static inline bool tree_work(const tree_node* node, void * data)
     return false;
 }
 
-static inline bool a_work(const tree_node* node, void * data)
+static inline bool a_work(const psx_tree_node* node, void * data)
 {
-    tree_node ** p = (tree_node**)data;
+    psx_tree_node ** p = (psx_tree_node**)data;
     *p = nullptr;
     return true;
 }
 
-static inline bool b_work2(const tree_node* node, void * data)
+static inline bool b_work2(const psx_tree_node* node, void * data)
 {
     return true;
 }
 
-static inline bool tree_work2(const tree_node* node, void * data)
+static inline bool tree_work2(const psx_tree_node* node, void * data)
 {
     uint32_t * p = (uint32_t*)data;
     (*p)++;
     return true;
 }
 
-static inline bool a_work2(const tree_node* node, void * data)
+static inline bool a_work2(const psx_tree_node* node, void * data)
 {
     return true;
 }
