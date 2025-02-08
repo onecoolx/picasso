@@ -16,15 +16,16 @@ struct data_test
 TEST(Pod_Vector, CreateAndDestroy)
 {
     pod_vector<unsigned int> iv;
-    pod_vector<unsigned int> sv = iv;
-
     EXPECT_EQ(0, (int)iv.size());
     EXPECT_EQ(0, (int)iv.capacity());
     
-    EXPECT_EQ(0, (int)sv.size());
-    EXPECT_EQ(0, (int)sv.capacity());
+    {
+        pod_vector<unsigned int> sv = iv;
+        EXPECT_EQ(0, (int)sv.size());
+        EXPECT_EQ(0, (int)sv.capacity());
 
-    EXPECT_NE(&iv , &sv);
+        EXPECT_NE(&iv , &sv);
+    }
 
     pod_vector<data_test> dv(10);
 
@@ -63,7 +64,6 @@ TEST(Pod_Vector, PushAndInsert)
     for(unsigned int i = 0; i < iv.size(); i++)
         printf("iv: integer vector[%d] = %d\n",i, iv[i]);
 
-    printf("copy vector iv to sv\n");
     sv = iv;
 
     EXPECT_EQ(3, (int)sv.size());
@@ -75,32 +75,27 @@ TEST(Pod_Vector, PushAndInsert)
     for(unsigned int i = 0; i < sv.size(); i++)
         printf("sv: integer vector[%d] = %d\n",i, sv[i]);
 
-    printf("resize iv to 6\n");
     iv.resize(6);
     for(unsigned int i = 0; i < iv.size(); i++) {
         EXPECT_EQ(sv[i], iv[i]);
-        printf("iv: integer vector[%d] = %d\n",i, iv[i]);
     }
 
     EXPECT_EQ(false, iv.is_full());
     EXPECT_EQ(3, (int)iv.size());
     EXPECT_EQ(6, (int)iv.capacity());
 
-    printf("insert value to index 2\n");
     b = iv.insert_at(2, 15);
     EXPECT_EQ(true, b);
     EXPECT_EQ(4, (int)iv.size());
     for(unsigned int i = 0; i < iv.size(); i++)
         printf("iv: integer vector[%d] = %d\n",i, iv[i]);
 
-    printf("insert value to index 15\n");
     b = iv.insert_at(15, 15);
     EXPECT_EQ(false, b);
     EXPECT_EQ(4, (int)iv.size());
 
     EXPECT_NE(iv.data(), sv.data());
 
-    printf("reset capacity sv\n");
     sv.capacity(1);
     EXPECT_EQ(0, (int)sv.size());
     EXPECT_EQ(5, (int)sv.capacity());
@@ -109,14 +104,12 @@ TEST(Pod_Vector, PushAndInsert)
     EXPECT_EQ(0, (int)sv.size());
     EXPECT_EQ(10, (int)sv.capacity());
 
-    printf("cut at index 2\n");
     iv.cut_at(2);
     EXPECT_EQ(2, (int)iv.size());
     EXPECT_EQ(6, (int)iv.capacity());
     for(unsigned int i = 0; i < iv.size(); i++)
         printf("iv: integer vector[%d] = %d\n",i, iv[i]);
 
-    printf("set data!\n");
     unsigned int data[] = {100, 200, 300};
     iv.set_data(3, data);
     EXPECT_EQ(3, (int)iv.size());
@@ -124,7 +117,6 @@ TEST(Pod_Vector, PushAndInsert)
     for(unsigned int i = 0; i < iv.size(); i++)
         printf("iv: integer vector[%d] = %d\n",i, iv[i]);
 
-    printf("set data!\n");
     unsigned int data2[] = {50, 150, 250, 350, 450, 550 ,650, 750};
     iv.set_data(8, data2);
     EXPECT_EQ(3, (int)iv.size());
@@ -139,7 +131,6 @@ TEST(Pod_Vector, PushAndInsert)
     for(unsigned int i = 0; i < iv.size(); i++)
         printf("iv: integer vector[%d] = %d\n",i, iv[i]);
 
-    printf("clear iv\n");
     iv.clear();
 
     EXPECT_EQ(0, (int)iv.size());
@@ -148,41 +139,33 @@ TEST(Pod_Vector, PushAndInsert)
 
 TEST(Pod_BVector, BlockAndAutoSizeVector)
 {
-    printf("create bvector size 0, capacity 0\n");
     pod_bvector<unsigned int> iv;
     EXPECT_EQ(0, (int)iv.size());
     EXPECT_EQ(0, (int)iv.capacity());
 
-    printf("add datas\n");
     iv.add(10);
     iv.add(11);
     iv.add(12);
 
-    printf("bvector size 3, capacity 32\n");
     EXPECT_EQ(3, (int)iv.size());
     EXPECT_EQ(32, (int)iv.capacity());
 
-    printf("add datas\n");
     iv.add(13);
     iv.add(14);
 
-    printf("bvector size 5, capacity 32\n");
     EXPECT_EQ(5, (int)iv.size());
     EXPECT_EQ(32, (int)iv.capacity());
 
     for(unsigned int i = 0; i < iv.size(); i++)
         printf("iv: integer vector[%d] = %d\n",i, iv[i]);
 
-    printf("remove last \n");
     iv.remove_last();
 
-    printf("bvector size 4, capacity 32\n");
     EXPECT_EQ(4, (int)iv.size());
     EXPECT_EQ(32, (int)iv.capacity());
     for(unsigned int i = 0; i < iv.size(); i++)
         printf("iv: integer vector[%d] = %d\n",i, iv[i]);
 
-    printf("remove all \n");
     iv.remove_all();
 
     EXPECT_EQ(0, (int)iv.size());
@@ -192,7 +175,6 @@ TEST(Pod_BVector, BlockAndAutoSizeVector)
 
 TEST(Block_Allocater, BlockBaseAllocater)
 {
-    printf("create a block allocater\n");
     block_allocator alloc(16384-16);
 
     printf("alloc 100 elements aligment 4\n");
