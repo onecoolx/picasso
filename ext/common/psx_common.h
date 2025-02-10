@@ -50,4 +50,10 @@
     #define INLINE
 #endif
 
+#if __cplusplus >= 201103L
+    #define REGISTER
+#else
+    #define REGISTER register
+#endif
+
 #endif /*_PSX_COMMON_H_*/

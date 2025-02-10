@@ -58,7 +58,7 @@ static INLINE bool list_empty(const struct list_hdr* head)
 
 static INLINE void list_add_entry(struct list_hdr* head, struct list_hdr* value)
 {
-    register struct list_hdr* next = head->next;
+    REGISTER struct list_hdr* next = head->next;
 
     next->prev = value;
     value->next = next;
@@ -71,7 +71,7 @@ static INLINE void list_add_entry(struct list_hdr* head, struct list_hdr* value)
 
 static INLINE void list_add_tail_entry(struct list_hdr* head, struct list_hdr* value)
 {
-    register struct list_hdr* prev = head->prev;
+    REGISTER struct list_hdr* prev = head->prev;
 
     head->prev = value;
     value->next = head;
