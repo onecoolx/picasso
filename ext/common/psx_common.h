@@ -29,6 +29,9 @@
 
 #include "pconfig.h"
 
+#include <stdint.h>
+#include <stdlib.h>
+
 #ifdef HAVE_STDBOOL_H
     #include <stdbool.h>
 #else
