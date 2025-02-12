@@ -143,7 +143,7 @@ public:
         do {
             m_interpolator->coordinates(&x, &y);
             int32_t d = m_gradient_function->calculate(x >> downscale_shift,
-                                                   y >> downscale_shift, m_d2);
+                                                       y >> downscale_shift, m_d2);
             d = ((d - m_d1) * (int)m_color_function->size()) / dd;
 
             if (d < 0) {

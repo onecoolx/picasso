@@ -3,32 +3,37 @@
 
 #include "psx_tree.h"
 
-class test_tree : public psx_tree_node {
+class test_tree : public psx_tree_node
+{
 public:
-    test_tree(test_tree * parent)
+    test_tree(test_tree* parent)
         : psx_tree_node(parent)
     {
     }
-    
+
     virtual ~test_tree()
     {
     }
 };
 
-class PsxTreeTest : public ::testing::Test {
+class PsxTreeTest : public ::testing::Test
+{
 protected:
     test_tree* root;
 
-    virtual void SetUp() {
+    virtual void SetUp()
+    {
         root = new test_tree(nullptr);
     }
 
-    virtual void TearDown() {
+    virtual void TearDown()
+    {
         delete root;
     }
 };
 
-TEST_F(PsxTreeTest, CreateAndDestroy) {
+TEST_F(PsxTreeTest, CreateAndDestroy)
+{
     EXPECT_EQ(root->child_count(), 0u);
     EXPECT_EQ(root->parent(), nullptr);
 
@@ -40,13 +45,15 @@ TEST_F(PsxTreeTest, CreateAndDestroy) {
     EXPECT_EQ(root->child_count(), 1u); // chrrent child is nullptr
 }
 
-bool b_work(const psx_tree_node* node, void* data) {
+bool b_work(const psx_tree_node* node, void* data)
+{
     psx_tree_node** p = static_cast<psx_tree_node**>(data);
     *p = const_cast<psx_tree_node*>(node);
     return true;
 }
 
-bool tree_work(const psx_tree_node* node, void* data) {
+bool tree_work(const psx_tree_node* node, void* data)
+{
     psx_tree_node** p = static_cast<psx_tree_node**>(data);
     printf("node access : %p  === %p\n", *p, node);
     if (node == *p) {
@@ -55,27 +62,32 @@ bool tree_work(const psx_tree_node* node, void* data) {
     return false;
 }
 
-bool a_work(const psx_tree_node* node, void* data) {
+bool a_work(const psx_tree_node* node, void* data)
+{
     psx_tree_node** p = static_cast<psx_tree_node**>(data);
     *p = nullptr;
     return true;
 }
 
-bool b_work2(const psx_tree_node* node, void* data) {
+bool b_work2(const psx_tree_node* node, void* data)
+{
     return true;
 }
 
-bool tree_work2(const psx_tree_node* node, void* data) {
+bool tree_work2(const psx_tree_node* node, void* data)
+{
     uint32_t* p = static_cast<uint32_t*>(data);
     (*p)++;
     return true;
 }
 
-bool a_work2(const psx_tree_node* node, void* data) {
+bool a_work2(const psx_tree_node* node, void* data)
+{
     return true;
 }
 
-TEST_F(PsxTreeTest, TraversalPreOrder) {
+TEST_F(PsxTreeTest, TraversalPreOrder)
+{
     test_tree* child1 = new test_tree(root);
     test_tree* child2 = new test_tree(root);
 
@@ -87,7 +99,8 @@ TEST_F(PsxTreeTest, TraversalPreOrder) {
     delete child1;
 }
 
-TEST_F(PsxTreeTest, TraversalPostOrder) {
+TEST_F(PsxTreeTest, TraversalPostOrder)
+{
     test_tree* child1 = new test_tree(root);
     test_tree* child2 = new test_tree(root);
 
@@ -99,7 +112,8 @@ TEST_F(PsxTreeTest, TraversalPostOrder) {
     delete child1;
 }
 
-TEST_F(PsxTreeTest, CallbackCombination) {
+TEST_F(PsxTreeTest, CallbackCombination)
+{
     test_tree* child = new test_tree(root);
     new test_tree(root); // remove with parent
     new test_tree(root); // remove with parent
@@ -112,4 +126,3 @@ TEST_F(PsxTreeTest, CallbackCombination) {
 
     delete child;
 }
-

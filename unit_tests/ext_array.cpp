@@ -3,27 +3,32 @@
 
 #include "psx_array.h"
 
-class PsxArrayTest : public ::testing::Test {
+class PsxArrayTest : public ::testing::Test
+{
 protected:
     psx_array_t array;
 
-    void SetUp() override {
+    void SetUp() override
+    {
         psx_array_init_type(&array, int);
     }
 
-    void TearDown() override {
+    void TearDown() override
+    {
         psx_array_destroy(&array);
     }
 };
 
-TEST_F(PsxArrayTest, CreateTest) {
+TEST_F(PsxArrayTest, CreateTest)
+{
     EXPECT_EQ(psx_array_size(&array), 0);
     EXPECT_EQ(psx_array_capacity(&array), PSX_ARRAY_DEFAULT_CAPACITY);
     EXPECT_EQ(array.element_size, sizeof(int));
     EXPECT_NE(array.data, nullptr);
 }
 
-TEST_F(PsxArrayTest, AppendTest) {
+TEST_F(PsxArrayTest, AppendTest)
+{
     int value = 10;
     EXPECT_TRUE(psx_array_append(&array, &value));
     EXPECT_EQ(*psx_array_get(&array, 0, int), value);
@@ -33,7 +38,8 @@ TEST_F(PsxArrayTest, AppendTest) {
     EXPECT_TRUE(psx_array_append(&array, nullptr));
 }
 
-TEST_F(PsxArrayTest, ExpandTest) {
+TEST_F(PsxArrayTest, ExpandTest)
+{
     for (int i = 0; i < PSX_ARRAY_DEFAULT_CAPACITY; ++i) {
         int value = i;
         EXPECT_TRUE(psx_array_append(&array, &value));
@@ -48,7 +54,8 @@ TEST_F(PsxArrayTest, ExpandTest) {
     EXPECT_EQ(*psx_array_get(&array, PSX_ARRAY_DEFAULT_CAPACITY, int), value);
 }
 
-TEST_F(PsxArrayTest, GetValueTest) {
+TEST_F(PsxArrayTest, GetValueTest)
+{
     int value = 10;
     psx_array_append(&array, &value);
     EXPECT_EQ(*psx_array_get(&array, 0, int), value);
@@ -57,7 +64,8 @@ TEST_F(PsxArrayTest, GetValueTest) {
     EXPECT_EQ(psx_array_get(&array, array.size, int), nullptr);
 }
 
-TEST_F(PsxArrayTest, ShrinkTest) {
+TEST_F(PsxArrayTest, ShrinkTest)
+{
     for (int i = 0; i < PSX_ARRAY_DEFAULT_CAPACITY * 2; ++i) {
         int value = i;
         EXPECT_TRUE(psx_array_append(&array, &value));
@@ -70,7 +78,8 @@ TEST_F(PsxArrayTest, ShrinkTest) {
     EXPECT_EQ(psx_array_capacity(&array), PSX_ARRAY_DEFAULT_CAPACITY);
 }
 
-TEST_F(PsxArrayTest, ClearTest) {
+TEST_F(PsxArrayTest, ClearTest)
+{
     int value = 10;
     psx_array_append(&array, &value);
     EXPECT_EQ(psx_array_size(&array), 1);
@@ -78,14 +87,16 @@ TEST_F(PsxArrayTest, ClearTest) {
     EXPECT_EQ(psx_array_size(&array), 0);
 }
 
-TEST_F(PsxArrayTest, EmptyTest) {
+TEST_F(PsxArrayTest, EmptyTest)
+{
     EXPECT_TRUE(psx_array_empty(&array));
     int value = 10;
     psx_array_append(&array, &value);
     EXPECT_FALSE(psx_array_empty(&array));
 }
 
-TEST_F(PsxArrayTest, RemoveTest) {
+TEST_F(PsxArrayTest, RemoveTest)
+{
     int value1 = 10, value2 = 20;
     psx_array_append(&array, &value1);
     psx_array_append(&array, &value2);
@@ -97,7 +108,8 @@ TEST_F(PsxArrayTest, RemoveTest) {
     EXPECT_FALSE(psx_array_remove(&array, array.size));
 }
 
-TEST_F(PsxArrayTest, RemoveLastTest) {
+TEST_F(PsxArrayTest, RemoveLastTest)
+{
     int value1 = 10, value2 = 20;
     psx_array_append(&array, &value1);
     psx_array_append(&array, &value2);

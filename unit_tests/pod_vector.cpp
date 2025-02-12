@@ -6,8 +6,7 @@
 
 using namespace picasso;
 
-struct data_test 
-{
+struct data_test {
     int i;
     float f;
     double d;
@@ -18,13 +17,13 @@ TEST(Pod_Vector, CreateAndDestroy)
     pod_vector<unsigned int> iv;
     EXPECT_EQ(0, (int)iv.size());
     EXPECT_EQ(0, (int)iv.capacity());
-    
+
     {
         pod_vector<unsigned int> sv = iv;
         EXPECT_EQ(0, (int)sv.size());
         EXPECT_EQ(0, (int)sv.capacity());
 
-        EXPECT_NE(&iv , &sv);
+        EXPECT_NE(&iv, &sv);
     }
 
     pod_vector<data_test> dv(10);
@@ -43,11 +42,10 @@ TEST(Pod_Vector, PushAndInsert)
 
     EXPECT_EQ(0, (int)iv.size());
     EXPECT_EQ(3, (int)iv.capacity());
-    
+
     EXPECT_EQ(0, (int)sv.size());
     EXPECT_EQ(5, (int)sv.capacity());
 
-    
     bool b;
     b = iv.push_back(10);
     EXPECT_EQ(true, b);
@@ -61,8 +59,9 @@ TEST(Pod_Vector, PushAndInsert)
     b = iv.push_back(13);
     EXPECT_EQ(false, b);
 
-    for(unsigned int i = 0; i < iv.size(); i++)
-        printf("iv: integer vector[%d] = %d\n",i, iv[i]);
+    for (unsigned int i = 0; i < iv.size(); i++) {
+        printf("iv: integer vector[%d] = %d\n", i, iv[i]);
+    }
 
     sv = iv;
 
@@ -72,11 +71,12 @@ TEST(Pod_Vector, PushAndInsert)
     EXPECT_EQ(false, sv.is_full());
     EXPECT_EQ(true, iv.is_full());
 
-    for(unsigned int i = 0; i < sv.size(); i++)
-        printf("sv: integer vector[%d] = %d\n",i, sv[i]);
+    for (unsigned int i = 0; i < sv.size(); i++) {
+        printf("sv: integer vector[%d] = %d\n", i, sv[i]);
+    }
 
     iv.resize(6);
-    for(unsigned int i = 0; i < iv.size(); i++) {
+    for (unsigned int i = 0; i < iv.size(); i++) {
         EXPECT_EQ(sv[i], iv[i]);
     }
 
@@ -87,8 +87,9 @@ TEST(Pod_Vector, PushAndInsert)
     b = iv.insert_at(2, 15);
     EXPECT_EQ(true, b);
     EXPECT_EQ(4, (int)iv.size());
-    for(unsigned int i = 0; i < iv.size(); i++)
-        printf("iv: integer vector[%d] = %d\n",i, iv[i]);
+    for (unsigned int i = 0; i < iv.size(); i++) {
+        printf("iv: integer vector[%d] = %d\n", i, iv[i]);
+    }
 
     b = iv.insert_at(15, 15);
     EXPECT_EQ(false, b);
@@ -107,29 +108,33 @@ TEST(Pod_Vector, PushAndInsert)
     iv.cut_at(2);
     EXPECT_EQ(2, (int)iv.size());
     EXPECT_EQ(6, (int)iv.capacity());
-    for(unsigned int i = 0; i < iv.size(); i++)
-        printf("iv: integer vector[%d] = %d\n",i, iv[i]);
+    for (unsigned int i = 0; i < iv.size(); i++) {
+        printf("iv: integer vector[%d] = %d\n", i, iv[i]);
+    }
 
     unsigned int data[] = {100, 200, 300};
     iv.set_data(3, data);
     EXPECT_EQ(3, (int)iv.size());
     EXPECT_EQ(6, (int)iv.capacity());
-    for(unsigned int i = 0; i < iv.size(); i++)
-        printf("iv: integer vector[%d] = %d\n",i, iv[i]);
+    for (unsigned int i = 0; i < iv.size(); i++) {
+        printf("iv: integer vector[%d] = %d\n", i, iv[i]);
+    }
 
-    unsigned int data2[] = {50, 150, 250, 350, 450, 550 ,650, 750};
+    unsigned int data2[] = {50, 150, 250, 350, 450, 550, 650, 750};
     iv.set_data(8, data2);
     EXPECT_EQ(3, (int)iv.size());
     EXPECT_EQ(6, (int)iv.capacity());
-    for(unsigned int i = 0; i < iv.size(); i++)
-        printf("iv: integer vector[%d] = %d\n",i, iv[i]);
+    for (unsigned int i = 0; i < iv.size(); i++) {
+        printf("iv: integer vector[%d] = %d\n", i, iv[i]);
+    }
 
     iv.resize(8);
     iv.set_data(8, data2);
     EXPECT_EQ(8, (int)iv.size());
     EXPECT_EQ(8, (int)iv.capacity());
-    for(unsigned int i = 0; i < iv.size(); i++)
-        printf("iv: integer vector[%d] = %d\n",i, iv[i]);
+    for (unsigned int i = 0; i < iv.size(); i++) {
+        printf("iv: integer vector[%d] = %d\n", i, iv[i]);
+    }
 
     iv.clear();
 
@@ -156,15 +161,17 @@ TEST(Pod_BVector, BlockAndAutoSizeVector)
     EXPECT_EQ(5, (int)iv.size());
     EXPECT_EQ(32, (int)iv.capacity());
 
-    for(unsigned int i = 0; i < iv.size(); i++)
-        printf("iv: integer vector[%d] = %d\n",i, iv[i]);
+    for (unsigned int i = 0; i < iv.size(); i++) {
+        printf("iv: integer vector[%d] = %d\n", i, iv[i]);
+    }
 
     iv.remove_last();
 
     EXPECT_EQ(4, (int)iv.size());
     EXPECT_EQ(32, (int)iv.capacity());
-    for(unsigned int i = 0; i < iv.size(); i++)
-        printf("iv: integer vector[%d] = %d\n",i, iv[i]);
+    for (unsigned int i = 0; i < iv.size(); i++) {
+        printf("iv: integer vector[%d] = %d\n", i, iv[i]);
+    }
 
     iv.remove_all();
 
@@ -175,16 +182,16 @@ TEST(Pod_BVector, BlockAndAutoSizeVector)
 
 TEST(Block_Allocater, BlockBaseAllocater)
 {
-    block_allocator alloc(16384-16);
+    block_allocator alloc(16384 - 16);
 
     printf("alloc 100 elements aligment 4\n");
-    data_test* ds = (data_test*)alloc.allocate(sizeof(data_test)*256, 4);
-    EXPECT_EQ(true, ds!=0);
+    data_test* ds = (data_test*)alloc.allocate(sizeof(data_test) * 256, 4);
+    EXPECT_EQ(true, ds != 0);
 
     printf("block memsize %d \n", alloc.all_mem_used());
 
-    data_test* ss = (data_test*)alloc.allocate(sizeof(data_test), 8); 
-    EXPECT_EQ(true, ss!=0);
+    data_test* ss = (data_test*)alloc.allocate(sizeof(data_test), 8);
+    EXPECT_EQ(true, ss != 0);
     printf("block memsize %d \n", alloc.all_mem_used());
 
     printf("free all memory\n");
@@ -201,9 +208,8 @@ TEST(Pod_Array, CreateAndInitialize)
     EXPECT_EQ(0, (int)iv.size());
     EXPECT_EQ(0, (int)sv.size());
 
-    EXPECT_NE(&iv , &sv);
+    EXPECT_NE(&iv, &sv);
 
     pod_array<data_test> dv(10);
     EXPECT_EQ(10, (int)dv.size());
 }
-

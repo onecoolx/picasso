@@ -3,14 +3,16 @@
 
 #include "psx_list.h"
 
-TEST(ListTest, TestListInit) {
+TEST(ListTest, TestListInit)
+{
     list_hdr_t list;
     list_init(&list);
     EXPECT_EQ(&list, list.next);
     EXPECT_EQ(&list, list.prev);
 }
 
-TEST(ListTest, TestListEmpty) {
+TEST(ListTest, TestListEmpty)
+{
     list_hdr_t list, entry;
     list_init(&list);
     EXPECT_TRUE(list_empty(&list));
@@ -20,7 +22,8 @@ TEST(ListTest, TestListEmpty) {
     EXPECT_FALSE(list_empty(&list));
 }
 
-TEST(ListTest, TestListAdd) {
+TEST(ListTest, TestListAdd)
+{
     list_hdr_t list, entry;
     list_init(&list);
     list_add(&list, &entry);
@@ -29,7 +32,8 @@ TEST(ListTest, TestListAdd) {
     EXPECT_EQ(&list, entry.prev);
 }
 
-TEST(ListTest, TestListAddTail) {
+TEST(ListTest, TestListAddTail)
+{
     list_hdr_t list, entry;
     list_init(&list);
     list_add_tail(&list, &entry);
@@ -38,7 +42,8 @@ TEST(ListTest, TestListAddTail) {
     EXPECT_EQ(&list, entry.next);
 }
 
-TEST(ListTest, TestListRemove) {
+TEST(ListTest, TestListRemove)
+{
     list_hdr_t list, entry;
     list_init(&list);
     list_add(&list, &entry);
@@ -46,7 +51,8 @@ TEST(ListTest, TestListRemove) {
     EXPECT_TRUE(list_empty(&list));
 }
 
-TEST(ListTest, TestListForEach) {
+TEST(ListTest, TestListForEach)
+{
     list_hdr_t list, entry1, entry2;
     list_init(&list);
     list_add(&list, &entry1);

@@ -35,7 +35,6 @@ extern "C" {
 
 #define TOKEN_LEN(t) ((t)->end - (t)->start)
 
-
 bool psx_xml_tokenizer(const char* xml_data, uint32_t data_len, xml_token_process, void* data)
 {
     return false;

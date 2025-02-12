@@ -1,5 +1,4 @@
 
-
 #ifndef _TU_H_
 #define _TU_H_
 
@@ -7,16 +6,16 @@
 #include "stdio.h"
 #include "time.h"
 #if defined(LINUX) || defined(UNIX)
-#include "unistd.h"
-#include "sys/time.h"
+    #include "unistd.h"
+    #include "sys/time.h"
 #endif
 #if defined(WIN32) || defined(WINCE)
-#include <windows.h>
+    #include <windows.h>
 #endif
 
 #if defined(WIN32) || defined(WINCE)
-typedef long long suseconds_t;
-#define inline __inline
+    typedef long long suseconds_t;
+    #define inline __inline
 #endif
 
 static inline suseconds_t get_time()
@@ -26,7 +25,7 @@ static inline suseconds_t get_time()
 #else
     struct timeval t;
     gettimeofday(&t, 0);
-    suseconds_t t1 = (suseconds_t)(t.tv_sec * 1000  + t.tv_usec/1000);
+    suseconds_t t1 = (suseconds_t)(t.tv_sec * 1000 + t.tv_usec / 1000);
 #endif
     return t1;
 }
@@ -45,7 +44,7 @@ static inline double get_clock_used_ms(LARGE_INTEGER t1, LARGE_INTEGER t2)
 {
     LARGE_INTEGER f;
     QueryPerformanceFrequency(&f);
-    return ((double)(t2.QuadPart-t1.QuadPart)/(double)f.QuadPart)*1000;
+    return ((double)(t2.QuadPart - t1.QuadPart) / (double)f.QuadPart) * 1000;
 }
 
 #endif

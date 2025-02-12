@@ -10,8 +10,8 @@ ps_context* get_context()
 
 TEST(Context, AntialiasAndGamma)
 {
-    ps_context * ctx = get_context();
-// gamma
+    ps_context* ctx = get_context();
+    // gamma
     float g = 1.5;
     float old = ps_set_gamma(ctx, g);
     ASSERT_EQ(STATUS_SUCCEED, ps_last_status());
@@ -24,7 +24,3 @@ TEST(Context, AntialiasAndGamma)
     ps_set_antialias(ctx, False);
     ASSERT_EQ(STATUS_SUCCEED, ps_last_status());
 }
-
-
-
-
