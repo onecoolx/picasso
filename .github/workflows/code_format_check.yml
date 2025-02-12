@@ -13,7 +13,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Install astyle
-        run: sudo apt-get install astyle
+        run: sudo pip install astyle
       - name: Formatting code
         run: bash code_format.sh
         working-directory: tools
