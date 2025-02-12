@@ -25,7 +25,7 @@ public:
     gfx_gradient_wrapper() { }
     virtual ~gfx_gradient_wrapper() { }
     virtual void init(scalar r, scalar x, scalar y) = 0;
-    virtual int calculate(int x, int y, int d) const = 0;
+    virtual int32_t calculate(int32_t x, int32_t y, int32_t d) const = 0;
 };
 
 // gradient table
@@ -84,12 +84,12 @@ public:
         m_color_profile.add(color_point(offset, color));
     }
 
-    static unsigned int size(void)
+    static uint32_t size(void)
     {
         return color_table_size;
     }
 
-    const color_type& operator [] (unsigned int i) const
+    const color_type& operator [] (uint32_t i) const
     {
         return m_color_table[i];
     }
@@ -131,9 +131,9 @@ public:
         // do nothing, scanline raster needed.
     }
 
-    void generate(color_type* span, int x, int y, unsigned int len)
+    void generate(color_type* span, int32_t x, int32_t y, uint32_t len)
     {
-        int dd = m_d2 - m_d1;
+        int32_t dd = m_d2 - m_d1;
         if (dd < 1) {
             dd = 1;
         }
@@ -142,7 +142,7 @@ public:
                               INT_TO_SCALAR(y) + FLT_TO_SCALAR(0.5f), len);
         do {
             m_interpolator->coordinates(&x, &y);
-            int d = m_gradient_function->calculate(x >> downscale_shift,
+            int32_t d = m_gradient_function->calculate(x >> downscale_shift,
                                                    y >> downscale_shift, m_d2);
             d = ((d - m_d1) * (int)m_color_function->size()) / dd;
 
@@ -163,8 +163,8 @@ private:
     interpolator_type* m_interpolator;
     const gradient_type* m_gradient_function;
     const color_func* m_color_function;
-    int m_d1;
-    int m_d2;
+    int32_t m_d1;
+    int32_t m_d2;
 };
 
 // gradient adaptor
@@ -186,12 +186,12 @@ public:
         }
     }
 
-    virtual void init_linear(int spread, scalar x1, scalar y1, scalar x2, scalar y2);
+    virtual void init_linear(int32_t spread, scalar x1, scalar y1, scalar x2, scalar y2);
 
-    virtual void init_radial(int spread, scalar x1, scalar y1, scalar radius1,
+    virtual void init_radial(int32_t spread, scalar x1, scalar y1, scalar radius1,
                              scalar x2, scalar y2, scalar radius2);
 
-    virtual void init_conic(int spread, scalar x, scalar y, scalar angle);
+    virtual void init_conic(int32_t spread, scalar x, scalar y, scalar angle);
 
     virtual void add_color_stop(scalar offset, const picasso::rgba& c)
     {

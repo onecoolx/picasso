@@ -33,7 +33,6 @@ LOCAL_SRC_FILES := \
 	$(SOURCE_PATH)/src/gfx/gfx_gradient_adapter.cpp \
 	$(SOURCE_PATH)/src/gfx/gfx_raster_adapter.cpp \
 	$(SOURCE_PATH)/src/gfx/gfx_rendering_buffer.cpp \
-	$(SOURCE_PATH)/src/gfx/gfx_sqrt_tables.cpp \
 	$(SOURCE_PATH)/src/picasso_api.cpp \
 	$(SOURCE_PATH)/src/picasso_canvas.cpp \
 	$(SOURCE_PATH)/src/picasso_font_api.cpp \
