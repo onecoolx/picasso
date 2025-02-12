@@ -51,7 +51,7 @@ public:
     void init(scalar, scalar, scalar) { }
     static int32_t calculate(int32_t x, int32_t y, int32_t d)
     {
-        return (int)Sqrt(x * x + y * y);
+        return (int32_t)SqrtD(x * x + y * y);
     }
 };
 
