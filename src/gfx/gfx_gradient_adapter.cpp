@@ -6,7 +6,6 @@
 
 #include "common.h"
 
-#include "gfx_math.h"
 #include "gfx_gradient_adapter.h"
 #include "gfx_line_generator.h"
 
@@ -52,7 +51,7 @@ public:
     void init(scalar, scalar, scalar) { }
     static int calculate(int x, int y, int d)
     {
-        return (int)fast_sqrt(x * x + y * y);
+        return (int)Sqrt(x * x + y * y);
     }
 };
 

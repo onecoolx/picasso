@@ -1,17 +1,12 @@
-/* Picasso - a vector graphics library
- *
- * Copyright (C) 2013 Zhang Ji Peng
- * Contact: onecoolx@gmail.com
- */
+#ifndef _FAST_SQRT_H_
+#define _FAST_SQRT_H_
 
-#ifndef _GFX_MATH_H_
-#define _GFX_MATH_H_
+#include <stdint.h>
 
-#include "common.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-namespace gfx {
-
-// Tables for fast sqrt from AGG.
 extern uint16_t g_sqrt_table[1024];
 extern int8_t g_elder_bit_table[256];
 
@@ -20,7 +15,7 @@ extern int8_t g_elder_bit_table[256];
     #pragma warning(push)
     #pragma warning(disable : 4035) //Disable warning "no return value"
 #endif
-inline unsigned int fast_sqrt(unsigned int val)
+inline uint32_t fast_sqrt(uint32_t val)
 {
 #if defined(_M_IX86) && defined(_MSC_VER)
     //For Ix86 family processors this assembler code is used.
@@ -48,8 +43,8 @@ inline unsigned int fast_sqrt(unsigned int val)
 
     //This code is actually pure C and portable to most
     //arcitectures including 64bit ones.
-    unsigned int t = val;
-    unsigned int shift = 11;
+    uint32_t t = val;
+    uint32_t shift = 11;
     int bit = 0;
 
     //The following piece of code is just an emulation of the
@@ -88,5 +83,7 @@ inline unsigned int fast_sqrt(unsigned int val)
     #pragma warning(pop)
 #endif
 
+#ifdef __cplusplus
 }
-#endif /*_GFX_MATH_H_*/
+#endif
+#endif /*_FAST_SQRT_H_*/

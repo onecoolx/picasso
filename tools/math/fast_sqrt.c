@@ -1,12 +1,4 @@
-/* Picasso - a vector graphics library
- *
- * Copyright (C) 2013 Zhang Ji Peng
- * Contact: onecoolx@gmail.com
- */
-
-#include "common.h"
-
-namespace gfx {
+#include "fast_sqrt.h"
 
 uint16_t g_sqrt_table[1024] = {
     0,
@@ -95,5 +87,3 @@ int8_t g_elder_bit_table[256] = {
     7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
     7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7
 };
-
-}
