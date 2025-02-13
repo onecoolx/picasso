@@ -156,8 +156,11 @@ set(WEBP_SOURCES
 add_definitions(-DWEBP_USE_THREAD)
 
 if (WIN32)
-add_definitions(-DWIN32_EXPORT)
-add_definitions(-DHAVE_WINCODEC_H)
+    add_definitions(-DWIN32_EXPORT)
+    add_definitions(-DHAVE_WINCODEC_H)
+elseif (ANDROID)
+    set(WEBP_SOURCES ${WEBP_SOURCES} ${ANDROID_NDK}/sources/android/cpufeatures/cpu-features.c)
+    include_directories(${ANDROID_NDK}/sources/android/cpufeatures)
 endif()
 
 file(GLOB_RECURSE WEBP_HEADERS ${WEBP_DIR}/src/webp/*.h)
@@ -171,3 +174,6 @@ install(TARGETS webp LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
 
 include_directories(${WEBP_DIR} ${CMAKE_CURRENT_BINARY_DIR}/include)
 
+if (ANDROID)
+    target_compile_options(webp PRIVATE -DANDROID -Wno-unused-but-set-variable)
+endif()

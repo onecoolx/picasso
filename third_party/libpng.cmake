@@ -23,6 +23,15 @@ set(PNG_SOURCES
     ${PNG_DIR}/pngwutil.c
 )
 
+if (ANDROID)
+set(PNG_SOURCES
+    ${PNG_SOURCES}
+    ${PNG_DIR}/arm/arm_init.c
+    ${PNG_DIR}/arm/filter_neon_intrinsics.c
+    ${PNG_DIR}/arm/filter_neon.S
+)
+endif()
+
 add_definitions(-DZLIB_DLL)
 configure_file(${PNG_DIR}/scripts/pnglibconf.h.prebuilt ${CMAKE_CURRENT_BINARY_DIR}/include/pnglibconf.h)
 configure_file(${PNG_DIR}/pngconf.h ${CMAKE_CURRENT_BINARY_DIR}/include/pngconf.h)
@@ -34,3 +43,6 @@ install(TARGETS png LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
 include_directories(${PNG_DIR} ${CMAKE_CURRENT_BINARY_DIR}/include)
 target_link_libraries(png PRIVATE zlib)
 
+if (ANDROID)
+    target_compile_options(png PRIVATE -Wno-unused-but-set-variable)
+endif()

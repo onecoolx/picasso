@@ -40,3 +40,6 @@ install(TARGETS zlib LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
 
 include_directories(${ZLIB_DIR} ${CMAKE_CURRENT_BINARY_DIR}/include)
 
+if (ANDROID)
+    target_compile_options(zlib PRIVATE -Wno-deprecated-non-prototype)
+endif()
