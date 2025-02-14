@@ -15,4 +15,4 @@ fi
 cmake ${build_type} ..
 
 echo "Please change dir to \"proj\" and type \"make\""
-echo "...\n"		
+echo "...\n"

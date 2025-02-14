@@ -21,9 +21,23 @@ jobs:
       uses: nttld/setup-ndk@v1.2.0
       with:
         ndk-version: r25b
-    - name: build freetype
-      run: ndk-build NDK_PROJECT_PATH=./android/freetype
-    - name: build expat
-      run: ndk-build NDK_PROJECT_PATH=./android/expat
-    - name: build
-      run: ndk-build NDK_PROJECT_PATH=./android/
+    - name: Generate Project
+      run: |
+        mkdir proj
+        cd proj
+        export PROJECT_ROOT=`pwd`
+        cmake \
+            -DCMAKE_TOOLCHAIN_FILE=${NDK_ROOT}/build/cmake/android.toolchain.cmake \
+            -DANDROID_NDK=${NDK_ROOT} \
+            -DANDROID_ABI=armeabi-v7a \
+            -DANDROID_PLATFORM=android-21 \
+            -DOPT_FORMAT_ABGR=OFF \
+            -DOPT_FORMAT_BGRA=OFF \
+            -DOPT_FORMAT_RGBA=OFF \
+            -DOPT_FORMAT_RGB=OFF \
+            -DOPT_FORMAT_BGR=OFF \
+            -DOPT_FORMAT_RGB555=OFF \
+            -DCMAKE_LIBRARY_OUTPUT_DIRECTORY=${PROJECT_ROOT}/lib \
+            ..
+    - name: make
+      run: make -C ./
