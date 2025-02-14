@@ -43,4 +43,4 @@ jobs:
       env:
         NDK_ROOT: ${{ steps.setup-ndk.outputs.ndk-path }}  
     - name: make
-      run: make -C ./
+      run: make -C ./proj
