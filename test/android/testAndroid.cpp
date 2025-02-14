@@ -1,5 +1,6 @@
 #include <jni.h>
 #include <errno.h>
+#include <string.h>
 
 #include <android/sensor.h>
 #include <android/log.h>
@@ -175,6 +176,11 @@ const char** argv(void)
     return __argv;
 }
 
+extern "C" const char* getSysFontName(void)
+{
+    return "sans-serif";
+}
+
 /**
  * This is the main entry point of a native application that is using
  * android_native_app_glue.  It runs in its own thread, with its own
@@ -214,7 +220,7 @@ void android_main(struct android_app* state)
         struct android_poll_source* source;
 
 
-        while ((ident=ALooper_pollAll(0, NULL, &events, (void**)&source)) >= 0) {
+        while ((ident=ALooper_pollOnce(0, NULL, &events, (void**)&source)) >= 0) {
             // Process this event.
 
             if (source != NULL) {
