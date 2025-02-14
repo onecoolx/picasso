@@ -5,6 +5,7 @@
 
 if (WIN32)
     set(plat_file ${PROJECT_ROOT}/demos/win32/platform_win32.c)
+    set(plat_gui_inc ${PROJECT_ROOT}/demos/)
     set(app_type WIN32)
 elseif (ANDROID)
     set(plat_file ${PROJECT_ROOT}/demos/android/platform_android.cpp
