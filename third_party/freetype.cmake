@@ -3,7 +3,7 @@
 # Copyright (C) 2024 Zhang Ji Peng
 # Contact: onecoolx@gmail.com
 
-set(FREETYPE_DIR ${PROJECT_ROOT}/android/freetype)
+set(FREETYPE_DIR ${PROJECT_ROOT}/third_party/freetype-2.3.6)
 
 set(FREETYPE_SOURCES
 	${FREETYPE_DIR}/src/base/ftbbox.c

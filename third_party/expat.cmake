@@ -3,7 +3,7 @@
 # Copyright (C) 2024 Zhang Ji Peng
 # Contact: onecoolx@gmail.com
 
-set(EXPAT_DIR ${PROJECT_ROOT}/android/expat)
+set(EXPAT_DIR ${PROJECT_ROOT}/third_party/expat-2.1.0)
 
 set(EXPAT_SOURCES
 	${EXPAT_DIR}/lib/xmltok.c

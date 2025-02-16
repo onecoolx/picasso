@@ -42,11 +42,6 @@ endif()
 
 include (${CMAKE_CURRENT_LIST_DIR}/build/configs.cmake)
 include (${CMAKE_CURRENT_LIST_DIR}/build/defines.cmake)
-
-if (ANDROID)
-include (${CMAKE_CURRENT_LIST_DIR}/android/freetype/freetype.cmake)
-include (${CMAKE_CURRENT_LIST_DIR}/android/expat/expat.cmake)
-endif()
 include (${CMAKE_CURRENT_LIST_DIR}/src/src.cmake)
 
 if (OPT_EXTENSIONS)
