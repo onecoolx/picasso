@@ -62,7 +62,7 @@ typedef struct {
 
 typedef bool (*xml_token_process)(void* context, const psx_xml_token_t* token);
 
-bool psx_xml_tokenizer(const char* xml_data, uint32_t data_len, xml_token_process, void* data);
+bool psx_xml_tokenizer(const char* xml_data, uint32_t data_len, xml_token_process cb, void* data);
 
 #ifdef __cplusplus
 }

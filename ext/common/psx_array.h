@@ -159,6 +159,9 @@ static INLINE bool psx_array_append(psx_array_t* array, const void* value)
 #define psx_array_get(array, i, type) \
     (type*)psx_array_at((array), (i))
 
+#define psx_array_get_last(array, type) \
+    psx_array_get((array), psx_array_size((array)) - 1, type)
+
 #define psx_array_push_back(array, value) \
     psx_array_append((array), (void*)&(value))
 
