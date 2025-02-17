@@ -347,7 +347,11 @@ bool psx_xml_tokenizer(const char* xml_data, uint32_t data_len, xml_token_proces
 {
     psx_xml_token_t token;
     _psx_token_init(&token);
-    xml_token_state_t state = { .flags = 0, .cur = xml_data, .end = xml_data + data_len };
+
+    xml_token_state_t state;
+    state.flags = 0;
+    state.cur = xml_data;
+    state.end = xml_data + data_len;
 
     while (state.cur < state.end) {
         char ch = *(state.cur);
