@@ -38,6 +38,7 @@ typedef enum {
     PSX_XML_BEGIN = 1,
     PSX_XML_END = 2,
     PSX_XML_CONTENT = 3,
+    PSX_XML_ENTITY = 4,
 } psx_xml_token_type_t;
 
 typedef struct {

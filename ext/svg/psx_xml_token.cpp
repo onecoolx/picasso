@@ -217,6 +217,88 @@ static INLINE void _psx_proc_doctype(xml_token_state_t* state, psx_xml_token_t* 
     }
 }
 
+static INLINE bool _psx_proc_entity(xml_token_state_t* state, psx_xml_token_t* token, xml_token_process cb, void* data)
+{
+    while (state->cur <= state->end) {
+        switch (_psx_get_entity_state(state)) {
+            case NO_ENTITY: {
+                    if (!_xml_token_process(token, cb, data)) {
+                        return false;
+                    }
+                    state->cur++;
+                }
+                return true;
+            case START_ENTITY: {
+                    char ch = *(state->cur);
+                    if (ch == '#') {
+                        _psx_set_entity_state(state, NUMERIC);
+                    } else {
+                        _psx_set_entity_state(state, ENTITY_NAME);
+                    }
+
+                    token->type = PSX_XML_ENTITY;
+                    state->cur++;
+                    if (!token->start) {
+                        token->start = state->cur;
+                    }
+                    continue;
+                }
+                break;
+            case NUMERIC: {
+                    char ch = *(state->cur);
+                    if (ch == 'x' || ch == 'X') {
+                        _psx_set_entity_state(state, HEX_DECIMAL);
+                        continue;
+                    } else if (ch >= '0' && ch <= '9') {
+                        _psx_set_entity_state(state, DECIMAL);
+                        continue;
+                    } else {
+                        _psx_set_entity_state(state, SEMICOLON);
+                        continue;
+                    }
+                }
+                break;
+            case HEX_DECIMAL: {
+                    char ch = *(state->cur);
+                    if (!((ch >= '0' && ch <= '9') || (ch >= 'a' && ch <= 'f')
+                          || (ch >= 'A' && ch <= 'F'))) {
+                        _psx_set_entity_state(state, SEMICOLON);
+                        continue;
+                    }
+                }
+                break;
+            case DECIMAL: {
+                    char ch = *(state->cur);
+                    if (!(ch >= '0' && ch <= '9')) {
+                        _psx_set_entity_state(state, SEMICOLON);
+                        continue;
+                    }
+                }
+                break;
+            case ENTITY_NAME: {
+                    char ch = *(state->cur);
+                    if (!((ch >= 'a' && ch <= 'z') || (ch >= '0' && ch <= '9')
+                          || (ch >= 'A' && ch <= 'Z'))) {
+                        _psx_set_entity_state(state, SEMICOLON);
+                        continue;
+                    }
+                }
+                break;
+            case SEMICOLON: {
+                    char ch = *(state->cur);
+                    if (ch == ';' || isspace(ch)) {
+                        token->end = state->cur;
+                        _psx_set_entity_state(state, NO_ENTITY);
+                        continue;
+                    }
+                }
+                break;
+        }
+        state->cur++;
+    }
+    return true;
+}
+
 static INLINE bool _psx_proc_tag(xml_token_state_t* state, psx_xml_token_t* token, xml_token_process cb, void* data)
 {
     while (state->cur <= state->end) {
@@ -440,6 +522,17 @@ bool psx_xml_tokenizer(const char* xml_data, uint32_t data_len, xml_token_proces
                 _psx_proc_comment(&state, &token);
             } else if (_psx_is_state(&state, IN_DOCTYPE)) {
                 _psx_proc_doctype(&state, &token);
+            } else if (_psx_is_state(&state, IN_ENTITY_MASK)) {
+                // process token
+                if (!_xml_token_process(&token, cb, data)) {
+                    psx_array_destroy(&token.attrs);
+                    return false;
+                }
+
+                if (!_psx_proc_entity(&state, &token, cb, data)) {
+                    psx_array_destroy(&token.attrs);
+                    return false;
+                }
             } else if (_psx_is_state(&state, IN_TAG_MASK)) {
                 if (!_psx_proc_tag(&state, &token, cb, data)) {
                     psx_array_destroy(&token.attrs);
@@ -452,6 +545,11 @@ bool psx_xml_tokenizer(const char* xml_data, uint32_t data_len, xml_token_proces
             switch (ch) {
                 case '<': {
                         _psx_set_state(&state, IN_START_TAG); // start a new tag
+                        state.cur++;
+                    }
+                    break;
+                case '&': {
+                        _psx_set_entity_state(&state, START_ENTITY);
                         state.cur++;
                     }
                     break;
