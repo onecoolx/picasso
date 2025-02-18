@@ -145,9 +145,29 @@ static INLINE void _psx_set_tag_state(xml_token_state_t* state, uint32_t bit)
     state->flags = (state->flags & ~IN_TAG_MASK) | bit;
 }
 
+static INLINE uint32_t _psx_get_tag_state(xml_token_state_t* state)
+{
+    return state->flags & IN_TAG_MASK;
+}
+
 static INLINE void _psx_set_quote_state(xml_token_state_t* state, uint32_t bit)
 {
     state->flags = (state->flags & ~IN_QUOTE_MASK) | (bit << 6);
+}
+
+static INLINE uint32_t _psx_get_quote_state(xml_token_state_t* state)
+{
+    return (state->flags & IN_QUOTE_MASK) >> 6;
+}
+
+static INLINE void _psx_set_entity_state(xml_token_state_t* state, uint32_t bit)
+{
+    state->flags = (state->flags & ~IN_ENTITY_MASK) | (bit << 3);
+}
+
+static INLINE uint32_t _psx_get_entity_state(xml_token_state_t* state)
+{
+    return (state->flags & IN_ENTITY_MASK) >> 3;
 }
 
 static INLINE bool _psx_special_handles(xml_token_state_t* state)
@@ -200,7 +220,7 @@ static INLINE void _psx_proc_doctype(xml_token_state_t* state, psx_xml_token_t* 
 static INLINE bool _psx_proc_tag(xml_token_state_t* state, psx_xml_token_t* token, xml_token_process cb, void* data)
 {
     while (state->cur <= state->end) {
-        switch (state->flags & IN_TAG_MASK) {
+        switch (_psx_get_tag_state(state)) {
             case NO_TAG: {
                     if (!_xml_token_process(token, cb, data)) {
                         return false;
@@ -300,8 +320,8 @@ static INLINE bool _psx_proc_tag(xml_token_state_t* state, psx_xml_token_t* toke
                 break;
             case QUOTE_VALUE: {
                     char ch = *(state->cur);
-                    if ((ch == '\'' && ((state->flags & IN_QUOTE_MASK) >> 3) == SINGLE_QUOTE)
-                        || (ch == '\"' && ((state->flags & IN_QUOTE_MASK) >> 3) == DOUBLE_QUOTE)) {
+                    if ((ch == '\'' && _psx_get_quote_state(state) == SINGLE_QUOTE)
+                        || (ch == '\"' && _psx_get_quote_state(state) == DOUBLE_QUOTE)) {
                         if (!token->cur_attr->value_start) {
                             token->cur_attr->value_start = state->cur;
                         }

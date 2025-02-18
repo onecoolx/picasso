@@ -21,7 +21,7 @@ set(UNIT_TESTS unit_tests)
 
 include_directories(${PROJECT_ROOT})
 add_executable(${UNIT_TESTS} ${UNIT_SOURCES})
-target_link_libraries(${UNIT_TESTS} PRIVATE GTest::GTest ${LIB_NAME})
+target_link_libraries(${UNIT_TESTS} PRIVATE GTest::GTest ${LIB_NAME} ${LIBX_IMAGE} ${LIBX_SVG})
 
 if (WIN32)
     add_custom_command(
