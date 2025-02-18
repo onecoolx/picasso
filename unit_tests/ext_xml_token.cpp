@@ -50,67 +50,67 @@ static bool _token_process_fail(void* data, const psx_xml_token_t* token)
 TEST(PsxXmlTokenTest, TestNormalXML)
 {
     static const char* xml_data = "<root><child attr=\"value\">\n</child></root>";
-    psx_xml_tokenizer(xml_data, strlen(xml_data), _token_process, nullptr);
+    psx_xml_tokenizer(xml_data, (uint32_t)strlen(xml_data), _token_process, nullptr);
 }
 
 TEST(PsxXmlTokenTest, TestEmpty)
 {
     const char* empty_xml_data = "";
-    bool ret = psx_xml_tokenizer(empty_xml_data, strlen(empty_xml_data), _token_process, nullptr);
+    bool ret = psx_xml_tokenizer(empty_xml_data, (uint32_t)strlen(empty_xml_data), _token_process, nullptr);
     EXPECT_FALSE(ret);
 }
 
 TEST(PsxXmlTokenTest, TestSingleTag)
 {
     const char* single_tag_xml_data = "<root>\r</root>";
-    psx_xml_tokenizer(single_tag_xml_data, strlen(single_tag_xml_data), _token_process, nullptr);
+    psx_xml_tokenizer(single_tag_xml_data, (uint32_t)strlen(single_tag_xml_data), _token_process, nullptr);
 }
 
 TEST(PsxXmlTokenTest, TestNoAttributes)
 {
     const char* no_attr_xml_data = "<root>hello world!</root>";
-    psx_xml_tokenizer(no_attr_xml_data, strlen(no_attr_xml_data), _token_process, nullptr);
+    psx_xml_tokenizer(no_attr_xml_data, (uint32_t)strlen(no_attr_xml_data), _token_process, nullptr);
 }
 
 TEST(PsxXmlTokenTest, TestHtmlFlatMode)
 {
     const char* xml_data = "<root><children attr1=value /></root>";
-    psx_xml_tokenizer(xml_data, strlen(xml_data), _token_process, nullptr);
+    psx_xml_tokenizer(xml_data, (uint32_t)strlen(xml_data), _token_process, nullptr);
 }
 
 TEST(PsxXmlTokenTest, TestXMLInst)
 {
     const char* xml_data = "<?xml information ?><root></root>";
-    psx_xml_tokenizer(xml_data, strlen(xml_data), _token_process, nullptr);
+    psx_xml_tokenizer(xml_data, (uint32_t)strlen(xml_data), _token_process, nullptr);
 }
 
 TEST(PsxXmlTokenTest, TestDocType)
 {
     const char* xml_data = "<!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN'"
                            "'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'><root></root>";
-    psx_xml_tokenizer(xml_data, strlen(xml_data), _token_process, nullptr);
+    psx_xml_tokenizer(xml_data, (uint32_t)strlen(xml_data), _token_process, nullptr);
 }
 
 TEST(PsxXmlTokenTest, TestQuoteValue)
 {
     const char* xml_data = "<root><children attr1=\"value1\" attr2='value2' attr3=value3/></root>";
-    psx_xml_tokenizer(xml_data, strlen(xml_data), _token_process, nullptr);
+    psx_xml_tokenizer(xml_data, (uint32_t)strlen(xml_data), _token_process, nullptr);
 
     const char* xml_data2 = "<root><children attr1=/></root>"; // no value
-    psx_xml_tokenizer(xml_data2, strlen(xml_data2), _token_process, nullptr);
+    psx_xml_tokenizer(xml_data2, (uint32_t)strlen(xml_data2), _token_process, nullptr);
 
     const char* xml_data3 = "<root><children checked/></root>"; // no attrname
-    psx_xml_tokenizer(xml_data3, strlen(xml_data3), _token_process, nullptr);
+    psx_xml_tokenizer(xml_data3, (uint32_t)strlen(xml_data3), _token_process, nullptr);
 }
 
 TEST(PsxXmlTokenTest, TestComment)
 {
     const char* xml_data = "<root><children><!-- comment message -->contents</children></root>";
-    psx_xml_tokenizer(xml_data, strlen(xml_data), _token_process, nullptr);
+    psx_xml_tokenizer(xml_data, (uint32_t)strlen(xml_data), _token_process, nullptr);
 }
 
 TEST(PsxXmlTokenTest, TestFail)
 {
     const char* xml_data = "<root></root>";
-    psx_xml_tokenizer(xml_data, strlen(xml_data), _token_process_fail, nullptr);
+    psx_xml_tokenizer(xml_data, (uint32_t)strlen(xml_data), _token_process_fail, nullptr);
 }
