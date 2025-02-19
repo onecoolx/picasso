@@ -248,7 +248,6 @@ static INLINE bool _psx_proc_entity(xml_token_state_t* state, psx_xml_token_t* t
                     char ch = *(state->cur);
                     if (ch == 'x' || ch == 'X') {
                         _psx_set_entity_state(state, HEX_DECIMAL);
-                        continue;
                     } else if (ch >= '0' && ch <= '9') {
                         _psx_set_entity_state(state, DECIMAL);
                         continue;

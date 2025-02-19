@@ -38,6 +38,9 @@ static bool _token_process(void* data, const psx_xml_token_t* token)
     } else if (token->type == PSX_XML_CONTENT || token->type == PSX_XML_END) {
         EXPECT_TRUE(token->end > token->start);
         EXPECT_EQ(token->attrs.size, 0);
+    } else if (token->type == PSX_XML_ENTITY) {
+        EXPECT_TRUE(token->end > token->start);
+        EXPECT_EQ(token->attrs.size, 0);
     }
     return true;
 }
@@ -96,17 +99,35 @@ TEST(PsxXmlTokenTest, TestQuoteValue)
     const char* xml_data = "<root><children attr1=\"value1\" attr2='value2' attr3=value3/></root>";
     psx_xml_tokenizer(xml_data, (uint32_t)strlen(xml_data), _token_process, nullptr);
 
-    const char* xml_data2 = "<root><children attr1=/></root>"; // no value
+    const char* xml_data2 = "<root><children attr1=  attr2=\"\" attr3=''/></root>"; // no value
     psx_xml_tokenizer(xml_data2, (uint32_t)strlen(xml_data2), _token_process, nullptr);
 
     const char* xml_data3 = "<root><children checked/></root>"; // no attrname
     psx_xml_tokenizer(xml_data3, (uint32_t)strlen(xml_data3), _token_process, nullptr);
+
+    const char* xml_data4 = "<root><children attr1=\" attr2='/></root>"; // bad case
+    psx_xml_tokenizer(xml_data4, (uint32_t)strlen(xml_data4), _token_process, nullptr);
 }
 
 TEST(PsxXmlTokenTest, TestComment)
 {
     const char* xml_data = "<root><children><!-- comment message -->contents</children></root>";
     psx_xml_tokenizer(xml_data, (uint32_t)strlen(xml_data), _token_process, nullptr);
+}
+
+TEST(PsxXmlTokenTest, TestEntity)
+{
+    const char* xml_data = "<root><children>start &amp; &AMP; contents</children></root>";
+    psx_xml_tokenizer(xml_data, (uint32_t)strlen(xml_data), _token_process, nullptr);
+
+    const char* xml_data2 = "<root><children>start &#xA9; &#169; </children></root>";
+    psx_xml_tokenizer(xml_data2, (uint32_t)strlen(xml_data2), _token_process, nullptr);
+
+    const char* xml_data3 = "<root><!ENTITY /><children>content</children></root>";
+    psx_xml_tokenizer(xml_data3, (uint32_t)strlen(xml_data3), _token_process, nullptr);
+
+    const char* xml_data4 = "<root><children>start &#; &# </children></root>"; // bad case
+    psx_xml_tokenizer(xml_data4, (uint32_t)strlen(xml_data4), _token_process, nullptr);
 }
 
 TEST(PsxXmlTokenTest, TestFail)
