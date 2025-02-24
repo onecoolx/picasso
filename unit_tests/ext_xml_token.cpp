@@ -29,7 +29,7 @@
 
 #include "psx_xml_token.h"
 
-static bool _token_process(void* data, const psx_xml_token_t* token)
+static bool _token_process(void* data, const psx_xml_token* token)
 {
     // success
     if (token->type == PSX_XML_BEGIN) {
@@ -45,7 +45,7 @@ static bool _token_process(void* data, const psx_xml_token_t* token)
     return true;
 }
 
-static bool _token_process_fail(void* data, const psx_xml_token_t* token)
+static bool _token_process_fail(void* data, const psx_xml_token* token)
 {
     return false;
 }

@@ -39,14 +39,14 @@ typedef enum {
     PSX_XML_END = 2,
     PSX_XML_CONTENT = 3,
     PSX_XML_ENTITY = 4,
-} psx_xml_token_type_t;
+} psx_xml_token_type;
 
 typedef struct {
     const char* name_start;
     const char* name_end;
     const char* value_start;
     const char* value_end;
-} psx_xml_token_attr_t;
+} psx_xml_token_attr;
 
 enum {
     PSX_XML_TOKEN_FLAT = 1,
@@ -56,12 +56,12 @@ typedef struct {
     uint32_t flags;
     const char* start;
     const char* end;
-    psx_xml_token_type_t type;
-    psx_xml_token_attr_t* cur_attr;
+    psx_xml_token_type type;
+    psx_xml_token_attr* cur_attr;
     psx_array_t attrs;
-} psx_xml_token_t;
+} psx_xml_token;
 
-typedef bool (*xml_token_process)(void* context, const psx_xml_token_t* token);
+typedef bool (*xml_token_process)(void* context, const psx_xml_token* token);
 
 bool psx_xml_tokenizer(const char* xml_data, uint32_t data_len, xml_token_process cb, void* data);
 

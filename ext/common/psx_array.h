@@ -33,8 +33,12 @@
 extern "C" {
 #endif
 
+#ifndef mem_calloc
 #define mem_calloc calloc
+#endif
+#ifndef mem_free
 #define mem_free free
+#endif
 
 #define PSX_ARRAY_DEFAULT_CAPACITY  4
 

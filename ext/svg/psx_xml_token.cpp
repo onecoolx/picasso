@@ -83,19 +83,19 @@ typedef struct {
     uint32_t flags;
     const char* cur;
     const char* end;
-} xml_token_state_t;
+} xml_token_state;
 
-static INLINE void _psx_token_init(psx_xml_token_t* token)
+static INLINE void _psx_token_init(psx_xml_token* token)
 {
     token->flags = 0;
     token->start = NULL;
     token->end = NULL;
     token->type = PSX_XML_CONTENT;
     token->cur_attr = NULL;
-    psx_array_init_type(&token->attrs, psx_xml_token_attr_t);
+    psx_array_init_type(&token->attrs, psx_xml_token_attr);
 }
 
-static INLINE void _psx_token_clear(psx_xml_token_t* token)
+static INLINE void _psx_token_clear(psx_xml_token* token)
 {
     token->flags = 0;
     token->start = NULL;
@@ -105,16 +105,16 @@ static INLINE void _psx_token_clear(psx_xml_token_t* token)
     psx_array_clear(&token->attrs);
 }
 
-static INLINE psx_xml_token_attr_t* _create_xml_attr(psx_xml_token_t* token)
+static INLINE psx_xml_token_attr* _create_xml_attr(psx_xml_token* token)
 {
     psx_array_append(&token->attrs, NULL);
 
-    psx_xml_token_attr_t* attr = psx_array_get_last(&token->attrs, psx_xml_token_attr_t);
-    memset(attr, 0, sizeof(psx_xml_token_attr_t));
+    psx_xml_token_attr* attr = psx_array_get_last(&token->attrs, psx_xml_token_attr);
+    memset(attr, 0, sizeof(psx_xml_token_attr));
     return attr;
 }
 
-static INLINE bool _xml_token_process(psx_xml_token_t* token, xml_token_process cb, void* data)
+static INLINE bool _xml_token_process(psx_xml_token* token, xml_token_process cb, void* data)
 {
     if (!token->start || TOKEN_LEN(token) == 0) {
         return true;
@@ -125,57 +125,57 @@ static INLINE bool _xml_token_process(psx_xml_token_t* token, xml_token_process 
     return ret;
 }
 
-static INLINE void _psx_set_state(xml_token_state_t* state, uint32_t bit)
+static INLINE void _psx_set_state(xml_token_state* state, uint32_t bit)
 {
     state->flags |= bit;
 }
 
-static INLINE void _psx_clear_state(xml_token_state_t* state, uint32_t bit)
+static INLINE void _psx_clear_state(xml_token_state* state, uint32_t bit)
 {
     state->flags &= ~bit;
 }
 
-static INLINE bool _psx_is_state(xml_token_state_t* state, uint32_t bit)
+static INLINE bool _psx_is_state(xml_token_state* state, uint32_t bit)
 {
     return state->flags & bit;
 }
 
-static INLINE void _psx_set_tag_state(xml_token_state_t* state, uint32_t bit)
+static INLINE void _psx_set_tag_state(xml_token_state* state, uint32_t bit)
 {
     state->flags = (state->flags & ~IN_TAG_MASK) | bit;
 }
 
-static INLINE uint32_t _psx_get_tag_state(xml_token_state_t* state)
+static INLINE uint32_t _psx_get_tag_state(xml_token_state* state)
 {
     return state->flags & IN_TAG_MASK;
 }
 
-static INLINE void _psx_set_quote_state(xml_token_state_t* state, uint32_t bit)
+static INLINE void _psx_set_quote_state(xml_token_state* state, uint32_t bit)
 {
     state->flags = (state->flags & ~IN_QUOTE_MASK) | (bit << 6);
 }
 
-static INLINE uint32_t _psx_get_quote_state(xml_token_state_t* state)
+static INLINE uint32_t _psx_get_quote_state(xml_token_state* state)
 {
     return (state->flags & IN_QUOTE_MASK) >> 6;
 }
 
-static INLINE void _psx_set_entity_state(xml_token_state_t* state, uint32_t bit)
+static INLINE void _psx_set_entity_state(xml_token_state* state, uint32_t bit)
 {
     state->flags = (state->flags & ~IN_ENTITY_MASK) | (bit << 3);
 }
 
-static INLINE uint32_t _psx_get_entity_state(xml_token_state_t* state)
+static INLINE uint32_t _psx_get_entity_state(xml_token_state* state)
 {
     return (state->flags & IN_ENTITY_MASK) >> 3;
 }
 
-static INLINE bool _psx_special_handles(xml_token_state_t* state)
+static INLINE bool _psx_special_handles(xml_token_state* state)
 {
     return state->flags & (IN_START_TAG | IN_SEARCH | IN_TAG_MASK | IN_ENTITY_MASK | IN_COMMENT | IN_SERVER_SIDE | IN_DOCTYPE | IN_XMLINST | IN_SCRIPT);
 }
 
-static INLINE void _psx_proc_xml_inst(xml_token_state_t* state, psx_xml_token_t* token)
+static INLINE void _psx_proc_xml_inst(xml_token_state* state, psx_xml_token* token)
 {
     // ignore xml inst
     while (state->cur <= state->end) {
@@ -189,7 +189,7 @@ static INLINE void _psx_proc_xml_inst(xml_token_state_t* state, psx_xml_token_t*
     }
 }
 
-static INLINE void _psx_proc_comment(xml_token_state_t* state, psx_xml_token_t* token)
+static INLINE void _psx_proc_comment(xml_token_state* state, psx_xml_token* token)
 {
     // ignore comment
     while (state->cur <= state->end) {
@@ -203,7 +203,7 @@ static INLINE void _psx_proc_comment(xml_token_state_t* state, psx_xml_token_t* 
     }
 }
 
-static INLINE void _psx_proc_doctype(xml_token_state_t* state, psx_xml_token_t* token)
+static INLINE void _psx_proc_doctype(xml_token_state* state, psx_xml_token* token)
 {
     // ignore doctype
     while (state->cur <= state->end) {
@@ -217,7 +217,7 @@ static INLINE void _psx_proc_doctype(xml_token_state_t* state, psx_xml_token_t* 
     }
 }
 
-static INLINE bool _psx_proc_entity(xml_token_state_t* state, psx_xml_token_t* token, xml_token_process cb, void* data)
+static INLINE bool _psx_proc_entity(xml_token_state* state, psx_xml_token* token, xml_token_process cb, void* data)
 {
     while (state->cur <= state->end) {
         switch (_psx_get_entity_state(state)) {
@@ -298,7 +298,7 @@ static INLINE bool _psx_proc_entity(xml_token_state_t* state, psx_xml_token_t* t
     return true;
 }
 
-static INLINE bool _psx_proc_tag(xml_token_state_t* state, psx_xml_token_t* token, xml_token_process cb, void* data)
+static INLINE bool _psx_proc_tag(xml_token_state* state, psx_xml_token* token, xml_token_process cb, void* data)
 {
     while (state->cur <= state->end) {
         switch (_psx_get_tag_state(state)) {
@@ -446,10 +446,10 @@ static INLINE bool _psx_proc_tag(xml_token_state_t* state, psx_xml_token_t* toke
 
 bool psx_xml_tokenizer(const char* xml_data, uint32_t data_len, xml_token_process cb, void* data)
 {
-    psx_xml_token_t token;
+    psx_xml_token token;
     _psx_token_init(&token);
 
-    xml_token_state_t state;
+    xml_token_state state;
     state.flags = 0;
     state.cur = xml_data;
     state.end = xml_data + data_len;
