@@ -8,6 +8,8 @@ set(PXSVG_DIR ${PROJECT_ROOT}/ext/svg)
 set(PXSVG_SOURCES
     ${PXSVG_DIR}/psx_xml_token.h
     ${PXSVG_DIR}/psx_xml_token.cpp
+    ${PXSVG_DIR}/psx_svg.h
+    ${PXSVG_DIR}/psx_svg.cpp
 )
 
 set(LIBX_SVG psx_svg)

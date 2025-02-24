@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng
+ * Copyright (c) 2025, Zhang Ji Peng
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,62 +24,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _PSX_COMMON_H_
-#define _PSX_COMMON_H_
+#include "psx_svg.h"
 
-#include "pconfig.h"
+psx_svg_doc* psx_svg_load(const char* svg_data, uint32_t len)
+{
+    if (!svg_data || !len) {
+        fprintf(stderr, "Bad arguments for svg data or length!\n");
+        return NULL;
+    }
 
-#include <ctype.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdint.h>
-#include <stdlib.h>
+    return NULL;
+}
 
-#ifdef HAVE_STDBOOL_H
-    #include <stdbool.h>
-#else
-    #if !defined(_MSC_VER)
-        typedef int bool;
-        #define true 1;
-        #define false 0;
-    #endif
-#endif
+void psx_svg_destroy(psx_svg_doc* doc)
+{
+    if (doc) {
 
-#if defined(__GNUC__)
-    #define INLINE inline
-#elif defined(_MSC_VER)
-    #define INLINE __inline
-#else
-    #define INLINE
-#endif
+    }
+}
 
-#if __cplusplus >= 201103L
-    #define REGISTER
-#else
-    #define REGISTER register
-#endif
+psx_svg_node* psx_svg_node_create(psx_svg_node* parent)
+{
+    return NULL;
+}
 
-/* memory management */
-#ifndef mem_malloc
-#define mem_malloc malloc
-#endif
+void psx_svg_node_destroy(psx_svg_node* node)
+{
+    if (node) {
 
-#ifndef mem_calloc
-#define mem_calloc calloc
-#endif
-
-#ifndef mem_realloc
-#define mem_realloc realloc
-#endif
-
-#ifndef mem_free
-#define mem_free free
-#endif
-
-/* c++ class utils */
-#define NON_COPYABLE_CLASS(type) \
-    private: \
-    type(const type& o); \
-    type& operator=(const type& o); \
-
-#endif /*_PSX_COMMON_H_*/
+    }
+}

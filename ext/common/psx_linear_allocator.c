@@ -71,7 +71,7 @@ static INLINE void ensure_next(linear_allocator_impl* mem, size_t size)
 
     mem->base.total_memory += block_size;
 
-    mem_block_t* block = malloc(block_size);
+    mem_block_t* block = mem_malloc(block_size);
     block->next = NULL;
     block->block_size = (uint32_t)block_size;
 
@@ -106,7 +106,7 @@ static INLINE void* _linear_alloc(struct _linear_allocator* mem, size_t size)
 
 psx_linear_allocator* psx_linear_allocator_create(psx_memory_align_t align)
 {
-    linear_allocator_impl* mem = (linear_allocator_impl*)malloc(sizeof(linear_allocator_impl));
+    linear_allocator_impl* mem = (linear_allocator_impl*)mem_malloc(sizeof(linear_allocator_impl));
     memset(mem, 0, sizeof(linear_allocator_impl));
 
     mem->base.alloc = _linear_alloc;
@@ -122,8 +122,8 @@ void psx_linear_allocator_destroy(psx_linear_allocator* mem)
 
     while (b) {
         mem_block_t* next = b->next;
-        free(b);
+        mem_free(b);
         b = next;
     }
-    free(mem);
+    mem_free(mem);
 }

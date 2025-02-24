@@ -41,12 +41,12 @@ public:
         , m_capacity(INIT_CAPACITY)
         , m_index(0)
     {
-        m_children = (psx_tree_node**)calloc(m_capacity, sizeof(psx_tree_node*));
+        m_children = (psx_tree_node**)mem_calloc(m_capacity, sizeof(psx_tree_node*));
         if (m_parent) {
             m_parent->m_count++;
             if (m_parent->m_count == m_parent->m_capacity) {
                 m_parent->m_capacity <<= 1;
-                m_parent->m_children = (psx_tree_node**)realloc(m_parent->m_children, sizeof(psx_tree_node*) * m_parent->m_capacity);
+                m_parent->m_children = (psx_tree_node**)mem_realloc(m_parent->m_children, sizeof(psx_tree_node*) * m_parent->m_capacity);
             }
             m_parent->m_children[m_parent->m_count - 1] = this;
             m_index = m_parent->m_count;
@@ -65,7 +65,7 @@ public:
                 delete m_children[i];
             }
         }
-        free(m_children);
+        mem_free(m_children);
     }
 
     uint32_t child_count(void) const { return m_count; }

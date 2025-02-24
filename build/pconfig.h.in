@@ -1,6 +1,9 @@
 #ifndef _CONFIGURATION_HEADER_PCONFIG_H_
 #define _CONFIGURATION_HEADER_PCONFIG_H_
 
+/* Define picasso version. */
+#cmakedefine PICASSO_VERSION @PICASSO_VERSION@ 
+
 /* Define if Fast memory copy is supported. */
 #cmakedefine ENABLE_FAST_COPY @ENABLE_FAST_COPY@
 
