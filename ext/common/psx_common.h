@@ -61,19 +61,19 @@
 
 /* memory management */
 #ifndef mem_malloc
-#define mem_malloc malloc
+    #define mem_malloc malloc
 #endif
 
 #ifndef mem_calloc
-#define mem_calloc calloc
+    #define mem_calloc calloc
 #endif
 
 #ifndef mem_realloc
-#define mem_realloc realloc
+    #define mem_realloc realloc
 #endif
 
 #ifndef mem_free
-#define mem_free free
+    #define mem_free free
 #endif
 
 /* c++ class utils */
