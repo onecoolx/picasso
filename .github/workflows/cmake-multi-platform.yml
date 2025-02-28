@@ -54,7 +54,7 @@ jobs:
 
     - if: ${{matrix.os == 'ubuntu-latest'}}
       run: |
-        sudo apt-get install libgtk2.0-dev
+        sudo apt-get install libgtk2.0-dev --fix-missing
 
     - if: ${{matrix.os == 'macos-latest'}}
       run: |
