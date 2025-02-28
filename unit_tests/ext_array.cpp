@@ -32,7 +32,7 @@
 class PsxArrayTest : public ::testing::Test
 {
 protected:
-    psx_array_t array;
+    psx_array array;
 
     void SetUp() override
     {

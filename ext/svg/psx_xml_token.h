@@ -58,7 +58,7 @@ typedef struct {
     const char* end;
     psx_xml_token_type type;
     psx_xml_token_attr* cur_attr;
-    psx_array_t attrs;
+    psx_array attrs;
 } psx_xml_token;
 
 typedef bool (*xml_token_process)(void* context, const psx_xml_token* token);

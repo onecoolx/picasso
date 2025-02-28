@@ -40,7 +40,7 @@ extern "C" {
 typedef struct list_hdr {
     struct list_hdr* next;
     struct list_hdr* prev;
-} list_hdr_t;
+} list_hdr;
 
 static INLINE void list_init(struct list_hdr* head)
 {

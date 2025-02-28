@@ -40,9 +40,9 @@ typedef struct {
     uint32_t size;
     uint32_t capacity;
     uint32_t element_size;
-} psx_array_t;
+} psx_array;
 
-static INLINE void psx_array_capacity_init(psx_array_t* array, uint32_t capacity, uint32_t element_size)
+static INLINE void psx_array_capacity_init(psx_array* array, uint32_t capacity, uint32_t element_size)
 {
     array->size = 0;
     array->capacity = capacity;
@@ -50,7 +50,7 @@ static INLINE void psx_array_capacity_init(psx_array_t* array, uint32_t capacity
     array->data = (uint8_t*)mem_calloc(capacity, element_size);
 }
 
-static INLINE void psx_array_destroy(psx_array_t* array)
+static INLINE void psx_array_destroy(psx_array* array)
 {
     if (array->data) {
         mem_free(array->data);
@@ -60,27 +60,27 @@ static INLINE void psx_array_destroy(psx_array_t* array)
     array->capacity = 0;
 }
 
-static INLINE uint32_t psx_array_size(const psx_array_t* array)
+static INLINE uint32_t psx_array_size(const psx_array* array)
 {
     return array->size;
 }
 
-static INLINE uint32_t psx_array_capacity(const psx_array_t* array)
+static INLINE uint32_t psx_array_capacity(const psx_array* array)
 {
     return array->capacity;
 }
 
-static INLINE void psx_array_clear(psx_array_t* array)
+static INLINE void psx_array_clear(psx_array* array)
 {
     array->size = 0;
 }
 
-static INLINE bool psx_array_empty(const psx_array_t* array)
+static INLINE bool psx_array_empty(const psx_array* array)
 {
     return array->size == 0;
 }
 
-static INLINE void* psx_array_at(const psx_array_t* array, uint32_t index)
+static INLINE void* psx_array_at(const psx_array* array, uint32_t index)
 {
     if (index >= array->size) {
         return NULL;
@@ -88,7 +88,7 @@ static INLINE void* psx_array_at(const psx_array_t* array, uint32_t index)
     return array->data + index * array->element_size;
 }
 
-static INLINE bool psx_array_resize(psx_array_t* array, uint32_t capacity)
+static INLINE bool psx_array_resize(psx_array* array, uint32_t capacity)
 {
     uint8_t* data = (uint8_t*)mem_calloc(capacity, array->element_size);
     if (!data) {
@@ -106,14 +106,14 @@ static INLINE bool psx_array_resize(psx_array_t* array, uint32_t capacity)
     return true;
 }
 
-static INLINE void psx_array_shrink(psx_array_t* array)
+static INLINE void psx_array_shrink(psx_array* array)
 {
     if (array->size <= (array->capacity >> 1)) {
         psx_array_resize(array, array->size);
     }
 }
 
-static INLINE bool psx_array_remove(psx_array_t* array, uint8_t index)
+static INLINE bool psx_array_remove(psx_array* array, uint8_t index)
 {
     if (index >= array->size) {
         return false;
@@ -132,7 +132,7 @@ static INLINE bool psx_array_remove(psx_array_t* array, uint8_t index)
     return true;
 }
 
-static INLINE bool psx_array_append(psx_array_t* array, const void* value)
+static INLINE bool psx_array_append(psx_array* array, const void* value)
 {
     if (array->size == array->capacity) {
         if (!psx_array_resize(array, (array->capacity << 1))) {
