@@ -32,7 +32,7 @@ struct vertex_dist {
 };
 
 // vertex_sequence
-template <typename T, unsigned int S = 6>
+template <typename T, uint32_t S = 6>
 class vertex_sequence : public pod_bvector<T, S>
 {
 public:
@@ -80,13 +80,13 @@ public:
 
 // shorten_path
 template<class VertexSequence>
-void shorten_path(VertexSequence& vs, scalar s, unsigned int closed = 0)
+void shorten_path(VertexSequence& vs, scalar s, uint32_t closed = 0)
 {
     typedef typename VertexSequence::value_type vertex_type;
 
     if ((s > FLT_TO_SCALAR(0.0f)) && (vs.size() > 1)) {
         scalar d;
-        int n = (int)(vs.size() - 2);
+        int32_t n = (int32_t)(vs.size() - 2);
 
         while (n) {
             d = vs[n].d;

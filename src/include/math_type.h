@@ -42,14 +42,14 @@ template <typename T> inline T Min(T a, T b) { return (a < b) ? a : b; }
 template <typename T> inline T Max(T a, T b) { return (a > b) ? a : b; }
 
 // float type
-inline unsigned _uround(float v)
+inline uint32_t _uround(float v)
 {
-    return unsigned(v + 0.5f);
+    return uint32_t(v + 0.5f);
 }
 
-inline int _iround(float v)
+inline int32_t _iround(float v)
 {
-    return int((v < 0.0f) ? v - 0.5f : v + 0.5f);
+    return int32_t((v < 0.0f) ? v - 0.5f : v + 0.5f);
 }
 
 #endif /*_MATH_TYPES_H_*/

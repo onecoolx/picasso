@@ -55,15 +55,15 @@ public:
 
     const rect& clip_rect(void) const { return m_clip_rect; }
 
-    int xmin(void) const { return m_clip_rect.x1; }
-    int ymin(void) const { return m_clip_rect.y1; }
-    int xmax(void) const { return m_clip_rect.x2; }
-    int ymax(void) const { return m_clip_rect.y2; }
+    int32_t xmin(void) const { return m_clip_rect.x1; }
+    int32_t ymin(void) const { return m_clip_rect.y1; }
+    int32_t xmax(void) const { return m_clip_rect.x2; }
+    int32_t ymax(void) const { return m_clip_rect.y2; }
 
-    unsigned int width(void) const { return m_pixfmt->width(); }
-    unsigned int height(void) const { return m_pixfmt->height(); }
+    uint32_t width(void) const { return m_pixfmt->width(); }
+    uint32_t height(void) const { return m_pixfmt->height(); }
 
-    bool clip_rect(int x1, int y1, int x2, int y2)
+    bool clip_rect(int32_t x1, int32_t y1, int32_t x2, int32_t y2)
     {
         rect cb(x1, y1, x2, y2);
         cb.normalize();
@@ -104,19 +104,19 @@ public:
     void clear(const color_type& c)
     {
         if (m_is_path_clip) { // copy for per pixel.
-            for (unsigned i = 0; i < height(); i++)
-                for (unsigned j = 0; j < width(); j++)
+            for (uint32_t i = 0; i < height(); i++)
+                for (uint32_t j = 0; j < width(); j++)
                     if (pixel_in_path(j, i)) {
                         m_pixfmt->copy_pixel(j, i, c);
                     }
         } else {
-            int x = m_clip_rect.x1;
-            int y = m_clip_rect.y1;
-            int w = m_clip_rect.x2 - m_clip_rect.x1 + 1;
-            int h = m_clip_rect.y2 - m_clip_rect.y1 + 1;
+            int32_t x = m_clip_rect.x1;
+            int32_t y = m_clip_rect.y1;
+            int32_t w = m_clip_rect.x2 - m_clip_rect.x1 + 1;
+            int32_t h = m_clip_rect.y2 - m_clip_rect.y1 + 1;
 
             if (w) {
-                for (int i = 0; i < h; i++) {
+                for (int32_t i = 0; i < h; i++) {
                     m_pixfmt->copy_hline(x, y + i, w, c);
                 }
             }
@@ -124,7 +124,7 @@ public:
     }
 
     void copy_absolute_from(const gfx_rendering_buffer& from,
-                            const rect* rect_src_ptr = 0, int dx = 0, int dy = 0)
+                            const rect* rect_src_ptr = 0, int32_t dx = 0, int32_t dy = 0)
     {
         rect rsrc(0, 0, from.width(), from.height());
         if (rect_src_ptr) {
@@ -139,8 +139,8 @@ public:
 
         if (m_is_path_clip) {
             if (rc.x2 > 0 && rc.y2 > 0) {
-                int incy = 1;
-                int incx = 1;
+                int32_t incy = 1;
+                int32_t incx = 1;
 
                 if (rdst.y1 > rsrc.y1) {
                     rsrc.y1 += rc.y2 - 1;
@@ -155,9 +155,9 @@ public:
                 }
 
                 while (rc.x2 > 0) {
-                    int y2 = rc.y2;
-                    int dy1 = rdst.y1;
-                    int sy1 = rsrc.y1;
+                    int32_t y2 = rc.y2;
+                    int32_t dy1 = rdst.y1;
+                    int32_t sy1 = rsrc.y1;
                     while (y2 > 0) {
                         if (pixel_in_path(rdst.x1, dy1)) {
                             m_pixfmt->copy_point_from(from, rdst.x1, dy1, rsrc.x1, sy1);
@@ -173,7 +173,7 @@ public:
             }
         } else {
             if (rc.x2 > 0) {
-                int incy = 1;
+                int32_t incy = 1;
 
                 if (rdst.y1 > rsrc.y1) {
                     rsrc.y1 += rc.y2 - 1;
@@ -194,7 +194,7 @@ public:
 
     template <typename SrcPixelFormatRenderer>
     void blend_from(const SrcPixelFormatRenderer& from,
-                    const rect* rect_src_ptr = 0, int dx = 0, int dy = 0,
+                    const rect* rect_src_ptr = 0, int32_t dx = 0, int32_t dy = 0,
                     cover_type cover = cover_full)
     {
         rect rsrc(0, 0, from.width(), from.height());
@@ -210,8 +210,8 @@ public:
 
         if (m_is_path_clip) {
             if (rc.x2 > 0 && rc.y2 > 0) {
-                int incy = 1;
-                int incx = 1;
+                int32_t incy = 1;
+                int32_t incx = 1;
 
                 if (rdst.y1 > rsrc.y1) {
                     rsrc.y1 += rc.y2 - 1;
@@ -226,9 +226,9 @@ public:
                 }
 
                 while (rc.x2 > 0) {
-                    int y2 = rc.y2;
-                    int dy1 = rdst.y1;
-                    int sy1 = rsrc.y1;
+                    int32_t y2 = rc.y2;
+                    int32_t dy1 = rdst.y1;
+                    int32_t sy1 = rsrc.y1;
                     while (y2 > 0) {
                         if (pixel_in_path(rdst.x1, dy1)) {
                             m_pixfmt->blend_point_from(from, rdst.x1, dy1, rsrc.x1, sy1, cover);
@@ -244,7 +244,7 @@ public:
             }
         } else {
             if (rc.x2 > 0) {
-                int incy = 1;
+                int32_t incy = 1;
 
                 if (rdst.y1 > rsrc.y1) {
                     rsrc.y1 += rc.y2 - 1;
@@ -255,9 +255,9 @@ public:
                 while (rc.y2 > 0) {
                     typename SrcPixelFormatRenderer::row_data rw = from.row(rsrc.y1);
                     if (rw.ptr) {
-                        int x1src = rsrc.x1;
-                        int x1dst = rdst.x1;
-                        int len = rc.x2;
+                        int32_t x1src = rsrc.x1;
+                        int32_t x1dst = rdst.x1;
+                        int32_t len = rc.x2;
 
                         if (rw.x1 > x1src) {
                             x1dst += rw.x1 - x1src;
@@ -284,11 +284,11 @@ public:
         }
     }
 
-    void blend_hline(int x1, int y, int x2, const color_type& c, cover_type cover)
+    void blend_hline(int32_t x1, int32_t y, int32_t x2, const color_type& c, cover_type cover)
     {
         normalize(x1, x2);
         if (m_is_path_clip) { // blend for per pixel.
-            for (int i = 0; i < (x2 - x1) + 1; i++)
+            for (int32_t i = 0; i < (x2 - x1) + 1; i++)
                 if (pixel_in_path(x1 + i, y)) {
                     m_pixfmt->blend_pixel(x1 + i, y, c, cover);
                 }
@@ -313,10 +313,10 @@ public:
         }
     }
 
-    void blend_solid_hspan(int x, int y, int len, const color_type& c, const cover_type* covers)
+    void blend_solid_hspan(int32_t x, int32_t y, int32_t len, const color_type& c, const cover_type* covers)
     {
         if (m_is_path_clip) {
-            for (int i = 0; i < len; i++)
+            for (int32_t i = 0; i < len; i++)
                 if (pixel_in_path(x + i, y)) {
                     m_pixfmt->blend_pixel(x + i, y, c, covers[i]);
                 }
@@ -346,11 +346,11 @@ public:
         }
     }
 
-    void blend_color_hspan(int x, int y, int len, const color_type* colors,
+    void blend_color_hspan(int32_t x, int32_t y, int32_t len, const color_type* colors,
                            const cover_type* covers, cover_type cover = cover_full)
     {
         if (m_is_path_clip) {
-            for (int i = 0; i < len; i++)
+            for (int32_t i = 0; i < len; i++)
                 if (pixel_in_path(x + i, y)) {
                     m_pixfmt->blend_pixel(x + i, y, colors[i], covers[i]);
                 }
@@ -360,7 +360,7 @@ public:
             }
 
             if (x < xmin()) {
-                int d = xmin() - x;
+                int32_t d = xmin() - x;
                 len -= d;
                 if (len <= 0) {
                     return;
@@ -386,22 +386,22 @@ public:
     }
 
 private:
-    void normalize(int& min, int& max)
+    void normalize(int32_t& min, int32_t& max)
     {
         if (min > max) {
-            int tmp = max;
+            int32_t tmp = max;
             max = min;
             min = tmp;
         }
     }
 
-    bool inbox(int x, int y) const
+    bool inbox(int32_t x, int32_t y) const
     {
         return x >= m_clip_rect.x1 && y >= m_clip_rect.y1
                && x <= m_clip_rect.x2 && y <= m_clip_rect.y2;
     }
 
-    bool pixel_in_path(int x, int y)
+    bool pixel_in_path(int32_t x, int32_t y)
     {
         if (!inbox(x, y)) {
             return false;
@@ -414,7 +414,7 @@ private:
         return true;
     }
 
-    rect clip_rect_area(rect& dst, rect& src, int wsrc, int hsrc) const
+    rect clip_rect_area(rect& dst, rect& src, int32_t wsrc, int32_t hsrc) const
     {
         rect rc(0, 0, 0, 0);
         rect cb = clip_rect();

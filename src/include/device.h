@@ -35,12 +35,12 @@ public:
 
     // redering buffer
     virtual abstract_rendering_buffer* create_rendering_buffer(byte* buf,
-                                                               unsigned int width, unsigned int height, int stride) = 0;
+                                                               uint32_t width, uint32_t height, int32_t stride) = 0;
     virtual void destroy_rendering_buffer(abstract_rendering_buffer* b) = 0;
 
     // masking layer
     virtual abstract_mask_layer* create_mask_layer(byte* buf,
-                                                   unsigned int width, unsigned int height, int stride) = 0;
+                                                   uint32_t width, uint32_t height, int32_t stride) = 0;
     virtual void destroy_mask_layer(abstract_mask_layer* m) = 0;
 
     // gradient adapter

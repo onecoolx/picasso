@@ -13,7 +13,7 @@
 
 namespace picasso {
 
-inline scalar path_length(vertex_source& vs, unsigned int path_id = 0)
+inline scalar path_length(vertex_source& vs, uint32_t path_id = 0)
 {
     scalar len = 0.0;
     scalar start_x = 0.0;
@@ -24,7 +24,7 @@ inline scalar path_length(vertex_source& vs, unsigned int path_id = 0)
     scalar y2 = 0.0;
     bool first = true;
 
-    unsigned int cmd;
+    uint32_t cmd;
     vs.rewind(path_id);
     while (!is_stop(cmd = vs.vertex(&x2, &y2))) {
         if (is_vertex(cmd)) {
@@ -46,7 +46,7 @@ inline scalar path_length(vertex_source& vs, unsigned int path_id = 0)
     return len;
 }
 
-inline bool bounding_rect(vertex_source& vs, unsigned int path_id, scalar* x1, scalar* y1, scalar* x2, scalar* y2)
+inline bool bounding_rect(vertex_source& vs, uint32_t path_id, scalar* x1, scalar* y1, scalar* x2, scalar* y2)
 {
     scalar x;
     scalar y;
@@ -58,7 +58,7 @@ inline bool bounding_rect(vertex_source& vs, unsigned int path_id, scalar* x1, s
     *y2 = INT_TO_SCALAR(0);
 
     vs.rewind(path_id);
-    unsigned int cmd;
+    uint32_t cmd;
     while (!is_stop(cmd = vs.vertex(&x, &y))) {
         if (is_vertex(cmd)) {
             if (first) {
@@ -81,7 +81,7 @@ inline bool bounding_rect(vertex_source& vs, unsigned int path_id, scalar* x1, s
 class bitset_iterator
 {
 public:
-    bitset_iterator(const byte* bits, unsigned int offset = 0)
+    bitset_iterator(const byte* bits, uint32_t offset = 0)
         : m_bits(bits + (offset >> 3))
         , m_mask(0x80 >> (offset & 7))
     {
@@ -96,7 +96,7 @@ public:
         }
     }
 
-    unsigned int bit(void) const
+    uint32_t bit(void) const
     {
         return (*m_bits) & m_mask;
     }

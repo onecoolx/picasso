@@ -28,7 +28,7 @@ public:
         base_span_block = base_span_mask - 1,
     };
 
-    color_type* allocate(unsigned int span_len)
+    color_type* allocate(uint32_t span_len)
     {
         if (span_len > m_span.size()) {
             m_span.resize(((span_len + base_span_block) >> 8) << 8);
@@ -37,7 +37,7 @@ public:
     }
 
     color_type* span(void) { return &m_span[0]; }
-    unsigned int max_span_len(void) const { return m_span.size(); }
+    uint32_t max_span_len(void) const { return m_span.size(); }
 
 private:
     pod_array<color_type> m_span;
@@ -57,7 +57,7 @@ public:
     {
     }
 
-    void begin(scalar x, scalar y, unsigned int len)
+    void begin(scalar x, scalar y, uint32_t len)
     {
         scalar tx;
         scalar ty;
@@ -65,14 +65,14 @@ public:
         tx = x;
         ty = y;
         m_trans->transform(&tx, &ty);
-        int x1 = iround(tx * subpixel_scale);
-        int y1 = iround(ty * subpixel_scale);
+        int32_t x1 = iround(tx * subpixel_scale);
+        int32_t y1 = iround(ty * subpixel_scale);
 
         tx = x + len;
         ty = y;
         m_trans->transform(&tx, &ty);
-        int x2 = iround(tx * subpixel_scale);
-        int y2 = iround(ty * subpixel_scale);
+        int32_t x2 = iround(tx * subpixel_scale);
+        int32_t y2 = iround(ty * subpixel_scale);
 
         m_li_x = gfx_dda2_line_interpolator(x1, x2, len);
         m_li_y = gfx_dda2_line_interpolator(y1, y2, len);
@@ -84,7 +84,7 @@ public:
         ++m_li_y;
     }
 
-    void coordinates(int* x, int* y) const
+    void coordinates(int32_t* x, int32_t* y) const
     {
         *x = m_li_x.y();
         *y = m_li_y.y();

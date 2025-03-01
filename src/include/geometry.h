@@ -57,13 +57,13 @@ public:
         return m_scale;
     }
 
-    virtual void rewind(unsigned int id)
+    virtual void rewind(uint32_t id)
     {
         m_path_cmd = path_cmd_move_to;
         m_angle = m_start;
     }
 
-    virtual unsigned int vertex(scalar* x, scalar* y)
+    virtual uint32_t vertex(scalar* x, scalar* y)
     {
         if (is_stop(m_path_cmd)) {
             return path_cmd_stop;
@@ -81,7 +81,7 @@ public:
 
         m_angle += m_da;
 
-        unsigned int pf = m_path_cmd;
+        uint32_t pf = m_path_cmd;
         m_path_cmd = path_cmd_line_to;
         return pf;
     }
@@ -112,7 +112,7 @@ private:
     scalar m_scale;
     scalar m_da;
     scalar m_angle;
-    unsigned int m_path_cmd;
+    uint32_t m_path_cmd;
     bool m_ccw;
     bool m_initialized;
 };
@@ -188,16 +188,16 @@ public:
         } while (!done && (m_num_vertices < vertex_max_num));
     }
 
-    unsigned int num_vertices(void) const { return m_num_vertices; }
+    uint32_t num_vertices(void) const { return m_num_vertices; }
     const scalar* vertices(void) const { return m_vertices; }
     scalar* vertices(void) { return m_vertices; }
 
-    virtual void rewind(unsigned int id)
+    virtual void rewind(uint32_t id)
     {
         m_vertex = 0;
     }
 
-    virtual unsigned int vertex(scalar* x, scalar* y)
+    virtual uint32_t vertex(scalar* x, scalar* y)
     {
         if (m_vertex >= m_num_vertices) {
             return path_cmd_stop;
@@ -230,16 +230,16 @@ private:
         scalar sn = Sin(start_angle + sweep_angle / FLT_TO_SCALAR(2.0f));
         scalar cs = Cos(start_angle + sweep_angle / FLT_TO_SCALAR(2.0f));
 
-        for (unsigned int i = 0; i < 4; i++) {
+        for (uint32_t i = 0; i < 4; i++) {
             curve[i * 2] = cx + rx * (px[i] * cs - py[i] * sn);
             curve[i * 2 + 1] = cy + ry * (px[i] * sn + py[i] * cs);
         }
     }
 
-    unsigned int m_vertex;
-    unsigned int m_num_vertices;
+    uint32_t m_vertex;
+    uint32_t m_num_vertices;
     scalar m_vertices[vertex_max_num];
-    unsigned int m_cmd;
+    uint32_t m_cmd;
 };
 
 // Bezier arc SVG style geometry
@@ -362,7 +362,7 @@ public:
         scalar tx = cx;
         scalar ty = cy;
 
-        for (unsigned i = 2; i < m_arc.num_vertices() - 2; i += 2) {
+        for (uint32_t i = 2; i < m_arc.num_vertices() - 2; i += 2) {
             scalar* x = m_arc.vertices() + i;
             scalar* y = m_arc.vertices() + i + 1;
 
@@ -382,16 +382,16 @@ public:
         }
     }
 
-    unsigned int num_vertices(void) const { return m_arc.num_vertices(); }
+    uint32_t num_vertices(void) const { return m_arc.num_vertices(); }
     const scalar* vertices(void) const { return m_arc.vertices(); }
     scalar* vertices(void) { return m_arc.vertices(); }
 
-    virtual void rewind(unsigned int id)
+    virtual void rewind(uint32_t id)
     {
         m_arc.rewind(0);
     }
 
-    virtual unsigned int vertex(scalar* x, scalar* y)
+    virtual uint32_t vertex(scalar* x, scalar* y)
     {
         return m_arc.vertex(x, y);
     }
@@ -499,14 +499,14 @@ public:
         return m_arc.approximation_scale();
     }
 
-    virtual void rewind(unsigned int id)
+    virtual void rewind(uint32_t id)
     {
         m_status = 0;
     }
 
-    virtual unsigned int vertex(scalar* x, scalar* y)
+    virtual uint32_t vertex(scalar* x, scalar* y)
     {
-        unsigned int cmd = path_cmd_stop;
+        uint32_t cmd = path_cmd_stop;
         switch (m_status) {
             case 0:
                 m_arc.init(m_x1 + m_rx1, m_y1 + m_ry1, m_rx1, m_ry1, PI, PI + _PIdiv2);
@@ -581,7 +581,7 @@ private:
     scalar m_ry3;
     scalar m_rx4;
     scalar m_ry4;
-    unsigned int m_status;
+    uint32_t m_status;
     arc m_arc;
 };
 
@@ -595,7 +595,7 @@ public:
     {
     }
 
-    ellipse(scalar x, scalar y, scalar rx, scalar ry, unsigned int num_steps = 0, bool cw = false)
+    ellipse(scalar x, scalar y, scalar rx, scalar ry, uint32_t num_steps = 0, bool cw = false)
         : m_x(x), m_y(y), m_rx(rx), m_ry(ry), m_scale(FLT_TO_SCALAR(1.0f))
         , m_num(num_steps), m_step(0), m_cw(cw)
     {
@@ -604,7 +604,7 @@ public:
         }
     }
 
-    void init(scalar x, scalar y, scalar rx, scalar ry, unsigned int num_steps = 0, bool cw = false)
+    void init(scalar x, scalar y, scalar rx, scalar ry, uint32_t num_steps = 0, bool cw = false)
     {
         m_x = x;
         m_y = y;
@@ -629,12 +629,12 @@ public:
         return m_scale;
     }
 
-    virtual void rewind(unsigned int id)
+    virtual void rewind(uint32_t id)
     {
         m_step = 0;
     }
 
-    virtual unsigned int vertex(scalar* x, scalar* y)
+    virtual uint32_t vertex(scalar* x, scalar* y)
     {
         if (m_step == m_num) {
             ++m_step;
@@ -670,8 +670,8 @@ private:
     scalar m_rx;
     scalar m_ry;
     scalar m_scale;
-    unsigned int m_num;
-    unsigned int m_step;
+    uint32_t m_num;
+    uint32_t m_step;
     bool m_cw;
 };
 
@@ -742,7 +742,7 @@ public:
         return m_curve_div.cusp_limit();
     }
 
-    virtual void rewind(unsigned int id)
+    virtual void rewind(uint32_t id)
     {
         if (m_approximation_method == curve_inc) {
             m_curve_inc.rewind(id);
@@ -751,7 +751,7 @@ public:
         }
     }
 
-    virtual unsigned int vertex(scalar* x, scalar* y)
+    virtual uint32_t vertex(scalar* x, scalar* y)
     {
         if (m_approximation_method == curve_inc) {
             return m_curve_inc.vertex(x, y);
@@ -835,7 +835,7 @@ public:
         return m_curve_div.cusp_limit();
     }
 
-    virtual void rewind(unsigned int id)
+    virtual void rewind(uint32_t id)
     {
         if (m_approximation_method == curve_inc) {
             m_curve_inc.rewind(id);
@@ -844,7 +844,7 @@ public:
         }
     }
 
-    virtual unsigned int vertex(scalar* x, scalar* y)
+    virtual uint32_t vertex(scalar* x, scalar* y)
     {
         if (m_approximation_method == curve_inc) {
             return m_curve_inc.vertex(x, y);

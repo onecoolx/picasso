@@ -24,23 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include "test.h"
+#include "timeuse.h"
+
 #include "psx_svg.h"
-
-psx_svg_node::psx_svg_node(psx_svg_node* parent)
-    : psx_tree_node(parent)
-{
-}
-
-psx_svg_node::~psx_svg_node()
-{
-}
-
-psx_svg_node* psx_svg_load(const char* svg_data, uint32_t len)
-{
-    if (!svg_data || !len) {
-        fprintf(stderr, "Bad arguments for svg data or length!\n");
-        return NULL;
-    }
-
-    return NULL;
-}

@@ -37,7 +37,7 @@ void _path_operation(conv_clipper::clip_op op, const graphic_path& a, const grap
     cliper.rewind(0);
     r.remove_all();
     scalar x = 0, y = 0;
-    unsigned int cmd = 0;
+    uint32_t cmd = 0;
     while (!is_stop(cmd = cliper.vertex(&x, &y))) {
         r.add_vertex(x, y, cmd);
     }
@@ -196,7 +196,7 @@ void PICAPI ps_path_tangent_arc_to(ps_path* path, float r, const ps_point* tp, c
 
     if (cos_phi == 1.0f) {
         // add infinite far away point
-        unsigned int max_length = 65535;
+        uint32_t max_length = 65535;
         float factor_max = max_length / p1p0_length;
         ps_point np = {(sp.x + factor_max * p1p0.x), (sp.y + factor_max * p1p0.y)};
         ps_path_line_to(path, &np);
@@ -357,7 +357,7 @@ float PICAPI ps_path_get_length(const ps_path* path)
     return SCALAR_TO_FLT(picasso::path_length(const_cast<ps_path*>(path)->path, 0));
 }
 
-unsigned int PICAPI ps_path_get_vertex_count(const ps_path* path)
+uint32_t PICAPI ps_path_get_vertex_count(const ps_path* path)
 {
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;
@@ -373,7 +373,7 @@ unsigned int PICAPI ps_path_get_vertex_count(const ps_path* path)
     return path->path.total_vertices();
 }
 
-ps_path_cmd PICAPI ps_path_get_vertex(const ps_path* path, unsigned int index, ps_point* point)
+ps_path_cmd PICAPI ps_path_get_vertex(const ps_path* path, uint32_t index, ps_point* point)
 {
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;
@@ -386,7 +386,7 @@ ps_path_cmd PICAPI ps_path_get_vertex(const ps_path* path, unsigned int index, p
     }
 
     scalar x = 0, y = 0;
-    unsigned int cmd = path->path.vertex(index, &x, &y);
+    uint32_t cmd = path->path.vertex(index, &x, &y);
     point->x = SCALAR_TO_FLT(x);
     point->y = SCALAR_TO_FLT(y);
     global_status = STATUS_SUCCEED;

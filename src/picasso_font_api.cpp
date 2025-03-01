@@ -74,7 +74,7 @@ static inline void _add_glyph_to_path(ps_context* ctx, picasso::graphic_path& pa
     scalar y = 0;
 
     while (true) {
-        unsigned int cmd = curve.vertex(&x, &y);
+        uint32_t cmd = curve.vertex(&x, &y);
         if (picasso::is_stop(cmd)) {
             path.add_vertex(x, y, picasso::path_cmd_end_poly | picasso::path_flags_close);
             break;
@@ -118,7 +118,7 @@ ps_font* PICAPI ps_font_create_copy(const ps_font* font)
     }
 }
 
-ps_font* PICAPI ps_font_create(const char* name, ps_charset c, float s, int w, ps_bool i)
+ps_font* PICAPI ps_font_create(const char* name, ps_charset c, float s, int32_t w, ps_bool i)
 {
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;
@@ -201,7 +201,7 @@ void PICAPI ps_font_set_size(ps_font* f, float s)
     global_status = STATUS_SUCCEED;
 }
 
-void PICAPI ps_font_set_weight(ps_font* f, int w)
+void PICAPI ps_font_set_weight(ps_font* f, int32_t w)
 {
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;
@@ -282,7 +282,7 @@ void PICAPI ps_font_set_charset(ps_font* f, ps_charset c)
     global_status = STATUS_SUCCEED;
 }
 
-void PICAPI ps_text_out_length(ps_context* ctx, float x, float y, const char* text, unsigned int len)
+void PICAPI ps_text_out_length(ps_context* ctx, float x, float y, const char* text, uint32_t len)
 {
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;
@@ -323,7 +323,7 @@ void PICAPI ps_text_out_length(ps_context* ctx, float x, float y, const char* te
     global_status = STATUS_SUCCEED;
 }
 
-void PICAPI ps_wide_text_out_length(ps_context* ctx, float x, float y, const ps_uchar16* text, unsigned int len)
+void PICAPI ps_wide_text_out_length(ps_context* ctx, float x, float y, const ps_uchar16* text, uint32_t len)
 {
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;
@@ -364,7 +364,7 @@ void PICAPI ps_wide_text_out_length(ps_context* ctx, float x, float y, const ps_
     global_status = STATUS_SUCCEED;
 }
 
-void PICAPI ps_draw_text(ps_context* ctx, const ps_rect* area, const void* text, unsigned int len,
+void PICAPI ps_draw_text(ps_context* ctx, const ps_rect* area, const void* text, uint32_t len,
                          ps_draw_text_type type, ps_text_align align)
 {
     if (!picasso::is_valid_system_device()) {
@@ -500,7 +500,7 @@ void PICAPI ps_draw_text(ps_context* ctx, const ps_rect* area, const void* text,
     global_status = STATUS_SUCCEED;
 }
 
-ps_bool PICAPI ps_get_text_extent(ps_context* ctx, const void* text, unsigned int len, ps_size* rsize)
+ps_bool PICAPI ps_get_text_extent(ps_context* ctx, const void* text, uint32_t len, ps_size* rsize)
 {
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;
@@ -548,7 +548,7 @@ ps_bool PICAPI ps_get_text_extent(ps_context* ctx, const void* text, unsigned in
     return True;
 }
 
-void PICAPI ps_show_glyphs(ps_context* ctx, float x, float y, ps_glyph* g, unsigned int len)
+void PICAPI ps_show_glyphs(ps_context* ctx, float x, float y, ps_glyph* g, uint32_t len)
 {
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;
@@ -565,7 +565,7 @@ void PICAPI ps_show_glyphs(ps_context* ctx, float x, float y, ps_glyph* g, unsig
 
     if (create_device_font(ctx)) {
         gy += ctx->fonts->current_font()->ascent();
-        for (unsigned int i = 0; i < len; i++) {
+        for (uint32_t i = 0; i < len; i++) {
             const picasso::glyph* glyph = (const picasso::glyph*)g[i].glyph;
             if (glyph) {
                 if (ctx->font_kerning) {
@@ -625,7 +625,7 @@ ps_bool PICAPI ps_get_path_from_glyph(ps_context* ctx, const ps_glyph* g, ps_pat
     return True;
 }
 
-ps_bool PICAPI ps_get_glyph(ps_context* ctx, int ch, ps_glyph* g)
+ps_bool PICAPI ps_get_glyph(ps_context* ctx, int32_t ch, ps_glyph* g)
 {
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;

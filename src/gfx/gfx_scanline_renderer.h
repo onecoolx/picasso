@@ -42,7 +42,7 @@ public:
     template <typename Scanline>
     void render(const Scanline& sl)
     {
-        unsigned int num_spans = sl.num_spans();
+        uint32_t num_spans = sl.num_spans();
         typename Scanline::const_iterator span = sl.begin();
         for (;;) {
             m_ren->blend_hline(span->x, sl.y(),
@@ -92,17 +92,17 @@ public:
     template <typename Scanline>
     void render(const Scanline& sl)
     {
-        int y = sl.y();
-        unsigned int num_spans = sl.num_spans();
+        int32_t y = sl.y();
+        uint32_t num_spans = sl.num_spans();
         typename Scanline::const_iterator span = sl.begin();
 
         for (;;) {
-            int x = span->x;
+            int32_t x = span->x;
 
             if (span->len > 0) {
-                m_ren->blend_solid_hspan(x, y, (unsigned int)span->len, m_color, span->covers);
+                m_ren->blend_solid_hspan(x, y, (uint32_t)span->len, m_color, span->covers);
             } else {
-                m_ren->blend_hline(x, y, (unsigned int)(x - span->len - 1), m_color, *(span->covers));
+                m_ren->blend_hline(x, y, (uint32_t)(x - span->len - 1), m_color, *(span->covers));
             }
 
             if (--num_spans == 0) {
@@ -141,13 +141,13 @@ void gfx_render_scanlines_aa(Rasterizer& ras, Scanline& sl, Renderer& ren,
         sl.reset(ras.min_x(), ras.max_x());
         span_gen.prepare();
         while (ras.sweep_scanline(sl)) {
-            int y = sl.y();
+            int32_t y = sl.y();
 
-            unsigned int num_spans = sl.num_spans();
+            uint32_t num_spans = sl.num_spans();
             typename Scanline::const_iterator span = sl.begin();
             for (;;) {
-                int x = span->x;
-                int len = span->len;
+                int32_t x = span->x;
+                int32_t len = span->len;
                 const typename Scanline::cover_type* covers = span->covers;
 
                 if (len < 0) {

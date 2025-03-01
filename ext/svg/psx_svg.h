@@ -27,10 +27,16 @@
 #ifndef _PSX_SVG_H_
 #define _PSX_SVG_H_
 
+#include <picasso/picasso.h>
+
 #include "psx_common.h"
+#include "psx_array.h"
 #include "psx_tree.h"
 #include "psx_linear_allocator.h"
 
+#define PSX_SVG_VERSION "Tiny 1.2"
+
+// svg tag
 typedef enum {
     SVG_TAG_INVALID = -1,
     SVG_TAG_CONTENT,
@@ -65,6 +71,156 @@ typedef enum {
     SVG_TAG_TBREAK,
 } psx_svg_tag;
 
+// attributes
+enum {
+    SVG_ATTR_INVALID = -1,
+    SVG_ATTR_XML_ID,
+    SVG_ATTR_VERSION,
+    SVG_ATTR_BASE_PROFILE,
+    SVG_ATTR_VIEWBOX,
+    SVG_ATTR_PRESERVE_ASPECT_RATIO,
+    SVG_ATTR_VIEWPORT_FILL,
+    SVG_ATTR_VIEWPORT_FILL_OPACITY,
+    SVG_ATTR_DISPLAY,
+    SVG_ATTR_VISIBILITY,
+    SVG_ATTR_X,
+    SVG_ATTR_Y,
+    SVG_ATTR_WIDTH,
+    SVG_ATTR_HEIGHT,
+    SVG_ATTR_RX,
+    SVG_ATTR_RY,
+    SVG_ATTR_CX,
+    SVG_ATTR_CY,
+    SVG_ATTR_R,
+    SVG_ATTR_X1,
+    SVG_ATTR_Y1,
+    SVG_ATTR_X2,
+    SVG_ATTR_Y2,
+    SVG_ATTR_POINTS,
+    SVG_ATTR_D,
+    SVG_ATTR_PATH_LENGTH,
+    SVG_ATTR_XLINK_HREF,
+    SVG_ATTR_FILL,
+    SVG_ATTR_FILL_RULE,
+    SVG_ATTR_FILL_OPACITY,
+    SVG_ATTR_STROKE,
+    SVG_ATTR_STROKE_WIDTH,
+    SVG_ATTR_STROKE_LINECAP,
+    SVG_ATTR_STROKE_LINEJOIN,
+    SVG_ATTR_STROKE_MITER_LIMIT,
+    SVG_ATTR_STROKE_DASH_ARRAY,
+    SVG_ATTR_STROKE_DASH_OFFSET,
+    SVG_ATTR_STROKE_OPACITY,
+    SVG_ATTR_OPACITY,
+    SVG_ATTR_SOLID_COLOR,
+    SVG_ATTR_SOLID_OPACITY,
+    SVG_ATTR_GRADIENT_UNITS,
+    SVG_ATTR_GRADIENT_STOP_OFFSET,
+    SVG_ATTR_GRADIENT_STOP_COLOR,
+    SVG_ATTR_GRADIENT_STOP_OPACITY,
+    SVG_ATTR_FONT_FAMILY,
+    SVG_ATTR_FONT_STYLE,
+    SVG_ATTR_FONT_VARIANT,
+    SVG_ATTR_FONT_WEIGHT,
+    SVG_ATTR_FONT_SIZE,
+    SVG_ATTR_TRANSFORM,
+    SVG_ATTR_TEXT_ANCHOR,
+    SVG_ATTR_ATTRIBUTE_NAME,
+    SVG_ATTR_ATTRIBUTE_TYPE,
+    SVG_ATTR_BEGIN,
+    SVG_ATTR_END,
+    SVG_ATTR_DUR,
+    SVG_ATTR_MIN,
+    SVG_ATTR_MAX,
+    SVG_ATTR_RESTART,
+    SVG_ATTR_REPEAT_COUNT,
+    SVG_ATTR_REPEAT_DUR,
+    SVG_ATTR_CALC_MODE,
+    SVG_ATTR_VALUES,
+    SVG_ATTR_KEY_TIMES,
+    SVG_ATTR_KEY_SPLINES,
+    SVG_ATTR_KEY_POINTS,
+    SVG_ATTR_FROM,
+    SVG_ATTR_TO,
+    SVG_ATTR_BY,
+    SVG_ATTR_ADDITIVE,
+    SVG_ATTR_ACCUMULATE,
+    SVG_ATTR_PATH,
+    SVG_ATTR_ROTATE,
+    SVG_ATTR_TRANSFORM_TYPE,
+};
+
+// transform type
+enum {
+    SVG_TRANSFORM_TYPE_MATRIX = 1,
+    SVG_TRANSFORM_TYPE_TRANSLATE,
+    SVG_TRANSFORM_TYPE_ROTATE,
+    SVG_TRANSFORM_TYPE_SCALE,
+    SVG_TRANSFORM_TYPE_SKEW_X,
+    SVG_TRANSFORM_TYPE_SKEW_Y,
+};
+
+enum {
+    SVG_ASPECT_RATIO_NONE = 0,
+    SVG_ASPECT_RATIO_XMIN_YMIN = (1 << 1),
+    SVG_ASPECT_RATIO_XMID_YMIN = (2 << 1),
+    SVG_ASPECT_RATIO_XMAX_YMIN = (3 << 1),
+    SVG_ASPECT_RATIO_XMIN_YMID = (4 << 1),
+    SVG_ASPECT_RATIO_XMID_YMID = (5 << 1),
+    SVG_ASPECT_RATIO_XMAX_YMID = (6 << 1),
+    SVG_ASPECT_RATIO_XMIN_YMAX = (7 << 1),
+    SVG_ASPECT_RATIO_XMID_YMAX = (8 << 1),
+    SVG_ASPECT_RATIO_XMAX_YMAX = (9 << 1),
+};
+
+enum {
+    SVG_ASPECT_RATIO_OPT_MEET = 0,
+    SVG_ASPECT_RATIO_OPT_SLICE,
+};
+
+// animation
+enum {
+    SVG_ANIMATION_REMOVE = 0,
+    SVG_ANIMATION_FREEZE,
+};
+
+enum {
+    SVG_ANIMATION_RESTART_ALWAYS = 0,
+    SVG_ANIMATION_RESTART_WHEN_NOT_ACTIVE,
+    SVG_ANIMATION_RESTART_NEVER,
+};
+
+enum {
+    SVG_ANIMATION_CALC_MODE_LINEAR = 0,
+    SVG_ANIMATION_CALC_MODE_PACED,
+    SVG_ANIMATION_CALC_MODE_SPLINE,
+    SVG_ANIMATION_CALC_MODE_DISCRETE,
+};
+
+enum {
+    SVG_ANIMATION_ADDITIVE_REPLACE = 0,
+    SVG_ANIMATION_ADDITIVE_SUM,
+};
+
+enum {
+    SVG_ANIMATION_ACCUMULATE_NONE = 0,
+    SVG_ANIMATION_ACCUMULATE_SUM,
+};
+
+// graphic
+enum {
+    SVG_GRADIENT_UNITS_OBJECT = 0,
+    SVG_GRADIENT_UNITS_USER_SPACE,
+};
+
+typedef struct _ps_point psx_svg_point;
+
+typedef struct {
+    float m[3][3];
+} psx_svg_matrix;
+
+class psx_svg_render_obj;
+
 // svg dom node
 class psx_svg_node : public psx_tree_node
 {
@@ -74,24 +230,13 @@ public:
 
     NON_COPYABLE_CLASS(psx_svg_node);
 private:
+    char* m_data; // id or content
+    uint32_t m_len;
+    psx_svg_tag m_tag;
+    psx_array m_attrs;
+    psx_svg_render_obj* render_obj;
 };
 
-// svg document
-class psx_svg_doc
-{
-public:
-    ~psx_svg_doc();
-
-    NON_COPYABLE_CLASS(psx_svg_doc);
-private:
-    psx_linear_allocator* m_allocator;
-    psx_svg_node* m_doc;
-};
-
-psx_svg_doc* psx_svg_load(const char* svg_data, uint32_t len);
-void psx_svg_destroy(psx_svg_doc* doc);
-
-psx_svg_node* psx_svg_node_create(psx_svg_node* parent);
-void psx_svg_node_destroy(psx_svg_node* node);
+psx_svg_node* psx_svg_load(const char* svg_data, uint32_t len);
 
 #endif /* _PSX_SVG_H_ */

@@ -50,7 +50,7 @@ public:
     struct image_holder {
         image_holder() : buffer(NULL) { }
         abstract_rendering_buffer* buffer;
-        int filter;
+        int32_t filter;
         rect_s rect;
         pix_fmt format;
         rgba8 key;
@@ -61,11 +61,11 @@ public:
     struct pattern_holder {
         pattern_holder() : buffer(NULL) { }
         abstract_rendering_buffer* buffer;
-        int filter;
+        int32_t filter;
         rect_s rect;
         pix_fmt format;
-        int xtype;
-        int ytype;
+        int32_t xtype;
+        int32_t ytype;
         trans_affine* matrix;
         bool transparent;
     };
@@ -92,16 +92,16 @@ public:
     virtual void set_alpha(scalar a);
     virtual void set_composite(comp_op op);
     virtual void set_stroke_color(const rgba& c);
-    virtual void set_stroke_image(const abstract_rendering_buffer* img, pix_fmt format, int filter, const rect_s& rc);
-    virtual void set_stroke_canvas(const abstract_rendering_buffer* img, pix_fmt format, int filter, const rect_s& rc);
-    virtual void set_stroke_pattern(const abstract_rendering_buffer* img, pix_fmt format, int filter, const rect_s& rc,
-                                    int xtype, int ytype, const trans_affine* mtx);
+    virtual void set_stroke_image(const abstract_rendering_buffer* img, pix_fmt format, int32_t filter, const rect_s& rc);
+    virtual void set_stroke_canvas(const abstract_rendering_buffer* img, pix_fmt format, int32_t filter, const rect_s& rc);
+    virtual void set_stroke_pattern(const abstract_rendering_buffer* img, pix_fmt format, int32_t filter, const rect_s& rc,
+                                    int32_t xtype, int32_t ytype, const trans_affine* mtx);
     virtual void set_stroke_gradient(const abstract_gradient_adapter* g);
     virtual void set_fill_color(const rgba& c);
-    virtual void set_fill_image(const abstract_rendering_buffer* img, pix_fmt format, int filter, const rect_s& rc);
-    virtual void set_fill_canvas(const abstract_rendering_buffer* img, pix_fmt format, int filter, const rect_s& rc);
-    virtual void set_fill_pattern(const abstract_rendering_buffer* img, pix_fmt format, int filter, const rect_s& rc,
-                                  int xtype, int ytype, const trans_affine* mtx);
+    virtual void set_fill_image(const abstract_rendering_buffer* img, pix_fmt format, int32_t filter, const rect_s& rc);
+    virtual void set_fill_canvas(const abstract_rendering_buffer* img, pix_fmt format, int32_t filter, const rect_s& rc);
+    virtual void set_fill_pattern(const abstract_rendering_buffer* img, pix_fmt format, int32_t filter, const rect_s& rc,
+                                  int32_t xtype, int32_t ytype, const trans_affine* mtx);
     virtual void set_fill_gradient(const abstract_gradient_adapter* g);
     virtual void set_font_fill_color(const rgba& c);
 
@@ -110,7 +110,7 @@ public:
     virtual void apply_text_fill(abstract_raster_adapter* rs, text_style style);
     virtual void apply_mono_text_fill(void* storage);
     virtual void apply_clear(const rgba& c);
-    virtual void apply_clip_path(const vertex_source& v, int rule, const trans_affine* mtx);
+    virtual void apply_clip_path(const vertex_source& v, int32_t rule, const trans_affine* mtx);
     virtual void apply_clip_device(const rect_s& rc, scalar xoffset, scalar yoffset);
     virtual void clear_clip(void);
 
@@ -123,7 +123,7 @@ public:
     virtual void apply_shadow(abstract_raster_adapter* rs, const rect_s& r,
                               const rgba& c, scalar x, scalar y, scalar b);
 
-    virtual void copy_rect_from(abstract_rendering_buffer* src, const rect& rc, int x, int y);
+    virtual void copy_rect_from(abstract_rendering_buffer* src, const rect& rc, int32_t x, int32_t y);
 private:
     void apply_fill_source(abstract_raster_adapter* raster, pix_fmt src_fmt)
     {
@@ -200,7 +200,7 @@ private:
     void apply_stroke_impl(abstract_raster_adapter* raster);
 
     template <typename PixfmtWrapper>
-    pattern_wrapper<PixfmtWrapper>* pattern_wrap(int xtype, int ytype, PixfmtWrapper& fmt)
+    pattern_wrapper<PixfmtWrapper>* pattern_wrap(int32_t xtype, int32_t ytype, PixfmtWrapper& fmt)
     {
         pattern_wrapper<PixfmtWrapper>* p = 0;
         if ((xtype == WRAP_TYPE_REPEAT) && (ytype == WRAP_TYPE_REPEAT)) {
@@ -290,7 +290,7 @@ inline void gfx_painter<Pixfmt>::set_stroke_color(const rgba& c)
 }
 
 template <typename Pixfmt>
-inline void gfx_painter<Pixfmt>::set_stroke_image(const abstract_rendering_buffer* img, pix_fmt format, int filter, const rect_s& rc)
+inline void gfx_painter<Pixfmt>::set_stroke_image(const abstract_rendering_buffer* img, pix_fmt format, int32_t filter, const rect_s& rc)
 {
     m_stroke_type = type_image;
     m_image_stroke.buffer = const_cast<abstract_rendering_buffer*>(img);
@@ -303,7 +303,7 @@ inline void gfx_painter<Pixfmt>::set_stroke_image(const abstract_rendering_buffe
 }
 
 template <typename Pixfmt>
-inline void gfx_painter<Pixfmt>::set_stroke_canvas(const abstract_rendering_buffer* img, pix_fmt format, int filter, const rect_s& rc)
+inline void gfx_painter<Pixfmt>::set_stroke_canvas(const abstract_rendering_buffer* img, pix_fmt format, int32_t filter, const rect_s& rc)
 {
     m_stroke_type = type_canvas;
     m_image_stroke.buffer = const_cast<abstract_rendering_buffer*>(img);
@@ -316,8 +316,8 @@ inline void gfx_painter<Pixfmt>::set_stroke_canvas(const abstract_rendering_buff
 }
 
 template <typename Pixfmt>
-inline void gfx_painter<Pixfmt>::set_stroke_pattern(const abstract_rendering_buffer* img, pix_fmt format, int filter, const rect_s& rc,
-                                                    int xtype, int ytype, const trans_affine* mtx)
+inline void gfx_painter<Pixfmt>::set_stroke_pattern(const abstract_rendering_buffer* img, pix_fmt format, int32_t filter, const rect_s& rc,
+                                                    int32_t xtype, int32_t ytype, const trans_affine* mtx)
 {
     m_stroke_type = type_pattern;
     m_pattern_stroke.buffer = const_cast<abstract_rendering_buffer*>(img);
@@ -338,7 +338,7 @@ inline void gfx_painter<Pixfmt>::set_stroke_gradient(const abstract_gradient_ada
 }
 
 template <typename Pixfmt>
-inline void gfx_painter<Pixfmt>::set_fill_image(const abstract_rendering_buffer* img, pix_fmt format, int filter, const rect_s& rc)
+inline void gfx_painter<Pixfmt>::set_fill_image(const abstract_rendering_buffer* img, pix_fmt format, int32_t filter, const rect_s& rc)
 {
     m_fill_type = type_image;
     m_image_source.buffer = const_cast<abstract_rendering_buffer*>(img);
@@ -351,7 +351,7 @@ inline void gfx_painter<Pixfmt>::set_fill_image(const abstract_rendering_buffer*
 }
 
 template <typename Pixfmt>
-inline void gfx_painter<Pixfmt>::set_fill_canvas(const abstract_rendering_buffer* img, pix_fmt format, int filter, const rect_s& rc)
+inline void gfx_painter<Pixfmt>::set_fill_canvas(const abstract_rendering_buffer* img, pix_fmt format, int32_t filter, const rect_s& rc)
 {
     m_fill_type = type_canvas;
     m_image_source.buffer = const_cast<abstract_rendering_buffer*>(img);
@@ -364,8 +364,8 @@ inline void gfx_painter<Pixfmt>::set_fill_canvas(const abstract_rendering_buffer
 }
 
 template <typename Pixfmt>
-inline void gfx_painter<Pixfmt>::set_fill_pattern(const abstract_rendering_buffer* img, pix_fmt format, int filter, const rect_s& rc,
-                                                  int xtype, int ytype, const trans_affine* mtx)
+inline void gfx_painter<Pixfmt>::set_fill_pattern(const abstract_rendering_buffer* img, pix_fmt format, int32_t filter, const rect_s& rc,
+                                                  int32_t xtype, int32_t ytype, const trans_affine* mtx)
 {
     m_fill_type = type_pattern;
     m_pattern_source.buffer = const_cast<abstract_rendering_buffer*>(img);
@@ -879,7 +879,7 @@ inline void gfx_painter<Pixfmt>::apply_fill(abstract_raster_adapter* raster)
 }
 
 template <typename Pixfmt>
-inline void gfx_painter<Pixfmt>::apply_clip_path(const vertex_source& v, int rule, const trans_affine* mtx)
+inline void gfx_painter<Pixfmt>::apply_clip_path(const vertex_source& v, int32_t rule, const trans_affine* mtx)
 {
     conv_transform p(const_cast<vertex_source&>(v), mtx);
 
@@ -948,8 +948,8 @@ inline bool gfx_painter<Pixfmt>::begin_shadow(const rect_s& rc)
     m_draw_shadow = true;
     m_shadow_area = rc;
 
-    unsigned int w = uround(rc.x2 - rc.x1);
-    unsigned int h = uround(rc.y2 - rc.y1);
+    uint32_t w = uround(rc.x2 - rc.x1);
+    uint32_t h = uround(rc.y2 - rc.y1);
     m_shadow_buffer = (byte*)mem_calloc(1, h * w * 4);
 
     if (!m_shadow_buffer) {
@@ -1000,7 +1000,7 @@ inline void gfx_painter<Pixfmt>::apply_shadow(abstract_raster_adapter* rs,
 }
 
 template <typename Pixfmt>
-inline void gfx_painter<Pixfmt>::copy_rect_from(abstract_rendering_buffer* src, const rect& rc, int x, int y)
+inline void gfx_painter<Pixfmt>::copy_rect_from(abstract_rendering_buffer* src, const rect& rc, int32_t x, int32_t y)
 {
     m_rb.copy_absolute_from(*static_cast<gfx_rendering_buffer*>(src), &rc, x, y);
 }

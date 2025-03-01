@@ -28,15 +28,15 @@ public:
     {
     }
 
-    unsigned int width(void) const { return m_pixfmt->height(); }
-    unsigned int height(void) const { return m_pixfmt->width(); }
+    uint32_t width(void) const { return m_pixfmt->height(); }
+    uint32_t height(void) const { return m_pixfmt->width(); }
 
-    color_type pixel(int x, int y) const
+    color_type pixel(int32_t x, int32_t y) const
     {
         return m_pixfmt->pixel(y, x);
     }
 
-    void copy_color_hspan(int x, int y, unsigned int len, const color_type* colors)
+    void copy_color_hspan(int32_t x, int32_t y, uint32_t len, const color_type* colors)
     {
         m_pixfmt->copy_color_vspan(y, x, len, colors);
     }
@@ -66,7 +66,7 @@ struct stack_blur_calc_rgba {
         a += v.a;
     }
 
-    template <typename T> void add(const T& v, unsigned int k)
+    template <typename T> void add(const T& v, uint32_t k)
     {
         r += v.r * k;
         g += v.g * k;
@@ -82,7 +82,7 @@ struct stack_blur_calc_rgba {
         a -= v.a;
     }
 
-    template <typename T> void calc_pix(T& v, unsigned int mul, unsigned int shr)
+    template <typename T> void calc_pix(T& v, uint32_t mul, uint32_t shr)
     {
         typedef typename T::value_type value_type;
         v.r = value_type((r * mul) >> shr);
@@ -114,15 +114,15 @@ public:
     }
 
     template <typename Img>
-    void blur_x(Img& img, unsigned int radius)
+    void blur_x(Img& img, uint32_t radius)
     {
         if (radius < 1) {
             return;
         }
 
-        unsigned int x, y, xp, i;
-        unsigned int stack_ptr;
-        unsigned int stack_start;
+        uint32_t x, y, xp, i;
+        uint32_t stack_ptr;
+        uint32_t stack_start;
 
         color_type pix;
         color_type* stack_pix;
@@ -130,14 +130,14 @@ public:
         calculator_type sum_in;
         calculator_type sum_out;
 
-        unsigned int w = img.width();
-        unsigned int h = img.height();
-        unsigned int wm = w - 1;
-        unsigned int div = (radius << 1) + 1;
+        uint32_t w = img.width();
+        uint32_t h = img.height();
+        uint32_t wm = w - 1;
+        uint32_t div = (radius << 1) + 1;
 
-        unsigned int mul_sum = 0;
-        unsigned int shr_sum = 0;
-        unsigned int max_val = color_type::base_mask;
+        uint32_t mul_sum = 0;
+        uint32_t shr_sum = 0;
+        uint32_t max_val = color_type::base_mask;
 
         if (max_val <= 255 && radius < 255) {
             mul_sum = g_stack_blur8_mul[radius];
@@ -217,14 +217,14 @@ public:
     }
 
     template <typename Img>
-    void blur_y(Img& img, unsigned int radius)
+    void blur_y(Img& img, uint32_t radius)
     {
         pixfmt_transformer<Img> img2(img);
         blur_x(img2, radius);
     }
 
     template <typename Img>
-    void blur(Img& img, unsigned int radius)
+    void blur(Img& img, uint32_t radius)
     {
         blur_x(img, radius);
         pixfmt_transformer<Img> img2(img);
@@ -232,9 +232,6 @@ public:
     }
 
 private:
-    stack_blur(const stack_blur&);
-    stack_blur& operator=(const stack_blur&);
-
     color_type m_shading;
     pod_vector<color_type> m_buffer;
     pod_vector<color_type> m_stack;

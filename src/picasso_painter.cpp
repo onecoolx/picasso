@@ -34,7 +34,7 @@ void painter::attach(rendering_buffer& buf)
     m_impl->attach(buf.m_impl);
 }
 
-void painter::init_raster_data(context_state* state, unsigned int methods,
+void painter::init_raster_data(context_state* state, uint32_t methods,
                                raster_adapter& raster, const vertex_source& p, const trans_affine& mtx)
 {
     raster.set_raster_method(methods);
@@ -59,7 +59,7 @@ void painter::init_raster_data(context_state* state, unsigned int methods,
     raster.add_shape(p, 0);
 }
 
-void painter::init_source_data(context_state* state, unsigned int methods, const graphic_path& p)
+void painter::init_source_data(context_state* state, uint32_t methods, const graphic_path& p)
 {
     m_impl->set_alpha(state->alpha);
     m_impl->set_composite(state->composite);
@@ -71,7 +71,7 @@ void painter::init_source_data(context_state* state, unsigned int methods, const
                     bounding_rect(const_cast<graphic_path&>(p), 0, &x1, &y1, &x2, &y2);
                     ps_canvas* canvas = static_cast<ps_canvas*>(state->pen.data);
                     rect_s rect(x1, y1, x2, y2);
-                    m_impl->set_stroke_canvas(canvas->buffer.impl(), (pix_fmt)(canvas->fmt), (int)state->filter, rect);
+                    m_impl->set_stroke_canvas(canvas->buffer.impl(), (pix_fmt)(canvas->fmt), (int32_t)state->filter, rect);
                 }
                 break;
             case pen_style_pattern: {
@@ -79,7 +79,7 @@ void painter::init_source_data(context_state* state, unsigned int methods, const
                     bounding_rect(const_cast<graphic_path&>(p), 0, &x1, &y1, &x2, &y2);
                     ps_pattern* pattern = static_cast<ps_pattern*>(state->pen.data);
                     rect_s rect(x1, y1, x2, y2);
-                    m_impl->set_stroke_pattern(pattern->img->buffer.impl(), (pix_fmt)(pattern->img->fmt), (int)state->filter, rect,
+                    m_impl->set_stroke_pattern(pattern->img->buffer.impl(), (pix_fmt)(pattern->img->fmt), (int32_t)state->filter, rect,
                                                pattern->xtype, pattern->ytype, &(pattern->matrix));
                 }
                 break;
@@ -88,7 +88,7 @@ void painter::init_source_data(context_state* state, unsigned int methods, const
                     bounding_rect(const_cast<graphic_path&>(p), 0, &x1, &y1, &x2, &y2);
                     ps_image* img = static_cast<ps_image*>(state->pen.data);
                     rect_s rect(x1, y1, x2, y2);
-                    m_impl->set_stroke_image(img->buffer.impl(), (pix_fmt)(img->fmt), (int)state->filter, rect);
+                    m_impl->set_stroke_image(img->buffer.impl(), (pix_fmt)(img->fmt), (int32_t)state->filter, rect);
                 }
                 break;
             case pen_style_gradient: {
@@ -112,7 +112,7 @@ void painter::init_source_data(context_state* state, unsigned int methods, const
                     bounding_rect(const_cast<graphic_path&>(p), 0, &x1, &y1, &x2, &y2);
                     ps_canvas* canvas = static_cast<ps_canvas*>(state->brush.data);
                     rect_s rect(x1, y1, x2, y2);
-                    m_impl->set_fill_canvas(canvas->buffer.impl(), (pix_fmt)(canvas->fmt), (int)state->filter, rect);
+                    m_impl->set_fill_canvas(canvas->buffer.impl(), (pix_fmt)(canvas->fmt), (int32_t)state->filter, rect);
                 }
                 break;
             case brush_style_pattern: {
@@ -120,7 +120,7 @@ void painter::init_source_data(context_state* state, unsigned int methods, const
                     bounding_rect(const_cast<graphic_path&>(p), 0, &x1, &y1, &x2, &y2);
                     ps_pattern* pattern = static_cast<ps_pattern*>(state->brush.data);
                     rect_s rect(x1, y1, x2, y2);
-                    m_impl->set_fill_pattern(pattern->img->buffer.impl(), (pix_fmt)(pattern->img->fmt), (int)state->filter, rect,
+                    m_impl->set_fill_pattern(pattern->img->buffer.impl(), (pix_fmt)(pattern->img->fmt), (int32_t)state->filter, rect,
                                              pattern->xtype, pattern->ytype, &(pattern->matrix));
                 }
                 break;
@@ -129,7 +129,7 @@ void painter::init_source_data(context_state* state, unsigned int methods, const
                     bounding_rect(const_cast<graphic_path&>(p), 0, &x1, &y1, &x2, &y2);
                     ps_image* img = static_cast<ps_image*>(state->brush.data);
                     rect_s rect(x1, y1, x2, y2);
-                    m_impl->set_fill_image(img->buffer.impl(), (pix_fmt)(img->fmt), (int)state->filter, rect);
+                    m_impl->set_fill_image(img->buffer.impl(), (pix_fmt)(img->fmt), (int32_t)state->filter, rect);
                 }
                 break;
             case brush_style_gradient: {
@@ -226,7 +226,7 @@ void painter::render_shadow(context_state* state, const graphic_path& p, bool fi
 {
     if (state->shadow.use_shadow) {
 
-        unsigned int method = 0;
+        uint32_t method = 0;
         if (fill) {
             method |= raster_fill;
         }
@@ -286,7 +286,7 @@ void painter::render_mask(const mask_layer& m, bool mask)
     }
 }
 
-void painter::render_copy(rendering_buffer& src, const rect* r, const painter* dst, int off_x, int off_y)
+void painter::render_copy(rendering_buffer& src, const rect* r, const painter* dst, int32_t off_x, int32_t off_y)
 {
     if (r) {
         rect rc(r->x1, r->y1, r->x2, r->y2);
@@ -297,7 +297,7 @@ void painter::render_copy(rendering_buffer& src, const rect* r, const painter* d
     }
 }
 
-void painter::render_glyph(context_state* state, raster_adapter& raster, const font* ft, int type)
+void painter::render_glyph(context_state* state, raster_adapter& raster, const font* ft, int32_t type)
 {
     //FIXME: support other source !
     m_impl->set_alpha(state->alpha);
@@ -320,7 +320,7 @@ void painter::render_glyph(context_state* state, raster_adapter& raster, const f
     }
 }
 
-void painter::render_glyphs_raster(context_state* state, raster_adapter& raster, int style)
+void painter::render_glyphs_raster(context_state* state, raster_adapter& raster, int32_t style)
 {
     if (!raster.is_empty()) {
         m_impl->apply_text_fill(raster.impl(), (text_style)style);

@@ -29,9 +29,9 @@ public:
         base_mask = color_type::base_mask,
     };
 
-    static _FORCE_INLINE_ void blend_pix(unsigned int op, pixel_type* p,
-                                         unsigned int cr, unsigned int cg,
-                                         unsigned int cb, unsigned int ca, unsigned int cover)
+    static _FORCE_INLINE_ void blend_pix(uint32_t op, pixel_type* p,
+                                         uint32_t cr, uint32_t cg,
+                                         uint32_t cb, uint32_t ca, uint32_t cover)
     {
         blend_op_table_packed<color_type, order_type, blender_rgb555>::g_packed_blend_op_func[op]
         (p, (cr * ca + base_mask) >> base_shift,
@@ -40,8 +40,8 @@ public:
          ca, cover);
     }
 
-    static _FORCE_INLINE_ void blend_pix(pixel_type* p, unsigned int cr, unsigned int cg,
-                                         unsigned int cb, unsigned int ca, unsigned int)
+    static _FORCE_INLINE_ void blend_pix(pixel_type* p, uint32_t cr, uint32_t cg,
+                                         uint32_t cb, uint32_t ca, uint32_t)
     {
         _REGISTER_ pixel_type rgb = *p;
         calc_type r = (rgb >> 7) & 0xF8;
@@ -52,7 +52,7 @@ public:
                           (((cb - b) * ca + (b << 8)) >> 11) | 0x8000);
     }
 
-    static pixel_type make_pix(unsigned int r, unsigned int g, unsigned int b)
+    static pixel_type make_pix(uint32_t r, uint32_t g, uint32_t b)
     {
         return (pixel_type)(((r & 0xF8) << 7) | ((g & 0xF8) << 2) | (b >> 3) | 0x8000);
     }
@@ -78,9 +78,9 @@ public:
         base_mask = color_type::base_mask,
     };
 
-    static _FORCE_INLINE_ void blend_pix(unsigned int op, pixel_type* p,
-                                         unsigned int cr, unsigned int cg,
-                                         unsigned int cb, unsigned int ca, unsigned int cover)
+    static _FORCE_INLINE_ void blend_pix(uint32_t op, pixel_type* p,
+                                         uint32_t cr, uint32_t cg,
+                                         uint32_t cb, uint32_t ca, uint32_t cover)
     {
         blend_op_table_packed<color_type, order_type, blender_rgb565>::g_packed_blend_op_func[op]
         (p, (cr * ca + base_mask) >> base_shift,
@@ -89,7 +89,7 @@ public:
          ca, cover);
     }
 
-    static pixel_type make_pix(unsigned int r, unsigned int g, unsigned int b)
+    static pixel_type make_pix(uint32_t r, uint32_t g, uint32_t b)
     {
         return (pixel_type)(((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3));
     }

@@ -39,7 +39,7 @@ public:
         return m_curve4.approximation_scale();
     }
 
-    virtual void rewind(unsigned int id)
+    virtual void rewind(uint32_t id)
     {
         m_source->rewind(id);
         m_last_x = FLT_TO_SCALAR(0.0f);
@@ -48,7 +48,7 @@ public:
         m_curve4.reset();
     }
 
-    virtual unsigned int vertex(scalar* x, scalar* y)
+    virtual uint32_t vertex(scalar* x, scalar* y)
     {
         if (!is_stop(m_curve3.vertex(x, y))) {
             m_last_x = *x;
@@ -67,7 +67,7 @@ public:
         scalar end_x = FLT_TO_SCALAR(0.0f);
         scalar end_y = FLT_TO_SCALAR(0.0f);
 
-        unsigned int cmd = m_source->vertex(x, y);
+        uint32_t cmd = m_source->vertex(x, y);
         switch (cmd) {
             case path_cmd_curve3:
                 m_source->vertex(&end_x, &end_y);
@@ -117,11 +117,11 @@ public:
 
     void transformer(const trans_affine& t) { m_trans = &t; }
 
-    virtual void rewind(unsigned int id) { m_source->rewind(id); }
+    virtual void rewind(uint32_t id) { m_source->rewind(id); }
 
-    virtual unsigned int vertex(scalar* x, scalar* y)
+    virtual uint32_t vertex(scalar* x, scalar* y)
     {
-        unsigned int cmd = m_source->vertex(x, y);
+        uint32_t cmd = m_source->vertex(x, y);
         if (is_vertex(cmd)) {
             m_trans->transform(x, y);
         }
@@ -153,7 +153,7 @@ public:
     } status;
 
     typedef struct {
-        int num_vertices;
+        int32_t num_vertices;
         vertex_s* vertices;
     } contour_header;
 
@@ -175,7 +175,7 @@ public:
         free_all();
     }
 
-    virtual void rewind(unsigned int id)
+    virtual void rewind(uint32_t id)
     {
         free_result();
         m_src_a->rewind(id);
@@ -203,7 +203,7 @@ public:
         m_vertex = -1;
     }
 
-    virtual unsigned int vertex(scalar* x, scalar* y)
+    virtual uint32_t vertex(scalar* x, scalar* y)
     {
         if (m_status == status_move_to) {
             if (next_contour()) {
@@ -242,7 +242,7 @@ private:
 
     void clear_polygon(polygon& p)
     {
-        for (int i = 0; i < p.num_contours; i++) {
+        for (int32_t i = 0; i < p.num_contours; i++) {
             pod_allocator<vertex_s>::deallocate(p.contour[i].vertex,
                                                 p.contour[i].num_vertices);
         }
@@ -273,12 +273,12 @@ private:
 
     void add(polygon& p, vertex_source& src)
     {
-        unsigned int cmd;
+        uint32_t cmd;
         scalar x, y;
         scalar start_x = FLT_TO_SCALAR(0.0f);
         scalar start_y = FLT_TO_SCALAR(0.0f);
         bool line_to = false;
-        unsigned int orientation = 0;
+        uint32_t orientation = 0;
 
         m_contour_accumulator.clear();
 
@@ -327,7 +327,7 @@ private:
         m_vertex_accumulator.clear();
     }
 
-    void end_contour(unsigned int orientation)
+    void end_contour(uint32_t orientation)
     {
         if (m_contour_accumulator.size()) {
             if (m_vertex_accumulator.size() > 2) {
@@ -336,7 +336,7 @@ private:
                 h.num_vertices = m_vertex_accumulator.size();
                 h.vertices = pod_allocator<vertex_s>::allocate(h.num_vertices);
                 vertex_s* d = h.vertices;
-                for (int i = 0; i < h.num_vertices; i++) {
+                for (int32_t i = 0; i < h.num_vertices; i++) {
                     const vertex_s& s = m_vertex_accumulator[i];
                     d->x = s.x;
                     d->y = s.y;
@@ -356,7 +356,7 @@ private:
             p.contour = pod_allocator<vertex_list>::allocate(p.num_contours);
 
             vertex_list* pv = p.contour;
-            for (int i = 0; i < p.num_contours; i++) {
+            for (int32_t i = 0; i < p.num_contours; i++) {
                 const contour_header& h = m_contour_accumulator[i];
                 pv->num_vertices = h.num_vertices;
                 pv->vertex = h.vertices;
@@ -371,8 +371,8 @@ private:
     vertex_source* m_src_a;
     vertex_source* m_src_b;
     status m_status;
-    int m_vertex;
-    int m_contour;
+    int32_t m_vertex;
+    int32_t m_contour;
     clip_op m_operation;
     pod_bvector<vertex_s> m_vertex_accumulator;
     pod_bvector<contour_header> m_contour_accumulator;
@@ -400,15 +400,15 @@ public:
     {
     }
 
-    virtual void rewind(unsigned int id)
+    virtual void rewind(uint32_t id)
     {
         m_source->rewind(id);
         m_status = status_initial;
     }
 
-    virtual unsigned int vertex(scalar* x, scalar* y)
+    virtual uint32_t vertex(scalar* x, scalar* y)
     {
-        unsigned int cmd = path_cmd_stop;
+        uint32_t cmd = path_cmd_stop;
         bool done = false;
         while (!done) {
             switch (m_status) {
@@ -464,7 +464,7 @@ public:
 
 protected:
     virtual void reset(void) = 0;
-    virtual unsigned int get_vertex(scalar* x, scalar* y) = 0;
+    virtual uint32_t get_vertex(scalar* x, scalar* y) = 0;
 
 private:
     conv_line_generator(const conv_line_generator&);
@@ -472,7 +472,7 @@ private:
 
     vertex_source* m_source;
     status m_status;
-    unsigned int m_last_cmd;
+    uint32_t m_last_cmd;
     scalar m_start_x;
     scalar m_start_y;
 };
@@ -534,9 +534,9 @@ public:
         m_src_vertex = 0;
     }
 
-    virtual unsigned int get_vertex(scalar* x, scalar* y)
+    virtual uint32_t get_vertex(scalar* x, scalar* y)
     {
-        unsigned int cmd = path_cmd_move_to;
+        uint32_t cmd = path_cmd_move_to;
         while (!is_stop(cmd)) {
             switch (m_status) {
                 case initial:
@@ -565,7 +565,7 @@ public:
                 case polyline: {
                         scalar dash_rest = m_dashes[m_curr_dash] - m_curr_dash_start;
 
-                        unsigned int cmd = (m_curr_dash & 1) ? path_cmd_move_to : path_cmd_line_to;
+                        uint32_t cmd = (m_curr_dash & 1) ? path_cmd_move_to : path_cmd_line_to;
 
                         if (m_curr_rest > dash_rest) {
                             m_curr_rest -= dash_rest;
@@ -619,7 +619,7 @@ public:
         m_closed = 0;
     }
 
-    virtual void add_vertex(scalar x, scalar y, unsigned int cmd)
+    virtual void add_vertex(scalar x, scalar y, uint32_t cmd)
     {
         m_status = initial;
         if (is_move_to(cmd)) {
@@ -664,20 +664,20 @@ private:
     // dash property
     scalar m_dashes[max_dashes];
     scalar m_total_dash_len;
-    unsigned int m_num_dashes;
+    uint32_t m_num_dashes;
     scalar m_dash_start;
     scalar m_shorten;
     scalar m_curr_dash_start;
     scalar m_curr_rest;
-    unsigned int m_curr_dash;
+    uint32_t m_curr_dash;
     const vertex_dist* m_v1;
     const vertex_dist* m_v2;
 
     // dash status
     vertex_storage m_src_vertices;
     status m_status;
-    unsigned int m_closed;
-    unsigned int m_src_vertex;
+    uint32_t m_closed;
+    uint32_t m_src_vertex;
 };
 
 // Convert dash
@@ -760,7 +760,7 @@ public:
         m_closed = 0;
     }
 
-    virtual void add_vertex(scalar x, scalar y, unsigned int cmd)
+    virtual void add_vertex(scalar x, scalar y, uint32_t cmd)
     {
         m_status = initial;
 
@@ -791,16 +791,16 @@ public:
         m_out_vertex = 0;
     }
 
-    virtual unsigned int get_vertex(scalar* x, scalar* y)
+    virtual uint32_t get_vertex(scalar* x, scalar* y)
     {
-        unsigned int cmd = path_cmd_line_to;
+        uint32_t cmd = path_cmd_line_to;
         while (!is_stop(cmd)) {
             switch (m_status) {
                 case initial:
                     reset();
 
                 case ready:
-                    if (m_src_vertices.size() < 2 + (unsigned int)(m_closed != 0)) {
+                    if (m_src_vertices.size() < 2 + (uint32_t)(m_closed != 0)) {
                         cmd = path_cmd_stop;
                         break;
                     }
@@ -861,7 +861,7 @@ public:
                     cmd = path_cmd_move_to;
 
                 case outline2:
-                    if (m_src_vertex <= (unsigned int)(m_closed == 0)) {
+                    if (m_src_vertex <= (uint32_t)(m_closed == 0)) {
                         m_status = end_poly2;
                         m_prev_status = stop;
                         break;
@@ -929,10 +929,10 @@ private:
             add_coord_vertex(cs, v0.x - dx1 - dx2, v0.y + dy1 - dy2);
             add_coord_vertex(cs, v0.x + dx1 - dx2, v0.y - dy1 - dy2);
         } else {
-            int i;
+            int32_t i;
             scalar a1;
             scalar da = Acos(m_width_abs / (m_width_abs + FLT_TO_SCALAR(0.125f) / m_approx_scale)) * 2;
-            int n = (int)iround(PI / da); // FIXME:need round ?
+            int32_t n = (int32_t)iround(PI / da); // FIXME:need round ?
 
             da = PI / (n + 1);
             add_coord_vertex(cs, v0.x - dx1, v0.y + dy1);
@@ -1046,7 +1046,7 @@ private:
         scalar a1 = Atan2(dy1 * m_width_sign, dx1 * m_width_sign);
         scalar a2 = Atan2(dy2 * m_width_sign, dx2 * m_width_sign);
         scalar da = a1 - a2;
-        int i, n;
+        int32_t i, n;
 
         da = Acos(m_width_abs / (m_width_abs + FLT_TO_SCALAR(0.125f) / m_approx_scale)) * 2;
 
@@ -1055,7 +1055,7 @@ private:
             if (a1 > a2) {
                 a2 += _2PI;
             }
-            n = (int)iround((a2 - a1) / da); // FIXME:need round ?
+            n = (int32_t)iround((a2 - a1) / da); // FIXME:need round ?
             da = (a2 - a1) / (n + 1);
             a1 += da;
             for (i = 0; i < n; i++) {
@@ -1066,7 +1066,7 @@ private:
             if (a1 < a2) {
                 a2 -= _2PI;
             }
-            n = (int)iround((a1 - a2) / da); // FIXME:need round ?
+            n = (int32_t)iround((a1 - a2) / da); // FIXME:need round ?
             da = (a1 - a2) / (n + 1);
             a1 -= da;
             for (i = 0; i < n; i++) {
@@ -1162,7 +1162,7 @@ private:
     scalar m_width;
     scalar m_width_abs;
     scalar m_width_eps;
-    int m_width_sign;
+    int32_t m_width_sign;
     scalar m_miter_limit;
     scalar m_inner_miter_limit;
     scalar m_approx_scale;
@@ -1176,9 +1176,9 @@ private:
     scalar m_shorten;
     status m_status;
     status m_prev_status;
-    unsigned int m_closed;
-    unsigned int m_src_vertex;
-    unsigned int m_out_vertex;
+    uint32_t m_closed;
+    uint32_t m_src_vertex;
+    uint32_t m_out_vertex;
 };
 
 }

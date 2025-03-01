@@ -235,7 +235,7 @@ static int get_depth(ps_color_format fmt)
 
 static int write_png_info(const psx_image* image, image_writer_fn func, void* param, float quality, psx_image_header* header)
 {
-    unsigned int fmt;
+    uint32_t fmt;
     struct png_image_ctx* ctx = (struct png_image_ctx*)calloc(1, sizeof(struct png_image_ctx));
     if (!ctx) {
         return -1; // out of memory.
