@@ -27,7 +27,7 @@
 #ifndef _PSX_SVG_H_
 #define _PSX_SVG_H_
 
-#include <picasso/picasso.h>
+#include "picasso.h"
 
 #include "psx_common.h"
 #include "psx_array.h"
