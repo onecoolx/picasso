@@ -24,12 +24,41 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "test.h"
-#include "timeuse.h"
+#ifndef _PSX_SVG_PARSER_H_
+#define _PSX_SVG_PARSER_H_
 
+#include "psx_common.h"
 #include "psx_svg.h"
+#include "psx_xml_token.h"
 
-TEST(PsxSVG, Test)
-{
-    printf("size %d\n", sizeof(psx_svg_attr));
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+enum {
+    SVG_PARSER_PROCESS = 0,
+    SVG_PARSER_IGNORE,
+};
+
+typedef struct {
+    uint32_t state;
+    char* ignore_name;
+    uint32_t ignore_len;
+    psx_svg_node* doc_root;
+    psx_svg_node* cur_node;
+} psx_svg_parser;
+
+void psx_svg_parser_init(psx_svg_parser* parser);
+void psx_svg_parser_destroy(psx_svg_parser* parser);
+bool psx_svg_parser_token(psx_svg_parser* parser, const psx_xml_token* token);
+bool psx_svg_parser_is_finish(psx_svg_parser* parser);
+
+#ifdef _DEBUG
+void psx_svg_dump_tree(psx_svg_node* root, int depth);
+#endif
+
+#ifdef __cplusplus
 }
+#endif
+
+#endif /*_PSX_SVG_PARSER_H_*/

@@ -25,14 +25,43 @@
  */
 
 #include "psx_svg.h"
+#include "psx_svg_parser.h"
+
+static INLINE void _free_svg_attr_value(psx_svg_attr* attr)
+{
+    if (attr->val_type == SVG_ATTR_VALUE_PTR) {
+        mem_free(attr->value.val);
+    }
+    // FIXME: release more type
+}
 
 psx_svg_node::psx_svg_node(psx_svg_node* parent)
     : psx_tree_node(parent)
+    , m_data(NULL)
+    , m_len(0)
+    , m_tag(SVG_TAG_INVALID)
+    , m_render_obj(NULL)
 {
+    psx_array_init_type(&m_attrs, psx_svg_attr);
 }
 
 psx_svg_node::~psx_svg_node()
 {
+    if (m_data) {
+        mem_free(m_data);
+    }
+
+    for (uint32_t i = 0; i < psx_array_size(&m_attrs); i++) {
+        psx_svg_attr* attr = psx_array_get(&m_attrs, i, psx_svg_attr);
+        _free_svg_attr_value(attr);
+    }
+    psx_array_destroy(&m_attrs);
+}
+
+static bool svg_token_process(void* context, const psx_xml_token* token)
+{
+    psx_svg_parser* parser = (psx_svg_parser*)context;
+    return psx_svg_parser_token(parser, token);
 }
 
 psx_svg_node* psx_svg_load(const char* svg_data, uint32_t len)
@@ -42,5 +71,26 @@ psx_svg_node* psx_svg_load(const char* svg_data, uint32_t len)
         return NULL;
     }
 
-    return NULL;
+    psx_svg_parser parser;
+    psx_svg_parser_init(&parser);
+
+    if (psx_xml_tokenizer(svg_data, len, svg_token_process, &parser)) {
+        if (psx_svg_parser_is_finish(&parser)) {
+            psx_svg_node* doc = parser.doc_root;
+            parser.doc_root = NULL;
+            psx_svg_parser_destroy(&parser);
+#ifdef _DEBUG
+            psx_svg_dump_tree(doc, 0);
+#endif
+            return doc;
+        } else {
+            psx_svg_parser_destroy(&parser);
+            fprintf(stderr, "SVG document parser raise errors!\n");
+            return NULL;
+        }
+    } else {
+        psx_svg_parser_destroy(&parser);
+        fprintf(stderr, "SVG document tokenizer raise errors!\n");
+        return NULL;
+    }
 }

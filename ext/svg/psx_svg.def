@@ -1,3 +1,2 @@
 LIBRARY  psx_svg
 EXPORTS
-    psx_xml_tokenizer

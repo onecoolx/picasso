@@ -32,7 +32,6 @@
 #include "psx_common.h"
 #include "psx_array.h"
 #include "psx_tree.h"
-#include "psx_linear_allocator.h"
 
 #define PSX_SVG_VERSION "Tiny 1.2"
 
@@ -74,6 +73,7 @@ typedef enum {
 // attributes
 enum {
     SVG_ATTR_INVALID = -1,
+    SVG_ATTR_ID,
     SVG_ATTR_XML_ID,
     SVG_ATTR_VERSION,
     SVG_ATTR_BASE_PROFILE,
@@ -215,9 +215,40 @@ enum {
 
 typedef struct _ps_point psx_svg_point;
 
+enum {
+    SVG_ATTR_VALUE_DATA = 0,
+    SVG_ATTR_VALUE_PTR,
+};
+
+enum {
+    SVG_ATTR_VALUE_NONE = 0,
+    SVG_ATTR_VALUE_INITIAL,
+    SVG_ATTR_VALUE_INHERIT,
+};
+
+typedef union {
+    int32_t ival;
+    uint32_t uval;
+    float fval;
+    char* sval;
+    void* val;
+} psx_svg_attr_value;
+
+/*
+ * to simplify list, allocate enough memory for all data and length.
+ * | size | data[0] | data[1] | data[2] | ... |
+ */
 typedef struct {
-    float m[3][3];
-} psx_svg_matrix;
+    uint32_t length;
+    uint8_t data[1];
+} psx_svg_attr_values_list;
+
+typedef struct {
+    int32_t attr_id : 8;
+    int32_t val_type : 8;
+    int32_t class_type : 8;
+    psx_svg_attr_value value;
+} psx_svg_attr;
 
 class psx_svg_render_obj;
 
@@ -228,13 +259,30 @@ public:
     psx_svg_node(psx_svg_node* parent);
     virtual ~psx_svg_node();
 
+    psx_svg_tag type(void) const { return m_tag; }
+    const char* content(uint32_t* rlen = NULL) const
+    {
+        if (rlen) {
+            *rlen = m_len;
+        }
+        return m_data;
+    }
+
+    uint32_t attr_count(void) const { return psx_array_size(&m_attrs); }
+    psx_svg_attr* attr_at(uint32_t idx) const
+    {
+        return psx_array_get(&m_attrs, idx, psx_svg_attr);
+    }
+
+    const psx_array* attrs(void) const { return &m_attrs; }
+
     NON_COPYABLE_CLASS(psx_svg_node);
 private:
     char* m_data; // id or content
     uint32_t m_len;
     psx_svg_tag m_tag;
     psx_array m_attrs;
-    psx_svg_render_obj* render_obj;
+    psx_svg_render_obj* m_render_obj;
 };
 
 psx_svg_node* psx_svg_load(const char* svg_data, uint32_t len);
