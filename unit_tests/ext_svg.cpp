@@ -29,7 +29,3 @@
 
 #include "psx_svg.h"
 
-TEST(PsxSVG, Test)
-{
-    printf("size %d\n", sizeof(psx_svg_attr));
-}
