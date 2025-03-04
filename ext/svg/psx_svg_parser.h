@@ -44,6 +44,7 @@ typedef struct {
     uint32_t state;
     char* ignore_name;
     uint32_t ignore_len;
+    int32_t dpi;
     psx_svg_node* doc_root;
     psx_svg_node* cur_node;
 } psx_svg_parser;

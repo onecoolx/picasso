@@ -71,7 +71,7 @@ typedef enum {
 } psx_svg_tag;
 
 // attributes
-enum {
+typedef enum {
     SVG_ATTR_INVALID = -1,
     SVG_ATTR_ID,
     SVG_ATTR_XML_ID,
@@ -148,7 +148,7 @@ enum {
     SVG_ATTR_PATH,
     SVG_ATTR_ROTATE,
     SVG_ATTR_TRANSFORM_TYPE,
-};
+} psx_svg_attr_type;
 
 // transform type
 enum {
@@ -218,6 +218,8 @@ typedef struct _ps_point psx_svg_point;
 enum {
     SVG_ATTR_VALUE_DATA = 0,
     SVG_ATTR_VALUE_PTR,
+    SVG_ATTR_VALUE_MATRIX_PTR,
+    SVG_ATTR_VALUE_PATH_PTR,
 };
 
 enum {
@@ -260,6 +262,8 @@ public:
     virtual ~psx_svg_node();
 
     psx_svg_tag type(void) const { return m_tag; }
+    void set_type(psx_svg_tag tag) { m_tag = tag; }
+
     const char* content(uint32_t* rlen = NULL) const
     {
         if (rlen) {
@@ -268,13 +272,15 @@ public:
         return m_data;
     }
 
+    void set_content(const char* data, uint32_t len);
+
     uint32_t attr_count(void) const { return psx_array_size(&m_attrs); }
     psx_svg_attr* attr_at(uint32_t idx) const
     {
         return psx_array_get(&m_attrs, idx, psx_svg_attr);
     }
 
-    const psx_array* attrs(void) const { return &m_attrs; }
+    psx_array* attrs(void) { return &m_attrs; }
 
     NON_COPYABLE_CLASS(psx_svg_node);
 private:
@@ -285,6 +291,18 @@ private:
     psx_svg_render_obj* m_render_obj;
 };
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 psx_svg_node* psx_svg_load(const char* svg_data, uint32_t len);
+
+psx_svg_node* psx_svg_node_create(psx_svg_node* parent);
+
+void psx_svg_node_destroy(psx_svg_node* node);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _PSX_SVG_H_ */

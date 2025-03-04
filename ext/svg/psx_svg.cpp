@@ -31,6 +31,10 @@ static INLINE void _free_svg_attr_value(psx_svg_attr* attr)
 {
     if (attr->val_type == SVG_ATTR_VALUE_PTR) {
         mem_free(attr->value.val);
+    } else if (attr->val_type == SVG_ATTR_VALUE_MATRIX_PTR) {
+        ps_matrix_unref((ps_matrix*)attr->value.val);
+    } else if (attr->val_type == SVG_ATTR_VALUE_PATH_PTR) {
+        ps_path_unref((ps_path*)attr->value.val);
     }
     // FIXME: release more type
 }
@@ -58,11 +62,27 @@ psx_svg_node::~psx_svg_node()
     psx_array_destroy(&m_attrs);
 }
 
+void psx_svg_node::set_content(const char* data, uint32_t len)
+{
+    if (m_data) {
+        mem_free(m_data);
+    }
+
+    m_data = (char*)mem_malloc(len + 1);
+    memcpy(m_data, data, len);
+    m_data[len] = '\0';
+    m_len = len;
+}
+
 static bool svg_token_process(void* context, const psx_xml_token* token)
 {
     psx_svg_parser* parser = (psx_svg_parser*)context;
     return psx_svg_parser_token(parser, token);
 }
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 psx_svg_node* psx_svg_load(const char* svg_data, uint32_t len)
 {
@@ -94,3 +114,18 @@ psx_svg_node* psx_svg_load(const char* svg_data, uint32_t len)
         return NULL;
     }
 }
+
+psx_svg_node* psx_svg_node_create(psx_svg_node* parent)
+{
+    return new psx_svg_node(parent);
+}
+
+void psx_svg_node_destroy(psx_svg_node* node)
+{
+    delete node;
+}
+
+#ifdef __cplusplus
+}
+#endif
+

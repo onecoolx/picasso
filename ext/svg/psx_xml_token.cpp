@@ -30,8 +30,6 @@
 extern "C" {
 #endif
 
-#define TOKEN_LEN(t) ((t)->end - (t)->start)
-
 /*
  *   tag mask   entity mask  quote mask   tag   search  comment  doctype   xmlinst   server side   script
  * |  0 0 0   |   0 0 0    |    0 0     |  0  |   0   |    0   |    0    |    0    |      0     |    0    |
@@ -443,6 +441,10 @@ static INLINE bool _psx_proc_tag(xml_token_state* state, psx_xml_token* token, x
 
 bool psx_xml_tokenizer(const char* xml_data, uint32_t data_len, xml_token_process cb, void* data)
 {
+    if (!xml_data || data_len == 0) {
+        return false;
+    }
+
     psx_xml_token token;
     _psx_token_init(&token);
 
@@ -564,7 +566,7 @@ bool psx_xml_tokenizer(const char* xml_data, uint32_t data_len, xml_token_proces
 
 finish:
     psx_array_destroy(&token.attrs);
-    return false;
+    return true;
 }
 
 #ifdef __cplusplus

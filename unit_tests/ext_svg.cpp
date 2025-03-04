@@ -29,3 +29,32 @@
 
 #include "psx_svg.h"
 
+class SVGParserTest : public ::testing::Test
+{
+protected:
+    void SetUp() override
+    {
+        root = NULL;
+    }
+
+    void TearDown() override
+    {
+        if (root) {
+            psx_svg_node_destroy(root);
+        }
+    }
+
+    void load(const char* data)
+    {
+        root = psx_svg_load(data, strlen(data));
+    }
+
+    psx_svg_node* root;
+};
+
+TEST_F(SVGParserTest, SimpleSVGTest)
+{
+    const char* svg_data = "<svg></svg>";
+    load(svg_data);
+    ASSERT_NE(root, nullptr);
+}
