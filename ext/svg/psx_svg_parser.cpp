@@ -1750,25 +1750,33 @@ static INLINE void _process_animation_attr_values(psx_svg_node* node, psx_svg_at
     if (type == SVG_ATTR_VALUES) {
         attr->val_type = SVG_ATTR_VALUE_PTR;
         struct _parse_value_list_context ctx;
-        ctx.mem_size = 0; ctx.list_count = 0; ctx.list = NULL;
+        ctx.mem_size = 0;
+        ctx.list_count = 0;
+        ctx.list = NULL;
         _parse_animation_value_list(node, attr, val_start, val_end, dpi, _animation_values_cb, &ctx);
         attr->value.val = ctx.list;
     } else if (type == SVG_ATTR_KEY_TIMES || type == SVG_ATTR_KEY_POINTS) {
         attr->val_type = SVG_ATTR_VALUE_PTR;
         struct _parse_value_list_context ctx;
-        ctx.mem_size = 0; ctx.list_count = 0; ctx.list = NULL;
+        ctx.mem_size = 0;
+        ctx.list_count = 0;
+        ctx.list = NULL;
         _parse_animation_value_list(node, attr, val_start, val_end, dpi, _animation_keys_cb, &ctx);
         attr->value.val = ctx.list;
     } else if (type == SVG_ATTR_KEY_SPLINES) {
         attr->val_type = SVG_ATTR_VALUE_PTR;
         struct _parse_value_list_context ctx;
-        ctx.mem_size = 0; ctx.list_count = 0; ctx.list = NULL;
+        ctx.mem_size = 0;
+        ctx.list_count = 0;
+        ctx.list = NULL;
         _parse_animation_value_list(node, attr, val_start, val_end, dpi, _animation_key_splines_cb, &ctx);
         attr->value.val = ctx.list;
     } else if (type == SVG_ATTR_BEGIN || type == SVG_ATTR_END) {
         attr->val_type = SVG_ATTR_VALUE_PTR;
         struct _parse_value_list_context ctx;
-        ctx.mem_size = 0; ctx.list_count = 0; ctx.list = NULL;
+        ctx.mem_size = 0;
+        ctx.list_count = 0;
+        ctx.list = NULL;
         _parse_animation_value_list(node, attr, val_start, val_end, dpi, _animation_begin_end_cb, &ctx);
         attr->value.val = ctx.list;
     } else {
