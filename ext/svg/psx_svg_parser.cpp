@@ -37,7 +37,8 @@ extern "C" {
 
 #define MAP_LEN(m) sizeof((m)) / sizeof((m[0]))
 #define DEFAULT_DPI  (96)
-#define ATTR_VALUE_LEN(attr) ((attr)->value_end - (attr)->value_start)
+#define ATTR_VALUE_LEN(attr) ((uint32_t)((attr)->value_end - (attr)->value_start))
+#define BUF_LEN(s, e) ((uint32_t)((e) - (s)))
 
 static const struct {
     const char* name;
@@ -372,7 +373,7 @@ static INLINE const char* _parse_length(const char* str, const char* str_end, in
 {
     str = _parse_number(str, str_end, val);
     if (str) {
-        uint32_t len = str_end - str;
+        uint32_t len = BUF_LEN(str, str_end);
         if (len > 0) {
             if (len == 1 && (*str == '%')) {
                 // percentage
@@ -404,7 +405,7 @@ static INLINE const char* _parse_clock_time(const char* str, const char* str_end
 {
     str = _parse_number(str, str_end, val);
     if (str) {
-        uint32_t len = str_end - str;
+        uint32_t len = BUF_LEN(str, str_end);
         if (len > 0) {
             if (len >= 2 && str[0] == 'm' && str[1] == 's') {
                 *val = roundf(*val);
@@ -432,7 +433,7 @@ static INLINE const char* _parse_color(const char* str, const char* str_end, uin
         ++ptr;
     }
 
-    uint32_t len = ptr - str;
+    uint32_t len = BUF_LEN(str, ptr);
     uint8_t r = 0, g = 0, b = 0;
 
     if (*str == '#') {
@@ -668,7 +669,7 @@ static INLINE psx_svg_tag _get_svg_tag_type(const psx_xml_token* token)
 static INLINE psx_svg_attr_type _get_svg_attr_type(const char* attr_start, const char* attr_end)
 {
     uint32_t len = MAP_LEN(_svg_attr_map);
-    uint32_t attr_len = attr_end - attr_start;
+    uint32_t attr_len = BUF_LEN(attr_start, attr_end);
 
     for (uint32_t i = 0; i < len; i++) {
         if (attr_len == _svg_attr_map[i].name_len && strncmp(_svg_attr_map[i].name, attr_start, attr_len) == 0) {
@@ -687,7 +688,7 @@ static INLINE void _process_string(psx_svg_node* node, psx_svg_attr_type type, c
     attr->val_type = SVG_ATTR_VALUE_PTR;
     attr->class_type = SVG_ATTR_VALUE_INITIAL;
 
-    uint32_t len = val_end - val_start;
+    uint32_t len = BUF_LEN(val_start, val_end);
     char* str = (char*)mem_malloc(len + 1);
     memcpy(str, val_start, len);
     str[len] = '\0';
@@ -707,7 +708,7 @@ static INLINE void _process_xlink(psx_svg_node* node, psx_svg_attr_type type, co
         val_start++;
     }
 
-    uint32_t len = val_end - val_start;
+    uint32_t len = BUF_LEN(val_start, val_end);
     char* str = (char*)mem_malloc(len + 1);
     memcpy(str, val_start, len);
     str[len] = '\0';
@@ -724,7 +725,7 @@ static INLINE void _process_view_box(psx_svg_node* node, psx_svg_attr_type type,
     attr->val_type = SVG_ATTR_VALUE_PTR;
     attr->class_type = SVG_ATTR_VALUE_INITIAL;
 
-    uint32_t len = val_end - val_start;
+    uint32_t len = BUF_LEN(val_start, val_end);
     if (len >= 4 && strncmp(val_start, "none", 4) == 0) {
         attr->val_type = SVG_ATTR_VALUE_DATA;
         attr->class_type = SVG_ATTR_VALUE_NONE;
@@ -774,7 +775,7 @@ static INLINE void _process_preserve_aspect_ratio(psx_svg_node* node, psx_svg_at
     }
 
     if (ratio != SVG_ASPECT_RATIO_NONE) {
-        len = val_end - val_start;
+        len = BUF_LEN(val_start, val_end);
         if (len > 4) {
             val_start = _skip_space(val_start, val_end);
             if (strncmp(val_start, "meet", 4) == 0) {
@@ -797,7 +798,7 @@ static INLINE void _process_opacity_value(psx_svg_node* node, psx_svg_attr_type 
     attr->val_type = SVG_ATTR_VALUE_DATA;
     attr->class_type = SVG_ATTR_VALUE_INITIAL;
 
-    uint32_t len = val_end - val_start;
+    uint32_t len = BUF_LEN(val_start, val_end);
     if (len >= 7 && strncmp(val_start, "inherit", 7) == 0) {
         attr->class_type = SVG_ATTR_VALUE_INHERIT;
         return;
@@ -878,7 +879,7 @@ static INLINE void _process_gradient_units(psx_svg_node* node, psx_svg_attr_type
     attr->val_type = SVG_ATTR_VALUE_DATA;
     attr->class_type = SVG_ATTR_VALUE_INITIAL;
 
-    uint32_t len = val_end - val_start;
+    uint32_t len = BUF_LEN(val_start, val_end);
     int32_t val = 0;
 
     if (len == 14 && strncmp(val_start, "userSpaceOnUse", 14) == 0) {
@@ -899,7 +900,7 @@ static INLINE void _process_clock_time(psx_svg_node* node, psx_svg_attr_type typ
     attr->val_type = SVG_ATTR_VALUE_DATA;
     attr->class_type = SVG_ATTR_VALUE_INITIAL;
 
-    uint32_t len = val_end - val_start;
+    uint32_t len = BUF_LEN(val_start, val_end);
     if (len == 10 && strncmp(val_start, "indefinite", 10) == 0) {
         attr->value.fval = 0.0f;
         return;
@@ -920,7 +921,7 @@ static INLINE void _process_paint(psx_svg_node* node, psx_svg_attr_type type, co
     attr->val_type = SVG_ATTR_VALUE_DATA;
     attr->class_type = SVG_ATTR_VALUE_INITIAL;
 
-    uint32_t len = val_end - val_start;
+    uint32_t len = BUF_LEN(val_start, val_end);
     if (len >= 4 && strncmp(val_start, "none", 4) == 0) {
         attr->class_type = SVG_ATTR_VALUE_NONE;
         attr->value.ival = 0;
@@ -953,7 +954,7 @@ static INLINE void _process_paint(psx_svg_node* node, psx_svg_attr_type type, co
         url_end = ptr;
         if (url_start && url_end) {
             attr->val_type = SVG_ATTR_VALUE_PTR;
-            len = url_end - url_start;
+            len = BUF_LEN(url_start, url_end);
             char* node_id = (char*)mem_malloc(len + 1);
             memcpy(node_id, url_start, len);
             node_id[len] = '\0';
@@ -988,7 +989,7 @@ static INLINE void _process_paint_attrs(psx_svg_node* node, psx_svg_attr_type ty
     attr->val_type = SVG_ATTR_VALUE_DATA;
     attr->class_type = SVG_ATTR_VALUE_INITIAL;
 
-    uint32_t len = val_end - val_start;
+    uint32_t len = BUF_LEN(val_start, val_end);
 
     if (len >= 7 && strncmp(val_start, "inherit", 7) == 0) {
         attr->class_type = SVG_ATTR_VALUE_INHERIT;
@@ -1058,7 +1059,7 @@ static INLINE void _process_paint_dasharray(psx_svg_node* node, psx_svg_attr_typ
     attr->val_type = SVG_ATTR_VALUE_DATA;
     attr->class_type = SVG_ATTR_VALUE_INITIAL;
 
-    uint32_t len = val_end - val_start;
+    uint32_t len = BUF_LEN(val_start, val_end);
 
     if (len >= 4 && strncmp(val_start, "none", 4) == 0) {
         attr->class_type = SVG_ATTR_VALUE_NONE;
@@ -1105,7 +1106,7 @@ static INLINE void _process_font_attrs(psx_svg_node* node, psx_svg_attr_type typ
     attr->val_type = SVG_ATTR_VALUE_DATA;
     attr->class_type = SVG_ATTR_VALUE_INITIAL;
 
-    uint32_t len = val_end - val_start;
+    uint32_t len = BUF_LEN(val_start, val_end);
 
     if (len >= 7 && strncmp(val_start, "inherit", 7) == 0) {
         attr->class_type = SVG_ATTR_VALUE_INHERIT;
@@ -1137,7 +1138,7 @@ static INLINE void _process_transform(psx_svg_node* node, psx_svg_attr_type type
     attr->val_type = SVG_ATTR_VALUE_MATRIX_PTR;
     attr->class_type = SVG_ATTR_VALUE_INITIAL;
 
-    uint32_t len = val_end - val_start;
+    uint32_t len = BUF_LEN(val_start, val_end);
     if (len >= 4 && strncmp(val_start, "none", 4) == 0) {
         attr->val_type = SVG_ATTR_VALUE_DATA;
         attr->class_type = SVG_ATTR_VALUE_NONE;
@@ -1151,7 +1152,7 @@ static INLINE void _process_transform(psx_svg_node* node, psx_svg_attr_type type
         ptr = _skip_space(ptr, val_end);
         if (ptr == val_end) { break; }
 
-        len = val_end - ptr;
+        len = BUF_LEN(ptr, val_end);
 
         if (len >= 9 && strncmp(ptr, "translate", 9) == 0) {
             ptr = _parse_matrix(ptr, val_end, SVG_TRANSFORM_TYPE_TRANSLATE, matrix);
@@ -1462,7 +1463,7 @@ static INLINE void _process_animation_attr_options(psx_svg_node* node, psx_svg_a
     attr->val_type = SVG_ATTR_VALUE_DATA;
     attr->class_type = SVG_ATTR_VALUE_INITIAL;
 
-    uint32_t len = val_end - val_start;
+    uint32_t len = BUF_LEN(val_start, val_end);
     switch (type) {
         case SVG_ATTR_RESTART: {
                 if (len == 6 && strncmp(val_start, "always", 6) == 0) {
@@ -1748,22 +1749,26 @@ static INLINE void _process_animation_attr_values(psx_svg_node* node, psx_svg_at
 
     if (type == SVG_ATTR_VALUES) {
         attr->val_type = SVG_ATTR_VALUE_PTR;
-        struct _parse_value_list_context ctx = {.mem_size = 0, .list_count = 0, .list = NULL};
+        struct _parse_value_list_context ctx;
+        ctx.mem_size = 0; ctx.list_count = 0; ctx.list = NULL;
         _parse_animation_value_list(node, attr, val_start, val_end, dpi, _animation_values_cb, &ctx);
         attr->value.val = ctx.list;
     } else if (type == SVG_ATTR_KEY_TIMES || type == SVG_ATTR_KEY_POINTS) {
         attr->val_type = SVG_ATTR_VALUE_PTR;
-        struct _parse_value_list_context ctx = {.mem_size = 0, .list_count = 0, .list = NULL};
+        struct _parse_value_list_context ctx;
+        ctx.mem_size = 0; ctx.list_count = 0; ctx.list = NULL;
         _parse_animation_value_list(node, attr, val_start, val_end, dpi, _animation_keys_cb, &ctx);
         attr->value.val = ctx.list;
     } else if (type == SVG_ATTR_KEY_SPLINES) {
         attr->val_type = SVG_ATTR_VALUE_PTR;
-        struct _parse_value_list_context ctx = {.mem_size = 0, .list_count = 0, .list = NULL};
+        struct _parse_value_list_context ctx;
+        ctx.mem_size = 0; ctx.list_count = 0; ctx.list = NULL;
         _parse_animation_value_list(node, attr, val_start, val_end, dpi, _animation_key_splines_cb, &ctx);
         attr->value.val = ctx.list;
     } else if (type == SVG_ATTR_BEGIN || type == SVG_ATTR_END) {
         attr->val_type = SVG_ATTR_VALUE_PTR;
-        struct _parse_value_list_context ctx = {.mem_size = 0, .list_count = 0, .list = NULL};
+        struct _parse_value_list_context ctx;
+        ctx.mem_size = 0; ctx.list_count = 0; ctx.list = NULL;
         _parse_animation_value_list(node, attr, val_start, val_end, dpi, _animation_begin_end_cb, &ctx);
         attr->value.val = ctx.list;
     } else {
@@ -1782,7 +1787,7 @@ static INLINE void _process_animation_attr_number(psx_svg_node* node, psx_svg_at
     attr->class_type = SVG_ATTR_VALUE_INITIAL;
 
     if (type == SVG_ATTR_REPEAT_COUNT) {
-        uint32_t len = val_end - val_start;
+        uint32_t len = BUF_LEN(val_start, val_end);
         if (len == 10 && strncmp(val_start, "indefinite", 10) == 0) {
             attr->value.uval = 0;
             return;
@@ -1792,7 +1797,7 @@ static INLINE void _process_animation_attr_number(psx_svg_node* node, psx_svg_at
         val_start = _parse_number(val_start, val_end, &val);
         attr->value.uval = (uint32_t)val;
     } else { // SVG_ATTR_ROTATE
-        uint32_t len = val_end - val_start;
+        uint32_t len = BUF_LEN(val_start, val_end);
         if (len == 4 && strncmp(val_start, "auto", 4) == 0) {
             // rotated over time by the angle of the direction (i.e., directional tangent vector) of the motion path
             attr->class_type = SVG_ATTR_VALUE_INHERIT;

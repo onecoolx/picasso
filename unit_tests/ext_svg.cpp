@@ -46,7 +46,7 @@ protected:
 
     void load(const char* data)
     {
-        root = psx_svg_load(data, strlen(data));
+        root = psx_svg_load(data, (uint32_t)strlen(data));
     }
 
     psx_svg_node* root;

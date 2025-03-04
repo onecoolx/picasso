@@ -34,7 +34,7 @@
 extern "C" {
 #endif
 
-#define TOKEN_LEN(t) ((t)->end - (t)->start)
+#define TOKEN_LEN(t) ((uint32_t)((t)->end - (t)->start))
 
 typedef enum {
     PSX_XML_BEGIN = 1,
