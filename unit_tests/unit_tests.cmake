@@ -14,6 +14,8 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(googletest)
 add_library(GTest::GTest INTERFACE IMPORTED)
 target_link_libraries(GTest::GTest INTERFACE gtest_main)
+add_library(GMock::GMock INTERFACE IMPORTED)
+target_link_libraries(GMock::GMock INTERFACE gmock_main)
 
 file(GLOB_RECURSE UNIT_SOURCES ${PROJECT_ROOT}/unit_tests/*.cpp)
 
@@ -21,7 +23,7 @@ set(UNIT_TESTS unit_tests)
 
 include_directories(${PROJECT_ROOT})
 add_executable(${UNIT_TESTS} ${UNIT_SOURCES})
-target_link_libraries(${UNIT_TESTS} PRIVATE GTest::GTest ${LIB_NAME} ${LIBX_COMMON} ${LIBX_IMAGE} ${LIBX_SVG_STATIC})
+target_link_libraries(${UNIT_TESTS} PRIVATE GTest::GTest GMock::GMock ${LIB_NAME} ${LIBX_COMMON} ${LIBX_IMAGE} ${LIBX_SVG_STATIC})
 
 if (WIN32)
     add_custom_command(
