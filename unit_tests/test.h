@@ -28,7 +28,21 @@
 #define _PICASSO_TEST_H_
 
 #include "picasso.h"
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
+#include <gmock/gmock.h>
 
 void clear_dcache(void);
+
+template <typename T>
+void CompareArrays(const T* expected, const T* actual, size_t length)
+{
+    for (size_t i = 0; i < length; ++i) {
+        EXPECT_EQ(expected[i], actual[i]) << "Mismatch at index " << i;
+    }
+}
+
+#define EXPECT_ARRAY_EQ(expected, actual, length) \
+    do { \
+        CompareArrays(expected, actual, length); \
+    } while (0)
 #endif
