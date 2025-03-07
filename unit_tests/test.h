@@ -28,8 +28,8 @@
 #define _PICASSO_TEST_H_
 
 #include "picasso.h"
-#include <gtest/gtest.h>
-#include <gmock/gmock.h>
+#include "gtest/gtest.h"
+#include "gmock/gmock.h"
 
 void clear_dcache(void);
 
