@@ -248,13 +248,13 @@ TEST_F(SVGParserTest, PathElementTest)
     const char* svg_path4 = "<svg><path d=\"m 100 200 150 180 L300 500 C 400 450 320.0 280.5 400 400 Z\"/></svg>";
     load(svg_path4);
     svg_node = root->get_child(0);
-    EXPECT_FLOAT_EQ(ps_path_get_length((ps_path*)(svg_node->attr_at(0)->value.val)), 945.00311);
+    EXPECT_FLOAT_EQ(ps_path_get_length((ps_path*)(svg_node->attr_at(0)->value.val)), 945.00311f);
     release();
 
     const char* svg_path5 = "<svg><path d=\"M 100 200 300 500 L400 450 l 150 100 H 500 h 100 H 600 v 100 s 100 200 300 400\"/></svg>";
     load(svg_path5);
     svg_node = root->get_child(0);
-    EXPECT_FLOAT_EQ(ps_path_get_length((ps_path*)(svg_node->attr_at(0)->value.val)), 1404.3647);
+    EXPECT_FLOAT_EQ(ps_path_get_length((ps_path*)(svg_node->attr_at(0)->value.val)), 1404.3647f);
 
     ps_path* path = (ps_path*)(svg_node->attr_at(0)->value.val);
 
@@ -371,8 +371,8 @@ TEST_F(SVGParserTest, TransformTest)
     svg_node = root->get_child(0);
     matrix = (ps_matrix*)(svg_node->attr_at(0)->value.val);
     ps_matrix_get_shear_factor(matrix, &shx, &shy);
-    EXPECT_FLOAT_EQ(shy, 0.17453294);
-    EXPECT_FLOAT_EQ(shx, 0.17453294);
+    EXPECT_FLOAT_EQ(shy, 0.17453294f);
+    EXPECT_FLOAT_EQ(shx, 0.17453294f);
     release();
 }
 
