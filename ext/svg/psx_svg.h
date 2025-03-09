@@ -282,6 +282,11 @@ public:
 
     psx_array* attrs(void) { return &m_attrs; }
 
+    psx_svg_node* get_child(uint32_t idx) const
+    {
+        return (psx_svg_node*)psx_tree_node::get_child(idx);
+    }
+
     NON_COPYABLE_CLASS(psx_svg_node);
 private:
     char* m_data; // id or content
@@ -295,7 +300,7 @@ private:
 extern "C" {
 #endif
 
-psx_svg_node* psx_svg_load(const char* svg_data, uint32_t len);
+psx_svg_node* psx_svg_load_data(const char* svg_data, uint32_t len);
 
 psx_svg_node* psx_svg_node_create(psx_svg_node* parent);
 

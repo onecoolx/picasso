@@ -84,7 +84,7 @@ static bool svg_token_process(void* context, const psx_xml_token* token)
 extern "C" {
 #endif
 
-psx_svg_node* psx_svg_load(const char* svg_data, uint32_t len)
+psx_svg_node* psx_svg_load_data(const char* svg_data, uint32_t len)
 {
     if (!svg_data || !len) {
         fprintf(stderr, "Bad arguments for svg data or length!\n");
