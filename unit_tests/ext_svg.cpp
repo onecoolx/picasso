@@ -746,3 +746,256 @@ TEST_F(SVGParserTest, BadCaseTest)
 
     release();
 }
+
+TEST_F(SVGParserTest, AnimateTest)
+{
+    const char* svg_anim0 = "<svg><rect xml:id=\"RectElement\" x=\"300\" y=\"100\" width=\"300\" height=\"100\">"
+                            "<animate attributeName=\"x\" dur=\"9s\" fill=\"freeze\" from=\"300\" to=\"0\"/>"
+                            "</rect></svg>";
+    load(svg_anim0);
+    psx_svg_node* svg_node = root->get_child(0);
+    psx_svg_node* anim_node = svg_node->get_child(0);
+    EXPECT_NE(nullptr, anim_node);
+
+    EXPECT_EQ(SVG_TAG_ANIMATE, anim_node->type());
+    psx_svg_attr_type at = (psx_svg_attr_type)anim_node->attr_at(0)->value.ival;
+    EXPECT_EQ(SVG_ATTR_X, at);
+
+    float dur = anim_node->attr_at(1)->value.fval;
+    EXPECT_FLOAT_EQ(dur, 9000.0f);
+
+    int ft = anim_node->attr_at(2)->value.ival;
+    EXPECT_EQ(ft, SVG_ANIMATION_FREEZE);
+
+    float fr = anim_node->attr_at(3)->value.fval;
+    EXPECT_FLOAT_EQ(fr, 300.0f);
+
+    float to = anim_node->attr_at(4)->value.fval;
+    EXPECT_FLOAT_EQ(to, 0.0f);
+    release();
+}
+
+TEST_F(SVGParserTest, SetTest)
+{
+    const char* svg_anim0 = "<svg><rect xml:id=\"RectElement\" x=\"300\" y=\"100\" width=\"300\" height=\"100\">"
+                            "<set attributeName=\"x\" to=\"500\" values=\"0\"/>"
+                            "</rect></svg>";
+    load(svg_anim0);
+    psx_svg_node* svg_node = root->get_child(0);
+    psx_svg_node* anim_node = svg_node->get_child(0);
+    EXPECT_NE(nullptr, anim_node);
+
+    EXPECT_EQ(SVG_TAG_SET, anim_node->type());
+    psx_svg_attr_type at = (psx_svg_attr_type)anim_node->attr_at(0)->value.ival;
+    EXPECT_EQ(SVG_ATTR_X, at);
+
+    float to = anim_node->attr_at(1)->value.fval;
+    EXPECT_FLOAT_EQ(to, 500.0f);
+    release();
+}
+
+TEST_F(SVGParserTest, AnimateMotionTest)
+{
+    const char* svg_anim0 = "<svg><path xml:id=\"path1\" d=\"M100,250 C 100,50 400,50 400,250\" "
+                            "fill=\"none\" stroke=\"blue\" stroke-width=\"7.06\"/>"
+                            "<animateMotion dur=\"6s\" repeatCount=\"indefinite\" rotate=\"auto\">"
+                            "<mpath xlink:href=\"#path1\"/>"
+                            "</animateMotion>"
+                            "</svg>";
+
+    load(svg_anim0);
+    psx_svg_node* path_node = root->get_child(0);
+    EXPECT_NE(nullptr, path_node);
+    psx_svg_node* anim_node = root->get_child(1);
+    EXPECT_NE(nullptr, anim_node);
+
+    EXPECT_EQ(SVG_TAG_ANIMATE_MOTION, anim_node->type());
+
+    psx_svg_node* mpath_node = anim_node->get_child(0);
+    EXPECT_NE(nullptr, mpath_node);
+
+    EXPECT_EQ(SVG_TAG_MPATH, mpath_node->type());
+
+    const char* xlink = mpath_node->attr_at(0)->value.sval;
+    EXPECT_STREQ(xlink, path_node->content());
+
+    uint32_t rp = anim_node->attr_at(1)->value.uval;
+    EXPECT_EQ(rp, 0);
+
+    float rt = anim_node->attr_at(2)->value.fval;
+    EXPECT_FLOAT_EQ(rt, 0.0f);
+    release();
+
+    const char* svg_anim1 = "<svg><circle r=\"5\" fill=\"blue\">"
+                            "<animateMotion begin=\"500ms\" dur=\"3.1s\" calcMode=\"linear\" "
+                            "keyPoints=\"0.5; 0.8; 1.0\" path=\"M15,43 C15,43 36,20 65,33\"/>"
+                            "</circle>"
+                            "</svg>";
+
+    load(svg_anim1);
+    path_node = root->get_child(0);
+    EXPECT_NE(nullptr, path_node);
+    anim_node = path_node->get_child(0);
+    EXPECT_NE(nullptr, anim_node);
+
+    EXPECT_EQ(SVG_TAG_ANIMATE_MOTION, anim_node->type());
+
+    psx_svg_attr_values_list* lb = (psx_svg_attr_values_list*)anim_node->attr_at(0)->value.val;
+    EXPECT_EQ(lb->length, 1);
+
+    float* fb = (float*)(&lb->data);
+    EXPECT_FLOAT_EQ(*fb, 500.0f);
+
+    float dr = anim_node->attr_at(1)->value.fval;
+    EXPECT_FLOAT_EQ(dr, 3100.0f);
+
+    int cm = anim_node->attr_at(2)->value.ival;
+    EXPECT_EQ(cm, SVG_ANIMATION_CALC_MODE_LINEAR);
+
+    psx_svg_attr_values_list* l = (psx_svg_attr_values_list*)anim_node->attr_at(3)->value.val;
+    EXPECT_EQ(l->length, 3);
+
+    float* pt = (float*)(&l->data);
+    EXPECT_FLOAT_EQ(pt[0], 0.5f);
+    EXPECT_FLOAT_EQ(pt[1], 0.8f);
+    EXPECT_FLOAT_EQ(pt[2], 1.0f);
+
+    release();
+
+    const char* svg_anim2 = "<svg><circle r=\"5\" fill=\"blue\">"
+                            "<animateMotion begin=\"5s;2s\" end=\"8s;10s\" values=\"100, 50;200 200\" keyTimes=\"100ms;200ms\""
+                            " keySplines=\"0 0 1.5 1.0; 0.5 0.5, 2.0,1.5\" additive=\"sum\" accumulate=\"none\"/>"
+                            "</circle>"
+                            "</svg>";
+
+    load(svg_anim2);
+    path_node = root->get_child(0);
+    EXPECT_NE(nullptr, path_node);
+    anim_node = path_node->get_child(0);
+    EXPECT_NE(nullptr, anim_node);
+
+    EXPECT_EQ(SVG_TAG_ANIMATE_MOTION, anim_node->type());
+
+    lb = (psx_svg_attr_values_list*)anim_node->attr_at(0)->value.val;
+    EXPECT_EQ(lb->length, 2);
+    fb = (float*)(&lb->data);
+    EXPECT_FLOAT_EQ(fb[0], 5000.0f);
+    EXPECT_FLOAT_EQ(fb[1], 2000.0f);
+
+    lb = (psx_svg_attr_values_list*)anim_node->attr_at(1)->value.val;
+    EXPECT_EQ(lb->length, 2);
+    fb = (float*)(&lb->data);
+    EXPECT_FLOAT_EQ(fb[0], 8000.0f);
+    EXPECT_FLOAT_EQ(fb[1], 10000.0f);
+
+    lb = (psx_svg_attr_values_list*)anim_node->attr_at(2)->value.val;
+    EXPECT_EQ(lb->length, 2);
+    psx_svg_point* ps = (psx_svg_point*)(&lb->data);
+    EXPECT_FLOAT_EQ(ps[0].x, 100.0f);
+    EXPECT_FLOAT_EQ(ps[0].y, 50.0f);
+    EXPECT_FLOAT_EQ(ps[1].x, 200.0f);
+    EXPECT_FLOAT_EQ(ps[1].y, 200.0f);
+
+    lb = (psx_svg_attr_values_list*)anim_node->attr_at(3)->value.val;
+    EXPECT_EQ(lb->length, 2);
+    fb = (float*)(&lb->data);
+    EXPECT_FLOAT_EQ(fb[0], 100.0f);
+    EXPECT_FLOAT_EQ(fb[1], 200.0f);
+
+    l = (psx_svg_attr_values_list*)anim_node->attr_at(4)->value.val;
+    EXPECT_EQ(l->length, 4);
+
+    ps = (psx_svg_point*)(&l->data);
+    EXPECT_FLOAT_EQ(ps[0].x, 0.0f);
+    EXPECT_FLOAT_EQ(ps[0].y, 0.0f);
+    EXPECT_FLOAT_EQ(ps[1].x, 1.5f);
+    EXPECT_FLOAT_EQ(ps[1].y, 1.0f);
+    EXPECT_FLOAT_EQ(ps[2].x, 0.5f);
+    EXPECT_FLOAT_EQ(ps[2].y, 0.5f);
+    EXPECT_FLOAT_EQ(ps[3].x, 2.0f);
+    EXPECT_FLOAT_EQ(ps[3].y, 1.5f);
+
+    release();
+}
+
+TEST_F(SVGParserTest, AnimateTransformTest)
+{
+    const char* svg_anim0 = "<svg><rect transform=\"skewX(30)\" x=0 y=0 width=100 height=100>"
+                            "<animateTransform attributeName=\"transform\" attributeType=\"XML\""
+                            "type=\"rotate\" from=\"0\" to=\"90\" dur=\"5s\""
+                            "additive=\"sum\" fill=\"freeze\"/>"
+                            "<animateTransform attributeName=\"transform\" attributeType=\"XML\""
+                            "type=\"scale\" from=\"1\" to=\"2\" dur=\"5s\" values=\"0.5; 0.2, 0.2\""
+                            "additive=\"sum\" fill=\"freeze\"/>"
+                            "</rect></svg>";
+
+    load(svg_anim0);
+    psx_svg_node* path_node = root->get_child(0);
+    EXPECT_NE(nullptr, path_node);
+    psx_svg_node* anim_node1 = path_node->get_child(0);
+    EXPECT_NE(nullptr, anim_node1);
+    EXPECT_EQ(SVG_TAG_ANIMATE_TRANSFORM, anim_node1->type());
+
+    psx_svg_node* anim_node2 = path_node->get_child(1);
+    EXPECT_NE(nullptr, anim_node2);
+    EXPECT_EQ(SVG_TAG_ANIMATE_TRANSFORM, anim_node2->type());
+
+    psx_svg_attr_type at = (psx_svg_attr_type)anim_node1->attr_at(0)->value.ival;
+    EXPECT_EQ(SVG_ATTR_TRANSFORM, at);
+
+    int32_t tt = anim_node1->attr_at(1)->value.ival;
+    EXPECT_EQ(SVG_TRANSFORM_TYPE_ROTATE, tt);
+
+    psx_svg_attr_values_list* l = (psx_svg_attr_values_list*)anim_node1->attr_at(2)->value.val;
+    EXPECT_EQ(l->length, 1);
+    float* pt = (float*)(&l->data);
+    EXPECT_FLOAT_EQ(pt[0], 0.0f);
+
+    l = (psx_svg_attr_values_list*)anim_node2->attr_at(5)->value.val;
+    EXPECT_EQ(l->length, 2);
+    psx_svg_attr_values_list* ll = (psx_svg_attr_values_list*)(&l->data);
+    EXPECT_EQ(ll->length, 1);
+    pt = (float*)(&ll->data);
+    EXPECT_FLOAT_EQ(pt[0], 0.5f);
+
+    ll = (psx_svg_attr_values_list*)((uint8_t*)(&l->data) + sizeof(uint32_t) + sizeof(float) * 4);
+    EXPECT_EQ(ll->length, 2);
+    pt = (float*)(&ll->data);
+    EXPECT_FLOAT_EQ(pt[0], 0.2f);
+    EXPECT_FLOAT_EQ(pt[1], 0.2f);
+
+    release();
+}
+
+TEST_F(SVGParserTest, AnimateColorTest)
+{
+    const char* svg_anim0 = "<svg><rect color=\"yellow\" fill=\"black\">"
+                            "<animateColor attributeName=\"fill\" from=\"red\" to=\"#DDF\" "
+                            "begin=\"1s\" dur=\"5s\" fill=\"freeze\" additive=\"sum\" repeatCount=5"
+                            " restart=\"whenNotActive\" values=\"rgb(0,255,0);black\" />"
+                            "</rect></svg>";
+
+    load(svg_anim0);
+    psx_svg_node* path_node = root->get_child(0);
+    EXPECT_NE(nullptr, path_node);
+    psx_svg_node* anim_node = path_node->get_child(0);
+    EXPECT_NE(nullptr, anim_node);
+    EXPECT_EQ(SVG_TAG_ANIMATE_COLOR, anim_node->type());
+
+    psx_svg_attr_type at = (psx_svg_attr_type)anim_node->attr_at(0)->value.ival;
+    EXPECT_EQ(SVG_ATTR_FILL, at);
+
+    uint32_t c = anim_node->attr_at(1)->value.uval;
+    EXPECT_EQ(c, 0xFF0000);
+
+    c = anim_node->attr_at(2)->value.uval;
+    EXPECT_EQ(c, 0xDDDDFF);
+
+    psx_svg_attr_values_list* l = (psx_svg_attr_values_list*)anim_node->attr_at(9)->value.val;
+    EXPECT_EQ(l->length, 2);
+    uint32_t* pc = (uint32_t*)(&l->data);
+    EXPECT_EQ(pc[0], 0x00FF00);
+    EXPECT_EQ(pc[1], 0x000000);
+
+    release();
+}
