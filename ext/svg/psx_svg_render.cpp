@@ -26,26 +26,10 @@
 
 #include "psx_svg_render.h"
 
-
-
-
-
-
-
-
-
-
-
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-
-
-
-
 #ifdef __cplusplus
 }
 #endif
-
