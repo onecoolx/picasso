@@ -38,7 +38,10 @@ bool _init_default_font(void)
 
 void _destory_default_font(void)
 {
-    ps_font_unref(_global_font);
+    if (_global_font) {
+        ps_font_unref(_global_font);
+        _global_font = NULL;
+    }
 }
 
 ps_font* _default_font(void)

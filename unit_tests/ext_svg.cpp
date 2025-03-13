@@ -32,6 +32,16 @@
 class SVGParserTest : public ::testing::Test
 {
 protected:
+    static void SetUpTestSuite()
+    {
+        PS_Init();
+    }
+
+    static void TearDownTestSuite()
+    {
+        PS_Shutdown();
+    }
+
     void SetUp() override
     {
         root = NULL;

@@ -46,3 +46,7 @@ void CompareArrays(const T* expected, const T* actual, size_t length)
         CompareArrays(expected, actual, length); \
     } while (0)
 #endif
+
+
+void PS_Init();
+void PS_Shutdown();

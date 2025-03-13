@@ -41,7 +41,7 @@ void clear_dcache(void)
     tmp = sum;
 }
 
-TEST(SystemDeathTest, Init)
+void PS_Init()
 {
     printf("picasso initialize\n");
     ASSERT_NE(False, ps_initialize());
@@ -50,7 +50,7 @@ TEST(SystemDeathTest, Init)
     ASSERT_EQ(STATUS_SUCCEED, ps_last_status());
 }
 
-TEST(System, Shutdown)
+void PS_Shutdown()
 {
     printf("picasso shutdown\n");
     ps_shutdown();

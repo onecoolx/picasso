@@ -24,50 +24,40 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "test.h"
+#ifndef _PSX_SVG_RENDER_H_
+#define _PSX_SVG_RENDER_H_
 
-class MatrixTest : public ::testing::Test
+#include "psx_common.h"
+#include "psx_svg.h"
+
+class psx_svg_render_obj
 {
-protected:
-    static void SetUpTestSuite()
-    {
-        PS_Init();
-    }
-
-    static void TearDownTestSuite()
-    {
-        PS_Shutdown();
-    }
+public:
+    virtual ~psx_svg_render_obj() { }
+    virtual void render(ps_context* ctx, const ps_matrix* matrix) = 0;
+    virtual void get_bounding_rect(ps_rect* rc) = 0;
+    virtual void update(void) = 0;
 };
 
-TEST_F(MatrixTest, CreateAndDestory)
+class psx_svg_render_list
 {
-    ps_matrix* m = NULL;
-    m = ps_matrix_create();
-    EXPECT_NE((ps_matrix*)NULL, m);
+public:
+    virtual ~psx_svg_render_list() { }
+    uint32_t get_bytes_size(void) const;
+private:
+    uint32_t m_bytes_size;
+};
 
-    ps_matrix* m2 = NULL;
-    m2 = ps_matrix_create_init(1, 0, 0, 1, 0, 0);
-    EXPECT_NE((ps_matrix*)NULL, m2);
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-    ps_matrix* m3 = NULL;
-    m3 = ps_matrix_create_copy(m);
-    EXPECT_NE((ps_matrix*)NULL, m3);
 
-    EXPECT_NE((ps_matrix*)NULL, ps_matrix_ref(m));
 
-    ps_matrix_unref(m);
-    ASSERT_EQ(STATUS_SUCCEED, ps_last_status());
 
-    ps_matrix_init(m, 1, 0, 0, 1, 0, 0);
-    ASSERT_EQ(STATUS_SUCCEED, ps_last_status());
 
-    ps_matrix_unref(m);
-    ASSERT_EQ(STATUS_SUCCEED, ps_last_status());
-
-    ps_matrix_unref(m2);
-    ASSERT_EQ(STATUS_SUCCEED, ps_last_status());
-
-    ps_matrix_unref(m3);
-    ASSERT_EQ(STATUS_SUCCEED, ps_last_status());
+#ifdef __cplusplus
 }
+#endif
+
+#endif /*_PSX_SVG_RENDER_H_*/

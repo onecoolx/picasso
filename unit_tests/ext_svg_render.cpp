@@ -25,8 +25,12 @@
  */
 
 #include "test.h"
+#include "timeuse.h"
 
-class MatrixTest : public ::testing::Test
+#include "psx_svg.h"
+#include "psx_svg_render.h"
+
+class SVGRenderTest : public ::testing::Test
 {
 protected:
     static void SetUpTestSuite()
@@ -38,36 +42,29 @@ protected:
     {
         PS_Shutdown();
     }
+
+    void SetUp() override
+    {
+        root = NULL;
+    }
+
+    void load(const char* data)
+    {
+        root = psx_svg_load_data(data, (uint32_t)strlen(data));
+    }
+
+    void release(void)
+    {
+        if (root) {
+            psx_svg_node_destroy(root);
+            root = NULL;
+        }
+    }
+
+    void TearDown() override
+    {
+        release();
+    }
+
+    psx_svg_node* root;
 };
-
-TEST_F(MatrixTest, CreateAndDestory)
-{
-    ps_matrix* m = NULL;
-    m = ps_matrix_create();
-    EXPECT_NE((ps_matrix*)NULL, m);
-
-    ps_matrix* m2 = NULL;
-    m2 = ps_matrix_create_init(1, 0, 0, 1, 0, 0);
-    EXPECT_NE((ps_matrix*)NULL, m2);
-
-    ps_matrix* m3 = NULL;
-    m3 = ps_matrix_create_copy(m);
-    EXPECT_NE((ps_matrix*)NULL, m3);
-
-    EXPECT_NE((ps_matrix*)NULL, ps_matrix_ref(m));
-
-    ps_matrix_unref(m);
-    ASSERT_EQ(STATUS_SUCCEED, ps_last_status());
-
-    ps_matrix_init(m, 1, 0, 0, 1, 0, 0);
-    ASSERT_EQ(STATUS_SUCCEED, ps_last_status());
-
-    ps_matrix_unref(m);
-    ASSERT_EQ(STATUS_SUCCEED, ps_last_status());
-
-    ps_matrix_unref(m2);
-    ASSERT_EQ(STATUS_SUCCEED, ps_last_status());
-
-    ps_matrix_unref(m3);
-    ASSERT_EQ(STATUS_SUCCEED, ps_last_status());
-}

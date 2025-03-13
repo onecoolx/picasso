@@ -26,16 +26,37 @@
 
 #include "test.h"
 
-ps_context* get_context()
+class ContextTest : public ::testing::Test
 {
-    static ps_canvas* e = ps_canvas_create(COLOR_FORMAT_RGBA, 200, 200);
-    static ps_context* c = ps_context_create(e, 0);
-    return c;
-}
+protected:
+    static void SetUpTestSuite()
+    {
+        PS_Init();
+    }
 
-TEST(Context, AntialiasAndGamma)
+    static void TearDownTestSuite()
+    {
+        PS_Shutdown();
+    }
+
+    void SetUp() override
+    {
+        canvas = ps_canvas_create(COLOR_FORMAT_RGBA, 200, 200);
+        ctx = ps_context_create(canvas, 0);
+    }
+
+    void TearDown() override
+    {
+        ps_context_unref(ctx);
+        ps_canvas_unref(canvas);
+    }
+
+    ps_canvas* canvas;
+    ps_context* ctx;
+};
+
+TEST_F(ContextTest, AntialiasAndGamma)
 {
-    ps_context* ctx = get_context();
     // gamma
     float g = 1.5;
     float old = ps_set_gamma(ctx, g);
