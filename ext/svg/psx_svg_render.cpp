@@ -57,7 +57,7 @@ public:
         psx_linear_allocator_destroy(m_alloc);
     }
 
-    uint32_t get_bytes_size(void) const override
+    virtual uint32_t get_bytes_size(void) const 
     {
         return (uint32_t)m_alloc->total_memory;
     }
