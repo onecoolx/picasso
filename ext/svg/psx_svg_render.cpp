@@ -59,7 +59,7 @@ public:
 
     uint32_t get_bytes_size(void) const override
     {
-        return m_alloc->total_memory;
+        return (uint32_t)m_alloc->total_memory;
     }
 private:
     psx_linear_allocator* m_alloc;
