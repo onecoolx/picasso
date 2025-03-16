@@ -39,5 +39,5 @@ install(TARGETS ${LIBX_SVG_STATIC} LIBRARY DESTINATION lib ARCHIVE DESTINATION l
 endif()
 
 include_directories(${PXSVG_DIR} ${PROJECT_ROOT}/ext/common ${PROJECT_ROOT}/include ${PROJECT_ROOT}/include/images ${PROJECT_ROOT}/include/svg)
-target_link_libraries(${LIBX_SVG} PRIVATE ${LIB_NAME})
+target_link_libraries(${LIBX_SVG} PRIVATE ${LIB_NAME} ${LIBX_COMMON})
 
