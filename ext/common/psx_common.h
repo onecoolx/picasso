@@ -29,11 +29,13 @@
 
 #include "pconfig.h"
 
+#include <assert.h>
 #include <ctype.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <stdarg.h>
 
 #ifdef HAVE_STDBOOL_H
     #include <stdbool.h>
@@ -75,6 +77,23 @@
 #ifndef mem_free
     #define mem_free free
 #endif
+
+/* abort */
+#define ABORT() abort()
+
+/* assert */
+#define ASSERT(cond) assert((cond))
+
+/* logs*/
+static INLINE void psx_log(const char* format, ...)
+{
+    va_list args;
+    va_start(args, format);
+    fprintf(stderr, format, args);
+    va_end(args);
+}
+#define LOG_ERROR(...) \
+    psx_log(__VA_ARGS__)
 
 /* c++ class utils */
 #define NON_COPYABLE_CLASS(type) \

@@ -12,6 +12,8 @@ set(PXSVG_SOURCES
     ${PXSVG_DIR}/psx_svg.cpp
     ${PXSVG_DIR}/psx_svg_parser.h
     ${PXSVG_DIR}/psx_svg_parser.cpp
+    ${PXSVG_DIR}/psx_svg_render.h
+    ${PXSVG_DIR}/psx_svg_render.cpp
 )
 
 set(LIBX_SVG psx_svg)

@@ -68,3 +68,9 @@ protected:
 
     psx_svg_node* root;
 };
+
+TEST_F(SVGRenderTest, SimpleTest)
+{
+    psx_svg_render_list* list = psx_svg_render_create(NULL);
+    EXPECT_EQ(nullptr, list);
+}

@@ -1979,7 +1979,7 @@ static INLINE bool _process_end_tag(psx_svg_parser* parser, psx_svg_tag tag, con
     }
 
     if (parser->cur_node->type() != tag) {
-        fprintf(stderr, "Svg tag does not match in pairs!\n");
+        LOG_ERROR("Svg tag does not match in pairs!\n");
         return false;
     }
 
@@ -2072,7 +2072,7 @@ bool psx_svg_parser_token(psx_svg_parser* parser, const psx_xml_token* token)
 
     if (parser->doc_root == NULL) {
         if (!(tag == SVG_TAG_SVG && token->type == PSX_XML_BEGIN)) {
-            fprintf(stderr, "Root element in svg document must be <svg>!\n");
+            LOG_ERROR("Root element in svg document must be <svg>!\n");
             return false;
         }
     }

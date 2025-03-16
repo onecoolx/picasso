@@ -72,6 +72,11 @@ static INLINE void ensure_next(linear_allocator_impl* mem, size_t size)
     mem->base.total_memory += block_size;
 
     mem_block_t* block = mem_malloc(block_size);
+    if (!block) {
+        LOG_ERROR("Out of memory!\n");
+        ABORT();
+        return;
+    }
     block->next = NULL;
     block->block_size = (uint32_t)block_size;
 
@@ -92,7 +97,7 @@ static INLINE void ensure_next(linear_allocator_impl* mem, size_t size)
 static INLINE void* _linear_alloc(struct _linear_allocator* mem, size_t size)
 {
     if (size > MAX_BLOCK_SIZE) {
-        fprintf(stderr, "Allocating more than 64kb of memory using the linear allocator is not allowed!\n");
+        LOG_ERROR("Allocating more than 64kb of memory using the linear allocator is not allowed!\n");
         return NULL;
     }
 
@@ -107,6 +112,10 @@ static INLINE void* _linear_alloc(struct _linear_allocator* mem, size_t size)
 psx_linear_allocator* psx_linear_allocator_create(psx_memory_align_t align)
 {
     linear_allocator_impl* mem = (linear_allocator_impl*)mem_malloc(sizeof(linear_allocator_impl));
+    ASSERT(mem != NULL);
+    if (!mem) {
+        return NULL;
+    }
     memset(mem, 0, sizeof(linear_allocator_impl));
 
     mem->base.alloc = _linear_alloc;
@@ -118,6 +127,11 @@ psx_linear_allocator* psx_linear_allocator_create(psx_memory_align_t align)
 
 void psx_linear_allocator_destroy(psx_linear_allocator* mem)
 {
+    ASSERT(mem != NULL);
+    if (!mem) {
+        return;
+    }
+
     mem_block_t* b = ((linear_allocator_impl*)mem)->blocks;
 
     while (b) {

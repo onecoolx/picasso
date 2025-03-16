@@ -87,7 +87,7 @@ extern "C" {
 psx_svg_node* psx_svg_load_data(const char* svg_data, uint32_t len)
 {
     if (!svg_data || !len) {
-        fprintf(stderr, "Bad arguments for svg data or length!\n");
+        LOG_ERROR( "Bad arguments for svg data or length!\n");
         return NULL;
     }
 
@@ -105,12 +105,12 @@ psx_svg_node* psx_svg_load_data(const char* svg_data, uint32_t len)
             return doc;
         } else {
             psx_svg_parser_destroy(&parser);
-            fprintf(stderr, "SVG document parser raise errors!\n");
+            LOG_ERROR( "SVG document parser raise errors!\n");
             return NULL;
         }
     } else {
         psx_svg_parser_destroy(&parser);
-        fprintf(stderr, "SVG document tokenizer raise errors!\n");
+        LOG_ERROR( "SVG document tokenizer raise errors!\n");
         return NULL;
     }
 }

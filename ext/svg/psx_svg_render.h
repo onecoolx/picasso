@@ -34,23 +34,26 @@ class psx_svg_render_obj
 {
 public:
     virtual ~psx_svg_render_obj() { }
+    virtual psx_svg_tag type(void) const = 0;
     virtual void render(ps_context* ctx, const ps_matrix* matrix) = 0;
     virtual void get_bounding_rect(ps_rect* rc) = 0;
-    virtual void update(void) = 0;
+    virtual void update(const psx_svg_node* node) = 0;
 };
 
 class psx_svg_render_list
 {
 public:
     virtual ~psx_svg_render_list() { }
-    uint32_t get_bytes_size(void) const;
-private:
-    uint32_t m_bytes_size;
+    virtual uint32_t get_bytes_size(void) const = 0;
 };
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+psx_svg_render_list* psx_svg_render_create(const psx_svg_node* doc);
+
+void psx_svg_render_destroy(psx_svg_render_list* list);
 
 #ifdef __cplusplus
 }
