@@ -179,10 +179,10 @@ static bool decompose_ft_outline(const FT_Outline& outline,
 
     FT_Vector* point;
     FT_Vector* limit;
-    char* tags;
+    unsigned char* tags;
 
     int first; // index of first point in contour
-    char tag; // current point's state
+    unsigned char tag; // current point's state
 
     first = 0;
 
