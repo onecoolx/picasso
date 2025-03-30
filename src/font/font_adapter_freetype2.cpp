@@ -198,7 +198,8 @@ static bool decompose_ft_outline(const FT_Outline& outline,
         v_control = v_start;
 
         point = outline.points + first;
-        tags = outline.tags + first;
+        tags = outline.tags;
+        tags += first;
         tag = FT_CURVE_TAG(tags[0]);
 
         // A contour cannot start with a cubic control point!
