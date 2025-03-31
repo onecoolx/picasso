@@ -36,7 +36,12 @@ configure_file(${ZLIB_DIR}/zconf.h ${CMAKE_CURRENT_BINARY_DIR}/include/zconf.h)
 configure_file(${ZLIB_DIR}/zlib.h ${CMAKE_CURRENT_BINARY_DIR}/include/zlib.h)
 
 add_library(zlib ${ZLIB_SOURCES})
-install(TARGETS zlib LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
+if (UNIX AND NOT APPLE)
+    include(GNUInstallDirs)
+    install(TARGETS zlib LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/picasso ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}/picasso)
+else
+    install(TARGETS zlib LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
+endif
 
 include_directories(${ZLIB_DIR} ${CMAKE_CURRENT_BINARY_DIR}/include)
 

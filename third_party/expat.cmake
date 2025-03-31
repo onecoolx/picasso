@@ -14,7 +14,12 @@ set(EXPAT_SOURCES
 include_directories(${EXPAT_DIR}/ ${EXPAT_DIR}/lib)
 
 add_library(expat STATIC ${EXPAT_SOURCES})
-install(TARGETS expat LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
+if (UNIX AND NOT APPLE)
+    include(GNUInstallDirs)
+    install(TARGETS expat LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/picasso ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}/picasso)
+else
+    install(TARGETS expat LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
+endif
 target_compile_definitions(expat PRIVATE -DHAVE_EXPAT_CONFIG_H=1)
 target_compile_options(expat PRIVATE  -fexceptions)
 
