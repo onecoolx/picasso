@@ -32,7 +32,7 @@ endif()
 
 if((NOT GIF) OR (NOT OPT_SYSTEM_GIF))
 if(NOT GIF)
-message("System giflib not found, building internal libgif")
+message("System giflib not found, building internal giflib")
 endif()
 include (${CMAKE_CURRENT_LIST_DIR}/giflib.cmake)
 endif()
