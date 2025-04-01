@@ -31,7 +31,7 @@
 #include "psx_linear_allocator.h"
 
 #define LINEAR_DEFAULT_BLOCK_SIZE    (1024) // 1kb
-#define MAX_BLOCK_SIZE   ((size_t)65536) // 64kb
+#define MAX_BLOCK_SIZE   ((size_t) 65536) // 64kb
 
 #define MEM_ALIGN(x, shift) \
     (((x) + ((shift) - 1)) & ~(shift - 1))

@@ -287,6 +287,9 @@ public:
         return (psx_svg_node*)psx_tree_node::get_child(idx);
     }
 
+    void set_render(psx_svg_render_obj* render) { m_render_obj = render; }
+    const psx_svg_render_obj* render(void) const { return m_render_obj; }
+
     NON_COPYABLE_CLASS(psx_svg_node);
 private:
     char* m_data; // id or content

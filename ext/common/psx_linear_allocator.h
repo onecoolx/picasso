@@ -43,7 +43,11 @@ typedef enum {
     PSX_LINEAR_ALIGN_64 = (1 << 6),
 } psx_memory_align_t;
 
+#if defined(_M_X64) || defined(__x86_64__) || defined(__aarch64__)
+#define PSX_LINEAR_ALIGN_DEFAULT PSX_LINEAR_ALIGN_8
+#else // 32bit system
 #define PSX_LINEAR_ALIGN_DEFAULT PSX_LINEAR_ALIGN_4
+#endif
 
 typedef struct _linear_allocator {
     size_t total_memory;
