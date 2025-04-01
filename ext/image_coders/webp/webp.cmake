@@ -15,7 +15,11 @@ set(LIBX_WEBP psxm_image_webp)
 
 add_definitions(-DEXPORT)
 add_library(${LIBX_WEBP} ${PXWEBP_SOURCES})
+if(OPT_SYSTEM_WEBP AND WEBP})
+target_link_libraries(${LIBX_WEBP} PRIVATE ${WEBP})
+else()
 target_link_libraries(${LIBX_WEBP} PRIVATE webp)
+endif()
 install(TARGETS ${LIBX_WEBP} LIBRARY DESTINATION lib/modules ARCHIVE DESTINATION lib/modules)
 
 set_target_properties(${LIBX_WEBP}

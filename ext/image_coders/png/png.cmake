@@ -15,7 +15,11 @@ set(LIBX_PNG psxm_image_png)
 
 add_definitions(-DEXPORT)
 add_library(${LIBX_PNG} ${PXPNG_SOURCES})
+if(OPT_SYSTEM_PNG AND PNG)
+target_link_libraries(${LIBX_PNG} PRIVATE ${PNG})
+else()
 target_link_libraries(${LIBX_PNG} PRIVATE png)
+endif()
 install(TARGETS ${LIBX_PNG} LIBRARY DESTINATION lib/modules ARCHIVE DESTINATION lib/modules)
 
 set_target_properties(${LIBX_PNG}
