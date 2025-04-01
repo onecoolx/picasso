@@ -14,5 +14,5 @@ set(LIBX_COMMON psx_common)
 
 add_library(${LIBX_COMMON} STATIC ${PXCOMMON_SOURCES})
 install(TARGETS ${LIBX_COMMON} LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
-include_directories(${PXCOMMON_DIR} ${PROJECT_ROOT}/ext/common)
+include_directories(${PXCOMMON_DIR} ${PROJECT_ROOT}/ext/common ${PROJECT_ROOT}/include ${PROJECT_OUT}/include)
 
