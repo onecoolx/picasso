@@ -170,7 +170,12 @@ foreach(webp_header ${WEBP_HEADERS})
 endforeach(webp_header ${WEBP_HEADERS})
 
 add_library(webp ${WEBP_SOURCES})
-install(TARGETS webp LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
+if (UNIX AND NOT APPLE)
+    include(GNUInstallDirs)
+    install(TARGETS webp LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/picasso ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}/picasso)
+else
+    install(TARGETS webp LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
+endif
 
 include_directories(${WEBP_DIR} ${CMAKE_CURRENT_BINARY_DIR}/include)
 

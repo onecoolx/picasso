@@ -76,7 +76,12 @@ configure_file(${JPEG_DIR}/jmorecfg.h ${CMAKE_CURRENT_BINARY_DIR}/include/jmorec
 configure_file(${JPEG_DIR}/jpeglib.h ${CMAKE_CURRENT_BINARY_DIR}/include/jpeglib.h)
 
 add_library(jpeg ${JPEG_SOURCES})
-install(TARGETS jpeg LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
+if (UNIX AND NOT APPLE)
+    include(GNUInstallDirs)
+    install(TARGETS jpeg LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/picasso ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}/picasso)
+else
+    install(TARGETS jpeg LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
+endif
 
 include_directories(${JPEG_DIR} ${JPEG_DIR}/build ${JPEG_DIR}/simd ${CMAKE_CURRENT_BINARY_DIR}/include)
 

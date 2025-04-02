@@ -29,7 +29,12 @@ endif()
 configure_file(${GIF_DIR}/lib/gif_lib.h ${CMAKE_CURRENT_BINARY_DIR}/include/gif_lib.h)
 
 add_library(gif ${GIF_SOURCES})
-install(TARGETS gif LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
+if (UNIX AND NOT APPLE)
+    include(GNUInstallDirs)
+    install(TARGETS gif LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/picasso ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}/picasso)
+else
+    install(TARGETS gif LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
+endif
 
 include_directories(${GIF_DIR} ${CMAKE_CURRENT_BINARY_DIR}/include)
 

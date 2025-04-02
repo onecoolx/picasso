@@ -38,7 +38,12 @@ configure_file(${PNG_DIR}/pngconf.h ${CMAKE_CURRENT_BINARY_DIR}/include/pngconf.
 configure_file(${PNG_DIR}/png.h ${CMAKE_CURRENT_BINARY_DIR}/include/png.h)
 
 add_library(png ${PNG_SOURCES})
-install(TARGETS png LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
+if (UNIX AND NOT APPLE)
+    include(GNUInstallDirs)
+    install(TARGETS png LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/picasso ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}/picasso)
+else
+    install(TARGETS png LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
+endif
 
 include_directories(${PNG_DIR} ${CMAKE_CURRENT_BINARY_DIR}/include)
 target_link_libraries(png PRIVATE zlib)
