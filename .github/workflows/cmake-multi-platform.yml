@@ -76,7 +76,7 @@ jobs:
         -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
         -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
-        -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+        -DCMAKE_POLICY_VERSION_MINIMUM="3.5"
         -DOPT_UNITTEST=ON
         -S ${{ github.workspace }}
 
