@@ -256,8 +256,8 @@ static void write_default(void)
 
     if ((pf = OPENFILE(CONFIG_FILE, F("a+")))) {
 
-        fprintf(pf, "[%s]\n", "sung");
-        fprintf(pf, "path=%s\n", "sung.ttf");
+        fprintf(pf, "[%s]\n", "zcoolxiaowei");
+        fprintf(pf, "path=%s\n", "ZCOOLXiaoWei-Regular.ttf");
         fprintf(pf, "[%s]\n", "arial");
         fprintf(pf, "path=%s\n", "arial.ttf");
 
@@ -328,7 +328,7 @@ bool _load_fonts(void)
     if (!g_font_map.size()) {
 
         font_item* ansi_font = get_font_item("arial", "arial.ttf");
-        font_item* uni_font = get_font_item("sung", "sung.ttf");
+        font_item* uni_font = get_font_item("zcoolxiaowei", "ZCOOLXiaoWei-Regular.ttf");
 
         g_font_map.add(uni_font);
         g_font_map.add(ansi_font);
