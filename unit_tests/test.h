@@ -31,7 +31,13 @@
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 
+#define TEST_WIDTH 640
+#define TEST_HEIGHT 480
+
+void PS_Init();
+void PS_Shutdown();
 void clear_dcache(void);
+ps_canvas* get_test_canvas(void);
 
 template <typename T>
 void CompareArrays(const T* expected, const T* actual, size_t length)
@@ -45,7 +51,17 @@ void CompareArrays(const T* expected, const T* actual, size_t length)
     do { \
         CompareArrays(expected, actual, length); \
     } while (0)
+
+::testing::AssertionResult CompareToImage(const char* actual_file);
+
+#ifndef SNAPSHOT_PATH
+    #define SNAPSHOT_PATH ""
 #endif
 
-void PS_Init();
-void PS_Shutdown();
+#define EXPECT_SNAPSHOT_EQ(actual) \
+    do { \
+        ::testing::AssertionResult pixels = CompareToImage("./snapshots/" SNAPSHOT_PATH "/" actual); \
+        EXPECT_TRUE(pixels); \
+    } while(0)
+
+#endif

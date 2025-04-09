@@ -17,13 +17,23 @@ target_link_libraries(GTest::GTest INTERFACE gtest_main)
 add_library(GMock::GMock INTERFACE IMPORTED)
 target_link_libraries(GMock::GMock INTERFACE gmock_main)
 
+FetchContent_Declare(
+  lodepng
+  GIT_REPOSITORY https://github.com/onecoolx/lodepng.git
+  GIT_TAG        939fbb9 # current used version
+)
+FetchContent_MakeAvailable(lodepng)
+add_library(lodepng INTERFACE IMPORTED)
+
 file(GLOB_RECURSE UNIT_SOURCES ${PROJECT_ROOT}/unit_tests/*.cpp)
+set(UNIT_SOURCES ${UNIT_SOURCES} ${lodepng_SOURCE_DIR}/lodepng.cpp)
 
 set(UNIT_TESTS unit_tests)
 
 include_directories(${PROJECT_ROOT})
 add_executable(${UNIT_TESTS} ${UNIT_SOURCES})
-target_link_libraries(${UNIT_TESTS} PRIVATE GTest::GTest GMock::GMock ${LIB_NAME} ${LIBX_COMMON} ${LIBX_IMAGE} ${LIBX_SVG_STATIC})
+target_link_libraries(${UNIT_TESTS} PRIVATE GTest::GTest GMock::GMock lodepng ${LIB_NAME} ${LIBX_COMMON} ${LIBX_IMAGE} ${LIBX_SVG_STATIC})
+target_include_directories(${UNIT_TESTS} PRIVATE ${lodepng_SOURCE_DIR})
 
 if (WIN32)
     add_custom_command(
@@ -32,6 +42,7 @@ if (WIN32)
         COMMAND_EXPAND_LISTS
     )
 else()
+    file(COPY ${PROJECT_ROOT}/unit_tests/snapshots DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
     target_compile_options(${UNIT_TESTS} PRIVATE -std=c++17)
 endif()
 

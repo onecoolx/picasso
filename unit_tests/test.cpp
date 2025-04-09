@@ -25,6 +25,7 @@
  */
 
 #include "test.h"
+#include "lodepng.h"
 
 volatile int tmp;
 static int dummy[4096000];
@@ -41,6 +42,10 @@ void clear_dcache(void)
     tmp = sum;
 }
 
+const uint8_t tolerance = 0;
+static uint8_t* test_buffer = NULL;
+static ps_canvas* test_canvas = NULL;
+
 void PS_Init()
 {
     printf("picasso initialize\n");
@@ -48,11 +53,166 @@ void PS_Init()
     int v = ps_version();
     fprintf(stderr, "picasso version %d \n", v);
     ASSERT_EQ(STATUS_SUCCEED, ps_last_status());
+
+    if (!test_buffer) {
+        test_buffer = (uint8_t*)calloc(TEST_WIDTH * 4, TEST_HEIGHT);
+        test_canvas = ps_canvas_create_with_data(test_buffer, COLOR_FORMAT_RGBA, TEST_WIDTH, TEST_HEIGHT, TEST_WIDTH * 4);
+    }
 }
 
 void PS_Shutdown()
 {
+    if (test_buffer) {
+        ps_canvas_unref(test_canvas);
+        test_canvas = NULL;
+        free(test_buffer);
+        test_buffer = NULL;
+    }
+
     printf("picasso shutdown\n");
     ps_shutdown();
     ASSERT_EQ(STATUS_SUCCEED, ps_last_status());
+}
+
+ps_canvas* get_test_canvas(void)
+{
+    return test_canvas;
+}
+
+static bool _file_exists(const char* path)
+{
+    struct stat fileInfo;
+    return !stat(path, &fileInfo);
+}
+
+static unsigned int _load_image(const char* actual_file, std::vector<uint8_t>& image, unsigned int& width, unsigned int& height)
+{
+    return lodepng::decode(image, width, height, actual_file);
+}
+
+// image compare
+static ::testing::AssertionResult _compare_images(
+    const uint8_t* expected_image, unsigned int expected_width, unsigned int expected_height,
+    const uint8_t* actual_image, unsigned int actual_width, unsigned int actual_height)
+{
+    if (expected_width != actual_width || expected_height != actual_height) {
+        return ::testing::AssertionFailure()
+               << "Image size mismatch!\n"
+               << "Expected: " << expected_width << "x" << expected_height << "\n"
+               << "Actual:   " << actual_width << "x" << actual_height;
+    }
+
+    const size_t pixel_count = expected_width * expected_height;
+    for (size_t i = 0; i < pixel_count; ++i) {
+        const size_t idx = i * 4;
+
+        if (std::abs(expected_image[idx] - actual_image[idx]) > tolerance || // R
+            std::abs(expected_image[idx + 1] - actual_image[idx + 1]) > tolerance || // G
+            std::abs(expected_image[idx + 2] - actual_image[idx + 2]) > tolerance || // B
+            std::abs(expected_image[idx + 3] - actual_image[idx + 3]) > tolerance) { // A
+
+            const size_t x = i % expected_width;
+            const size_t y = i / expected_width;
+
+            return ::testing::AssertionFailure()
+                   << "Pixel mismatch at (" << x << ", " << y << ")\n"
+                   << "Expected: RGBA("
+                   << static_cast<int>(expected_image[idx]) << ", "
+                   << static_cast<int>(expected_image[idx + 1]) << ", "
+                   << static_cast<int>(expected_image[idx + 2]) << ", "
+                   << static_cast<int>(expected_image[idx + 3]) << ")\n"
+                   << "Actual:   RGBA("
+                   << static_cast<int>(actual_image[idx]) << ", "
+                   << static_cast<int>(actual_image[idx + 1]) << ", "
+                   << static_cast<int>(actual_image[idx + 2]) << ", "
+                   << static_cast<int>(actual_image[idx + 3]) << ")";
+        }
+    }
+
+    return ::testing::AssertionSuccess();
+}
+
+static ::testing::AssertionResult _save_image(
+    const uint8_t* image_buf, unsigned int width, unsigned int height,
+    const char* save_file)
+{
+    unsigned error = lodepng_encode32_file(save_file, image_buf, width, height);
+    if (error) {
+        return ::testing::AssertionFailure()
+               << "Failed to save actual image: " << lodepng_error_text(error);
+    }
+    return ::testing::AssertionSuccess();
+}
+
+static void _generate_diff_image(std::vector<uint8_t>& diffImage, const uint8_t* image1, unsigned int width1, unsigned int height1,
+                                 const uint8_t* image2, unsigned int width2, unsigned int height2)
+{
+    unsigned int width = width1;
+    unsigned int height = height1;
+    const size_t pixelCount = width * height;
+
+    diffImage.resize(pixelCount * 4);
+
+    for (size_t i = 0; i < pixelCount; ++i) {
+        const size_t idx = i * 4;
+        uint8_t r1 = image1[idx];
+        uint8_t g1 = image1[idx + 1];
+        uint8_t b1 = image1[idx + 2];
+        uint8_t a1 = image1[idx + 3];
+
+        uint8_t r2 = image2[idx];
+        uint8_t g2 = image2[idx + 1];
+        uint8_t b2 = image2[idx + 2];
+        uint8_t a2 = image2[idx + 3];
+
+        bool diff = (std::abs(r1 - r2) > tolerance) ||
+                    (std::abs(g1 - g2) > tolerance) ||
+                    (std::abs(b1 - b2) > tolerance) ||
+                    (std::abs(a1 - a2) > tolerance);
+
+        if (diff) {
+            diffImage[idx] = 255; // R
+            diffImage[idx + 1] = 0; // G
+            diffImage[idx + 2] = 0; // B
+            diffImage[idx + 3] = 255; // A
+        } else {
+            diffImage[idx] = r1; // R
+            diffImage[idx + 1] = g1; // G
+            diffImage[idx + 2] = b1; // B
+            diffImage[idx + 3] = (uint8_t)(a1 * 0.5f); // A
+        }
+    }
+}
+
+::testing::AssertionResult CompareToImage(const char* actual_file)
+{
+    if (!_file_exists(actual_file)) {
+        return _save_image(test_buffer, TEST_WIDTH, TEST_HEIGHT, actual_file);
+    }
+
+    std::vector<uint8_t> actual_image;
+    unsigned int actual_width, actual_height;
+    unsigned int error = _load_image(actual_file, actual_image, actual_width, actual_height);
+    if (error) {
+        return ::testing::AssertionFailure()
+               << "Failed to load actual image: "
+               << lodepng_error_text(error);
+    }
+
+    ::testing::AssertionResult result = _compare_images(test_buffer, TEST_WIDTH, TEST_HEIGHT,
+                                                        actual_image.data(), actual_width, actual_height);
+    if (!result) {
+        std::string file_name = actual_file;
+        std::string pure_name = file_name.substr(0, file_name.rfind("."));
+
+        std::string err_file = pure_name + "_failed.png";
+        _save_image(test_buffer, TEST_WIDTH, TEST_HEIGHT, err_file.c_str());
+
+        std::vector<uint8_t> diff_image;
+        std::string diff_file = pure_name + "_diff.png";
+        _generate_diff_image(diff_image, test_buffer, TEST_WIDTH, TEST_HEIGHT,
+                             actual_image.data(), actual_width, actual_height);
+        _save_image(diff_image.data(), TEST_WIDTH, TEST_HEIGHT, diff_file.c_str());
+    }
+    return result;
 }
