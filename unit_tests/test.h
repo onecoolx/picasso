@@ -38,6 +38,7 @@ void PS_Init();
 void PS_Shutdown();
 void clear_dcache(void);
 ps_canvas* get_test_canvas(void);
+void clear_test_canvas(void);
 
 template <typename T>
 void CompareArrays(const T* expected, const T* actual, size_t length)
@@ -60,7 +61,7 @@ void CompareArrays(const T* expected, const T* actual, size_t length)
 
 #define EXPECT_SNAPSHOT_EQ(actual) \
     do { \
-        ::testing::AssertionResult pixels = CompareToImage("./snapshots/" SNAPSHOT_PATH "/" actual); \
+        ::testing::AssertionResult pixels = CompareToImage("./snapshots/" SNAPSHOT_PATH "/" #actual ".png"); \
         EXPECT_TRUE(pixels); \
     } while(0)
 

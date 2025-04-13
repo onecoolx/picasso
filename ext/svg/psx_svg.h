@@ -215,10 +215,13 @@ enum {
 
 typedef struct _ps_point psx_svg_point;
 
+typedef struct {
+    float m[3][3];
+} psx_svg_matrix;
+
 enum {
     SVG_ATTR_VALUE_DATA = 0,
     SVG_ATTR_VALUE_PTR,
-    SVG_ATTR_VALUE_MATRIX_PTR,
     SVG_ATTR_VALUE_PATH_PTR,
 };
 
@@ -272,6 +275,7 @@ public:
         return m_data;
     }
 
+    bool has_content(void) const { return m_data != NULL; }
     void set_content(const char* data, uint32_t len);
 
     uint32_t attr_count(void) const { return psx_array_size(&m_attrs); }
@@ -308,6 +312,20 @@ psx_svg_node* psx_svg_load_data(const char* svg_data, uint32_t len);
 psx_svg_node* psx_svg_node_create(psx_svg_node* parent);
 
 void psx_svg_node_destroy(psx_svg_node* node);
+
+
+// svg matrix function
+void psx_svg_matrix_identity(psx_svg_matrix* matrix);
+
+void psx_svg_matrix_init(psx_svg_matrix* matrix, float a, float b, float c, float d, float e, float f);
+
+void psx_svg_matrix_translate(psx_svg_matrix* matrix, float tx, float ty);
+
+void psx_svg_matrix_scale(psx_svg_matrix* matrix, float sx, float sy);
+
+void psx_svg_matrix_rotate(psx_svg_matrix* matrix, float rad);
+
+void psx_svg_matrix_skew(psx_svg_matrix* matrix, float shx, float shy);
 
 #ifdef __cplusplus
 }

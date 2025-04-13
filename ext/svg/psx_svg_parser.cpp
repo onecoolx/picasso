@@ -530,7 +530,7 @@ static INLINE const char* _parse_color(const char* str, const char* str_end, uin
 }
 
 static INLINE const char* _parse_matrix(const char* str, const char* str_end, uint32_t type,
-                                        ps_matrix* matrix)
+                                        psx_svg_matrix* matrix)
 {
     // skip loading
     while ((str < str_end) && *str != '(') {
@@ -553,7 +553,7 @@ static INLINE const char* _parse_matrix(const char* str, const char* str_end, ui
                     str = ptr;
                 }
 
-                ps_matrix_init(matrix, vals[0], vals[1], vals[2], vals[3], vals[4], vals[5]);
+                psx_svg_matrix_init(matrix, vals[0], vals[1], vals[2], vals[3], vals[4], vals[5]);
             }
             break;
         case SVG_TRANSFORM_TYPE_TRANSLATE: {
@@ -572,7 +572,7 @@ static INLINE const char* _parse_matrix(const char* str, const char* str_end, ui
                     }
                 }
 
-                ps_matrix_translate(matrix, tx, ty);
+                psx_svg_matrix_translate(matrix, tx, ty);
             }
             break;
         case SVG_TRANSFORM_TYPE_ROTATE: {
@@ -597,11 +597,11 @@ static INLINE const char* _parse_matrix(const char* str, const char* str_end, ui
 
                 float radian = degree / 180.0f * (float)M_PI;
                 if (!trans) {
-                    ps_matrix_rotate(matrix, radian);
+                    psx_svg_matrix_rotate(matrix, radian);
                 } else {
-                    ps_matrix_translate(matrix, -cx, -cy);
-                    ps_matrix_rotate(matrix, radian);
-                    ps_matrix_translate(matrix, cx, cy);
+                    psx_svg_matrix_translate(matrix, cx, cy);
+                    psx_svg_matrix_rotate(matrix, radian);
+                    psx_svg_matrix_translate(matrix, -cx, -cy);
                 }
             }
             break;
@@ -622,7 +622,7 @@ static INLINE const char* _parse_matrix(const char* str, const char* str_end, ui
                         str = ptr;
                     }
                 }
-                ps_matrix_scale(matrix, sx, sy);
+                psx_svg_matrix_scale(matrix, sx, sy);
             }
             break;
         case SVG_TRANSFORM_TYPE_SKEW_X: {
@@ -634,7 +634,7 @@ static INLINE const char* _parse_matrix(const char* str, const char* str_end, ui
                 str = ptr;
 
                 float radian = degree / 180.0f * (float)M_PI;
-                ps_matrix_shear(matrix, radian, 0);
+                psx_svg_matrix_skew(matrix, radian, 0);
             }
             break;
         case SVG_TRANSFORM_TYPE_SKEW_Y: {
@@ -646,7 +646,7 @@ static INLINE const char* _parse_matrix(const char* str, const char* str_end, ui
                 str = ptr;
 
                 float radian = degree / 180.0f * (float)M_PI;
-                ps_matrix_shear(matrix, 0, radian);
+                psx_svg_matrix_skew(matrix, 0, radian);
             }
             break;
     }
@@ -690,7 +690,7 @@ static INLINE void _process_string(psx_svg_node* node, psx_svg_attr_type type, c
 
     uint32_t len = BUF_LEN(val_start, val_end);
     char* str = (char*)mem_malloc(len + 1);
-    memcpy(str, val_start, len);
+    mem_copy(str, val_start, len);
     str[len] = '\0';
     attr->value.sval = str;
 }
@@ -710,7 +710,7 @@ static INLINE void _process_xlink(psx_svg_node* node, psx_svg_attr_type type, co
 
     uint32_t len = BUF_LEN(val_start, val_end);
     char* str = (char*)mem_malloc(len + 1);
-    memcpy(str, val_start, len);
+    mem_copy(str, val_start, len);
     str[len] = '\0';
     attr->value.sval = str;
 }
@@ -956,7 +956,7 @@ static INLINE void _process_paint(psx_svg_node* node, psx_svg_attr_type type, co
             attr->val_type = SVG_ATTR_VALUE_PTR;
             len = BUF_LEN(url_start, url_end);
             char* node_id = (char*)mem_malloc(len + 1);
-            memcpy(node_id, url_start, len);
+            mem_copy(node_id, url_start, len);
             node_id[len] = '\0';
             attr->value.sval = node_id;
         }
@@ -1037,7 +1037,7 @@ static INLINE void _process_paint_attrs(psx_svg_node* node, psx_svg_attr_type ty
         if (val < 1.0f) {
             val = 1.0f;
         }
-        attr->value.ival = (int32_t)val;
+        attr->value.fval = val;
     } else if (type == SVG_ATTR_STROKE_DASH_OFFSET) {
         float val = 0.0f;
         val_start = _parse_number(val_start, val_end, &val);
@@ -1122,7 +1122,7 @@ static INLINE void _process_font_attrs(psx_svg_node* node, psx_svg_attr_type typ
         attr->val_type = SVG_ATTR_VALUE_PTR;
 
         char* str = (char*)mem_malloc(len + 1);
-        memcpy(str, val_start, len);
+        mem_copy(str, val_start, len);
         str[len] = '\0';
         attr->value.sval = str;
     }
@@ -1135,7 +1135,7 @@ static INLINE void _process_transform(psx_svg_node* node, psx_svg_attr_type type
     psx_svg_attr* attr = psx_array_get_last(node->attrs(), psx_svg_attr);
 
     attr->attr_id = type;
-    attr->val_type = SVG_ATTR_VALUE_MATRIX_PTR;
+    attr->val_type = SVG_ATTR_VALUE_PTR;
     attr->class_type = SVG_ATTR_VALUE_INITIAL;
 
     uint32_t len = BUF_LEN(val_start, val_end);
@@ -1146,7 +1146,9 @@ static INLINE void _process_transform(psx_svg_node* node, psx_svg_attr_type type
         return;
     }
 
-    ps_matrix* matrix = ps_matrix_create();
+    psx_svg_matrix* matrix = (psx_svg_matrix*)mem_malloc(sizeof(psx_svg_matrix));
+    psx_svg_matrix_identity(matrix);
+
     const char* ptr = val_start;
     while (ptr < val_end) {
         ptr = _skip_space(ptr, val_end);
@@ -2012,7 +2014,7 @@ static INLINE bool _process_begin_tag(psx_svg_parser* parser, psx_svg_tag tag, c
             uint32_t len = TOKEN_LEN(token);
             parser->ignore_name = (char*)mem_malloc(len + 1);
             parser->ignore_len = len;
-            memcpy(parser->ignore_name, token->start, len);
+            mem_copy(parser->ignore_name, token->start, len);
             parser->ignore_name[len] = '\0';
         }
         return true;

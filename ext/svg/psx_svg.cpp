@@ -27,12 +27,12 @@
 #include "psx_svg.h"
 #include "psx_svg_parser.h"
 
+#include <math.h>
+
 static INLINE void _free_svg_attr_value(psx_svg_attr* attr)
 {
     if (attr->val_type == SVG_ATTR_VALUE_PTR) {
         mem_free(attr->value.val);
-    } else if (attr->val_type == SVG_ATTR_VALUE_MATRIX_PTR) {
-        ps_matrix_unref((ps_matrix*)attr->value.val);
     } else if (attr->val_type == SVG_ATTR_VALUE_PATH_PTR) {
         ps_path_unref((ps_path*)attr->value.val);
     }
@@ -69,7 +69,7 @@ void psx_svg_node::set_content(const char* data, uint32_t len)
     }
 
     m_data = (char*)mem_malloc(len + 1);
-    memcpy(m_data, data, len);
+    mem_copy(m_data, data, len);
     m_data[len] = '\0';
     m_len = len;
 }
@@ -123,6 +123,144 @@ psx_svg_node* psx_svg_node_create(psx_svg_node* parent)
 void psx_svg_node_destroy(psx_svg_node* node)
 {
     delete node;
+}
+
+// svg matrix
+static INLINE bool _matrix_translation_only(const psx_svg_matrix * matrix)
+{
+    return (matrix->m[0][0] == 1.0f &&
+            matrix->m[0][1] == 0.0f &&
+            matrix->m[1][0] == 0.0f &&
+            matrix->m[1][1] == 1.0f &&
+            matrix->m[2][0] == 0.0f &&
+            matrix->m[2][1] == 0.0f &&
+            matrix->m[2][2] == 1.0f);
+}
+
+static INLINE void _matrix_multiply(psx_svg_matrix * matrix, const psx_svg_matrix * matrix2)
+{
+    psx_svg_matrix result;
+    result.m[0][0] = matrix->m[0][0] * matrix2->m[0][0] + matrix->m[0][1] * matrix2->m[1][0] + matrix->m[0][2] *
+                     matrix2->m[2][0];
+    result.m[0][1] = matrix->m[0][0] * matrix2->m[0][1] + matrix->m[0][1] * matrix2->m[1][1] + matrix->m[0][2] *
+                     matrix2->m[2][1];
+    result.m[0][2] = matrix->m[0][0] * matrix2->m[0][2] + matrix->m[0][1] * matrix2->m[1][2] + matrix->m[0][2] *
+                     matrix2->m[2][2];
+
+    result.m[1][0] = matrix->m[1][0] * matrix2->m[0][0] + matrix->m[1][1] * matrix2->m[1][0] + matrix->m[1][2] *
+                     matrix2->m[2][0];
+    result.m[1][1] = matrix->m[1][0] * matrix2->m[0][1] + matrix->m[1][1] * matrix2->m[1][1] + matrix->m[1][2] *
+                     matrix2->m[2][1];
+    result.m[1][2] = matrix->m[1][0] * matrix2->m[0][2] + matrix->m[1][1] * matrix2->m[1][2] + matrix->m[1][2] *
+                     matrix2->m[2][2];
+
+    result.m[2][0] = matrix->m[2][0] * matrix2->m[0][0] + matrix->m[2][1] * matrix2->m[1][0] + matrix->m[2][2] *
+                     matrix2->m[2][0];
+    result.m[2][1] = matrix->m[2][0] * matrix2->m[0][1] + matrix->m[2][1] * matrix2->m[1][1] + matrix->m[2][2] *
+                     matrix2->m[2][1];
+    result.m[2][2] = matrix->m[2][0] * matrix2->m[0][2] + matrix->m[2][1] * matrix2->m[1][2] + matrix->m[2][2] *
+                     matrix2->m[2][2];
+
+    *matrix = result;
+}
+
+
+void psx_svg_matrix_identity(psx_svg_matrix* matrix)
+{
+    if (!matrix) {
+        return;
+    }
+    memset(matrix, 0, sizeof(psx_svg_matrix));
+    matrix->m[0][0] = matrix->m[1][1] = matrix->m[2][2] = 1.0f; // identity
+}
+
+void psx_svg_matrix_init(psx_svg_matrix* matrix, float a, float b, float c, float d, float e, float f)
+{
+    if (!matrix) {
+        return;
+    }
+
+    matrix->m[0][0] = a;
+    matrix->m[0][1] = c;
+    matrix->m[0][2] = e;
+    matrix->m[1][0] = b;
+    matrix->m[1][1] = d;
+    matrix->m[1][2] = f;
+    matrix->m[2][0] = 0.0f;
+    matrix->m[2][1] = 0.0f;
+    matrix->m[2][2] = 1.0f;
+}
+
+void psx_svg_matrix_translate(psx_svg_matrix* matrix, float tx, float ty)
+{
+    if (!matrix) {
+        return;
+    }
+
+    if (_matrix_translation_only(matrix)) {
+        matrix->m[0][2] += tx;
+        matrix->m[1][2] += ty;
+        return;
+    }
+
+    psx_svg_matrix m = {{
+        {1.0f, 0.0f, tx},
+        {0.0f, 1.0f, ty},
+        {0.0f, 0.0f, 1.0f},
+    }};
+
+    _matrix_multiply(matrix, &m);
+}
+
+void psx_svg_matrix_scale(psx_svg_matrix* matrix, float sx, float sy)
+{
+    if (!matrix) {
+        return;
+    }
+
+    psx_svg_matrix m = {{
+        {sx, 0.0f, 0.0f},
+        {0.0f, sy, 0.0f},
+        {0.0f, 0.0f, 1.0f},
+    }};
+
+    _matrix_multiply(matrix, &m);
+}
+
+void psx_svg_matrix_rotate(psx_svg_matrix* matrix, float rad)
+{
+    if (!matrix) {
+        return;
+    }
+
+    float cosr = cosf(rad);
+    float sinr = sinf(rad);
+
+    psx_svg_matrix m = {{
+        {cosr, -sinr, 0.0f},
+        {sinr, cosr, 0.0f},
+        {0.0f, 0.0f, 1.0f},
+    }};
+
+    _matrix_multiply(matrix, &m);
+}
+
+void psx_svg_matrix_skew(psx_svg_matrix* matrix, float shx, float shy)
+{
+    if (!matrix) {
+        return;
+    }
+
+    float tanx = tanf(shx);
+    float tany = tanf(shy);
+
+    psx_svg_matrix m = {{
+        {1.0f, tanx, 0.0f},
+        {tany, 1.0f, 0.0f},
+        {0.0f, 0.0f, 1.0f},
+    }};
+
+    _matrix_multiply(matrix, &m);
 }
 
 #ifdef __cplusplus

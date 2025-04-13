@@ -301,7 +301,7 @@ void PICAPI ps_text_out_length(ps_context* ctx, float x, float y, const char* te
     scalar gy = FLT_TO_SCALAR(y);
 
     if (create_device_font(ctx)) {
-        gy += ctx->fonts->current_font()->ascent();
+        gy += ctx->fonts->current_font()->ascent() + ctx->fonts->current_font()->leading();
 
         const char* p = text;
         while (*p && len) {

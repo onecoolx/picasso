@@ -55,6 +55,8 @@ psx_svg_render_list* psx_svg_render_create(const psx_svg_node* doc);
 
 void psx_svg_render_destroy(psx_svg_render_list* list);
 
+bool psx_svg_draw(ps_context* ctx, const psx_svg_render_list* render);
+
 #ifdef __cplusplus
 }
 #endif

@@ -79,6 +79,11 @@ ps_canvas* get_test_canvas(void)
     return test_canvas;
 }
 
+void clear_test_canvas(void)
+{
+    memset(test_buffer, 0, TEST_WIDTH * TEST_HEIGHT * 4);
+}
+
 static bool _file_exists(const char* path)
 {
     struct stat fileInfo;

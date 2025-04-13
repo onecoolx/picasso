@@ -78,6 +78,10 @@
     #define mem_free free
 #endif
 
+#ifndef mem_copy
+    #define mem_copy memcpy
+#endif
+
 /* abort */
 #define ABORT() abort()
 
