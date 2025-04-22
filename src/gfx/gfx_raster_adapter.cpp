@@ -221,8 +221,11 @@ void gfx_raster_adapter::setup_stroke_raster(void)
 
         picasso::conv_stroke p(c);
 
-        trans_affine adjmtx = stable_matrix(*const_cast<trans_affine*>(m_impl->m_transform));
-        adjmtx *= trans_affine_translation(FLT_TO_SCALAR(0.5f), FLT_TO_SCALAR(0.5f)); //adjust edge
+        bool adjust;
+        trans_affine adjmtx = stable_matrix(*const_cast<trans_affine*>(m_impl->m_transform), &adjust);
+        if (adjust) {
+            adjmtx *= trans_affine_translation(FLT_TO_SCALAR(0.5f), FLT_TO_SCALAR(0.5f)); //adjust edge
+        }
 
         picasso::conv_transform t(p, &adjmtx);
 
@@ -237,8 +240,11 @@ void gfx_raster_adapter::setup_stroke_raster(void)
         picasso::conv_curve c(*const_cast<vertex_source*>(m_impl->m_source));
         picasso::conv_stroke p(c);
 
-        trans_affine adjmtx = stable_matrix(*const_cast<trans_affine*>(m_impl->m_transform));
-        adjmtx *= trans_affine_translation(FLT_TO_SCALAR(0.5f), FLT_TO_SCALAR(0.5f)); //adjust edge
+        bool adjust;
+        trans_affine adjmtx = stable_matrix(*const_cast<trans_affine*>(m_impl->m_transform), &adjust);
+        if (adjust) {
+            adjmtx *= trans_affine_translation(FLT_TO_SCALAR(0.5f), FLT_TO_SCALAR(0.5f)); //adjust edge
+        }
 
         picasso::conv_transform t(p, &adjmtx);
 

@@ -22,8 +22,8 @@ struct cell {
 
     void initial(void)
     {
-        x = 0x7FFFFFFF;
-        y = 0x7FFFFFFF;
+        x = INT32_MAX;
+        y = INT32_MAX;
         cover = 0;
         area = 0;
     }

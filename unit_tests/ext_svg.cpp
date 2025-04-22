@@ -289,6 +289,19 @@ TEST_F(SVGParserTest, PathElementTest)
     release();
 }
 
+static inline bool _matrix_is_identity(const psx_svg_matrix* matrix)
+{
+    return (matrix->m[0][0] == 1.0f &&
+            matrix->m[0][1] == 0.0f &&
+            matrix->m[0][2] == 0.0f &&
+            matrix->m[1][0] == 0.0f &&
+            matrix->m[1][1] == 1.0f &&
+            matrix->m[1][2] == 0.0f &&
+            matrix->m[2][0] == 0.0f &&
+            matrix->m[2][1] == 0.0f &&
+            matrix->m[2][2] == 1.0f);
+}
+
 TEST_F(SVGParserTest, TransformTest)
 {
     const char* svg_tr1 = "<svg><g transform=\" \"/></svg>";
@@ -306,83 +319,70 @@ TEST_F(SVGParserTest, TransformTest)
     const char* svg_tr3 = "<svg><g transform=\"matrix()\"/></svg>";
     load(svg_tr3);
     svg_node = root->get_child(0);
-    ps_matrix* matrix = (ps_matrix*)(svg_node->attr_at(0)->value.val);
-    EXPECT_EQ(ps_matrix_is_identity(matrix), True);
+    psx_svg_matrix* matrix = (psx_svg_matrix*)(svg_node->attr_at(0)->value.val);
+    EXPECT_EQ(_matrix_is_identity(matrix), true);
     release();
 
     const char* svg_tr4 = "<svg><g transform=\"matrix(1.5, 0, 2.0, 2, 10, 20)\"/></svg>";
     load(svg_tr4);
     svg_node = root->get_child(0);
-    matrix = (ps_matrix*)(svg_node->attr_at(0)->value.val);
-    float shx, shy;
-    ps_matrix_get_shear_factor(matrix, &shx, &shy);
-    EXPECT_FLOAT_EQ(shy, 0.0f);
-    EXPECT_FLOAT_EQ(shx, 2.0f);
-    float sx, sy;
-    ps_matrix_get_scale_factor(matrix, &sx, &sy);
-    EXPECT_FLOAT_EQ(sx, 1.5f);
-    EXPECT_FLOAT_EQ(sy, 2.0f);
-    float tx, ty;
-    ps_matrix_get_translate_factor(matrix, &tx, &ty);
-    EXPECT_FLOAT_EQ(tx, 10.0f);
-    EXPECT_FLOAT_EQ(ty, 20.0f);
+    matrix = (psx_svg_matrix*)(svg_node->attr_at(0)->value.val);
+    EXPECT_FLOAT_EQ(matrix->m[0][1], 2.0f);
+    EXPECT_FLOAT_EQ(matrix->m[1][1], 2.0f);
+    EXPECT_FLOAT_EQ(matrix->m[0][0], 1.5f);
+    EXPECT_FLOAT_EQ(matrix->m[1][0], 0.0f);
+    EXPECT_FLOAT_EQ(matrix->m[0][2], 10.0f);
+    EXPECT_FLOAT_EQ(matrix->m[1][2], 20.0f);
     release();
 
     const char* svg_tr5 = "<svg><g transform=\"translate(1, 2) translate(2.0, 2)\"/></svg>";
     load(svg_tr5);
     svg_node = root->get_child(0);
-    matrix = (ps_matrix*)(svg_node->attr_at(0)->value.val);
-    ps_matrix_get_translate_factor(matrix, &tx, &ty);
-    EXPECT_FLOAT_EQ(tx, 3.0f);
-    EXPECT_FLOAT_EQ(ty, 4.0f);
+    matrix = (psx_svg_matrix*)(svg_node->attr_at(0)->value.val);
+    EXPECT_FLOAT_EQ(matrix->m[0][2], 3.0f);
+    EXPECT_FLOAT_EQ(matrix->m[1][2], 4.0f);
     release();
 
     const char* svg_tr6 = "<svg><g transform=\" scale(0.5) scale(0.5 0.5)\"/></svg>";
     load(svg_tr6);
     svg_node = root->get_child(0);
-    matrix = (ps_matrix*)(svg_node->attr_at(0)->value.val);
-    ps_matrix_get_scale_factor(matrix, &sx, &sy);
-    EXPECT_FLOAT_EQ(sx, 0.25f);
-    EXPECT_FLOAT_EQ(sy, 0.25f);
+    matrix = (psx_svg_matrix*)(svg_node->attr_at(0)->value.val);
+    EXPECT_FLOAT_EQ(matrix->m[0][0], 0.25f);
+    EXPECT_FLOAT_EQ(matrix->m[1][1], 0.25f);
     release();
 
     const char* svg_tr7 = "<svg><g transform=\" translate(10 ) scale( 0.5  0.5) scale(0.5 ) \"/></svg>";
     load(svg_tr7);
     svg_node = root->get_child(0);
-    matrix = (ps_matrix*)(svg_node->attr_at(0)->value.val);
-    ps_matrix_get_translate_factor(matrix, &tx, &ty);
-    EXPECT_FLOAT_EQ(tx, 2.5f);
-    EXPECT_FLOAT_EQ(ty, 0.0f);
-    ps_matrix_get_scale_factor(matrix, &sx, &sy);
-    EXPECT_FLOAT_EQ(sx, 0.25f);
-    EXPECT_FLOAT_EQ(sy, 0.25f);
+    matrix = (psx_svg_matrix*)(svg_node->attr_at(0)->value.val);
+    EXPECT_FLOAT_EQ(matrix->m[0][2], 10.0f);
+    EXPECT_FLOAT_EQ(matrix->m[1][2], 0.0f);
+    EXPECT_FLOAT_EQ(matrix->m[0][0], 0.25f);
+    EXPECT_FLOAT_EQ(matrix->m[1][1], 0.25f);
     release();
 
     const char* svg_tr8 = "<svg><g transform=\" rotate(90 10 10) \"/></svg>";
     load(svg_tr8);
     svg_node = root->get_child(0);
-    matrix = (ps_matrix*)(svg_node->attr_at(0)->value.val);
-    ps_matrix_get_translate_factor(matrix, &tx, &ty);
-    EXPECT_FLOAT_EQ(tx, 20.0f);
-    EXPECT_FLOAT_EQ(ty, 0.0f);
+    matrix = (psx_svg_matrix*)(svg_node->attr_at(0)->value.val);
+    EXPECT_FLOAT_EQ(matrix->m[0][2], 20.0f);
+    EXPECT_FLOAT_EQ(matrix->m[1][2], 0.0f);
     release();
 
     const char* svg_tr9 = "<svg><g transform=\" rotate(90 ) \"/></svg>";
     load(svg_tr9);
     svg_node = root->get_child(0);
-    matrix = (ps_matrix*)(svg_node->attr_at(0)->value.val);
-    ps_matrix_get_translate_factor(matrix, &tx, &ty);
-    EXPECT_FLOAT_EQ(tx, 0.0f);
-    EXPECT_FLOAT_EQ(ty, 0.0f);
+    matrix = (psx_svg_matrix*)(svg_node->attr_at(0)->value.val);
+    EXPECT_FLOAT_EQ(matrix->m[0][2], 0.0f);
+    EXPECT_FLOAT_EQ(matrix->m[1][2], 0.0f);
     release();
 
     const char* svg_tr10 = "<svg><g transform=\" skewX(10) skewY(10) \"/></svg>";
     load(svg_tr10);
     svg_node = root->get_child(0);
-    matrix = (ps_matrix*)(svg_node->attr_at(0)->value.val);
-    ps_matrix_get_shear_factor(matrix, &shx, &shy);
-    EXPECT_FLOAT_EQ(shy, 0.17453294f);
-    EXPECT_FLOAT_EQ(shx, 0.17453294f);
+    matrix = (psx_svg_matrix*)(svg_node->attr_at(0)->value.val);
+    EXPECT_FLOAT_EQ(matrix->m[1][0], 0.17632699f);
+    EXPECT_FLOAT_EQ(matrix->m[0][1], 0.17632699f);
     release();
 }
 
@@ -491,8 +491,8 @@ TEST_F(SVGParserTest, FillStrokeAttrsTest)
     svg_node = root->get_child(0);
     float f1 = svg_node->attr_at(0)->value.fval;
     EXPECT_FLOAT_EQ(f1, 1.0f);
-    uint32_t f2 = svg_node->attr_at(1)->value.ival;
-    EXPECT_EQ(f2, 3);
+    float f2 = svg_node->attr_at(1)->value.fval;
+    EXPECT_FLOAT_EQ(f2, 3);
     release();
 
     const char* svg_sf2 = "<svg><g fill-rule=\"evenodd\" stroke-width=\'-1\' stroke-miterlimit=\'-5.0\'/></svg>";
@@ -502,8 +502,8 @@ TEST_F(SVGParserTest, FillStrokeAttrsTest)
     EXPECT_EQ(r1, FILL_RULE_EVEN_ODD);
     float w1 = svg_node->attr_at(1)->value.fval;
     EXPECT_FLOAT_EQ(w1, 0.0f);
-    uint32_t l1 = svg_node->attr_at(2)->value.uval;
-    EXPECT_EQ(l1, 1);
+    float l1 = svg_node->attr_at(2)->value.fval;
+    EXPECT_FLOAT_EQ(l1, 1);
     release();
 
     const char* svg_sf3 = "<svg><g stroke-linecap=\"round\" stroke-linejoin=\' bevel\' fill-rule=nonzero/></svg>";
@@ -660,8 +660,8 @@ TEST_F(SVGParserTest, BadCaseTest)
     const char* svg_b5 = "<svg><g transform=matrix/></svg>";
     load(svg_b5);
     svg_node = root->get_child(0);
-    ps_matrix* matrix = (ps_matrix*)(svg_node->attr_at(0)->value.val);
-    EXPECT_EQ(ps_matrix_is_identity(matrix), True);
+    psx_svg_matrix* matrix = (psx_svg_matrix*)(svg_node->attr_at(0)->value.val);
+    EXPECT_EQ(_matrix_is_identity(matrix), true);
     release();
 
     const char* svg_b6 = "<svg><123><123></svg>";

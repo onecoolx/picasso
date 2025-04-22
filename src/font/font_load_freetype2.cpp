@@ -86,7 +86,7 @@ static font_item* get_font_item(const char* name, const char* path)
 }
 
 #if ENABLE(FONT_CONFIG)
-static FcConfig* g_FcConfig = 0;
+static FcConfig* g_FcConfig = NULL;
 
 static void load_font_from_fontconfig(void)
 {
@@ -302,10 +302,17 @@ static void load_font_from_file(FILE* f)
 }
 #endif //ENABLE(FONT_CONFIG)
 
-FT_Library g_library = 0;
+FT_Library g_library = NULL;
 
 bool _load_fonts(void)
 {
+    if (g_library) {
+        return true;
+    }
+
+#if ENABLE(FONT_CONFIG)
+    FcInit();
+#endif
 #if ENABLE(FONT_CONFIG)
     load_font_from_fontconfig();
 #elif defined(__ANDROID__)
@@ -345,6 +352,7 @@ void _free_fonts(void)
 {
     if (g_library) {
         FT_Done_FreeType(g_library);
+        g_library = NULL;
     }
 
     for (uint32_t i = 0; i < g_font_map.size(); i++) {
@@ -426,9 +434,6 @@ char* _font_by_name(const char* face, float size, float weight, bool italic)
 
 bool platform_font_init(void)
 {
-#if ENABLE(FONT_CONFIG)
-    FcInit();
-#endif
     return picasso::_load_fonts();
 }
 
@@ -438,9 +443,9 @@ void platform_font_shutdown(void)
 #if ENABLE(FONT_CONFIG)
     if (picasso::g_FcConfig) {
         FcConfigDestroy(picasso::g_FcConfig);
+        picasso::g_FcConfig = NULL;
+        FcFini();
     }
-
-    FcFini();
 #endif
 }
 

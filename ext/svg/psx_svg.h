@@ -291,6 +291,8 @@ public:
         return (psx_svg_node*)psx_tree_node::get_child(idx);
     }
 
+    psx_svg_node* parent(void) const { return (psx_svg_node*)psx_tree_node::parent(); }
+
     void set_render(psx_svg_render_obj* render) { m_render_obj = render; }
     const psx_svg_render_obj* render(void) const { return m_render_obj; }
 
@@ -312,7 +314,6 @@ psx_svg_node* psx_svg_load_data(const char* svg_data, uint32_t len);
 psx_svg_node* psx_svg_node_create(psx_svg_node* parent);
 
 void psx_svg_node_destroy(psx_svg_node* node);
-
 
 // svg matrix function
 void psx_svg_matrix_identity(psx_svg_matrix* matrix);

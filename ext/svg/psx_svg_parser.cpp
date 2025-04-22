@@ -45,8 +45,11 @@ static const struct {
     uint32_t name_len;
     psx_svg_tag tag;
 } _svg_tag_map[] = {
+    {"", 0, SVG_TAG_CONTENT},
+    {"&", 1, SVG_TAG_ENTITY},
     {"svg", 3, SVG_TAG_SVG},
     {"use", 3, SVG_TAG_USE},
+    {"a", 1, SVG_TAG_A},
     {"g", 1, SVG_TAG_G},
     {"path", 4, SVG_TAG_PATH},
     {"rect", 4, SVG_TAG_RECT},
@@ -67,6 +70,7 @@ static const struct {
     {"animateColor", 12, SVG_TAG_ANIMATE_COLOR},
     {"animateTransform", 16, SVG_TAG_ANIMATE_TRANSFORM},
     {"animateMotion", 13, SVG_TAG_ANIMATE_MOTION},
+    {"animation", 9, SVG_TAG_ANIMATION},
     {"text", 4, SVG_TAG_TEXT},
     {"tspan", 5, SVG_TAG_TSPAN},
     {"textArea", 8, SVG_TAG_TEXT_AREA},
@@ -2100,7 +2104,7 @@ void psx_svg_dump_tree(psx_svg_node* root, int depth)
     if (root->type() == SVG_TAG_CONTENT) {
         fprintf(stderr, "content: [%s]\n", root->content());
     } else {
-        fprintf(stderr, "tag <%s>", _svg_tag_map[root->type() - 2].name);
+        fprintf(stderr, "tag <%s>", _svg_tag_map[root->type()].name);
         if (root->content()) {
             fprintf(stderr, " - id [%s]", root->content());
         }

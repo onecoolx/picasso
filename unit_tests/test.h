@@ -28,6 +28,7 @@
 #define _PICASSO_TEST_H_
 
 #include "picasso.h"
+#include "images/psx_image.h"
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 

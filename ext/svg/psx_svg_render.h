@@ -36,7 +36,7 @@ public:
     virtual ~psx_svg_render_obj() { }
     virtual psx_svg_tag type(void) const = 0;
     virtual void render(ps_context* ctx, const ps_matrix* matrix) = 0;
-    virtual void get_bounding_rect(ps_rect* rc) = 0;
+    virtual void get_bounding_rect(ps_rect* rc) const = 0;
     virtual void update(const psx_svg_node* node) = 0;
 };
 

@@ -35,6 +35,7 @@ typedef float scalar;
 #define Ceil(x) ceilf(x)
 #define Exp(x) expf(x)
 #define Pow(x, y) powf((x), (y))
+#define Round(x) roundf(x)
 
 #define SqrtD(x) sqrt(x)
 // max min

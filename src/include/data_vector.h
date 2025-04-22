@@ -190,8 +190,10 @@ inline void pod_vector<T>::resize(uint32_t new_size)
     if (new_size > m_size) {
         if (new_size > m_capacity) {
             T* data = pod_allocator<T>::allocate(new_size);
-            mem_copy(data, m_array, m_size * sizeof(T));
-            pod_allocator<T>::deallocate(m_array, m_capacity);
+            if (m_array) {
+                mem_copy(data, m_array, m_size * sizeof(T));
+                pod_allocator<T>::deallocate(m_array, m_capacity);
+            }
             m_capacity = new_size;
             m_array = data;
         }

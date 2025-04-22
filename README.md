@@ -7,6 +7,22 @@ Copyright (C) 2008 ~ 2025 Zhang Ji Peng  (onecoolx@gmail.com)
 
 Picasso is a high quality vector graphic rendering library. It has high performance and low footprint. Picasso provides a set of high level 2D graphics API, which can be used to a GUI system, rendering postscript, rendering svg images and so on. It support path, matrix, gradient, pattern, image and truetype font. 
 
+## **Features**
+- Path Filling, Stroking
+- Solid Color, Gradient, Pattern
+- Stroke Dashing
+- Linecap Butt, Round, Square
+- Linejoin Miter, Round, Bevel
+- Transform and Matrix
+- Filling Rule
+- Blur
+- Shadow
+- Clipping
+- Compisiting
+- Font and Text
+- Image Decoders jpeg, png, webp, gif
+- SVG (Comming Soon...)
+
 ## **How to build**
 
 #### linux:

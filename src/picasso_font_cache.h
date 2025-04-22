@@ -89,7 +89,7 @@ public:
             return 0; // already exists.
         }
 
-        glyph* g = (glyph*)m_allocator.allocate(sizeof(glyph), sizeof(int));
+        glyph* g = (glyph*)m_allocator.allocate(sizeof(glyph), sizeof(intptr_t));
 
         g->code = code;
         g->index = index;

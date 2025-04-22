@@ -73,6 +73,8 @@ endif()
 
 if (OPT_UNITTEST)
 enable_testing()
+set(OPT_FONT_CONFIG OFF)
+set(OPT_FREE_TYPE2 ON)
 include (${CMAKE_CURRENT_LIST_DIR}/unit_tests/unit_tests.cmake)
 endif(OPT_UNITTEST)
 

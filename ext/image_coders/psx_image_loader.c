@@ -87,8 +87,6 @@ int PICAPI psx_image_init(void)
         }
 
         if (modules_init(g_modules) != 0) {
-            free(g_modules);
-            g_modules = NULL;
             return S_INIT_FAILURE;
         }
     }

@@ -26,6 +26,7 @@
 
 #include "test.h"
 #include "lodepng.h"
+#include "images/psx_image_plugin.h"
 
 volatile int tmp;
 static int dummy[4096000];
@@ -46,10 +47,15 @@ const uint8_t tolerance = 0;
 static uint8_t* test_buffer = NULL;
 static ps_canvas* test_canvas = NULL;
 
+static void init_png_decoder(void);
+static void deinit_png_decoder(void);
+
 void PS_Init()
 {
     printf("picasso initialize\n");
     ASSERT_NE(False, ps_initialize());
+    ASSERT_NE(0, psx_image_init());
+    init_png_decoder();
     int v = ps_version();
     fprintf(stderr, "picasso version %d \n", v);
     ASSERT_EQ(STATUS_SUCCEED, ps_last_status());
@@ -69,7 +75,9 @@ void PS_Shutdown()
         test_buffer = NULL;
     }
 
+    deinit_png_decoder();
     printf("picasso shutdown\n");
+    psx_image_shutdown();
     ps_shutdown();
     ASSERT_EQ(STATUS_SUCCEED, ps_last_status());
 }
@@ -81,7 +89,7 @@ ps_canvas* get_test_canvas(void)
 
 void clear_test_canvas(void)
 {
-    memset(test_buffer, 0, TEST_WIDTH * TEST_HEIGHT * 4);
+    memset(test_buffer, 0xFF, TEST_WIDTH * TEST_HEIGHT * 4);
 }
 
 static bool _file_exists(const char* path)
@@ -220,4 +228,65 @@ static void _generate_diff_image(std::vector<uint8_t>& diffImage, const uint8_t*
         _save_image(diff_image.data(), TEST_WIDTH, TEST_HEIGHT, diff_file.c_str());
     }
     return result;
+}
+
+struct lode_png_image_ctx {
+    std::vector<uint8_t> image;
+    unsigned int width;
+    unsigned int height;
+};
+
+static int lode_read_png_info(const ps_byte* data, size_t len, psx_image_header* header)
+{
+    struct lode_png_image_ctx* ctx = (struct lode_png_image_ctx*)calloc(1, sizeof(struct lode_png_image_ctx));
+    if (!ctx) {
+        return -1; // out of memory.
+    }
+
+    new ((void*) & (ctx->image)) std::vector<uint8_t>();
+    lodepng::decode(ctx->image, ctx->width, ctx->height, data, len);
+
+    header->priv = ctx;
+    header->width = ctx->width;
+    header->height = ctx->height;
+    header->pitch = ctx->width * 4;
+    header->depth = 32;
+    header->bpp = 4;
+    header->format = 0;
+    header->alpha = 1;
+    header->frames = 1;
+    return 0;
+}
+
+static int lode_release_read_png_info(psx_image_header* header)
+{
+    struct lode_png_image_ctx* ctx = (struct lode_png_image_ctx*)header->priv;
+
+    (&ctx->image)->vector<uint8_t>::~vector<uint8_t>();
+    free(ctx);
+    return 0;
+}
+
+static int lode_decode_png_data(psx_image_header* header, const psx_image* image, psx_image_frame* frame, int idx, ps_byte* buffer, size_t buffer_len)
+{
+    struct lode_png_image_ctx* ctx = (struct lode_png_image_ctx*)header->priv;
+    memcpy(buffer, ctx->image.data(), ctx->width * ctx->height * 4);
+    return 0;
+}
+
+static psx_image_operator png_coder;
+
+static void init_png_decoder(void)
+{
+    png_coder.read_header_info = lode_read_png_info;
+    png_coder.decode_image_data = lode_decode_png_data;
+    png_coder.release_read_header_info = lode_release_read_png_info;
+
+    psx_image_register_operator(
+        "png", (ps_byte*)"\x89\x50\x4E\x47\x0D\x0A\x1A\x0A", 0, 8, PRIORITY_DEFAULT, &png_coder);
+}
+
+static void deinit_png_decoder(void)
+{
+    psx_image_unregister_operator(&png_coder);
 }

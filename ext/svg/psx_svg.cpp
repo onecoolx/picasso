@@ -126,7 +126,7 @@ void psx_svg_node_destroy(psx_svg_node* node)
 }
 
 // svg matrix
-static INLINE bool _matrix_translation_only(const psx_svg_matrix * matrix)
+static INLINE bool _matrix_translation_only(const psx_svg_matrix* matrix)
 {
     return (matrix->m[0][0] == 1.0f &&
             matrix->m[0][1] == 0.0f &&
@@ -137,7 +137,7 @@ static INLINE bool _matrix_translation_only(const psx_svg_matrix * matrix)
             matrix->m[2][2] == 1.0f);
 }
 
-static INLINE void _matrix_multiply(psx_svg_matrix * matrix, const psx_svg_matrix * matrix2)
+static INLINE void _matrix_multiply(psx_svg_matrix* matrix, const psx_svg_matrix* matrix2)
 {
     psx_svg_matrix result;
     result.m[0][0] = matrix->m[0][0] * matrix2->m[0][0] + matrix->m[0][1] * matrix2->m[1][0] + matrix->m[0][2] *
@@ -163,7 +163,6 @@ static INLINE void _matrix_multiply(psx_svg_matrix * matrix, const psx_svg_matri
 
     *matrix = result;
 }
-
 
 void psx_svg_matrix_identity(psx_svg_matrix* matrix)
 {
@@ -204,10 +203,11 @@ void psx_svg_matrix_translate(psx_svg_matrix* matrix, float tx, float ty)
     }
 
     psx_svg_matrix m = {{
-        {1.0f, 0.0f, tx},
-        {0.0f, 1.0f, ty},
-        {0.0f, 0.0f, 1.0f},
-    }};
+            {1.0f, 0.0f, tx},
+            {0.0f, 1.0f, ty},
+            {0.0f, 0.0f, 1.0f},
+        }
+    };
 
     _matrix_multiply(matrix, &m);
 }
@@ -219,10 +219,11 @@ void psx_svg_matrix_scale(psx_svg_matrix* matrix, float sx, float sy)
     }
 
     psx_svg_matrix m = {{
-        {sx, 0.0f, 0.0f},
-        {0.0f, sy, 0.0f},
-        {0.0f, 0.0f, 1.0f},
-    }};
+            {sx, 0.0f, 0.0f},
+            {0.0f, sy, 0.0f},
+            {0.0f, 0.0f, 1.0f},
+        }
+    };
 
     _matrix_multiply(matrix, &m);
 }
@@ -237,10 +238,11 @@ void psx_svg_matrix_rotate(psx_svg_matrix* matrix, float rad)
     float sinr = sinf(rad);
 
     psx_svg_matrix m = {{
-        {cosr, -sinr, 0.0f},
-        {sinr, cosr, 0.0f},
-        {0.0f, 0.0f, 1.0f},
-    }};
+            {cosr, -sinr, 0.0f},
+            {sinr, cosr, 0.0f},
+            {0.0f, 0.0f, 1.0f},
+        }
+    };
 
     _matrix_multiply(matrix, &m);
 }
@@ -255,10 +257,11 @@ void psx_svg_matrix_skew(psx_svg_matrix* matrix, float shx, float shy)
     float tany = tanf(shy);
 
     psx_svg_matrix m = {{
-        {1.0f, tanx, 0.0f},
-        {tany, 1.0f, 0.0f},
-        {0.0f, 0.0f, 1.0f},
-    }};
+            {1.0f, tanx, 0.0f},
+            {tany, 1.0f, 0.0f},
+            {0.0f, 0.0f, 1.0f},
+        }
+    };
 
     _matrix_multiply(matrix, &m);
 }
@@ -266,4 +269,3 @@ void psx_svg_matrix_skew(psx_svg_matrix* matrix, float shx, float shy)
 #ifdef __cplusplus
 }
 #endif
-
