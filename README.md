@@ -11,8 +11,8 @@ Picasso is a high quality vector graphic rendering library. It has high performa
 - Path Filling, Stroking
 - Solid Color, Gradient, Pattern
 - Stroke Dashing
-- LineCap Butt, Round, Square
-- LineJoin Miter, Round, Bevel
+- Linecap Butt, Round, Square
+- Linejoin Miter, Round, Bevel
 - Transform and Matrix
 - Filling Rule
 - Blur
@@ -20,7 +20,7 @@ Picasso is a high quality vector graphic rendering library. It has high performa
 - Clipping
 - Compisiting
 - Font and Text
-- Image Decoders
+- Image Decoders jpeg, png, webp, gif
 - SVG (Comming Soon...)
 
 ## **How to build**
