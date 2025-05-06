@@ -205,7 +205,7 @@ static INLINE void set_draw_attr(const _svg_list_builder_state* state, ps_draw_a
                     return;
                 } else {
                     if (val->val_type == SVG_ATTR_VALUE_PTR) {
-#warning reduce impl func
+                        // FIXME: reduce string dup function
                         size_t len = strlen(val->value.sval);
                         char* link = (char*)state->list->alloc(len + 1);
                         mem_copy(link, val->value.sval, len);
@@ -252,7 +252,7 @@ static INLINE void set_draw_attr(const _svg_list_builder_state* state, ps_draw_a
                     return;
                 } else {
                     if (val->val_type == SVG_ATTR_VALUE_PTR) {
-#warning reduce impl func
+                        //FIXME: reduce string dup function.
                         size_t len = strlen(val->value.sval);
                         char* link = (char*)state->list->alloc(len + 1);
                         mem_copy(link, val->value.sval, len);
@@ -1059,7 +1059,7 @@ public:
                 m_y = attr->value.fval;
                 break;
             case SVG_ATTR_XLINK_HREF: {
-#warning reduce impl func
+                    //FIXME: reduce string dup function
                     size_t len = strlen(attr->value.sval);
                     char* xlink = (char*)state->list->alloc(len + 1);
                     mem_copy(xlink, attr->value.sval, len);
