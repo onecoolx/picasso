@@ -28,7 +28,7 @@ endif()
 add_definitions(-DEXPORT)
 add_library(${LIBX_IMAGE} ${PXIMG_SOURCES})
 install(TARGETS ${LIBX_IMAGE} LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
-set_target_properties(${LIBX_IMAGE} PROPERTIES VERSION ${VERSION_INFO} SOVERSION 1)
+set_target_properties(${LIBX_IMAGE} PROPERTIES VERSION ${VERSION_INFO} SOVERSION ${VERSION_MAJOR})
 
 include_directories(${PXIMG_DIR} ${PROJECT_ROOT}/ext/common ${PROJECT_ROOT}/include ${PROJECT_ROOT}/include/images)
 target_link_libraries(${LIBX_IMAGE} PRIVATE ${LIB_NAME})

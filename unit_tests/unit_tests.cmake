@@ -49,6 +49,7 @@ else()
     file(COPY ${PROJECT_ROOT}/unit_tests/snapshots DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
     target_compile_options(${UNIT_TESTS} PRIVATE -std=c++17)
     configure_file(${PROJECT_ROOT}/unit_tests/test.png ${CMAKE_CURRENT_BINARY_DIR}/test.png COPYONLY)
+    configure_file(${PROJECT_ROOT}/cfg/ZCOOLXiaoWei-Regular.ttf ${CMAKE_CURRENT_BINARY_DIR}/ZCOOLXiaoWei-Regular.ttf COPYONLY)
 endif()
 
 add_test(NAME unittest COMMAND ${UNIT_TESTS})

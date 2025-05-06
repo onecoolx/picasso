@@ -51,7 +51,7 @@ endif()
 
 add_library(${LIB_NAME} ${BUILD_LIBS_TYPE} ${SOURCES})
 install(TARGETS ${LIB_NAME} LIBRARY DESTINATION lib ARCHIVE DESTINATION lib RUNTIME DESTINATION bin)
-set_target_properties(${LIB_NAME} PROPERTIES VERSION ${VERSION_INFO} SOVERSION 1)
+set_target_properties(${LIB_NAME} PROPERTIES VERSION ${VERSION_INFO} SOVERSION ${VERSION_MAJOR})
 
 if (ANDROID)
     target_include_directories(${LIB_NAME} PRIVATE ${PROJECT_ROOT}/android/freetype/include ${PROJECT_ROOT}/android/expat/lib)

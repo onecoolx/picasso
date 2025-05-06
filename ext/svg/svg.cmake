@@ -30,7 +30,7 @@ endif()
 add_definitions(-DEXPORT)
 add_library(${LIBX_SVG} ${PXSVG_SOURCES})
 install(TARGETS ${LIBX_SVG} LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
-set_target_properties(${LIBX_SVG} PROPERTIES VERSION ${VERSION_INFO} SOVERSION 1)
+set_target_properties(${LIBX_SVG} PROPERTIES VERSION ${VERSION_INFO} SOVERSION ${VERSION_MAJOR})
 
 if (OPT_UNITTEST)
 set(LIBX_SVG_STATIC psx_svg_static)
@@ -39,5 +39,5 @@ install(TARGETS ${LIBX_SVG_STATIC} LIBRARY DESTINATION lib ARCHIVE DESTINATION l
 endif()
 
 include_directories(${PXSVG_DIR} ${PROJECT_ROOT}/ext/common ${PROJECT_ROOT}/include ${PROJECT_ROOT}/include/images ${PROJECT_ROOT}/include/svg)
-target_link_libraries(${LIBX_SVG} PRIVATE ${LIB_NAME} ${LIBX_COMMON})
+target_link_libraries(${LIBX_SVG} PRIVATE ${LIB_NAME} ${LIBX_COMMON} ${LIBX_IMAGE})
 
