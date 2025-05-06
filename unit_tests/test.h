@@ -67,11 +67,11 @@ void CompareArrays(const T* expected, const T* actual, size_t length)
     } while(0)
 
 #if defined(WIN32)
-#define SYSTEM "win32"
-#elif defined(__APPLE__) 
-#define SYSTEM "apple"
+    #define SYSTEM "win32"
+#elif defined(__APPLE__)
+    #define SYSTEM "apple"
 #else
-#define SYSTEM "linux"
+    #define SYSTEM "linux"
 #endif
 
 #define EXPECT_SYS_SNAPSHOT_EQ(actual) \
