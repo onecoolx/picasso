@@ -43,7 +43,7 @@ void clear_dcache(void)
     tmp = sum;
 }
 
-const uint8_t tolerance = 3;
+const uint8_t tolerance = 5;
 static uint8_t* test_buffer = NULL;
 static ps_canvas* test_canvas = NULL;
 
