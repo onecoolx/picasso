@@ -120,7 +120,7 @@ TEST_F(SVGRenderTest, ViewportTest)
                                  "Stretch to fit</text>"
                                  "</svg>";
     draw_svg(svg_viewport_2);
-    EXPECT_SNAPSHOT_EQ(svg_viewport_2);
+    EXPECT_SYS_SNAPSHOT_EQ(svg_viewport_2);
 }
 
 TEST_F(SVGRenderTest, ShapesTest)
@@ -146,7 +146,7 @@ TEST_F(SVGRenderTest, ShapesTest)
                                    "y=\"21\" font-weight=\"bold\" font-size=\"60\">A</text>"
                                    "</g></svg>";
     draw_svg(svg_shapes_solid);
-    EXPECT_SNAPSHOT_EQ(svg_shapes_solid);
+    EXPECT_SYS_SNAPSHOT_EQ(svg_shapes_solid);
 
     const char* svg_linear_gradient = "<svg width=\"4cm\" height=\"2cm\" viewBox=\"0 0 400 200\">"
                                       "<defs><linearGradient xml:id=\"MyGradient\">"
@@ -257,7 +257,7 @@ TEST_F(SVGRenderTest, ComplexPath)
                                 "<text font-size=22 font-family=\"Verdana\" x=25 y=70>M100,200 C100,100 250,100 250,200</text>"
                                 "<text font-size=22 font-family=\"Verdana\" x=325 y=350>S400,300 400,200</text></svg>";
     draw_svg(svg_complex_1);
-    EXPECT_SNAPSHOT_EQ(svg_complex_1);
+    EXPECT_SYS_SNAPSHOT_EQ(svg_complex_1);
 
     const char* svg_complex_2 = "<?xml version=\"1.0\"?><svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\""
                                 "version=\"1.2\" baseProfile=\"tiny\" width=\"10cm\" height=\"3cm\" viewBox=\"0 0 100 30\">"
@@ -348,7 +348,7 @@ TEST_F(SVGRenderTest, ComplexPath)
                                 "<text x='200' y='200' font-size='20'>داستان SVG Tiny 1.2 طولا ني است.</text>"
                                 "</svg>";
     draw_svg(svg_complex_8);
-    EXPECT_SNAPSHOT_EQ(svg_complex_8);
+    EXPECT_SYS_SNAPSHOT_EQ(svg_complex_8);
 }
 
 TEST_F(SVGRenderTest, GroupTest)
@@ -403,7 +403,7 @@ TEST_F(SVGRenderTest, TextTest)
                                  "hello <tspan fill=\"red\" font-size=\"36\">all</tspan> world"
                                  "</text></svg>";
     draw_svg(svg_text_tspan);
-    EXPECT_SNAPSHOT_EQ(svg_text_tspan);
+    EXPECT_SYS_SNAPSHOT_EQ(svg_text_tspan);
 
     const char* svg_text_gradient = "<svg><defs><linearGradient id=\"g1\">"
                                     "<stop offset=\"0.1\" stop-color=\"blue\"/>"
@@ -413,7 +413,7 @@ TEST_F(SVGRenderTest, TextTest)
                                     "hello <tspan fill=\"green\" font-size=\"24px\">all</tspan> world"
                                     "</text></svg>";
     draw_svg(svg_text_gradient);
-    EXPECT_SNAPSHOT_EQ(svg_text_gradient);
+    EXPECT_SYS_SNAPSHOT_EQ(svg_text_gradient);
 }
 
 TEST_F(SVGRenderTest, ImageTest)

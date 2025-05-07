@@ -35,20 +35,17 @@ add_executable(${UNIT_TESTS} ${UNIT_SOURCES})
 target_link_libraries(${UNIT_TESTS} PRIVATE GTest::GTest GMock::GMock lodepng ${LIB_NAME} ${LIBX_COMMON} ${LIBX_IMAGE} ${LIBX_SVG_STATIC})
 target_include_directories(${UNIT_TESTS} PRIVATE ${lodepng_SOURCE_DIR})
 
+file(COPY ${PROJECT_ROOT}/unit_tests/snapshots DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+configure_file(${PROJECT_ROOT}/unit_tests/test.png ${CMAKE_CURRENT_BINARY_DIR}/test.png COPYONLY)
+
 if (WIN32)
     add_custom_command(
         TARGET ${UNIT_TESTS} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_RUNTIME_DLLS:unit_tests> $<TARGET_FILE_DIR:unit_tests>
         COMMAND_EXPAND_LISTS
     )
-    add_custom_command(
-        TARGET ${UNIT_TESTS} POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy "${PROJECT_ROOT}/unit_tests/test.png" "$(ProjectDir)/$(Configuration)" 
-    ) 
 else()
-    file(COPY ${PROJECT_ROOT}/unit_tests/snapshots DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
     target_compile_options(${UNIT_TESTS} PRIVATE -std=c++17)
-    configure_file(${PROJECT_ROOT}/unit_tests/test.png ${CMAKE_CURRENT_BINARY_DIR}/test.png COPYONLY)
     configure_file(${PROJECT_ROOT}/cfg/ZCOOLXiaoWei-Regular.ttf ${CMAKE_CURRENT_BINARY_DIR}/ZCOOLXiaoWei-Regular.ttf COPYONLY)
 endif()
 
