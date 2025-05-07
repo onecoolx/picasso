@@ -21,7 +21,7 @@ Picasso is a high quality vector graphic rendering library. It has high performa
 - Compisiting
 - Font and Text
 - Image Decoders jpeg, png, webp, gif
-- SVG (Comming Soon...)
+- SVG
 
 ## **How to build**
 
