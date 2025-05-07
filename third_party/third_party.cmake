@@ -3,8 +3,10 @@
 # Copyright (C) 2024 Zhang Ji Peng
 # Contact: onecoolx@gmail.com
 
-if (ANDROID)
+if (ANDROID OR OPT_UNITTEST)
 include (${CMAKE_CURRENT_LIST_DIR}/freetype.cmake)
+endif()
+if (ANDROID)
 include (${CMAKE_CURRENT_LIST_DIR}/expat.cmake)
 endif()
 
