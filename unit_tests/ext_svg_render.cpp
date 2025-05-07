@@ -28,7 +28,7 @@
 #include "test.h"
 #include "timeuse.h"
 
-#include "psx_svg.h"
+#include "psx_svg_node.h"
 #include "psx_svg_render.h"
 
 class SVGRenderTest : public ::testing::Test

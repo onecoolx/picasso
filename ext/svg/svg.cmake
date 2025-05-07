@@ -8,8 +8,8 @@ set(PXSVG_DIR ${PROJECT_ROOT}/ext/svg)
 set(PXSVG_SOURCES
     ${PXSVG_DIR}/psx_xml_token.h
     ${PXSVG_DIR}/psx_xml_token.cpp
-    ${PXSVG_DIR}/psx_svg.h
-    ${PXSVG_DIR}/psx_svg.cpp
+    ${PXSVG_DIR}/psx_svg_node.h
+    ${PXSVG_DIR}/psx_svg_node.cpp
     ${PXSVG_DIR}/psx_svg_parser.h
     ${PXSVG_DIR}/psx_svg_parser.cpp
     ${PXSVG_DIR}/psx_svg_render.h

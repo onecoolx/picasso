@@ -28,7 +28,7 @@
 #define _PSX_SVG_RENDER_H_
 
 #include "psx_common.h"
-#include "psx_svg.h"
+#include "psx_svg_node.h"
 
 class psx_svg_render_obj
 {

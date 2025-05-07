@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "psx_svg.h"
+#include "psx_svg_node.h"
 #include "psx_svg_parser.h"
 
 #include <math.h>
