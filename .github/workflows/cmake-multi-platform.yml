@@ -95,6 +95,6 @@ jobs:
       with:
         name: test-snpashots
         path: |
-          ./snapshots/
+          ${{ steps.strings.outputs.build-output-dir }}/snapshots/
 
       
