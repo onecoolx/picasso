@@ -93,7 +93,7 @@ jobs:
     - name: Upload Test Reaults
       uses: actions/upload-artifact@v4.6.2
       with:
-        name: test-snpashots
+        name: test-snpashots-${{matrix.os}}-${{ matrix.build_type }}
         path: |
           ${{ steps.strings.outputs.build-output-dir }}/snapshots/
 
