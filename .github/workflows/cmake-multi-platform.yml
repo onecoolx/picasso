@@ -91,9 +91,10 @@ jobs:
       run: ctest --build-config ${{ matrix.build_type }} --output-on-failure
 
     - name: Upload Test Reaults
+      if: always()
       uses: actions/upload-artifact@v4.6.2
       with:
-        name: test-snpashots-${{matrix.os}}-${{ matrix.build_type }}
+        name: test-snpashots-${{matrix.os}}-${{ matrix.build_type }}-${{ matrix.c_compiler }}
         path: |
           ${{ steps.strings.outputs.build-output-dir }}/snapshots/
 
