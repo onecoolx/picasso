@@ -14,6 +14,7 @@ set(PXSVG_SOURCES
     ${PXSVG_DIR}/psx_svg_parser.cpp
     ${PXSVG_DIR}/psx_svg_render.h
     ${PXSVG_DIR}/psx_svg_render.cpp
+    ${PXSVG_DIR}/psx_svg.cpp
 )
 
 set(LIBX_SVG psx_svg)
@@ -39,5 +40,5 @@ install(TARGETS ${LIBX_SVG_STATIC} LIBRARY DESTINATION lib ARCHIVE DESTINATION l
 endif()
 
 include_directories(${PXSVG_DIR} ${PROJECT_ROOT}/ext/common ${PROJECT_ROOT}/include ${PROJECT_ROOT}/include/images ${PROJECT_ROOT}/include/svg)
-target_link_libraries(${LIBX_SVG} PRIVATE ${LIB_NAME} ${LIBX_COMMON} ${LIBX_IMAGE})
+target_link_libraries(${LIBX_SVG} PRIVATE ${LIB_NAME} ${LIBX_IMAGE} ${LIBX_COMMON})
 

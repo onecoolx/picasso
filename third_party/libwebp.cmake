@@ -174,6 +174,6 @@ install(TARGETS webp LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
 
 include_directories(${WEBP_DIR} ${CMAKE_CURRENT_BINARY_DIR}/include)
 
-if (ANDROID)
-    target_compile_options(webp PRIVATE -DANDROID -Wno-unused-but-set-variable)
+if (NOT WIN32)
+    target_compile_options(webp PRIVATE -DANDROID -Wno-unused-but-set-variable -Wno-unused-but-set-variable)
 endif()

@@ -24,8 +24,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _PSX_SVG_H_
-#define _PSX_SVG_H_
+#ifndef _PSX_SVG_NODE_H_
+#define _PSX_SVG_NODE_H_
 
 #include "picasso.h"
 
@@ -332,4 +332,4 @@ void psx_svg_matrix_skew(psx_svg_matrix* matrix, float shx, float shy);
 }
 #endif
 
-#endif /* _PSX_SVG_H_ */
+#endif /* _PSX_SVG_NODE_H_ */

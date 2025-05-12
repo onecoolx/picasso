@@ -1,2 +1,7 @@
 LIBRARY  psx_svg
 EXPORTS
+    psx_svg_init
+    psx_svg_shutdown
+    psx_svg_load
+    psx_svg_load_from_memory
+    psx_svg_destroy

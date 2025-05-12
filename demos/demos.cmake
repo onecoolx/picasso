@@ -38,9 +38,12 @@ foreach(demo_file ${DEMOS_SOURCES})
     get_filename_component(demo ${demo_file} NAME_WLE)
     if (ANDROID)
         add_library(${demo} SHARED ${app_type} ${demo_file} ${plat_file})
-        target_compile_options(${demo} PRIVATE -Wno-deprecated-declarations -Wno-implicit-const-int-float-conversion)
     else()
         add_executable(${demo} ${app_type} ${demo_file} ${plat_file})
+    endif()
+
+    if (NOT WIN32)
+        target_compile_options(${demo} PRIVATE -Wno-deprecated-declarations -Wno-implicit-const-int-float-conversion)
     endif()
      
     if (APPLE)

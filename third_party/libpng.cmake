@@ -50,6 +50,6 @@ else()
 target_link_libraries(png PRIVATE zlib)
 endif()
 
-if (ANDROID)
-    target_compile_options(png PRIVATE -Wno-unused-but-set-variable)
+if (NOT WIN32)
+    target_compile_options(png PRIVATE -Wno-unused-but-set-variable -Wno-unused-but-set-variable)
 endif()
