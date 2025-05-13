@@ -2153,7 +2153,7 @@ static bool svg_doc_walk_after(const psx_tree_node* node, void* data)
 extern "C" {
 #endif
 
-psx_svg_render_list* psx_svg_render_create(const psx_svg_node* doc)
+psx_svg_render_list* psx_svg_render_list_create(const psx_svg_node* doc)
 {
     if (!doc) {
         LOG_ERROR("Invalid parameters!\n");
@@ -2191,7 +2191,7 @@ psx_svg_render_list* psx_svg_render_create(const psx_svg_node* doc)
     return list;
 }
 
-void psx_svg_render_destroy(psx_svg_render_list* list)
+void psx_svg_render_list_destroy(psx_svg_render_list* list)
 {
     if (list) {
         svg_render_list_impl* svg_list = (svg_render_list_impl*)list;
@@ -2205,7 +2205,7 @@ void psx_svg_render_destroy(psx_svg_render_list* list)
     }
 }
 
-bool psx_svg_draw(ps_context* ctx, const psx_svg_render_list* render)
+bool psx_svg_render_list_draw(ps_context* ctx, const psx_svg_render_list* render)
 {
     if (!ctx || !render) {
         LOG_ERROR("Invalid arguements for svg render!\n");

@@ -51,11 +51,11 @@ public:
 extern "C" {
 #endif
 
-psx_svg_render_list* psx_svg_render_create(const psx_svg_node* doc);
+psx_svg_render_list* psx_svg_render_list_create(const psx_svg_node* doc);
 
-void psx_svg_render_destroy(psx_svg_render_list* list);
+void psx_svg_render_list_destroy(psx_svg_render_list* list);
 
-bool psx_svg_draw(ps_context* ctx, const psx_svg_render_list* render);
+bool psx_svg_render_list_draw(ps_context* ctx, const psx_svg_render_list* render);
 
 #ifdef __cplusplus
 }

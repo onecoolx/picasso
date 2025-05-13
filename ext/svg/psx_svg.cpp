@@ -132,6 +132,48 @@ void PICAPI psx_svg_destroy(psx_svg* doc)
     }
 }
 
+psx_svg_render* PICAPI psx_svg_render_create(const psx_svg* doc, psx_result* err_code)
+{
+    if (!doc) {
+        if (err_code) {
+            *err_code = S_BAD_PARAMS;
+        }
+        return NULL;
+    }
+
+    psx_svg_render_list* list = psx_svg_render_list_create((const psx_svg_node*)doc);
+    if (!list) {
+        if (err_code) {
+            *err_code = S_FAILURE;
+        }
+        return NULL;
+    }
+
+    if (err_code) {
+        *err_code = S_OK;
+    }
+    return (psx_svg_render*)list;
+}
+
+void PICAPI psx_svg_render_destroy(psx_svg_render* render)
+{
+    if (render) {
+        psx_svg_render_list_destroy((psx_svg_render_list*)render);
+    }
+}
+
+psx_result PICAPI psx_svg_render_draw(ps_context* ctx, const psx_svg_render* render)
+{
+    if (!ctx || !render) {
+        return S_BAD_PARAMS;
+    }
+
+    if (!psx_svg_render_list_draw(ctx, (const psx_svg_render_list*)render)) {
+        return S_FAILURE;
+    }
+    return S_OK;
+}
+
 psx_result PICAPI psx_svg_init(void)
 {
     return (psx_result)psx_image_init();

@@ -80,7 +80,7 @@ PEXPORT psx_result PICAPI psx_svg_init(void);
 PEXPORT void PICAPI psx_svg_shutdown(void);
 
 /**
- * \fn psx_svg* psx_svg_load(const char* file_name, int* err_code)
+ * \fn psx_svg* psx_svg_load(const char* file_name, psx_result* err_code)
  * \brief Create a new psx_svg object and load from file.
  *
  * \param file_name  The svg file path which will be loaded, which is encoded by utf8.
@@ -94,7 +94,7 @@ PEXPORT void PICAPI psx_svg_shutdown(void);
 PEXPORT psx_svg* PICAPI psx_svg_load(const char* file_name, psx_result* err_code);
 
 /**
- * \fn psx_svg* psx_svg_load_from_memory(const ps_byte* data, size_t length, int* err_code)
+ * \fn psx_svg* psx_svg_load_from_memory(const ps_byte* data, size_t length, psx_result* err_code)
  * \brief Create a new psx_svg object and load data from memory.
  *
  * \param data       Pointer to data buffer in memeory.
@@ -117,6 +117,43 @@ PEXPORT psx_svg* PICAPI psx_svg_load_from_memory(const ps_byte* data, size_t len
  * \sa psx_svg_load psx_svg_load_from_memory
  */
 PEXPORT void PICAPI psx_svg_destroy(psx_svg* doc);
+
+/**
+ * \fn psx_svg_render* psx_svg_render_create(psx_svg* doc, psx_result* err_code)
+ * \brief Create a new psx_svg_render from a psx_svg object.
+ *
+ * \param doc  Pointer to an existing psx_svg object.
+ * \param err_code   Pointer to a value to receiving the result code. can be NULL.
+ *
+ * \return If successs, the return value is the pointer to new psx_svg_render object.
+ *         If fails, the return value is NULL, and result will be return by \a err_code.
+ *
+ * \sa psx_svg_render_destroy psx_svg_render_draw
+ */
+PEXPORT psx_svg_render* PICAPI psx_svg_render_create(const psx_svg* doc, psx_result* err_code);
+
+/**
+ * \fn void psx_svg_render_destroy(psx_svg_render* render)
+ * \brief Destroy the psx_svg_render object and release resources.
+ *
+ * \param render Pointer to an existing psx_svg_render object.
+ *
+ * \sa psx_svg_render_draw psx_svg_render_create
+ */
+PEXPORT void PICAPI psx_svg_render_destroy(psx_svg_render* render);
+
+/**
+ * \fn psx_result PICAPI psx_svg_render_draw(ps_context* ctx, const psx_svg_render* render)
+ * \brief Draws an psx_svg_render object into the given context.
+ *
+ * \param ctx Pointer to an existing context object.
+ * \param render Pointer to an existing psx_svg_render object.
+ *
+ * \return Result code returned.
+ *
+ * \sa psx_svg_render_draw psx_svg_render_create
+ */
+PEXPORT psx_result PICAPI psx_svg_render_draw(ps_context* ctx, const psx_svg_render* render);
 
 /** @} end of extsvg svgfunctions */
 /** @} end of extsvg */

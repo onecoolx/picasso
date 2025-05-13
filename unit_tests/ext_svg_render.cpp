@@ -58,7 +58,7 @@ protected:
     void load(const char* data)
     {
         root = psx_svg_load_data(data, (uint32_t)strlen(data));
-        draw_list = psx_svg_render_create(root);
+        draw_list = psx_svg_render_list_create(root);
     }
 
     void release(void)
@@ -68,7 +68,7 @@ protected:
             root = NULL;
         }
         if (draw_list) {
-            psx_svg_render_destroy(draw_list);
+            psx_svg_render_list_destroy(draw_list);
             draw_list = NULL;
         }
     }
@@ -84,7 +84,7 @@ protected:
     {
         clear();
         ps_context* ctx = ps_context_create(get_test_canvas(), NULL);
-        psx_svg_draw(ctx, draw_list);
+        psx_svg_render_list_draw(ctx, draw_list);
         ps_context_unref(ctx);
     }
 
