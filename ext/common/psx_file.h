@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, Zhang Ji Peng
+ * Copyright (c) 2025, Zhang Ji Peng
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,24 +24,38 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _PSX_IMAGE_IO_H_
-#define _PSX_IMAGE_IO_H_
+#ifndef _PSX_FILE_H_
+#define _PSX_FILE_H_
 
-#include "psx_file.h"
+#include "psx_common.h"
 
-typedef void* module_handle;
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-#define INVALID_HANDLE  ((module_handle)0)
+#if defined(WIN32) && defined(_MSC_VER)
+#define PATH_MAX  1024
+typedef wchar_t pchar;
+#else
+typedef char pchar;
+#endif
 
-module_handle _module_load(const pchar* path);
+pchar* psx_path_create(const char* str, size_t* rlen);
 
-void* _module_get_symbol(module_handle module, const char* name);
+void psx_path_destroy(pchar* pstr);
 
-void _module_unload(module_handle module);
+bool psx_file_exists(const pchar* path);
 
-pchar* _module_get_modules_dir(pchar* path_buffer, size_t buffer_size);
+size_t psx_file_size(const pchar* path);
 
-/* if paths == NULL, return modules only, paths[] items will alloc by malloc. */
-size_t _module_get_modules(const pchar* dir_path, pchar* paths[], size_t num);
+bool psx_file_read(const pchar* path, uint8_t* buffer, size_t buffer_size);
 
-#endif /*_PSX_IMAGE_IO_H_*/
+bool psx_file_write(const pchar* path, const uint8_t* buffer, size_t buffer_size);
+
+bool psx_file_remove(const pchar* path);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* _PSX_FILE_H_ */

@@ -27,6 +27,7 @@
 #include "psx_svg.h"
 
 #include "picasso.h"
+#include "psx_file.h"
 #include "psx_image.h"
 #include "psx_svg_node.h"
 #include "psx_svg_render.h"
@@ -35,9 +36,69 @@
 extern "C" {
 #endif
 
-psx_svg* PICAPI psx_svg_load(const char* file_name, psx_result* err_code)
+psx_svg* PICAPI psx_svg_load(const char* name, psx_result* err_code)
 {
-    return NULL;
+    size_t size;
+    ps_byte* file_data;
+    pchar* file_name;
+
+    if (!name) {
+        if (err_code) {
+            *err_code = S_BAD_PARAMS;
+        }
+        return NULL;
+    }
+
+    file_name = psx_path_create(name, NULL);
+    if (!file_name) {
+        if (err_code) {
+            *err_code = S_FAILURE;
+        }
+        return NULL;
+    }
+
+    if (!psx_file_exists(file_name)) {
+        if (err_code) {
+            *err_code = S_BAD_PARAMS;
+        }
+        psx_path_destroy(file_name);
+        return NULL;
+    }
+
+    size = psx_file_size(file_name);
+    if (!size) {
+        if (err_code) {
+            *err_code = S_BAD_PARAMS;
+        }
+        psx_path_destroy(file_name);
+        return NULL;
+    }
+
+    file_data = (ps_byte*)mem_malloc(size);
+    if (!file_data) {
+        if (err_code) {
+            *err_code = S_OUT_OF_MEMORY;
+        }
+        psx_path_destroy(file_name);
+        return NULL;
+    }
+    // read file data.
+    if (!psx_file_read(file_name, file_data, size)) {
+        free(file_data);
+        if (err_code) {
+            *err_code = S_FAILURE;
+        }
+        psx_path_destroy(file_name);
+        return NULL;
+    }
+
+    psx_svg* svg = psx_svg_load_from_memory(file_data, size, err_code);
+    psx_path_destroy(file_name);
+    free(file_data);
+    if (err_code) {
+        *err_code = S_OK;
+    }
+    return svg;
 }
 
 psx_svg* PICAPI psx_svg_load_from_memory(const ps_byte* data, size_t length, psx_result* err_code)

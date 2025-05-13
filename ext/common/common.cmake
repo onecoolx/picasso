@@ -8,6 +8,8 @@ set(PXCOMMON_DIR ${PROJECT_ROOT}/ext/common)
 set(PXCOMMON_SOURCES
     ${PXCOMMON_DIR}/psx_linear_allocator.h
     ${PXCOMMON_DIR}/psx_linear_allocator.c
+    ${PXCOMMON_DIR}/psx_file.h
+    ${PXCOMMON_DIR}/psx_file.c
 )
 
 set(LIBX_COMMON psx_common)
