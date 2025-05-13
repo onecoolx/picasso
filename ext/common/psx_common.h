@@ -37,6 +37,10 @@
 #include <stdlib.h>
 #include <stdarg.h>
 
+#if defined(WIN32) && defined(_MSC_VER)
+    #define strdup(s) _strdup(s)
+#endif
+
 #ifdef HAVE_STDBOOL_H
     #include <stdbool.h>
 #else
