@@ -43,52 +43,43 @@ $(function() {
 <a href="#typedef-members">Typedefs</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
-<div class="title">XImage Functions<div class="ingroups"><a class="el" href="group__extension.html">Extensions</a> &raquo; <a class="el" href="group__extimg.html">XImage Extension</a><a class="el" href="group__extension.html">Extensions</a> &raquo;  &#124; <a class="el" href="group__extsvg.html">XSvg Extension</a></div></div>  </div>
+<div class="title">XImage Functions<div class="ingroups"><a class="el" href="group__extension.html">Extensions</a> &raquo; <a class="el" href="group__extimg.html">XImage Extension</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
 <tr class="memitem:gaf258071fa6a65940e43a8edda1020473"><td class="memItemLeft" align="right" valign="top"><a id="gaf258071fa6a65940e43a8edda1020473"></a>
-typedef int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__functions.html#gaf258071fa6a65940e43a8edda1020473">image_writer_fn</a>) (void *param, const <a class="el" href="group__data.html#gab4d32618dcac1b191ee7db92ef475ed0">ps_byte</a> *data, size_t length)</td></tr>
+typedef int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__imgfunctions.html#gaf258071fa6a65940e43a8edda1020473">image_writer_fn</a>) (void *param, const <a class="el" href="group__data.html#gab4d32618dcac1b191ee7db92ef475ed0">ps_byte</a> *data, size_t length)</td></tr>
 <tr class="memdesc:gaf258071fa6a65940e43a8edda1020473"><td class="mdescLeft">&#160;</td><td class="mdescRight">Callback function for saving image data. <br /></td></tr>
 <tr class="separator:gaf258071fa6a65940e43a8edda1020473"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ga8449a503380d339ecccdd0ecf8074b82"><td class="memItemLeft" align="right" valign="top">PEXPORT int PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__functions.html#ga8449a503380d339ecccdd0ecf8074b82">psx_image_init</a> (void)</td></tr>
-<tr class="memdesc:ga8449a503380d339ecccdd0ecf8074b82"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialze the library and load resources.  <a href="group__functions.html#ga8449a503380d339ecccdd0ecf8074b82">More...</a><br /></td></tr>
+<tr class="memitem:ga8449a503380d339ecccdd0ecf8074b82"><td class="memItemLeft" align="right" valign="top">PEXPORT int PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__imgfunctions.html#ga8449a503380d339ecccdd0ecf8074b82">psx_image_init</a> (void)</td></tr>
+<tr class="memdesc:ga8449a503380d339ecccdd0ecf8074b82"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialze the library and load resources.  <a href="group__imgfunctions.html#ga8449a503380d339ecccdd0ecf8074b82">More...</a><br /></td></tr>
 <tr class="separator:ga8449a503380d339ecccdd0ecf8074b82"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga886028c5ac25bb636de0abd5c508e0a1"><td class="memItemLeft" align="right" valign="top">PEXPORT int PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__functions.html#ga886028c5ac25bb636de0abd5c508e0a1">psx_image_shutdown</a> (void)</td></tr>
-<tr class="memdesc:ga886028c5ac25bb636de0abd5c508e0a1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Release resources and shutdoen.  <a href="group__functions.html#ga886028c5ac25bb636de0abd5c508e0a1">More...</a><br /></td></tr>
+<tr class="memitem:ga886028c5ac25bb636de0abd5c508e0a1"><td class="memItemLeft" align="right" valign="top">PEXPORT int PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__imgfunctions.html#ga886028c5ac25bb636de0abd5c508e0a1">psx_image_shutdown</a> (void)</td></tr>
+<tr class="memdesc:ga886028c5ac25bb636de0abd5c508e0a1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Release resources and shutdoen.  <a href="group__imgfunctions.html#ga886028c5ac25bb636de0abd5c508e0a1">More...</a><br /></td></tr>
 <tr class="separator:ga886028c5ac25bb636de0abd5c508e0a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gad40645d0b040d9bf426800c1ce6115c2"><td class="memItemLeft" align="right" valign="top">PEXPORT <a class="el" href="group__types.html#gadf288af52cc3e0bcd015ad1d5cb34555">psx_image</a> *PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__functions.html#gad40645d0b040d9bf426800c1ce6115c2">psx_image_create_from_data</a> (<a class="el" href="group__data.html#gab4d32618dcac1b191ee7db92ef475ed0">ps_byte</a> *data, <a class="el" href="group__canvas.html#ga79f9abf66c44773958bf7a91519e4163">ps_color_format</a> fmt, int width, int height, int pitch, int *err_code)</td></tr>
-<tr class="memdesc:gad40645d0b040d9bf426800c1ce6115c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a new psx_image using a copy of given address in memory.  <a href="group__functions.html#gad40645d0b040d9bf426800c1ce6115c2">More...</a><br /></td></tr>
+<tr class="memitem:gad40645d0b040d9bf426800c1ce6115c2"><td class="memItemLeft" align="right" valign="top">PEXPORT <a class="el" href="group__imgtypes.html#gadf288af52cc3e0bcd015ad1d5cb34555">psx_image</a> *PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__imgfunctions.html#gad40645d0b040d9bf426800c1ce6115c2">psx_image_create_from_data</a> (<a class="el" href="group__data.html#gab4d32618dcac1b191ee7db92ef475ed0">ps_byte</a> *data, <a class="el" href="group__canvas.html#ga79f9abf66c44773958bf7a91519e4163">ps_color_format</a> fmt, int width, int height, int pitch, int *err_code)</td></tr>
+<tr class="memdesc:gad40645d0b040d9bf426800c1ce6115c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a new psx_image using a copy of given address in memory.  <a href="group__imgfunctions.html#gad40645d0b040d9bf426800c1ce6115c2">More...</a><br /></td></tr>
 <tr class="separator:gad40645d0b040d9bf426800c1ce6115c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaba934b22f7e53c2d744f340cde3fefe9"><td class="memItemLeft" align="right" valign="top">PEXPORT <a class="el" href="group__types.html#gadf288af52cc3e0bcd015ad1d5cb34555">psx_image</a> *PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__functions.html#gaba934b22f7e53c2d744f340cde3fefe9">psx_image_load</a> (const char *file_name, int *err_code)</td></tr>
-<tr class="memdesc:gaba934b22f7e53c2d744f340cde3fefe9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a new psx_image object and load from file.  <a href="group__functions.html#gaba934b22f7e53c2d744f340cde3fefe9">More...</a><br /></td></tr>
+<tr class="memitem:gaba934b22f7e53c2d744f340cde3fefe9"><td class="memItemLeft" align="right" valign="top">PEXPORT <a class="el" href="group__imgtypes.html#gadf288af52cc3e0bcd015ad1d5cb34555">psx_image</a> *PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__imgfunctions.html#gaba934b22f7e53c2d744f340cde3fefe9">psx_image_load</a> (const char *file_name, int *err_code)</td></tr>
+<tr class="memdesc:gaba934b22f7e53c2d744f340cde3fefe9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a new psx_image object and load from file.  <a href="group__imgfunctions.html#gaba934b22f7e53c2d744f340cde3fefe9">More...</a><br /></td></tr>
 <tr class="separator:gaba934b22f7e53c2d744f340cde3fefe9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gab7b5a6aabdaf060a25bc6c608b42431c"><td class="memItemLeft" align="right" valign="top">PEXPORT <a class="el" href="group__types.html#gadf288af52cc3e0bcd015ad1d5cb34555">psx_image</a> *PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__functions.html#gab7b5a6aabdaf060a25bc6c608b42431c">psx_image_load_from_memory</a> (const <a class="el" href="group__data.html#gab4d32618dcac1b191ee7db92ef475ed0">ps_byte</a> *data, size_t length, int *err_code)</td></tr>
-<tr class="memdesc:gab7b5a6aabdaf060a25bc6c608b42431c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a new psx_image object and load data from memory.  <a href="group__functions.html#gab7b5a6aabdaf060a25bc6c608b42431c">More...</a><br /></td></tr>
+<tr class="memitem:gab7b5a6aabdaf060a25bc6c608b42431c"><td class="memItemLeft" align="right" valign="top">PEXPORT <a class="el" href="group__imgtypes.html#gadf288af52cc3e0bcd015ad1d5cb34555">psx_image</a> *PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__imgfunctions.html#gab7b5a6aabdaf060a25bc6c608b42431c">psx_image_load_from_memory</a> (const <a class="el" href="group__data.html#gab4d32618dcac1b191ee7db92ef475ed0">ps_byte</a> *data, size_t length, int *err_code)</td></tr>
+<tr class="memdesc:gab7b5a6aabdaf060a25bc6c608b42431c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a new psx_image object and load data from memory.  <a href="group__imgfunctions.html#gab7b5a6aabdaf060a25bc6c608b42431c">More...</a><br /></td></tr>
 <tr class="separator:gab7b5a6aabdaf060a25bc6c608b42431c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga204b2a1fd4375d5fa75ae2c1b6f66689"><td class="memItemLeft" align="right" valign="top">PEXPORT int PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__functions.html#ga204b2a1fd4375d5fa75ae2c1b6f66689">psx_image_save</a> (const <a class="el" href="group__types.html#gadf288af52cc3e0bcd015ad1d5cb34555">psx_image</a> *image, <a class="el" href="group__functions.html#gaf258071fa6a65940e43a8edda1020473">image_writer_fn</a> func, void *param, const char *type, float quality)</td></tr>
-<tr class="memdesc:ga204b2a1fd4375d5fa75ae2c1b6f66689"><td class="mdescLeft">&#160;</td><td class="mdescRight">Encoding psx_image to a gaving format and output it.  <a href="group__functions.html#ga204b2a1fd4375d5fa75ae2c1b6f66689">More...</a><br /></td></tr>
+<tr class="memitem:ga204b2a1fd4375d5fa75ae2c1b6f66689"><td class="memItemLeft" align="right" valign="top">PEXPORT int PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__imgfunctions.html#ga204b2a1fd4375d5fa75ae2c1b6f66689">psx_image_save</a> (const <a class="el" href="group__imgtypes.html#gadf288af52cc3e0bcd015ad1d5cb34555">psx_image</a> *image, <a class="el" href="group__imgfunctions.html#gaf258071fa6a65940e43a8edda1020473">image_writer_fn</a> func, void *param, const char *type, float quality)</td></tr>
+<tr class="memdesc:ga204b2a1fd4375d5fa75ae2c1b6f66689"><td class="mdescLeft">&#160;</td><td class="mdescRight">Encoding psx_image to a gaving format and output it.  <a href="group__imgfunctions.html#ga204b2a1fd4375d5fa75ae2c1b6f66689">More...</a><br /></td></tr>
 <tr class="separator:ga204b2a1fd4375d5fa75ae2c1b6f66689"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaa1b10b378e6c58563e5f36bdf4d282c6"><td class="memItemLeft" align="right" valign="top">PEXPORT int PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__functions.html#gaa1b10b378e6c58563e5f36bdf4d282c6">psx_image_save_to_file</a> (const <a class="el" href="group__types.html#gadf288af52cc3e0bcd015ad1d5cb34555">psx_image</a> *image, const char *file_name, const char *type, float quality)</td></tr>
-<tr class="memdesc:gaa1b10b378e6c58563e5f36bdf4d282c6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Encoding psx_image to a gaving format and output to a file.  <a href="group__functions.html#gaa1b10b378e6c58563e5f36bdf4d282c6">More...</a><br /></td></tr>
+<tr class="memitem:gaa1b10b378e6c58563e5f36bdf4d282c6"><td class="memItemLeft" align="right" valign="top">PEXPORT int PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__imgfunctions.html#gaa1b10b378e6c58563e5f36bdf4d282c6">psx_image_save_to_file</a> (const <a class="el" href="group__imgtypes.html#gadf288af52cc3e0bcd015ad1d5cb34555">psx_image</a> *image, const char *file_name, const char *type, float quality)</td></tr>
+<tr class="memdesc:gaa1b10b378e6c58563e5f36bdf4d282c6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Encoding psx_image to a gaving format and output to a file.  <a href="group__imgfunctions.html#gaa1b10b378e6c58563e5f36bdf4d282c6">More...</a><br /></td></tr>
 <tr class="separator:gaa1b10b378e6c58563e5f36bdf4d282c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga018b18d8cd3730dc8fe86ff37bffd9a8"><td class="memItemLeft" align="right" valign="top">PEXPORT int PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__functions.html#ga018b18d8cd3730dc8fe86ff37bffd9a8">psx_image_destroy</a> (<a class="el" href="group__types.html#gadf288af52cc3e0bcd015ad1d5cb34555">psx_image</a> *image)</td></tr>
-<tr class="memdesc:ga018b18d8cd3730dc8fe86ff37bffd9a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroy the psx_image object and release resources.  <a href="group__functions.html#ga018b18d8cd3730dc8fe86ff37bffd9a8">More...</a><br /></td></tr>
+<tr class="memitem:ga018b18d8cd3730dc8fe86ff37bffd9a8"><td class="memItemLeft" align="right" valign="top">PEXPORT int PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__imgfunctions.html#ga018b18d8cd3730dc8fe86ff37bffd9a8">psx_image_destroy</a> (<a class="el" href="group__imgtypes.html#gadf288af52cc3e0bcd015ad1d5cb34555">psx_image</a> *image)</td></tr>
+<tr class="memdesc:ga018b18d8cd3730dc8fe86ff37bffd9a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroy the psx_image object and release resources.  <a href="group__imgfunctions.html#ga018b18d8cd3730dc8fe86ff37bffd9a8">More...</a><br /></td></tr>
 <tr class="separator:ga018b18d8cd3730dc8fe86ff37bffd9a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga362a4e99a0e5a5157a68a8e379e8417d"><td class="memItemLeft" align="right" valign="top">PEXPORT <a class="el" href="group__extension.html#ga928fc0f11b933610cbaf04bf3cf5619c">psx_result</a> PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__functions.html#ga362a4e99a0e5a5157a68a8e379e8417d">psx_svg_init</a> (void)</td></tr>
-<tr class="memdesc:ga362a4e99a0e5a5157a68a8e379e8417d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialze the library and load resources.  <a href="group__functions.html#ga362a4e99a0e5a5157a68a8e379e8417d">More...</a><br /></td></tr>
-<tr class="separator:ga362a4e99a0e5a5157a68a8e379e8417d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga9cbe75fa42d4c7a21155a38049bed6bf"><td class="memItemLeft" align="right" valign="top">PEXPORT void PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__functions.html#ga9cbe75fa42d4c7a21155a38049bed6bf">psx_svg_shutdown</a> (void)</td></tr>
-<tr class="memdesc:ga9cbe75fa42d4c7a21155a38049bed6bf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Release resources and shutdoen.  <a href="group__functions.html#ga9cbe75fa42d4c7a21155a38049bed6bf">More...</a><br /></td></tr>
-<tr class="separator:ga9cbe75fa42d4c7a21155a38049bed6bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga03907eadc640e2688e1a1a15444d775a"><td class="memItemLeft" align="right" valign="top">PEXPORT void PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__functions.html#ga03907eadc640e2688e1a1a15444d775a">psx_svg_destroy</a> (<a class="el" href="group__types.html#gaeb10426a6a4570e0176172f4bc58ec16">psx_svg</a> *doc)</td></tr>
-<tr class="memdesc:ga03907eadc640e2688e1a1a15444d775a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroy the psx_svg object and release resources.  <a href="group__functions.html#ga03907eadc640e2688e1a1a15444d775a">More...</a><br /></td></tr>
-<tr class="separator:ga03907eadc640e2688e1a1a15444d775a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <h2 class="groupheader">Function Documentation</h2>
@@ -99,7 +90,7 @@ Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="group__types.html#gadf288af52cc3e0bcd015ad1d5cb34555">psx_image</a> * psx_image_create_from_data </td>
+          <td class="memname"><a class="el" href="group__imgtypes.html#gadf288af52cc3e0bcd015ad1d5cb34555">psx_image</a> * psx_image_create_from_data </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="group__data.html#gab4d32618dcac1b191ee7db92ef475ed0">ps_byte</a> *&#160;</td>
           <td class="paramname"><em>data</em>, </td>
@@ -155,7 +146,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>If the function succeeds, the return value is the pointer to a new psx_image object. If the function fails, the return value is NULL.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__functions.html#gaba934b22f7e53c2d744f340cde3fefe9" title="Create a new psx_image object and load from file.">psx_image_load</a> <a class="el" href="group__functions.html#gab7b5a6aabdaf060a25bc6c608b42431c" title="Create a new psx_image object and load data from memory.">psx_image_load_from_memory</a> <a class="el" href="group__functions.html#ga018b18d8cd3730dc8fe86ff37bffd9a8" title="Destroy the psx_image object and release resources.">psx_image_destroy</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__imgfunctions.html#gaba934b22f7e53c2d744f340cde3fefe9" title="Create a new psx_image object and load from file.">psx_image_load</a> <a class="el" href="group__imgfunctions.html#gab7b5a6aabdaf060a25bc6c608b42431c" title="Create a new psx_image object and load data from memory.">psx_image_load_from_memory</a> <a class="el" href="group__imgfunctions.html#ga018b18d8cd3730dc8fe86ff37bffd9a8" title="Destroy the psx_image object and release resources.">psx_image_destroy</a> </dd></dl>
 
 </div>
 </div>
@@ -168,7 +159,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">int psx_image_destroy </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="group__types.html#gadf288af52cc3e0bcd015ad1d5cb34555">psx_image</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="group__imgtypes.html#gadf288af52cc3e0bcd015ad1d5cb34555">psx_image</a> *&#160;</td>
           <td class="paramname"><em>image</em></td><td>)</td>
           <td></td>
         </tr>
@@ -183,7 +174,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Result code returned.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__functions.html#gaba934b22f7e53c2d744f340cde3fefe9" title="Create a new psx_image object and load from file.">psx_image_load</a> <a class="el" href="group__functions.html#gab7b5a6aabdaf060a25bc6c608b42431c" title="Create a new psx_image object and load data from memory.">psx_image_load_from_memory</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__imgfunctions.html#gaba934b22f7e53c2d744f340cde3fefe9" title="Create a new psx_image object and load from file.">psx_image_load</a> <a class="el" href="group__imgfunctions.html#gab7b5a6aabdaf060a25bc6c608b42431c" title="Create a new psx_image object and load data from memory.">psx_image_load_from_memory</a> </dd></dl>
 
 </div>
 </div>
@@ -205,7 +196,7 @@ Functions</h2></td></tr>
 
 <p>Initialze the library and load resources. </p>
 <dl class="section return"><dt>Returns</dt><dd>Result code returned.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__functions.html#ga886028c5ac25bb636de0abd5c508e0a1" title="Release resources and shutdoen.">psx_image_shutdown</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__imgfunctions.html#ga886028c5ac25bb636de0abd5c508e0a1" title="Release resources and shutdoen.">psx_image_shutdown</a> </dd></dl>
 
 </div>
 </div>
@@ -216,7 +207,7 @@ Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="group__types.html#gadf288af52cc3e0bcd015ad1d5cb34555">psx_image</a> * psx_image_load </td>
+          <td class="memname"><a class="el" href="group__imgtypes.html#gadf288af52cc3e0bcd015ad1d5cb34555">psx_image</a> * psx_image_load </td>
           <td>(</td>
           <td class="paramtype">const char *&#160;</td>
           <td class="paramname"><em>file_name</em>, </td>
@@ -244,7 +235,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>If successs, the return value is the pointer to new psx_image object. If fails, the return value is NULL, and result will be return by <em>err_code</em>.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__functions.html#ga018b18d8cd3730dc8fe86ff37bffd9a8" title="Destroy the psx_image object and release resources.">psx_image_destroy</a> <a class="el" href="group__functions.html#gab7b5a6aabdaf060a25bc6c608b42431c" title="Create a new psx_image object and load data from memory.">psx_image_load_from_memory</a> <a class="el" href="group__functions.html#gad40645d0b040d9bf426800c1ce6115c2" title="Create a new psx_image using a copy of given address in memory.">psx_image_create_from_data</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__imgfunctions.html#ga018b18d8cd3730dc8fe86ff37bffd9a8" title="Destroy the psx_image object and release resources.">psx_image_destroy</a> <a class="el" href="group__imgfunctions.html#gab7b5a6aabdaf060a25bc6c608b42431c" title="Create a new psx_image object and load data from memory.">psx_image_load_from_memory</a> <a class="el" href="group__imgfunctions.html#gad40645d0b040d9bf426800c1ce6115c2" title="Create a new psx_image using a copy of given address in memory.">psx_image_create_from_data</a> </dd></dl>
 
 </div>
 </div>
@@ -255,7 +246,7 @@ Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="group__types.html#gadf288af52cc3e0bcd015ad1d5cb34555">psx_image</a> * psx_image_load_from_memory </td>
+          <td class="memname"><a class="el" href="group__imgtypes.html#gadf288af52cc3e0bcd015ad1d5cb34555">psx_image</a> * psx_image_load_from_memory </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="group__data.html#gab4d32618dcac1b191ee7db92ef475ed0">ps_byte</a> *&#160;</td>
           <td class="paramname"><em>data</em>, </td>
@@ -290,7 +281,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>If successs, the return value is the pointer to new psx_image object. If fails, the return value is NULL, and result will be return by <em>err_code</em>.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__functions.html#ga018b18d8cd3730dc8fe86ff37bffd9a8" title="Destroy the psx_image object and release resources.">psx_image_destroy</a> <a class="el" href="group__functions.html#gaba934b22f7e53c2d744f340cde3fefe9" title="Create a new psx_image object and load from file.">psx_image_load</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__imgfunctions.html#ga018b18d8cd3730dc8fe86ff37bffd9a8" title="Destroy the psx_image object and release resources.">psx_image_destroy</a> <a class="el" href="group__imgfunctions.html#gaba934b22f7e53c2d744f340cde3fefe9" title="Create a new psx_image object and load from file.">psx_image_load</a> </dd></dl>
 
 </div>
 </div>
@@ -303,13 +294,13 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">int psx_image_save </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="group__types.html#gadf288af52cc3e0bcd015ad1d5cb34555">psx_image</a> *&#160;</td>
+          <td class="paramtype">const <a class="el" href="group__imgtypes.html#gadf288af52cc3e0bcd015ad1d5cb34555">psx_image</a> *&#160;</td>
           <td class="paramname"><em>image</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="group__functions.html#gaf258071fa6a65940e43a8edda1020473">image_writer_fn</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="group__imgfunctions.html#gaf258071fa6a65940e43a8edda1020473">image_writer_fn</a>&#160;</td>
           <td class="paramname"><em>func</em>, </td>
         </tr>
         <tr>
@@ -350,7 +341,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Result code returned.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__functions.html#gaa1b10b378e6c58563e5f36bdf4d282c6" title="Encoding psx_image to a gaving format and output to a file.">psx_image_save_to_file</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__imgfunctions.html#gaa1b10b378e6c58563e5f36bdf4d282c6" title="Encoding psx_image to a gaving format and output to a file.">psx_image_save_to_file</a> </dd></dl>
 
 </div>
 </div>
@@ -363,7 +354,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">int psx_image_save_to_file </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="group__types.html#gadf288af52cc3e0bcd015ad1d5cb34555">psx_image</a> *&#160;</td>
+          <td class="paramtype">const <a class="el" href="group__imgtypes.html#gadf288af52cc3e0bcd015ad1d5cb34555">psx_image</a> *&#160;</td>
           <td class="paramname"><em>image</em>, </td>
         </tr>
         <tr>
@@ -403,7 +394,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Result code returned.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__functions.html#ga204b2a1fd4375d5fa75ae2c1b6f66689" title="Encoding psx_image to a gaving format and output it.">psx_image_save</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__imgfunctions.html#ga204b2a1fd4375d5fa75ae2c1b6f66689" title="Encoding psx_image to a gaving format and output it.">psx_image_save</a> </dd></dl>
 
 </div>
 </div>
@@ -425,77 +416,7 @@ Functions</h2></td></tr>
 
 <p>Release resources and shutdoen. </p>
 <dl class="section return"><dt>Returns</dt><dd>Result code returned.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__functions.html#ga8449a503380d339ecccdd0ecf8074b82" title="Initialze the library and load resources.">psx_image_init</a> </dd></dl>
-
-</div>
-</div>
-<a id="ga03907eadc640e2688e1a1a15444d775a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga03907eadc640e2688e1a1a15444d775a">&#9670;&nbsp;</a></span>psx_svg_destroy()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void psx_svg_destroy </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="group__types.html#gaeb10426a6a4570e0176172f4bc58ec16">psx_svg</a> *&#160;</td>
-          <td class="paramname"><em>doc</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Destroy the psx_svg object and release resources. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">doc</td><td>Pointer to an existing psx_svg object.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section see"><dt>See also</dt><dd>psx_svg_load psx_svg_load_from_memory </dd></dl>
-
-</div>
-</div>
-<a id="ga362a4e99a0e5a5157a68a8e379e8417d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga362a4e99a0e5a5157a68a8e379e8417d">&#9670;&nbsp;</a></span>psx_svg_init()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="group__extension.html#ga928fc0f11b933610cbaf04bf3cf5619c">psx_result</a> psx_svg_init </td>
-          <td>(</td>
-          <td class="paramtype">void&#160;</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Initialze the library and load resources. </p>
-<dl class="section return"><dt>Returns</dt><dd>Result code returned.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__functions.html#ga9cbe75fa42d4c7a21155a38049bed6bf" title="Release resources and shutdoen.">psx_svg_shutdown</a> </dd></dl>
-
-</div>
-</div>
-<a id="ga9cbe75fa42d4c7a21155a38049bed6bf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga9cbe75fa42d4c7a21155a38049bed6bf">&#9670;&nbsp;</a></span>psx_svg_shutdown()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void psx_svg_shutdown </td>
-          <td>(</td>
-          <td class="paramtype">void&#160;</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Release resources and shutdoen. </p>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__functions.html#ga362a4e99a0e5a5157a68a8e379e8417d" title="Initialze the library and load resources.">psx_svg_init</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__imgfunctions.html#ga8449a503380d339ecccdd0ecf8074b82" title="Initialze the library and load resources.">psx_image_init</a> </dd></dl>
 
 </div>
 </div>

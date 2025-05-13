@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Picasso API: Extensions</title>
+<title>Picasso API: include/picasso_ext.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -37,23 +37,22 @@ $(function() {
 });
 /* @license-end */</script>
 <div id="main-nav"></div>
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li>  </ul>
+</div>
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#groups">Modules</a> &#124;
 <a href="#enum-members">Enumerations</a>  </div>
   <div class="headertitle">
-<div class="title">Extensions</div>  </div>
+<div class="title">picasso_ext.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+<div class="textblock"><code>#include &quot;<a class="el" href="picasso_8h_source.html">picasso.h</a>&quot;</code><br />
+</div>
+<p><a href="picasso__ext_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="groups"></a>
-Modules</h2></td></tr>
-<tr class="memitem:group__extimg"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__extimg.html">XImage Extension</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:group__extsvg"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__extsvg.html">XSvg Extension</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
 <tr class="memitem:ga928fc0f11b933610cbaf04bf3cf5619c"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__extension.html#ga928fc0f11b933610cbaf04bf3cf5619c">psx_result</a> { <br />
@@ -70,40 +69,16 @@ Enumerations</h2></td></tr>
 <tr class="separator:ga928fc0f11b933610cbaf04bf3cf5619c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<h2 class="groupheader">Enumeration Type Documentation</h2>
-<a id="ga928fc0f11b933610cbaf04bf3cf5619c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga928fc0f11b933610cbaf04bf3cf5619c">&#9670;&nbsp;</a></span>psx_result</h2>
+<div class="textblock"><dl class="section author"><dt>Author</dt><dd>Zhang Ji Peng <a href="#" onclick="location.href='mai'+'lto:'+'one'+'co'+'olx'+'@g'+'mai'+'l.'+'com'; return false;">oneco<span style="display: none;">.nosp@m.</span>olx@<span style="display: none;">.nosp@m.</span>gmail<span style="display: none;">.nosp@m.</span>.com</a> </dd></dl>
+<dl class="section date"><dt>Date</dt><dd>2025/5/12</dd></dl>
+<p>This file includes all common definitions for the picasso extension.</p>
+<pre class="fragment">   Copyright (C) 2008 ~ 2025  Zhang Ji Peng
 
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">enum <a class="el" href="group__extension.html#ga928fc0f11b933610cbaf04bf3cf5619c">psx_result</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
+   All rights reserved.
 
-<p>Status code return by call APIs. </p>
-<table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="gga928fc0f11b933610cbaf04bf3cf5619cae36cb8bfb9670d44e24261506cae2791"></a>S_OK&#160;</td><td class="fielddoc"><p>Successful no errors. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="gga928fc0f11b933610cbaf04bf3cf5619ca149bfeb516955c855e9f170db6dc093c"></a>S_BAD_PARAMS&#160;</td><td class="fielddoc"><p>Invalid params input. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="gga928fc0f11b933610cbaf04bf3cf5619cadc433abcd1da990b49c947a7c16dd657"></a>S_NOT_SUPPORT&#160;</td><td class="fielddoc"><p>Not support. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="gga928fc0f11b933610cbaf04bf3cf5619ca6d6bd1f44f637e595bb3564c1d914863"></a>S_OUT_OF_MEMORY&#160;</td><td class="fielddoc"><p>Not enough memory. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="gga928fc0f11b933610cbaf04bf3cf5619ca28b75b1b6ca84b4239cf23b1b8b506f2"></a>S_INIT_FAILURE&#160;</td><td class="fielddoc"><p>Not initialize system. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="gga928fc0f11b933610cbaf04bf3cf5619cacd33e5b280a7fed8bd4a5521bd5e4b87"></a>S_FAILURE&#160;</td><td class="fielddoc"><p>Operation failed by internal errors. </p>
-</td></tr>
-</table>
-
-<p class="definition">Definition at line <a class="el" href="picasso__ext_8h_source.html#l00036">36</a> of file <a class="el" href="picasso__ext_8h_source.html">picasso_ext.h</a>.</p>
-
-</div>
-</div>
-</div><!-- contents -->
+   Picasso is a vector graphic library.</pre> 
+<p class="definition">Definition in file <a class="el" href="picasso__ext_8h_source.html">picasso_ext.h</a>.</p>
+</div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">
