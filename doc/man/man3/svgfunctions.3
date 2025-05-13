@@ -18,9 +18,25 @@ svgfunctions
 .br
 .RI "Release resources and shutdoen\&. "
 .ti -1c
+.RI "PEXPORT \fBpsx_svg\fP *PICAPI \fBpsx_svg_load\fP (const char *file_name, \fBpsx_result\fP *err_code)"
+.br
+.RI "Create a new psx_svg object and load from file\&. "
+.ti -1c
+.RI "PEXPORT \fBpsx_svg\fP *PICAPI \fBpsx_svg_load_from_memory\fP (const \fBps_byte\fP *data, size_t length, \fBpsx_result\fP *err_code)"
+.br
+.RI "Create a new psx_svg object and load data from memory\&. "
+.ti -1c
 .RI "PEXPORT void PICAPI \fBpsx_svg_destroy\fP (\fBpsx_svg\fP *doc)"
 .br
 .RI "Destroy the psx_svg object and release resources\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBpsx_svg_render_destroy\fP (\fBpsx_svg_render\fP *render)"
+.br
+.RI "Destroy the psx_svg_render object and release resources\&. "
+.ti -1c
+.RI "PEXPORT \fBpsx_result\fP PICAPI \fBpsx_svg_render_draw\fP (\fBps_context\fP *ctx, const \fBpsx_svg_render\fP *render)"
+.br
+.RI "Draws an psx_svg_render object into the given context\&. "
 .in -1c
 .SH "Detailed Description"
 .PP 
@@ -39,7 +55,7 @@ Destroy the psx_svg object and release resources\&.
 .PP
 \fBSee also\fP
 .RS 4
-psx_svg_load psx_svg_load_from_memory 
+\fBpsx_svg_load\fP \fBpsx_svg_load_from_memory\fP 
 .RE
 .PP
 
@@ -56,6 +72,93 @@ Result code returned\&.
 \fBSee also\fP
 .RS 4
 \fBpsx_svg_shutdown\fP 
+.RE
+.PP
+
+.SS "\fBpsx_svg\fP * psx_svg_load (const char * file_name, \fBpsx_result\fP * err_code)"
+
+.PP
+Create a new psx_svg object and load from file\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIfile_name\fP The svg file path which will be loaded, which is encoded by utf8\&. 
+.br
+\fIerr_code\fP Pointer to a value to receiving the result code\&. can be NULL\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+If successs, the return value is the pointer to new psx_svg object\&. If fails, the return value is NULL, and result will be return by \fIerr_code\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBpsx_svg_destroy\fP \fBpsx_svg_load_from_memory\fP 
+.RE
+.PP
+
+.SS "\fBpsx_svg\fP * psx_svg_load_from_memory (const \fBps_byte\fP * data, size_t length, \fBpsx_result\fP * err_code)"
+
+.PP
+Create a new psx_svg object and load data from memory\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIdata\fP Pointer to data buffer in memeory\&. 
+.br
+\fIlength\fP Data length bytes\&. 
+.br
+\fIerr_code\fP Pointer to a value to receiving the result code\&. can be NULL\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+If successs, the return value is the pointer to new psx_svg object\&. If fails, the return value is NULL, and result will be return by \fIerr_code\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBpsx_svg_destroy\fP \fBpsx_svg_load\fP 
+.RE
+.PP
+
+.SS "void psx_svg_render_destroy (\fBpsx_svg_render\fP * render)"
+
+.PP
+Destroy the psx_svg_render object and release resources\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIrender\fP Pointer to an existing psx_svg_render object\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBpsx_svg_render_draw\fP psx_svg_render_create 
+.RE
+.PP
+
+.SS "\fBpsx_result\fP PICAPI psx_svg_render_draw (\fBps_context\fP * ctx, const \fBpsx_svg_render\fP * render)"
+
+.PP
+Draws an psx_svg_render object into the given context\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIctx\fP Pointer to an existing context object\&. 
+.br
+\fIrender\fP Pointer to an existing psx_svg_render object\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Result code returned\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBpsx_svg_render_draw\fP psx_svg_render_create 
 .RE
 .PP
 
