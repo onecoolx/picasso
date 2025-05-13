@@ -43,20 +43,14 @@ typedef struct \textbf{ \+\_\+psx\+\_\+image\+\_\+header} \textbf{ psx\+\_\+imag
 typedef struct \textbf{ \+\_\+psx\+\_\+image\+\_\+operator} \textbf{ psx\+\_\+image\+\_\+operator}
 \begin{DoxyCompactList}\small\item\em The image operator define. \end{DoxyCompactList}\item 
 typedef enum \textbf{ \+\_\+psx\+\_\+priority\+\_\+level} \textbf{ psx\+\_\+priority\+\_\+level}
-\begin{DoxyCompactList}\small\item\em Priority level for image\+\_\+operator. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em Priority level for image\+\_\+operator. \end{DoxyCompactList}\item 
+typedef struct \+\_\+psx\+\_\+svg \textbf{ psx\+\_\+svg}
+\begin{DoxyCompactList}\small\item\em An opaque type represents an svg document. \end{DoxyCompactList}\item 
+typedef struct \+\_\+psx\+\_\+svg\+\_\+render \textbf{ psx\+\_\+svg\+\_\+render}
+\begin{DoxyCompactList}\small\item\em An opaque type represents an svg render object. \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsection*{Enumerations}
 \begin{DoxyCompactItemize}
 \item 
-enum \{ \newline
-\textbf{ S\+\_\+\+OK} = 0, 
-\textbf{ S\+\_\+\+B\+A\+D\+\_\+\+P\+A\+R\+A\+MS} = 1, 
-\textbf{ S\+\_\+\+N\+O\+T\+\_\+\+S\+U\+P\+P\+O\+RT} = 2, 
-\textbf{ S\+\_\+\+O\+U\+T\+\_\+\+O\+F\+\_\+\+M\+E\+M\+O\+RY} = 3, 
-\newline
-\textbf{ S\+\_\+\+I\+N\+I\+T\+\_\+\+F\+A\+I\+L\+U\+RE} = 4, 
-\textbf{ S\+\_\+\+F\+A\+I\+L\+U\+RE} = 5
- \}
-\begin{DoxyCompactList}\small\item\em Status code return by call A\+P\+Is. \end{DoxyCompactList}\item 
 enum \textbf{ \+\_\+psx\+\_\+priority\+\_\+level} \{ \textbf{ P\+R\+I\+O\+R\+I\+T\+Y\+\_\+\+E\+X\+T\+E\+N\+T\+ED} = -\/1, 
 \textbf{ P\+R\+I\+O\+R\+I\+T\+Y\+\_\+\+D\+E\+F\+A\+U\+LT} = 0, 
 \textbf{ P\+R\+I\+O\+R\+I\+T\+Y\+\_\+\+M\+A\+S\+T\+ER} = 1
@@ -83,7 +77,7 @@ Get first image frame data.
 \end{DoxySeeAlso}
 
 
-Definition at line 84 of file psx\+\_\+image.\+h.
+Definition at line 87 of file psx\+\_\+image.\+h.
 
 \mbox{\label{group__types_ga55ebbcf390dafc4dbcc392b8a126fa54}} 
 \index{XImage Object Types@{XImage Object Types}!IMG\_DATA\_AT\_INDEX@{IMG\_DATA\_AT\_INDEX}}
@@ -100,7 +94,7 @@ Get image frame data at index.
 \end{DoxySeeAlso}
 
 
-Definition at line 105 of file psx\+\_\+image.\+h.
+Definition at line 108 of file psx\+\_\+image.\+h.
 
 \mbox{\label{group__types_ga0c129ffe2ff88a4549acc8dc41dcc8e8}} 
 \index{XImage Object Types@{XImage Object Types}!IMG\_DATA\_SIZE@{IMG\_DATA\_SIZE}}
@@ -117,7 +111,7 @@ Get first image frame data size.
 \end{DoxySeeAlso}
 
 
-Definition at line 91 of file psx\+\_\+image.\+h.
+Definition at line 94 of file psx\+\_\+image.\+h.
 
 \mbox{\label{group__types_ga03cb372f7ebc94296372e691e56d1a81}} 
 \index{XImage Object Types@{XImage Object Types}!IMG\_DATA\_SIZE\_AT\_INDEX@{IMG\_DATA\_SIZE\_AT\_INDEX}}
@@ -134,7 +128,7 @@ Get image frame data size at index.
 \end{DoxySeeAlso}
 
 
-Definition at line 112 of file psx\+\_\+image.\+h.
+Definition at line 115 of file psx\+\_\+image.\+h.
 
 \mbox{\label{group__types_ga844356bd32f7c49562ffe9e403eebde5}} 
 \index{XImage Object Types@{XImage Object Types}!IMG\_DURATION\_AT\_INDEX@{IMG\_DURATION\_AT\_INDEX}}
@@ -151,7 +145,7 @@ Get image frame duration at index.
 \end{DoxySeeAlso}
 
 
-Definition at line 119 of file psx\+\_\+image.\+h.
+Definition at line 122 of file psx\+\_\+image.\+h.
 
 \mbox{\label{group__types_ga4f220b976061c8b3604e2cc0f1acc894}} 
 \index{XImage Object Types@{XImage Object Types}!IMG\_OBJ@{IMG\_OBJ}}
@@ -168,7 +162,7 @@ Get first ps\+\_\+image obj.
 \end{DoxySeeAlso}
 
 
-Definition at line 77 of file psx\+\_\+image.\+h.
+Definition at line 80 of file psx\+\_\+image.\+h.
 
 \mbox{\label{group__types_ga7d8aed5aba80028b8b14faa09c4afbce}} 
 \index{XImage Object Types@{XImage Object Types}!IMG\_OBJ\_AT\_INDEX@{IMG\_OBJ\_AT\_INDEX}}
@@ -185,7 +179,7 @@ Get ps\+\_\+image obj at index.
 \end{DoxySeeAlso}
 
 
-Definition at line 98 of file psx\+\_\+image.\+h.
+Definition at line 101 of file psx\+\_\+image.\+h.
 
 
 
@@ -216,47 +210,43 @@ Priority level for image\+\_\+operator.
 \begin{DoxySeeAlso}{See also}
 \doxyref{psx\+\_\+image\+\_\+register\+\_\+operator}{p.}{group__interface_gac2c1fc7d317f49ee5c246f9aff61e13a} 
 \end{DoxySeeAlso}
+\mbox{\label{group__types_gaeb10426a6a4570e0176172f4bc58ec16}} 
+\index{XImage Object Types@{XImage Object Types}!psx\_svg@{psx\_svg}}
+\index{psx\_svg@{psx\_svg}!XImage Object Types@{XImage Object Types}}
+\doxysubsubsection{psx\_svg}
+{\footnotesize\ttfamily \textbf{ psx\+\_\+svg}}
+
+
+
+An opaque type represents an svg document. 
+
+\begin{DoxySeeAlso}{See also}
+\doxyref{psx\+\_\+svg\+\_\+render}{p.}{group__types_ga01286d1b137a25f1badc7a4f27af43af} 
+\end{DoxySeeAlso}
+
+
+Definition at line 48 of file psx\+\_\+svg.\+h.
+
+\mbox{\label{group__types_ga01286d1b137a25f1badc7a4f27af43af}} 
+\index{XImage Object Types@{XImage Object Types}!psx\_svg\_render@{psx\_svg\_render}}
+\index{psx\_svg\_render@{psx\_svg\_render}!XImage Object Types@{XImage Object Types}}
+\doxysubsubsection{psx\_svg\_render}
+{\footnotesize\ttfamily \textbf{ psx\+\_\+svg\+\_\+render}}
+
+
+
+An opaque type represents an svg render object. 
+
+\begin{DoxySeeAlso}{See also}
+\doxyref{psx\+\_\+svg}{p.}{group__types_gaeb10426a6a4570e0176172f4bc58ec16} 
+\end{DoxySeeAlso}
+
+
+Definition at line 55 of file psx\+\_\+svg.\+h.
+
 
 
 \doxysubsection{Enumeration Type Documentation}
-\mbox{\label{group__types_ga06fc87d81c62e9abb8790b6e5713c55b}} 
-\doxysubsubsection{anonymous enum}
-{\footnotesize\ttfamily anonymous enum}
-
-
-
-Status code return by call A\+P\+Is. 
-
-\begin{DoxyEnumFields}{Enumerator}
-\raisebox{\heightof{T}}[0pt][0pt]{\index{S\_OK@{S\_OK}!XImage Object Types@{XImage Object Types}}\index{XImage Object Types@{XImage Object Types}!S\_OK@{S\_OK}}}\mbox{\label{group__types_gga06fc87d81c62e9abb8790b6e5713c55bae36cb8bfb9670d44e24261506cae2791}} 
-S\+\_\+\+OK&Successful no errors. \\
-\hline
-
-\raisebox{\heightof{T}}[0pt][0pt]{\index{S\_BAD\_PARAMS@{S\_BAD\_PARAMS}!XImage Object Types@{XImage Object Types}}\index{XImage Object Types@{XImage Object Types}!S\_BAD\_PARAMS@{S\_BAD\_PARAMS}}}\mbox{\label{group__types_gga06fc87d81c62e9abb8790b6e5713c55ba149bfeb516955c855e9f170db6dc093c}} 
-S\+\_\+\+B\+A\+D\+\_\+\+P\+A\+R\+A\+MS&Invalid params input. \\
-\hline
-
-\raisebox{\heightof{T}}[0pt][0pt]{\index{S\_NOT\_SUPPORT@{S\_NOT\_SUPPORT}!XImage Object Types@{XImage Object Types}}\index{XImage Object Types@{XImage Object Types}!S\_NOT\_SUPPORT@{S\_NOT\_SUPPORT}}}\mbox{\label{group__types_gga06fc87d81c62e9abb8790b6e5713c55badc433abcd1da990b49c947a7c16dd657}} 
-S\+\_\+\+N\+O\+T\+\_\+\+S\+U\+P\+P\+O\+RT&Not support format or decoder module not found. \\
-\hline
-
-\raisebox{\heightof{T}}[0pt][0pt]{\index{S\_OUT\_OF\_MEMORY@{S\_OUT\_OF\_MEMORY}!XImage Object Types@{XImage Object Types}}\index{XImage Object Types@{XImage Object Types}!S\_OUT\_OF\_MEMORY@{S\_OUT\_OF\_MEMORY}}}\mbox{\label{group__types_gga06fc87d81c62e9abb8790b6e5713c55ba6d6bd1f44f637e595bb3564c1d914863}} 
-S\+\_\+\+O\+U\+T\+\_\+\+O\+F\+\_\+\+M\+E\+M\+O\+RY&Not enough memory. \\
-\hline
-
-\raisebox{\heightof{T}}[0pt][0pt]{\index{S\_INIT\_FAILURE@{S\_INIT\_FAILURE}!XImage Object Types@{XImage Object Types}}\index{XImage Object Types@{XImage Object Types}!S\_INIT\_FAILURE@{S\_INIT\_FAILURE}}}\mbox{\label{group__types_gga06fc87d81c62e9abb8790b6e5713c55ba28b75b1b6ca84b4239cf23b1b8b506f2}} 
-S\+\_\+\+I\+N\+I\+T\+\_\+\+F\+A\+I\+L\+U\+RE&Not initialize system. \\
-\hline
-
-\raisebox{\heightof{T}}[0pt][0pt]{\index{S\_FAILURE@{S\_FAILURE}!XImage Object Types@{XImage Object Types}}\index{XImage Object Types@{XImage Object Types}!S\_FAILURE@{S\_FAILURE}}}\mbox{\label{group__types_gga06fc87d81c62e9abb8790b6e5713c55bacd33e5b280a7fed8bd4a5521bd5e4b87}} 
-S\+\_\+\+F\+A\+I\+L\+U\+RE&Operation failed by internal errors. \\
-\hline
-
-\end{DoxyEnumFields}
-
-
-Definition at line 124 of file psx\+\_\+image.\+h.
-
 \mbox{\label{group__types_ga57d2d84e226ccbbbd2a1d9b593f7a4d9}} 
 \index{XImage Object Types@{XImage Object Types}!\_psx\_priority\_level@{\_psx\_priority\_level}}
 \index{\_psx\_priority\_level@{\_psx\_priority\_level}!XImage Object Types@{XImage Object Types}}

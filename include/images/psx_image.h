@@ -36,7 +36,7 @@ extern "C" {
  * @{
  */
 /**
- * \defgroup types XImage Object Types
+ * \defgroup imgtypes XImage Object Types
  * @{
  */
 
@@ -121,10 +121,10 @@ typedef struct _psx_image {
  */
 #define IMG_DURATION_AT_INDEX(img, idx) (img->frames[idx].duration)
 
-/** @} end of extimg types */
+/** @} end of extimg imgtypes */
 
 /**
- * \defgroup functions XImage Functions
+ * \defgroup imgfunctions XImage Functions
  * @{
  */
 
@@ -247,7 +247,7 @@ PEXPORT int PICAPI psx_image_save_to_file(const psx_image* image, const char* fi
  * \sa psx_image_load psx_image_load_from_memory
  */
 PEXPORT int PICAPI psx_image_destroy(psx_image* image);
-/** @} end of extimg functions */
+/** @} end of extimg imgfunctions */
 /** @} end of extimg */
 /** @} end of extensions */
 

@@ -1,0 +1,75 @@
+.TH "svgfunctions" 3 "Tue May 13 2025" "Version 2.8" "Picasso API" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+svgfunctions
+.SH SYNOPSIS
+.br
+.PP
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "PEXPORT \fBpsx_result\fP PICAPI \fBpsx_svg_init\fP (void)"
+.br
+.RI "Initialze the library and load resources\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBpsx_svg_shutdown\fP (void)"
+.br
+.RI "Release resources and shutdoen\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBpsx_svg_destroy\fP (\fBpsx_svg\fP *doc)"
+.br
+.RI "Destroy the psx_svg object and release resources\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.SH "Function Documentation"
+.PP 
+.SS "void psx_svg_destroy (\fBpsx_svg\fP * doc)"
+
+.PP
+Destroy the psx_svg object and release resources\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIdoc\fP Pointer to an existing psx_svg object\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+psx_svg_load psx_svg_load_from_memory 
+.RE
+.PP
+
+.SS "\fBpsx_result\fP psx_svg_init (void)"
+
+.PP
+Initialze the library and load resources\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Result code returned\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBpsx_svg_shutdown\fP 
+.RE
+.PP
+
+.SS "void psx_svg_shutdown (void)"
+
+.PP
+Release resources and shutdoen\&. 
+.PP
+\fBSee also\fP
+.RS 4
+\fBpsx_svg_init\fP 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Picasso API from the source code\&.

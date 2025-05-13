@@ -1,0 +1,221 @@
+\doxysection{X\+Image Functions}
+\label{group__imgfunctions}\index{XImage Functions@{XImage Functions}}
+\doxysubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\label{group__imgfunctions_gaf258071fa6a65940e43a8edda1020473}} 
+typedef int($\ast$ \textbf{ image\+\_\+writer\+\_\+fn}) (void $\ast$param, const \textbf{ ps\+\_\+byte} $\ast$data, size\+\_\+t length)
+\begin{DoxyCompactList}\small\item\em Callback function for saving image data. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+P\+E\+X\+P\+O\+RT int P\+I\+C\+A\+PI \textbf{ psx\+\_\+image\+\_\+init} (void)
+\begin{DoxyCompactList}\small\item\em Initialze the library and load resources. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT int P\+I\+C\+A\+PI \textbf{ psx\+\_\+image\+\_\+shutdown} (void)
+\begin{DoxyCompactList}\small\item\em Release resources and shutdoen. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ psx\+\_\+image} $\ast$P\+I\+C\+A\+PI \textbf{ psx\+\_\+image\+\_\+create\+\_\+from\+\_\+data} (\textbf{ ps\+\_\+byte} $\ast$data, \textbf{ ps\+\_\+color\+\_\+format} fmt, int width, int height, int pitch, int $\ast$err\+\_\+code)
+\begin{DoxyCompactList}\small\item\em Create a new psx\+\_\+image using a copy of given address in memory. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ psx\+\_\+image} $\ast$P\+I\+C\+A\+PI \textbf{ psx\+\_\+image\+\_\+load} (const char $\ast$file\+\_\+name, int $\ast$err\+\_\+code)
+\begin{DoxyCompactList}\small\item\em Create a new psx\+\_\+image object and load from file. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ psx\+\_\+image} $\ast$P\+I\+C\+A\+PI \textbf{ psx\+\_\+image\+\_\+load\+\_\+from\+\_\+memory} (const \textbf{ ps\+\_\+byte} $\ast$data, size\+\_\+t length, int $\ast$err\+\_\+code)
+\begin{DoxyCompactList}\small\item\em Create a new psx\+\_\+image object and load data from memory. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT int P\+I\+C\+A\+PI \textbf{ psx\+\_\+image\+\_\+save} (const \textbf{ psx\+\_\+image} $\ast$image, \textbf{ image\+\_\+writer\+\_\+fn} func, void $\ast$param, const char $\ast$type, float quality)
+\begin{DoxyCompactList}\small\item\em Encoding psx\+\_\+image to a gaving format and output it. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT int P\+I\+C\+A\+PI \textbf{ psx\+\_\+image\+\_\+save\+\_\+to\+\_\+file} (const \textbf{ psx\+\_\+image} $\ast$image, const char $\ast$file\+\_\+name, const char $\ast$type, float quality)
+\begin{DoxyCompactList}\small\item\em Encoding psx\+\_\+image to a gaving format and output to a file. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT int P\+I\+C\+A\+PI \textbf{ psx\+\_\+image\+\_\+destroy} (\textbf{ psx\+\_\+image} $\ast$image)
+\begin{DoxyCompactList}\small\item\em Destroy the psx\+\_\+image object and release resources. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\label{group__imgfunctions_gad40645d0b040d9bf426800c1ce6115c2}} 
+\index{XImage Functions@{XImage Functions}!psx\_image\_create\_from\_data@{psx\_image\_create\_from\_data}}
+\index{psx\_image\_create\_from\_data@{psx\_image\_create\_from\_data}!XImage Functions@{XImage Functions}}
+\doxysubsubsection{psx\_image\_create\_from\_data()}
+{\footnotesize\ttfamily \textbf{ psx\+\_\+image} $\ast$ psx\+\_\+image\+\_\+create\+\_\+from\+\_\+data (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+byte} $\ast$}]{data,  }\item[{\textbf{ ps\+\_\+color\+\_\+format}}]{fmt,  }\item[{int}]{width,  }\item[{int}]{height,  }\item[{int}]{pitch,  }\item[{int $\ast$}]{err\+\_\+code }\end{DoxyParamCaption})}
+
+
+
+Create a new psx\+\_\+image using a copy of given address in memory. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em data} & A pointer to the destination in memory where the drawing is to be rendered. The size of this memory block should be at least (pitch $\ast$ height) bytes. \\
+\hline
+{\em fmt} & The Pixel format to use for the image. \\
+\hline
+{\em width} & The width, in pixels, of the required image. \\
+\hline
+{\em height} & The height, in pixels, of the required image. \\
+\hline
+{\em pitch} & The number of bytes per row, of the required image. \\
+\hline
+{\em err\+\_\+code} & Pointer to a value to receiving the result code. can be N\+U\+LL.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+If the function succeeds, the return value is the pointer to a new psx\+\_\+image object. If the function fails, the return value is N\+U\+LL.
+\end{DoxyReturn}
+\begin{DoxySeeAlso}{See also}
+\doxyref{psx\+\_\+image\+\_\+load}{p.}{group__imgfunctions_gaba934b22f7e53c2d744f340cde3fefe9} \doxyref{psx\+\_\+image\+\_\+load\+\_\+from\+\_\+memory}{p.}{group__imgfunctions_gab7b5a6aabdaf060a25bc6c608b42431c} \doxyref{psx\+\_\+image\+\_\+destroy}{p.}{group__imgfunctions_ga018b18d8cd3730dc8fe86ff37bffd9a8} 
+\end{DoxySeeAlso}
+\mbox{\label{group__imgfunctions_ga018b18d8cd3730dc8fe86ff37bffd9a8}} 
+\index{XImage Functions@{XImage Functions}!psx\_image\_destroy@{psx\_image\_destroy}}
+\index{psx\_image\_destroy@{psx\_image\_destroy}!XImage Functions@{XImage Functions}}
+\doxysubsubsection{psx\_image\_destroy()}
+{\footnotesize\ttfamily int psx\+\_\+image\+\_\+destroy (\begin{DoxyParamCaption}\item[{\textbf{ psx\+\_\+image} $\ast$}]{image }\end{DoxyParamCaption})}
+
+
+
+Destroy the psx\+\_\+image object and release resources. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em image} & Pointer to an existing psx\+\_\+image object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Result code returned.
+\end{DoxyReturn}
+\begin{DoxySeeAlso}{See also}
+\doxyref{psx\+\_\+image\+\_\+load}{p.}{group__imgfunctions_gaba934b22f7e53c2d744f340cde3fefe9} \doxyref{psx\+\_\+image\+\_\+load\+\_\+from\+\_\+memory}{p.}{group__imgfunctions_gab7b5a6aabdaf060a25bc6c608b42431c} 
+\end{DoxySeeAlso}
+\mbox{\label{group__imgfunctions_ga8449a503380d339ecccdd0ecf8074b82}} 
+\index{XImage Functions@{XImage Functions}!psx\_image\_init@{psx\_image\_init}}
+\index{psx\_image\_init@{psx\_image\_init}!XImage Functions@{XImage Functions}}
+\doxysubsubsection{psx\_image\_init()}
+{\footnotesize\ttfamily int psx\+\_\+image\+\_\+init (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+Initialze the library and load resources. 
+
+\begin{DoxyReturn}{Returns}
+Result code returned.
+\end{DoxyReturn}
+\begin{DoxySeeAlso}{See also}
+\doxyref{psx\+\_\+image\+\_\+shutdown}{p.}{group__imgfunctions_ga886028c5ac25bb636de0abd5c508e0a1} 
+\end{DoxySeeAlso}
+\mbox{\label{group__imgfunctions_gaba934b22f7e53c2d744f340cde3fefe9}} 
+\index{XImage Functions@{XImage Functions}!psx\_image\_load@{psx\_image\_load}}
+\index{psx\_image\_load@{psx\_image\_load}!XImage Functions@{XImage Functions}}
+\doxysubsubsection{psx\_image\_load()}
+{\footnotesize\ttfamily \textbf{ psx\+\_\+image} $\ast$ psx\+\_\+image\+\_\+load (\begin{DoxyParamCaption}\item[{const char $\ast$}]{file\+\_\+name,  }\item[{int $\ast$}]{err\+\_\+code }\end{DoxyParamCaption})}
+
+
+
+Create a new psx\+\_\+image object and load from file. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em file\+\_\+name} & The image file path which will be loaded, which is encoded by utf8. \\
+\hline
+{\em err\+\_\+code} & Pointer to a value to receiving the result code. can be N\+U\+LL.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+If successs, the return value is the pointer to new psx\+\_\+image object. If fails, the return value is N\+U\+LL, and result will be return by {\itshape err\+\_\+code}.
+\end{DoxyReturn}
+\begin{DoxySeeAlso}{See also}
+\doxyref{psx\+\_\+image\+\_\+destroy}{p.}{group__imgfunctions_ga018b18d8cd3730dc8fe86ff37bffd9a8} \doxyref{psx\+\_\+image\+\_\+load\+\_\+from\+\_\+memory}{p.}{group__imgfunctions_gab7b5a6aabdaf060a25bc6c608b42431c} \doxyref{psx\+\_\+image\+\_\+create\+\_\+from\+\_\+data}{p.}{group__imgfunctions_gad40645d0b040d9bf426800c1ce6115c2} 
+\end{DoxySeeAlso}
+\mbox{\label{group__imgfunctions_gab7b5a6aabdaf060a25bc6c608b42431c}} 
+\index{XImage Functions@{XImage Functions}!psx\_image\_load\_from\_memory@{psx\_image\_load\_from\_memory}}
+\index{psx\_image\_load\_from\_memory@{psx\_image\_load\_from\_memory}!XImage Functions@{XImage Functions}}
+\doxysubsubsection{psx\_image\_load\_from\_memory()}
+{\footnotesize\ttfamily \textbf{ psx\+\_\+image} $\ast$ psx\+\_\+image\+\_\+load\+\_\+from\+\_\+memory (\begin{DoxyParamCaption}\item[{const \textbf{ ps\+\_\+byte} $\ast$}]{data,  }\item[{size\+\_\+t}]{length,  }\item[{int $\ast$}]{err\+\_\+code }\end{DoxyParamCaption})}
+
+
+
+Create a new psx\+\_\+image object and load data from memory. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em data} & Pointer to data buffer in memeory. \\
+\hline
+{\em length} & Data length bytes. \\
+\hline
+{\em err\+\_\+code} & Pointer to a value to receiving the result code. can be N\+U\+LL.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+If successs, the return value is the pointer to new psx\+\_\+image object. If fails, the return value is N\+U\+LL, and result will be return by {\itshape err\+\_\+code}.
+\end{DoxyReturn}
+\begin{DoxySeeAlso}{See also}
+\doxyref{psx\+\_\+image\+\_\+destroy}{p.}{group__imgfunctions_ga018b18d8cd3730dc8fe86ff37bffd9a8} \doxyref{psx\+\_\+image\+\_\+load}{p.}{group__imgfunctions_gaba934b22f7e53c2d744f340cde3fefe9} 
+\end{DoxySeeAlso}
+\mbox{\label{group__imgfunctions_ga204b2a1fd4375d5fa75ae2c1b6f66689}} 
+\index{XImage Functions@{XImage Functions}!psx\_image\_save@{psx\_image\_save}}
+\index{psx\_image\_save@{psx\_image\_save}!XImage Functions@{XImage Functions}}
+\doxysubsubsection{psx\_image\_save()}
+{\footnotesize\ttfamily int psx\+\_\+image\+\_\+save (\begin{DoxyParamCaption}\item[{const \textbf{ psx\+\_\+image} $\ast$}]{image,  }\item[{\textbf{ image\+\_\+writer\+\_\+fn}}]{func,  }\item[{void $\ast$}]{param,  }\item[{const char $\ast$}]{type,  }\item[{float}]{quality }\end{DoxyParamCaption})}
+
+
+
+Encoding psx\+\_\+image to a gaving format and output it. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em image} & Pointer to an psx\+\_\+image object. \\
+\hline
+{\em func} & User define saving callback function. \\
+\hline
+{\em param} & User define saving callback param. \\
+\hline
+{\em type} & Image type short name. (i.\+e \char`\"{}png\char`\"{} \char`\"{}jpg\char`\"{} \char`\"{}bmp\char`\"{}) \\
+\hline
+{\em quality} & Image encoding quality. (0.\+1 $\sim$ 1.\+0)\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Result code returned.
+\end{DoxyReturn}
+\begin{DoxySeeAlso}{See also}
+\doxyref{psx\+\_\+image\+\_\+save\+\_\+to\+\_\+file}{p.}{group__imgfunctions_gaa1b10b378e6c58563e5f36bdf4d282c6} 
+\end{DoxySeeAlso}
+\mbox{\label{group__imgfunctions_gaa1b10b378e6c58563e5f36bdf4d282c6}} 
+\index{XImage Functions@{XImage Functions}!psx\_image\_save\_to\_file@{psx\_image\_save\_to\_file}}
+\index{psx\_image\_save\_to\_file@{psx\_image\_save\_to\_file}!XImage Functions@{XImage Functions}}
+\doxysubsubsection{psx\_image\_save\_to\_file()}
+{\footnotesize\ttfamily int psx\+\_\+image\+\_\+save\+\_\+to\+\_\+file (\begin{DoxyParamCaption}\item[{const \textbf{ psx\+\_\+image} $\ast$}]{image,  }\item[{const char $\ast$}]{file\+\_\+name,  }\item[{const char $\ast$}]{type,  }\item[{float}]{quality }\end{DoxyParamCaption})}
+
+
+
+Encoding psx\+\_\+image to a gaving format and output to a file. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em image} & Pointer to an psx\+\_\+image object. \\
+\hline
+{\em file\+\_\+name} & The image file path which will be output, which is encoded by utf8. \\
+\hline
+{\em type} & Image type short name. (i.\+e \char`\"{}png\char`\"{} \char`\"{}jpg\char`\"{} \char`\"{}bmp\char`\"{}) \\
+\hline
+{\em quality} & Image encoding quality. (0.\+1 $\sim$ 1.\+0)\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Result code returned.
+\end{DoxyReturn}
+\begin{DoxySeeAlso}{See also}
+\doxyref{psx\+\_\+image\+\_\+save}{p.}{group__imgfunctions_ga204b2a1fd4375d5fa75ae2c1b6f66689} 
+\end{DoxySeeAlso}
+\mbox{\label{group__imgfunctions_ga886028c5ac25bb636de0abd5c508e0a1}} 
+\index{XImage Functions@{XImage Functions}!psx\_image\_shutdown@{psx\_image\_shutdown}}
+\index{psx\_image\_shutdown@{psx\_image\_shutdown}!XImage Functions@{XImage Functions}}
+\doxysubsubsection{psx\_image\_shutdown()}
+{\footnotesize\ttfamily int psx\+\_\+image\+\_\+shutdown (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+Release resources and shutdoen. 
+
+\begin{DoxyReturn}{Returns}
+Result code returned.
+\end{DoxyReturn}
+\begin{DoxySeeAlso}{See also}
+\doxyref{psx\+\_\+image\+\_\+init}{p.}{group__imgfunctions_ga8449a503380d339ecccdd0ecf8074b82} 
+\end{DoxySeeAlso}

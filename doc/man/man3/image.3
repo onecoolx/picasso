@@ -1,4 +1,4 @@
-.TH "image" 3 "Tue Dec 24 2024" "Version 2.8" "Picasso API" \" -*- nroff -*-
+.TH "image" 3 "Tue May 13 2025" "Version 2.8" "Picasso API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -10,19 +10,19 @@ image
 
 .in +1c
 .ti -1c
-.RI "PEXPORT \fBps_image\fP *PICAPI \fBps_image_create\fP (\fBps_color_format\fP fmt, int width, int height)"
+.RI "PEXPORT \fBps_image\fP *PICAPI \fBps_image_create\fP (\fBps_color_format\fP fmt, int32_t width, int32_t height)"
 .br
 .RI "Create a new image using the given parameters\&. "
 .ti -1c
-.RI "PEXPORT \fBps_image\fP *PICAPI \fBps_image_create_with_data\fP (\fBps_byte\fP *data, \fBps_color_format\fP fmt, int width, int height, int pitch)"
+.RI "PEXPORT \fBps_image\fP *PICAPI \fBps_image_create_with_data\fP (\fBps_byte\fP *data, \fBps_color_format\fP fmt, int32_t width, int32_t height, int32_t pitch)"
 .br
 .RI "Create a new image using a given address in memory\&. "
 .ti -1c
-.RI "PEXPORT \fBps_image\fP *PICAPI \fBps_image_create_from_data\fP (\fBps_byte\fP *data, \fBps_color_format\fP fmt, int width, int height, int pitch)"
+.RI "PEXPORT \fBps_image\fP *PICAPI \fBps_image_create_from_data\fP (\fBps_byte\fP *data, \fBps_color_format\fP fmt, int32_t width, int32_t height, int32_t pitch)"
 .br
 .RI "Create a new image using a copy of given address in memory\&. "
 .ti -1c
-.RI "PEXPORT \fBps_image\fP *PICAPI \fBps_image_create_compatible\fP (const \fBps_canvas\fP *canvas, int width, int height)"
+.RI "PEXPORT \fBps_image\fP *PICAPI \fBps_image_create_compatible\fP (const \fBps_canvas\fP *canvas, int32_t width, int32_t height)"
 .br
 .RI "Create a new image to compatible with an existing canvas\&. "
 .ti -1c
@@ -63,7 +63,7 @@ image
 
 .SH "Function Documentation"
 .PP 
-.SS "\fBps_image\fP * ps_image_create (\fBps_color_format\fP fmt, int width, int height)"
+.SS "\fBps_image\fP * ps_image_create (\fBps_color_format\fP fmt, int32_t width, int32_t height)"
 
 .PP
 Create a new image using the given parameters\&. 
@@ -93,7 +93,7 @@ To get extended error information, call \fIps_last_status\fP\&.
 .RE
 .PP
 
-.SS "\fBps_image\fP * ps_image_create_compatible (const \fBps_canvas\fP * canvas, int width, int height)"
+.SS "\fBps_image\fP * ps_image_create_compatible (const \fBps_canvas\fP * canvas, int32_t width, int32_t height)"
 
 .PP
 Create a new image to compatible with an existing canvas\&. 
@@ -151,7 +151,7 @@ To get extended error information, call \fIps_last_status\fP\&.
 .RE
 .PP
 
-.SS "\fBps_image\fP * ps_image_create_from_data (\fBps_byte\fP * data, \fBps_color_format\fP fmt, int width, int height, int pitch)"
+.SS "\fBps_image\fP * ps_image_create_from_data (\fBps_byte\fP * data, \fBps_color_format\fP fmt, int32_t width, int32_t height, int32_t pitch)"
 
 .PP
 Create a new image using a copy of given address in memory\&. 
@@ -213,7 +213,7 @@ To get extended error information, call \fIps_last_status\fP\&.
 .RE
 .PP
 
-.SS "\fBps_image\fP * ps_image_create_with_data (\fBps_byte\fP * data, \fBps_color_format\fP fmt, int width, int height, int pitch)"
+.SS "\fBps_image\fP * ps_image_create_with_data (\fBps_byte\fP * data, \fBps_color_format\fP fmt, int32_t width, int32_t height, int32_t pitch)"
 
 .PP
 Create a new image using a given address in memory\&. 

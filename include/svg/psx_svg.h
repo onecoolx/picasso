@@ -36,7 +36,7 @@ extern "C" {
  * @{
  */
 /**
- * \defgroup types XSvg Object Types
+ * \defgroup svgtypes XSvg Object Types
  * @{
  */
 
@@ -54,10 +54,10 @@ typedef struct _psx_svg psx_svg;
  */
 typedef struct _psx_svg_render psx_svg_render;
 
-/** @} end of extsvg types */
+/** @} end of extsvg svgtypes */
 
 /**
- * \defgroup functions XSvg Functions
+ * \defgroup svgfunctions XSvg Functions
  * @{
  */
 
@@ -118,7 +118,7 @@ PEXPORT psx_svg* PICAPI psx_svg_load_from_memory(const ps_byte* data, size_t len
  */
 PEXPORT void PICAPI psx_svg_destroy(psx_svg* doc);
 
-/** @} end of extsvg functions */
+/** @} end of extsvg svgfunctions */
 /** @} end of extsvg */
 /** @} end of extensions */
 

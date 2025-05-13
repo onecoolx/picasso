@@ -1,4 +1,4 @@
-.TH "font" 3 "Tue Dec 24 2024" "Version 2.8" "Picasso API" \" -*- nroff -*-
+.TH "font" 3 "Tue May 13 2025" "Version 2.8" "Picasso API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -46,7 +46,7 @@ font
 
 .in +1c
 .ti -1c
-.RI "PEXPORT \fBps_font\fP *PICAPI \fBps_font_create\fP (const char *name, \fBps_charset\fP charset, float size, int weight, \fBps_bool\fP italic)"
+.RI "PEXPORT \fBps_font\fP *PICAPI \fBps_font_create\fP (const char *name, \fBps_charset\fP charset, float size, int32_t weight, \fBps_bool\fP italic)"
 .br
 .RI "Create a font object using the given parameters\&. "
 .ti -1c
@@ -66,7 +66,7 @@ font
 .br
 .RI "Set size for a font object\&. "
 .ti -1c
-.RI "PEXPORT void PICAPI \fBps_font_set_weight\fP (\fBps_font\fP *font, int weight)"
+.RI "PEXPORT void PICAPI \fBps_font_set_weight\fP (\fBps_font\fP *font, int32_t weight)"
 .br
 .RI "Set weight for a font object\&. "
 .ti -1c
@@ -113,7 +113,7 @@ Ansi ISO-8859-x charset
 \fB\fICHARSET_UNICODE \fP\fP
 Unicode UCS-2 charset 
 .PP
-Definition at line 1919 of file picasso\&.h\&.
+Definition at line 1957 of file picasso\&.h\&.
 .SS "enum \fB_ps_font_weight\fP"
 
 .PP
@@ -134,10 +134,10 @@ Bold weight\&.
 \fB\fIFONT_WEIGHT_HEAVY \fP\fP
 Heavy weight\&. 
 .PP
-Definition at line 1933 of file picasso\&.h\&.
+Definition at line 1971 of file picasso\&.h\&.
 .SH "Function Documentation"
 .PP 
-.SS "\fBps_font\fP * ps_font_create (const char * name, \fBps_charset\fP charset, float size, int weight, \fBps_bool\fP italic)"
+.SS "\fBps_font\fP * ps_font_create (const char * name, \fBps_charset\fP charset, float size, int32_t weight, \fBps_bool\fP italic)"
 
 .PP
 Create a font object using the given parameters\&. 
@@ -313,7 +313,7 @@ Set size for a font object\&.
 .RE
 .PP
 
-.SS "void ps_font_set_weight (\fBps_font\fP * font, int weight)"
+.SS "void ps_font_set_weight (\fBps_font\fP * font, int32_t weight)"
 
 .PP
 Set weight for a font object\&. 

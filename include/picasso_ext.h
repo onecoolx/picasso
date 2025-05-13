@@ -21,8 +21,9 @@
 
 #include "picasso.h"
 
-#include <stddef.h>
-#include <stdint.h>
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * \defgroup extension Extensions
@@ -48,5 +49,9 @@ typedef enum {
 } psx_result;
 
 /** @} end of extensions */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /*_PICASSO_EXT_H_*/

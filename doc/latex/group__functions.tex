@@ -24,7 +24,13 @@ P\+E\+X\+P\+O\+RT int P\+I\+C\+A\+PI \textbf{ psx\+\_\+image\+\_\+save} (const \
 P\+E\+X\+P\+O\+RT int P\+I\+C\+A\+PI \textbf{ psx\+\_\+image\+\_\+save\+\_\+to\+\_\+file} (const \textbf{ psx\+\_\+image} $\ast$image, const char $\ast$file\+\_\+name, const char $\ast$type, float quality)
 \begin{DoxyCompactList}\small\item\em Encoding psx\+\_\+image to a gaving format and output to a file. \end{DoxyCompactList}\item 
 P\+E\+X\+P\+O\+RT int P\+I\+C\+A\+PI \textbf{ psx\+\_\+image\+\_\+destroy} (\textbf{ psx\+\_\+image} $\ast$image)
-\begin{DoxyCompactList}\small\item\em Destroy the psx\+\_\+image object and release resources. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em Destroy the psx\+\_\+image object and release resources. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ psx\+\_\+result} P\+I\+C\+A\+PI \textbf{ psx\+\_\+svg\+\_\+init} (void)
+\begin{DoxyCompactList}\small\item\em Initialze the library and load resources. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ psx\+\_\+svg\+\_\+shutdown} (void)
+\begin{DoxyCompactList}\small\item\em Release resources and shutdoen. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ psx\+\_\+svg\+\_\+destroy} (\textbf{ psx\+\_\+svg} $\ast$doc)
+\begin{DoxyCompactList}\small\item\em Destroy the psx\+\_\+svg object and release resources. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
 \doxysubsection{Detailed Description}
@@ -218,4 +224,51 @@ Result code returned.
 \end{DoxyReturn}
 \begin{DoxySeeAlso}{See also}
 \doxyref{psx\+\_\+image\+\_\+init}{p.}{group__functions_ga8449a503380d339ecccdd0ecf8074b82} 
+\end{DoxySeeAlso}
+\mbox{\label{group__functions_ga03907eadc640e2688e1a1a15444d775a}} 
+\index{XImage Functions@{XImage Functions}!psx\_svg\_destroy@{psx\_svg\_destroy}}
+\index{psx\_svg\_destroy@{psx\_svg\_destroy}!XImage Functions@{XImage Functions}}
+\doxysubsubsection{psx\_svg\_destroy()}
+{\footnotesize\ttfamily void psx\+\_\+svg\+\_\+destroy (\begin{DoxyParamCaption}\item[{\textbf{ psx\+\_\+svg} $\ast$}]{doc }\end{DoxyParamCaption})}
+
+
+
+Destroy the psx\+\_\+svg object and release resources. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em doc} & Pointer to an existing psx\+\_\+svg object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+psx\+\_\+svg\+\_\+load psx\+\_\+svg\+\_\+load\+\_\+from\+\_\+memory 
+\end{DoxySeeAlso}
+\mbox{\label{group__functions_ga362a4e99a0e5a5157a68a8e379e8417d}} 
+\index{XImage Functions@{XImage Functions}!psx\_svg\_init@{psx\_svg\_init}}
+\index{psx\_svg\_init@{psx\_svg\_init}!XImage Functions@{XImage Functions}}
+\doxysubsubsection{psx\_svg\_init()}
+{\footnotesize\ttfamily \textbf{ psx\+\_\+result} psx\+\_\+svg\+\_\+init (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+Initialze the library and load resources. 
+
+\begin{DoxyReturn}{Returns}
+Result code returned.
+\end{DoxyReturn}
+\begin{DoxySeeAlso}{See also}
+\doxyref{psx\+\_\+svg\+\_\+shutdown}{p.}{group__functions_ga9cbe75fa42d4c7a21155a38049bed6bf} 
+\end{DoxySeeAlso}
+\mbox{\label{group__functions_ga9cbe75fa42d4c7a21155a38049bed6bf}} 
+\index{XImage Functions@{XImage Functions}!psx\_svg\_shutdown@{psx\_svg\_shutdown}}
+\index{psx\_svg\_shutdown@{psx\_svg\_shutdown}!XImage Functions@{XImage Functions}}
+\doxysubsubsection{psx\_svg\_shutdown()}
+{\footnotesize\ttfamily void psx\+\_\+svg\+\_\+shutdown (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+Release resources and shutdoen. 
+
+\begin{DoxySeeAlso}{See also}
+\doxyref{psx\+\_\+svg\+\_\+init}{p.}{group__functions_ga362a4e99a0e5a5157a68a8e379e8417d} 
 \end{DoxySeeAlso}

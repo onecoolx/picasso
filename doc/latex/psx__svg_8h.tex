@@ -1,0 +1,36 @@
+\doxysection{include/svg/psx\+\_\+svg.h File Reference}
+\label{psx__svg_8h}\index{include/svg/psx\_svg.h@{include/svg/psx\_svg.h}}
+{\ttfamily \#include \char`\"{}picasso.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}picasso\+\_\+ext.\+h\char`\"{}}\newline
+{\ttfamily \#include $<$stddef.\+h$>$}\newline
+\doxysubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef struct \+\_\+psx\+\_\+svg \textbf{ psx\+\_\+svg}
+\begin{DoxyCompactList}\small\item\em An opaque type represents an svg document. \end{DoxyCompactList}\item 
+typedef struct \+\_\+psx\+\_\+svg\+\_\+render \textbf{ psx\+\_\+svg\+\_\+render}
+\begin{DoxyCompactList}\small\item\em An opaque type represents an svg render object. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+P\+E\+X\+P\+O\+RT \textbf{ psx\+\_\+result} P\+I\+C\+A\+PI \textbf{ psx\+\_\+svg\+\_\+init} (void)
+\begin{DoxyCompactList}\small\item\em Initialze the library and load resources. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ psx\+\_\+svg\+\_\+shutdown} (void)
+\begin{DoxyCompactList}\small\item\em Release resources and shutdoen. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ psx\+\_\+svg\+\_\+destroy} (\textbf{ psx\+\_\+svg} $\ast$doc)
+\begin{DoxyCompactList}\small\item\em Destroy the psx\+\_\+svg object and release resources. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyAuthor}{Author}
+Zhang Ji Peng {\texttt{ onecoolx@gmail.\+com}} 
+\end{DoxyAuthor}
+\begin{DoxyDate}{Date}
+2025/5/12
+\end{DoxyDate}
+This file includes all interfaces of picasso\textquotesingle{}s S\+VG extension function. \begin{DoxyVerb}   Copyright (C) 2008 ~ 2025  Zhang Ji Peng
+
+   All rights reserved.
+
+   Picasso is a vector graphic library.\end{DoxyVerb}
+ 

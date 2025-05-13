@@ -1,0 +1,73 @@
+.TH "include/svg/psx_svg.h" 3 "Tue May 13 2025" "Version 2.8" "Picasso API" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+include/svg/psx_svg.h
+.SH SYNOPSIS
+.br
+.PP
+\fC#include 'picasso\&.h'\fP
+.br
+\fC#include 'picasso_ext\&.h'\fP
+.br
+\fC#include <stddef\&.h>\fP
+.br
+
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef struct _psx_svg \fBpsx_svg\fP"
+.br
+.RI "An opaque type represents an svg document\&. "
+.ti -1c
+.RI "typedef struct _psx_svg_render \fBpsx_svg_render\fP"
+.br
+.RI "An opaque type represents an svg render object\&. "
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "PEXPORT \fBpsx_result\fP PICAPI \fBpsx_svg_init\fP (void)"
+.br
+.RI "Initialze the library and load resources\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBpsx_svg_shutdown\fP (void)"
+.br
+.RI "Release resources and shutdoen\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBpsx_svg_destroy\fP (\fBpsx_svg\fP *doc)"
+.br
+.RI "Destroy the psx_svg object and release resources\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.PP
+\fBAuthor\fP
+.RS 4
+Zhang Ji Peng onecoolx@gmail.com 
+.RE
+.PP
+\fBDate\fP
+.RS 4
+2025/5/12
+.RE
+.PP
+This file includes all interfaces of picasso's SVG extension function\&. 
+.PP
+.nf
+   Copyright (C) 2008 ~ 2025  Zhang Ji Peng
+
+   All rights reserved.
+
+   Picasso is a vector graphic library.
+.fi
+.PP
+ 
+.PP
+Definition in file \fBpsx_svg\&.h\fP\&.
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Picasso API from the source code\&.

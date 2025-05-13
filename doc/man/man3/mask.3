@@ -1,4 +1,4 @@
-.TH "mask" 3 "Tue Dec 24 2024" "Version 2.8" "Picasso API" \" -*- nroff -*-
+.TH "mask" 3 "Tue May 13 2025" "Version 2.8" "Picasso API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -10,7 +10,11 @@ mask
 
 .in +1c
 .ti -1c
-.RI "PEXPORT \fBps_mask\fP *PICAPI \fBps_mask_create_with_data\fP (\fBps_byte\fP *data, int width, int height)"
+.RI "PEXPORT \fBps_mask\fP *PICAPI \fBps_mask_create\fP (int32_t width, int32_t height)"
+.br
+.RI "Create a new mask\&. "
+.ti -1c
+.RI "PEXPORT \fBps_mask\fP *PICAPI \fBps_mask_create_with_data\fP (\fBps_byte\fP *data, int32_t width, int32_t height)"
 .br
 .RI "Create a new mask using a given data block\&. "
 .ti -1c
@@ -69,7 +73,35 @@ Clear all colors from mask's filter\&.
 .RE
 .PP
 
-.SS "\fBps_mask\fP * ps_mask_create_with_data (\fBps_byte\fP * data, int width, int height)"
+.SS "\fBps_mask\fP * ps_mask_create (int32_t width, int32_t height)"
+
+.PP
+Create a new mask\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIwidth\fP The width, in pixels, of the required mask\&. 
+.br
+\fIheight\fP The height, in pixels, of the required mask\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+If the function succeeds, the return value is the pointer to a new mask object\&. If the function fails, the return value is NULL\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+To get extended error information, call \fIps_last_status\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBps_mask_ref\fP, \fBps_mask_unref\fP, \fBps_canvas_set_mask\fP, \fBps_canvas_reset_mask\fP, \fBps_mask_create_with_data\fP 
+.RE
+.PP
+
+.SS "\fBps_mask\fP * ps_mask_create_with_data (\fBps_byte\fP * data, int32_t width, int32_t height)"
 
 .PP
 Create a new mask using a given data block\&. 
@@ -95,7 +127,7 @@ To get extended error information, call \fIps_last_status\fP\&.
 .PP
 \fBSee also\fP
 .RS 4
-\fBps_mask_ref\fP, \fBps_mask_unref\fP, \fBps_canvas_set_mask\fP, \fBps_canvas_reset_mask\fP 
+\fBps_mask_ref\fP, \fBps_mask_unref\fP, \fBps_canvas_set_mask\fP, \fBps_canvas_reset_mask\fP, \fBps_mask_create\fP 
 .RE
 .PP
 
@@ -121,7 +153,7 @@ To get extended error information, call \fIps_last_status\fP\&.
 .PP
 \fBSee also\fP
 .RS 4
-\fBps_mask_create_with_data\fP, \fBps_mask_unref\fP, \fBps_canvas_set_mask\fP, \fBps_canvas_reset_mask\fP 
+\fBps_mask_create_with_data\fP, \fBps_mask_unref\fP, \fBps_canvas_set_mask\fP, \fBps_canvas_reset_mask\fP, \fBps_mask_create\fP 
 .RE
 .PP
 
@@ -137,7 +169,7 @@ Decrements the reference count for the mask object\&. If the reference count on 
 .PP
 \fBSee also\fP
 .RS 4
-\fBps_mask_create_with_data\fP, \fBps_mask_ref\fP, \fBps_canvas_set_mask\fP, \fBps_canvas_reset_mask\fP 
+\fBps_mask_create_with_data\fP, \fBps_mask_ref\fP, \fBps_canvas_set_mask\fP, \fBps_canvas_reset_mask\fP, \fBps_mask_create\fP 
 .RE
 .PP
 

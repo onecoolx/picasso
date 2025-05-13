@@ -26,7 +26,7 @@ struct \textbf{ \+\_\+ps\+\_\+font\+\_\+info}
 \doxysubsection*{Typedefs}
 \begin{DoxyCompactItemize}
 \item 
-typedef int \textbf{ ps\+\_\+bool}
+typedef int32\+\_\+t \textbf{ ps\+\_\+bool}
 \begin{DoxyCompactList}\small\item\em boolean type \end{DoxyCompactList}\item 
 typedef uint16\+\_\+t \textbf{ ps\+\_\+uchar16}
 \begin{DoxyCompactList}\small\item\em 16 bit unsigned unicode character \end{DoxyCompactList}\item 
@@ -123,6 +123,7 @@ enum \textbf{ \+\_\+ps\+\_\+color\+\_\+format} \{ \newline
 \textbf{ C\+O\+L\+O\+R\+\_\+\+F\+O\+R\+M\+A\+T\+\_\+\+R\+G\+B565}, 
 \textbf{ C\+O\+L\+O\+R\+\_\+\+F\+O\+R\+M\+A\+T\+\_\+\+R\+G\+B555}, 
 \newline
+\textbf{ C\+O\+L\+O\+R\+\_\+\+F\+O\+R\+M\+A\+T\+\_\+\+A8}, 
 \textbf{ C\+O\+L\+O\+R\+\_\+\+F\+O\+R\+M\+A\+T\+\_\+\+U\+N\+K\+N\+O\+WN}
  \}
 \begin{DoxyCompactList}\small\item\em Pixel formats of canvas or image. \end{DoxyCompactList}\item 
@@ -262,7 +263,7 @@ enum \textbf{ \+\_\+ps\+\_\+path\+\_\+op} \{ \textbf{ P\+A\+T\+H\+\_\+\+O\+P\+\_
 \doxysubsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
-P\+E\+X\+P\+O\+RT int P\+I\+C\+A\+PI \textbf{ ps\+\_\+version} (void)
+P\+E\+X\+P\+O\+RT int32\+\_\+t P\+I\+C\+A\+PI \textbf{ ps\+\_\+version} (void)
 \begin{DoxyCompactList}\small\item\em Return current version of picasso. \end{DoxyCompactList}\item 
 P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+bool} P\+I\+C\+A\+PI \textbf{ ps\+\_\+initialize} (void)
 \begin{DoxyCompactList}\small\item\em Initialize the picasso drawing environment. \end{DoxyCompactList}\item 
@@ -280,17 +281,17 @@ P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+canvas} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\
 \begin{DoxyCompactList}\small\item\em Set a new canvas into a context, and return the old one. \end{DoxyCompactList}\item 
 P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+canvas} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+context\+\_\+get\+\_\+canvas} (\textbf{ ps\+\_\+context} $\ast$ctx)
 \begin{DoxyCompactList}\small\item\em Get the canvas from the context. \end{DoxyCompactList}\item 
-P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+canvas} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+canvas\+\_\+create} (\textbf{ ps\+\_\+color\+\_\+format} fmt, int width, int height)
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+canvas} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+canvas\+\_\+create} (\textbf{ ps\+\_\+color\+\_\+format} fmt, int32\+\_\+t width, int32\+\_\+t height)
 \begin{DoxyCompactList}\small\item\em Create a new canvas using the given parameters. \end{DoxyCompactList}\item 
-P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+canvas} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+canvas\+\_\+create\+\_\+with\+\_\+data} (\textbf{ ps\+\_\+byte} $\ast$data, \textbf{ ps\+\_\+color\+\_\+format} fmt, int width, int height, int pitch)
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+canvas} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+canvas\+\_\+create\+\_\+with\+\_\+data} (\textbf{ ps\+\_\+byte} $\ast$data, \textbf{ ps\+\_\+color\+\_\+format} fmt, int32\+\_\+t width, int32\+\_\+t height, int32\+\_\+t pitch)
 \begin{DoxyCompactList}\small\item\em Create a new canvas using a given address in memory. \end{DoxyCompactList}\item 
-P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+canvas} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+canvas\+\_\+create\+\_\+compatible} (const \textbf{ ps\+\_\+canvas} $\ast$canvas, int width, int height)
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+canvas} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+canvas\+\_\+create\+\_\+compatible} (const \textbf{ ps\+\_\+canvas} $\ast$canvas, int32\+\_\+t width, int32\+\_\+t height)
 \begin{DoxyCompactList}\small\item\em Create a new canvas to compatible with an existing canvas. \end{DoxyCompactList}\item 
 P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+canvas} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+canvas\+\_\+create\+\_\+from\+\_\+canvas} (\textbf{ ps\+\_\+canvas} $\ast$canvas, const \textbf{ ps\+\_\+rect} $\ast$rect)
 \begin{DoxyCompactList}\small\item\em Create a new canvas using part of an existing canvas in same pixel buffer. \end{DoxyCompactList}\item 
 P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+canvas} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+canvas\+\_\+create\+\_\+from\+\_\+image} (\textbf{ ps\+\_\+image} $\ast$img, const \textbf{ ps\+\_\+rect} $\ast$rect)
 \begin{DoxyCompactList}\small\item\em Create a new canvas using part of an existing ps\+\_\+image object in same pixel buffer. \end{DoxyCompactList}\item 
-P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+canvas} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+canvas\+\_\+replace\+\_\+data} (\textbf{ ps\+\_\+canvas} $\ast$canvas, \textbf{ ps\+\_\+byte} $\ast$data, \textbf{ ps\+\_\+color\+\_\+format} fmt, int width, int height, int pitch)
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+canvas} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+canvas\+\_\+replace\+\_\+data} (\textbf{ ps\+\_\+canvas} $\ast$canvas, \textbf{ ps\+\_\+byte} $\ast$data, \textbf{ ps\+\_\+color\+\_\+format} fmt, int32\+\_\+t width, int32\+\_\+t height, int32\+\_\+t pitch)
 \begin{DoxyCompactList}\small\item\em Replace a canvas target rendering buffer address in memory, which is only use for canvas create by {\itshape ps\+\_\+canvas\+\_\+create\+\_\+with\+\_\+data}. \end{DoxyCompactList}\item 
 P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+canvas} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+canvas\+\_\+ref} (\textbf{ ps\+\_\+canvas} $\ast$canvas)
 \begin{DoxyCompactList}\small\item\em Increases the reference count of the canvas by 1. \end{DoxyCompactList}\item 
@@ -306,13 +307,13 @@ P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+canvas\+\_\+reset\+\_\+ma
 \begin{DoxyCompactList}\small\item\em Clear the mask from the canvas object. \end{DoxyCompactList}\item 
 P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+canvas\+\_\+bitblt} (\textbf{ ps\+\_\+canvas} $\ast$src, const \textbf{ ps\+\_\+rect} $\ast$rect, \textbf{ ps\+\_\+canvas} $\ast$dst, const \textbf{ ps\+\_\+point} $\ast$location)
 \begin{DoxyCompactList}\small\item\em Copy raster data between two canvas objects. \end{DoxyCompactList}\item 
-P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+image} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+image\+\_\+create} (\textbf{ ps\+\_\+color\+\_\+format} fmt, int width, int height)
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+image} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+image\+\_\+create} (\textbf{ ps\+\_\+color\+\_\+format} fmt, int32\+\_\+t width, int32\+\_\+t height)
 \begin{DoxyCompactList}\small\item\em Create a new image using the given parameters. \end{DoxyCompactList}\item 
-P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+image} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+image\+\_\+create\+\_\+with\+\_\+data} (\textbf{ ps\+\_\+byte} $\ast$data, \textbf{ ps\+\_\+color\+\_\+format} fmt, int width, int height, int pitch)
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+image} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+image\+\_\+create\+\_\+with\+\_\+data} (\textbf{ ps\+\_\+byte} $\ast$data, \textbf{ ps\+\_\+color\+\_\+format} fmt, int32\+\_\+t width, int32\+\_\+t height, int32\+\_\+t pitch)
 \begin{DoxyCompactList}\small\item\em Create a new image using a given address in memory. \end{DoxyCompactList}\item 
-P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+image} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+image\+\_\+create\+\_\+from\+\_\+data} (\textbf{ ps\+\_\+byte} $\ast$data, \textbf{ ps\+\_\+color\+\_\+format} fmt, int width, int height, int pitch)
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+image} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+image\+\_\+create\+\_\+from\+\_\+data} (\textbf{ ps\+\_\+byte} $\ast$data, \textbf{ ps\+\_\+color\+\_\+format} fmt, int32\+\_\+t width, int32\+\_\+t height, int32\+\_\+t pitch)
 \begin{DoxyCompactList}\small\item\em Create a new image using a copy of given address in memory. \end{DoxyCompactList}\item 
-P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+image} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+image\+\_\+create\+\_\+compatible} (const \textbf{ ps\+\_\+canvas} $\ast$canvas, int width, int height)
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+image} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+image\+\_\+create\+\_\+compatible} (const \textbf{ ps\+\_\+canvas} $\ast$canvas, int32\+\_\+t width, int32\+\_\+t height)
 \begin{DoxyCompactList}\small\item\em Create a new image to compatible with an existing canvas. \end{DoxyCompactList}\item 
 P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+image} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+image\+\_\+create\+\_\+from\+\_\+canvas} (\textbf{ ps\+\_\+canvas} $\ast$canvas, const \textbf{ ps\+\_\+rect} $\ast$rect)
 \begin{DoxyCompactList}\small\item\em Create a new image using part of an existing canvas in same pixel buffer. \end{DoxyCompactList}\item 
@@ -354,7 +355,9 @@ P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+gradient\+\_\+add\+\_\+co
 \begin{DoxyCompactList}\small\item\em Add a color stop to a gradient. The offset specifies the location along the gradient\textquotesingle{}s control vector. \end{DoxyCompactList}\item 
 P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+gradient\+\_\+clear\+\_\+color\+\_\+stops} (\textbf{ ps\+\_\+gradient} $\ast$gradient)
 \begin{DoxyCompactList}\small\item\em Clear color stops from gradient\textquotesingle{}s control vector. \end{DoxyCompactList}\item 
-P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+mask} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+mask\+\_\+create\+\_\+with\+\_\+data} (\textbf{ ps\+\_\+byte} $\ast$data, int width, int height)
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+mask} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+mask\+\_\+create} (int32\+\_\+t width, int32\+\_\+t height)
+\begin{DoxyCompactList}\small\item\em Create a new mask. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+mask} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+mask\+\_\+create\+\_\+with\+\_\+data} (\textbf{ ps\+\_\+byte} $\ast$data, int32\+\_\+t width, int32\+\_\+t height)
 \begin{DoxyCompactList}\small\item\em Create a new mask using a given data block. \end{DoxyCompactList}\item 
 P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+mask} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+mask\+\_\+ref} (\textbf{ ps\+\_\+mask} $\ast$mask)
 \begin{DoxyCompactList}\small\item\em Increases the reference count of the mask by 1. \end{DoxyCompactList}\item 
@@ -394,7 +397,7 @@ P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+set\+\_\+stroke\+\_\+grad
 \begin{DoxyCompactList}\small\item\em Set a gradient to the context, it is used to stroke a graphic object. \end{DoxyCompactList}\item 
 P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+set\+\_\+stroke\+\_\+canvas} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+canvas} $\ast$canvas)
 \begin{DoxyCompactList}\small\item\em Set a canvas to the context, it is used to stroke a graphic object. \end{DoxyCompactList}\item 
-P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+set\+\_\+line\+\_\+dash} (\textbf{ ps\+\_\+context} $\ast$ctx, float start, const float $\ast$dashes, unsigned int num\+\_\+dashes)
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+set\+\_\+line\+\_\+dash} (\textbf{ ps\+\_\+context} $\ast$ctx, float start, const float $\ast$dashes, uint32\+\_\+t num\+\_\+dashes)
 \begin{DoxyCompactList}\small\item\em Set the pattern for dashed lines in the context. \end{DoxyCompactList}\item 
 P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+reset\+\_\+line\+\_\+dash} (\textbf{ ps\+\_\+context} $\ast$ctx)
 \begin{DoxyCompactList}\small\item\em Clear the dashs from the context, and set to solid. \end{DoxyCompactList}\item 
@@ -434,7 +437,7 @@ P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+clip\+\_\+rect} (\textbf{
 \begin{DoxyCompactList}\small\item\em Clipping specified rectangle. \end{DoxyCompactList}\item 
 P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+scissor\+\_\+rect} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+rect} $\ast$rect)
 \begin{DoxyCompactList}\small\item\em The fast way to clipping specified rectangle, the clip rect can not be transformed by world matrix. \end{DoxyCompactList}\item 
-P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+clip\+\_\+rects} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+rect} $\ast$rects, unsigned int num\+\_\+rects)
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+clip\+\_\+rects} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+rect} $\ast$rects, uint32\+\_\+t num\+\_\+rects)
 \begin{DoxyCompactList}\small\item\em Clipping specified area defined by an array of rectangles. \end{DoxyCompactList}\item 
 P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+reset\+\_\+clip} (\textbf{ ps\+\_\+context} $\ast$ctx)
 \begin{DoxyCompactList}\small\item\em Clear the clipping area from the context. \end{DoxyCompactList}\item 
@@ -442,7 +445,7 @@ P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+save} (\textbf{ ps\+\_\+c
 \begin{DoxyCompactList}\small\item\em Pushes a copy of the current graphics state on to stack for context. \end{DoxyCompactList}\item 
 P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+restore} (\textbf{ ps\+\_\+context} $\ast$ctx)
 \begin{DoxyCompactList}\small\item\em Set the current graphics state to the state most recently saved. \end{DoxyCompactList}\item 
-P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+font} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+font\+\_\+create} (const char $\ast$name, \textbf{ ps\+\_\+charset} charset, float size, int weight, \textbf{ ps\+\_\+bool} italic)
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+font} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+font\+\_\+create} (const char $\ast$name, \textbf{ ps\+\_\+charset} charset, float size, int32\+\_\+t weight, \textbf{ ps\+\_\+bool} italic)
 \begin{DoxyCompactList}\small\item\em Create a font object using the given parameters. \end{DoxyCompactList}\item 
 P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+font} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+font\+\_\+create\+\_\+copy} (const \textbf{ ps\+\_\+font} $\ast$font)
 \begin{DoxyCompactList}\small\item\em Create a copy from an existing font object. \end{DoxyCompactList}\item 
@@ -452,7 +455,7 @@ P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+font\+\_\+unref} (\textbf
 \begin{DoxyCompactList}\small\item\em Decrements the reference count for the font object. If the reference count on the font falls to 0, the font is freed. \end{DoxyCompactList}\item 
 P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+font\+\_\+set\+\_\+size} (\textbf{ ps\+\_\+font} $\ast$font, float size)
 \begin{DoxyCompactList}\small\item\em Set size for a font object. \end{DoxyCompactList}\item 
-P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+font\+\_\+set\+\_\+weight} (\textbf{ ps\+\_\+font} $\ast$font, int weight)
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+font\+\_\+set\+\_\+weight} (\textbf{ ps\+\_\+font} $\ast$font, int32\+\_\+t weight)
 \begin{DoxyCompactList}\small\item\em Set weight for a font object. \end{DoxyCompactList}\item 
 P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+font\+\_\+set\+\_\+italic} (\textbf{ ps\+\_\+font} $\ast$font, \textbf{ ps\+\_\+bool} italic)
 \begin{DoxyCompactList}\small\item\em Set italic for a font object. \end{DoxyCompactList}\item 
@@ -466,7 +469,7 @@ P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+bool} P\+I\+C\+A\+PI \textbf{ ps\+\_\+get\+\_
 \begin{DoxyCompactList}\small\item\em Return the font information from the graphics context. \end{DoxyCompactList}\item 
 P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+font} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+set\+\_\+font} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+font} $\ast$font)
 \begin{DoxyCompactList}\small\item\em Set a new font to graphics context. \end{DoxyCompactList}\item 
-P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+bool} P\+I\+C\+A\+PI \textbf{ ps\+\_\+get\+\_\+text\+\_\+extent} (\textbf{ ps\+\_\+context} $\ast$ctx, const void $\ast$text, unsigned int length, \textbf{ ps\+\_\+size} $\ast$rsize)
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+bool} P\+I\+C\+A\+PI \textbf{ ps\+\_\+get\+\_\+text\+\_\+extent} (\textbf{ ps\+\_\+context} $\ast$ctx, const void $\ast$text, uint32\+\_\+t length, \textbf{ ps\+\_\+size} $\ast$rsize)
 \begin{DoxyCompactList}\small\item\em Get extent for text using current font which selected to graphic context. \end{DoxyCompactList}\item 
 P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+set\+\_\+text\+\_\+color} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+color} $\ast$color)
 \begin{DoxyCompactList}\small\item\em Set the text fill color for the graphic context. \end{DoxyCompactList}\item 
@@ -482,15 +485,15 @@ P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+set\+\_\+text\+\_\+antial
 \begin{DoxyCompactList}\small\item\em Set whether the font allowed be anti-\/aliasing. \end{DoxyCompactList}\item 
 P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+set\+\_\+text\+\_\+kerning} (\textbf{ ps\+\_\+context} $\ast$ctx, \textbf{ ps\+\_\+bool} kerning)
 \begin{DoxyCompactList}\small\item\em Set whether the font auto kerning is allowed. \end{DoxyCompactList}\item 
-P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+text\+\_\+out\+\_\+length} (\textbf{ ps\+\_\+context} $\ast$ctx, float x, float y, const char $\ast$text, unsigned int length)
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+text\+\_\+out\+\_\+length} (\textbf{ ps\+\_\+context} $\ast$ctx, float x, float y, const char $\ast$text, uint32\+\_\+t length)
 \begin{DoxyCompactList}\small\item\em Draw single byte characters (latin-\/1) at location in user space. \end{DoxyCompactList}\item 
-P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+wide\+\_\+text\+\_\+out\+\_\+length} (\textbf{ ps\+\_\+context} $\ast$ctx, float x, float y, const \textbf{ ps\+\_\+uchar16} $\ast$text, unsigned int length)
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+wide\+\_\+text\+\_\+out\+\_\+length} (\textbf{ ps\+\_\+context} $\ast$ctx, float x, float y, const \textbf{ ps\+\_\+uchar16} $\ast$text, uint32\+\_\+t length)
 \begin{DoxyCompactList}\small\item\em Draw unicode characters (ucs-\/2) at location in user space. \end{DoxyCompactList}\item 
-P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+draw\+\_\+text} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+rect} $\ast$area, const void $\ast$text, unsigned int length, \textbf{ ps\+\_\+draw\+\_\+text\+\_\+type} type, \textbf{ ps\+\_\+text\+\_\+align} align)
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+draw\+\_\+text} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+rect} $\ast$area, const void $\ast$text, uint32\+\_\+t length, \textbf{ ps\+\_\+draw\+\_\+text\+\_\+type} type, \textbf{ ps\+\_\+text\+\_\+align} align)
 \begin{DoxyCompactList}\small\item\em Draw text in a rectangle area, using font object which is selected in graphic context. \end{DoxyCompactList}\item 
-P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+bool} P\+I\+C\+A\+PI \textbf{ ps\+\_\+get\+\_\+glyph} (\textbf{ ps\+\_\+context} $\ast$ctx, int ch, \textbf{ ps\+\_\+glyph} $\ast$glyph)
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+bool} P\+I\+C\+A\+PI \textbf{ ps\+\_\+get\+\_\+glyph} (\textbf{ ps\+\_\+context} $\ast$ctx, int32\+\_\+t ch, \textbf{ ps\+\_\+glyph} $\ast$glyph)
 \begin{DoxyCompactList}\small\item\em Get the glyph from a given character, using font object which is selected in graphic context. \end{DoxyCompactList}\item 
-P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+show\+\_\+glyphs} (\textbf{ ps\+\_\+context} $\ast$ctx, float x, float y, \textbf{ ps\+\_\+glyph} $\ast$glyphs, unsigned int length)
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+show\+\_\+glyphs} (\textbf{ ps\+\_\+context} $\ast$ctx, float x, float y, \textbf{ ps\+\_\+glyph} $\ast$glyphs, uint32\+\_\+t length)
 \begin{DoxyCompactList}\small\item\em Draw an array of glyphs at location in user space. \end{DoxyCompactList}\item 
 P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+bool} P\+I\+C\+A\+PI \textbf{ ps\+\_\+get\+\_\+path\+\_\+from\+\_\+glyph} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+glyph} $\ast$glyph, \textbf{ ps\+\_\+path} $\ast$path)
 \begin{DoxyCompactList}\small\item\em Get the path from a given glyph object. \end{DoxyCompactList}\item 
@@ -628,9 +631,9 @@ P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+path\+\_\+clear} (\textbf
 \begin{DoxyCompactList}\small\item\em Clear the path to empty. \end{DoxyCompactList}\item 
 P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+bool} P\+I\+C\+A\+PI \textbf{ ps\+\_\+path\+\_\+is\+\_\+empty} (const \textbf{ ps\+\_\+path} $\ast$path)
 \begin{DoxyCompactList}\small\item\em Checks whether the path is empty. \end{DoxyCompactList}\item 
-P\+E\+X\+P\+O\+RT unsigned int P\+I\+C\+A\+PI \textbf{ ps\+\_\+path\+\_\+get\+\_\+vertex\+\_\+count} (const \textbf{ ps\+\_\+path} $\ast$path)
+P\+E\+X\+P\+O\+RT uint32\+\_\+t P\+I\+C\+A\+PI \textbf{ ps\+\_\+path\+\_\+get\+\_\+vertex\+\_\+count} (const \textbf{ ps\+\_\+path} $\ast$path)
 \begin{DoxyCompactList}\small\item\em Return the count of vertices in the path. \end{DoxyCompactList}\item 
-P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+path\+\_\+cmd} P\+I\+C\+A\+PI \textbf{ ps\+\_\+path\+\_\+get\+\_\+vertex} (const \textbf{ ps\+\_\+path} $\ast$path, unsigned int index, \textbf{ ps\+\_\+point} $\ast$point)
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+path\+\_\+cmd} P\+I\+C\+A\+PI \textbf{ ps\+\_\+path\+\_\+get\+\_\+vertex} (const \textbf{ ps\+\_\+path} $\ast$path, uint32\+\_\+t index, \textbf{ ps\+\_\+point} $\ast$point)
 \begin{DoxyCompactList}\small\item\em Get a vertex from the path by index, and return the vertex command. \end{DoxyCompactList}\item 
 P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+bool} P\+I\+C\+A\+PI \textbf{ ps\+\_\+path\+\_\+bounding\+\_\+rect} (const \textbf{ ps\+\_\+path} $\ast$path, \textbf{ ps\+\_\+rect} $\ast$rect)
 \begin{DoxyCompactList}\small\item\em Get the bounding rectangle of the path. \end{DoxyCompactList}\item 

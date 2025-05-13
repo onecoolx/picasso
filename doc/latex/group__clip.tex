@@ -11,7 +11,7 @@ P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+clip\+\_\+rect} (\textbf{
 \begin{DoxyCompactList}\small\item\em Clipping specified rectangle. \end{DoxyCompactList}\item 
 P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+scissor\+\_\+rect} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+rect} $\ast$rect)
 \begin{DoxyCompactList}\small\item\em The fast way to clipping specified rectangle, the clip rect can not be transformed by world matrix. \end{DoxyCompactList}\item 
-P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+clip\+\_\+rects} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+rect} $\ast$rects, unsigned int num\+\_\+rects)
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+clip\+\_\+rects} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+rect} $\ast$rects, uint32\+\_\+t num\+\_\+rects)
 \begin{DoxyCompactList}\small\item\em Clipping specified area defined by an array of rectangles. \end{DoxyCompactList}\item 
 P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+reset\+\_\+clip} (\textbf{ ps\+\_\+context} $\ast$ctx)
 \begin{DoxyCompactList}\small\item\em Clear the clipping area from the context. \end{DoxyCompactList}\end{DoxyCompactItemize}
@@ -37,7 +37,7 @@ Clipping the current path, using the current fill rule. After called, the curren
 \hline
 \end{DoxyParams}
 \begin{DoxySeeAlso}{See also}
-\doxyref{ps\+\_\+clip\+\_\+path}{p.}{group__clip_ga570281d1fa52523e9dc4803db1c4fa85}, \doxyref{ps\+\_\+clip\+\_\+rect}{p.}{group__clip_ga5a2b68ffc66c43b4036779644cd394ab}, \doxyref{ps\+\_\+clip\+\_\+rects}{p.}{group__clip_gacfe347f9cecab66847e0319cd9d9b50f}, \doxyref{ps\+\_\+reset\+\_\+clip}{p.}{group__clip_gab2d284432435b712e1f2327b6d66a080} 
+\doxyref{ps\+\_\+clip\+\_\+path}{p.}{group__clip_ga570281d1fa52523e9dc4803db1c4fa85}, \doxyref{ps\+\_\+clip\+\_\+rect}{p.}{group__clip_ga5a2b68ffc66c43b4036779644cd394ab}, \doxyref{ps\+\_\+clip\+\_\+rects}{p.}{group__clip_ga5244f873cea26ff894ff9bd3e0986d79}, \doxyref{ps\+\_\+reset\+\_\+clip}{p.}{group__clip_gab2d284432435b712e1f2327b6d66a080} 
 \end{DoxySeeAlso}
 \mbox{\label{group__clip_ga570281d1fa52523e9dc4803db1c4fa85}} 
 \index{Clip@{Clip}!ps\_clip\_path@{ps\_clip\_path}}
@@ -59,7 +59,7 @@ Clipping specified path, using the given fill rule.
 \hline
 \end{DoxyParams}
 \begin{DoxySeeAlso}{See also}
-\doxyref{ps\+\_\+clip}{p.}{group__clip_ga79550990154227f8377971b1a07f7efc}, \doxyref{ps\+\_\+clip\+\_\+rect}{p.}{group__clip_ga5a2b68ffc66c43b4036779644cd394ab}, \doxyref{ps\+\_\+clip\+\_\+rects}{p.}{group__clip_gacfe347f9cecab66847e0319cd9d9b50f}, \doxyref{ps\+\_\+reset\+\_\+clip}{p.}{group__clip_gab2d284432435b712e1f2327b6d66a080} 
+\doxyref{ps\+\_\+clip}{p.}{group__clip_ga79550990154227f8377971b1a07f7efc}, \doxyref{ps\+\_\+clip\+\_\+rect}{p.}{group__clip_ga5a2b68ffc66c43b4036779644cd394ab}, \doxyref{ps\+\_\+clip\+\_\+rects}{p.}{group__clip_ga5244f873cea26ff894ff9bd3e0986d79}, \doxyref{ps\+\_\+reset\+\_\+clip}{p.}{group__clip_gab2d284432435b712e1f2327b6d66a080} 
 \end{DoxySeeAlso}
 \mbox{\label{group__clip_ga5a2b68ffc66c43b4036779644cd394ab}} 
 \index{Clip@{Clip}!ps\_clip\_rect@{ps\_clip\_rect}}
@@ -79,13 +79,13 @@ Clipping specified rectangle.
 \hline
 \end{DoxyParams}
 \begin{DoxySeeAlso}{See also}
-\doxyref{ps\+\_\+clip}{p.}{group__clip_ga79550990154227f8377971b1a07f7efc}, \doxyref{ps\+\_\+clip\+\_\+path}{p.}{group__clip_ga570281d1fa52523e9dc4803db1c4fa85}, \doxyref{ps\+\_\+clip\+\_\+rects}{p.}{group__clip_gacfe347f9cecab66847e0319cd9d9b50f}, \doxyref{ps\+\_\+reset\+\_\+clip}{p.}{group__clip_gab2d284432435b712e1f2327b6d66a080}, \doxyref{ps\+\_\+scissor\+\_\+rect}{p.}{group__clip_gaced88979d81f52c7dbfd3129c7e5b80f} 
+\doxyref{ps\+\_\+clip}{p.}{group__clip_ga79550990154227f8377971b1a07f7efc}, \doxyref{ps\+\_\+clip\+\_\+path}{p.}{group__clip_ga570281d1fa52523e9dc4803db1c4fa85}, \doxyref{ps\+\_\+clip\+\_\+rects}{p.}{group__clip_ga5244f873cea26ff894ff9bd3e0986d79}, \doxyref{ps\+\_\+reset\+\_\+clip}{p.}{group__clip_gab2d284432435b712e1f2327b6d66a080}, \doxyref{ps\+\_\+scissor\+\_\+rect}{p.}{group__clip_gaced88979d81f52c7dbfd3129c7e5b80f} 
 \end{DoxySeeAlso}
-\mbox{\label{group__clip_gacfe347f9cecab66847e0319cd9d9b50f}} 
+\mbox{\label{group__clip_ga5244f873cea26ff894ff9bd3e0986d79}} 
 \index{Clip@{Clip}!ps\_clip\_rects@{ps\_clip\_rects}}
 \index{ps\_clip\_rects@{ps\_clip\_rects}!Clip@{Clip}}
 \doxysubsubsection{ps\_clip\_rects()}
-{\footnotesize\ttfamily void ps\+\_\+clip\+\_\+rects (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{const \textbf{ ps\+\_\+rect} $\ast$}]{rects,  }\item[{unsigned int}]{num\+\_\+rects }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void ps\+\_\+clip\+\_\+rects (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{const \textbf{ ps\+\_\+rect} $\ast$}]{rects,  }\item[{uint32\+\_\+t}]{num\+\_\+rects }\end{DoxyParamCaption})}
 
 
 
@@ -119,7 +119,7 @@ Clear the clipping area from the context.
 \hline
 \end{DoxyParams}
 \begin{DoxySeeAlso}{See also}
-\doxyref{ps\+\_\+clip}{p.}{group__clip_ga79550990154227f8377971b1a07f7efc}, \doxyref{ps\+\_\+clip\+\_\+path}{p.}{group__clip_ga570281d1fa52523e9dc4803db1c4fa85}, \doxyref{ps\+\_\+clip\+\_\+rect}{p.}{group__clip_ga5a2b68ffc66c43b4036779644cd394ab}, \doxyref{ps\+\_\+clip\+\_\+rects}{p.}{group__clip_gacfe347f9cecab66847e0319cd9d9b50f} 
+\doxyref{ps\+\_\+clip}{p.}{group__clip_ga79550990154227f8377971b1a07f7efc}, \doxyref{ps\+\_\+clip\+\_\+path}{p.}{group__clip_ga570281d1fa52523e9dc4803db1c4fa85}, \doxyref{ps\+\_\+clip\+\_\+rect}{p.}{group__clip_ga5a2b68ffc66c43b4036779644cd394ab}, \doxyref{ps\+\_\+clip\+\_\+rects}{p.}{group__clip_ga5244f873cea26ff894ff9bd3e0986d79} 
 \end{DoxySeeAlso}
 \mbox{\label{group__clip_gaced88979d81f52c7dbfd3129c7e5b80f}} 
 \index{Clip@{Clip}!ps\_scissor\_rect@{ps\_scissor\_rect}}
@@ -142,5 +142,5 @@ The fast way to clipping specified rectangle, the clip rect can not be transform
 This function is deprecated, will be remove feature.
 \end{DoxyNote}
 \begin{DoxySeeAlso}{See also}
-\doxyref{ps\+\_\+clip}{p.}{group__clip_ga79550990154227f8377971b1a07f7efc}, \doxyref{ps\+\_\+clip\+\_\+path}{p.}{group__clip_ga570281d1fa52523e9dc4803db1c4fa85}, \doxyref{ps\+\_\+clip\+\_\+rects}{p.}{group__clip_gacfe347f9cecab66847e0319cd9d9b50f}, \doxyref{ps\+\_\+reset\+\_\+clip}{p.}{group__clip_gab2d284432435b712e1f2327b6d66a080}, \doxyref{ps\+\_\+clip\+\_\+rect}{p.}{group__clip_ga5a2b68ffc66c43b4036779644cd394ab} 
+\doxyref{ps\+\_\+clip}{p.}{group__clip_ga79550990154227f8377971b1a07f7efc}, \doxyref{ps\+\_\+clip\+\_\+path}{p.}{group__clip_ga570281d1fa52523e9dc4803db1c4fa85}, \doxyref{ps\+\_\+clip\+\_\+rects}{p.}{group__clip_ga5244f873cea26ff894ff9bd3e0986d79}, \doxyref{ps\+\_\+reset\+\_\+clip}{p.}{group__clip_gab2d284432435b712e1f2327b6d66a080}, \doxyref{ps\+\_\+clip\+\_\+rect}{p.}{group__clip_ga5a2b68ffc66c43b4036779644cd394ab} 
 \end{DoxySeeAlso}

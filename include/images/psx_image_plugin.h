@@ -34,7 +34,7 @@ extern "C" {
  * @{
  */
 /**
- * \defgroup types XImage Coder Plugin Data Types
+ * \defgroup imgtypes XImage Coder Plugin Data Types
  * @{
  */
 

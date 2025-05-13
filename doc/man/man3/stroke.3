@@ -1,4 +1,4 @@
-.TH "stroke" 3 "Tue Dec 24 2024" "Version 2.8" "Picasso API" \" -*- nroff -*-
+.TH "stroke" 3 "Tue May 13 2025" "Version 2.8" "Picasso API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -82,7 +82,7 @@ stroke
 .br
 .RI "Set a canvas to the context, it is used to stroke a graphic object\&. "
 .ti -1c
-.RI "PEXPORT void PICAPI \fBps_set_line_dash\fP (\fBps_context\fP *ctx, float start, const float *dashes, unsigned int num_dashes)"
+.RI "PEXPORT void PICAPI \fBps_set_line_dash\fP (\fBps_context\fP *ctx, float start, const float *dashes, uint32_t num_dashes)"
 .br
 .RI "Set the pattern for dashed lines in the context\&. "
 .ti -1c
@@ -112,7 +112,7 @@ A line with a rounded end\&. The line to extend beyond the endpoint\&.
 \fB\fILINE_CAP_SQUARE \fP\fP
 A line with a squared-off end\&. The line to extend beyond the endpoint\&. 
 .PP
-Definition at line 1231 of file picasso\&.h\&.
+Definition at line 1269 of file picasso\&.h\&.
 .SS "enum \fB_ps_line_inner_join\fP"
 
 .PP
@@ -133,7 +133,7 @@ A inner join with a jag end\&.
 \fB\fILINE_INNER_ROUND \fP\fP
 A inner join with a rounded end\&. 
 .PP
-Definition at line 1299 of file picasso\&.h\&.
+Definition at line 1337 of file picasso\&.h\&.
 .SS "enum \fB_ps_line_join\fP"
 
 .PP
@@ -157,7 +157,7 @@ A join with a rounded end\&.
 \fB\fILINE_JOIN_BEVEL \fP\fP
 A join with a squared-off end\&. 
 .PP
-Definition at line 1261 of file picasso\&.h\&.
+Definition at line 1299 of file picasso\&.h\&.
 .SH "Function Documentation"
 .PP 
 .SS "void ps_reset_line_dash (\fBps_context\fP * ctx)"
@@ -194,7 +194,7 @@ Set the style for the endpoint of lines in a graphics context\&.
 .RE
 .PP
 
-.SS "void ps_set_line_dash (\fBps_context\fP * ctx, float start, const float * dashes, unsigned int num_dashes)"
+.SS "void ps_set_line_dash (\fBps_context\fP * ctx, float start, const float * dashes, uint32_t num_dashes)"
 
 .PP
 Set the pattern for dashed lines in the context\&. 
