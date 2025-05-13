@@ -53,10 +53,12 @@ public:
         , m_head(NULL)
     {
         m_alloc = psx_linear_allocator_create(PSX_LINEAR_ALIGN_DEFAULT);
+        m_render_matrix = ps_matrix_create();
     }
 
     virtual ~svg_render_list_impl()
     {
+        ps_matrix_unref(m_render_matrix);
         psx_linear_allocator_destroy(m_alloc);
     }
 
@@ -85,9 +87,11 @@ public:
 
     void set_head(render_obj_base* head) { m_head = head; }
     render_obj_base* head(void) const { return m_head; }
+    ps_matrix* render_matrix(void) const { return m_render_matrix; }
 private:
     psx_linear_allocator* m_alloc;
     render_obj_base* m_head;
+    ps_matrix* m_render_matrix;
 };
 
 enum {
@@ -136,6 +140,7 @@ struct _svg_list_builder_state {
     svg_render_list_impl* list;
     ps_draw_attrs* draw_attrs;
     ps_matrix* global_matrix;
+    ps_matrix* render_matrix;
     render_obj_base* tail;
     int32_t in_group_deps;
     bool in_defs;
@@ -392,6 +397,7 @@ public:
         , m_head(NULL)
         , m_draw_attrs(NULL)
         , m_global_matrix(NULL)
+        , m_render_matrix(NULL)
     {
         m_tag = node->type();
         m_matrix = ps_matrix_create();
@@ -505,6 +511,10 @@ public:
                 ps_transform(ctx, m_global_matrix);
             }
 
+            if (m_render_matrix) {
+                ps_transform(ctx, m_render_matrix);
+            }
+
             if ((attrs->flags & RENDER_FILL) && (attrs->flags & RENDER_STROKE)) {
                 ps_paint(ctx);
             } else {
@@ -541,6 +551,7 @@ public:
     }
 
     void set_global_matrix(ps_matrix* matrix) { m_global_matrix = matrix; }
+    void set_render_matrix(ps_matrix* matrix) { m_render_matrix = matrix; }
 
     void set_next(render_obj_base* obj) { m_next = obj; }
     render_obj_base* next(void) const { return m_next; }
@@ -558,6 +569,7 @@ protected:
     ps_matrix* m_matrix;
     ps_draw_attrs* m_draw_attrs;
     ps_matrix* m_global_matrix;
+    ps_matrix* m_render_matrix;
 };
 
 void render_obj_base::set_attr(const psx_svg_attr* attr, _svg_list_builder_state* state)
@@ -2076,6 +2088,7 @@ static bool svg_doc_walk(const psx_tree_node* node, void* data)
 
     obj->set_head(state->list->head());
     obj->set_global_matrix(state->global_matrix);
+    obj->set_render_matrix(state->render_matrix);
     svg_node->set_render(obj);
     return true;
 }
@@ -2177,6 +2190,7 @@ psx_svg_render_list* psx_svg_render_list_create(const psx_svg_node* doc)
     state.list = list;
     state.draw_attrs = attrs;
     state.global_matrix = NULL;
+    state.render_matrix = list->render_matrix();
     state.tail = NULL;
     state.in_group_deps = 0;
     state.in_defs = false;
@@ -2212,13 +2226,21 @@ bool psx_svg_render_list_draw(ps_context* ctx, const psx_svg_render_list* render
         return false;
     }
 
-    render_obj_base* head = ((svg_render_list_impl*)render)->head();
+    svg_render_list_impl* list = (svg_render_list_impl*)render;
+
+    ps_save(ctx);
+    ps_get_matrix(ctx, list->render_matrix());
+    ps_identity(ctx);
+
+    render_obj_base* head = list->head();
     while (head) {
         if (head->render_type() == RENDER_NORMAL) {
             head->render(ctx, NULL);
         }
         head = head->next();
     }
+
+    ps_restore(ctx);
     return true;
 }
 

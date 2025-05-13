@@ -37,6 +37,7 @@ target_include_directories(${UNIT_TESTS} PRIVATE ${lodepng_SOURCE_DIR})
 
 file(COPY ${PROJECT_ROOT}/unit_tests/snapshots DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 configure_file(${PROJECT_ROOT}/unit_tests/test.png ${CMAKE_CURRENT_BINARY_DIR}/test.png COPYONLY)
+configure_file(${PROJECT_ROOT}/unit_tests/tiger.svg ${CMAKE_CURRENT_BINARY_DIR}/tiger.svg COPYONLY)
 
 if (WIN32)
     add_custom_command(
