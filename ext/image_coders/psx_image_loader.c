@@ -1,7 +1,27 @@
-/* Picasso - a vector graphics library
+/*
+ * Copyright (c) 2016, Zhang Ji Peng
+ * All rights reserved.
  *
- * Copyright (C) 2016 Zhang Ji Peng
- * Contact: onecoolx@gmail.com
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * * Redistributions of source code must retain the above copyright notice, this
+ *   list of conditions and the following disclaimer.
+ *
+ * * Redistributions in binary form must reproduce the above copyright notice,
+ *   this list of conditions and the following disclaimer in the documentation
+ *   and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include <stdio.h>
@@ -67,8 +87,6 @@ int PICAPI psx_image_init(void)
         }
 
         if (modules_init(g_modules) != 0) {
-            free(g_modules);
-            g_modules = NULL;
             return S_INIT_FAILURE;
         }
     }
@@ -187,7 +205,7 @@ psx_image* PICAPI psx_image_load(const char* name, int* err_code)
         return NULL;
     }
 
-    file_name = pstring_create(name, NULL);
+    file_name = psx_path_create(name, NULL);
     if (!file_name) {
         if (err_code) {
             *err_code = S_FAILURE;
@@ -195,43 +213,43 @@ psx_image* PICAPI psx_image_load(const char* name, int* err_code)
         return NULL;
     }
 
-    if (_file_exists(file_name) != 0) {
+    if (!psx_file_exists(file_name)) {
         if (err_code) {
             *err_code = S_BAD_PARAMS;
         }
-        free(file_name);
+        psx_path_destroy(file_name);
         return NULL;
     }
 
-    size = _file_size(file_name);
+    size = psx_file_size(file_name);
     if (!size) {
         if (err_code) {
             *err_code = S_BAD_PARAMS;
         }
-        free(file_name);
+        psx_path_destroy(file_name);
         return NULL;
     }
 
-    file_data = (ps_byte*)malloc(size);
+    file_data = (ps_byte*)mem_malloc(size);
     if (!file_data) {
         if (err_code) {
             *err_code = S_OUT_OF_MEMORY;
         }
-        free(file_name);
+        psx_path_destroy(file_name);
         return NULL;
     }
     // read file data.
-    if (_file_read(file_name, file_data, size) != 0) {
+    if (!psx_file_read(file_name, file_data, size)) {
         free(file_data);
         if (err_code) {
             *err_code = S_FAILURE;
         }
-        free(file_name);
+        psx_path_destroy(file_name);
         return NULL;
     }
 
     image = psx_image_load_from_memory(file_data, size, err_code);
-    free(file_name);
+    psx_path_destroy(file_name);
     free(file_data);
     if (err_code) {
         *err_code = S_OK;
@@ -252,7 +270,7 @@ static psx_image* load_psx_image(psx_image_operator* op, const ps_byte* data, si
         return NULL;
     }
 
-    image = (psx_image*)calloc(1, sizeof(psx_image));
+    image = (psx_image*)mem_calloc(1, sizeof(psx_image));
     if (image) {
         //FIXME: add more image attribute here
         image->width = header.width;
@@ -261,7 +279,7 @@ static psx_image* load_psx_image(psx_image_operator* op, const ps_byte* data, si
         image->format = get_format(&header);
         image->num_frames = header.frames;
 
-        image->frames = (psx_image_frame*)calloc(image->num_frames, sizeof(psx_image_frame));
+        image->frames = (psx_image_frame*)mem_calloc(image->num_frames, sizeof(psx_image_frame));
         if (!image->frames) {
             goto error;
         }
@@ -415,7 +433,7 @@ int PICAPI psx_image_save(const psx_image* image, image_writer_fn func, void* pa
 static int file_writer(void* param, const ps_byte* data, size_t len)
 {
     const pchar* path = (const pchar*)param;
-    if (_file_write(path, (unsigned char*)data, len) == 0) {
+    if (psx_file_write(path, (const uint8_t*)data, len)) {
         return S_OK;
     } else {
         return S_FAILURE;
@@ -430,12 +448,12 @@ int PICAPI psx_image_save_to_file(const psx_image* image, const char* name, cons
     if (!image || !name || !type || quality <= 0.0f) {
         return S_BAD_PARAMS;
     }
-    file_name = pstring_create(name, NULL);
-    if (_file_exists(file_name) == 0) {
-        _file_remove(file_name); // remove old file.
+    file_name = psx_path_create(name, NULL);
+    if (psx_file_exists(file_name)) {
+        psx_file_remove(file_name); // remove old file.
     }
     ret = psx_image_save(image, file_writer, (void*)file_name, type, quality);
-    free(file_name);
+    psx_path_destroy(file_name);
     return ret;
 }
 

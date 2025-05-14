@@ -3,7 +3,9 @@
 \doxysubsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
-P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+mask} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+mask\+\_\+create\+\_\+with\+\_\+data} (\textbf{ ps\+\_\+byte} $\ast$data, int width, int height)
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+mask} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+mask\+\_\+create} (int32\+\_\+t width, int32\+\_\+t height)
+\begin{DoxyCompactList}\small\item\em Create a new mask. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+mask} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+mask\+\_\+create\+\_\+with\+\_\+data} (\textbf{ ps\+\_\+byte} $\ast$data, int32\+\_\+t width, int32\+\_\+t height)
 \begin{DoxyCompactList}\small\item\em Create a new mask using a given data block. \end{DoxyCompactList}\item 
 P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+mask} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+mask\+\_\+ref} (\textbf{ ps\+\_\+mask} $\ast$mask)
 \begin{DoxyCompactList}\small\item\em Increases the reference count of the mask by 1. \end{DoxyCompactList}\item 
@@ -57,11 +59,37 @@ Clear all colors from mask\textquotesingle{}s filter.
 \begin{DoxySeeAlso}{See also}
 \doxyref{ps\+\_\+mask\+\_\+add\+\_\+color\+\_\+filter}{p.}{group__mask_ga8caf434db1774654e30f059b490ad293} 
 \end{DoxySeeAlso}
-\mbox{\label{group__mask_ga6705aec0eba1809d7546391e1021b4db}} 
+\mbox{\label{group__mask_ga017d3944f6280c2b8cbba87da84d47e9}} 
+\index{Mask@{Mask}!ps\_mask\_create@{ps\_mask\_create}}
+\index{ps\_mask\_create@{ps\_mask\_create}!Mask@{Mask}}
+\doxysubsubsection{ps\_mask\_create()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+mask} $\ast$ ps\+\_\+mask\+\_\+create (\begin{DoxyParamCaption}\item[{int32\+\_\+t}]{width,  }\item[{int32\+\_\+t}]{height }\end{DoxyParamCaption})}
+
+
+
+Create a new mask. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em width} & The width, in pixels, of the required mask. \\
+\hline
+{\em height} & The height, in pixels, of the required mask.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+If the function succeeds, the return value is the pointer to a new mask object. If the function fails, the return value is N\+U\+LL.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxyref{ps\+\_\+mask\+\_\+ref}{p.}{group__mask_ga4e5d901b886cd95c6b78a508869cf7b2}, \doxyref{ps\+\_\+mask\+\_\+unref}{p.}{group__mask_gabc9c126ec3862a0ea8290079a1e165a1}, \doxyref{ps\+\_\+canvas\+\_\+set\+\_\+mask}{p.}{group__canvas_gae2c3473beecada34539bc9bcc61da3be}, \doxyref{ps\+\_\+canvas\+\_\+reset\+\_\+mask}{p.}{group__canvas_ga7b52ce718da8798ce1823ed30c65d297}, \doxyref{ps\+\_\+mask\+\_\+create\+\_\+with\+\_\+data}{p.}{group__mask_gad3c0e4b2ed43c18ed3969539ce80e4be} 
+\end{DoxySeeAlso}
+\mbox{\label{group__mask_gad3c0e4b2ed43c18ed3969539ce80e4be}} 
 \index{Mask@{Mask}!ps\_mask\_create\_with\_data@{ps\_mask\_create\_with\_data}}
 \index{ps\_mask\_create\_with\_data@{ps\_mask\_create\_with\_data}!Mask@{Mask}}
 \doxysubsubsection{ps\_mask\_create\_with\_data()}
-{\footnotesize\ttfamily \textbf{ ps\+\_\+mask} $\ast$ ps\+\_\+mask\+\_\+create\+\_\+with\+\_\+data (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+byte} $\ast$}]{data,  }\item[{int}]{width,  }\item[{int}]{height }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+mask} $\ast$ ps\+\_\+mask\+\_\+create\+\_\+with\+\_\+data (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+byte} $\ast$}]{data,  }\item[{int32\+\_\+t}]{width,  }\item[{int32\+\_\+t}]{height }\end{DoxyParamCaption})}
 
 
 
@@ -83,7 +111,7 @@ If the function succeeds, the return value is the pointer to a new mask object. 
 To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
 \end{DoxyNote}
 \begin{DoxySeeAlso}{See also}
-\doxyref{ps\+\_\+mask\+\_\+ref}{p.}{group__mask_ga4e5d901b886cd95c6b78a508869cf7b2}, \doxyref{ps\+\_\+mask\+\_\+unref}{p.}{group__mask_gabc9c126ec3862a0ea8290079a1e165a1}, \doxyref{ps\+\_\+canvas\+\_\+set\+\_\+mask}{p.}{group__canvas_gae2c3473beecada34539bc9bcc61da3be}, \doxyref{ps\+\_\+canvas\+\_\+reset\+\_\+mask}{p.}{group__canvas_ga7b52ce718da8798ce1823ed30c65d297} 
+\doxyref{ps\+\_\+mask\+\_\+ref}{p.}{group__mask_ga4e5d901b886cd95c6b78a508869cf7b2}, \doxyref{ps\+\_\+mask\+\_\+unref}{p.}{group__mask_gabc9c126ec3862a0ea8290079a1e165a1}, \doxyref{ps\+\_\+canvas\+\_\+set\+\_\+mask}{p.}{group__canvas_gae2c3473beecada34539bc9bcc61da3be}, \doxyref{ps\+\_\+canvas\+\_\+reset\+\_\+mask}{p.}{group__canvas_ga7b52ce718da8798ce1823ed30c65d297}, \doxyref{ps\+\_\+mask\+\_\+create}{p.}{group__mask_ga017d3944f6280c2b8cbba87da84d47e9} 
 \end{DoxySeeAlso}
 \mbox{\label{group__mask_ga4e5d901b886cd95c6b78a508869cf7b2}} 
 \index{Mask@{Mask}!ps\_mask\_ref@{ps\_mask\_ref}}
@@ -107,7 +135,7 @@ If the function succeeds, the return value is the pointer to the mask object. If
 To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
 \end{DoxyNote}
 \begin{DoxySeeAlso}{See also}
-\doxyref{ps\+\_\+mask\+\_\+create\+\_\+with\+\_\+data}{p.}{group__mask_ga6705aec0eba1809d7546391e1021b4db}, \doxyref{ps\+\_\+mask\+\_\+unref}{p.}{group__mask_gabc9c126ec3862a0ea8290079a1e165a1}, \doxyref{ps\+\_\+canvas\+\_\+set\+\_\+mask}{p.}{group__canvas_gae2c3473beecada34539bc9bcc61da3be}, \doxyref{ps\+\_\+canvas\+\_\+reset\+\_\+mask}{p.}{group__canvas_ga7b52ce718da8798ce1823ed30c65d297} 
+\doxyref{ps\+\_\+mask\+\_\+create\+\_\+with\+\_\+data}{p.}{group__mask_gad3c0e4b2ed43c18ed3969539ce80e4be}, \doxyref{ps\+\_\+mask\+\_\+unref}{p.}{group__mask_gabc9c126ec3862a0ea8290079a1e165a1}, \doxyref{ps\+\_\+canvas\+\_\+set\+\_\+mask}{p.}{group__canvas_gae2c3473beecada34539bc9bcc61da3be}, \doxyref{ps\+\_\+canvas\+\_\+reset\+\_\+mask}{p.}{group__canvas_ga7b52ce718da8798ce1823ed30c65d297}, \doxyref{ps\+\_\+mask\+\_\+create}{p.}{group__mask_ga017d3944f6280c2b8cbba87da84d47e9} 
 \end{DoxySeeAlso}
 \mbox{\label{group__mask_gabc9c126ec3862a0ea8290079a1e165a1}} 
 \index{Mask@{Mask}!ps\_mask\_unref@{ps\_mask\_unref}}
@@ -125,5 +153,5 @@ Decrements the reference count for the mask object. If the reference count on th
 \hline
 \end{DoxyParams}
 \begin{DoxySeeAlso}{See also}
-\doxyref{ps\+\_\+mask\+\_\+create\+\_\+with\+\_\+data}{p.}{group__mask_ga6705aec0eba1809d7546391e1021b4db}, \doxyref{ps\+\_\+mask\+\_\+ref}{p.}{group__mask_ga4e5d901b886cd95c6b78a508869cf7b2}, \doxyref{ps\+\_\+canvas\+\_\+set\+\_\+mask}{p.}{group__canvas_gae2c3473beecada34539bc9bcc61da3be}, \doxyref{ps\+\_\+canvas\+\_\+reset\+\_\+mask}{p.}{group__canvas_ga7b52ce718da8798ce1823ed30c65d297} 
+\doxyref{ps\+\_\+mask\+\_\+create\+\_\+with\+\_\+data}{p.}{group__mask_gad3c0e4b2ed43c18ed3969539ce80e4be}, \doxyref{ps\+\_\+mask\+\_\+ref}{p.}{group__mask_ga4e5d901b886cd95c6b78a508869cf7b2}, \doxyref{ps\+\_\+canvas\+\_\+set\+\_\+mask}{p.}{group__canvas_gae2c3473beecada34539bc9bcc61da3be}, \doxyref{ps\+\_\+canvas\+\_\+reset\+\_\+mask}{p.}{group__canvas_ga7b52ce718da8798ce1823ed30c65d297}, \doxyref{ps\+\_\+mask\+\_\+create}{p.}{group__mask_ga017d3944f6280c2b8cbba87da84d47e9} 
 \end{DoxySeeAlso}

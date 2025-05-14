@@ -26,11 +26,11 @@ public:
     virtual void destroy_raster_adapter(abstract_raster_adapter* d);
 
     virtual abstract_rendering_buffer* create_rendering_buffer(byte* buf,
-                                                               unsigned int width, unsigned int height, int stride);
+                                                               uint32_t width, uint32_t height, int32_t stride);
     virtual void destroy_rendering_buffer(abstract_rendering_buffer* b);
 
     virtual abstract_mask_layer* create_mask_layer(byte* buf,
-                                                   unsigned int width, unsigned int height, int stride);
+                                                   uint32_t width, uint32_t height, int32_t stride);
     virtual void destroy_mask_layer(abstract_mask_layer* m);
 
     virtual abstract_gradient_adapter* create_gradient_adapter(void);

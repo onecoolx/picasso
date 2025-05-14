@@ -32,9 +32,9 @@ public:
     {
     }
 
-    void reset(int min_x, int max_x)
+    void reset(int32_t min_x, int32_t max_x)
     {
-        unsigned int max_len = max_x - min_x + 3;
+        uint32_t max_len = max_x - min_x + 3;
         if (max_len > m_spans.size()) {
             m_spans.resize(max_len);
         }
@@ -42,7 +42,7 @@ public:
         m_cur_span = &m_spans[0];
     }
 
-    void add_cell(int x, unsigned int)
+    void add_cell(int32_t x, uint32_t)
     {
         if (x == m_last_x + 1) {
             m_cur_span->len++;
@@ -54,7 +54,7 @@ public:
         m_last_x = x;
     }
 
-    void add_span(int x, unsigned int len, unsigned int)
+    void add_span(int32_t x, uint32_t len, uint32_t)
     {
         if (x == m_last_x + 1) {
             m_cur_span->len = (int16_t)(m_cur_span->len + len);
@@ -66,12 +66,12 @@ public:
         m_last_x = x + len - 1;
     }
 
-    void add_cells(int x, unsigned len, const void*)
+    void add_cells(int32_t x, uint32_t len, const void*)
     {
         add_span(x, len, 0);
     }
 
-    void finalize(int y)
+    void finalize(int32_t y)
     {
         m_y = y;
     }
@@ -82,16 +82,16 @@ public:
         m_cur_span = &m_spans[0];
     }
 
-    int y(void) const { return m_y; }
-    unsigned int num_spans(void) const { return (unsigned int)(m_cur_span - &m_spans[0]); }
+    int32_t y(void) const { return m_y; }
+    uint32_t num_spans(void) const { return (uint32_t)(m_cur_span - &m_spans[0]); }
     const_iterator begin(void) const { return &m_spans[1]; }
 
 private:
     gfx_scanline_bin(const gfx_scanline_bin&);
     const gfx_scanline_bin operator = (const gfx_scanline_bin&);
 
-    int m_last_x;
-    int m_y;
+    int32_t m_last_x;
+    int32_t m_y;
     span* m_cur_span;
     pod_array<span> m_spans;
 };
@@ -120,9 +120,9 @@ public:
     {
     }
 
-    void reset(int min_x, int max_x)
+    void reset(int32_t min_x, int32_t max_x)
     {
-        unsigned int max_len = max_x - min_x + 3;
+        uint32_t max_len = max_x - min_x + 3;
         if (max_len > m_spans.size()) {
             m_spans.resize(max_len);
             m_covers.resize(max_len);
@@ -133,7 +133,7 @@ public:
         m_cur_span->len = 0;
     }
 
-    void add_cell(int x, unsigned int cover)
+    void add_cell(int32_t x, uint32_t cover)
     {
         *m_cover_ptr = (cover_type)cover;
         if (x == m_last_x + 1 && m_cur_span->len > 0) {
@@ -148,7 +148,7 @@ public:
         m_cover_ptr++;
     }
 
-    void add_cells(int x, unsigned int len, const cover_type* covers)
+    void add_cells(int32_t x, uint32_t len, const cover_type* covers)
     {
         mem_copy(m_cover_ptr, covers, len * sizeof(cover_type));
         if (x == m_last_x + 1 && m_cur_span->len > 0) {
@@ -163,7 +163,7 @@ public:
         m_last_x = x + len - 1;
     }
 
-    void add_span(int x, unsigned int len, unsigned int cover)
+    void add_span(int32_t x, uint32_t len, uint32_t cover)
     {
         if (x == m_last_x + 1 && m_cur_span->len < 0
             && cover == *m_cur_span->covers) {
@@ -173,12 +173,12 @@ public:
             m_cur_span++;
             m_cur_span->covers = m_cover_ptr++;
             m_cur_span->x = (int16_t)x;
-            m_cur_span->len = (int16_t)(-int(len));
+            m_cur_span->len = (int16_t)(-int32_t(len));
         }
         m_last_x = x + len - 1;
     }
 
-    void finalize(int y)
+    void finalize(int32_t y)
     {
         m_y = y;
     }
@@ -191,16 +191,16 @@ public:
         m_cur_span->len = 0;
     }
 
-    int y(void) const { return m_y; }
-    unsigned int num_spans(void) const { return (unsigned int)(m_cur_span - &m_spans[0]); }
+    int32_t y(void) const { return m_y; }
+    uint32_t num_spans(void) const { return (uint32_t)(m_cur_span - &m_spans[0]); }
     const_iterator begin(void) const { return &m_spans[1]; }
 
 private:
     gfx_scanline_p8(const gfx_scanline_p8&);
     const gfx_scanline_p8& operator = (const gfx_scanline_p8&);
 
-    int m_last_x;
-    int m_y;
+    int32_t m_last_x;
+    int32_t m_y;
     cover_type* m_cover_ptr;
     pod_array<cover_type> m_covers;
     span* m_cur_span;
@@ -231,9 +231,9 @@ public:
     {
     }
 
-    void reset(int min_x, int max_x)
+    void reset(int32_t min_x, int32_t max_x)
     {
-        unsigned int max_len = max_x - min_x + 2;
+        uint32_t max_len = max_x - min_x + 2;
         if (max_len > m_spans.size()) {
             m_spans.resize(max_len);
             m_covers.resize(max_len);
@@ -243,7 +243,7 @@ public:
         m_cur_span = &m_spans[0];
     }
 
-    void add_cell(int x, unsigned int cover)
+    void add_cell(int32_t x, uint32_t cover)
     {
         x -= m_min_x;
         m_covers[x] = (cover_type)cover;
@@ -258,7 +258,7 @@ public:
         m_last_x = x;
     }
 
-    void add_cells(int x, unsigned int len, const cover_type* covers)
+    void add_cells(int32_t x, uint32_t len, const cover_type* covers)
     {
         x -= m_min_x;
         mem_copy(&m_covers[x], covers, len * sizeof(cover_type));
@@ -273,7 +273,7 @@ public:
         m_last_x = x + len - 1;
     }
 
-    void add_span(int x, unsigned int len, unsigned int cover)
+    void add_span(int32_t x, uint32_t len, uint32_t cover)
     {
         x -= m_min_x;
         memset(&m_covers[x], cover, len);
@@ -288,7 +288,7 @@ public:
         m_last_x = x + len - 1;
     }
 
-    void finalize(int y)
+    void finalize(int32_t y)
     {
         m_y = y;
     }
@@ -299,8 +299,8 @@ public:
         m_cur_span = &m_spans[0];
     }
 
-    int y(void) const { return m_y; }
-    unsigned int num_spans(void) const { return (unsigned int)(m_cur_span - &m_spans[0]); }
+    int32_t y(void) const { return m_y; }
+    uint32_t num_spans(void) const { return (uint32_t)(m_cur_span - &m_spans[0]); }
     const_iterator begin(void) const { return &m_spans[1]; }
     iterator begin(void) { return &m_spans[1]; }
 
@@ -308,9 +308,9 @@ private:
     gfx_scanline_u8(const gfx_scanline_u8&);
     const gfx_scanline_u8& operator = (const gfx_scanline_u8&);
 
-    int m_min_x;
-    int m_last_x;
-    int m_y;
+    int32_t m_min_x;
+    int32_t m_last_x;
+    int32_t m_y;
     pod_array<cover_type> m_covers;
     span* m_cur_span;
     pod_array<span> m_spans;

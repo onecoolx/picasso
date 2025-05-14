@@ -81,7 +81,7 @@ struct rgba8 {
     {
     }
 
-    rgba8(unsigned int _r, unsigned int _g, unsigned int _b, unsigned int _a = base_mask)
+    rgba8(uint32_t _r, uint32_t _g, uint32_t _b, uint32_t _a = base_mask)
         : r(_r), g(_g), b(_b), a(_a)
     {
     }

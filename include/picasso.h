@@ -57,7 +57,7 @@ extern "C" {
  * \brief boolean type
  * \sa ps_uchar16, ps_schar16, ps_byte
  */
-typedef int ps_bool;
+typedef int32_t ps_bool;
 
 /**
  * \def True
@@ -228,11 +228,11 @@ typedef struct _ps_color {
  */
 
 /**
- * \fn int ps_version(void)
+ * \fn int32_t ps_version(void)
  * \brief Return current version of picasso.
  * \sa ps_last_status
  */
-PEXPORT int PICAPI ps_version(void);
+PEXPORT int32_t PICAPI ps_version(void);
 
 /**
  * \fn ps_bool ps_initialize(void)
@@ -435,7 +435,7 @@ typedef enum _ps_color_format {
 } ps_color_format;
 
 /**
- * \fn ps_canvas* ps_canvas_create(ps_color_format fmt, int width, int height)
+ * \fn ps_canvas* ps_canvas_create(ps_color_format fmt, int32_t width, int32_t height)
  * \brief Create a new canvas using the given parameters.
  *
  * \param fmt     The Pixel format to use for the canvas.
@@ -450,10 +450,10 @@ typedef enum _ps_color_format {
  * \sa ps_canvas_create_with_data, ps_canvas_create_compatible, ps_canvas_create_from_canvas,
  *     ps_canvas_create_from_image, ps_canvas_create_from_mask, ps_canvas_ref, ps_canvas_unref
  */
-PEXPORT ps_canvas* PICAPI ps_canvas_create(ps_color_format fmt, int width, int height);
+PEXPORT ps_canvas* PICAPI ps_canvas_create(ps_color_format fmt, int32_t width, int32_t height);
 
 /**
- * \fn ps_canvas* ps_canvas_create_with_data(ps_byte* data, ps_color_format fmt, int width, int height, int pitch)
+ * \fn ps_canvas* ps_canvas_create_with_data(ps_byte* data, ps_color_format fmt, int32_t width, int32_t height, int32_t pitch)
  * \brief Create a new canvas using a given address in memory.
  *
  * \param data    A pointer to the destination in memory where the drawing is to be rendered.
@@ -472,10 +472,10 @@ PEXPORT ps_canvas* PICAPI ps_canvas_create(ps_color_format fmt, int width, int h
  *     ps_canvas_create_from_image, ps_canvas_create_from_mask, ps_canvas_ref, ps_canvas_unref, ps_canvas_replace_data
  */
 PEXPORT ps_canvas* PICAPI ps_canvas_create_with_data(ps_byte* data, ps_color_format fmt,
-                                                     int width, int height, int pitch);
+                                                     int32_t width, int32_t height, int32_t pitch);
 
 /**
- * \fn ps_canvas* ps_canvas_create_compatible(const ps_canvas* canvas, int width, int height)
+ * \fn ps_canvas* ps_canvas_create_compatible(const ps_canvas* canvas, int32_t width, int32_t height)
  * \brief Create a new canvas to compatible with an existing canvas.
  *
  * \param canvas  A pointer to an existing canvas.
@@ -493,7 +493,7 @@ PEXPORT ps_canvas* PICAPI ps_canvas_create_with_data(ps_byte* data, ps_color_for
  *     ps_canvas_create_from_image, ps_canvas_create_from_mask, ps_canvas_ref, ps_canvas_unref
  */
 PEXPORT ps_canvas* PICAPI ps_canvas_create_compatible(const ps_canvas* canvas,
-                                                      int width, int height);
+                                                      int32_t width, int32_t height);
 
 /**
  * \fn ps_canvas* ps_canvas_create_from_canvas(ps_canvas* canvas, const ps_rect* rect)
@@ -551,7 +551,7 @@ PEXPORT ps_canvas* PICAPI ps_canvas_create_from_mask(ps_mask* mask, const ps_rec
 
 /**
  * \fn ps_canvas* PICAPI ps_canvas_replace_data(ps_canvas* canvas, ps_byte* data,
- *                                              ps_color_format fmt, int width, int height, int pitch);
+ *                                              ps_color_format fmt, int32_t width, int32_t height, int32_t pitch);
  * \brief Replace a canvas target rendering buffer address in memory, which is only use for canvas create by
  *        \a ps_canvas_create_with_data.
  *
@@ -572,7 +572,7 @@ PEXPORT ps_canvas* PICAPI ps_canvas_create_from_mask(ps_mask* mask, const ps_rec
  * \sa ps_canvas_create_with_data
  */
 PEXPORT ps_canvas* PICAPI ps_canvas_replace_data(ps_canvas* canvas, ps_byte* data,
-                                                 ps_color_format fmt, int width, int height, int pitch);
+                                                 ps_color_format fmt, int32_t width, int32_t height, int32_t pitch);
 
 /**
  * \fn ps_canvas* ps_canvas_ref(ps_canvas* canvas)
@@ -678,7 +678,7 @@ PEXPORT void PICAPI ps_canvas_bitblt(ps_canvas* src, const ps_rect* rect,
  */
 
 /**
- * \fn ps_image* ps_image_create(ps_color_format fmt, int width, int height)
+ * \fn ps_image* ps_image_create(ps_color_format fmt, int32_t width, int32_t height)
  * \brief Create a new image using the given parameters.
  *
  * \param fmt     The Pixel format to use for the image.
@@ -693,10 +693,10 @@ PEXPORT void PICAPI ps_canvas_bitblt(ps_canvas* src, const ps_rect* rect,
  * \sa ps_image_create_with_data, ps_image_create_compatible, ps_image_create_from_canvas,
  *     ps_image_create_from_data, ps_image_create_from_image, ps_image_ref, ps_image_unref
  */
-PEXPORT ps_image* PICAPI ps_image_create(ps_color_format fmt, int width, int height);
+PEXPORT ps_image* PICAPI ps_image_create(ps_color_format fmt, int32_t width, int32_t height);
 
 /**
- * \fn ps_image* ps_image_create_with_data(ps_byte* data, ps_color_format fmt, int width, int height, int pitch)
+ * \fn ps_image* ps_image_create_with_data(ps_byte* data, ps_color_format fmt, int32_t width, int32_t height, int32_t pitch)
  * \brief Create a new image using a given address in memory.
  *
  * \param data    A pointer to the destination in memory where the drawing is to be rendered.
@@ -715,9 +715,9 @@ PEXPORT ps_image* PICAPI ps_image_create(ps_color_format fmt, int width, int hei
  *     ps_image_create_from_data, ps_image_create_from_image, ps_image_ref, ps_image_unref
  */
 PEXPORT ps_image* PICAPI ps_image_create_with_data(ps_byte* data, ps_color_format fmt,
-                                                   int width, int height, int pitch);
+                                                   int32_t width, int32_t height, int32_t pitch);
 /**
- * \fn ps_image* ps_image_create_from_data(ps_byte* data, ps_color_format fmt, int width, int height, int pitch)
+ * \fn ps_image* ps_image_create_from_data(ps_byte* data, ps_color_format fmt, int32_t width, int32_t height, int32_t pitch)
  * \brief Create a new image using a copy of given address in memory.
  *
  * \param data    A pointer to the destination in memory where the drawing is to be rendered.
@@ -736,9 +736,9 @@ PEXPORT ps_image* PICAPI ps_image_create_with_data(ps_byte* data, ps_color_forma
  *     ps_image_create_with_data, ps_image_create_from_image, ps_image_ref, ps_image_unref
  */
 PEXPORT ps_image* PICAPI ps_image_create_from_data(ps_byte* data, ps_color_format fmt,
-                                                   int width, int height, int pitch);
+                                                   int32_t width, int32_t height, int32_t pitch);
 /**
- * \fn ps_image* ps_image_create_compatible(const ps_canvas* canvas, int width, int height)
+ * \fn ps_image* ps_image_create_compatible(const ps_canvas* canvas, int32_t width, int32_t height)
  * \brief Create a new image to compatible with an existing canvas.
  *
  * \param canvas  A pointer to an existing canvas.
@@ -755,7 +755,7 @@ PEXPORT ps_image* PICAPI ps_image_create_from_data(ps_byte* data, ps_color_forma
  * \sa ps_image_create, ps_image_create_with_data, ps_image_create_from_canvas,
  *     ps_image_create_from_image, ps_image_ref, ps_image_unref
  */
-PEXPORT ps_image* PICAPI ps_image_create_compatible(const ps_canvas* canvas, int width, int height);
+PEXPORT ps_image* PICAPI ps_image_create_compatible(const ps_canvas* canvas, int32_t width, int32_t height);
 
 /**
  * \fn ps_image* ps_image_create_from_canvas(ps_canvas* canvas, const ps_rect* rect)
@@ -1023,7 +1023,7 @@ PEXPORT ps_gradient* PICAPI ps_gradient_create_radial(ps_gradient_spread spread,
  *
  * \param spread  The spread type of the gradient.
  * \param origin  The center point of conic, of the required gradient.
- * \param sangle  The angle, int radians, which the first color.
+ * \param sangle  The angle, int32_t radians, which the first color.
  *
  * \return If the function succeeds, the return value is the pointer to a new gradient object.
  *         If the function fails, the return value is NULL.
@@ -1107,7 +1107,7 @@ PEXPORT void PICAPI ps_gradient_clear_color_stops(ps_gradient* gradient);
  */
 
 /**
- * \fn ps_mask* ps_mask_create(int width, int height)
+ * \fn ps_mask* ps_mask_create(int32_t width, int32_t height)
  * \brief Create a new mask.
  *
  * \param width   The width, in pixels, of the required mask.
@@ -1120,10 +1120,10 @@ PEXPORT void PICAPI ps_gradient_clear_color_stops(ps_gradient* gradient);
  *
  * \sa ps_mask_ref, ps_mask_unref, ps_canvas_set_mask, ps_canvas_reset_mask, ps_mask_create_with_data
  */
-PEXPORT ps_mask* PICAPI ps_mask_create(int width, int height);
+PEXPORT ps_mask* PICAPI ps_mask_create(int32_t width, int32_t height);
 
 /**
- * \fn ps_mask* ps_mask_create_with_data(ps_byte* data, int width, int height)
+ * \fn ps_mask* ps_mask_create_with_data(ps_byte* data, int32_t width, int32_t height)
  * \brief Create a new mask using a given data block.
  *
  * \param data    A pointer to the mask data block in memory.
@@ -1139,7 +1139,7 @@ PEXPORT ps_mask* PICAPI ps_mask_create(int width, int height);
  *
  * \sa ps_mask_ref, ps_mask_unref, ps_canvas_set_mask, ps_canvas_reset_mask, ps_mask_create
  */
-PEXPORT ps_mask* PICAPI ps_mask_create_with_data(ps_byte* data, int width, int height);
+PEXPORT ps_mask* PICAPI ps_mask_create_with_data(ps_byte* data, int32_t width, int32_t height);
 
 /**
  * \fn ps_mask* ps_mask_ref(ps_mask* mask)
@@ -1467,7 +1467,7 @@ PEXPORT void PICAPI ps_set_stroke_gradient(ps_context* ctx, const ps_gradient* g
 PEXPORT void PICAPI ps_set_stroke_canvas(ps_context* ctx, const ps_canvas* canvas);
 
 /**
- * \fn void ps_set_line_dash(ps_context* ctx, float start, const float* dashes, unsigned int num_dashes)
+ * \fn void ps_set_line_dash(ps_context* ctx, float start, const float* dashes, uint32_t num_dashes)
  * \brief Set the pattern for dashed lines in the context.
  *
  * \param ctx        Pointer to an existing context object.
@@ -1480,7 +1480,7 @@ PEXPORT void PICAPI ps_set_stroke_canvas(ps_context* ctx, const ps_canvas* canva
  *     ps_set_stroke_color, ps_reset_line_dash, ps_set_line_inner_join
  */
 PEXPORT void PICAPI ps_set_line_dash(ps_context* ctx, float start,
-                                     const float* dashes, unsigned int num_dashes);
+                                     const float* dashes, uint32_t num_dashes);
 
 /**
  * \fn void ps_reset_line_dash(ps_context* ctx)
@@ -1876,7 +1876,7 @@ PEXPORT void PICAPI ps_clip_rect(ps_context* ctx, const ps_rect* rect);
 PEXPORT void PICAPI ps_scissor_rect(ps_context* ctx, const ps_rect* rect);
 
 /**
- * \fn void ps_clip_rects(ps_context* ctx, const ps_rect* rects, unsigned int num_rects)
+ * \fn void ps_clip_rects(ps_context* ctx, const ps_rect* rects, uint32_t num_rects)
  * \brief Clipping specified area defined by an array of rectangles.
  *
  * \param ctx       Pointer to an existing context object.
@@ -1885,7 +1885,7 @@ PEXPORT void PICAPI ps_scissor_rect(ps_context* ctx, const ps_rect* rect);
  *
  * \sa ps_clip, ps_clip_path, ps_clip_rect, ps_reset_clip
  */
-PEXPORT void PICAPI ps_clip_rects(ps_context* ctx, const ps_rect* rects, unsigned int num_rects);
+PEXPORT void PICAPI ps_clip_rects(ps_context* ctx, const ps_rect* rects, uint32_t num_rects);
 
 /**
  * \fn void ps_reset_clip(ps_context* ctx)
@@ -1988,7 +1988,7 @@ typedef enum _ps_font_weight {
 } ps_font_weight;
 
 /**
- * \fn ps_font* ps_font_create(const char* name, ps_charset charset, float size, int weight, ps_bool italic)
+ * \fn ps_font* ps_font_create(const char* name, ps_charset charset, float size, int32_t weight, ps_bool italic)
  * \brief Create a font object using the given parameters.
  *
  * \param name     The font family name.
@@ -2005,7 +2005,7 @@ typedef enum _ps_font_weight {
  * \sa ps_font_create_copy, ps_font_ref, ps_font_unref
  */
 PEXPORT ps_font* PICAPI ps_font_create(const char* name, ps_charset charset,
-                                       float size, int weight, ps_bool italic);
+                                       float size, int32_t weight, ps_bool italic);
 
 /**
  * \fn ps_font* ps_font_create_copy(const ps_font* font)
@@ -2061,7 +2061,7 @@ PEXPORT void PICAPI ps_font_unref(ps_font* font);
 PEXPORT void PICAPI ps_font_set_size(ps_font* font, float size);
 
 /**
- * \fn void ps_font_set_weight(ps_font* font, int weight)
+ * \fn void ps_font_set_weight(ps_font* font, int32_t weight)
  * \brief Set weight for a font object.
  *
  * \param font    Pointer to an existing font object.
@@ -2070,7 +2070,7 @@ PEXPORT void PICAPI ps_font_set_size(ps_font* font, float size);
  * \sa ps_font_set_size, ps_font_set_italic, ps_font_set_charset,
  *        ps_font_set_hint, ps_font_set_flip
  */
-PEXPORT void PICAPI ps_font_set_weight(ps_font* font, int weight);
+PEXPORT void PICAPI ps_font_set_weight(ps_font* font, int32_t weight);
 
 /**
  * \fn void ps_font_set_italic(ps_font* font, ps_bool italic)
@@ -2143,7 +2143,7 @@ typedef struct _ps_font_info {
     /**
      * UnitsEm, the number of glyph space units per em.
      */
-    unsigned int unitsEM;
+    uint32_t unitsEM;
 } ps_font_info;
 
 /**
@@ -2201,7 +2201,7 @@ typedef enum _ps_text_type {
 } ps_text_type;
 
 /**
- * \fn ps_bool ps_get_text_extent(ps_context* ctx, const void* text, unsigned int length, ps_size* rsize)
+ * \fn ps_bool ps_get_text_extent(ps_context* ctx, const void* text, uint32_t length, ps_size* rsize)
  * \brief Get extent for text using current font which selected to graphic context.
  *
  * \param ctx     Pointer to an existing context object.
@@ -2215,7 +2215,7 @@ typedef enum _ps_text_type {
  *
  * \sa ps_glyph_get_extent
  */
-PEXPORT ps_bool PICAPI ps_get_text_extent(ps_context* ctx, const void* text, unsigned int length, ps_size* rsize);
+PEXPORT ps_bool PICAPI ps_get_text_extent(ps_context* ctx, const void* text, uint32_t length, ps_size* rsize);
 
 /**
  * \fn void ps_set_text_color(ps_context* ctx, const ps_color * color)
@@ -2306,7 +2306,7 @@ PEXPORT void PICAPI ps_set_text_antialias(ps_context* ctx, ps_bool antialias);
 PEXPORT void PICAPI ps_set_text_kerning(ps_context* ctx, ps_bool kerning);
 
 /**
- * \fn void ps_text_out_length(ps_context* ctx, float x, float y, const char* text, unsigned int length)
+ * \fn void ps_text_out_length(ps_context* ctx, float x, float y, const char* text, uint32_t length)
  * \brief Draw single byte characters (latin-1) at location in user space.
  *
  * \param ctx     Pointer to an existing context object.
@@ -2318,10 +2318,10 @@ PEXPORT void PICAPI ps_set_text_kerning(ps_context* ctx, ps_bool kerning);
  * \sa ps_wide_text_out_length, ps_draw_text
  */
 PEXPORT void PICAPI ps_text_out_length(ps_context* ctx, float x, float y,
-                                       const char* text, unsigned int length);
+                                       const char* text, uint32_t length);
 
 /**
- * \fn void ps_wide_text_out_length(ps_context* ctx, float x, float y, const ps_uchar16* text, unsigned int length)
+ * \fn void ps_wide_text_out_length(ps_context* ctx, float x, float y, const ps_uchar16* text, uint32_t length)
  * \brief Draw unicode characters (ucs-2) at location in user space.
  *
  * \param ctx     Pointer to an existing context object.
@@ -2333,7 +2333,7 @@ PEXPORT void PICAPI ps_text_out_length(ps_context* ctx, float x, float y,
  * \sa ps_text_out_length, ps_draw_text
  */
 PEXPORT void PICAPI ps_wide_text_out_length(ps_context* ctx, float x, float y,
-                                            const ps_uchar16* text, unsigned int length);
+                                            const ps_uchar16* text, uint32_t length);
 /**
  * \brief Draw mode for rending text.
  */
@@ -2379,7 +2379,7 @@ typedef enum _ps_text_align {
 } ps_text_align;
 
 /**
- * \fn void ps_draw_text(ps_context* ctx, const ps_rect* area, const void* text, unsigned int length,
+ * \fn void ps_draw_text(ps_context* ctx, const ps_rect* area, const void* text, uint32_t length,
  *                                                                         ps_draw_text_type type, ps_text_align align)
  * \brief Draw text in a rectangle area, using font object which is selected in graphic context.
  *
@@ -2393,10 +2393,10 @@ typedef enum _ps_text_align {
  * \sa ps_text_out_length, ps_wide_text_out_length
  */
 PEXPORT void PICAPI ps_draw_text(ps_context* ctx, const ps_rect* area, const void* text,
-                                 unsigned int length, ps_draw_text_type type, ps_text_align align);
+                                 uint32_t length, ps_draw_text_type type, ps_text_align align);
 
 /**
- * \fn ps_bool ps_get_glyph(ps_context* ctx, int ch, ps_glyph* glyph)
+ * \fn ps_bool ps_get_glyph(ps_context* ctx, int32_t ch, ps_glyph* glyph)
  * \brief Get the glyph from a given character, using font object which is selected in graphic context.
  *
  * \param ctx     Pointer to an existing context object.
@@ -2407,10 +2407,10 @@ PEXPORT void PICAPI ps_draw_text(ps_context* ctx, const ps_rect* area, const voi
  *
  * \sa ps_show_glyphs, ps_get_path_from_glyph
  */
-PEXPORT ps_bool PICAPI ps_get_glyph(ps_context* ctx, int ch, ps_glyph* glyph);
+PEXPORT ps_bool PICAPI ps_get_glyph(ps_context* ctx, int32_t ch, ps_glyph* glyph);
 
 /**
- * \fn void ps_show_glyphs(ps_context* ctx, float x, float y, ps_glyph* glyphs, unsigned int length)
+ * \fn void ps_show_glyphs(ps_context* ctx, float x, float y, ps_glyph* glyphs, uint32_t length)
  * \brief Draw an array of glyphs at location in user space.
  *
  * \param ctx     Pointer to an existing context object.
@@ -2422,7 +2422,7 @@ PEXPORT ps_bool PICAPI ps_get_glyph(ps_context* ctx, int ch, ps_glyph* glyph);
  * \sa ps_get_path_from_glyph
  */
 PEXPORT void PICAPI ps_show_glyphs(ps_context* ctx, float x, float y,
-                                   ps_glyph* glyphs, unsigned int length);
+                                   ps_glyph* glyphs, uint32_t length);
 
 /**
  * \fn ps_bool ps_get_path_from_glyph(ps_context* ctx, const ps_glyph* glyph, ps_path* path)
@@ -3319,7 +3319,7 @@ PEXPORT void PICAPI ps_path_clear(ps_path* path);
 PEXPORT ps_bool PICAPI ps_path_is_empty(const ps_path* path);
 
 /**
- * \fn unsigned int ps_path_get_vertex_count(const ps_path* path)
+ * \fn uint32_t ps_path_get_vertex_count(const ps_path* path)
  * \brief Return the count of vertices in the path.
  *
  * \param path  Pointer to an existing path object.
@@ -3331,7 +3331,7 @@ PEXPORT ps_bool PICAPI ps_path_is_empty(const ps_path* path);
  *
  * \sa ps_path_get_vertex, ps_path_bounding_rect, ps_path_contains, ps_path_stroke_contains
  */
-PEXPORT unsigned int PICAPI ps_path_get_vertex_count(const ps_path* path);
+PEXPORT uint32_t PICAPI ps_path_get_vertex_count(const ps_path* path);
 
 /**
  * \brief Path command for vertices.
@@ -3364,7 +3364,7 @@ typedef enum _ps_path_cmd {
 } ps_path_cmd;
 
 /**
- * \fn ps_path_cmd ps_path_get_vertex(const ps_path* path, unsigned int index, ps_point * point)
+ * \fn ps_path_cmd ps_path_get_vertex(const ps_path* path, uint32_t index, ps_point * point)
  * \brief Get a vertex from the path by index, and return the vertex command.
  *
  * \param path   Pointer to an existing path object.
@@ -3379,7 +3379,7 @@ typedef enum _ps_path_cmd {
  * \sa ps_path_get_vertex_count, ps_path_bounding_rect, ps_path_contains, ps_path_stroke_contains
  */
 PEXPORT ps_path_cmd PICAPI ps_path_get_vertex(const ps_path* path,
-                                              unsigned int index, ps_point* point);
+                                              uint32_t index, ps_point* point);
 
 /**
  * \fn ps_bool ps_path_bounding_rect(const ps_path* path, ps_rect* rect)

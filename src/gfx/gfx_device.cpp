@@ -93,7 +93,7 @@ void gfx_device::destroy_raster_adapter(abstract_raster_adapter* d)
 }
 
 abstract_rendering_buffer* gfx_device::create_rendering_buffer(byte* buf,
-                                                               unsigned int width, unsigned int height, int stride)
+                                                               uint32_t width, uint32_t height, int32_t stride)
 {
     return new gfx_rendering_buffer(buf, width, height, stride);
 }
@@ -104,7 +104,7 @@ void gfx_device::destroy_rendering_buffer(abstract_rendering_buffer* b)
 }
 
 abstract_mask_layer* gfx_device::create_mask_layer(byte* buf,
-                                                   unsigned int width, unsigned int height, int stride)
+                                                   uint32_t width, uint32_t height, int32_t stride)
 {
     return new gfx_mask_layer(buf, width, height, stride);
 }

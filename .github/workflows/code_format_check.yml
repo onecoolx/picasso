@@ -1,0 +1,35 @@
+name: Check coding style
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install astyle
+        run: |
+          tar xvjf tools/astyle-3.4.10.tar.bz2
+          cd astyle-3.4.10
+          cmake .
+          make
+          sudo make install
+          astyle -V
+      - name: Formatting code
+        run: bash code_format.sh
+        working-directory: tools
+      - name: Check Code
+        shell: bash
+        run: |
+          set -o pipefail
+          if ! (git diff --exit-code | tee /tmp/_diff.patch); then
+            echo "Please fix the code format before submitting the code, by running 'tools/code_format.sh'"
+            exit 1
+          fi     
+
+

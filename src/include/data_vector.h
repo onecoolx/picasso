@@ -76,13 +76,13 @@ public:
 
     uint32_t size(void) const { return m_size; }
 
-    const T& operator [] (unsigned i) const { return m_array[i]; }
-    T& operator [] (unsigned i) { return m_array[i]; }
+    const T& operator [] (uint32_t i) const { return m_array[i]; }
+    T& operator [] (uint32_t i) { return m_array[i]; }
 
-    const T& at(unsigned i) const { return m_array[i]; }
-    T& at(unsigned i) { return m_array[i]; }
+    const T& at(uint32_t i) const { return m_array[i]; }
+    T& at(uint32_t i) { return m_array[i]; }
 
-    T value_at(unsigned i) const { return m_array[i]; }
+    T value_at(uint32_t i) const { return m_array[i]; }
 
     const T* data() const { return m_array; }
     T* data(void) { return m_array; }
@@ -190,8 +190,10 @@ inline void pod_vector<T>::resize(uint32_t new_size)
     if (new_size > m_size) {
         if (new_size > m_capacity) {
             T* data = pod_allocator<T>::allocate(new_size);
-            mem_copy(data, m_array, m_size * sizeof(T));
-            pod_allocator<T>::deallocate(m_array, m_capacity);
+            if (m_array) {
+                mem_copy(data, m_array, m_size * sizeof(T));
+                pod_allocator<T>::deallocate(m_array, m_capacity);
+            }
             m_capacity = new_size;
             m_array = data;
         }
@@ -505,7 +507,7 @@ class block_allocator
 
 public:
 
-    block_allocator(unsigned block_size, unsigned block_ptr_inc = 256 - 8)
+    block_allocator(uint32_t block_size, uint32_t block_ptr_inc = 256 - 8)
         : m_block_size(block_size)
         , m_block_ptr_inc(block_ptr_inc)
         , m_num_blocks(0)
@@ -747,7 +749,7 @@ void quick_sort(Array& array, LessFunc less)
 // Remove duplicates from a sorted array. It doesn't cut the
 // tail of the array, it just returns the number of remaining elements.
 template <typename Array, typename EqualFunc>
-unsigned remove_duplicates(Array& array, EqualFunc equal)
+uint32_t remove_duplicates(Array& array, EqualFunc equal)
 {
     if (array.size() < 2) {
         return array.size();

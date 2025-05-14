@@ -40,7 +40,7 @@ public:
         , m_inner_join(inner_miter)
         , m_filling_rule(fill_non_zero)
     {
-        for (int i = 0; i < aa_scale; i++) {
+        for (int32_t i = 0; i < aa_scale; i++) {
             m_gamma[i] = i;
         }
     }
@@ -71,19 +71,19 @@ public:
     template <typename GammaFunc>
     void gamma(const GammaFunc& gamma_function)
     {
-        for (int i = 0; i < aa_scale; i++) {
+        for (int32_t i = 0; i < aa_scale; i++) {
             m_gamma[i] = uround(gamma_function(INT_TO_SCALAR(i) / aa_mask) * aa_mask);
         }
     }
 
     const vertex_source* m_source;
     const trans_affine* m_transform;
-    unsigned int m_method;
+    uint32_t m_method;
     bool m_antialias;
     bool m_dashline;
     scalar m_dash_start;
     const scalar* m_dash_data;
-    unsigned int m_dash_num;
+    uint32_t m_dash_num;
     //stroke attributes
     scalar m_line_width;
     scalar m_miter_limit;
@@ -93,7 +93,7 @@ public:
     //fill attributes
     filling_rule m_filling_rule;
     // gamma table
-    int m_gamma[aa_scale];
+    int32_t m_gamma[aa_scale];
 };
 
 gfx_raster_adapter::gfx_raster_adapter()
@@ -136,12 +136,12 @@ trans_affine gfx_raster_adapter::transformation(void) const
     }
 }
 
-void gfx_raster_adapter::set_raster_method(unsigned int m)
+void gfx_raster_adapter::set_raster_method(uint32_t m)
 {
     m_impl->m_method = m;
 }
 
-unsigned int gfx_raster_adapter::raster_method(void) const
+uint32_t gfx_raster_adapter::raster_method(void) const
 {
     return m_impl->m_method;
 }
@@ -153,7 +153,7 @@ void gfx_raster_adapter::reset(void)
     m_fraster.reset();
 }
 
-void gfx_raster_adapter::set_stroke_dashes(scalar start, const scalar* dashes, unsigned int num)
+void gfx_raster_adapter::set_stroke_dashes(scalar start, const scalar* dashes, uint32_t num)
 {
     m_impl->m_dashline = true;
     m_impl->m_dash_start = start;
@@ -161,7 +161,7 @@ void gfx_raster_adapter::set_stroke_dashes(scalar start, const scalar* dashes, u
     m_impl->m_dash_num = num;
 }
 
-void gfx_raster_adapter::set_stroke_attr(int idx, int val)
+void gfx_raster_adapter::set_stroke_attr(int32_t idx, int32_t val)
 {
     switch (idx) {
         case STA_LINE_CAP:
@@ -178,7 +178,7 @@ void gfx_raster_adapter::set_stroke_attr(int idx, int val)
     }
 }
 
-void gfx_raster_adapter::set_stroke_attr_val(int idx, scalar val)
+void gfx_raster_adapter::set_stroke_attr_val(int32_t idx, scalar val)
 {
     switch (idx) {
         case STA_WIDTH:
@@ -192,7 +192,7 @@ void gfx_raster_adapter::set_stroke_attr_val(int idx, scalar val)
     }
 }
 
-void gfx_raster_adapter::set_fill_attr(int idx, int val)
+void gfx_raster_adapter::set_fill_attr(int32_t idx, int32_t val)
 {
     switch (idx) {
         case FIA_FILL_RULE:
@@ -213,7 +213,7 @@ void gfx_raster_adapter::setup_stroke_raster(void)
     if (m_impl->m_dashline) {
         picasso::conv_dash c(*const_cast<vertex_source*>(m_impl->m_source));
 
-        for (unsigned int i = 0; i < m_impl->m_dash_num; i += 2) {
+        for (uint32_t i = 0; i < m_impl->m_dash_num; i += 2) {
             c.add_dash(m_impl->m_dash_data[i], m_impl->m_dash_data[i + 1]);
         }
 
@@ -221,8 +221,11 @@ void gfx_raster_adapter::setup_stroke_raster(void)
 
         picasso::conv_stroke p(c);
 
-        trans_affine adjmtx = stable_matrix(*const_cast<trans_affine*>(m_impl->m_transform));
-        adjmtx *= trans_affine_translation(FLT_TO_SCALAR(0.5f), FLT_TO_SCALAR(0.5f)); //adjust edge
+        bool adjust;
+        trans_affine adjmtx = stable_matrix(*const_cast<trans_affine*>(m_impl->m_transform), &adjust);
+        if (adjust) {
+            adjmtx *= trans_affine_translation(FLT_TO_SCALAR(0.5f), FLT_TO_SCALAR(0.5f)); //adjust edge
+        }
 
         picasso::conv_transform t(p, &adjmtx);
 
@@ -237,8 +240,11 @@ void gfx_raster_adapter::setup_stroke_raster(void)
         picasso::conv_curve c(*const_cast<vertex_source*>(m_impl->m_source));
         picasso::conv_stroke p(c);
 
-        trans_affine adjmtx = stable_matrix(*const_cast<trans_affine*>(m_impl->m_transform));
-        adjmtx *= trans_affine_translation(FLT_TO_SCALAR(0.5f), FLT_TO_SCALAR(0.5f)); //adjust edge
+        bool adjust;
+        trans_affine adjmtx = stable_matrix(*const_cast<trans_affine*>(m_impl->m_transform), &adjust);
+        if (adjust) {
+            adjmtx *= trans_affine_translation(FLT_TO_SCALAR(0.5f), FLT_TO_SCALAR(0.5f)); //adjust edge
+        }
 
         picasso::conv_transform t(p, &adjmtx);
 
@@ -274,7 +280,7 @@ void gfx_raster_adapter::commit(void)
     }
 }
 
-void gfx_raster_adapter::add_shape(const vertex_source& vs, unsigned int id)
+void gfx_raster_adapter::add_shape(const vertex_source& vs, uint32_t id)
 {
     m_impl->m_source = &vs;
 }

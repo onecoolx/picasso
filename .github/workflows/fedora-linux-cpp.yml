@@ -1,0 +1,38 @@
+name: Fedora Linux Build with System Libraries
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Podman
+        run: |
+          sudo apt update
+          sudo apt-get -y install podman
+          podman pull fedora:rawhide
+      - name: Get source
+        uses: actions/checkout@v3
+        with:
+          path: 'picasso'
+      - name: Create container and run tests
+        run: |
+          {
+              echo 'FROM fedora:rawhide'
+              echo 'RUN dnf -y update'
+              echo 'RUN dnf -y install cmake gcc-c++ giflib-devel gtk2-devel'
+              echo 'RUN dnf -y install libjpeg-turbo-devel libwebp-devel'
+              echo 'RUN dnf -y install libpng-devel zlib-ng-compat-devel'
+              echo 'RUN dnf clean all'
+              echo 'COPY picasso picasso'
+              echo 'WORKDIR /picasso'
+              echo 'RUN cmake . -Bbuild2 -DOPT_SYSTEM_GIF="OFF" -DOPT_SYSTEM_JPEG="ON" -DOPT_SYSTEM_PNG="ON" -DOPT_SYSTEM_WEBP="ON" -DOPT_SYSTEM_ZLIB="ON" '
+              echo 'WORKDIR /picasso/build2'
+              echo 'RUN make'
+          } > podmanfile
+          podman build --tag fedora_test -f ./podmanfile

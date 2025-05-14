@@ -34,14 +34,14 @@ public:
     void set_gamma_power(scalar g);
     void set_antialias(bool b);
     void set_transform(const trans_affine& mtx);
-    void set_raster_method(unsigned int methods);
+    void set_raster_method(uint32_t methods);
 
-    void set_stroke_dashes(scalar start, const scalar* dashes, unsigned int num);
-    void set_stroke_attr(int idx, int val);
-    void set_stroke_attr_val(int idx, scalar val);
-    void set_fill_attr(int idx, int val);
+    void set_stroke_dashes(scalar start, const scalar* dashes, uint32_t num);
+    void set_stroke_attr(int32_t idx, int32_t val);
+    void set_stroke_attr_val(int32_t idx, scalar val);
+    void set_fill_attr(int32_t idx, int32_t val);
 
-    void add_shape(const vertex_source& vs, unsigned int id = 0);
+    void add_shape(const vertex_source& vs, uint32_t id = 0);
     void reset(void);
     void commit(void);
 
@@ -52,8 +52,6 @@ public:
 public:
     abstract_raster_adapter* impl(void) const { return m_impl; }
 private:
-    raster_adapter(const raster_adapter& o);
-    raster_adapter& operator = (const raster_adapter& o);
     abstract_raster_adapter* m_impl;
 };
 

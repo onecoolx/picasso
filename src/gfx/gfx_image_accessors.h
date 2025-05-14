@@ -32,13 +32,13 @@ public:
     }
 
 public:
-    const byte* span(int x, int y, unsigned int len)
+    const byte* span(int32_t x, int32_t y, uint32_t len)
     {
         m_x = m_tx = x;
         m_y = y;
 
-        if ((y >= 0) && (y < (int)m_pixf->height()) &&
-            (x >= 0) && ((x + (int)len) <= (int)m_pixf->width())) {
+        if ((y >= 0) && (y < (int32_t)m_pixf->height()) &&
+            (x >= 0) && ((x + (int32_t)len) <= (int32_t)m_pixf->width())) {
             return m_pix_ptr = m_pixf->pix_ptr(x, y);
         }
 
@@ -61,7 +61,7 @@ public:
         ++m_y;
         m_x = m_tx;
 
-        if (m_pix_ptr && (m_y >= 0) && (m_y < (int)m_pixf->height())) {
+        if (m_pix_ptr && (m_y >= 0) && (m_y < (int32_t)m_pixf->height())) {
             return m_pix_ptr = m_pixf->pix_ptr(m_x, m_y);
         }
 
@@ -75,10 +75,10 @@ private:
 
     const byte* pixel(void) const
     {
-        _REGISTER_ int x = m_x;
-        _REGISTER_ int y = m_y;
+        _REGISTER_ int32_t x = m_x;
+        _REGISTER_ int32_t y = m_y;
 
-        if (x < 0 || y < 0 || x >= (int)m_pixf->width() || y >= (int)m_pixf->height()) {
+        if (x < 0 || y < 0 || x >= (int32_t)m_pixf->width() || y >= (int32_t)m_pixf->height()) {
             return m_pixf->pix_zero();
         }
 
@@ -86,9 +86,9 @@ private:
     }
 
 private:
-    int m_x;
-    int m_y;
-    int m_tx;
+    int32_t m_x;
+    int32_t m_y;
+    int32_t m_tx;
     const PixFmt* m_pixf;
     const byte* m_pix_ptr;
 };
@@ -116,7 +116,7 @@ public:
     }
 
 public:
-    const byte* span(int x, int y, unsigned int)
+    const byte* span(int32_t x, int32_t y, uint32_t)
     {
         m_x = x;
         m_row_ptr = m_pixf->row_ptr(m_wrap_y(y));
@@ -125,7 +125,7 @@ public:
 
     const byte* next_x(void)
     {
-        int x = ++m_wrap_x;
+        int32_t x = ++m_wrap_x;
         return m_row_ptr + x * pix_width;
     }
 
@@ -141,7 +141,7 @@ private:
 private:
     const PixFmt* m_pixf;
     const byte* m_row_ptr;
-    int m_x;
+    int32_t m_x;
     WrapX m_wrap_x;
     WrapY m_wrap_y;
 };
@@ -150,19 +150,19 @@ private:
 class wrap_mode_repeat
 {
 public:
-    wrap_mode_repeat(unsigned int size)
+    wrap_mode_repeat(uint32_t size)
         : m_size(size)
         , m_add(size * (0x3FFFFFFF / size))
         , m_value(0)
     {
     }
 
-    unsigned int operator()(int v)
+    uint32_t operator()(int32_t v)
     {
-        return m_value = ((unsigned int)v + m_add) % m_size;
+        return m_value = ((uint32_t)v + m_add) % m_size;
     }
 
-    unsigned int operator++()
+    uint32_t operator++()
     {
         ++m_value;
         if (m_value >= m_size) {
@@ -171,16 +171,16 @@ public:
         return m_value;
     }
 private:
-    unsigned int m_size;
-    unsigned int m_add;
-    unsigned int m_value;
+    uint32_t m_size;
+    uint32_t m_add;
+    uint32_t m_value;
 };
 
 // wrap_mode_reflect
 class wrap_mode_reflect
 {
 public:
-    wrap_mode_reflect(unsigned int size)
+    wrap_mode_reflect(uint32_t size)
         : m_size(size)
         , m_size2(size << 1)
         , m_add(m_size2 * (0x3FFFFFFF / m_size2))
@@ -188,16 +188,16 @@ public:
     {
     }
 
-    unsigned int operator()(int v)
+    uint32_t operator()(int32_t v)
     {
-        m_value = ((unsigned int)v + m_add) % m_size2;
+        m_value = ((uint32_t)v + m_add) % m_size2;
         if (m_value >= m_size) {
             return m_size2 - m_value - 1;
         }
         return m_value;
     }
 
-    unsigned int operator++()
+    uint32_t operator++()
     {
         ++m_value;
         if (m_value >= m_size2) {
@@ -209,10 +209,10 @@ public:
         return m_value;
     }
 private:
-    unsigned int m_size;
-    unsigned int m_size2;
-    unsigned int m_add;
-    unsigned int m_value;
+    uint32_t m_size;
+    uint32_t m_size2;
+    uint32_t m_add;
+    uint32_t m_value;
 };
 
 }

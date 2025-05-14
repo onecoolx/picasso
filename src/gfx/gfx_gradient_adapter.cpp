@@ -6,7 +6,6 @@
 
 #include "common.h"
 
-#include "gfx_math.h"
 #include "gfx_gradient_adapter.h"
 #include "gfx_line_generator.h"
 
@@ -19,7 +18,7 @@ class gradient_x
 {
 public:
     void init(scalar, scalar, scalar) { }
-    static int calculate(int x, int, int) { return x; }
+    static int32_t calculate(int32_t x, int, int) { return x; }
 };
 
 // gradient_conic
@@ -27,7 +26,7 @@ class gradient_conic
 {
 public:
     void init(scalar, scalar, scalar) { }
-    static int calculate(int x, int y, int d)
+    static int32_t calculate(int32_t x, int32_t y, int32_t d)
     {
         return uround(Fabs(Atan2(INT_TO_SCALAR(y), INT_TO_SCALAR(x))) * INT_TO_SCALAR(d) * _1divPI);
     }
@@ -37,7 +36,7 @@ class gradient_conic_vg
 {
 public:
     void init(scalar, scalar, scalar) { }
-    static int calculate(int x, int y, int d)
+    static int32_t calculate(int32_t x, int32_t y, int32_t d)
     {
         scalar a = Atan2(INT_TO_SCALAR(y), INT_TO_SCALAR(x));
         if (a < 0) { a = _2PI + a; }
@@ -50,9 +49,9 @@ class gradient_radial
 {
 public:
     void init(scalar, scalar, scalar) { }
-    static int calculate(int x, int y, int d)
+    static int32_t calculate(int32_t x, int32_t y, int32_t d)
     {
-        return (int)fast_sqrt(x * x + y * y);
+        return (int32_t)SqrtD(x * x + y * y);
     }
 };
 
@@ -76,7 +75,7 @@ public:
         update_values();
     }
 
-    int calculate(int x, int y, int) const
+    int32_t calculate(int32_t x, int32_t y, int) const
     {
         scalar dx = INT_TO_SCALAR(x - m_fx);
         scalar dy = INT_TO_SCALAR(y - m_fy);
@@ -123,9 +122,9 @@ private:
     }
 
 private:
-    int m_r;
-    int m_fx;
-    int m_fy;
+    int32_t m_r;
+    int32_t m_fx;
+    int32_t m_fy;
     scalar m_r2;
     scalar m_fx2;
     scalar m_fy2;
@@ -144,9 +143,9 @@ public:
     {
     }
 
-    int calculate(int x, int y, int d) const
+    int32_t calculate(int32_t x, int32_t y, int32_t d) const
     {
-        int ret = m_gradient->calculate(x, y, d);
+        int32_t ret = m_gradient->calculate(x, y, d);
         if (ret < 0) { ret = 0; }
         if (ret > d) { ret = d; }
         return ret;
@@ -166,9 +165,9 @@ public:
     {
     }
 
-    int calculate(int x, int y, int d) const
+    int32_t calculate(int32_t x, int32_t y, int32_t d) const
     {
-        int ret = m_gradient->calculate(x, y, d) % d;
+        int32_t ret = m_gradient->calculate(x, y, d) % d;
         if (ret < 0) { ret += d; }
         return ret;
     }
@@ -187,10 +186,10 @@ public:
     {
     }
 
-    int calculate(int x, int y, int d) const
+    int32_t calculate(int32_t x, int32_t y, int32_t d) const
     {
-        int d2 = d << 1;
-        int ret = m_gradient->calculate(x, y, d) % d2;
+        int32_t d2 = d << 1;
+        int32_t ret = m_gradient->calculate(x, y, d) % d2;
         if (ret < 0) { ret += d2; }
         if (ret >= d) { ret = d2 - ret; }
         return ret;
@@ -216,7 +215,7 @@ public:
         m_gradient.init(r, x, y);
     }
 
-    virtual int calculate(int x, int y, int d) const
+    virtual int32_t calculate(int32_t x, int32_t y, int32_t d) const
     {
         return m_adaptor.calculate(x, y, d);
     }
@@ -233,7 +232,7 @@ struct color_interpolator {
 public:
     typedef rgba8 color_type;
 
-    color_interpolator(const color_type& c1, const color_type& c2, unsigned len)
+    color_interpolator(const color_type& c1, const color_type& c2, uint32_t len)
         : r(c1.r, c2.r, len)
         , g(c1.g, c2.g, len)
         , b(c1.b, c2.b, len)
@@ -267,9 +266,9 @@ void gfx_gradient_table::build_table(void)
     m_color_profile.cut_at(remove_duplicates(m_color_profile, offset_equal));
 
     if (m_color_profile.size() >= 2) {
-        unsigned int i;
-        unsigned int start = uround(m_color_profile[0].offset * color_table_size);
-        unsigned int end = 0;
+        uint32_t i;
+        uint32_t start = uround(m_color_profile[0].offset * color_table_size);
+        uint32_t end = 0;
         color_type c = m_color_profile[0].color;
 
         for (i = 0; i < start; i++) {
@@ -296,7 +295,7 @@ void gfx_gradient_table::build_table(void)
 }
 
 // gfx gradient adapter
-void gfx_gradient_adapter::init_linear(int spread, scalar x1, scalar y1, scalar x2, scalar y2)
+void gfx_gradient_adapter::init_linear(int32_t spread, scalar x1, scalar y1, scalar x2, scalar y2)
 {
     if (!m_wrapper) {
         switch (spread) {
@@ -336,7 +335,7 @@ void gfx_gradient_adapter::init_linear(int spread, scalar x1, scalar y1, scalar 
     }
 }
 
-void gfx_gradient_adapter::init_radial(int spread, scalar x1, scalar y1, scalar radius1,
+void gfx_gradient_adapter::init_radial(int32_t spread, scalar x1, scalar y1, scalar radius1,
                                        scalar x2, scalar y2, scalar radius2)
 {
     if (!m_wrapper) {
@@ -396,7 +395,7 @@ void gfx_gradient_adapter::init_radial(int spread, scalar x1, scalar y1, scalar 
     }
 }
 
-void gfx_gradient_adapter::init_conic(int spread, scalar x, scalar y, scalar angle)
+void gfx_gradient_adapter::init_conic(int32_t spread, scalar x, scalar y, scalar angle)
 {
     if (!m_wrapper) {
         if (spread == SPREAD_REFLECT) {

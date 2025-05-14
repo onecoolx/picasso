@@ -21,10 +21,10 @@ static inline void swap_cells(T* a, T* b)
     *b = temp;
 }
 
-const int qsort_threshold = 9;
+const int32_t qsort_threshold = 9;
 
 template <typename Cell>
-void qsort_cells(Cell** start, unsigned int num)
+void qsort_cells(Cell** start, uint32_t num)
 {
     Cell** stack[80];
     Cell*** top;
@@ -36,7 +36,7 @@ void qsort_cells(Cell** start, unsigned int num)
     top = stack;
 
     for (;;) {
-        int len = (int)(limit - base);
+        int32_t len = (int32_t)(limit - base);
 
         Cell** i;
         Cell** j;
@@ -64,7 +64,7 @@ void qsort_cells(Cell** start, unsigned int num)
             }
 
             for (;;) {
-                int x = (*base)->x;
+                int32_t x = (*base)->x;
                 do { i++; }
                 while ( (*i)->x < x );
                 do { j--; }
@@ -137,8 +137,8 @@ public:
     };
 
     struct sorted_y {
-        unsigned int start;
-        unsigned int num;
+        uint32_t start;
+        uint32_t num;
     };
 
     gfx_rasterizer_cells_aa()
@@ -190,27 +190,27 @@ public:
         m_style_cell.style(style_cell);
     }
 
-    void line(int x1, int y1, int x2, int y2)
+    void line(int32_t x1, int32_t y1, int32_t x2, int32_t y2)
     {
-        int dx = x2 - x1;
+        int32_t dx = x2 - x1;
 
         if (dx >= dx_limit || dx <= -dx_limit) {
-            int cx = (x1 + x2) >> 1;
-            int cy = (y1 + y2) >> 1;
+            int32_t cx = (x1 + x2) >> 1;
+            int32_t cy = (y1 + y2) >> 1;
             line(x1, y1, cx, cy);
             line(cx, cy, x2, y2);
         }
 
-        int dy = y2 - y1;
-        int ex1 = x1 >> poly_subpixel_shift;
-        int ex2 = x2 >> poly_subpixel_shift;
-        int ey1 = y1 >> poly_subpixel_shift;
-        int ey2 = y2 >> poly_subpixel_shift;
-        int fy1 = y1 & poly_subpixel_mask;
-        int fy2 = y2 & poly_subpixel_mask;
+        int32_t dy = y2 - y1;
+        int32_t ex1 = x1 >> poly_subpixel_shift;
+        int32_t ex2 = x2 >> poly_subpixel_shift;
+        int32_t ey1 = y1 >> poly_subpixel_shift;
+        int32_t ey2 = y2 >> poly_subpixel_shift;
+        int32_t fy1 = y1 & poly_subpixel_mask;
+        int32_t fy2 = y2 & poly_subpixel_mask;
 
-        int x_from, x_to;
-        int p, rem, mod, lift, delta, first, incr;
+        int32_t x_from, x_to;
+        int32_t p, rem, mod, lift, delta, first, incr;
 
         if (ex1 < m_min_x) { m_min_x = ex1; }
         if (ex1 > m_max_x) { m_max_x = ex1; }
@@ -235,9 +235,9 @@ public:
         //cell, so, we don't have to call render_hline().
         incr = 1;
         if (dx == 0) {
-            int ex = x1 >> poly_subpixel_shift;
-            int two_fx = (int32_t)((uint32_t)(x1 - (int32_t)((uint32_t)ex << poly_subpixel_shift)) << 1);
-            int area;
+            int32_t ex = x1 >> poly_subpixel_shift;
+            int32_t two_fx = (int32_t)((uint32_t)(x1 - (int32_t)((uint32_t)ex << poly_subpixel_shift)) << 1);
+            int32_t area;
 
             first = poly_subpixel_scale;
             if (dy < 0) {
@@ -323,10 +323,10 @@ public:
         render_hline(ey1, x_from, poly_subpixel_scale - first, x2, fy2);
     }
 
-    int min_x(void) const { return m_min_x; }
-    int min_y(void) const { return m_min_y; }
-    int max_x(void) const { return m_max_x; }
-    int max_y(void) const { return m_max_y; }
+    int32_t min_x(void) const { return m_min_x; }
+    int32_t min_y(void) const { return m_min_y; }
+    int32_t max_x(void) const { return m_max_x; }
+    int32_t max_y(void) const { return m_max_y; }
 
     void sort_cells(void)
     {
@@ -354,8 +354,8 @@ public:
         // Create the Y-histogram (count the numbers of cells for each Y)
         cell_type** block_ptr = m_cells;
         cell_type* cell_ptr;
-        unsigned int nb = m_num_cells >> cell_block_shift;
-        unsigned int i;
+        uint32_t nb = m_num_cells >> cell_block_shift;
+        uint32_t i;
         while (nb--) {
             cell_ptr = *block_ptr++;
             i = cell_block_size;
@@ -373,9 +373,9 @@ public:
         }
 
         // Convert the Y-histogram into the array of starting indexes
-        unsigned int start = 0;
+        uint32_t start = 0;
         for (i = 0; i < m_sorted_y.size(); i++) {
-            unsigned int v = m_sorted_y[i].start;
+            uint32_t v = m_sorted_y[i].start;
             m_sorted_y[i].start = start;
             start += v;
         }
@@ -413,17 +413,17 @@ public:
         m_sorted = true;
     }
 
-    unsigned int total_cells(void) const
+    uint32_t total_cells(void) const
     {
         return m_num_cells;
     }
 
-    unsigned int scanline_num_cells(unsigned int y) const
+    uint32_t scanline_num_cells(uint32_t y) const
     {
         return m_sorted_y[y - m_min_y].num;
     }
 
-    const cell_type* const* scanline_cells(unsigned int y) const
+    const cell_type* const* scanline_cells(uint32_t y) const
     {
         return m_sorted_cells.data() + m_sorted_y[y - m_min_y].start;
     }
@@ -431,7 +431,7 @@ public:
     bool sorted(void) const { return m_sorted; }
 
 private:
-    void set_curr_cell(int x, int y)
+    void set_curr_cell(int32_t x, int32_t y)
     {
         if (m_curr_cell.not_equal(x, y, m_style_cell)) {
             add_curr_cell();
@@ -457,15 +457,15 @@ private:
         }
     }
 
-    void render_hline(int ey, int x1, int y1, int x2, int y2)
+    void render_hline(int32_t ey, int32_t x1, int32_t y1, int32_t x2, int32_t y2)
     {
-        int ex1 = x1 >> poly_subpixel_shift;
-        int ex2 = x2 >> poly_subpixel_shift;
-        int fx1 = x1 & poly_subpixel_mask;
-        int fx2 = x2 & poly_subpixel_mask;
+        int32_t ex1 = x1 >> poly_subpixel_shift;
+        int32_t ex2 = x2 >> poly_subpixel_shift;
+        int32_t fx1 = x1 & poly_subpixel_mask;
+        int32_t fx2 = x2 & poly_subpixel_mask;
 
-        int delta, p, first, dx;
-        int incr, lift, mod, rem;
+        int32_t delta, p, first, dx;
+        int32_t incr, lift, mod, rem;
 
         // trivial case. Happens often
         if (y1 == y2) {
@@ -566,20 +566,20 @@ private:
     gfx_rasterizer_cells_aa(const gfx_rasterizer_cells_aa<Cell>&);
     const gfx_rasterizer_cells_aa<Cell>& operator = (const gfx_rasterizer_cells_aa<Cell>&);
 
-    unsigned int m_num_blocks;
-    unsigned int m_max_blocks;
-    unsigned int m_curr_block;
-    unsigned int m_num_cells;
+    uint32_t m_num_blocks;
+    uint32_t m_max_blocks;
+    uint32_t m_curr_block;
+    uint32_t m_num_cells;
     cell_type** m_cells;
     cell_type* m_curr_cell_ptr;
     pod_vector<cell_type*> m_sorted_cells;
     pod_vector<sorted_y> m_sorted_y;
     cell_type m_curr_cell;
     cell_type m_style_cell;
-    int m_min_x;
-    int m_min_y;
-    int m_max_x;
-    int m_max_y;
+    int32_t m_min_x;
+    int32_t m_min_y;
+    int32_t m_max_x;
+    int32_t m_max_y;
     bool m_sorted;
 };
 

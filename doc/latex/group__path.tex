@@ -59,9 +59,9 @@ P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+path\+\_\+clear} (\textbf
 \begin{DoxyCompactList}\small\item\em Clear the path to empty. \end{DoxyCompactList}\item 
 P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+bool} P\+I\+C\+A\+PI \textbf{ ps\+\_\+path\+\_\+is\+\_\+empty} (const \textbf{ ps\+\_\+path} $\ast$path)
 \begin{DoxyCompactList}\small\item\em Checks whether the path is empty. \end{DoxyCompactList}\item 
-P\+E\+X\+P\+O\+RT unsigned int P\+I\+C\+A\+PI \textbf{ ps\+\_\+path\+\_\+get\+\_\+vertex\+\_\+count} (const \textbf{ ps\+\_\+path} $\ast$path)
+P\+E\+X\+P\+O\+RT uint32\+\_\+t P\+I\+C\+A\+PI \textbf{ ps\+\_\+path\+\_\+get\+\_\+vertex\+\_\+count} (const \textbf{ ps\+\_\+path} $\ast$path)
 \begin{DoxyCompactList}\small\item\em Return the count of vertices in the path. \end{DoxyCompactList}\item 
-P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+path\+\_\+cmd} P\+I\+C\+A\+PI \textbf{ ps\+\_\+path\+\_\+get\+\_\+vertex} (const \textbf{ ps\+\_\+path} $\ast$path, unsigned int index, \textbf{ ps\+\_\+point} $\ast$point)
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+path\+\_\+cmd} P\+I\+C\+A\+PI \textbf{ ps\+\_\+path\+\_\+get\+\_\+vertex} (const \textbf{ ps\+\_\+path} $\ast$path, uint32\+\_\+t index, \textbf{ ps\+\_\+point} $\ast$point)
 \begin{DoxyCompactList}\small\item\em Get a vertex from the path by index, and return the vertex command. \end{DoxyCompactList}\item 
 P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+bool} P\+I\+C\+A\+PI \textbf{ ps\+\_\+path\+\_\+bounding\+\_\+rect} (const \textbf{ ps\+\_\+path} $\ast$path, \textbf{ ps\+\_\+rect} $\ast$rect)
 \begin{DoxyCompactList}\small\item\em Get the bounding rectangle of the path. \end{DoxyCompactList}\item 
@@ -127,7 +127,7 @@ P\+A\+T\+H\+\_\+\+C\+M\+D\+\_\+\+E\+N\+D\+\_\+\+P\+O\+LY&End polyline command. \
 \end{DoxyEnumFields}
 
 
-Definition at line 3301 of file picasso.\+h.
+Definition at line 3339 of file picasso.\+h.
 
 \mbox{\label{group__path_gae6007109d33fd12e3900ac6da459bf88}} 
 \index{Path@{Path}!\_ps\_path\_op@{\_ps\_path\_op}}
@@ -159,7 +159,7 @@ P\+A\+T\+H\+\_\+\+O\+P\+\_\+\+D\+I\+FF&Difference. \\
 \end{DoxyEnumFields}
 
 
-Definition at line 3477 of file picasso.\+h.
+Definition at line 3515 of file picasso.\+h.
 
 
 
@@ -388,7 +388,7 @@ True if is success, otherwise False.
 To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
 \end{DoxyNote}
 \begin{DoxySeeAlso}{See also}
-\doxyref{ps\+\_\+path\+\_\+get\+\_\+vertex\+\_\+count}{p.}{group__path_ga5f38d7b21720e6ce0d233eccf352d8e0}, \doxyref{ps\+\_\+path\+\_\+get\+\_\+vertex}{p.}{group__path_ga420531dae755417305bb4092659bab53}, \doxyref{ps\+\_\+path\+\_\+contains}{p.}{group__path_gaf026a4a1760f350873c1a8a9e3a7e8f2}, \doxyref{ps\+\_\+path\+\_\+stroke\+\_\+contains}{p.}{group__path_gaca11c82acc68f1a5cdf886727b3f50d9} 
+\doxyref{ps\+\_\+path\+\_\+get\+\_\+vertex\+\_\+count}{p.}{group__path_gad4745ab3175875d49036babe2452754c}, \doxyref{ps\+\_\+path\+\_\+get\+\_\+vertex}{p.}{group__path_ga91a1461900dd9e0f0c1dc03885f999f2}, \doxyref{ps\+\_\+path\+\_\+contains}{p.}{group__path_gaf026a4a1760f350873c1a8a9e3a7e8f2}, \doxyref{ps\+\_\+path\+\_\+stroke\+\_\+contains}{p.}{group__path_gaca11c82acc68f1a5cdf886727b3f50d9} 
 \end{DoxySeeAlso}
 \mbox{\label{group__path_ga2966ad40d07c9f5f52f2dc6516107115}} 
 \index{Path@{Path}!ps\_path\_clear@{ps\_path\_clear}}
@@ -430,7 +430,7 @@ Clipping two path with the operation and get the result path.
 \hline
 \end{DoxyParams}
 \begin{DoxySeeAlso}{See also}
-\doxyref{ps\+\_\+path\+\_\+get\+\_\+vertex}{p.}{group__path_ga420531dae755417305bb4092659bab53}, \doxyref{ps\+\_\+path\+\_\+get\+\_\+vertex\+\_\+count}{p.}{group__path_ga5f38d7b21720e6ce0d233eccf352d8e0} 
+\doxyref{ps\+\_\+path\+\_\+get\+\_\+vertex}{p.}{group__path_ga91a1461900dd9e0f0c1dc03885f999f2}, \doxyref{ps\+\_\+path\+\_\+get\+\_\+vertex\+\_\+count}{p.}{group__path_gad4745ab3175875d49036babe2452754c} 
 \end{DoxySeeAlso}
 \mbox{\label{group__path_gaf026a4a1760f350873c1a8a9e3a7e8f2}} 
 \index{Path@{Path}!ps\_path\_contains@{ps\_path\_contains}}
@@ -455,7 +455,7 @@ Check whether a point is contained in the path by fill method.
 True if the point is contained, otherwise False.
 \end{DoxyReturn}
 \begin{DoxySeeAlso}{See also}
-\doxyref{ps\+\_\+path\+\_\+get\+\_\+vertex\+\_\+count}{p.}{group__path_ga5f38d7b21720e6ce0d233eccf352d8e0}, \doxyref{ps\+\_\+path\+\_\+get\+\_\+vertex}{p.}{group__path_ga420531dae755417305bb4092659bab53}, \doxyref{ps\+\_\+path\+\_\+bounding\+\_\+rect}{p.}{group__path_gad73761a49225721353dbf33ddac8f09b}, \doxyref{ps\+\_\+path\+\_\+stroke\+\_\+contains}{p.}{group__path_gaca11c82acc68f1a5cdf886727b3f50d9} 
+\doxyref{ps\+\_\+path\+\_\+get\+\_\+vertex\+\_\+count}{p.}{group__path_gad4745ab3175875d49036babe2452754c}, \doxyref{ps\+\_\+path\+\_\+get\+\_\+vertex}{p.}{group__path_ga91a1461900dd9e0f0c1dc03885f999f2}, \doxyref{ps\+\_\+path\+\_\+bounding\+\_\+rect}{p.}{group__path_gad73761a49225721353dbf33ddac8f09b}, \doxyref{ps\+\_\+path\+\_\+stroke\+\_\+contains}{p.}{group__path_gaca11c82acc68f1a5cdf886727b3f50d9} 
 \end{DoxySeeAlso}
 \mbox{\label{group__path_ga1f455e0614bbd5c99aa5bdb9b57b53cc}} 
 \index{Path@{Path}!ps\_path\_create@{ps\_path\_create}}
@@ -524,11 +524,11 @@ To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
 \begin{DoxySeeAlso}{See also}
 \doxyref{ps\+\_\+path\+\_\+sub\+\_\+close}{p.}{group__path_gac19ea77b0228e57be93ebc43e7ed2fad}, \doxyref{ps\+\_\+path\+\_\+clear}{p.}{group__path_ga2966ad40d07c9f5f52f2dc6516107115}, \doxyref{ps\+\_\+path\+\_\+is\+\_\+empty}{p.}{group__path_ga0640542247094b43cdde639ded93e85e} 
 \end{DoxySeeAlso}
-\mbox{\label{group__path_ga420531dae755417305bb4092659bab53}} 
+\mbox{\label{group__path_ga91a1461900dd9e0f0c1dc03885f999f2}} 
 \index{Path@{Path}!ps\_path\_get\_vertex@{ps\_path\_get\_vertex}}
 \index{ps\_path\_get\_vertex@{ps\_path\_get\_vertex}!Path@{Path}}
 \doxysubsubsection{ps\_path\_get\_vertex()}
-{\footnotesize\ttfamily \textbf{ ps\+\_\+path\+\_\+cmd} ps\+\_\+path\+\_\+get\+\_\+vertex (\begin{DoxyParamCaption}\item[{const \textbf{ ps\+\_\+path} $\ast$}]{path,  }\item[{unsigned int}]{index,  }\item[{\textbf{ ps\+\_\+point} $\ast$}]{point }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+path\+\_\+cmd} ps\+\_\+path\+\_\+get\+\_\+vertex (\begin{DoxyParamCaption}\item[{const \textbf{ ps\+\_\+path} $\ast$}]{path,  }\item[{uint32\+\_\+t}]{index,  }\item[{\textbf{ ps\+\_\+point} $\ast$}]{point }\end{DoxyParamCaption})}
 
 
 
@@ -550,13 +550,13 @@ If the function succeeds, the return value is the command of the vertex. If the 
 To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
 \end{DoxyNote}
 \begin{DoxySeeAlso}{See also}
-\doxyref{ps\+\_\+path\+\_\+get\+\_\+vertex\+\_\+count}{p.}{group__path_ga5f38d7b21720e6ce0d233eccf352d8e0}, \doxyref{ps\+\_\+path\+\_\+bounding\+\_\+rect}{p.}{group__path_gad73761a49225721353dbf33ddac8f09b}, \doxyref{ps\+\_\+path\+\_\+contains}{p.}{group__path_gaf026a4a1760f350873c1a8a9e3a7e8f2}, \doxyref{ps\+\_\+path\+\_\+stroke\+\_\+contains}{p.}{group__path_gaca11c82acc68f1a5cdf886727b3f50d9} 
+\doxyref{ps\+\_\+path\+\_\+get\+\_\+vertex\+\_\+count}{p.}{group__path_gad4745ab3175875d49036babe2452754c}, \doxyref{ps\+\_\+path\+\_\+bounding\+\_\+rect}{p.}{group__path_gad73761a49225721353dbf33ddac8f09b}, \doxyref{ps\+\_\+path\+\_\+contains}{p.}{group__path_gaf026a4a1760f350873c1a8a9e3a7e8f2}, \doxyref{ps\+\_\+path\+\_\+stroke\+\_\+contains}{p.}{group__path_gaca11c82acc68f1a5cdf886727b3f50d9} 
 \end{DoxySeeAlso}
-\mbox{\label{group__path_ga5f38d7b21720e6ce0d233eccf352d8e0}} 
+\mbox{\label{group__path_gad4745ab3175875d49036babe2452754c}} 
 \index{Path@{Path}!ps\_path\_get\_vertex\_count@{ps\_path\_get\_vertex\_count}}
 \index{ps\_path\_get\_vertex\_count@{ps\_path\_get\_vertex\_count}!Path@{Path}}
 \doxysubsubsection{ps\_path\_get\_vertex\_count()}
-{\footnotesize\ttfamily unsigned int ps\+\_\+path\+\_\+get\+\_\+vertex\+\_\+count (\begin{DoxyParamCaption}\item[{const \textbf{ ps\+\_\+path} $\ast$}]{path }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily uint32\+\_\+t ps\+\_\+path\+\_\+get\+\_\+vertex\+\_\+count (\begin{DoxyParamCaption}\item[{const \textbf{ ps\+\_\+path} $\ast$}]{path }\end{DoxyParamCaption})}
 
 
 
@@ -574,7 +574,7 @@ If the function succeeds, the return value is the vertices count in the path obj
 To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
 \end{DoxyNote}
 \begin{DoxySeeAlso}{See also}
-\doxyref{ps\+\_\+path\+\_\+get\+\_\+vertex}{p.}{group__path_ga420531dae755417305bb4092659bab53}, \doxyref{ps\+\_\+path\+\_\+bounding\+\_\+rect}{p.}{group__path_gad73761a49225721353dbf33ddac8f09b}, \doxyref{ps\+\_\+path\+\_\+contains}{p.}{group__path_gaf026a4a1760f350873c1a8a9e3a7e8f2}, \doxyref{ps\+\_\+path\+\_\+stroke\+\_\+contains}{p.}{group__path_gaca11c82acc68f1a5cdf886727b3f50d9} 
+\doxyref{ps\+\_\+path\+\_\+get\+\_\+vertex}{p.}{group__path_ga91a1461900dd9e0f0c1dc03885f999f2}, \doxyref{ps\+\_\+path\+\_\+bounding\+\_\+rect}{p.}{group__path_gad73761a49225721353dbf33ddac8f09b}, \doxyref{ps\+\_\+path\+\_\+contains}{p.}{group__path_gaf026a4a1760f350873c1a8a9e3a7e8f2}, \doxyref{ps\+\_\+path\+\_\+stroke\+\_\+contains}{p.}{group__path_gaca11c82acc68f1a5cdf886727b3f50d9} 
 \end{DoxySeeAlso}
 \mbox{\label{group__path_ga0640542247094b43cdde639ded93e85e}} 
 \index{Path@{Path}!ps\_path\_is\_empty@{ps\_path\_is\_empty}}
@@ -703,7 +703,7 @@ Check whether a point is contained in the path by stroke method.
 True if the point is contained, otherwise False.
 \end{DoxyReturn}
 \begin{DoxySeeAlso}{See also}
-\doxyref{ps\+\_\+path\+\_\+get\+\_\+vertex\+\_\+count}{p.}{group__path_ga5f38d7b21720e6ce0d233eccf352d8e0}, \doxyref{ps\+\_\+path\+\_\+get\+\_\+vertex}{p.}{group__path_ga420531dae755417305bb4092659bab53}, \doxyref{ps\+\_\+path\+\_\+bounding\+\_\+rect}{p.}{group__path_gad73761a49225721353dbf33ddac8f09b}, \doxyref{ps\+\_\+path\+\_\+contains}{p.}{group__path_gaf026a4a1760f350873c1a8a9e3a7e8f2} 
+\doxyref{ps\+\_\+path\+\_\+get\+\_\+vertex\+\_\+count}{p.}{group__path_gad4745ab3175875d49036babe2452754c}, \doxyref{ps\+\_\+path\+\_\+get\+\_\+vertex}{p.}{group__path_ga91a1461900dd9e0f0c1dc03885f999f2}, \doxyref{ps\+\_\+path\+\_\+bounding\+\_\+rect}{p.}{group__path_gad73761a49225721353dbf33ddac8f09b}, \doxyref{ps\+\_\+path\+\_\+contains}{p.}{group__path_gaf026a4a1760f350873c1a8a9e3a7e8f2} 
 \end{DoxySeeAlso}
 \mbox{\label{group__path_gac19ea77b0228e57be93ebc43e7ed2fad}} 
 \index{Path@{Path}!ps\_path\_sub\_close@{ps\_path\_sub\_close}}

@@ -37,7 +37,7 @@ enum \textbf{ \+\_\+ps\+\_\+text\+\_\+align} \{ \newline
 \doxysubsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
-P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+bool} P\+I\+C\+A\+PI \textbf{ ps\+\_\+get\+\_\+text\+\_\+extent} (\textbf{ ps\+\_\+context} $\ast$ctx, const void $\ast$text, unsigned int length, \textbf{ ps\+\_\+size} $\ast$rsize)
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+bool} P\+I\+C\+A\+PI \textbf{ ps\+\_\+get\+\_\+text\+\_\+extent} (\textbf{ ps\+\_\+context} $\ast$ctx, const void $\ast$text, uint32\+\_\+t length, \textbf{ ps\+\_\+size} $\ast$rsize)
 \begin{DoxyCompactList}\small\item\em Get extent for text using current font which selected to graphic context. \end{DoxyCompactList}\item 
 P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+set\+\_\+text\+\_\+color} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+color} $\ast$color)
 \begin{DoxyCompactList}\small\item\em Set the text fill color for the graphic context. \end{DoxyCompactList}\item 
@@ -53,15 +53,15 @@ P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+set\+\_\+text\+\_\+antial
 \begin{DoxyCompactList}\small\item\em Set whether the font allowed be anti-\/aliasing. \end{DoxyCompactList}\item 
 P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+set\+\_\+text\+\_\+kerning} (\textbf{ ps\+\_\+context} $\ast$ctx, \textbf{ ps\+\_\+bool} kerning)
 \begin{DoxyCompactList}\small\item\em Set whether the font auto kerning is allowed. \end{DoxyCompactList}\item 
-P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+text\+\_\+out\+\_\+length} (\textbf{ ps\+\_\+context} $\ast$ctx, float x, float y, const char $\ast$text, unsigned int length)
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+text\+\_\+out\+\_\+length} (\textbf{ ps\+\_\+context} $\ast$ctx, float x, float y, const char $\ast$text, uint32\+\_\+t length)
 \begin{DoxyCompactList}\small\item\em Draw single byte characters (latin-\/1) at location in user space. \end{DoxyCompactList}\item 
-P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+wide\+\_\+text\+\_\+out\+\_\+length} (\textbf{ ps\+\_\+context} $\ast$ctx, float x, float y, const \textbf{ ps\+\_\+uchar16} $\ast$text, unsigned int length)
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+wide\+\_\+text\+\_\+out\+\_\+length} (\textbf{ ps\+\_\+context} $\ast$ctx, float x, float y, const \textbf{ ps\+\_\+uchar16} $\ast$text, uint32\+\_\+t length)
 \begin{DoxyCompactList}\small\item\em Draw unicode characters (ucs-\/2) at location in user space. \end{DoxyCompactList}\item 
-P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+draw\+\_\+text} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+rect} $\ast$area, const void $\ast$text, unsigned int length, \textbf{ ps\+\_\+draw\+\_\+text\+\_\+type} type, \textbf{ ps\+\_\+text\+\_\+align} align)
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+draw\+\_\+text} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+rect} $\ast$area, const void $\ast$text, uint32\+\_\+t length, \textbf{ ps\+\_\+draw\+\_\+text\+\_\+type} type, \textbf{ ps\+\_\+text\+\_\+align} align)
 \begin{DoxyCompactList}\small\item\em Draw text in a rectangle area, using font object which is selected in graphic context. \end{DoxyCompactList}\item 
-P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+bool} P\+I\+C\+A\+PI \textbf{ ps\+\_\+get\+\_\+glyph} (\textbf{ ps\+\_\+context} $\ast$ctx, int ch, \textbf{ ps\+\_\+glyph} $\ast$glyph)
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+bool} P\+I\+C\+A\+PI \textbf{ ps\+\_\+get\+\_\+glyph} (\textbf{ ps\+\_\+context} $\ast$ctx, int32\+\_\+t ch, \textbf{ ps\+\_\+glyph} $\ast$glyph)
 \begin{DoxyCompactList}\small\item\em Get the glyph from a given character, using font object which is selected in graphic context. \end{DoxyCompactList}\item 
-P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+show\+\_\+glyphs} (\textbf{ ps\+\_\+context} $\ast$ctx, float x, float y, \textbf{ ps\+\_\+glyph} $\ast$glyphs, unsigned int length)
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+show\+\_\+glyphs} (\textbf{ ps\+\_\+context} $\ast$ctx, float x, float y, \textbf{ ps\+\_\+glyph} $\ast$glyphs, uint32\+\_\+t length)
 \begin{DoxyCompactList}\small\item\em Draw an array of glyphs at location in user space. \end{DoxyCompactList}\item 
 P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+bool} P\+I\+C\+A\+PI \textbf{ ps\+\_\+get\+\_\+path\+\_\+from\+\_\+glyph} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+glyph} $\ast$glyph, \textbf{ ps\+\_\+path} $\ast$path)
 \begin{DoxyCompactList}\small\item\em Get the path from a given glyph object. \end{DoxyCompactList}\item 
@@ -99,7 +99,7 @@ D\+R\+A\+W\+\_\+\+T\+E\+X\+T\+\_\+\+B\+O\+TH&Perform fill,then stroke operation 
 \end{DoxyEnumFields}
 
 
-Definition at line 2302 of file picasso.\+h.
+Definition at line 2340 of file picasso.\+h.
 
 \mbox{\label{group__text_gaac566a8c2ea1627be2b9cdaf8b3b39e7}} 
 \index{Text@{Text}!\_ps\_text\_align@{\_ps\_text\_align}}
@@ -135,7 +135,7 @@ T\+E\+X\+T\+\_\+\+A\+L\+I\+G\+N\+\_\+\+R\+I\+G\+HT&Aligns text to right. \\
 \end{DoxyEnumFields}
 
 
-Definition at line 2320 of file picasso.\+h.
+Definition at line 2358 of file picasso.\+h.
 
 \mbox{\label{group__text_gae259beafbac1631008928e8fd20fc423}} 
 \index{Text@{Text}!\_ps\_text\_type@{\_ps\_text\_type}}
@@ -163,16 +163,16 @@ T\+E\+X\+T\+\_\+\+T\+Y\+P\+E\+\_\+\+S\+T\+R\+O\+KE&Out\+Line rendering. \\
 \end{DoxyEnumFields}
 
 
-Definition at line 2150 of file picasso.\+h.
+Definition at line 2188 of file picasso.\+h.
 
 
 
 \doxysubsection{Function Documentation}
-\mbox{\label{group__text_ga6a0eb97cb87386ce25f1c8f5c95d6027}} 
+\mbox{\label{group__text_ga4accdd233bee66e3b25cee89bcaf4de2}} 
 \index{Text@{Text}!ps\_draw\_text@{ps\_draw\_text}}
 \index{ps\_draw\_text@{ps\_draw\_text}!Text@{Text}}
 \doxysubsubsection{ps\_draw\_text()}
-{\footnotesize\ttfamily void ps\+\_\+draw\+\_\+text (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{const \textbf{ ps\+\_\+rect} $\ast$}]{area,  }\item[{const void $\ast$}]{text,  }\item[{unsigned int}]{length,  }\item[{\textbf{ ps\+\_\+draw\+\_\+text\+\_\+type}}]{type,  }\item[{\textbf{ ps\+\_\+text\+\_\+align}}]{align }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void ps\+\_\+draw\+\_\+text (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{const \textbf{ ps\+\_\+rect} $\ast$}]{area,  }\item[{const void $\ast$}]{text,  }\item[{uint32\+\_\+t}]{length,  }\item[{\textbf{ ps\+\_\+draw\+\_\+text\+\_\+type}}]{type,  }\item[{\textbf{ ps\+\_\+text\+\_\+align}}]{align }\end{DoxyParamCaption})}
 
 
 
@@ -194,13 +194,13 @@ Draw text in a rectangle area, using font object which is selected in graphic co
 \hline
 \end{DoxyParams}
 \begin{DoxySeeAlso}{See also}
-\doxyref{ps\+\_\+text\+\_\+out\+\_\+length}{p.}{group__text_gae94b0d7c8256fce8e8de5e214666bdec}, \doxyref{ps\+\_\+wide\+\_\+text\+\_\+out\+\_\+length}{p.}{group__text_ga33400352bdb79ff76c25980020bd69cf} 
+\doxyref{ps\+\_\+text\+\_\+out\+\_\+length}{p.}{group__text_gac7653026ee5e744cc6917a0516d14d48}, \doxyref{ps\+\_\+wide\+\_\+text\+\_\+out\+\_\+length}{p.}{group__text_ga3a608d2e91a130253b00edf5ed8aee85} 
 \end{DoxySeeAlso}
-\mbox{\label{group__text_gab9da1b7b31c4506634ef682bba172c49}} 
+\mbox{\label{group__text_ga93bff269935a635c246f915d60cadcb9}} 
 \index{Text@{Text}!ps\_get\_glyph@{ps\_get\_glyph}}
 \index{ps\_get\_glyph@{ps\_get\_glyph}!Text@{Text}}
 \doxysubsubsection{ps\_get\_glyph()}
-{\footnotesize\ttfamily \textbf{ ps\+\_\+bool} ps\+\_\+get\+\_\+glyph (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{int}]{ch,  }\item[{\textbf{ ps\+\_\+glyph} $\ast$}]{glyph }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+bool} ps\+\_\+get\+\_\+glyph (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{int32\+\_\+t}]{ch,  }\item[{\textbf{ ps\+\_\+glyph} $\ast$}]{glyph }\end{DoxyParamCaption})}
 
 
 
@@ -219,7 +219,7 @@ Get the glyph from a given character, using font object which is selected in gra
 True if is success, otherwise False.
 \end{DoxyReturn}
 \begin{DoxySeeAlso}{See also}
-\doxyref{ps\+\_\+show\+\_\+glyphs}{p.}{group__text_ga4a7af174d4c6b7b5bf79910d9fee3b32}, \doxyref{ps\+\_\+get\+\_\+path\+\_\+from\+\_\+glyph}{p.}{group__text_gae9ec60c25a891742464c03114fbf2bc7} 
+\doxyref{ps\+\_\+show\+\_\+glyphs}{p.}{group__text_gad41d2e291f1fdc5ba39dd0d5dceec4af}, \doxyref{ps\+\_\+get\+\_\+path\+\_\+from\+\_\+glyph}{p.}{group__text_gae9ec60c25a891742464c03114fbf2bc7} 
 \end{DoxySeeAlso}
 \mbox{\label{group__text_gae9ec60c25a891742464c03114fbf2bc7}} 
 \index{Text@{Text}!ps\_get\_path\_from\_glyph@{ps\_get\_path\_from\_glyph}}
@@ -244,13 +244,13 @@ Get the path from a given glyph object.
 True if is success, otherwise False.
 \end{DoxyReturn}
 \begin{DoxySeeAlso}{See also}
-\doxyref{ps\+\_\+show\+\_\+glyphs}{p.}{group__text_ga4a7af174d4c6b7b5bf79910d9fee3b32} 
+\doxyref{ps\+\_\+show\+\_\+glyphs}{p.}{group__text_gad41d2e291f1fdc5ba39dd0d5dceec4af} 
 \end{DoxySeeAlso}
-\mbox{\label{group__text_ga42ef6b742f45fcf0ac21a71a10843c2b}} 
+\mbox{\label{group__text_ga7c58087659844dbb7de531a7a5119d3a}} 
 \index{Text@{Text}!ps\_get\_text\_extent@{ps\_get\_text\_extent}}
 \index{ps\_get\_text\_extent@{ps\_get\_text\_extent}!Text@{Text}}
 \doxysubsubsection{ps\_get\_text\_extent()}
-{\footnotesize\ttfamily \textbf{ ps\+\_\+bool} ps\+\_\+get\+\_\+text\+\_\+extent (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{const void $\ast$}]{text,  }\item[{unsigned int}]{length,  }\item[{\textbf{ ps\+\_\+size} $\ast$}]{rsize }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+bool} ps\+\_\+get\+\_\+text\+\_\+extent (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{const void $\ast$}]{text,  }\item[{uint32\+\_\+t}]{length,  }\item[{\textbf{ ps\+\_\+size} $\ast$}]{rsize }\end{DoxyParamCaption})}
 
 
 
@@ -300,7 +300,7 @@ True if is success, otherwise False.
 To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
 \end{DoxyNote}
 \begin{DoxySeeAlso}{See also}
-\doxyref{ps\+\_\+get\+\_\+text\+\_\+extent}{p.}{group__text_ga42ef6b742f45fcf0ac21a71a10843c2b} 
+\doxyref{ps\+\_\+get\+\_\+text\+\_\+extent}{p.}{group__text_ga7c58087659844dbb7de531a7a5119d3a} 
 \end{DoxySeeAlso}
 \mbox{\label{group__text_ga2578080dcff888eb5d52c669451ba0bf}} 
 \index{Text@{Text}!ps\_set\_text\_antialias@{ps\_set\_text\_antialias}}
@@ -422,11 +422,11 @@ Set the text stroke color for the graphic context.
 \begin{DoxySeeAlso}{See also}
 \doxyref{ps\+\_\+set\+\_\+text\+\_\+color}{p.}{group__text_ga09aad6a9aa1b6bdb4d3a54bc0c8d4f27}, \doxyref{ps\+\_\+set\+\_\+text\+\_\+matrix}{p.}{group__text_ga6e193574b5c044ee6430062554693396}, \doxyref{ps\+\_\+set\+\_\+text\+\_\+antialias}{p.}{group__text_ga2578080dcff888eb5d52c669451ba0bf}, \doxyref{ps\+\_\+text\+\_\+transform}{p.}{group__text_ga50f52f55f32dedc0dc0f171298268966}, \doxyref{ps\+\_\+set\+\_\+text\+\_\+render\+\_\+type}{p.}{group__text_gad087544df03c06e5676771e684e901a9}, \doxyref{ps\+\_\+set\+\_\+text\+\_\+kerning}{p.}{group__text_ga854b138c2357034dd34513c49a40c02f} 
 \end{DoxySeeAlso}
-\mbox{\label{group__text_ga4a7af174d4c6b7b5bf79910d9fee3b32}} 
+\mbox{\label{group__text_gad41d2e291f1fdc5ba39dd0d5dceec4af}} 
 \index{Text@{Text}!ps\_show\_glyphs@{ps\_show\_glyphs}}
 \index{ps\_show\_glyphs@{ps\_show\_glyphs}!Text@{Text}}
 \doxysubsubsection{ps\_show\_glyphs()}
-{\footnotesize\ttfamily void ps\+\_\+show\+\_\+glyphs (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{float}]{x,  }\item[{float}]{y,  }\item[{\textbf{ ps\+\_\+glyph} $\ast$}]{glyphs,  }\item[{unsigned int}]{length }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void ps\+\_\+show\+\_\+glyphs (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{float}]{x,  }\item[{float}]{y,  }\item[{\textbf{ ps\+\_\+glyph} $\ast$}]{glyphs,  }\item[{uint32\+\_\+t}]{length }\end{DoxyParamCaption})}
 
 
 
@@ -448,11 +448,11 @@ Draw an array of glyphs at location in user space.
 \begin{DoxySeeAlso}{See also}
 \doxyref{ps\+\_\+get\+\_\+path\+\_\+from\+\_\+glyph}{p.}{group__text_gae9ec60c25a891742464c03114fbf2bc7} 
 \end{DoxySeeAlso}
-\mbox{\label{group__text_gae94b0d7c8256fce8e8de5e214666bdec}} 
+\mbox{\label{group__text_gac7653026ee5e744cc6917a0516d14d48}} 
 \index{Text@{Text}!ps\_text\_out\_length@{ps\_text\_out\_length}}
 \index{ps\_text\_out\_length@{ps\_text\_out\_length}!Text@{Text}}
 \doxysubsubsection{ps\_text\_out\_length()}
-{\footnotesize\ttfamily void ps\+\_\+text\+\_\+out\+\_\+length (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{float}]{x,  }\item[{float}]{y,  }\item[{const char $\ast$}]{text,  }\item[{unsigned int}]{length }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void ps\+\_\+text\+\_\+out\+\_\+length (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{float}]{x,  }\item[{float}]{y,  }\item[{const char $\ast$}]{text,  }\item[{uint32\+\_\+t}]{length }\end{DoxyParamCaption})}
 
 
 
@@ -472,7 +472,7 @@ Draw single byte characters (latin-\/1) at location in user space.
 \hline
 \end{DoxyParams}
 \begin{DoxySeeAlso}{See also}
-\doxyref{ps\+\_\+wide\+\_\+text\+\_\+out\+\_\+length}{p.}{group__text_ga33400352bdb79ff76c25980020bd69cf}, \doxyref{ps\+\_\+draw\+\_\+text}{p.}{group__text_ga6a0eb97cb87386ce25f1c8f5c95d6027} 
+\doxyref{ps\+\_\+wide\+\_\+text\+\_\+out\+\_\+length}{p.}{group__text_ga3a608d2e91a130253b00edf5ed8aee85}, \doxyref{ps\+\_\+draw\+\_\+text}{p.}{group__text_ga4accdd233bee66e3b25cee89bcaf4de2} 
 \end{DoxySeeAlso}
 \mbox{\label{group__text_ga50f52f55f32dedc0dc0f171298268966}} 
 \index{Text@{Text}!ps\_text\_transform@{ps\_text\_transform}}
@@ -494,11 +494,11 @@ Transform text matrix for the graphic context. The text matrix is not a part of 
 \begin{DoxySeeAlso}{See also}
 \doxyref{ps\+\_\+set\+\_\+text\+\_\+matrix}{p.}{group__text_ga6e193574b5c044ee6430062554693396}, \doxyref{ps\+\_\+set\+\_\+text\+\_\+antialias}{p.}{group__text_ga2578080dcff888eb5d52c669451ba0bf}, \doxyref{ps\+\_\+set\+\_\+text\+\_\+color}{p.}{group__text_ga09aad6a9aa1b6bdb4d3a54bc0c8d4f27}, \doxyref{ps\+\_\+set\+\_\+text\+\_\+stroke\+\_\+color}{p.}{group__text_ga07d2a86f3a5074f756d85ff87a0f0d48}, \doxyref{ps\+\_\+set\+\_\+text\+\_\+render\+\_\+type}{p.}{group__text_gad087544df03c06e5676771e684e901a9}, \doxyref{ps\+\_\+set\+\_\+text\+\_\+kerning}{p.}{group__text_ga854b138c2357034dd34513c49a40c02f} 
 \end{DoxySeeAlso}
-\mbox{\label{group__text_ga33400352bdb79ff76c25980020bd69cf}} 
+\mbox{\label{group__text_ga3a608d2e91a130253b00edf5ed8aee85}} 
 \index{Text@{Text}!ps\_wide\_text\_out\_length@{ps\_wide\_text\_out\_length}}
 \index{ps\_wide\_text\_out\_length@{ps\_wide\_text\_out\_length}!Text@{Text}}
 \doxysubsubsection{ps\_wide\_text\_out\_length()}
-{\footnotesize\ttfamily void ps\+\_\+wide\+\_\+text\+\_\+out\+\_\+length (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{float}]{x,  }\item[{float}]{y,  }\item[{const \textbf{ ps\+\_\+uchar16} $\ast$}]{text,  }\item[{unsigned int}]{length }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void ps\+\_\+wide\+\_\+text\+\_\+out\+\_\+length (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{float}]{x,  }\item[{float}]{y,  }\item[{const \textbf{ ps\+\_\+uchar16} $\ast$}]{text,  }\item[{uint32\+\_\+t}]{length }\end{DoxyParamCaption})}
 
 
 
@@ -518,5 +518,5 @@ Draw unicode characters (ucs-\/2) at location in user space.
 \hline
 \end{DoxyParams}
 \begin{DoxySeeAlso}{See also}
-\doxyref{ps\+\_\+text\+\_\+out\+\_\+length}{p.}{group__text_gae94b0d7c8256fce8e8de5e214666bdec}, \doxyref{ps\+\_\+draw\+\_\+text}{p.}{group__text_ga6a0eb97cb87386ce25f1c8f5c95d6027} 
+\doxyref{ps\+\_\+text\+\_\+out\+\_\+length}{p.}{group__text_gac7653026ee5e744cc6917a0516d14d48}, \doxyref{ps\+\_\+draw\+\_\+text}{p.}{group__text_ga4accdd233bee66e3b25cee89bcaf4de2} 
 \end{DoxySeeAlso}

@@ -30,15 +30,15 @@ public:
     {
         scalar r = filter.radius();
         realloc_filter_lut(r);
-        unsigned int pivot = diameter() << (image_subpixel_shift - 1);
+        uint32_t pivot = diameter() << (image_subpixel_shift - 1);
 
-        for (unsigned int i = 0; i < pivot; i++) {
+        for (uint32_t i = 0; i < pivot; i++) {
             scalar x = INT_TO_SCALAR(i) / INT_TO_SCALAR(image_subpixel_scale);
             scalar y = filter.calc_weight(x);
             m_weight_array[pivot + i] = m_weight_array[pivot - i] = (int16_t)iround(y * image_filter_scale);
         }
 
-        unsigned int end = (diameter() << image_subpixel_shift) - 1;
+        uint32_t end = (diameter() << image_subpixel_shift) - 1;
         m_weight_array[0] = m_weight_array[end];
 
         if (normalization) {
@@ -46,19 +46,19 @@ public:
         }
     }
 
-    int start(void) const { return m_start; }
+    int32_t start(void) const { return m_start; }
     scalar radius(void) const { return m_radius; }
-    unsigned int diameter(void) const { return m_diameter; }
+    uint32_t diameter(void) const { return m_diameter; }
     const int16_t* weight_array(void) const { return &m_weight_array[0]; }
 
     void normalize(void)
     {
-        int flip = 1;
+        int32_t flip = 1;
 
-        for (unsigned int i = 0; i < image_subpixel_scale; i++) {
+        for (uint32_t i = 0; i < image_subpixel_scale; i++) {
             for (;;) {
-                int sum = 0;
-                unsigned int j;
+                int32_t sum = 0;
+                uint32_t j;
                 for (j = 0; j < m_diameter; j++) {
                     sum += m_weight_array[j * image_subpixel_scale + i];
                 }
@@ -75,12 +75,12 @@ public:
                 }
 
                 sum -= image_filter_scale;
-                int inc = (sum > 0) ? -1 : 1;
+                int32_t inc = (sum > 0) ? -1 : 1;
 
                 for (j = 0; j < m_diameter && sum; j++) {
                     flip ^= 1;
-                    unsigned int idx = flip ? m_diameter / 2 + j / 2 : m_diameter / 2 - j / 2;
-                    int v = m_weight_array[idx * image_subpixel_scale + i];
+                    uint32_t idx = flip ? m_diameter / 2 + j / 2 : m_diameter / 2 - j / 2;
+                    int32_t v = m_weight_array[idx * image_subpixel_scale + i];
                     if (v < image_filter_scale) {
                         m_weight_array[idx * image_subpixel_scale + i] += inc;
                         sum += inc;
@@ -89,13 +89,13 @@ public:
             }
         }
 
-        unsigned int pivot = m_diameter << (image_subpixel_shift - 1);
+        uint32_t pivot = m_diameter << (image_subpixel_shift - 1);
 
-        for (unsigned int i = 0; i < pivot; i++) {
+        for (uint32_t i = 0; i < pivot; i++) {
             m_weight_array[pivot + i] = m_weight_array[pivot - i];
         }
 
-        unsigned int end = (diameter() << image_subpixel_shift) - 1;
+        uint32_t end = (diameter() << image_subpixel_shift) - 1;
         m_weight_array[0] = m_weight_array[end];
     }
 
@@ -106,9 +106,9 @@ private:
     void realloc_filter_lut(scalar radius)
     {
         m_radius = radius;
-        m_diameter = (unsigned int)Ceil(radius) * 2;
-        m_start = -(int)(m_diameter / 2 - 1);
-        unsigned int size = m_diameter << image_subpixel_shift;
+        m_diameter = (uint32_t)Ceil(radius) * 2;
+        m_start = -(int32_t)(m_diameter / 2 - 1);
+        uint32_t size = m_diameter << image_subpixel_shift;
 
         if (size > m_weight_array.size()) {
             m_weight_array.resize(size);
@@ -116,13 +116,13 @@ private:
     }
 
     scalar m_radius;
-    int m_start;
-    unsigned int m_diameter;
+    int32_t m_start;
+    uint32_t m_diameter;
     pod_array<int16_t> m_weight_array;
 };
 
 // filter creater
-image_filter_adapter* create_image_filter(int filter);
+image_filter_adapter* create_image_filter(int32_t filter);
 
 }
 #endif /*_GFX_IMAGE_FILTERS_H_*/

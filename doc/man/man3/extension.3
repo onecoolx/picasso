@@ -1,4 +1,4 @@
-.TH "extension" 3 "Tue Dec 24 2024" "Version 2.8" "Picasso API" \" -*- nroff -*-
+.TH "extension" 3 "Tue May 13 2025" "Version 2.8" "Picasso API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -12,10 +12,50 @@ extension
 .ti -1c
 .RI "\fBXImage Extension\fP"
 .br
+.ti -1c
+.RI "\fBXSvg Extension\fP"
+.br
+.in -1c
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum \fBpsx_result\fP { \fBS_OK\fP = 0, \fBS_BAD_PARAMS\fP = 1, \fBS_NOT_SUPPORT\fP = 2, \fBS_OUT_OF_MEMORY\fP = 3, \fBS_INIT_FAILURE\fP = 4, \fBS_FAILURE\fP = 5 }"
+.br
+.RI "Status code return by call APIs\&. "
 .in -1c
 .SH "Detailed Description"
 .PP 
 
+.SH "Enumeration Type Documentation"
+.PP 
+.SS "enum \fBpsx_result\fP"
+
+.PP
+Status code return by call APIs\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIS_OK \fP\fP
+Successful no errors\&. 
+.TP
+\fB\fIS_BAD_PARAMS \fP\fP
+Invalid params input\&. 
+.TP
+\fB\fIS_NOT_SUPPORT \fP\fP
+Not support\&. 
+.TP
+\fB\fIS_OUT_OF_MEMORY \fP\fP
+Not enough memory\&. 
+.TP
+\fB\fIS_INIT_FAILURE \fP\fP
+Not initialize system\&. 
+.TP
+\fB\fIS_FAILURE \fP\fP
+Operation failed by internal errors\&. 
+.PP
+Definition at line 36 of file picasso_ext\&.h\&.
 .SH "Author"
 .PP 
 Generated automatically by Doxygen for Picasso API from the source code\&.

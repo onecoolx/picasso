@@ -18,17 +18,17 @@ class rendering_buffer
 {
 public:
     rendering_buffer();
-    rendering_buffer(byte* buf, unsigned int width, unsigned int height, int stride);
+    rendering_buffer(byte* buf, uint32_t width, uint32_t height, int32_t stride);
     ~rendering_buffer();
 public:
-    void attach(byte* buf, unsigned int width, unsigned int height, int stride);
-    void replace(byte* buf, unsigned int width, unsigned int height, int stride);
+    void attach(byte* buf, uint32_t width, uint32_t height, int32_t stride);
+    void replace(byte* buf, uint32_t width, uint32_t height, int32_t stride);
     bool is_empty(void) const;
 
     byte* buffer(void) const;
-    unsigned int width(void) const;
-    unsigned int height(void) const;
-    int stride(void) const;
+    uint32_t width(void) const;
+    uint32_t height(void) const;
+    int32_t stride(void) const;
 
     bool is_transparent(void) const;
     void set_transparent(bool b);
@@ -41,8 +41,6 @@ public:
     abstract_rendering_buffer* impl(void) const { return m_impl; }
 private:
     friend class painter;
-    rendering_buffer(const rendering_buffer& o);
-    rendering_buffer& operator = (const rendering_buffer& o);
     abstract_rendering_buffer* m_impl;
 };
 

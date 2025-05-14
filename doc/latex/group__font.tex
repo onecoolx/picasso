@@ -33,7 +33,7 @@ enum \textbf{ \+\_\+ps\+\_\+font\+\_\+weight} \{ \textbf{ F\+O\+N\+T\+\_\+\+W\+E
 \doxysubsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
-P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+font} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+font\+\_\+create} (const char $\ast$name, \textbf{ ps\+\_\+charset} charset, float size, int weight, \textbf{ ps\+\_\+bool} italic)
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+font} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+font\+\_\+create} (const char $\ast$name, \textbf{ ps\+\_\+charset} charset, float size, int32\+\_\+t weight, \textbf{ ps\+\_\+bool} italic)
 \begin{DoxyCompactList}\small\item\em Create a font object using the given parameters. \end{DoxyCompactList}\item 
 P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+font} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+font\+\_\+create\+\_\+copy} (const \textbf{ ps\+\_\+font} $\ast$font)
 \begin{DoxyCompactList}\small\item\em Create a copy from an existing font object. \end{DoxyCompactList}\item 
@@ -43,7 +43,7 @@ P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+font\+\_\+unref} (\textbf
 \begin{DoxyCompactList}\small\item\em Decrements the reference count for the font object. If the reference count on the font falls to 0, the font is freed. \end{DoxyCompactList}\item 
 P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+font\+\_\+set\+\_\+size} (\textbf{ ps\+\_\+font} $\ast$font, float size)
 \begin{DoxyCompactList}\small\item\em Set size for a font object. \end{DoxyCompactList}\item 
-P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+font\+\_\+set\+\_\+weight} (\textbf{ ps\+\_\+font} $\ast$font, int weight)
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+font\+\_\+set\+\_\+weight} (\textbf{ ps\+\_\+font} $\ast$font, int32\+\_\+t weight)
 \begin{DoxyCompactList}\small\item\em Set weight for a font object. \end{DoxyCompactList}\item 
 P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+font\+\_\+set\+\_\+italic} (\textbf{ ps\+\_\+font} $\ast$font, \textbf{ ps\+\_\+bool} italic)
 \begin{DoxyCompactList}\small\item\em Set italic for a font object. \end{DoxyCompactList}\item 
@@ -85,7 +85,7 @@ C\+H\+A\+R\+S\+E\+T\+\_\+\+U\+N\+I\+C\+O\+DE&Unicode U\+C\+S-\/2 charset \\
 \end{DoxyEnumFields}
 
 
-Definition at line 1919 of file picasso.\+h.
+Definition at line 1957 of file picasso.\+h.
 
 \mbox{\label{group__font_ga025f88d2a6171a1e298b4a9e8aace679}} 
 \index{Font@{Font}!\_ps\_font\_weight@{\_ps\_font\_weight}}
@@ -117,16 +117,16 @@ F\+O\+N\+T\+\_\+\+W\+E\+I\+G\+H\+T\+\_\+\+H\+E\+A\+VY&Heavy weight. \\
 \end{DoxyEnumFields}
 
 
-Definition at line 1933 of file picasso.\+h.
+Definition at line 1971 of file picasso.\+h.
 
 
 
 \doxysubsection{Function Documentation}
-\mbox{\label{group__font_gaaefcec3ece8daac5bc135aaff941e322}} 
+\mbox{\label{group__font_ga91dceab8be5981d2b5d94ff3eaa427df}} 
 \index{Font@{Font}!ps\_font\_create@{ps\_font\_create}}
 \index{ps\_font\_create@{ps\_font\_create}!Font@{Font}}
 \doxysubsubsection{ps\_font\_create()}
-{\footnotesize\ttfamily \textbf{ ps\+\_\+font} $\ast$ ps\+\_\+font\+\_\+create (\begin{DoxyParamCaption}\item[{const char $\ast$}]{name,  }\item[{\textbf{ ps\+\_\+charset}}]{charset,  }\item[{float}]{size,  }\item[{int}]{weight,  }\item[{\textbf{ ps\+\_\+bool}}]{italic }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+font} $\ast$ ps\+\_\+font\+\_\+create (\begin{DoxyParamCaption}\item[{const char $\ast$}]{name,  }\item[{\textbf{ ps\+\_\+charset}}]{charset,  }\item[{float}]{size,  }\item[{int32\+\_\+t}]{weight,  }\item[{\textbf{ ps\+\_\+bool}}]{italic }\end{DoxyParamCaption})}
 
 
 
@@ -176,7 +176,7 @@ If the function succeeds, the return value is the pointer to a new font object. 
 To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
 \end{DoxyNote}
 \begin{DoxySeeAlso}{See also}
-\doxyref{ps\+\_\+font\+\_\+create}{p.}{group__font_gaaefcec3ece8daac5bc135aaff941e322}, \doxyref{ps\+\_\+font\+\_\+ref}{p.}{group__font_gaa3f4ad222ac03a2f017fde3eaa462c33}, \doxyref{ps\+\_\+font\+\_\+unref}{p.}{group__font_ga64ab9cf8ac1d102894407f4b3bcbd1be} 
+\doxyref{ps\+\_\+font\+\_\+create}{p.}{group__font_ga91dceab8be5981d2b5d94ff3eaa427df}, \doxyref{ps\+\_\+font\+\_\+ref}{p.}{group__font_gaa3f4ad222ac03a2f017fde3eaa462c33}, \doxyref{ps\+\_\+font\+\_\+unref}{p.}{group__font_ga64ab9cf8ac1d102894407f4b3bcbd1be} 
 \end{DoxySeeAlso}
 \mbox{\label{group__font_gaa3f4ad222ac03a2f017fde3eaa462c33}} 
 \index{Font@{Font}!ps\_font\_ref@{ps\_font\_ref}}
@@ -200,7 +200,7 @@ If the function succeeds, the return value is the pointer to the font object. If
 To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
 \end{DoxyNote}
 \begin{DoxySeeAlso}{See also}
-\doxyref{ps\+\_\+font\+\_\+create}{p.}{group__font_gaaefcec3ece8daac5bc135aaff941e322}, \doxyref{ps\+\_\+font\+\_\+create\+\_\+copy}{p.}{group__font_ga3aa562cc7f467a41a214e526778601d0}, \doxyref{ps\+\_\+font\+\_\+unref}{p.}{group__font_ga64ab9cf8ac1d102894407f4b3bcbd1be} 
+\doxyref{ps\+\_\+font\+\_\+create}{p.}{group__font_ga91dceab8be5981d2b5d94ff3eaa427df}, \doxyref{ps\+\_\+font\+\_\+create\+\_\+copy}{p.}{group__font_ga3aa562cc7f467a41a214e526778601d0}, \doxyref{ps\+\_\+font\+\_\+unref}{p.}{group__font_ga64ab9cf8ac1d102894407f4b3bcbd1be} 
 \end{DoxySeeAlso}
 \mbox{\label{group__font_ga0abc4de193c6c512b6131b1c890167d5}} 
 \index{Font@{Font}!ps\_font\_set\_charset@{ps\_font\_set\_charset}}
@@ -220,7 +220,7 @@ Set charset for a font object.
 \hline
 \end{DoxyParams}
 \begin{DoxySeeAlso}{See also}
-\doxyref{ps\+\_\+font\+\_\+set\+\_\+size}{p.}{group__font_gad71cc608b2259f1bde9fb86aca205695}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+weight}{p.}{group__font_ga32c69b4397b77bdac151c829a3121aad}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+italic}{p.}{group__font_gaeaf6470fd1661ef158d09c8b84d029ca}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+hint}{p.}{group__font_ga54faab6d1e061307be5b12db4e46a17d}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+flip}{p.}{group__font_ga25507395e231d29567f4cda01242419e} 
+\doxyref{ps\+\_\+font\+\_\+set\+\_\+size}{p.}{group__font_gad71cc608b2259f1bde9fb86aca205695}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+weight}{p.}{group__font_ga90152ee631dd5ebe29ad4a10389256f3}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+italic}{p.}{group__font_gaeaf6470fd1661ef158d09c8b84d029ca}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+hint}{p.}{group__font_ga54faab6d1e061307be5b12db4e46a17d}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+flip}{p.}{group__font_ga25507395e231d29567f4cda01242419e} 
 \end{DoxySeeAlso}
 \mbox{\label{group__font_ga25507395e231d29567f4cda01242419e}} 
 \index{Font@{Font}!ps\_font\_set\_flip@{ps\_font\_set\_flip}}
@@ -240,7 +240,7 @@ Set flip for a font object.
 \hline
 \end{DoxyParams}
 \begin{DoxySeeAlso}{See also}
-\doxyref{ps\+\_\+font\+\_\+set\+\_\+size}{p.}{group__font_gad71cc608b2259f1bde9fb86aca205695}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+weight}{p.}{group__font_ga32c69b4397b77bdac151c829a3121aad}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+italic}{p.}{group__font_gaeaf6470fd1661ef158d09c8b84d029ca}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+charset}{p.}{group__font_ga0abc4de193c6c512b6131b1c890167d5}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+hint}{p.}{group__font_ga54faab6d1e061307be5b12db4e46a17d} 
+\doxyref{ps\+\_\+font\+\_\+set\+\_\+size}{p.}{group__font_gad71cc608b2259f1bde9fb86aca205695}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+weight}{p.}{group__font_ga90152ee631dd5ebe29ad4a10389256f3}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+italic}{p.}{group__font_gaeaf6470fd1661ef158d09c8b84d029ca}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+charset}{p.}{group__font_ga0abc4de193c6c512b6131b1c890167d5}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+hint}{p.}{group__font_ga54faab6d1e061307be5b12db4e46a17d} 
 \end{DoxySeeAlso}
 \mbox{\label{group__font_ga54faab6d1e061307be5b12db4e46a17d}} 
 \index{Font@{Font}!ps\_font\_set\_hint@{ps\_font\_set\_hint}}
@@ -260,7 +260,7 @@ Set hiting for a font object.
 \hline
 \end{DoxyParams}
 \begin{DoxySeeAlso}{See also}
-\doxyref{ps\+\_\+font\+\_\+set\+\_\+size}{p.}{group__font_gad71cc608b2259f1bde9fb86aca205695}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+weight}{p.}{group__font_ga32c69b4397b77bdac151c829a3121aad}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+italic}{p.}{group__font_gaeaf6470fd1661ef158d09c8b84d029ca}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+charset}{p.}{group__font_ga0abc4de193c6c512b6131b1c890167d5}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+flip}{p.}{group__font_ga25507395e231d29567f4cda01242419e} 
+\doxyref{ps\+\_\+font\+\_\+set\+\_\+size}{p.}{group__font_gad71cc608b2259f1bde9fb86aca205695}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+weight}{p.}{group__font_ga90152ee631dd5ebe29ad4a10389256f3}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+italic}{p.}{group__font_gaeaf6470fd1661ef158d09c8b84d029ca}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+charset}{p.}{group__font_ga0abc4de193c6c512b6131b1c890167d5}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+flip}{p.}{group__font_ga25507395e231d29567f4cda01242419e} 
 \end{DoxySeeAlso}
 \mbox{\label{group__font_gaeaf6470fd1661ef158d09c8b84d029ca}} 
 \index{Font@{Font}!ps\_font\_set\_italic@{ps\_font\_set\_italic}}
@@ -280,7 +280,7 @@ Set italic for a font object.
 \hline
 \end{DoxyParams}
 \begin{DoxySeeAlso}{See also}
-\doxyref{ps\+\_\+font\+\_\+set\+\_\+size}{p.}{group__font_gad71cc608b2259f1bde9fb86aca205695}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+weight}{p.}{group__font_ga32c69b4397b77bdac151c829a3121aad}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+charset}{p.}{group__font_ga0abc4de193c6c512b6131b1c890167d5}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+hint}{p.}{group__font_ga54faab6d1e061307be5b12db4e46a17d}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+flip}{p.}{group__font_ga25507395e231d29567f4cda01242419e} 
+\doxyref{ps\+\_\+font\+\_\+set\+\_\+size}{p.}{group__font_gad71cc608b2259f1bde9fb86aca205695}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+weight}{p.}{group__font_ga90152ee631dd5ebe29ad4a10389256f3}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+charset}{p.}{group__font_ga0abc4de193c6c512b6131b1c890167d5}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+hint}{p.}{group__font_ga54faab6d1e061307be5b12db4e46a17d}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+flip}{p.}{group__font_ga25507395e231d29567f4cda01242419e} 
 \end{DoxySeeAlso}
 \mbox{\label{group__font_gad71cc608b2259f1bde9fb86aca205695}} 
 \index{Font@{Font}!ps\_font\_set\_size@{ps\_font\_set\_size}}
@@ -300,13 +300,13 @@ Set size for a font object.
 \hline
 \end{DoxyParams}
 \begin{DoxySeeAlso}{See also}
-\doxyref{ps\+\_\+font\+\_\+set\+\_\+weight}{p.}{group__font_ga32c69b4397b77bdac151c829a3121aad}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+italic}{p.}{group__font_gaeaf6470fd1661ef158d09c8b84d029ca}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+charset}{p.}{group__font_ga0abc4de193c6c512b6131b1c890167d5}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+hint}{p.}{group__font_ga54faab6d1e061307be5b12db4e46a17d}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+flip}{p.}{group__font_ga25507395e231d29567f4cda01242419e} 
+\doxyref{ps\+\_\+font\+\_\+set\+\_\+weight}{p.}{group__font_ga90152ee631dd5ebe29ad4a10389256f3}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+italic}{p.}{group__font_gaeaf6470fd1661ef158d09c8b84d029ca}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+charset}{p.}{group__font_ga0abc4de193c6c512b6131b1c890167d5}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+hint}{p.}{group__font_ga54faab6d1e061307be5b12db4e46a17d}, \doxyref{ps\+\_\+font\+\_\+set\+\_\+flip}{p.}{group__font_ga25507395e231d29567f4cda01242419e} 
 \end{DoxySeeAlso}
-\mbox{\label{group__font_ga32c69b4397b77bdac151c829a3121aad}} 
+\mbox{\label{group__font_ga90152ee631dd5ebe29ad4a10389256f3}} 
 \index{Font@{Font}!ps\_font\_set\_weight@{ps\_font\_set\_weight}}
 \index{ps\_font\_set\_weight@{ps\_font\_set\_weight}!Font@{Font}}
 \doxysubsubsection{ps\_font\_set\_weight()}
-{\footnotesize\ttfamily void ps\+\_\+font\+\_\+set\+\_\+weight (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+font} $\ast$}]{font,  }\item[{int}]{weight }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void ps\+\_\+font\+\_\+set\+\_\+weight (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+font} $\ast$}]{font,  }\item[{int32\+\_\+t}]{weight }\end{DoxyParamCaption})}
 
 
 
@@ -338,7 +338,7 @@ Decrements the reference count for the font object. If the reference count on th
 \hline
 \end{DoxyParams}
 \begin{DoxySeeAlso}{See also}
-\doxyref{ps\+\_\+font\+\_\+create}{p.}{group__font_gaaefcec3ece8daac5bc135aaff941e322}, \doxyref{ps\+\_\+font\+\_\+create\+\_\+copy}{p.}{group__font_ga3aa562cc7f467a41a214e526778601d0}, \doxyref{ps\+\_\+font\+\_\+ref}{p.}{group__font_gaa3f4ad222ac03a2f017fde3eaa462c33} 
+\doxyref{ps\+\_\+font\+\_\+create}{p.}{group__font_ga91dceab8be5981d2b5d94ff3eaa427df}, \doxyref{ps\+\_\+font\+\_\+create\+\_\+copy}{p.}{group__font_ga3aa562cc7f467a41a214e526778601d0}, \doxyref{ps\+\_\+font\+\_\+ref}{p.}{group__font_gaa3f4ad222ac03a2f017fde3eaa462c33} 
 \end{DoxySeeAlso}
 \mbox{\label{group__font_ga774a7aa9bdf9357bd395589c6fde5575}} 
 \index{Font@{Font}!ps\_get\_font\_info@{ps\_get\_font\_info}}

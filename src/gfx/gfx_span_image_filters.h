@@ -42,8 +42,8 @@ public:
     interpolator_type& interpolator(void) { return *m_interpolator; }
     source_type& source(void) { return *m_src; }
     const image_filter_adapter& filter(void) const { return *m_filter; }
-    int filter_dx_int(void) const { return m_dx_int; }
-    int filter_dy_int(void) const { return m_dy_int; }
+    int32_t filter_dx_int(void) const { return m_dx_int; }
+    int32_t filter_dy_int(void) const { return m_dy_int; }
     scalar filter_dx_flt(void) const { return m_dx_flt; }
     scalar filter_dy_flt(void) const { return m_dy_flt; }
 
@@ -64,8 +64,8 @@ private:
     const image_filter_adapter* m_filter;
     scalar m_dx_flt;
     scalar m_dy_flt;
-    unsigned int m_dx_int;
-    unsigned int m_dy_int;
+    uint32_t m_dx_int;
+    uint32_t m_dy_int;
 };
 
 // rgba color format filters
@@ -93,20 +93,20 @@ public:
     {
     }
 
-    void generate(color_type* span, int x, int y, unsigned int len)
+    void generate(color_type* span, int32_t x, int32_t y, uint32_t len)
     {
         base_type::interpolator().begin(x + base_type::filter_dx_flt(),
                                         y + base_type::filter_dy_flt(), len);
 
-        int fg[4];
+        int32_t fg[4];
         const value_type* fg_ptr;
 
-        unsigned int diameter = base_type::filter().diameter();
-        int start = base_type::filter().start();
+        uint32_t diameter = base_type::filter().diameter();
+        int32_t start = base_type::filter().start();
         const int16_t* weight_array = base_type::filter().weight_array();
 
-        int x_count;
-        int weight_y;
+        int32_t x_count;
+        int32_t weight_y;
 
         do {
             base_type::interpolator().coordinates(&x, &y);
@@ -114,16 +114,16 @@ public:
             x -= base_type::filter_dx_int();
             y -= base_type::filter_dy_int();
 
-            int x_hr = x;
-            int y_hr = y;
+            int32_t x_hr = x;
+            int32_t y_hr = y;
 
-            int x_lr = x_hr >> image_subpixel_shift;
-            int y_lr = y_hr >> image_subpixel_shift;
+            int32_t x_lr = x_hr >> image_subpixel_shift;
+            int32_t y_lr = y_hr >> image_subpixel_shift;
 
             fg[0] = fg[1] = fg[2] = fg[3] = image_filter_scale / 2;
 
-            int x_fract = x_hr & image_subpixel_mask;
-            unsigned int y_count = diameter;
+            int32_t x_fract = x_hr & image_subpixel_mask;
+            uint32_t y_count = diameter;
 
             y_hr = image_subpixel_mask - (y_hr & image_subpixel_mask);
             fg_ptr = (const value_type*)base_type::source().span(x_lr + start, y_lr + start, diameter);
@@ -133,9 +133,9 @@ public:
                 weight_y = weight_array[y_hr];
                 x_hr = image_subpixel_mask - x_fract;
                 for (;;) {
-                    int weight = (weight_y * weight_array[x_hr] +
-                                  image_filter_scale / 2) >>
-                                 image_filter_shift;
+                    int32_t weight = (weight_y * weight_array[x_hr] +
+                                      image_filter_scale / 2) >>
+                                     image_filter_shift;
 
                     fg[0] += weight * *fg_ptr++;
                     fg[1] += weight * *fg_ptr++;
@@ -208,20 +208,20 @@ public:
     {
     }
 
-    void generate(color_type* span, int x, int y, unsigned int len)
+    void generate(color_type* span, int32_t x, int32_t y, uint32_t len)
     {
         base_type::interpolator().begin(x + base_type::filter_dx_flt(),
                                         y + base_type::filter_dy_flt(), len);
 
-        int fg[4];
+        int32_t fg[4];
         const value_type* fg_ptr;
 
-        unsigned int diameter = base_type::filter().diameter();
-        int start = base_type::filter().start();
+        uint32_t diameter = base_type::filter().diameter();
+        int32_t start = base_type::filter().start();
         const int16_t* weight_array = base_type::filter().weight_array();
 
-        int x_count;
-        int weight_y;
+        int32_t x_count;
+        int32_t weight_y;
 
         do {
             base_type::interpolator().coordinates(&x, &y);
@@ -229,16 +229,16 @@ public:
             x -= base_type::filter_dx_int();
             y -= base_type::filter_dy_int();
 
-            int x_hr = x;
-            int y_hr = y;
+            int32_t x_hr = x;
+            int32_t y_hr = y;
 
-            int x_lr = x_hr >> image_subpixel_shift;
-            int y_lr = y_hr >> image_subpixel_shift;
+            int32_t x_lr = x_hr >> image_subpixel_shift;
+            int32_t y_lr = y_hr >> image_subpixel_shift;
 
             fg[0] = fg[1] = fg[2] = fg[3] = image_filter_scale / 2;
 
-            int x_fract = x_hr & image_subpixel_mask;
-            unsigned int y_count = diameter;
+            int32_t x_fract = x_hr & image_subpixel_mask;
+            uint32_t y_count = diameter;
 
             y_hr = image_subpixel_mask - (y_hr & image_subpixel_mask);
             fg_ptr = (const value_type*)base_type::source().span(x_lr + start, y_lr + start, diameter);
@@ -248,9 +248,9 @@ public:
                 weight_y = weight_array[y_hr];
                 x_hr = image_subpixel_mask - x_fract;
                 for (;;) {
-                    int weight = (weight_y * weight_array[x_hr] +
-                                  image_filter_scale / 2) >>
-                                 image_filter_shift;
+                    int32_t weight = (weight_y * weight_array[x_hr] +
+                                      image_filter_scale / 2) >>
+                                     image_filter_shift;
 
                     fg[0] += weight * *fg_ptr++;
                     fg[1] += weight * *fg_ptr++;
@@ -316,7 +316,7 @@ public:
     {
     }
 
-    void generate(color_type* span, int x, int y, unsigned int len)
+    void generate(color_type* span, int32_t x, int32_t y, uint32_t len)
     {
         base_type::interpolator().begin(x + base_type::filter_dx_flt(),
                                         y + base_type::filter_dy_flt(), len);
@@ -360,7 +360,7 @@ public:
     {
     }
 
-    void generate(color_type* span, int x, int y, unsigned int len)
+    void generate(color_type* span, int32_t x, int32_t y, uint32_t len)
     {
         base_type::interpolator().begin(x + base_type::filter_dx_flt(),
                                         y + base_type::filter_dy_flt(), len);
@@ -405,20 +405,20 @@ public:
     {
     }
 
-    void generate(color_type* span, int x, int y, unsigned int len)
+    void generate(color_type* span, int32_t x, int32_t y, uint32_t len)
     {
         base_type::interpolator().begin(x + base_type::filter_dx_flt(),
                                         y + base_type::filter_dy_flt(), len);
 
-        int fg[3];
+        int32_t fg[3];
         const value_type* fg_ptr;
 
-        unsigned int diameter = base_type::filter().diameter();
-        int start = base_type::filter().start();
+        uint32_t diameter = base_type::filter().diameter();
+        int32_t start = base_type::filter().start();
         const int16_t* weight_array = base_type::filter().weight_array();
 
-        int x_count;
-        int weight_y;
+        int32_t x_count;
+        int32_t weight_y;
 
         do {
             base_type::interpolator().coordinates(&x, &y);
@@ -426,16 +426,16 @@ public:
             x -= base_type::filter_dx_int();
             y -= base_type::filter_dy_int();
 
-            int x_hr = x;
-            int y_hr = y;
+            int32_t x_hr = x;
+            int32_t y_hr = y;
 
-            int x_lr = x_hr >> image_subpixel_shift;
-            int y_lr = y_hr >> image_subpixel_shift;
+            int32_t x_lr = x_hr >> image_subpixel_shift;
+            int32_t y_lr = y_hr >> image_subpixel_shift;
 
             fg[0] = fg[1] = fg[2] = image_filter_scale / 2;
 
-            int x_fract = x_hr & image_subpixel_mask;
-            unsigned int y_count = diameter;
+            int32_t x_fract = x_hr & image_subpixel_mask;
+            uint32_t y_count = diameter;
 
             y_hr = image_subpixel_mask - (y_hr & image_subpixel_mask);
             fg_ptr = (const value_type*)base_type::source().span(x_lr + start, y_lr + start, diameter);
@@ -446,9 +446,9 @@ public:
                 x_hr = image_subpixel_mask - x_fract;
 
                 for (;;) {
-                    int weight = (weight_y * weight_array[x_hr] +
-                                  image_filter_scale / 2) >>
-                                 image_filter_shift;
+                    int32_t weight = (weight_y * weight_array[x_hr] +
+                                      image_filter_scale / 2) >>
+                                     image_filter_shift;
 
                     fg[0] += weight * *fg_ptr++;
                     fg[1] += weight * *fg_ptr++;
@@ -517,7 +517,7 @@ public:
     {
     }
 
-    void generate(color_type* span, int x, int y, unsigned int len)
+    void generate(color_type* span, int32_t x, int32_t y, uint32_t len)
     {
         base_type::interpolator().begin(x + base_type::filter_dx_flt(),
                                         y + base_type::filter_dy_flt(), len);
@@ -567,20 +567,20 @@ public:
     {
     }
 
-    void generate(color_type* span, int x, int y, unsigned int len)
+    void generate(color_type* span, int32_t x, int32_t y, uint32_t len)
     {
         base_type::interpolator().begin(x + base_type::filter_dx_flt(),
                                         y + base_type::filter_dy_flt(), len);
 
-        int fg[3];
+        int32_t fg[3];
         const value_type* fg_ptr;
 
-        unsigned int diameter = base_type::filter().diameter();
-        int start = base_type::filter().start();
+        uint32_t diameter = base_type::filter().diameter();
+        int32_t start = base_type::filter().start();
         const int16_t* weight_array = base_type::filter().weight_array();
 
-        int x_count;
-        int weight_y;
+        int32_t x_count;
+        int32_t weight_y;
 
         pixel_type rgb_pixel;
 
@@ -590,16 +590,16 @@ public:
             x -= base_type::filter_dx_int();
             y -= base_type::filter_dy_int();
 
-            int x_hr = x;
-            int y_hr = y;
+            int32_t x_hr = x;
+            int32_t y_hr = y;
 
-            int x_lr = x_hr >> image_subpixel_shift;
-            int y_lr = y_hr >> image_subpixel_shift;
+            int32_t x_lr = x_hr >> image_subpixel_shift;
+            int32_t y_lr = y_hr >> image_subpixel_shift;
 
             fg[0] = fg[1] = fg[2] = image_filter_scale >> 1;
 
-            int x_fract = x_hr & image_subpixel_mask;
-            unsigned int y_count = diameter;
+            int32_t x_fract = x_hr & image_subpixel_mask;
+            uint32_t y_count = diameter;
 
             y_hr = image_subpixel_mask - (y_hr & image_subpixel_mask);
             fg_ptr = (const value_type*)base_type::source().span(x_lr + start, y_lr + start, diameter);
@@ -611,9 +611,9 @@ public:
                 x_hr = image_subpixel_mask - x_fract;
 
                 for (;;) {
-                    int weight = (weight_y * weight_array[x_hr] +
-                                  (image_filter_scale >> 1)) >>
-                                 image_filter_shift;
+                    int32_t weight = (weight_y * weight_array[x_hr] +
+                                      (image_filter_scale >> 1)) >>
+                                     image_filter_shift;
 
                     fg[0] += weight * ((rgb_pixel & r_mask) >> (order_type::G + order_type::B));
                     fg[1] += weight * ((rgb_pixel & g_mask) >> (order_type::B));
@@ -646,9 +646,9 @@ public:
             if (fg[1] < 0) { fg[1] = 0; }
             if (fg[2] < 0) { fg[2] = 0; }
 
-            if (fg[0] > (int)base_mask) { fg[0] = base_mask; }
-            if (fg[1] > (int)base_mask) { fg[1] = base_mask; }
-            if (fg[2] > (int)base_mask) { fg[2] = base_mask; }
+            if (fg[0] > (int32_t)base_mask) { fg[0] = base_mask; }
+            if (fg[1] > (int32_t)base_mask) { fg[1] = base_mask; }
+            if (fg[2] > (int32_t)base_mask) { fg[2] = base_mask; }
 
             span->r = (value_type)(fg[0] << (base_shift - order_type::R));
             span->g = (value_type)(fg[1] << (base_shift - order_type::G));
@@ -690,7 +690,7 @@ public:
     {
     }
 
-    void generate(color_type* span, int x, int y, unsigned int len)
+    void generate(color_type* span, int32_t x, int32_t y, uint32_t len)
     {
         base_type::interpolator().begin(x + base_type::filter_dx_flt(),
                                         y + base_type::filter_dy_flt(), len);

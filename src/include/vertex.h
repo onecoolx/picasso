@@ -24,8 +24,8 @@ class vertex_source
 public:
     virtual ~vertex_source() {}
 
-    virtual void rewind(unsigned int id) = 0;
-    virtual unsigned int vertex(scalar* x, scalar* y) = 0;
+    virtual void rewind(uint32_t id) = 0;
+    virtual uint32_t vertex(scalar* x, scalar* y) = 0;
 };
 
 class vertex_container : public vertex_source
@@ -33,7 +33,7 @@ class vertex_container : public vertex_source
 public:
     virtual ~vertex_container() {}
 
-    virtual void add_vertex(scalar x, scalar y, unsigned int cmd) = 0;
+    virtual void add_vertex(scalar x, scalar y, uint32_t cmd) = 0;
     virtual void remove_all(void) = 0;
 };
 

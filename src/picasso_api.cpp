@@ -32,15 +32,13 @@ static inline void _clip_path(context_state* state, const graphic_path& p, filli
 
 }
 
-#define PICASSO_VERSION 28000     // version 2.8.0
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 ps_status global_status = STATUS_SUCCEED;
 
-int PICAPI ps_version(void)
+int32_t PICAPI ps_version(void)
 {
     return PICASSO_VERSION;
 }
@@ -786,7 +784,7 @@ float PICAPI ps_set_miter_limit(ps_context* ctx, float limit)
     return rd;
 }
 
-void PICAPI ps_set_line_dash(ps_context* ctx, float start, const float* dashes, unsigned int num_dashes)
+void PICAPI ps_set_line_dash(ps_context* ctx, float start, const float* dashes, uint32_t num_dashes)
 {
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;
@@ -1501,7 +1499,7 @@ void PICAPI ps_clip_rect(ps_context* ctx, const ps_rect* r)
     global_status = STATUS_SUCCEED;
 }
 
-void PICAPI ps_clip_rects(ps_context* ctx, const ps_rect* rs, unsigned int num_rs)
+void PICAPI ps_clip_rects(ps_context* ctx, const ps_rect* rs, uint32_t num_rs)
 {
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;
@@ -1514,7 +1512,7 @@ void PICAPI ps_clip_rects(ps_context* ctx, const ps_rect* rs, unsigned int num_r
     }
 
     picasso::graphic_path path;
-    for (unsigned int i = 0; i < num_rs; i++) {
+    for (uint32_t i = 0; i < num_rs; i++) {
         path.move_to(FLT_TO_SCALAR(rs[i].x), FLT_TO_SCALAR(rs[i].y));
         path.hline_rel(FLT_TO_SCALAR(rs[i].w));
         path.vline_rel(FLT_TO_SCALAR(rs[i].h));

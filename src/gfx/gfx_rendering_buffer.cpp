@@ -20,7 +20,7 @@ gfx_rendering_buffer::gfx_rendering_buffer()
 {
 }
 
-gfx_rendering_buffer::gfx_rendering_buffer(byte* ptr, unsigned int width, unsigned int height, int stride)
+gfx_rendering_buffer::gfx_rendering_buffer(byte* ptr, uint32_t width, uint32_t height, int32_t stride)
     : m_buffer(0)
     , m_observer(0)
     , m_width(0)
@@ -33,13 +33,13 @@ gfx_rendering_buffer::gfx_rendering_buffer(byte* ptr, unsigned int width, unsign
     init(ptr, width, height, stride);
 }
 
-void gfx_rendering_buffer::replace(byte* ptr, unsigned int width, unsigned int height, int stride)
+void gfx_rendering_buffer::replace(byte* ptr, uint32_t width, uint32_t height, int32_t stride)
 {
     init(ptr, width, height, stride);
     notify_buffer_changed();
 }
 
-void gfx_rendering_buffer::init(byte* ptr, unsigned int width, unsigned int height, int stride)
+void gfx_rendering_buffer::init(byte* ptr, uint32_t width, uint32_t height, int32_t stride)
 {
     m_buffer = ptr;
     m_width = width;
@@ -52,7 +52,7 @@ void gfx_rendering_buffer::init(byte* ptr, unsigned int width, unsigned int heig
 
     byte* p = m_buffer;
     if (stride < 0) {
-        p = m_buffer - (int)(height - 1) * stride;
+        p = m_buffer - (int32_t)(height - 1) * stride;
     }
 
     byte** rows = &m_rows[0];

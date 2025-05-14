@@ -1,4 +1,4 @@
-.TH "gradient" 3 "Tue Dec 24 2024" "Version 2.8" "Picasso API" \" -*- nroff -*-
+.TH "gradient" 3 "Tue May 13 2025" "Version 2.8" "Picasso API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -80,7 +80,7 @@ Spread repeat, the gradient is repeated outside the area\&.
 \fB\fIGRADIENT_SPREAD_REFLECT \fP\fP
 Spread reflect, the gradient is reflected outside the area\&. 
 .PP
-Definition at line 942 of file picasso\&.h\&.
+Definition at line 964 of file picasso\&.h\&.
 .SH "Function Documentation"
 .PP 
 .SS "void ps_gradient_add_color_stop (\fBps_gradient\fP * gradient, float offset, const \fBps_color\fP * color)"
@@ -130,7 +130,7 @@ Create a new gradient that varies along the area defined by provided concentric 
 .br
 \fIorigin\fP The center point of conic, of the required gradient\&. 
 .br
-\fIsangle\fP The angle, int radians, which the first color\&.
+\fIsangle\fP The angle, int32_t radians, which the first color\&.
 .RE
 .PP
 \fBReturns\fP

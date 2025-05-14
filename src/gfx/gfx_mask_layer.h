@@ -44,33 +44,33 @@ public:
 
     void attach(gfx_rendering_buffer& buffer) { m_buffer = &buffer; }
 
-    cover_type pixel(int x, int y) const
+    cover_type pixel(int32_t x, int32_t y) const
     {
         if (x >= 0 && y >= 0 &&
-            x < (int)m_buffer->internal_width() &&
-            y < (int)m_buffer->internal_height()) {
+            x < (int32_t)m_buffer->internal_width() &&
+            y < (int32_t)m_buffer->internal_height()) {
             return (cover_type)calculate(m_buffer->row_ptr(y) + x * step + offset);
         }
         return 0;
     }
 
-    cover_type combine_pixel(int x, int y, cover_type val) const
+    cover_type combine_pixel(int32_t x, int32_t y, cover_type val) const
     {
         if (x >= 0 && y >= 0 &&
-            x < (int)m_buffer->internal_width() &&
-            y < (int)m_buffer->internal_height()) {
+            x < (int32_t)m_buffer->internal_width() &&
+            y < (int32_t)m_buffer->internal_height()) {
             return (cover_type)((cover_full + val * calculate(
                                      m_buffer->row_ptr(y) + x * step + offset)) >> cover_shift);
         }
         return 0;
     }
 
-    void fill_hspan(int x, int y, cover_type* dst, int num_pix) const
+    void fill_hspan(int32_t x, int32_t y, cover_type* dst, int32_t num_pix) const
     {
-        int xmax = m_buffer->internal_width() - 1;
-        int ymax = m_buffer->internal_height() - 1;
+        int32_t xmax = m_buffer->internal_width() - 1;
+        int32_t ymax = m_buffer->internal_height() - 1;
 
-        int count = num_pix;
+        int32_t count = num_pix;
         cover_type* covers = dst;
 
         if (y < 0 || y > ymax) {
@@ -90,7 +90,7 @@ public:
         }
 
         if (x + count > xmax) {
-            int rest = x + count - xmax - 1;
+            int32_t rest = x + count - xmax - 1;
             count -= rest;
             if (count <= 0) {
                 memset(dst, 0, num_pix * sizeof(cover_type));
@@ -106,12 +106,12 @@ public:
         } while (--count);
     }
 
-    void combine_hspan(int x, int y, cover_type* dst, int num_pix) const
+    void combine_hspan(int32_t x, int32_t y, cover_type* dst, int32_t num_pix) const
     {
-        int xmax = m_buffer->internal_width() - 1;
-        int ymax = m_buffer->internal_height() - 1;
+        int32_t xmax = m_buffer->internal_width() - 1;
+        int32_t ymax = m_buffer->internal_height() - 1;
 
-        int count = num_pix;
+        int32_t count = num_pix;
         cover_type* covers = dst;
 
         if (y < 0 || y > ymax) {
@@ -131,7 +131,7 @@ public:
         }
 
         if (x + count > xmax) {
-            int rest = x + count - xmax - 1;
+            int32_t rest = x + count - xmax - 1;
             count -= rest;
             if (count <= 0) {
                 memset(dst, 0, num_pix * sizeof(cover_type));
@@ -149,12 +149,12 @@ public:
         } while (--count);
     }
 
-    void fill_vspan(int x, int y, cover_type* dst, int num_pix) const
+    void fill_vspan(int32_t x, int32_t y, cover_type* dst, int32_t num_pix) const
     {
-        int xmax = m_buffer->internal_width() - 1;
-        int ymax = m_buffer->internal_height() - 1;
+        int32_t xmax = m_buffer->internal_width() - 1;
+        int32_t ymax = m_buffer->internal_height() - 1;
 
-        int count = num_pix;
+        int32_t count = num_pix;
         cover_type* covers = dst;
 
         if (x < 0 || x > xmax) {
@@ -174,7 +174,7 @@ public:
         }
 
         if (y + count > ymax) {
-            int rest = y + count - ymax - 1;
+            int32_t rest = y + count - ymax - 1;
             count -= rest;
             if (count <= 0) {
                 memset(dst, 0, num_pix * sizeof(cover_type));
@@ -190,12 +190,12 @@ public:
         } while (--count);
     }
 
-    void combine_vspan(int x, int y, cover_type* dst, int num_pix) const
+    void combine_vspan(int32_t x, int32_t y, cover_type* dst, int32_t num_pix) const
     {
-        int xmax = m_buffer->internal_width() - 1;
-        int ymax = m_buffer->internal_height() - 1;
+        int32_t xmax = m_buffer->internal_width() - 1;
+        int32_t ymax = m_buffer->internal_height() - 1;
 
-        int count = num_pix;
+        int32_t count = num_pix;
         cover_type* covers = dst;
 
         if (x < 0 || x > xmax) {
@@ -215,7 +215,7 @@ public:
         }
 
         if (y + count > ymax) {
-            int rest = y + count - ymax - 1;
+            int32_t rest = y + count - ymax - 1;
             count -= rest;
             if (count <= 0) {
                 memset(dst, 0, num_pix * sizeof(cover_type));
@@ -236,7 +236,7 @@ public:
 private:
     gfx_alpha_mask_u8(const gfx_alpha_mask_u8&);
     const gfx_alpha_mask_u8& operator=(const gfx_alpha_mask_u8&);
-    unsigned int calculate(const uint8_t* p) const { return *p; }
+    uint32_t calculate(const uint8_t* p) const { return *p; }
 
     gfx_rendering_buffer* m_buffer;
 };
@@ -257,20 +257,20 @@ public:
     };
 
 private:
-    void realloc_span(unsigned int len)
+    void realloc_span(uint32_t len)
     {
         if (len > m_span.size()) {
             m_span.resize(len + span_extra_tail);
         }
     }
 
-    void init_span(unsigned int len)
+    void init_span(uint32_t len)
     {
         realloc_span(len);
         memset(&m_span[0], amask_type::cover_full, len * sizeof(cover_type));
     }
 
-    void init_span(unsigned int len, const cover_type* covers)
+    void init_span(uint32_t len, const cover_type* covers)
     {
         realloc_span(len);
         mem_copy(&m_span[0], covers, len * sizeof(cover_type));
@@ -286,32 +286,32 @@ public:
     void attach_pixfmt(pixfmt_type& pixfmt) { m_pixfmt = &pixfmt; }
     void attach_alpha_mask(const amask_type& mask) { m_mask = &mask; }
 
-    unsigned int width(void) const { return m_pixfmt->width(); }
-    unsigned int height(void) const { return m_pixfmt->height(); }
+    uint32_t width(void) const { return m_pixfmt->width(); }
+    uint32_t height(void) const { return m_pixfmt->height(); }
 
-    color_type pixel(int x, int y)
+    color_type pixel(int32_t x, int32_t y)
     {
         return m_pixfmt->pixel(x, y);
     }
 
-    void copy_pixel(int x, int y, const color_type& c)
+    void copy_pixel(int32_t x, int32_t y, const color_type& c)
     {
         m_pixfmt->blend_pixel(x, y, c, m_mask->pixel(x, y));
     }
 
-    void blend_pixel(int x, int y, const color_type& c, cover_type cover)
+    void blend_pixel(int32_t x, int32_t y, const color_type& c, cover_type cover)
     {
         m_pixfmt->blend_pixel(x, y, c, m_mask->combine_pixel(x, y, cover));
     }
 
-    void copy_hline(int x, int y, unsigned int len, const color_type& c)
+    void copy_hline(int32_t x, int32_t y, uint32_t len, const color_type& c)
     {
         realloc_span(len);
         m_mask->fill_hspan(x, y, &m_span[0], len);
         m_pixfmt->blend_solid_hspan(x, y, len, c, &m_span[0]);
     }
 
-    void blend_hline(int x, int y, unsigned int len,
+    void blend_hline(int32_t x, int32_t y, uint32_t len,
                      const color_type& c, cover_type cover)
     {
         init_span(len);
@@ -319,14 +319,14 @@ public:
         m_pixfmt->blend_solid_hspan(x, y, len, c, &m_span[0]);
     }
 
-    void copy_vline(int x, int y, unsigned int len, const color_type& c)
+    void copy_vline(int32_t x, int32_t y, uint32_t len, const color_type& c)
     {
         realloc_span(len);
         m_mask->fill_vspan(x, y, &m_span[0], len);
         m_pixfmt->blend_solid_vspan(x, y, len, c, &m_span[0]);
     }
 
-    void blend_vline(int x, int y, unsigned int len,
+    void blend_vline(int32_t x, int32_t y, uint32_t len,
                      const color_type& c, cover_type cover)
     {
         init_span(len);
@@ -335,12 +335,12 @@ public:
     }
 
     void copy_from(const gfx_rendering_buffer& from,
-                   int xdst, int ydst, int xsrc, int ysrc, unsigned int len)
+                   int32_t xdst, int32_t ydst, int32_t xsrc, int32_t ysrc, uint32_t len)
     {
         m_pixfmt->copy_from(from, xdst, ydst, xsrc, ysrc, len);
     }
 
-    void blend_solid_hspan(int x, int y, unsigned int len,
+    void blend_solid_hspan(int32_t x, int32_t y, uint32_t len,
                            const color_type& c, const cover_type* covers)
     {
         init_span(len, covers);
@@ -348,7 +348,7 @@ public:
         m_pixfmt->blend_solid_hspan(x, y, len, c, &m_span[0]);
     }
 
-    void blend_solid_vspan(int x, int y, unsigned int len,
+    void blend_solid_vspan(int32_t x, int32_t y, uint32_t len,
                            const color_type& c, const cover_type* covers)
     {
         init_span(len, covers);
@@ -356,21 +356,21 @@ public:
         m_pixfmt->blend_solid_vspan(x, y, len, c, &m_span[0]);
     }
 
-    void copy_color_hspan(int x, int y, unsigned int len, const color_type* colors)
+    void copy_color_hspan(int32_t x, int32_t y, uint32_t len, const color_type* colors)
     {
         realloc_span(len);
         m_mask->fill_hspan(x, y, &m_span[0], len);
         m_pixfmt->blend_color_hspan(x, y, len, colors, &m_span[0], cover_full);
     }
 
-    void copy_color_vspan(int x, int y, unsigned int len, const color_type* colors)
+    void copy_color_vspan(int32_t x, int32_t y, uint32_t len, const color_type* colors)
     {
         realloc_span(len);
         m_mask->fill_vspan(x, y, &m_span[0], len);
         m_pixfmt->blend_color_vspan(x, y, len, colors, &m_span[0], cover_full);
     }
 
-    void blend_color_hspan(int x, int y, unsigned int len, const color_type* colors,
+    void blend_color_hspan(int32_t x, int32_t y, uint32_t len, const color_type* colors,
                            const cover_type* covers, cover_type cover = cover_full)
     {
         if (covers) {
@@ -383,7 +383,7 @@ public:
         m_pixfmt->blend_color_hspan(x, y, len, colors, &m_span[0], cover);
     }
 
-    void blend_color_vspan(int x, int y, unsigned int len, const color_type* colors,
+    void blend_color_vspan(int32_t x, int32_t y, uint32_t len, const color_type* colors,
                            const cover_type* covers, cover_type cover = cover_full)
     {
         if (covers) {
@@ -406,7 +406,7 @@ private:
 class gfx_mask_layer : public abstract_mask_layer
 {
 public:
-    gfx_mask_layer(byte* buf, unsigned int width, unsigned int height, int stride)
+    gfx_mask_layer(byte* buf, uint32_t width, uint32_t height, int32_t stride)
         : m_type(MASK_ALPHA)
     {
         attach(buf, width, height, stride);
@@ -417,12 +417,12 @@ public:
         m_colors.clear();
     }
 
-    virtual void attach(byte* buf, unsigned int width, unsigned int height, int stride)
+    virtual void attach(byte* buf, uint32_t width, uint32_t height, int32_t stride)
     {
         m_buffer.init(buf, width, height, stride);
     }
 
-    virtual void set_mask_type(int t)
+    virtual void set_mask_type(int32_t t)
     {
         m_type = t;
     }
@@ -437,11 +437,11 @@ public:
         m_colors.clear();
     }
 
-    int type(void) const { return m_type; }
+    int32_t type(void) const { return m_type; }
     gfx_rendering_buffer& buffer(void) { return m_buffer; }
     pod_bvector<rgba8>& colors(void) { return m_colors; }
 private:
-    int m_type;
+    int32_t m_type;
     gfx_rendering_buffer m_buffer;
     pod_bvector<rgba8> m_colors;
 };

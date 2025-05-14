@@ -1,4 +1,4 @@
-.TH "include/images/psx_image.h" 3 "Tue Dec 24 2024" "Version 2.8" "Picasso API" \" -*- nroff -*-
+.TH "include/images/psx_image.h" 3 "Tue May 13 2025" "Version 2.8" "Picasso API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -7,6 +7,10 @@ include/images/psx_image.h
 .br
 .PP
 \fC#include 'picasso\&.h'\fP
+.br
+\fC#include 'picasso_ext\&.h'\fP
+.br
+\fC#include <stddef\&.h>\fP
 .br
 
 .SS "Data Structures"
@@ -68,14 +72,6 @@ include/images/psx_image.h
 .RI "typedef int(* \fBimage_writer_fn\fP) (void *param, const \fBps_byte\fP *data, size_t length)"
 .br
 .RI "Callback function for saving image data\&. "
-.in -1c
-.SS "Enumerations"
-
-.in +1c
-.ti -1c
-.RI "enum { \fBS_OK\fP = 0, \fBS_BAD_PARAMS\fP = 1, \fBS_NOT_SUPPORT\fP = 2, \fBS_OUT_OF_MEMORY\fP = 3, \fBS_INIT_FAILURE\fP = 4, \fBS_FAILURE\fP = 5 }"
-.br
-.RI "Status code return by call APIs\&. "
 .in -1c
 .SS "Functions"
 

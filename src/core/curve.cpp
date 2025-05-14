@@ -56,7 +56,7 @@ void curve3_inc::init(scalar x1, scalar y1, scalar x2, scalar y2, scalar x3, sca
     m_step = m_num_steps;
 }
 
-void curve3_inc::rewind(unsigned int)
+void curve3_inc::rewind(uint32_t)
 {
     if (m_num_steps == 0) {
         m_step = -1;
@@ -69,7 +69,7 @@ void curve3_inc::rewind(unsigned int)
     m_dfy = m_saved_dfy;
 }
 
-unsigned int curve3_inc::vertex(scalar* x, scalar* y)
+uint32_t curve3_inc::vertex(scalar* x, scalar* y)
 {
     if (m_step < 0) {
         return path_cmd_stop;
@@ -110,7 +110,7 @@ void curve3_div::init(scalar x1, scalar y1, scalar x2, scalar y2, scalar x3, sca
 }
 
 //------------------------------------------------------------------------
-void curve3_div::recursive_bezier(scalar x1, scalar y1, scalar x2, scalar y2, scalar x3, scalar y3, unsigned int level)
+void curve3_div::recursive_bezier(scalar x1, scalar y1, scalar x2, scalar y2, scalar x3, scalar y3, uint32_t level)
 {
     if (level > curve_recursion_limit) {
         return;
@@ -254,7 +254,7 @@ void curve4_inc::init(scalar x1, scalar y1, scalar x2, scalar y2, scalar x3, sca
     m_step = m_num_steps;
 }
 
-void curve4_inc::rewind(unsigned int)
+void curve4_inc::rewind(uint32_t)
 {
     if (m_num_steps == 0) {
         m_step = -1;
@@ -269,7 +269,7 @@ void curve4_inc::rewind(unsigned int)
     m_ddfy = m_saved_ddfy;
 }
 
-unsigned int curve4_inc::vertex(scalar* x, scalar* y)
+uint32_t curve4_inc::vertex(scalar* x, scalar* y)
 {
     if (m_step < 0) {
         return path_cmd_stop;
@@ -315,7 +315,7 @@ void curve4_div::init(scalar x1, scalar y1,
     m_count = 0;
 }
 
-void curve4_div::recursive_bezier(scalar x1, scalar y1, scalar x2, scalar y2, scalar x3, scalar y3, scalar x4, scalar y4, unsigned int level)
+void curve4_div::recursive_bezier(scalar x1, scalar y1, scalar x2, scalar y2, scalar x3, scalar y3, scalar x4, scalar y4, uint32_t level)
 {
     if (level > curve_recursion_limit) {
         return;
@@ -345,7 +345,7 @@ void curve4_div::recursive_bezier(scalar x1, scalar y1, scalar x2, scalar y2, sc
     scalar d3 = Fabs(((x3 - x4) * dy - (y3 - y4) * dx));
     scalar da1, da2, k;
 
-    switch ((int(d2 > curve_collinearity_epsilon) << 1) + int(d3 > curve_collinearity_epsilon)) {
+    switch ((int32_t(d2 > curve_collinearity_epsilon) << 1) + int32_t(d3 > curve_collinearity_epsilon)) {
         case 0:
             // All collinear OR p1==p4
             //----------------------

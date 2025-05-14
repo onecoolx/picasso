@@ -1,4 +1,4 @@
-.TH "include/picasso.h" 3 "Tue Dec 24 2024" "Version 2.8" "Picasso API" \" -*- nroff -*-
+.TH "include/picasso.h" 3 "Tue May 13 2025" "Version 2.8" "Picasso API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -53,7 +53,7 @@ include/picasso.h
 
 .in +1c
 .ti -1c
-.RI "typedef int \fBps_bool\fP"
+.RI "typedef int32_t \fBps_bool\fP"
 .br
 .RI "boolean type "
 .ti -1c
@@ -205,7 +205,7 @@ include/picasso.h
 .br
 .RI "Status code return by call ps_last_status function\&. "
 .ti -1c
-.RI "enum \fB_ps_color_format\fP { \fBCOLOR_FORMAT_RGBA\fP, \fBCOLOR_FORMAT_ARGB\fP, \fBCOLOR_FORMAT_ABGR\fP, \fBCOLOR_FORMAT_BGRA\fP, \fBCOLOR_FORMAT_RGB\fP, \fBCOLOR_FORMAT_BGR\fP, \fBCOLOR_FORMAT_RGB565\fP, \fBCOLOR_FORMAT_RGB555\fP, \fBCOLOR_FORMAT_UNKNOWN\fP }"
+.RI "enum \fB_ps_color_format\fP { \fBCOLOR_FORMAT_RGBA\fP, \fBCOLOR_FORMAT_ARGB\fP, \fBCOLOR_FORMAT_ABGR\fP, \fBCOLOR_FORMAT_BGRA\fP, \fBCOLOR_FORMAT_RGB\fP, \fBCOLOR_FORMAT_BGR\fP, \fBCOLOR_FORMAT_RGB565\fP, \fBCOLOR_FORMAT_RGB555\fP, \fBCOLOR_FORMAT_A8\fP, \fBCOLOR_FORMAT_UNKNOWN\fP }"
 .br
 .RI "Pixel formats of canvas or image\&. "
 .ti -1c
@@ -273,7 +273,7 @@ include/picasso.h
 
 .in +1c
 .ti -1c
-.RI "PEXPORT int PICAPI \fBps_version\fP (void)"
+.RI "PEXPORT int32_t PICAPI \fBps_version\fP (void)"
 .br
 .RI "Return current version of picasso\&. "
 .ti -1c
@@ -309,15 +309,15 @@ include/picasso.h
 .br
 .RI "Get the canvas from the context\&. "
 .ti -1c
-.RI "PEXPORT \fBps_canvas\fP *PICAPI \fBps_canvas_create\fP (\fBps_color_format\fP fmt, int width, int height)"
+.RI "PEXPORT \fBps_canvas\fP *PICAPI \fBps_canvas_create\fP (\fBps_color_format\fP fmt, int32_t width, int32_t height)"
 .br
 .RI "Create a new canvas using the given parameters\&. "
 .ti -1c
-.RI "PEXPORT \fBps_canvas\fP *PICAPI \fBps_canvas_create_with_data\fP (\fBps_byte\fP *data, \fBps_color_format\fP fmt, int width, int height, int pitch)"
+.RI "PEXPORT \fBps_canvas\fP *PICAPI \fBps_canvas_create_with_data\fP (\fBps_byte\fP *data, \fBps_color_format\fP fmt, int32_t width, int32_t height, int32_t pitch)"
 .br
 .RI "Create a new canvas using a given address in memory\&. "
 .ti -1c
-.RI "PEXPORT \fBps_canvas\fP *PICAPI \fBps_canvas_create_compatible\fP (const \fBps_canvas\fP *canvas, int width, int height)"
+.RI "PEXPORT \fBps_canvas\fP *PICAPI \fBps_canvas_create_compatible\fP (const \fBps_canvas\fP *canvas, int32_t width, int32_t height)"
 .br
 .RI "Create a new canvas to compatible with an existing canvas\&. "
 .ti -1c
@@ -329,7 +329,7 @@ include/picasso.h
 .br
 .RI "Create a new canvas using part of an existing ps_image object in same pixel buffer\&. "
 .ti -1c
-.RI "PEXPORT \fBps_canvas\fP *PICAPI \fBps_canvas_replace_data\fP (\fBps_canvas\fP *canvas, \fBps_byte\fP *data, \fBps_color_format\fP fmt, int width, int height, int pitch)"
+.RI "PEXPORT \fBps_canvas\fP *PICAPI \fBps_canvas_replace_data\fP (\fBps_canvas\fP *canvas, \fBps_byte\fP *data, \fBps_color_format\fP fmt, int32_t width, int32_t height, int32_t pitch)"
 .br
 .RI "Replace a canvas target rendering buffer address in memory, which is only use for canvas create by \fIps_canvas_create_with_data\fP\&. "
 .ti -1c
@@ -361,19 +361,19 @@ include/picasso.h
 .br
 .RI "Copy raster data between two canvas objects\&. "
 .ti -1c
-.RI "PEXPORT \fBps_image\fP *PICAPI \fBps_image_create\fP (\fBps_color_format\fP fmt, int width, int height)"
+.RI "PEXPORT \fBps_image\fP *PICAPI \fBps_image_create\fP (\fBps_color_format\fP fmt, int32_t width, int32_t height)"
 .br
 .RI "Create a new image using the given parameters\&. "
 .ti -1c
-.RI "PEXPORT \fBps_image\fP *PICAPI \fBps_image_create_with_data\fP (\fBps_byte\fP *data, \fBps_color_format\fP fmt, int width, int height, int pitch)"
+.RI "PEXPORT \fBps_image\fP *PICAPI \fBps_image_create_with_data\fP (\fBps_byte\fP *data, \fBps_color_format\fP fmt, int32_t width, int32_t height, int32_t pitch)"
 .br
 .RI "Create a new image using a given address in memory\&. "
 .ti -1c
-.RI "PEXPORT \fBps_image\fP *PICAPI \fBps_image_create_from_data\fP (\fBps_byte\fP *data, \fBps_color_format\fP fmt, int width, int height, int pitch)"
+.RI "PEXPORT \fBps_image\fP *PICAPI \fBps_image_create_from_data\fP (\fBps_byte\fP *data, \fBps_color_format\fP fmt, int32_t width, int32_t height, int32_t pitch)"
 .br
 .RI "Create a new image using a copy of given address in memory\&. "
 .ti -1c
-.RI "PEXPORT \fBps_image\fP *PICAPI \fBps_image_create_compatible\fP (const \fBps_canvas\fP *canvas, int width, int height)"
+.RI "PEXPORT \fBps_image\fP *PICAPI \fBps_image_create_compatible\fP (const \fBps_canvas\fP *canvas, int32_t width, int32_t height)"
 .br
 .RI "Create a new image to compatible with an existing canvas\&. "
 .ti -1c
@@ -457,7 +457,11 @@ include/picasso.h
 .br
 .RI "Clear color stops from gradient's control vector\&. "
 .ti -1c
-.RI "PEXPORT \fBps_mask\fP *PICAPI \fBps_mask_create_with_data\fP (\fBps_byte\fP *data, int width, int height)"
+.RI "PEXPORT \fBps_mask\fP *PICAPI \fBps_mask_create\fP (int32_t width, int32_t height)"
+.br
+.RI "Create a new mask\&. "
+.ti -1c
+.RI "PEXPORT \fBps_mask\fP *PICAPI \fBps_mask_create_with_data\fP (\fBps_byte\fP *data, int32_t width, int32_t height)"
 .br
 .RI "Create a new mask using a given data block\&. "
 .ti -1c
@@ -537,7 +541,7 @@ include/picasso.h
 .br
 .RI "Set a canvas to the context, it is used to stroke a graphic object\&. "
 .ti -1c
-.RI "PEXPORT void PICAPI \fBps_set_line_dash\fP (\fBps_context\fP *ctx, float start, const float *dashes, unsigned int num_dashes)"
+.RI "PEXPORT void PICAPI \fBps_set_line_dash\fP (\fBps_context\fP *ctx, float start, const float *dashes, uint32_t num_dashes)"
 .br
 .RI "Set the pattern for dashed lines in the context\&. "
 .ti -1c
@@ -617,7 +621,7 @@ include/picasso.h
 .br
 .RI "The fast way to clipping specified rectangle, the clip rect can not be transformed by world matrix\&. "
 .ti -1c
-.RI "PEXPORT void PICAPI \fBps_clip_rects\fP (\fBps_context\fP *ctx, const \fBps_rect\fP *rects, unsigned int num_rects)"
+.RI "PEXPORT void PICAPI \fBps_clip_rects\fP (\fBps_context\fP *ctx, const \fBps_rect\fP *rects, uint32_t num_rects)"
 .br
 .RI "Clipping specified area defined by an array of rectangles\&. "
 .ti -1c
@@ -633,7 +637,7 @@ include/picasso.h
 .br
 .RI "Set the current graphics state to the state most recently saved\&. "
 .ti -1c
-.RI "PEXPORT \fBps_font\fP *PICAPI \fBps_font_create\fP (const char *name, \fBps_charset\fP charset, float size, int weight, \fBps_bool\fP italic)"
+.RI "PEXPORT \fBps_font\fP *PICAPI \fBps_font_create\fP (const char *name, \fBps_charset\fP charset, float size, int32_t weight, \fBps_bool\fP italic)"
 .br
 .RI "Create a font object using the given parameters\&. "
 .ti -1c
@@ -653,7 +657,7 @@ include/picasso.h
 .br
 .RI "Set size for a font object\&. "
 .ti -1c
-.RI "PEXPORT void PICAPI \fBps_font_set_weight\fP (\fBps_font\fP *font, int weight)"
+.RI "PEXPORT void PICAPI \fBps_font_set_weight\fP (\fBps_font\fP *font, int32_t weight)"
 .br
 .RI "Set weight for a font object\&. "
 .ti -1c
@@ -681,7 +685,7 @@ include/picasso.h
 .br
 .RI "Set a new font to graphics context\&. "
 .ti -1c
-.RI "PEXPORT \fBps_bool\fP PICAPI \fBps_get_text_extent\fP (\fBps_context\fP *ctx, const void *text, unsigned int length, \fBps_size\fP *rsize)"
+.RI "PEXPORT \fBps_bool\fP PICAPI \fBps_get_text_extent\fP (\fBps_context\fP *ctx, const void *text, uint32_t length, \fBps_size\fP *rsize)"
 .br
 .RI "Get extent for text using current font which selected to graphic context\&. "
 .ti -1c
@@ -713,23 +717,23 @@ include/picasso.h
 .br
 .RI "Set whether the font auto kerning is allowed\&. "
 .ti -1c
-.RI "PEXPORT void PICAPI \fBps_text_out_length\fP (\fBps_context\fP *ctx, float x, float y, const char *text, unsigned int length)"
+.RI "PEXPORT void PICAPI \fBps_text_out_length\fP (\fBps_context\fP *ctx, float x, float y, const char *text, uint32_t length)"
 .br
 .RI "Draw single byte characters (latin-1) at location in user space\&. "
 .ti -1c
-.RI "PEXPORT void PICAPI \fBps_wide_text_out_length\fP (\fBps_context\fP *ctx, float x, float y, const \fBps_uchar16\fP *text, unsigned int length)"
+.RI "PEXPORT void PICAPI \fBps_wide_text_out_length\fP (\fBps_context\fP *ctx, float x, float y, const \fBps_uchar16\fP *text, uint32_t length)"
 .br
 .RI "Draw unicode characters (ucs-2) at location in user space\&. "
 .ti -1c
-.RI "PEXPORT void PICAPI \fBps_draw_text\fP (\fBps_context\fP *ctx, const \fBps_rect\fP *area, const void *text, unsigned int length, \fBps_draw_text_type\fP type, \fBps_text_align\fP align)"
+.RI "PEXPORT void PICAPI \fBps_draw_text\fP (\fBps_context\fP *ctx, const \fBps_rect\fP *area, const void *text, uint32_t length, \fBps_draw_text_type\fP type, \fBps_text_align\fP align)"
 .br
 .RI "Draw text in a rectangle area, using font object which is selected in graphic context\&. "
 .ti -1c
-.RI "PEXPORT \fBps_bool\fP PICAPI \fBps_get_glyph\fP (\fBps_context\fP *ctx, int ch, \fBps_glyph\fP *glyph)"
+.RI "PEXPORT \fBps_bool\fP PICAPI \fBps_get_glyph\fP (\fBps_context\fP *ctx, int32_t ch, \fBps_glyph\fP *glyph)"
 .br
 .RI "Get the glyph from a given character, using font object which is selected in graphic context\&. "
 .ti -1c
-.RI "PEXPORT void PICAPI \fBps_show_glyphs\fP (\fBps_context\fP *ctx, float x, float y, \fBps_glyph\fP *glyphs, unsigned int length)"
+.RI "PEXPORT void PICAPI \fBps_show_glyphs\fP (\fBps_context\fP *ctx, float x, float y, \fBps_glyph\fP *glyphs, uint32_t length)"
 .br
 .RI "Draw an array of glyphs at location in user space\&. "
 .ti -1c
@@ -1005,11 +1009,11 @@ include/picasso.h
 .br
 .RI "Checks whether the path is empty\&. "
 .ti -1c
-.RI "PEXPORT unsigned int PICAPI \fBps_path_get_vertex_count\fP (const \fBps_path\fP *path)"
+.RI "PEXPORT uint32_t PICAPI \fBps_path_get_vertex_count\fP (const \fBps_path\fP *path)"
 .br
 .RI "Return the count of vertices in the path\&. "
 .ti -1c
-.RI "PEXPORT \fBps_path_cmd\fP PICAPI \fBps_path_get_vertex\fP (const \fBps_path\fP *path, unsigned int index, \fBps_point\fP *point)"
+.RI "PEXPORT \fBps_path_cmd\fP PICAPI \fBps_path_get_vertex\fP (const \fBps_path\fP *path, uint32_t index, \fBps_point\fP *point)"
 .br
 .RI "Get a vertex from the path by index, and return the vertex command\&. "
 .ti -1c

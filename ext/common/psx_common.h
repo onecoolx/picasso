@@ -29,6 +29,18 @@
 
 #include "pconfig.h"
 
+#include <assert.h>
+#include <ctype.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <stdarg.h>
+
+#if defined(WIN32) && defined(_MSC_VER)
+    #define strdup(s) _strdup(s)
+#endif
+
 #ifdef HAVE_STDBOOL_H
     #include <stdbool.h>
 #else
@@ -46,5 +58,55 @@
 #else
     #define INLINE
 #endif
+
+#if __cplusplus >= 201103L
+    #define REGISTER
+#else
+    #define REGISTER register
+#endif
+
+/* memory management */
+#ifndef mem_malloc
+    #define mem_malloc malloc
+#endif
+
+#ifndef mem_calloc
+    #define mem_calloc calloc
+#endif
+
+#ifndef mem_realloc
+    #define mem_realloc realloc
+#endif
+
+#ifndef mem_free
+    #define mem_free free
+#endif
+
+#ifndef mem_copy
+    #define mem_copy memcpy
+#endif
+
+/* abort */
+#define ABORT() abort()
+
+/* assert */
+#define ASSERT(cond) assert((cond))
+
+/* logs*/
+static INLINE void psx_log(const char* format, ...)
+{
+    va_list args;
+    va_start(args, format);
+    fprintf(stderr, format, args);
+    va_end(args);
+}
+#define LOG_ERROR(...) \
+    psx_log(__VA_ARGS__)
+
+/* c++ class utils */
+#define NON_COPYABLE_CLASS(type) \
+    private: \
+    type(const type& o); \
+    type& operator=(const type& o); \
 
 #endif /*_PSX_COMMON_H_*/

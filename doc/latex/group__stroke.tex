@@ -58,7 +58,7 @@ P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+set\+\_\+stroke\+\_\+grad
 \begin{DoxyCompactList}\small\item\em Set a gradient to the context, it is used to stroke a graphic object. \end{DoxyCompactList}\item 
 P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+set\+\_\+stroke\+\_\+canvas} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+canvas} $\ast$canvas)
 \begin{DoxyCompactList}\small\item\em Set a canvas to the context, it is used to stroke a graphic object. \end{DoxyCompactList}\item 
-P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+set\+\_\+line\+\_\+dash} (\textbf{ ps\+\_\+context} $\ast$ctx, float start, const float $\ast$dashes, unsigned int num\+\_\+dashes)
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+set\+\_\+line\+\_\+dash} (\textbf{ ps\+\_\+context} $\ast$ctx, float start, const float $\ast$dashes, uint32\+\_\+t num\+\_\+dashes)
 \begin{DoxyCompactList}\small\item\em Set the pattern for dashed lines in the context. \end{DoxyCompactList}\item 
 P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+reset\+\_\+line\+\_\+dash} (\textbf{ ps\+\_\+context} $\ast$ctx)
 \begin{DoxyCompactList}\small\item\em Clear the dashs from the context, and set to solid. \end{DoxyCompactList}\end{DoxyCompactItemize}
@@ -94,7 +94,7 @@ L\+I\+N\+E\+\_\+\+C\+A\+P\+\_\+\+S\+Q\+U\+A\+RE&A line with a squared-\/off end.
 \end{DoxyEnumFields}
 
 
-Definition at line 1231 of file picasso.\+h.
+Definition at line 1269 of file picasso.\+h.
 
 \mbox{\label{group__stroke_ga3e82d0c5809ff0fd87c09490c1245db1}} 
 \index{Stroke@{Stroke}!\_ps\_line\_inner\_join@{\_ps\_line\_inner\_join}}
@@ -126,7 +126,7 @@ L\+I\+N\+E\+\_\+\+I\+N\+N\+E\+R\+\_\+\+R\+O\+U\+ND&A inner join with a rounded e
 \end{DoxyEnumFields}
 
 
-Definition at line 1299 of file picasso.\+h.
+Definition at line 1337 of file picasso.\+h.
 
 \mbox{\label{group__stroke_gab18ffd06505620c2063013630acb4497}} 
 \index{Stroke@{Stroke}!\_ps\_line\_join@{\_ps\_line\_join}}
@@ -162,7 +162,7 @@ L\+I\+N\+E\+\_\+\+J\+O\+I\+N\+\_\+\+B\+E\+V\+EL&A join with a squared-\/off end.
 \end{DoxyEnumFields}
 
 
-Definition at line 1261 of file picasso.\+h.
+Definition at line 1299 of file picasso.\+h.
 
 
 
@@ -183,7 +183,7 @@ Clear the dashs from the context, and set to solid.
 \hline
 \end{DoxyParams}
 \begin{DoxySeeAlso}{See also}
-\doxyref{ps\+\_\+set\+\_\+line\+\_\+cap}{p.}{group__stroke_gadb1c82ca13abac1c02f09e0e4804b33a}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+join}{p.}{group__stroke_ga502a7abc4f46bbd8ba54b187a9f05220}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+width}{p.}{group__stroke_gaa7c2102304123fab38eb57b68af23440}, \doxyref{ps\+\_\+set\+\_\+miter\+\_\+limit}{p.}{group__stroke_ga83568c0d29c26a834d05c93e48909328}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+color}{p.}{group__stroke_gacc37293e8d7ceda573a0a3625b169076}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+dash}{p.}{group__stroke_ga14690c35aae12a4262af1bfb2fbdd96e}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+inner\+\_\+join}{p.}{group__stroke_ga14303807813ac01122f298e5212fb5fc} 
+\doxyref{ps\+\_\+set\+\_\+line\+\_\+cap}{p.}{group__stroke_gadb1c82ca13abac1c02f09e0e4804b33a}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+join}{p.}{group__stroke_ga502a7abc4f46bbd8ba54b187a9f05220}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+width}{p.}{group__stroke_gaa7c2102304123fab38eb57b68af23440}, \doxyref{ps\+\_\+set\+\_\+miter\+\_\+limit}{p.}{group__stroke_ga83568c0d29c26a834d05c93e48909328}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+color}{p.}{group__stroke_gacc37293e8d7ceda573a0a3625b169076}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+dash}{p.}{group__stroke_ga3e2beff431d8efb2b3fa23b1b9bf037c}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+inner\+\_\+join}{p.}{group__stroke_ga14303807813ac01122f298e5212fb5fc} 
 \end{DoxySeeAlso}
 \mbox{\label{group__stroke_gadb1c82ca13abac1c02f09e0e4804b33a}} 
 \index{Stroke@{Stroke}!ps\_set\_line\_cap@{ps\_set\_line\_cap}}
@@ -203,13 +203,13 @@ Set the style for the endpoint of lines in a graphics context.
 \hline
 \end{DoxyParams}
 \begin{DoxySeeAlso}{See also}
-\doxyref{ps\+\_\+set\+\_\+line\+\_\+join}{p.}{group__stroke_ga502a7abc4f46bbd8ba54b187a9f05220}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+width}{p.}{group__stroke_gaa7c2102304123fab38eb57b68af23440}, \doxyref{ps\+\_\+set\+\_\+miter\+\_\+limit}{p.}{group__stroke_ga83568c0d29c26a834d05c93e48909328}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+color}{p.}{group__stroke_gacc37293e8d7ceda573a0a3625b169076}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+dash}{p.}{group__stroke_ga14690c35aae12a4262af1bfb2fbdd96e}, \doxyref{ps\+\_\+reset\+\_\+line\+\_\+dash}{p.}{group__stroke_ga6d9522c011d21ff17a4c5f6e5ef7f914}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+inner\+\_\+join}{p.}{group__stroke_ga14303807813ac01122f298e5212fb5fc} 
+\doxyref{ps\+\_\+set\+\_\+line\+\_\+join}{p.}{group__stroke_ga502a7abc4f46bbd8ba54b187a9f05220}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+width}{p.}{group__stroke_gaa7c2102304123fab38eb57b68af23440}, \doxyref{ps\+\_\+set\+\_\+miter\+\_\+limit}{p.}{group__stroke_ga83568c0d29c26a834d05c93e48909328}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+color}{p.}{group__stroke_gacc37293e8d7ceda573a0a3625b169076}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+dash}{p.}{group__stroke_ga3e2beff431d8efb2b3fa23b1b9bf037c}, \doxyref{ps\+\_\+reset\+\_\+line\+\_\+dash}{p.}{group__stroke_ga6d9522c011d21ff17a4c5f6e5ef7f914}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+inner\+\_\+join}{p.}{group__stroke_ga14303807813ac01122f298e5212fb5fc} 
 \end{DoxySeeAlso}
-\mbox{\label{group__stroke_ga14690c35aae12a4262af1bfb2fbdd96e}} 
+\mbox{\label{group__stroke_ga3e2beff431d8efb2b3fa23b1b9bf037c}} 
 \index{Stroke@{Stroke}!ps\_set\_line\_dash@{ps\_set\_line\_dash}}
 \index{ps\_set\_line\_dash@{ps\_set\_line\_dash}!Stroke@{Stroke}}
 \doxysubsubsection{ps\_set\_line\_dash()}
-{\footnotesize\ttfamily void ps\+\_\+set\+\_\+line\+\_\+dash (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{float}]{start,  }\item[{const float $\ast$}]{dashes,  }\item[{unsigned int}]{num\+\_\+dashes }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void ps\+\_\+set\+\_\+line\+\_\+dash (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{float}]{start,  }\item[{const float $\ast$}]{dashes,  }\item[{uint32\+\_\+t}]{num\+\_\+dashes }\end{DoxyParamCaption})}
 
 
 
@@ -247,7 +247,7 @@ Set the style for the inner joins of connected lines in a graphics context.
 \hline
 \end{DoxyParams}
 \begin{DoxySeeAlso}{See also}
-\doxyref{ps\+\_\+set\+\_\+line\+\_\+cap}{p.}{group__stroke_gadb1c82ca13abac1c02f09e0e4804b33a}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+width}{p.}{group__stroke_gaa7c2102304123fab38eb57b68af23440}, \doxyref{ps\+\_\+set\+\_\+miter\+\_\+limit}{p.}{group__stroke_ga83568c0d29c26a834d05c93e48909328}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+color}{p.}{group__stroke_gacc37293e8d7ceda573a0a3625b169076}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+dash}{p.}{group__stroke_ga14690c35aae12a4262af1bfb2fbdd96e}, \doxyref{ps\+\_\+reset\+\_\+line\+\_\+dash}{p.}{group__stroke_ga6d9522c011d21ff17a4c5f6e5ef7f914}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+join}{p.}{group__stroke_ga502a7abc4f46bbd8ba54b187a9f05220} 
+\doxyref{ps\+\_\+set\+\_\+line\+\_\+cap}{p.}{group__stroke_gadb1c82ca13abac1c02f09e0e4804b33a}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+width}{p.}{group__stroke_gaa7c2102304123fab38eb57b68af23440}, \doxyref{ps\+\_\+set\+\_\+miter\+\_\+limit}{p.}{group__stroke_ga83568c0d29c26a834d05c93e48909328}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+color}{p.}{group__stroke_gacc37293e8d7ceda573a0a3625b169076}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+dash}{p.}{group__stroke_ga3e2beff431d8efb2b3fa23b1b9bf037c}, \doxyref{ps\+\_\+reset\+\_\+line\+\_\+dash}{p.}{group__stroke_ga6d9522c011d21ff17a4c5f6e5ef7f914}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+join}{p.}{group__stroke_ga502a7abc4f46bbd8ba54b187a9f05220} 
 \end{DoxySeeAlso}
 \mbox{\label{group__stroke_ga502a7abc4f46bbd8ba54b187a9f05220}} 
 \index{Stroke@{Stroke}!ps\_set\_line\_join@{ps\_set\_line\_join}}
@@ -267,7 +267,7 @@ Set the style for the joins of connected lines in a graphics context.
 \hline
 \end{DoxyParams}
 \begin{DoxySeeAlso}{See also}
-\doxyref{ps\+\_\+set\+\_\+line\+\_\+cap}{p.}{group__stroke_gadb1c82ca13abac1c02f09e0e4804b33a}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+width}{p.}{group__stroke_gaa7c2102304123fab38eb57b68af23440}, \doxyref{ps\+\_\+set\+\_\+miter\+\_\+limit}{p.}{group__stroke_ga83568c0d29c26a834d05c93e48909328}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+color}{p.}{group__stroke_gacc37293e8d7ceda573a0a3625b169076}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+dash}{p.}{group__stroke_ga14690c35aae12a4262af1bfb2fbdd96e}, \doxyref{ps\+\_\+reset\+\_\+line\+\_\+dash}{p.}{group__stroke_ga6d9522c011d21ff17a4c5f6e5ef7f914}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+inner\+\_\+join}{p.}{group__stroke_ga14303807813ac01122f298e5212fb5fc} 
+\doxyref{ps\+\_\+set\+\_\+line\+\_\+cap}{p.}{group__stroke_gadb1c82ca13abac1c02f09e0e4804b33a}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+width}{p.}{group__stroke_gaa7c2102304123fab38eb57b68af23440}, \doxyref{ps\+\_\+set\+\_\+miter\+\_\+limit}{p.}{group__stroke_ga83568c0d29c26a834d05c93e48909328}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+color}{p.}{group__stroke_gacc37293e8d7ceda573a0a3625b169076}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+dash}{p.}{group__stroke_ga3e2beff431d8efb2b3fa23b1b9bf037c}, \doxyref{ps\+\_\+reset\+\_\+line\+\_\+dash}{p.}{group__stroke_ga6d9522c011d21ff17a4c5f6e5ef7f914}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+inner\+\_\+join}{p.}{group__stroke_ga14303807813ac01122f298e5212fb5fc} 
 \end{DoxySeeAlso}
 \mbox{\label{group__stroke_gaa7c2102304123fab38eb57b68af23440}} 
 \index{Stroke@{Stroke}!ps\_set\_line\_width@{ps\_set\_line\_width}}
@@ -293,7 +293,7 @@ If the function succeeds, the return value is the old width. If the function fai
 To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
 \end{DoxyNote}
 \begin{DoxySeeAlso}{See also}
-\doxyref{ps\+\_\+set\+\_\+line\+\_\+cap}{p.}{group__stroke_gadb1c82ca13abac1c02f09e0e4804b33a}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+join}{p.}{group__stroke_ga502a7abc4f46bbd8ba54b187a9f05220}, \doxyref{ps\+\_\+set\+\_\+miter\+\_\+limit}{p.}{group__stroke_ga83568c0d29c26a834d05c93e48909328}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+color}{p.}{group__stroke_gacc37293e8d7ceda573a0a3625b169076}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+dash}{p.}{group__stroke_ga14690c35aae12a4262af1bfb2fbdd96e}, \doxyref{ps\+\_\+reset\+\_\+line\+\_\+dash}{p.}{group__stroke_ga6d9522c011d21ff17a4c5f6e5ef7f914}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+inner\+\_\+join}{p.}{group__stroke_ga14303807813ac01122f298e5212fb5fc} 
+\doxyref{ps\+\_\+set\+\_\+line\+\_\+cap}{p.}{group__stroke_gadb1c82ca13abac1c02f09e0e4804b33a}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+join}{p.}{group__stroke_ga502a7abc4f46bbd8ba54b187a9f05220}, \doxyref{ps\+\_\+set\+\_\+miter\+\_\+limit}{p.}{group__stroke_ga83568c0d29c26a834d05c93e48909328}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+color}{p.}{group__stroke_gacc37293e8d7ceda573a0a3625b169076}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+dash}{p.}{group__stroke_ga3e2beff431d8efb2b3fa23b1b9bf037c}, \doxyref{ps\+\_\+reset\+\_\+line\+\_\+dash}{p.}{group__stroke_ga6d9522c011d21ff17a4c5f6e5ef7f914}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+inner\+\_\+join}{p.}{group__stroke_ga14303807813ac01122f298e5212fb5fc} 
 \end{DoxySeeAlso}
 \mbox{\label{group__stroke_ga83568c0d29c26a834d05c93e48909328}} 
 \index{Stroke@{Stroke}!ps\_set\_miter\_limit@{ps\_set\_miter\_limit}}
@@ -319,7 +319,7 @@ If the function succeeds, the return value is the old miter limit. If the functi
 To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
 \end{DoxyNote}
 \begin{DoxySeeAlso}{See also}
-\doxyref{ps\+\_\+set\+\_\+line\+\_\+cap}{p.}{group__stroke_gadb1c82ca13abac1c02f09e0e4804b33a}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+join}{p.}{group__stroke_ga502a7abc4f46bbd8ba54b187a9f05220}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+width}{p.}{group__stroke_gaa7c2102304123fab38eb57b68af23440}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+color}{p.}{group__stroke_gacc37293e8d7ceda573a0a3625b169076}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+dash}{p.}{group__stroke_ga14690c35aae12a4262af1bfb2fbdd96e}, \doxyref{ps\+\_\+reset\+\_\+line\+\_\+dash}{p.}{group__stroke_ga6d9522c011d21ff17a4c5f6e5ef7f914}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+inner\+\_\+join}{p.}{group__stroke_ga14303807813ac01122f298e5212fb5fc} 
+\doxyref{ps\+\_\+set\+\_\+line\+\_\+cap}{p.}{group__stroke_gadb1c82ca13abac1c02f09e0e4804b33a}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+join}{p.}{group__stroke_ga502a7abc4f46bbd8ba54b187a9f05220}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+width}{p.}{group__stroke_gaa7c2102304123fab38eb57b68af23440}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+color}{p.}{group__stroke_gacc37293e8d7ceda573a0a3625b169076}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+dash}{p.}{group__stroke_ga3e2beff431d8efb2b3fa23b1b9bf037c}, \doxyref{ps\+\_\+reset\+\_\+line\+\_\+dash}{p.}{group__stroke_ga6d9522c011d21ff17a4c5f6e5ef7f914}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+inner\+\_\+join}{p.}{group__stroke_ga14303807813ac01122f298e5212fb5fc} 
 \end{DoxySeeAlso}
 \mbox{\label{group__stroke_ga6ddddfdba22f22a1583119e1b150e6fb}} 
 \index{Stroke@{Stroke}!ps\_set\_stroke\_canvas@{ps\_set\_stroke\_canvas}}
@@ -339,7 +339,7 @@ Set a canvas to the context, it is used to stroke a graphic object.
 \hline
 \end{DoxyParams}
 \begin{DoxySeeAlso}{See also}
-\doxyref{ps\+\_\+set\+\_\+line\+\_\+cap}{p.}{group__stroke_gadb1c82ca13abac1c02f09e0e4804b33a}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+join}{p.}{group__stroke_ga502a7abc4f46bbd8ba54b187a9f05220}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+width}{p.}{group__stroke_gaa7c2102304123fab38eb57b68af23440}, \doxyref{ps\+\_\+set\+\_\+miter\+\_\+limit}{p.}{group__stroke_ga83568c0d29c26a834d05c93e48909328}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+dash}{p.}{group__stroke_ga14690c35aae12a4262af1bfb2fbdd96e}, \doxyref{ps\+\_\+reset\+\_\+line\+\_\+dash}{p.}{group__stroke_ga6d9522c011d21ff17a4c5f6e5ef7f914}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+inner\+\_\+join}{p.}{group__stroke_ga14303807813ac01122f298e5212fb5fc}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+color}{p.}{group__stroke_gacc37293e8d7ceda573a0a3625b169076} \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+image}{p.}{group__stroke_ga0cd821b1abab722e43fda7c48e01bca6}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+pattern}{p.}{group__stroke_ga87c581e0da2e0e66c0e6f3037ba64e40}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+gradient}{p.}{group__stroke_gaeea9b60ea7eabf6ff291a3a7d002770e} 
+\doxyref{ps\+\_\+set\+\_\+line\+\_\+cap}{p.}{group__stroke_gadb1c82ca13abac1c02f09e0e4804b33a}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+join}{p.}{group__stroke_ga502a7abc4f46bbd8ba54b187a9f05220}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+width}{p.}{group__stroke_gaa7c2102304123fab38eb57b68af23440}, \doxyref{ps\+\_\+set\+\_\+miter\+\_\+limit}{p.}{group__stroke_ga83568c0d29c26a834d05c93e48909328}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+dash}{p.}{group__stroke_ga3e2beff431d8efb2b3fa23b1b9bf037c}, \doxyref{ps\+\_\+reset\+\_\+line\+\_\+dash}{p.}{group__stroke_ga6d9522c011d21ff17a4c5f6e5ef7f914}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+inner\+\_\+join}{p.}{group__stroke_ga14303807813ac01122f298e5212fb5fc}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+color}{p.}{group__stroke_gacc37293e8d7ceda573a0a3625b169076} \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+image}{p.}{group__stroke_ga0cd821b1abab722e43fda7c48e01bca6}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+pattern}{p.}{group__stroke_ga87c581e0da2e0e66c0e6f3037ba64e40}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+gradient}{p.}{group__stroke_gaeea9b60ea7eabf6ff291a3a7d002770e} 
 \end{DoxySeeAlso}
 \mbox{\label{group__stroke_gacc37293e8d7ceda573a0a3625b169076}} 
 \index{Stroke@{Stroke}!ps\_set\_stroke\_color@{ps\_set\_stroke\_color}}
@@ -359,7 +359,7 @@ Set a color to the context, it is used to stroke a graphic object.
 \hline
 \end{DoxyParams}
 \begin{DoxySeeAlso}{See also}
-\doxyref{ps\+\_\+set\+\_\+line\+\_\+cap}{p.}{group__stroke_gadb1c82ca13abac1c02f09e0e4804b33a}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+join}{p.}{group__stroke_ga502a7abc4f46bbd8ba54b187a9f05220}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+width}{p.}{group__stroke_gaa7c2102304123fab38eb57b68af23440}, \doxyref{ps\+\_\+set\+\_\+miter\+\_\+limit}{p.}{group__stroke_ga83568c0d29c26a834d05c93e48909328}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+dash}{p.}{group__stroke_ga14690c35aae12a4262af1bfb2fbdd96e}, \doxyref{ps\+\_\+reset\+\_\+line\+\_\+dash}{p.}{group__stroke_ga6d9522c011d21ff17a4c5f6e5ef7f914}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+inner\+\_\+join}{p.}{group__stroke_ga14303807813ac01122f298e5212fb5fc}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+image}{p.}{group__stroke_ga0cd821b1abab722e43fda7c48e01bca6} \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+pattern}{p.}{group__stroke_ga87c581e0da2e0e66c0e6f3037ba64e40}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+gradient}{p.}{group__stroke_gaeea9b60ea7eabf6ff291a3a7d002770e}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+canvas}{p.}{group__stroke_ga6ddddfdba22f22a1583119e1b150e6fb} 
+\doxyref{ps\+\_\+set\+\_\+line\+\_\+cap}{p.}{group__stroke_gadb1c82ca13abac1c02f09e0e4804b33a}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+join}{p.}{group__stroke_ga502a7abc4f46bbd8ba54b187a9f05220}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+width}{p.}{group__stroke_gaa7c2102304123fab38eb57b68af23440}, \doxyref{ps\+\_\+set\+\_\+miter\+\_\+limit}{p.}{group__stroke_ga83568c0d29c26a834d05c93e48909328}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+dash}{p.}{group__stroke_ga3e2beff431d8efb2b3fa23b1b9bf037c}, \doxyref{ps\+\_\+reset\+\_\+line\+\_\+dash}{p.}{group__stroke_ga6d9522c011d21ff17a4c5f6e5ef7f914}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+inner\+\_\+join}{p.}{group__stroke_ga14303807813ac01122f298e5212fb5fc}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+image}{p.}{group__stroke_ga0cd821b1abab722e43fda7c48e01bca6} \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+pattern}{p.}{group__stroke_ga87c581e0da2e0e66c0e6f3037ba64e40}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+gradient}{p.}{group__stroke_gaeea9b60ea7eabf6ff291a3a7d002770e}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+canvas}{p.}{group__stroke_ga6ddddfdba22f22a1583119e1b150e6fb} 
 \end{DoxySeeAlso}
 \mbox{\label{group__stroke_gaeea9b60ea7eabf6ff291a3a7d002770e}} 
 \index{Stroke@{Stroke}!ps\_set\_stroke\_gradient@{ps\_set\_stroke\_gradient}}
@@ -379,7 +379,7 @@ Set a gradient to the context, it is used to stroke a graphic object.
 \hline
 \end{DoxyParams}
 \begin{DoxySeeAlso}{See also}
-\doxyref{ps\+\_\+set\+\_\+line\+\_\+cap}{p.}{group__stroke_gadb1c82ca13abac1c02f09e0e4804b33a}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+join}{p.}{group__stroke_ga502a7abc4f46bbd8ba54b187a9f05220}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+width}{p.}{group__stroke_gaa7c2102304123fab38eb57b68af23440}, \doxyref{ps\+\_\+set\+\_\+miter\+\_\+limit}{p.}{group__stroke_ga83568c0d29c26a834d05c93e48909328}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+dash}{p.}{group__stroke_ga14690c35aae12a4262af1bfb2fbdd96e}, \doxyref{ps\+\_\+reset\+\_\+line\+\_\+dash}{p.}{group__stroke_ga6d9522c011d21ff17a4c5f6e5ef7f914}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+inner\+\_\+join}{p.}{group__stroke_ga14303807813ac01122f298e5212fb5fc}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+color}{p.}{group__stroke_gacc37293e8d7ceda573a0a3625b169076} \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+image}{p.}{group__stroke_ga0cd821b1abab722e43fda7c48e01bca6}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+pattern}{p.}{group__stroke_ga87c581e0da2e0e66c0e6f3037ba64e40}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+canvas}{p.}{group__stroke_ga6ddddfdba22f22a1583119e1b150e6fb} 
+\doxyref{ps\+\_\+set\+\_\+line\+\_\+cap}{p.}{group__stroke_gadb1c82ca13abac1c02f09e0e4804b33a}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+join}{p.}{group__stroke_ga502a7abc4f46bbd8ba54b187a9f05220}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+width}{p.}{group__stroke_gaa7c2102304123fab38eb57b68af23440}, \doxyref{ps\+\_\+set\+\_\+miter\+\_\+limit}{p.}{group__stroke_ga83568c0d29c26a834d05c93e48909328}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+dash}{p.}{group__stroke_ga3e2beff431d8efb2b3fa23b1b9bf037c}, \doxyref{ps\+\_\+reset\+\_\+line\+\_\+dash}{p.}{group__stroke_ga6d9522c011d21ff17a4c5f6e5ef7f914}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+inner\+\_\+join}{p.}{group__stroke_ga14303807813ac01122f298e5212fb5fc}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+color}{p.}{group__stroke_gacc37293e8d7ceda573a0a3625b169076} \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+image}{p.}{group__stroke_ga0cd821b1abab722e43fda7c48e01bca6}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+pattern}{p.}{group__stroke_ga87c581e0da2e0e66c0e6f3037ba64e40}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+canvas}{p.}{group__stroke_ga6ddddfdba22f22a1583119e1b150e6fb} 
 \end{DoxySeeAlso}
 \mbox{\label{group__stroke_ga0cd821b1abab722e43fda7c48e01bca6}} 
 \index{Stroke@{Stroke}!ps\_set\_stroke\_image@{ps\_set\_stroke\_image}}
@@ -399,7 +399,7 @@ Set a image to the context, it is used to stroke a graphic object.
 \hline
 \end{DoxyParams}
 \begin{DoxySeeAlso}{See also}
-\doxyref{ps\+\_\+set\+\_\+line\+\_\+cap}{p.}{group__stroke_gadb1c82ca13abac1c02f09e0e4804b33a}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+join}{p.}{group__stroke_ga502a7abc4f46bbd8ba54b187a9f05220}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+width}{p.}{group__stroke_gaa7c2102304123fab38eb57b68af23440}, \doxyref{ps\+\_\+set\+\_\+miter\+\_\+limit}{p.}{group__stroke_ga83568c0d29c26a834d05c93e48909328}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+dash}{p.}{group__stroke_ga14690c35aae12a4262af1bfb2fbdd96e}, \doxyref{ps\+\_\+reset\+\_\+line\+\_\+dash}{p.}{group__stroke_ga6d9522c011d21ff17a4c5f6e5ef7f914}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+inner\+\_\+join}{p.}{group__stroke_ga14303807813ac01122f298e5212fb5fc}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+color}{p.}{group__stroke_gacc37293e8d7ceda573a0a3625b169076} \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+pattern}{p.}{group__stroke_ga87c581e0da2e0e66c0e6f3037ba64e40}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+gradient}{p.}{group__stroke_gaeea9b60ea7eabf6ff291a3a7d002770e}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+canvas}{p.}{group__stroke_ga6ddddfdba22f22a1583119e1b150e6fb} 
+\doxyref{ps\+\_\+set\+\_\+line\+\_\+cap}{p.}{group__stroke_gadb1c82ca13abac1c02f09e0e4804b33a}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+join}{p.}{group__stroke_ga502a7abc4f46bbd8ba54b187a9f05220}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+width}{p.}{group__stroke_gaa7c2102304123fab38eb57b68af23440}, \doxyref{ps\+\_\+set\+\_\+miter\+\_\+limit}{p.}{group__stroke_ga83568c0d29c26a834d05c93e48909328}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+dash}{p.}{group__stroke_ga3e2beff431d8efb2b3fa23b1b9bf037c}, \doxyref{ps\+\_\+reset\+\_\+line\+\_\+dash}{p.}{group__stroke_ga6d9522c011d21ff17a4c5f6e5ef7f914}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+inner\+\_\+join}{p.}{group__stroke_ga14303807813ac01122f298e5212fb5fc}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+color}{p.}{group__stroke_gacc37293e8d7ceda573a0a3625b169076} \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+pattern}{p.}{group__stroke_ga87c581e0da2e0e66c0e6f3037ba64e40}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+gradient}{p.}{group__stroke_gaeea9b60ea7eabf6ff291a3a7d002770e}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+canvas}{p.}{group__stroke_ga6ddddfdba22f22a1583119e1b150e6fb} 
 \end{DoxySeeAlso}
 \mbox{\label{group__stroke_ga87c581e0da2e0e66c0e6f3037ba64e40}} 
 \index{Stroke@{Stroke}!ps\_set\_stroke\_pattern@{ps\_set\_stroke\_pattern}}
@@ -419,5 +419,5 @@ Set a pattern to the context, it is used to stroke a graphic object.
 \hline
 \end{DoxyParams}
 \begin{DoxySeeAlso}{See also}
-\doxyref{ps\+\_\+set\+\_\+line\+\_\+cap}{p.}{group__stroke_gadb1c82ca13abac1c02f09e0e4804b33a}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+join}{p.}{group__stroke_ga502a7abc4f46bbd8ba54b187a9f05220}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+width}{p.}{group__stroke_gaa7c2102304123fab38eb57b68af23440}, \doxyref{ps\+\_\+set\+\_\+miter\+\_\+limit}{p.}{group__stroke_ga83568c0d29c26a834d05c93e48909328}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+dash}{p.}{group__stroke_ga14690c35aae12a4262af1bfb2fbdd96e}, \doxyref{ps\+\_\+reset\+\_\+line\+\_\+dash}{p.}{group__stroke_ga6d9522c011d21ff17a4c5f6e5ef7f914}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+inner\+\_\+join}{p.}{group__stroke_ga14303807813ac01122f298e5212fb5fc}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+color}{p.}{group__stroke_gacc37293e8d7ceda573a0a3625b169076} \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+image}{p.}{group__stroke_ga0cd821b1abab722e43fda7c48e01bca6}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+gradient}{p.}{group__stroke_gaeea9b60ea7eabf6ff291a3a7d002770e}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+canvas}{p.}{group__stroke_ga6ddddfdba22f22a1583119e1b150e6fb} 
+\doxyref{ps\+\_\+set\+\_\+line\+\_\+cap}{p.}{group__stroke_gadb1c82ca13abac1c02f09e0e4804b33a}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+join}{p.}{group__stroke_ga502a7abc4f46bbd8ba54b187a9f05220}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+width}{p.}{group__stroke_gaa7c2102304123fab38eb57b68af23440}, \doxyref{ps\+\_\+set\+\_\+miter\+\_\+limit}{p.}{group__stroke_ga83568c0d29c26a834d05c93e48909328}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+dash}{p.}{group__stroke_ga3e2beff431d8efb2b3fa23b1b9bf037c}, \doxyref{ps\+\_\+reset\+\_\+line\+\_\+dash}{p.}{group__stroke_ga6d9522c011d21ff17a4c5f6e5ef7f914}, \doxyref{ps\+\_\+set\+\_\+line\+\_\+inner\+\_\+join}{p.}{group__stroke_ga14303807813ac01122f298e5212fb5fc}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+color}{p.}{group__stroke_gacc37293e8d7ceda573a0a3625b169076} \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+image}{p.}{group__stroke_ga0cd821b1abab722e43fda7c48e01bca6}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+gradient}{p.}{group__stroke_gaeea9b60ea7eabf6ff291a3a7d002770e}, \doxyref{ps\+\_\+set\+\_\+stroke\+\_\+canvas}{p.}{group__stroke_ga6ddddfdba22f22a1583119e1b150e6fb} 
 \end{DoxySeeAlso}

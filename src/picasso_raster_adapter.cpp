@@ -46,32 +46,32 @@ bool raster_adapter::is_empty(void) const
     return m_impl->is_empty();
 }
 
-void raster_adapter::add_shape(const vertex_source& vs, unsigned int id)
+void raster_adapter::add_shape(const vertex_source& vs, uint32_t id)
 {
     m_impl->add_shape(vs, id);
 }
 
-void raster_adapter::set_stroke_dashes(scalar start, const scalar* dashes, unsigned int num)
+void raster_adapter::set_stroke_dashes(scalar start, const scalar* dashes, uint32_t num)
 {
     m_impl->set_stroke_dashes(start, dashes, num);
 }
 
-void raster_adapter::set_stroke_attr_val(int idx, scalar val)
+void raster_adapter::set_stroke_attr_val(int32_t idx, scalar val)
 {
     m_impl->set_stroke_attr_val(idx, val);
 }
 
-void raster_adapter::set_stroke_attr(int idx, int val)
+void raster_adapter::set_stroke_attr(int32_t idx, int32_t val)
 {
     m_impl->set_stroke_attr(idx, val);
 }
 
-void raster_adapter::set_fill_attr(int idx, int val)
+void raster_adapter::set_fill_attr(int32_t idx, int32_t val)
 {
     m_impl->set_fill_attr(idx, val);
 }
 
-void raster_adapter::set_raster_method(unsigned int m)
+void raster_adapter::set_raster_method(uint32_t m)
 {
     m_impl->set_raster_method(m);
 }

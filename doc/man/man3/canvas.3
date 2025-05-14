@@ -1,4 +1,4 @@
-.TH "canvas" 3 "Tue Dec 24 2024" "Version 2.8" "Picasso API" \" -*- nroff -*-
+.TH "canvas" 3 "Tue May 13 2025" "Version 2.8" "Picasso API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -18,7 +18,7 @@ canvas
 
 .in +1c
 .ti -1c
-.RI "enum \fB_ps_color_format\fP { \fBCOLOR_FORMAT_RGBA\fP, \fBCOLOR_FORMAT_ARGB\fP, \fBCOLOR_FORMAT_ABGR\fP, \fBCOLOR_FORMAT_BGRA\fP, \fBCOLOR_FORMAT_RGB\fP, \fBCOLOR_FORMAT_BGR\fP, \fBCOLOR_FORMAT_RGB565\fP, \fBCOLOR_FORMAT_RGB555\fP, \fBCOLOR_FORMAT_UNKNOWN\fP }"
+.RI "enum \fB_ps_color_format\fP { \fBCOLOR_FORMAT_RGBA\fP, \fBCOLOR_FORMAT_ARGB\fP, \fBCOLOR_FORMAT_ABGR\fP, \fBCOLOR_FORMAT_BGRA\fP, \fBCOLOR_FORMAT_RGB\fP, \fBCOLOR_FORMAT_BGR\fP, \fBCOLOR_FORMAT_RGB565\fP, \fBCOLOR_FORMAT_RGB555\fP, \fBCOLOR_FORMAT_A8\fP, \fBCOLOR_FORMAT_UNKNOWN\fP }"
 .br
 .RI "Pixel formats of canvas or image\&. "
 .in -1c
@@ -26,15 +26,15 @@ canvas
 
 .in +1c
 .ti -1c
-.RI "PEXPORT \fBps_canvas\fP *PICAPI \fBps_canvas_create\fP (\fBps_color_format\fP fmt, int width, int height)"
+.RI "PEXPORT \fBps_canvas\fP *PICAPI \fBps_canvas_create\fP (\fBps_color_format\fP fmt, int32_t width, int32_t height)"
 .br
 .RI "Create a new canvas using the given parameters\&. "
 .ti -1c
-.RI "PEXPORT \fBps_canvas\fP *PICAPI \fBps_canvas_create_with_data\fP (\fBps_byte\fP *data, \fBps_color_format\fP fmt, int width, int height, int pitch)"
+.RI "PEXPORT \fBps_canvas\fP *PICAPI \fBps_canvas_create_with_data\fP (\fBps_byte\fP *data, \fBps_color_format\fP fmt, int32_t width, int32_t height, int32_t pitch)"
 .br
 .RI "Create a new canvas using a given address in memory\&. "
 .ti -1c
-.RI "PEXPORT \fBps_canvas\fP *PICAPI \fBps_canvas_create_compatible\fP (const \fBps_canvas\fP *canvas, int width, int height)"
+.RI "PEXPORT \fBps_canvas\fP *PICAPI \fBps_canvas_create_compatible\fP (const \fBps_canvas\fP *canvas, int32_t width, int32_t height)"
 .br
 .RI "Create a new canvas to compatible with an existing canvas\&. "
 .ti -1c
@@ -46,7 +46,7 @@ canvas
 .br
 .RI "Create a new canvas using part of an existing ps_image object in same pixel buffer\&. "
 .ti -1c
-.RI "PEXPORT \fBps_canvas\fP *PICAPI \fBps_canvas_replace_data\fP (\fBps_canvas\fP *canvas, \fBps_byte\fP *data, \fBps_color_format\fP fmt, int width, int height, int pitch)"
+.RI "PEXPORT \fBps_canvas\fP *PICAPI \fBps_canvas_replace_data\fP (\fBps_canvas\fP *canvas, \fBps_byte\fP *data, \fBps_color_format\fP fmt, int32_t width, int32_t height, int32_t pitch)"
 .br
 .RI "Replace a canvas target rendering buffer address in memory, which is only use for canvas create by \fIps_canvas_create_with_data\fP\&. "
 .ti -1c
@@ -115,6 +115,9 @@ Pixel formats of canvas or image\&.
 \fB\fICOLOR_FORMAT_RGB555 \fP\fP
 16bpp, 5bpc, RGB color space\&. 
 .TP
+\fB\fICOLOR_FORMAT_A8 \fP\fP
+8bit, gray color space\&. 
+.TP
 \fB\fICOLOR_FORMAT_UNKNOWN \fP\fP
 Unsupported color space\&. 
 .PP
@@ -148,7 +151,7 @@ The two canvas's color format must be equal, otherwish will be failed and \fISTA
 .RE
 .PP
 
-.SS "\fBps_canvas\fP * ps_canvas_create (\fBps_color_format\fP fmt, int width, int height)"
+.SS "\fBps_canvas\fP * ps_canvas_create (\fBps_color_format\fP fmt, int32_t width, int32_t height)"
 
 .PP
 Create a new canvas using the given parameters\&. 
@@ -174,11 +177,11 @@ To get extended error information, call \fIps_last_status\fP\&.
 .PP
 \fBSee also\fP
 .RS 4
-\fBps_canvas_create_with_data\fP, \fBps_canvas_create_compatible\fP, \fBps_canvas_create_from_canvas\fP, \fBps_canvas_create_from_image\fP, \fBps_canvas_ref\fP, \fBps_canvas_unref\fP 
+\fBps_canvas_create_with_data\fP, \fBps_canvas_create_compatible\fP, \fBps_canvas_create_from_canvas\fP, \fBps_canvas_create_from_image\fP, ps_canvas_create_from_mask, \fBps_canvas_ref\fP, \fBps_canvas_unref\fP 
 .RE
 .PP
 
-.SS "\fBps_canvas\fP * ps_canvas_create_compatible (const \fBps_canvas\fP * canvas, int width, int height)"
+.SS "\fBps_canvas\fP * ps_canvas_create_compatible (const \fBps_canvas\fP * canvas, int32_t width, int32_t height)"
 
 .PP
 Create a new canvas to compatible with an existing canvas\&. 
@@ -204,7 +207,7 @@ To get extended error information, call \fIps_last_status\fP\&.
 .PP
 \fBSee also\fP
 .RS 4
-\fBps_canvas_create\fP, \fBps_canvas_create_with_data\fP, \fBps_canvas_create_from_canvas\fP, \fBps_canvas_create_from_image\fP, \fBps_canvas_ref\fP, \fBps_canvas_unref\fP 
+\fBps_canvas_create\fP, \fBps_canvas_create_with_data\fP, \fBps_canvas_create_from_canvas\fP, \fBps_canvas_create_from_image\fP, ps_canvas_create_from_mask, \fBps_canvas_ref\fP, \fBps_canvas_unref\fP 
 .RE
 .PP
 
@@ -232,7 +235,7 @@ To get extended error information, call \fIps_last_status\fP\&.
 .PP
 \fBSee also\fP
 .RS 4
-\fBps_canvas_create\fP, \fBps_canvas_create_with_data\fP, \fBps_canvas_create_compatible\fP, \fBps_canvas_create_from_image\fP, \fBps_canvas_ref\fP, \fBps_canvas_unref\fP 
+\fBps_canvas_create\fP, \fBps_canvas_create_with_data\fP, \fBps_canvas_create_compatible\fP, \fBps_canvas_create_from_image\fP, ps_canvas_create_from_mask, \fBps_canvas_ref\fP, \fBps_canvas_unref\fP 
 .RE
 .PP
 
@@ -260,11 +263,11 @@ To get extended error information, call \fIps_last_status\fP\&.
 .PP
 \fBSee also\fP
 .RS 4
-\fBps_canvas_create\fP, \fBps_canvas_create_with_data\fP, \fBps_canvas_create_compatible\fP, \fBps_canvas_create_from_canvas\fP, \fBps_canvas_ref\fP, \fBps_canvas_unref\fP 
+\fBps_canvas_create\fP, \fBps_canvas_create_with_data\fP, \fBps_canvas_create_compatible\fP, \fBps_canvas_create_from_canvas\fP, ps_canvas_create_from_mask, \fBps_canvas_ref\fP, \fBps_canvas_unref\fP 
 .RE
 .PP
 
-.SS "\fBps_canvas\fP * ps_canvas_create_with_data (\fBps_byte\fP * data, \fBps_color_format\fP fmt, int width, int height, int pitch)"
+.SS "\fBps_canvas\fP * ps_canvas_create_with_data (\fBps_byte\fP * data, \fBps_color_format\fP fmt, int32_t width, int32_t height, int32_t pitch)"
 
 .PP
 Create a new canvas using a given address in memory\&. 
@@ -294,7 +297,7 @@ To get extended error information, call \fIps_last_status\fP\&.
 .PP
 \fBSee also\fP
 .RS 4
-\fBps_canvas_create\fP, \fBps_canvas_create_compatible\fP, \fBps_canvas_create_from_canvas\fP, \fBps_canvas_create_from_image\fP, \fBps_canvas_ref\fP, \fBps_canvas_unref\fP, \fBps_canvas_replace_data\fP 
+\fBps_canvas_create\fP, \fBps_canvas_create_compatible\fP, \fBps_canvas_create_from_canvas\fP, \fBps_canvas_create_from_image\fP, ps_canvas_create_from_mask, \fBps_canvas_ref\fP, \fBps_canvas_unref\fP, \fBps_canvas_replace_data\fP 
 .RE
 .PP
 
@@ -378,7 +381,7 @@ To get extended error information, call \fIps_last_status\fP\&.
 .RE
 .PP
 
-.SS "\fBps_canvas\fP *PICAPI ps_canvas_replace_data (\fBps_canvas\fP * canvas, \fBps_byte\fP * data, \fBps_color_format\fP fmt, int width, int height, int pitch)"
+.SS "\fBps_canvas\fP *PICAPI ps_canvas_replace_data (\fBps_canvas\fP * canvas, \fBps_byte\fP * data, \fBps_color_format\fP fmt, int32_t width, int32_t height, int32_t pitch)"
 
 .PP
 Replace a canvas target rendering buffer address in memory, which is only use for canvas create by \fIps_canvas_create_with_data\fP\&. 

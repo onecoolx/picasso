@@ -102,6 +102,11 @@ font_adapter::font_adapter(const char* name, int charset, scalar size, scalar we
     if ((CTFontGetSymbolicTraits(m_impl->font) & kCTFontTraitItalic) == 0 && italic) {
         m_impl->matrix = CGAffineTransformConcat(m_impl->matrix, CGAffineTransformMake(1.0, 0.0, 0.4, 1.0, 0.0, 0.0));
     }
+    m_impl->ascent = (scalar)CTFontGetAscent(m_impl->font);
+    m_impl->descent = (scalar)CTFontGetDescent(m_impl->font);
+    m_impl->leading = (scalar)CTFontGetLeading(m_impl->font);
+    m_impl->units_per_em = CTFontGetUnitsPerEm(m_impl->font);
+    m_impl->height = m_impl->ascent + m_impl->descent;
     // FIXME： weight not implement.
     CFRelease(fName);
 }
@@ -178,11 +183,7 @@ bool font_adapter::prepare_glyph(uint32_t code)
         CGPathApply(fontPath, m_impl, _cgPathReader);
         m_impl->cur_bound_rect = get_bounding_rect(m_impl->cur_font_path);
         m_impl->cur_data_size = m_impl->cur_font_path.total_byte_size()+sizeof(uint32_t);//count data
-        m_impl->ascent = (scalar)CTFontGetAscent(m_impl->font);
-        m_impl->descent = (scalar)CTFontGetDescent(m_impl->font);
-        m_impl->leading = (scalar)CTFontGetLeading(m_impl->font);
-        m_impl->units_per_em = CTFontGetUnitsPerEm(m_impl->font);
-        m_impl->height = m_impl->ascent + m_impl->descent;
+
         CGPathRelease(fontPath);
         return true;
     }

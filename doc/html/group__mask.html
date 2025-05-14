@@ -48,9 +48,12 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ga6705aec0eba1809d7546391e1021b4db"><td class="memItemLeft" align="right" valign="top">PEXPORT <a class="el" href="group__objects.html#ga092f94fd838b031395acbda684394b63">ps_mask</a> *PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__mask.html#ga6705aec0eba1809d7546391e1021b4db">ps_mask_create_with_data</a> (<a class="el" href="group__data.html#gab4d32618dcac1b191ee7db92ef475ed0">ps_byte</a> *data, int width, int height)</td></tr>
-<tr class="memdesc:ga6705aec0eba1809d7546391e1021b4db"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a new mask using a given data block.  <a href="group__mask.html#ga6705aec0eba1809d7546391e1021b4db">More...</a><br /></td></tr>
-<tr class="separator:ga6705aec0eba1809d7546391e1021b4db"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga017d3944f6280c2b8cbba87da84d47e9"><td class="memItemLeft" align="right" valign="top">PEXPORT <a class="el" href="group__objects.html#ga092f94fd838b031395acbda684394b63">ps_mask</a> *PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__mask.html#ga017d3944f6280c2b8cbba87da84d47e9">ps_mask_create</a> (int32_t width, int32_t height)</td></tr>
+<tr class="memdesc:ga017d3944f6280c2b8cbba87da84d47e9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a new mask.  <a href="group__mask.html#ga017d3944f6280c2b8cbba87da84d47e9">More...</a><br /></td></tr>
+<tr class="separator:ga017d3944f6280c2b8cbba87da84d47e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gad3c0e4b2ed43c18ed3969539ce80e4be"><td class="memItemLeft" align="right" valign="top">PEXPORT <a class="el" href="group__objects.html#ga092f94fd838b031395acbda684394b63">ps_mask</a> *PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__mask.html#gad3c0e4b2ed43c18ed3969539ce80e4be">ps_mask_create_with_data</a> (<a class="el" href="group__data.html#gab4d32618dcac1b191ee7db92ef475ed0">ps_byte</a> *data, int32_t width, int32_t height)</td></tr>
+<tr class="memdesc:gad3c0e4b2ed43c18ed3969539ce80e4be"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a new mask using a given data block.  <a href="group__mask.html#gad3c0e4b2ed43c18ed3969539ce80e4be">More...</a><br /></td></tr>
+<tr class="separator:gad3c0e4b2ed43c18ed3969539ce80e4be"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga4e5d901b886cd95c6b78a508869cf7b2"><td class="memItemLeft" align="right" valign="top">PEXPORT <a class="el" href="group__objects.html#ga092f94fd838b031395acbda684394b63">ps_mask</a> *PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__mask.html#ga4e5d901b886cd95c6b78a508869cf7b2">ps_mask_ref</a> (<a class="el" href="group__objects.html#ga092f94fd838b031395acbda684394b63">ps_mask</a> *mask)</td></tr>
 <tr class="memdesc:ga4e5d901b886cd95c6b78a508869cf7b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Increases the reference count of the mask by 1.  <a href="group__mask.html#ga4e5d901b886cd95c6b78a508869cf7b2">More...</a><br /></td></tr>
 <tr class="separator:ga4e5d901b886cd95c6b78a508869cf7b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -131,8 +134,48 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ga6705aec0eba1809d7546391e1021b4db"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga6705aec0eba1809d7546391e1021b4db">&#9670;&nbsp;</a></span>ps_mask_create_with_data()</h2>
+<a id="ga017d3944f6280c2b8cbba87da84d47e9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga017d3944f6280c2b8cbba87da84d47e9">&#9670;&nbsp;</a></span>ps_mask_create()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__objects.html#ga092f94fd838b031395acbda684394b63">ps_mask</a> * ps_mask_create </td>
+          <td>(</td>
+          <td class="paramtype">int32_t&#160;</td>
+          <td class="paramname"><em>width</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int32_t&#160;</td>
+          <td class="paramname"><em>height</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Create a new mask. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">width</td><td>The width, in pixels, of the required mask. </td></tr>
+    <tr><td class="paramname">height</td><td>The height, in pixels, of the required mask.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>If the function succeeds, the return value is the pointer to a new mask object. If the function fails, the return value is NULL.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>To get extended error information, call <em>ps_last_status</em>.</dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__mask.html#ga4e5d901b886cd95c6b78a508869cf7b2" title="Increases the reference count of the mask by 1.">ps_mask_ref</a>, <a class="el" href="group__mask.html#gabc9c126ec3862a0ea8290079a1e165a1" title="Decrements the reference count for the mask object. If the reference count on the mask falls to 0,...">ps_mask_unref</a>, <a class="el" href="group__canvas.html#gae2c3473beecada34539bc9bcc61da3be" title="Set a new mask into an existing canvas object.">ps_canvas_set_mask</a>, <a class="el" href="group__canvas.html#ga7b52ce718da8798ce1823ed30c65d297" title="Clear the mask from the canvas object.">ps_canvas_reset_mask</a>, <a class="el" href="group__mask.html#gad3c0e4b2ed43c18ed3969539ce80e4be" title="Create a new mask using a given data block.">ps_mask_create_with_data</a> </dd></dl>
+
+</div>
+</div>
+<a id="gad3c0e4b2ed43c18ed3969539ce80e4be"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gad3c0e4b2ed43c18ed3969539ce80e4be">&#9670;&nbsp;</a></span>ps_mask_create_with_data()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -146,13 +189,13 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int&#160;</td>
+          <td class="paramtype">int32_t&#160;</td>
           <td class="paramname"><em>width</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int&#160;</td>
+          <td class="paramtype">int32_t&#160;</td>
           <td class="paramname"><em>height</em>&#160;</td>
         </tr>
         <tr>
@@ -174,7 +217,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>If the function succeeds, the return value is the pointer to a new mask object. If the function fails, the return value is NULL.</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>To get extended error information, call <em>ps_last_status</em>.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__mask.html#ga4e5d901b886cd95c6b78a508869cf7b2" title="Increases the reference count of the mask by 1.">ps_mask_ref</a>, <a class="el" href="group__mask.html#gabc9c126ec3862a0ea8290079a1e165a1" title="Decrements the reference count for the mask object. If the reference count on the mask falls to 0,...">ps_mask_unref</a>, <a class="el" href="group__canvas.html#gae2c3473beecada34539bc9bcc61da3be" title="Set a new mask into an existing canvas object.">ps_canvas_set_mask</a>, <a class="el" href="group__canvas.html#ga7b52ce718da8798ce1823ed30c65d297" title="Clear the mask from the canvas object.">ps_canvas_reset_mask</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__mask.html#ga4e5d901b886cd95c6b78a508869cf7b2" title="Increases the reference count of the mask by 1.">ps_mask_ref</a>, <a class="el" href="group__mask.html#gabc9c126ec3862a0ea8290079a1e165a1" title="Decrements the reference count for the mask object. If the reference count on the mask falls to 0,...">ps_mask_unref</a>, <a class="el" href="group__canvas.html#gae2c3473beecada34539bc9bcc61da3be" title="Set a new mask into an existing canvas object.">ps_canvas_set_mask</a>, <a class="el" href="group__canvas.html#ga7b52ce718da8798ce1823ed30c65d297" title="Clear the mask from the canvas object.">ps_canvas_reset_mask</a>, <a class="el" href="group__mask.html#ga017d3944f6280c2b8cbba87da84d47e9" title="Create a new mask.">ps_mask_create</a> </dd></dl>
 
 </div>
 </div>
@@ -203,7 +246,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>If the function succeeds, the return value is the pointer to the mask object. If the function fails, the return value is NULL.</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>To get extended error information, call <em>ps_last_status</em>.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__mask.html#ga6705aec0eba1809d7546391e1021b4db" title="Create a new mask using a given data block.">ps_mask_create_with_data</a>, <a class="el" href="group__mask.html#gabc9c126ec3862a0ea8290079a1e165a1" title="Decrements the reference count for the mask object. If the reference count on the mask falls to 0,...">ps_mask_unref</a>, <a class="el" href="group__canvas.html#gae2c3473beecada34539bc9bcc61da3be" title="Set a new mask into an existing canvas object.">ps_canvas_set_mask</a>, <a class="el" href="group__canvas.html#ga7b52ce718da8798ce1823ed30c65d297" title="Clear the mask from the canvas object.">ps_canvas_reset_mask</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__mask.html#gad3c0e4b2ed43c18ed3969539ce80e4be" title="Create a new mask using a given data block.">ps_mask_create_with_data</a>, <a class="el" href="group__mask.html#gabc9c126ec3862a0ea8290079a1e165a1" title="Decrements the reference count for the mask object. If the reference count on the mask falls to 0,...">ps_mask_unref</a>, <a class="el" href="group__canvas.html#gae2c3473beecada34539bc9bcc61da3be" title="Set a new mask into an existing canvas object.">ps_canvas_set_mask</a>, <a class="el" href="group__canvas.html#ga7b52ce718da8798ce1823ed30c65d297" title="Clear the mask from the canvas object.">ps_canvas_reset_mask</a>, <a class="el" href="group__mask.html#ga017d3944f6280c2b8cbba87da84d47e9" title="Create a new mask.">ps_mask_create</a> </dd></dl>
 
 </div>
 </div>
@@ -230,7 +273,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__mask.html#ga6705aec0eba1809d7546391e1021b4db" title="Create a new mask using a given data block.">ps_mask_create_with_data</a>, <a class="el" href="group__mask.html#ga4e5d901b886cd95c6b78a508869cf7b2" title="Increases the reference count of the mask by 1.">ps_mask_ref</a>, <a class="el" href="group__canvas.html#gae2c3473beecada34539bc9bcc61da3be" title="Set a new mask into an existing canvas object.">ps_canvas_set_mask</a>, <a class="el" href="group__canvas.html#ga7b52ce718da8798ce1823ed30c65d297" title="Clear the mask from the canvas object.">ps_canvas_reset_mask</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__mask.html#gad3c0e4b2ed43c18ed3969539ce80e4be" title="Create a new mask using a given data block.">ps_mask_create_with_data</a>, <a class="el" href="group__mask.html#ga4e5d901b886cd95c6b78a508869cf7b2" title="Increases the reference count of the mask by 1.">ps_mask_ref</a>, <a class="el" href="group__canvas.html#gae2c3473beecada34539bc9bcc61da3be" title="Set a new mask into an existing canvas object.">ps_canvas_set_mask</a>, <a class="el" href="group__canvas.html#ga7b52ce718da8798ce1823ed30c65d297" title="Clear the mask from the canvas object.">ps_canvas_reset_mask</a>, <a class="el" href="group__mask.html#ga017d3944f6280c2b8cbba87da84d47e9" title="Create a new mask.">ps_mask_create</a> </dd></dl>
 
 </div>
 </div>

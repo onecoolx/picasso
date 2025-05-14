@@ -1,4 +1,4 @@
-.TH "path" 3 "Tue Dec 24 2024" "Version 2.8" "Picasso API" \" -*- nroff -*-
+.TH "path" 3 "Tue May 13 2025" "Version 2.8" "Picasso API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -90,11 +90,11 @@ path
 .br
 .RI "Checks whether the path is empty\&. "
 .ti -1c
-.RI "PEXPORT unsigned int PICAPI \fBps_path_get_vertex_count\fP (const \fBps_path\fP *path)"
+.RI "PEXPORT uint32_t PICAPI \fBps_path_get_vertex_count\fP (const \fBps_path\fP *path)"
 .br
 .RI "Return the count of vertices in the path\&. "
 .ti -1c
-.RI "PEXPORT \fBps_path_cmd\fP PICAPI \fBps_path_get_vertex\fP (const \fBps_path\fP *path, unsigned int index, \fBps_point\fP *point)"
+.RI "PEXPORT \fBps_path_cmd\fP PICAPI \fBps_path_get_vertex\fP (const \fBps_path\fP *path, uint32_t index, \fBps_point\fP *point)"
 .br
 .RI "Get a vertex from the path by index, and return the vertex command\&. "
 .ti -1c
@@ -169,7 +169,7 @@ Bezier curve to command\&.
 \fB\fIPATH_CMD_END_POLY \fP\fP
 End polyline command\&. 
 .PP
-Definition at line 3301 of file picasso\&.h\&.
+Definition at line 3339 of file picasso\&.h\&.
 .SS "enum \fB_ps_path_op\fP"
 
 .PP
@@ -190,7 +190,7 @@ Exclusive or\&.
 \fB\fIPATH_OP_DIFF \fP\fP
 Difference\&. 
 .PP
-Definition at line 3477 of file picasso\&.h\&.
+Definition at line 3515 of file picasso\&.h\&.
 .SH "Function Documentation"
 .PP 
 .SS "void ps_path_add_arc (\fBps_path\fP * path, const \fBps_point\fP * cp, float radius, float sangle, float eangle, \fBps_bool\fP clockwise)"
@@ -541,7 +541,7 @@ To get extended error information, call \fIps_last_status\fP\&.
 .RE
 .PP
 
-.SS "\fBps_path_cmd\fP ps_path_get_vertex (const \fBps_path\fP * path, unsigned int index, \fBps_point\fP * point)"
+.SS "\fBps_path_cmd\fP ps_path_get_vertex (const \fBps_path\fP * path, uint32_t index, \fBps_point\fP * point)"
 
 .PP
 Get a vertex from the path by index, and return the vertex command\&. 
@@ -571,7 +571,7 @@ To get extended error information, call \fIps_last_status\fP\&.
 .RE
 .PP
 
-.SS "unsigned int ps_path_get_vertex_count (const \fBps_path\fP * path)"
+.SS "uint32_t ps_path_get_vertex_count (const \fBps_path\fP * path)"
 
 .PP
 Return the count of vertices in the path\&. 

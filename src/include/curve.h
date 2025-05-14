@@ -53,12 +53,12 @@ public:
     void cusp_limit(scalar) {}
     scalar cusp_limit(void) const { return FLT_TO_SCALAR(0.0f); }
 
-    virtual void rewind(unsigned int id);
-    virtual unsigned int vertex(scalar* x, scalar* y);
+    virtual void rewind(uint32_t id);
+    virtual uint32_t vertex(scalar* x, scalar* y);
 
 private:
-    int m_num_steps;
-    int m_step;
+    int32_t m_num_steps;
+    int32_t m_step;
     scalar m_scale;
     scalar m_start_x;
     scalar m_start_y;
@@ -114,12 +114,12 @@ public:
     void cusp_limit(scalar) {}
     scalar cusp_limit(void) const { return FLT_TO_SCALAR(0.0f); }
 
-    virtual void rewind(unsigned int id)
+    virtual void rewind(uint32_t id)
     {
         m_count = 0;
     }
 
-    virtual unsigned int vertex(scalar* x, scalar* y)
+    virtual uint32_t vertex(scalar* x, scalar* y)
     {
         if (m_count >= m_points.size()) {
             return path_cmd_stop;
@@ -134,12 +134,12 @@ public:
 private:
     void bezier(scalar x1, scalar y1, scalar x2, scalar y2, scalar x3, scalar y3);
     void recursive_bezier(scalar x1, scalar y1, scalar x2, scalar y2,
-                          scalar x3, scalar y3, unsigned int level);
+                          scalar x3, scalar y3, uint32_t level);
 
     scalar m_approximation_scale;
     scalar m_distance_tolerance_square;
     scalar m_angle_tolerance;
-    unsigned int m_count;
+    uint32_t m_count;
     pod_bvector<vertex_s> m_points;
 };
 
@@ -178,12 +178,12 @@ public:
     void cusp_limit(scalar) {}
     scalar cusp_limit(void) const { return FLT_TO_SCALAR(0.0f); }
 
-    virtual void rewind(unsigned int id);
-    virtual unsigned int vertex(scalar* x, scalar* y);
+    virtual void rewind(uint32_t id);
+    virtual uint32_t vertex(scalar* x, scalar* y);
 
 private:
-    int m_num_steps;
-    int m_step;
+    int32_t m_num_steps;
+    int32_t m_step;
     scalar m_scale;
     scalar m_start_x;
     scalar m_start_y;
@@ -255,12 +255,12 @@ public:
         return (m_cusp_limit == FLT_TO_SCALAR(0.0f)) ? FLT_TO_SCALAR(0.0f) : PI - m_cusp_limit;
     }
 
-    virtual void rewind(unsigned int id)
+    virtual void rewind(uint32_t id)
     {
         m_count = 0;
     }
 
-    virtual unsigned int vertex(scalar* x, scalar* y)
+    virtual uint32_t vertex(scalar* x, scalar* y)
     {
         if (m_count >= m_points.size()) {
             return path_cmd_stop;
@@ -282,13 +282,13 @@ private:
                           scalar x2, scalar y2,
                           scalar x3, scalar y3,
                           scalar x4, scalar y4,
-                          unsigned level);
+                          uint32_t level);
 
     scalar m_approximation_scale;
     scalar m_distance_tolerance_square;
     scalar m_angle_tolerance;
     scalar m_cusp_limit;
-    unsigned int m_count;
+    uint32_t m_count;
     pod_bvector<vertex_s> m_points;
 };
 

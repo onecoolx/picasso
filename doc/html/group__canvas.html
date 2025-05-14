@@ -68,7 +68,8 @@ Enumerations</h2></td></tr>
 <a class="el" href="group__canvas.html#gga5bdaa5d6c1e23f6f8f3200b424301665a0ccdaa00f0ca75ec6613d9bc7f106181">COLOR_FORMAT_RGB565</a>, 
 <a class="el" href="group__canvas.html#gga5bdaa5d6c1e23f6f8f3200b424301665a7d1aa54654f4d3700e7db3aa569b0bba">COLOR_FORMAT_RGB555</a>, 
 <br />
-&#160;&#160;<a class="el" href="group__canvas.html#gga5bdaa5d6c1e23f6f8f3200b424301665ab58141bf00d632ba06094d3c4b6446c2">COLOR_FORMAT_UNKNOWN</a>
+&#160;&#160;<a class="el" href="group__canvas.html#gga5bdaa5d6c1e23f6f8f3200b424301665ac5c51638482797e18867224a3de61e55">COLOR_FORMAT_A8</a>, 
+<a class="el" href="group__canvas.html#gga5bdaa5d6c1e23f6f8f3200b424301665ab58141bf00d632ba06094d3c4b6446c2">COLOR_FORMAT_UNKNOWN</a>
 <br />
  }</td></tr>
 <tr class="memdesc:ga5bdaa5d6c1e23f6f8f3200b424301665"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pixel formats of canvas or image.  <a href="group__canvas.html#ga5bdaa5d6c1e23f6f8f3200b424301665">More...</a><br /></td></tr>
@@ -76,24 +77,24 @@ Enumerations</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ga422a8fc62631fb6447e92924c78bc3b7"><td class="memItemLeft" align="right" valign="top">PEXPORT <a class="el" href="group__objects.html#ga3bfe40359f5735c28409d200e20f1d5d">ps_canvas</a> *PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__canvas.html#ga422a8fc62631fb6447e92924c78bc3b7">ps_canvas_create</a> (<a class="el" href="group__canvas.html#ga79f9abf66c44773958bf7a91519e4163">ps_color_format</a> fmt, int width, int height)</td></tr>
-<tr class="memdesc:ga422a8fc62631fb6447e92924c78bc3b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a new canvas using the given parameters.  <a href="group__canvas.html#ga422a8fc62631fb6447e92924c78bc3b7">More...</a><br /></td></tr>
-<tr class="separator:ga422a8fc62631fb6447e92924c78bc3b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga5764ae1f5e2ed6fd1dae2c01018651e2"><td class="memItemLeft" align="right" valign="top">PEXPORT <a class="el" href="group__objects.html#ga3bfe40359f5735c28409d200e20f1d5d">ps_canvas</a> *PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__canvas.html#ga5764ae1f5e2ed6fd1dae2c01018651e2">ps_canvas_create_with_data</a> (<a class="el" href="group__data.html#gab4d32618dcac1b191ee7db92ef475ed0">ps_byte</a> *data, <a class="el" href="group__canvas.html#ga79f9abf66c44773958bf7a91519e4163">ps_color_format</a> fmt, int width, int height, int pitch)</td></tr>
-<tr class="memdesc:ga5764ae1f5e2ed6fd1dae2c01018651e2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a new canvas using a given address in memory.  <a href="group__canvas.html#ga5764ae1f5e2ed6fd1dae2c01018651e2">More...</a><br /></td></tr>
-<tr class="separator:ga5764ae1f5e2ed6fd1dae2c01018651e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga2ea69fce3ac80798a1372fb4eb6fe374"><td class="memItemLeft" align="right" valign="top">PEXPORT <a class="el" href="group__objects.html#ga3bfe40359f5735c28409d200e20f1d5d">ps_canvas</a> *PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__canvas.html#ga2ea69fce3ac80798a1372fb4eb6fe374">ps_canvas_create_compatible</a> (const <a class="el" href="group__objects.html#ga3bfe40359f5735c28409d200e20f1d5d">ps_canvas</a> *canvas, int width, int height)</td></tr>
-<tr class="memdesc:ga2ea69fce3ac80798a1372fb4eb6fe374"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a new canvas to compatible with an existing canvas.  <a href="group__canvas.html#ga2ea69fce3ac80798a1372fb4eb6fe374">More...</a><br /></td></tr>
-<tr class="separator:ga2ea69fce3ac80798a1372fb4eb6fe374"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaa1696e3506662db96bda564fd02794d8"><td class="memItemLeft" align="right" valign="top">PEXPORT <a class="el" href="group__objects.html#ga3bfe40359f5735c28409d200e20f1d5d">ps_canvas</a> *PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__canvas.html#gaa1696e3506662db96bda564fd02794d8">ps_canvas_create</a> (<a class="el" href="group__canvas.html#ga79f9abf66c44773958bf7a91519e4163">ps_color_format</a> fmt, int32_t width, int32_t height)</td></tr>
+<tr class="memdesc:gaa1696e3506662db96bda564fd02794d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a new canvas using the given parameters.  <a href="group__canvas.html#gaa1696e3506662db96bda564fd02794d8">More...</a><br /></td></tr>
+<tr class="separator:gaa1696e3506662db96bda564fd02794d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga2831507decba4da3e98aaa859f27268b"><td class="memItemLeft" align="right" valign="top">PEXPORT <a class="el" href="group__objects.html#ga3bfe40359f5735c28409d200e20f1d5d">ps_canvas</a> *PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__canvas.html#ga2831507decba4da3e98aaa859f27268b">ps_canvas_create_with_data</a> (<a class="el" href="group__data.html#gab4d32618dcac1b191ee7db92ef475ed0">ps_byte</a> *data, <a class="el" href="group__canvas.html#ga79f9abf66c44773958bf7a91519e4163">ps_color_format</a> fmt, int32_t width, int32_t height, int32_t pitch)</td></tr>
+<tr class="memdesc:ga2831507decba4da3e98aaa859f27268b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a new canvas using a given address in memory.  <a href="group__canvas.html#ga2831507decba4da3e98aaa859f27268b">More...</a><br /></td></tr>
+<tr class="separator:ga2831507decba4da3e98aaa859f27268b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gac287566b073b963f7dbe3bc08a5b473a"><td class="memItemLeft" align="right" valign="top">PEXPORT <a class="el" href="group__objects.html#ga3bfe40359f5735c28409d200e20f1d5d">ps_canvas</a> *PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__canvas.html#gac287566b073b963f7dbe3bc08a5b473a">ps_canvas_create_compatible</a> (const <a class="el" href="group__objects.html#ga3bfe40359f5735c28409d200e20f1d5d">ps_canvas</a> *canvas, int32_t width, int32_t height)</td></tr>
+<tr class="memdesc:gac287566b073b963f7dbe3bc08a5b473a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a new canvas to compatible with an existing canvas.  <a href="group__canvas.html#gac287566b073b963f7dbe3bc08a5b473a">More...</a><br /></td></tr>
+<tr class="separator:gac287566b073b963f7dbe3bc08a5b473a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gadcd073449c2570fd165cfd51836a5e86"><td class="memItemLeft" align="right" valign="top">PEXPORT <a class="el" href="group__objects.html#ga3bfe40359f5735c28409d200e20f1d5d">ps_canvas</a> *PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__canvas.html#gadcd073449c2570fd165cfd51836a5e86">ps_canvas_create_from_canvas</a> (<a class="el" href="group__objects.html#ga3bfe40359f5735c28409d200e20f1d5d">ps_canvas</a> *canvas, const <a class="el" href="group__objects.html#ga6acefae8e0866450753775eb9424dea7">ps_rect</a> *rect)</td></tr>
 <tr class="memdesc:gadcd073449c2570fd165cfd51836a5e86"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a new canvas using part of an existing canvas in same pixel buffer.  <a href="group__canvas.html#gadcd073449c2570fd165cfd51836a5e86">More...</a><br /></td></tr>
 <tr class="separator:gadcd073449c2570fd165cfd51836a5e86"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaf877dddf73ecc30ccbe87c31f5c5bf75"><td class="memItemLeft" align="right" valign="top">PEXPORT <a class="el" href="group__objects.html#ga3bfe40359f5735c28409d200e20f1d5d">ps_canvas</a> *PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__canvas.html#gaf877dddf73ecc30ccbe87c31f5c5bf75">ps_canvas_create_from_image</a> (<a class="el" href="group__objects.html#ga29ff73b2e4d6395ac53d9a203ad7f5ca">ps_image</a> *img, const <a class="el" href="group__objects.html#ga6acefae8e0866450753775eb9424dea7">ps_rect</a> *rect)</td></tr>
 <tr class="memdesc:gaf877dddf73ecc30ccbe87c31f5c5bf75"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a new canvas using part of an existing ps_image object in same pixel buffer.  <a href="group__canvas.html#gaf877dddf73ecc30ccbe87c31f5c5bf75">More...</a><br /></td></tr>
 <tr class="separator:gaf877dddf73ecc30ccbe87c31f5c5bf75"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga5ffc739d55c6d314ad645df4916fec73"><td class="memItemLeft" align="right" valign="top">PEXPORT <a class="el" href="group__objects.html#ga3bfe40359f5735c28409d200e20f1d5d">ps_canvas</a> *PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__canvas.html#ga5ffc739d55c6d314ad645df4916fec73">ps_canvas_replace_data</a> (<a class="el" href="group__objects.html#ga3bfe40359f5735c28409d200e20f1d5d">ps_canvas</a> *canvas, <a class="el" href="group__data.html#gab4d32618dcac1b191ee7db92ef475ed0">ps_byte</a> *data, <a class="el" href="group__canvas.html#ga79f9abf66c44773958bf7a91519e4163">ps_color_format</a> fmt, int width, int height, int pitch)</td></tr>
-<tr class="memdesc:ga5ffc739d55c6d314ad645df4916fec73"><td class="mdescLeft">&#160;</td><td class="mdescRight">Replace a canvas target rendering buffer address in memory, which is only use for canvas create by <em>ps_canvas_create_with_data</em>.  <a href="group__canvas.html#ga5ffc739d55c6d314ad645df4916fec73">More...</a><br /></td></tr>
-<tr class="separator:ga5ffc739d55c6d314ad645df4916fec73"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaea8b8671a1601a0deff10958dfc4d768"><td class="memItemLeft" align="right" valign="top">PEXPORT <a class="el" href="group__objects.html#ga3bfe40359f5735c28409d200e20f1d5d">ps_canvas</a> *PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__canvas.html#gaea8b8671a1601a0deff10958dfc4d768">ps_canvas_replace_data</a> (<a class="el" href="group__objects.html#ga3bfe40359f5735c28409d200e20f1d5d">ps_canvas</a> *canvas, <a class="el" href="group__data.html#gab4d32618dcac1b191ee7db92ef475ed0">ps_byte</a> *data, <a class="el" href="group__canvas.html#ga79f9abf66c44773958bf7a91519e4163">ps_color_format</a> fmt, int32_t width, int32_t height, int32_t pitch)</td></tr>
+<tr class="memdesc:gaea8b8671a1601a0deff10958dfc4d768"><td class="mdescLeft">&#160;</td><td class="mdescRight">Replace a canvas target rendering buffer address in memory, which is only use for canvas create by <em>ps_canvas_create_with_data</em>.  <a href="group__canvas.html#gaea8b8671a1601a0deff10958dfc4d768">More...</a><br /></td></tr>
+<tr class="separator:gaea8b8671a1601a0deff10958dfc4d768"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaee1cef3d1e04d2a85cf5f3c19e94a69f"><td class="memItemLeft" align="right" valign="top">PEXPORT <a class="el" href="group__objects.html#ga3bfe40359f5735c28409d200e20f1d5d">ps_canvas</a> *PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__canvas.html#gaee1cef3d1e04d2a85cf5f3c19e94a69f">ps_canvas_ref</a> (<a class="el" href="group__objects.html#ga3bfe40359f5735c28409d200e20f1d5d">ps_canvas</a> *canvas)</td></tr>
 <tr class="memdesc:gaee1cef3d1e04d2a85cf5f3c19e94a69f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Increases the reference count of the canvas by 1.  <a href="group__canvas.html#gaee1cef3d1e04d2a85cf5f3c19e94a69f">More...</a><br /></td></tr>
 <tr class="separator:gaee1cef3d1e04d2a85cf5f3c19e94a69f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -147,6 +148,8 @@ Functions</h2></td></tr>
 <tr><td class="fieldname"><a id="gga5bdaa5d6c1e23f6f8f3200b424301665a0ccdaa00f0ca75ec6613d9bc7f106181"></a>COLOR_FORMAT_RGB565&#160;</td><td class="fielddoc"><p>16bpp, 5/6bpc, RGB color space. </p>
 </td></tr>
 <tr><td class="fieldname"><a id="gga5bdaa5d6c1e23f6f8f3200b424301665a7d1aa54654f4d3700e7db3aa569b0bba"></a>COLOR_FORMAT_RGB555&#160;</td><td class="fielddoc"><p>16bpp, 5bpc, RGB color space. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gga5bdaa5d6c1e23f6f8f3200b424301665ac5c51638482797e18867224a3de61e55"></a>COLOR_FORMAT_A8&#160;</td><td class="fielddoc"><p>8bit, gray color space. </p>
 </td></tr>
 <tr><td class="fieldname"><a id="gga5bdaa5d6c1e23f6f8f3200b424301665ab58141bf00d632ba06094d3c4b6446c2"></a>COLOR_FORMAT_UNKNOWN&#160;</td><td class="fielddoc"><p>Unsupported color space. </p>
 </td></tr>
@@ -210,8 +213,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ga422a8fc62631fb6447e92924c78bc3b7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga422a8fc62631fb6447e92924c78bc3b7">&#9670;&nbsp;</a></span>ps_canvas_create()</h2>
+<a id="gaa1696e3506662db96bda564fd02794d8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaa1696e3506662db96bda564fd02794d8">&#9670;&nbsp;</a></span>ps_canvas_create()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -225,13 +228,13 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int&#160;</td>
+          <td class="paramtype">int32_t&#160;</td>
           <td class="paramname"><em>width</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int&#160;</td>
+          <td class="paramtype">int32_t&#160;</td>
           <td class="paramname"><em>height</em>&#160;</td>
         </tr>
         <tr>
@@ -253,12 +256,12 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>If the function succeeds, the return value is the pointer to a new canvas object. If the function fails, the return value is NULL.</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>To get extended error information, call <em>ps_last_status</em>.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__canvas.html#ga5764ae1f5e2ed6fd1dae2c01018651e2" title="Create a new canvas using a given address in memory.">ps_canvas_create_with_data</a>, <a class="el" href="group__canvas.html#ga2ea69fce3ac80798a1372fb4eb6fe374" title="Create a new canvas to compatible with an existing canvas.">ps_canvas_create_compatible</a>, <a class="el" href="group__canvas.html#gadcd073449c2570fd165cfd51836a5e86" title="Create a new canvas using part of an existing canvas in same pixel buffer.">ps_canvas_create_from_canvas</a>, <a class="el" href="group__canvas.html#gaf877dddf73ecc30ccbe87c31f5c5bf75" title="Create a new canvas using part of an existing ps_image object in same pixel buffer.">ps_canvas_create_from_image</a>, <a class="el" href="group__canvas.html#gaee1cef3d1e04d2a85cf5f3c19e94a69f" title="Increases the reference count of the canvas by 1.">ps_canvas_ref</a>, <a class="el" href="group__canvas.html#ga474f482e71cd737d2110168768c6a3d5" title="Decrements the reference count for the canvas object. If the reference count on the canvas falls to 0...">ps_canvas_unref</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__canvas.html#ga2831507decba4da3e98aaa859f27268b" title="Create a new canvas using a given address in memory.">ps_canvas_create_with_data</a>, <a class="el" href="group__canvas.html#gac287566b073b963f7dbe3bc08a5b473a" title="Create a new canvas to compatible with an existing canvas.">ps_canvas_create_compatible</a>, <a class="el" href="group__canvas.html#gadcd073449c2570fd165cfd51836a5e86" title="Create a new canvas using part of an existing canvas in same pixel buffer.">ps_canvas_create_from_canvas</a>, <a class="el" href="group__canvas.html#gaf877dddf73ecc30ccbe87c31f5c5bf75" title="Create a new canvas using part of an existing ps_image object in same pixel buffer.">ps_canvas_create_from_image</a>, ps_canvas_create_from_mask, <a class="el" href="group__canvas.html#gaee1cef3d1e04d2a85cf5f3c19e94a69f" title="Increases the reference count of the canvas by 1.">ps_canvas_ref</a>, <a class="el" href="group__canvas.html#ga474f482e71cd737d2110168768c6a3d5" title="Decrements the reference count for the canvas object. If the reference count on the canvas falls to 0...">ps_canvas_unref</a> </dd></dl>
 
 </div>
 </div>
-<a id="ga2ea69fce3ac80798a1372fb4eb6fe374"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga2ea69fce3ac80798a1372fb4eb6fe374">&#9670;&nbsp;</a></span>ps_canvas_create_compatible()</h2>
+<a id="gac287566b073b963f7dbe3bc08a5b473a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gac287566b073b963f7dbe3bc08a5b473a">&#9670;&nbsp;</a></span>ps_canvas_create_compatible()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -272,13 +275,13 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int&#160;</td>
+          <td class="paramtype">int32_t&#160;</td>
           <td class="paramname"><em>width</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int&#160;</td>
+          <td class="paramtype">int32_t&#160;</td>
           <td class="paramname"><em>height</em>&#160;</td>
         </tr>
         <tr>
@@ -300,7 +303,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>If the function succeeds, the return value is the pointer to a new canvas object. If the function fails, the return value is NULL.</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>To get extended error information, call <em>ps_last_status</em>.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__canvas.html#ga422a8fc62631fb6447e92924c78bc3b7" title="Create a new canvas using the given parameters.">ps_canvas_create</a>, <a class="el" href="group__canvas.html#ga5764ae1f5e2ed6fd1dae2c01018651e2" title="Create a new canvas using a given address in memory.">ps_canvas_create_with_data</a>, <a class="el" href="group__canvas.html#gadcd073449c2570fd165cfd51836a5e86" title="Create a new canvas using part of an existing canvas in same pixel buffer.">ps_canvas_create_from_canvas</a>, <a class="el" href="group__canvas.html#gaf877dddf73ecc30ccbe87c31f5c5bf75" title="Create a new canvas using part of an existing ps_image object in same pixel buffer.">ps_canvas_create_from_image</a>, <a class="el" href="group__canvas.html#gaee1cef3d1e04d2a85cf5f3c19e94a69f" title="Increases the reference count of the canvas by 1.">ps_canvas_ref</a>, <a class="el" href="group__canvas.html#ga474f482e71cd737d2110168768c6a3d5" title="Decrements the reference count for the canvas object. If the reference count on the canvas falls to 0...">ps_canvas_unref</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__canvas.html#gaa1696e3506662db96bda564fd02794d8" title="Create a new canvas using the given parameters.">ps_canvas_create</a>, <a class="el" href="group__canvas.html#ga2831507decba4da3e98aaa859f27268b" title="Create a new canvas using a given address in memory.">ps_canvas_create_with_data</a>, <a class="el" href="group__canvas.html#gadcd073449c2570fd165cfd51836a5e86" title="Create a new canvas using part of an existing canvas in same pixel buffer.">ps_canvas_create_from_canvas</a>, <a class="el" href="group__canvas.html#gaf877dddf73ecc30ccbe87c31f5c5bf75" title="Create a new canvas using part of an existing ps_image object in same pixel buffer.">ps_canvas_create_from_image</a>, ps_canvas_create_from_mask, <a class="el" href="group__canvas.html#gaee1cef3d1e04d2a85cf5f3c19e94a69f" title="Increases the reference count of the canvas by 1.">ps_canvas_ref</a>, <a class="el" href="group__canvas.html#ga474f482e71cd737d2110168768c6a3d5" title="Decrements the reference count for the canvas object. If the reference count on the canvas falls to 0...">ps_canvas_unref</a> </dd></dl>
 
 </div>
 </div>
@@ -340,7 +343,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>If the function succeeds, the return value is the pointer to a new canvas object. If the function fails, the return value is NULL.</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>To get extended error information, call <em>ps_last_status</em>.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__canvas.html#ga422a8fc62631fb6447e92924c78bc3b7" title="Create a new canvas using the given parameters.">ps_canvas_create</a>, <a class="el" href="group__canvas.html#ga5764ae1f5e2ed6fd1dae2c01018651e2" title="Create a new canvas using a given address in memory.">ps_canvas_create_with_data</a>, <a class="el" href="group__canvas.html#ga2ea69fce3ac80798a1372fb4eb6fe374" title="Create a new canvas to compatible with an existing canvas.">ps_canvas_create_compatible</a>, <a class="el" href="group__canvas.html#gaf877dddf73ecc30ccbe87c31f5c5bf75" title="Create a new canvas using part of an existing ps_image object in same pixel buffer.">ps_canvas_create_from_image</a>, <a class="el" href="group__canvas.html#gaee1cef3d1e04d2a85cf5f3c19e94a69f" title="Increases the reference count of the canvas by 1.">ps_canvas_ref</a>, <a class="el" href="group__canvas.html#ga474f482e71cd737d2110168768c6a3d5" title="Decrements the reference count for the canvas object. If the reference count on the canvas falls to 0...">ps_canvas_unref</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__canvas.html#gaa1696e3506662db96bda564fd02794d8" title="Create a new canvas using the given parameters.">ps_canvas_create</a>, <a class="el" href="group__canvas.html#ga2831507decba4da3e98aaa859f27268b" title="Create a new canvas using a given address in memory.">ps_canvas_create_with_data</a>, <a class="el" href="group__canvas.html#gac287566b073b963f7dbe3bc08a5b473a" title="Create a new canvas to compatible with an existing canvas.">ps_canvas_create_compatible</a>, <a class="el" href="group__canvas.html#gaf877dddf73ecc30ccbe87c31f5c5bf75" title="Create a new canvas using part of an existing ps_image object in same pixel buffer.">ps_canvas_create_from_image</a>, ps_canvas_create_from_mask, <a class="el" href="group__canvas.html#gaee1cef3d1e04d2a85cf5f3c19e94a69f" title="Increases the reference count of the canvas by 1.">ps_canvas_ref</a>, <a class="el" href="group__canvas.html#ga474f482e71cd737d2110168768c6a3d5" title="Decrements the reference count for the canvas object. If the reference count on the canvas falls to 0...">ps_canvas_unref</a> </dd></dl>
 
 </div>
 </div>
@@ -380,12 +383,12 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>If the function succeeds, the return value is the pointer to a new canvas object. If the function fails, the return value is NULL.</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>To get extended error information, call <em>ps_last_status</em>.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__canvas.html#ga422a8fc62631fb6447e92924c78bc3b7" title="Create a new canvas using the given parameters.">ps_canvas_create</a>, <a class="el" href="group__canvas.html#ga5764ae1f5e2ed6fd1dae2c01018651e2" title="Create a new canvas using a given address in memory.">ps_canvas_create_with_data</a>, <a class="el" href="group__canvas.html#ga2ea69fce3ac80798a1372fb4eb6fe374" title="Create a new canvas to compatible with an existing canvas.">ps_canvas_create_compatible</a>, <a class="el" href="group__canvas.html#gadcd073449c2570fd165cfd51836a5e86" title="Create a new canvas using part of an existing canvas in same pixel buffer.">ps_canvas_create_from_canvas</a>, <a class="el" href="group__canvas.html#gaee1cef3d1e04d2a85cf5f3c19e94a69f" title="Increases the reference count of the canvas by 1.">ps_canvas_ref</a>, <a class="el" href="group__canvas.html#ga474f482e71cd737d2110168768c6a3d5" title="Decrements the reference count for the canvas object. If the reference count on the canvas falls to 0...">ps_canvas_unref</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__canvas.html#gaa1696e3506662db96bda564fd02794d8" title="Create a new canvas using the given parameters.">ps_canvas_create</a>, <a class="el" href="group__canvas.html#ga2831507decba4da3e98aaa859f27268b" title="Create a new canvas using a given address in memory.">ps_canvas_create_with_data</a>, <a class="el" href="group__canvas.html#gac287566b073b963f7dbe3bc08a5b473a" title="Create a new canvas to compatible with an existing canvas.">ps_canvas_create_compatible</a>, <a class="el" href="group__canvas.html#gadcd073449c2570fd165cfd51836a5e86" title="Create a new canvas using part of an existing canvas in same pixel buffer.">ps_canvas_create_from_canvas</a>, ps_canvas_create_from_mask, <a class="el" href="group__canvas.html#gaee1cef3d1e04d2a85cf5f3c19e94a69f" title="Increases the reference count of the canvas by 1.">ps_canvas_ref</a>, <a class="el" href="group__canvas.html#ga474f482e71cd737d2110168768c6a3d5" title="Decrements the reference count for the canvas object. If the reference count on the canvas falls to 0...">ps_canvas_unref</a> </dd></dl>
 
 </div>
 </div>
-<a id="ga5764ae1f5e2ed6fd1dae2c01018651e2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga5764ae1f5e2ed6fd1dae2c01018651e2">&#9670;&nbsp;</a></span>ps_canvas_create_with_data()</h2>
+<a id="ga2831507decba4da3e98aaa859f27268b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga2831507decba4da3e98aaa859f27268b">&#9670;&nbsp;</a></span>ps_canvas_create_with_data()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -405,19 +408,19 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int&#160;</td>
+          <td class="paramtype">int32_t&#160;</td>
           <td class="paramname"><em>width</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int&#160;</td>
+          <td class="paramtype">int32_t&#160;</td>
           <td class="paramname"><em>height</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int&#160;</td>
+          <td class="paramtype">int32_t&#160;</td>
           <td class="paramname"><em>pitch</em>&#160;</td>
         </tr>
         <tr>
@@ -441,7 +444,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>If the function succeeds, the return value is the pointer to a new canvas object. If the function fails, the return value is NULL.</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>To get extended error information, call <em>ps_last_status</em>.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__canvas.html#ga422a8fc62631fb6447e92924c78bc3b7" title="Create a new canvas using the given parameters.">ps_canvas_create</a>, <a class="el" href="group__canvas.html#ga2ea69fce3ac80798a1372fb4eb6fe374" title="Create a new canvas to compatible with an existing canvas.">ps_canvas_create_compatible</a>, <a class="el" href="group__canvas.html#gadcd073449c2570fd165cfd51836a5e86" title="Create a new canvas using part of an existing canvas in same pixel buffer.">ps_canvas_create_from_canvas</a>, <a class="el" href="group__canvas.html#gaf877dddf73ecc30ccbe87c31f5c5bf75" title="Create a new canvas using part of an existing ps_image object in same pixel buffer.">ps_canvas_create_from_image</a>, <a class="el" href="group__canvas.html#gaee1cef3d1e04d2a85cf5f3c19e94a69f" title="Increases the reference count of the canvas by 1.">ps_canvas_ref</a>, <a class="el" href="group__canvas.html#ga474f482e71cd737d2110168768c6a3d5" title="Decrements the reference count for the canvas object. If the reference count on the canvas falls to 0...">ps_canvas_unref</a>, <a class="el" href="group__canvas.html#ga5ffc739d55c6d314ad645df4916fec73" title="Replace a canvas target rendering buffer address in memory, which is only use for canvas create by ps...">ps_canvas_replace_data</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__canvas.html#gaa1696e3506662db96bda564fd02794d8" title="Create a new canvas using the given parameters.">ps_canvas_create</a>, <a class="el" href="group__canvas.html#gac287566b073b963f7dbe3bc08a5b473a" title="Create a new canvas to compatible with an existing canvas.">ps_canvas_create_compatible</a>, <a class="el" href="group__canvas.html#gadcd073449c2570fd165cfd51836a5e86" title="Create a new canvas using part of an existing canvas in same pixel buffer.">ps_canvas_create_from_canvas</a>, <a class="el" href="group__canvas.html#gaf877dddf73ecc30ccbe87c31f5c5bf75" title="Create a new canvas using part of an existing ps_image object in same pixel buffer.">ps_canvas_create_from_image</a>, ps_canvas_create_from_mask, <a class="el" href="group__canvas.html#gaee1cef3d1e04d2a85cf5f3c19e94a69f" title="Increases the reference count of the canvas by 1.">ps_canvas_ref</a>, <a class="el" href="group__canvas.html#ga474f482e71cd737d2110168768c6a3d5" title="Decrements the reference count for the canvas object. If the reference count on the canvas falls to 0...">ps_canvas_unref</a>, <a class="el" href="group__canvas.html#gaea8b8671a1601a0deff10958dfc4d768" title="Replace a canvas target rendering buffer address in memory, which is only use for canvas create by ps...">ps_canvas_replace_data</a> </dd></dl>
 
 </div>
 </div>
@@ -539,12 +542,12 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>If the function succeeds, the return value is the pointer to the canvas object. If the function fails, the return value is NULL.</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>To get extended error information, call <em>ps_last_status</em>.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__canvas.html#ga422a8fc62631fb6447e92924c78bc3b7" title="Create a new canvas using the given parameters.">ps_canvas_create</a>, <a class="el" href="group__canvas.html#ga5764ae1f5e2ed6fd1dae2c01018651e2" title="Create a new canvas using a given address in memory.">ps_canvas_create_with_data</a>, <a class="el" href="group__canvas.html#ga2ea69fce3ac80798a1372fb4eb6fe374" title="Create a new canvas to compatible with an existing canvas.">ps_canvas_create_compatible</a>, <a class="el" href="group__canvas.html#gadcd073449c2570fd165cfd51836a5e86" title="Create a new canvas using part of an existing canvas in same pixel buffer.">ps_canvas_create_from_canvas</a>, <a class="el" href="group__canvas.html#gaf877dddf73ecc30ccbe87c31f5c5bf75" title="Create a new canvas using part of an existing ps_image object in same pixel buffer.">ps_canvas_create_from_image</a>, <a class="el" href="group__canvas.html#ga474f482e71cd737d2110168768c6a3d5" title="Decrements the reference count for the canvas object. If the reference count on the canvas falls to 0...">ps_canvas_unref</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__canvas.html#gaa1696e3506662db96bda564fd02794d8" title="Create a new canvas using the given parameters.">ps_canvas_create</a>, <a class="el" href="group__canvas.html#ga2831507decba4da3e98aaa859f27268b" title="Create a new canvas using a given address in memory.">ps_canvas_create_with_data</a>, <a class="el" href="group__canvas.html#gac287566b073b963f7dbe3bc08a5b473a" title="Create a new canvas to compatible with an existing canvas.">ps_canvas_create_compatible</a>, <a class="el" href="group__canvas.html#gadcd073449c2570fd165cfd51836a5e86" title="Create a new canvas using part of an existing canvas in same pixel buffer.">ps_canvas_create_from_canvas</a>, <a class="el" href="group__canvas.html#gaf877dddf73ecc30ccbe87c31f5c5bf75" title="Create a new canvas using part of an existing ps_image object in same pixel buffer.">ps_canvas_create_from_image</a>, <a class="el" href="group__canvas.html#ga474f482e71cd737d2110168768c6a3d5" title="Decrements the reference count for the canvas object. If the reference count on the canvas falls to 0...">ps_canvas_unref</a> </dd></dl>
 
 </div>
 </div>
-<a id="ga5ffc739d55c6d314ad645df4916fec73"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga5ffc739d55c6d314ad645df4916fec73">&#9670;&nbsp;</a></span>ps_canvas_replace_data()</h2>
+<a id="gaea8b8671a1601a0deff10958dfc4d768"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaea8b8671a1601a0deff10958dfc4d768">&#9670;&nbsp;</a></span>ps_canvas_replace_data()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -570,19 +573,19 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int&#160;</td>
+          <td class="paramtype">int32_t&#160;</td>
           <td class="paramname"><em>width</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int&#160;</td>
+          <td class="paramtype">int32_t&#160;</td>
           <td class="paramname"><em>height</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int&#160;</td>
+          <td class="paramtype">int32_t&#160;</td>
           <td class="paramname"><em>pitch</em>&#160;</td>
         </tr>
         <tr>
@@ -607,7 +610,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>If the function succeeds, the return value is the pointer to a new canvas object. If the function fails, the return value is NULL.</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>The data's color format must be equal with target canvas, otherwish will be failed and <em>STATUS_MISMATCHING_FORMAT</em> will be set.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__canvas.html#ga5764ae1f5e2ed6fd1dae2c01018651e2" title="Create a new canvas using a given address in memory.">ps_canvas_create_with_data</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__canvas.html#ga2831507decba4da3e98aaa859f27268b" title="Create a new canvas using a given address in memory.">ps_canvas_create_with_data</a> </dd></dl>
 
 </div>
 </div>
@@ -699,7 +702,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__canvas.html#ga422a8fc62631fb6447e92924c78bc3b7" title="Create a new canvas using the given parameters.">ps_canvas_create</a>, <a class="el" href="group__canvas.html#ga5764ae1f5e2ed6fd1dae2c01018651e2" title="Create a new canvas using a given address in memory.">ps_canvas_create_with_data</a>, <a class="el" href="group__canvas.html#ga2ea69fce3ac80798a1372fb4eb6fe374" title="Create a new canvas to compatible with an existing canvas.">ps_canvas_create_compatible</a>, <a class="el" href="group__canvas.html#gadcd073449c2570fd165cfd51836a5e86" title="Create a new canvas using part of an existing canvas in same pixel buffer.">ps_canvas_create_from_canvas</a>, <a class="el" href="group__canvas.html#gaf877dddf73ecc30ccbe87c31f5c5bf75" title="Create a new canvas using part of an existing ps_image object in same pixel buffer.">ps_canvas_create_from_image</a>, <a class="el" href="group__canvas.html#gaee1cef3d1e04d2a85cf5f3c19e94a69f" title="Increases the reference count of the canvas by 1.">ps_canvas_ref</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__canvas.html#gaa1696e3506662db96bda564fd02794d8" title="Create a new canvas using the given parameters.">ps_canvas_create</a>, <a class="el" href="group__canvas.html#ga2831507decba4da3e98aaa859f27268b" title="Create a new canvas using a given address in memory.">ps_canvas_create_with_data</a>, <a class="el" href="group__canvas.html#gac287566b073b963f7dbe3bc08a5b473a" title="Create a new canvas to compatible with an existing canvas.">ps_canvas_create_compatible</a>, <a class="el" href="group__canvas.html#gadcd073449c2570fd165cfd51836a5e86" title="Create a new canvas using part of an existing canvas in same pixel buffer.">ps_canvas_create_from_canvas</a>, <a class="el" href="group__canvas.html#gaf877dddf73ecc30ccbe87c31f5c5bf75" title="Create a new canvas using part of an existing ps_image object in same pixel buffer.">ps_canvas_create_from_image</a>, <a class="el" href="group__canvas.html#gaee1cef3d1e04d2a85cf5f3c19e94a69f" title="Increases the reference count of the canvas by 1.">ps_canvas_ref</a> </dd></dl>
 
 </div>
 </div>

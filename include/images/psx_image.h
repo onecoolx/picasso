@@ -19,6 +19,9 @@
 #define _PSX_IMAGE_DECODERS_H_
 
 #include "picasso.h"
+#include "picasso_ext.h"
+
+#include <stddef.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -33,7 +36,7 @@ extern "C" {
  * @{
  */
 /**
- * \defgroup types XImage Object Types
+ * \defgroup imgtypes XImage Object Types
  * @{
  */
 
@@ -118,28 +121,10 @@ typedef struct _psx_image {
  */
 #define IMG_DURATION_AT_INDEX(img, idx) (img->frames[idx].duration)
 
-/**
- * \brief Status code return by call APIs.
- */
-enum {
-    /** Successful no errors. */
-    S_OK = 0,
-    /** Invalid params input. */
-    S_BAD_PARAMS = 1,
-    /** Not support format or decoder module not found. */
-    S_NOT_SUPPORT = 2,
-    /** Not enough memory. */
-    S_OUT_OF_MEMORY = 3,
-    /** Not initialize system. */
-    S_INIT_FAILURE = 4,
-    /** Operation failed by internal errors. */
-    S_FAILURE = 5,
-};
-
-/** @} end of extimg types */
+/** @} end of extimg imgtypes */
 
 /**
- * \defgroup functions XImage Functions
+ * \defgroup imgfunctions XImage Functions
  * @{
  */
 
@@ -262,7 +247,7 @@ PEXPORT int PICAPI psx_image_save_to_file(const psx_image* image, const char* fi
  * \sa psx_image_load psx_image_load_from_memory
  */
 PEXPORT int PICAPI psx_image_destroy(psx_image* image);
-/** @} end of extimg functions */
+/** @} end of extimg imgfunctions */
 /** @} end of extimg */
 /** @} end of extensions */
 

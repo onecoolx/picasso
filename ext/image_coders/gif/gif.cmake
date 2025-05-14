@@ -15,7 +15,11 @@ set(LIBX_GIF psxm_image_gif)
 
 add_definitions(-DEXPORT)
 add_library(${LIBX_GIF} ${PXGIF_SOURCES})
+if(OPT_SYSTEM_GIF AND GIF)
+target_link_libraries(${LIBX_GIF} PRIVATE ${GIF})
+else()
 target_link_libraries(${LIBX_GIF} PRIVATE gif)
+endif()
 install(TARGETS ${LIBX_GIF} LIBRARY DESTINATION lib/modules ARCHIVE DESTINATION lib/modules)
 
 set_target_properties(${LIBX_GIF}

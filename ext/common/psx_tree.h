@@ -31,29 +31,29 @@
 
 #define INIT_CAPACITY 4
 
-class tree_node
+class psx_tree_node
 {
 public:
-    tree_node(tree_node* parent)
+    psx_tree_node(psx_tree_node* parent)
         : m_parent(parent)
         , m_children(NULL)
         , m_count(0)
         , m_capacity(INIT_CAPACITY)
         , m_index(0)
     {
-        m_children = (tree_node**)calloc(m_capacity, sizeof(tree_node*));
+        m_children = (psx_tree_node**)mem_calloc(m_capacity, sizeof(psx_tree_node*));
         if (m_parent) {
             m_parent->m_count++;
             if (m_parent->m_count == m_parent->m_capacity) {
                 m_parent->m_capacity <<= 1;
-                m_parent->m_children = (tree_node**)realloc(m_parent->m_children, sizeof(tree_node*) * m_parent->m_capacity);
+                m_parent->m_children = (psx_tree_node**)mem_realloc(m_parent->m_children, sizeof(psx_tree_node*) * m_parent->m_capacity);
             }
             m_parent->m_children[m_parent->m_count - 1] = this;
             m_index = m_parent->m_count;
         }
     }
 
-    virtual ~tree_node()
+    virtual ~psx_tree_node()
     {
         if (m_parent) {
             if (m_parent->m_children[m_index - 1] == this) {
@@ -65,14 +65,14 @@ public:
                 delete m_children[i];
             }
         }
-        free(m_children);
+        mem_free(m_children);
     }
 
     uint32_t child_count(void) const { return m_count; }
 
-    tree_node* parent(void) const { return m_parent; }
+    psx_tree_node* parent(void) const { return m_parent; }
 
-    tree_node* get_child(uint32_t idx) const
+    psx_tree_node* get_child(uint32_t idx) const
     {
         if (idx >= m_count) {
             return NULL;
@@ -81,8 +81,8 @@ public:
     }
 
 private:
-    tree_node* m_parent;
-    tree_node** m_children;
+    psx_tree_node* m_parent;
+    psx_tree_node** m_children;
     uint32_t m_count : 16;
     uint32_t m_capacity : 16;
     uint32_t m_index : 16;
@@ -93,10 +93,10 @@ typedef enum {
     PSX_TREE_WALK_POST_ORDER,
 } PSX_TREE_WALK_MODE;
 
-typedef bool (*psx_tree_traversal_callback)(const tree_node* node, void* ctx);
+typedef bool (*psx_tree_traversal_callback)(const psx_tree_node* node, void* ctx);
 
 template <PSX_TREE_WALK_MODE mode>
-static bool psx_tree_traversal(const tree_node* tree_head, void* ctx, psx_tree_traversal_callback cb,
+static bool psx_tree_traversal(const psx_tree_node* tree_head, void* ctx, psx_tree_traversal_callback cb,
                                psx_tree_traversal_callback before = NULL,
                                psx_tree_traversal_callback after = NULL)
 {

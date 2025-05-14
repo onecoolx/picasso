@@ -1,4 +1,4 @@
-.TH "text" 3 "Tue Dec 24 2024" "Version 2.8" "Picasso API" \" -*- nroff -*-
+.TH "text" 3 "Tue May 13 2025" "Version 2.8" "Picasso API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -42,7 +42,7 @@ text
 
 .in +1c
 .ti -1c
-.RI "PEXPORT \fBps_bool\fP PICAPI \fBps_get_text_extent\fP (\fBps_context\fP *ctx, const void *text, unsigned int length, \fBps_size\fP *rsize)"
+.RI "PEXPORT \fBps_bool\fP PICAPI \fBps_get_text_extent\fP (\fBps_context\fP *ctx, const void *text, uint32_t length, \fBps_size\fP *rsize)"
 .br
 .RI "Get extent for text using current font which selected to graphic context\&. "
 .ti -1c
@@ -74,23 +74,23 @@ text
 .br
 .RI "Set whether the font auto kerning is allowed\&. "
 .ti -1c
-.RI "PEXPORT void PICAPI \fBps_text_out_length\fP (\fBps_context\fP *ctx, float x, float y, const char *text, unsigned int length)"
+.RI "PEXPORT void PICAPI \fBps_text_out_length\fP (\fBps_context\fP *ctx, float x, float y, const char *text, uint32_t length)"
 .br
 .RI "Draw single byte characters (latin-1) at location in user space\&. "
 .ti -1c
-.RI "PEXPORT void PICAPI \fBps_wide_text_out_length\fP (\fBps_context\fP *ctx, float x, float y, const \fBps_uchar16\fP *text, unsigned int length)"
+.RI "PEXPORT void PICAPI \fBps_wide_text_out_length\fP (\fBps_context\fP *ctx, float x, float y, const \fBps_uchar16\fP *text, uint32_t length)"
 .br
 .RI "Draw unicode characters (ucs-2) at location in user space\&. "
 .ti -1c
-.RI "PEXPORT void PICAPI \fBps_draw_text\fP (\fBps_context\fP *ctx, const \fBps_rect\fP *area, const void *text, unsigned int length, \fBps_draw_text_type\fP type, \fBps_text_align\fP align)"
+.RI "PEXPORT void PICAPI \fBps_draw_text\fP (\fBps_context\fP *ctx, const \fBps_rect\fP *area, const void *text, uint32_t length, \fBps_draw_text_type\fP type, \fBps_text_align\fP align)"
 .br
 .RI "Draw text in a rectangle area, using font object which is selected in graphic context\&. "
 .ti -1c
-.RI "PEXPORT \fBps_bool\fP PICAPI \fBps_get_glyph\fP (\fBps_context\fP *ctx, int ch, \fBps_glyph\fP *glyph)"
+.RI "PEXPORT \fBps_bool\fP PICAPI \fBps_get_glyph\fP (\fBps_context\fP *ctx, int32_t ch, \fBps_glyph\fP *glyph)"
 .br
 .RI "Get the glyph from a given character, using font object which is selected in graphic context\&. "
 .ti -1c
-.RI "PEXPORT void PICAPI \fBps_show_glyphs\fP (\fBps_context\fP *ctx, float x, float y, \fBps_glyph\fP *glyphs, unsigned int length)"
+.RI "PEXPORT void PICAPI \fBps_show_glyphs\fP (\fBps_context\fP *ctx, float x, float y, \fBps_glyph\fP *glyphs, uint32_t length)"
 .br
 .RI "Draw an array of glyphs at location in user space\&. "
 .ti -1c
@@ -124,7 +124,7 @@ Perform a stroke operation on the text\&.
 \fB\fIDRAW_TEXT_BOTH \fP\fP
 Perform fill,then stroke operation on the text\&. 
 .PP
-Definition at line 2302 of file picasso\&.h\&.
+Definition at line 2340 of file picasso\&.h\&.
 .SS "enum \fB_ps_text_align\fP"
 
 .PP
@@ -148,7 +148,7 @@ Aligns text to left\&.
 \fB\fITEXT_ALIGN_RIGHT \fP\fP
 Aligns text to right\&. 
 .PP
-Definition at line 2320 of file picasso\&.h\&.
+Definition at line 2358 of file picasso\&.h\&.
 .SS "enum \fB_ps_text_type\fP"
 
 .PP
@@ -166,10 +166,10 @@ Mono rendering\&.
 \fB\fITEXT_TYPE_STROKE \fP\fP
 OutLine rendering\&. 
 .PP
-Definition at line 2150 of file picasso\&.h\&.
+Definition at line 2188 of file picasso\&.h\&.
 .SH "Function Documentation"
 .PP 
-.SS "void ps_draw_text (\fBps_context\fP * ctx, const \fBps_rect\fP * area, const void * text, unsigned int length, \fBps_draw_text_type\fP type, \fBps_text_align\fP align)"
+.SS "void ps_draw_text (\fBps_context\fP * ctx, const \fBps_rect\fP * area, const void * text, uint32_t length, \fBps_draw_text_type\fP type, \fBps_text_align\fP align)"
 
 .PP
 Draw text in a rectangle area, using font object which is selected in graphic context\&. 
@@ -195,7 +195,7 @@ Draw text in a rectangle area, using font object which is selected in graphic co
 .RE
 .PP
 
-.SS "\fBps_bool\fP ps_get_glyph (\fBps_context\fP * ctx, int ch, \fBps_glyph\fP * glyph)"
+.SS "\fBps_bool\fP ps_get_glyph (\fBps_context\fP * ctx, int32_t ch, \fBps_glyph\fP * glyph)"
 
 .PP
 Get the glyph from a given character, using font object which is selected in graphic context\&. 
@@ -245,7 +245,7 @@ True if is success, otherwise False\&.
 .RE
 .PP
 
-.SS "\fBps_bool\fP ps_get_text_extent (\fBps_context\fP * ctx, const void * text, unsigned int length, \fBps_size\fP * rsize)"
+.SS "\fBps_bool\fP ps_get_text_extent (\fBps_context\fP * ctx, const void * text, uint32_t length, \fBps_size\fP * rsize)"
 
 .PP
 Get extent for text using current font which selected to graphic context\&. 
@@ -413,7 +413,7 @@ Set the text stroke color for the graphic context\&.
 .RE
 .PP
 
-.SS "void ps_show_glyphs (\fBps_context\fP * ctx, float x, float y, \fBps_glyph\fP * glyphs, unsigned int length)"
+.SS "void ps_show_glyphs (\fBps_context\fP * ctx, float x, float y, \fBps_glyph\fP * glyphs, uint32_t length)"
 
 .PP
 Draw an array of glyphs at location in user space\&. 
@@ -437,7 +437,7 @@ Draw an array of glyphs at location in user space\&.
 .RE
 .PP
 
-.SS "void ps_text_out_length (\fBps_context\fP * ctx, float x, float y, const char * text, unsigned int length)"
+.SS "void ps_text_out_length (\fBps_context\fP * ctx, float x, float y, const char * text, uint32_t length)"
 
 .PP
 Draw single byte characters (latin-1) at location in user space\&. 
@@ -479,7 +479,7 @@ Transform text matrix for the graphic context\&. The text matrix is not a part o
 .RE
 .PP
 
-.SS "void ps_wide_text_out_length (\fBps_context\fP * ctx, float x, float y, const \fBps_uchar16\fP * text, unsigned int length)"
+.SS "void ps_wide_text_out_length (\fBps_context\fP * ctx, float x, float y, const \fBps_uchar16\fP * text, uint32_t length)"
 
 .PP
 Draw unicode characters (ucs-2) at location in user space\&. 

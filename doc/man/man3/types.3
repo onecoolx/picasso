@@ -1,4 +1,4 @@
-.TH "types" 3 "Tue Dec 24 2024" "Version 2.8" "Picasso API" \" -*- nroff -*-
+.TH "types" 3 "Tue May 13 2025" "Version 2.8" "Picasso API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -81,14 +81,18 @@ types
 .RI "typedef enum \fB_psx_priority_level\fP \fBpsx_priority_level\fP"
 .br
 .RI "Priority level for image_operator\&. "
+.ti -1c
+.RI "typedef struct _psx_svg \fBpsx_svg\fP"
+.br
+.RI "An opaque type represents an svg document\&. "
+.ti -1c
+.RI "typedef struct _psx_svg_render \fBpsx_svg_render\fP"
+.br
+.RI "An opaque type represents an svg render object\&. "
 .in -1c
 .SS "Enumerations"
 
 .in +1c
-.ti -1c
-.RI "enum { \fBS_OK\fP = 0, \fBS_BAD_PARAMS\fP = 1, \fBS_NOT_SUPPORT\fP = 2, \fBS_OUT_OF_MEMORY\fP = 3, \fBS_INIT_FAILURE\fP = 4, \fBS_FAILURE\fP = 5 }"
-.br
-.RI "Status code return by call APIs\&. "
 .ti -1c
 .RI "enum \fB_psx_priority_level\fP { \fBPRIORITY_EXTENTED\fP = -1, \fBPRIORITY_DEFAULT\fP = 0, \fBPRIORITY_MASTER\fP = 1 }"
 .br
@@ -111,7 +115,7 @@ Get first image frame data\&.
 .PP
 
 .PP
-Definition at line 84 of file psx_image\&.h\&.
+Definition at line 87 of file psx_image\&.h\&.
 .SS "#define IMG_DATA_AT_INDEX(image, idx)   (image\->frames[idx]\&.data)"
 
 .PP
@@ -124,7 +128,7 @@ Get image frame data at index\&.
 .PP
 
 .PP
-Definition at line 105 of file psx_image\&.h\&.
+Definition at line 108 of file psx_image\&.h\&.
 .SS "#define IMG_DATA_SIZE(image)   \fBIMG_DATA_SIZE_AT_INDEX\fP(image, 0)"
 
 .PP
@@ -137,7 +141,7 @@ Get first image frame data size\&.
 .PP
 
 .PP
-Definition at line 91 of file psx_image\&.h\&.
+Definition at line 94 of file psx_image\&.h\&.
 .SS "#define IMG_DATA_SIZE_AT_INDEX(img, idx)   (img\->frames[idx]\&.size)"
 
 .PP
@@ -150,7 +154,7 @@ Get image frame data size at index\&.
 .PP
 
 .PP
-Definition at line 112 of file psx_image\&.h\&.
+Definition at line 115 of file psx_image\&.h\&.
 .SS "#define IMG_DURATION_AT_INDEX(img, idx)   (img\->frames[idx]\&.duration)"
 
 .PP
@@ -163,7 +167,7 @@ Get image frame duration at index\&.
 .PP
 
 .PP
-Definition at line 119 of file psx_image\&.h\&.
+Definition at line 122 of file psx_image\&.h\&.
 .SS "#define IMG_OBJ(image)   \fBIMG_OBJ_AT_INDEX\fP(image, 0)"
 
 .PP
@@ -176,7 +180,7 @@ Get first ps_image obj\&.
 .PP
 
 .PP
-Definition at line 77 of file psx_image\&.h\&.
+Definition at line 80 of file psx_image\&.h\&.
 .SS "#define IMG_OBJ_AT_INDEX(image, idx)   (image\->frames[idx]\&.img)"
 
 .PP
@@ -189,7 +193,7 @@ Get ps_image obj at index\&.
 .PP
 
 .PP
-Definition at line 98 of file psx_image\&.h\&.
+Definition at line 101 of file psx_image\&.h\&.
 .SH "Typedef Documentation"
 .PP 
 .SS "typedef struct \fB_psx_image_operator\fP \fBpsx_image_operator\fP"
@@ -214,35 +218,34 @@ Priority level for image_operator\&.
 .RE
 .PP
 
-.SH "Enumeration Type Documentation"
-.PP 
-.SS "anonymous enum"
+.SS "\fBpsx_svg\fP"
 
 .PP
-Status code return by call APIs\&. 
+An opaque type represents an svg document\&. 
 .PP
-\fBEnumerator\fP
-.in +1c
-.TP
-\fB\fIS_OK \fP\fP
-Successful no errors\&. 
-.TP
-\fB\fIS_BAD_PARAMS \fP\fP
-Invalid params input\&. 
-.TP
-\fB\fIS_NOT_SUPPORT \fP\fP
-Not support format or decoder module not found\&. 
-.TP
-\fB\fIS_OUT_OF_MEMORY \fP\fP
-Not enough memory\&. 
-.TP
-\fB\fIS_INIT_FAILURE \fP\fP
-Not initialize system\&. 
-.TP
-\fB\fIS_FAILURE \fP\fP
-Operation failed by internal errors\&. 
+\fBSee also\fP
+.RS 4
+\fBpsx_svg_render\fP 
+.RE
 .PP
-Definition at line 124 of file psx_image\&.h\&.
+
+.PP
+Definition at line 48 of file psx_svg\&.h\&.
+.SS "\fBpsx_svg_render\fP"
+
+.PP
+An opaque type represents an svg render object\&. 
+.PP
+\fBSee also\fP
+.RS 4
+\fBpsx_svg\fP 
+.RE
+.PP
+
+.PP
+Definition at line 55 of file psx_svg\&.h\&.
+.SH "Enumeration Type Documentation"
+.PP 
 .SS "enum \fB_psx_priority_level\fP"
 
 .PP

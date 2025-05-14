@@ -1,4 +1,4 @@
-.TH "clip" 3 "Tue Dec 24 2024" "Version 2.8" "Picasso API" \" -*- nroff -*-
+.TH "clip" 3 "Tue May 13 2025" "Version 2.8" "Picasso API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -26,7 +26,7 @@ clip
 .br
 .RI "The fast way to clipping specified rectangle, the clip rect can not be transformed by world matrix\&. "
 .ti -1c
-.RI "PEXPORT void PICAPI \fBps_clip_rects\fP (\fBps_context\fP *ctx, const \fBps_rect\fP *rects, unsigned int num_rects)"
+.RI "PEXPORT void PICAPI \fBps_clip_rects\fP (\fBps_context\fP *ctx, const \fBps_rect\fP *rects, uint32_t num_rects)"
 .br
 .RI "Clipping specified area defined by an array of rectangles\&. "
 .ti -1c
@@ -93,7 +93,7 @@ Clipping specified rectangle\&.
 .RE
 .PP
 
-.SS "void ps_clip_rects (\fBps_context\fP * ctx, const \fBps_rect\fP * rects, unsigned int num_rects)"
+.SS "void ps_clip_rects (\fBps_context\fP * ctx, const \fBps_rect\fP * rects, uint32_t num_rects)"
 
 .PP
 Clipping specified area defined by an array of rectangles\&. 

@@ -33,3 +33,6 @@ install(TARGETS gif LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
 
 include_directories(${GIF_DIR} ${CMAKE_CURRENT_BINARY_DIR}/include)
 
+if (ANDROID)
+    target_compile_options(gif PRIVATE -DS_IREAD=S_IRUSR -DS_IWRITE=S_IWUSR -DS_IWRITE=S_IWUSR)
+endif()

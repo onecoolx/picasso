@@ -43,16 +43,14 @@ public:
     void render_shadow(context_state* state, const graphic_path& p, bool fill, bool stroke);
 
     void render_mask(const mask_layer& m, bool mask);
-    void render_copy(rendering_buffer& src, const rect* rect, const painter* dst, int off_x, int off_y);
+    void render_copy(rendering_buffer& src, const rect* rect, const painter* dst, int32_t off_x, int32_t off_y);
 
-    void render_glyph(context_state* state, raster_adapter& raster, const font* f, int type);
-    void render_glyphs_raster(context_state* state, raster_adapter& raster, int style);
+    void render_glyph(context_state* state, raster_adapter& raster, const font* f, int32_t type);
+    void render_glyphs_raster(context_state* state, raster_adapter& raster, int32_t style);
 private:
-    void init_raster_data(context_state*, unsigned int, raster_adapter&, const vertex_source&, const trans_affine&);
-    void init_source_data(context_state*, unsigned int, const graphic_path&);
+    void init_raster_data(context_state*, uint32_t, raster_adapter&, const vertex_source&, const trans_affine&);
+    void init_source_data(context_state*, uint32_t, const graphic_path&);
 private:
-    painter(const painter& o);
-    painter& operator=(const painter& o);
     abstract_painter* m_impl;
 };
 

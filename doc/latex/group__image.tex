@@ -3,13 +3,13 @@
 \doxysubsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
-P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+image} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+image\+\_\+create} (\textbf{ ps\+\_\+color\+\_\+format} fmt, int width, int height)
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+image} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+image\+\_\+create} (\textbf{ ps\+\_\+color\+\_\+format} fmt, int32\+\_\+t width, int32\+\_\+t height)
 \begin{DoxyCompactList}\small\item\em Create a new image using the given parameters. \end{DoxyCompactList}\item 
-P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+image} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+image\+\_\+create\+\_\+with\+\_\+data} (\textbf{ ps\+\_\+byte} $\ast$data, \textbf{ ps\+\_\+color\+\_\+format} fmt, int width, int height, int pitch)
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+image} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+image\+\_\+create\+\_\+with\+\_\+data} (\textbf{ ps\+\_\+byte} $\ast$data, \textbf{ ps\+\_\+color\+\_\+format} fmt, int32\+\_\+t width, int32\+\_\+t height, int32\+\_\+t pitch)
 \begin{DoxyCompactList}\small\item\em Create a new image using a given address in memory. \end{DoxyCompactList}\item 
-P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+image} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+image\+\_\+create\+\_\+from\+\_\+data} (\textbf{ ps\+\_\+byte} $\ast$data, \textbf{ ps\+\_\+color\+\_\+format} fmt, int width, int height, int pitch)
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+image} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+image\+\_\+create\+\_\+from\+\_\+data} (\textbf{ ps\+\_\+byte} $\ast$data, \textbf{ ps\+\_\+color\+\_\+format} fmt, int32\+\_\+t width, int32\+\_\+t height, int32\+\_\+t pitch)
 \begin{DoxyCompactList}\small\item\em Create a new image using a copy of given address in memory. \end{DoxyCompactList}\item 
-P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+image} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+image\+\_\+create\+\_\+compatible} (const \textbf{ ps\+\_\+canvas} $\ast$canvas, int width, int height)
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+image} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+image\+\_\+create\+\_\+compatible} (const \textbf{ ps\+\_\+canvas} $\ast$canvas, int32\+\_\+t width, int32\+\_\+t height)
 \begin{DoxyCompactList}\small\item\em Create a new image to compatible with an existing canvas. \end{DoxyCompactList}\item 
 P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+image} $\ast$P\+I\+C\+A\+PI \textbf{ ps\+\_\+image\+\_\+create\+\_\+from\+\_\+canvas} (\textbf{ ps\+\_\+canvas} $\ast$canvas, const \textbf{ ps\+\_\+rect} $\ast$rect)
 \begin{DoxyCompactList}\small\item\em Create a new image using part of an existing canvas in same pixel buffer. \end{DoxyCompactList}\item 
@@ -33,11 +33,11 @@ P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+color\+\_\+format} P\+I\+C\+A\+PI \textbf{ ps
 
 
 \doxysubsection{Function Documentation}
-\mbox{\label{group__image_gad73f93a376c811065edbbc54b857f093}} 
+\mbox{\label{group__image_ga4d39f95e68dd60a58ff112a6442c6361}} 
 \index{Image@{Image}!ps\_image\_create@{ps\_image\_create}}
 \index{ps\_image\_create@{ps\_image\_create}!Image@{Image}}
 \doxysubsubsection{ps\_image\_create()}
-{\footnotesize\ttfamily \textbf{ ps\+\_\+image} $\ast$ ps\+\_\+image\+\_\+create (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+color\+\_\+format}}]{fmt,  }\item[{int}]{width,  }\item[{int}]{height }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+image} $\ast$ ps\+\_\+image\+\_\+create (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+color\+\_\+format}}]{fmt,  }\item[{int32\+\_\+t}]{width,  }\item[{int32\+\_\+t}]{height }\end{DoxyParamCaption})}
 
 
 
@@ -59,13 +59,13 @@ If the function succeeds, the return value is the pointer to a new image object.
 To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
 \end{DoxyNote}
 \begin{DoxySeeAlso}{See also}
-\doxyref{ps\+\_\+image\+\_\+create\+\_\+with\+\_\+data}{p.}{group__image_ga8a45a5aa2404138a2dd323b3b009740d}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+compatible}{p.}{group__image_gae649621753e8feca08b0f5e76db0513f}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+canvas}{p.}{group__image_gafb11e3545a00ac5f963cd0bc550fdb54}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+data}{p.}{group__image_gaebebf1d12a7c978a5b5440b2eae4f650}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+image}{p.}{group__image_ga2a0bf1bcf790bf0c32d0562349a0af2a}, \doxyref{ps\+\_\+image\+\_\+ref}{p.}{group__image_ga56a76add1af7ead02d1d9b400f579a46}, \doxyref{ps\+\_\+image\+\_\+unref}{p.}{group__image_ga38cd469f268f5f55c45b36322543a3f6} 
+\doxyref{ps\+\_\+image\+\_\+create\+\_\+with\+\_\+data}{p.}{group__image_ga4e7c4002f493d3e8bfccfe455020694b}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+compatible}{p.}{group__image_ga0f4e0eca0a389aedb69b01cf6e94f42d}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+canvas}{p.}{group__image_gafb11e3545a00ac5f963cd0bc550fdb54}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+data}{p.}{group__image_ga6f0df04dd3b72b334698de97b99666f7}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+image}{p.}{group__image_ga2a0bf1bcf790bf0c32d0562349a0af2a}, \doxyref{ps\+\_\+image\+\_\+ref}{p.}{group__image_ga56a76add1af7ead02d1d9b400f579a46}, \doxyref{ps\+\_\+image\+\_\+unref}{p.}{group__image_ga38cd469f268f5f55c45b36322543a3f6} 
 \end{DoxySeeAlso}
-\mbox{\label{group__image_gae649621753e8feca08b0f5e76db0513f}} 
+\mbox{\label{group__image_ga0f4e0eca0a389aedb69b01cf6e94f42d}} 
 \index{Image@{Image}!ps\_image\_create\_compatible@{ps\_image\_create\_compatible}}
 \index{ps\_image\_create\_compatible@{ps\_image\_create\_compatible}!Image@{Image}}
 \doxysubsubsection{ps\_image\_create\_compatible()}
-{\footnotesize\ttfamily \textbf{ ps\+\_\+image} $\ast$ ps\+\_\+image\+\_\+create\+\_\+compatible (\begin{DoxyParamCaption}\item[{const \textbf{ ps\+\_\+canvas} $\ast$}]{canvas,  }\item[{int}]{width,  }\item[{int}]{height }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+image} $\ast$ ps\+\_\+image\+\_\+create\+\_\+compatible (\begin{DoxyParamCaption}\item[{const \textbf{ ps\+\_\+canvas} $\ast$}]{canvas,  }\item[{int32\+\_\+t}]{width,  }\item[{int32\+\_\+t}]{height }\end{DoxyParamCaption})}
 
 
 
@@ -87,7 +87,7 @@ If the function succeeds, the return value is the pointer to a new image object.
 To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
 \end{DoxyNote}
 \begin{DoxySeeAlso}{See also}
-\doxyref{ps\+\_\+image\+\_\+create}{p.}{group__image_gad73f93a376c811065edbbc54b857f093}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+with\+\_\+data}{p.}{group__image_ga8a45a5aa2404138a2dd323b3b009740d}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+canvas}{p.}{group__image_gafb11e3545a00ac5f963cd0bc550fdb54}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+image}{p.}{group__image_ga2a0bf1bcf790bf0c32d0562349a0af2a}, \doxyref{ps\+\_\+image\+\_\+ref}{p.}{group__image_ga56a76add1af7ead02d1d9b400f579a46}, \doxyref{ps\+\_\+image\+\_\+unref}{p.}{group__image_ga38cd469f268f5f55c45b36322543a3f6} 
+\doxyref{ps\+\_\+image\+\_\+create}{p.}{group__image_ga4d39f95e68dd60a58ff112a6442c6361}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+with\+\_\+data}{p.}{group__image_ga4e7c4002f493d3e8bfccfe455020694b}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+canvas}{p.}{group__image_gafb11e3545a00ac5f963cd0bc550fdb54}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+image}{p.}{group__image_ga2a0bf1bcf790bf0c32d0562349a0af2a}, \doxyref{ps\+\_\+image\+\_\+ref}{p.}{group__image_ga56a76add1af7ead02d1d9b400f579a46}, \doxyref{ps\+\_\+image\+\_\+unref}{p.}{group__image_ga38cd469f268f5f55c45b36322543a3f6} 
 \end{DoxySeeAlso}
 \mbox{\label{group__image_gafb11e3545a00ac5f963cd0bc550fdb54}} 
 \index{Image@{Image}!ps\_image\_create\_from\_canvas@{ps\_image\_create\_from\_canvas}}
@@ -113,13 +113,13 @@ If the function succeeds, the return value is the pointer to a new image object.
 To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
 \end{DoxyNote}
 \begin{DoxySeeAlso}{See also}
-\doxyref{ps\+\_\+image\+\_\+create}{p.}{group__image_gad73f93a376c811065edbbc54b857f093}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+with\+\_\+data}{p.}{group__image_ga8a45a5aa2404138a2dd323b3b009740d}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+compatible}{p.}{group__image_gae649621753e8feca08b0f5e76db0513f}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+data}{p.}{group__image_gaebebf1d12a7c978a5b5440b2eae4f650}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+image}{p.}{group__image_ga2a0bf1bcf790bf0c32d0562349a0af2a}, \doxyref{ps\+\_\+image\+\_\+ref}{p.}{group__image_ga56a76add1af7ead02d1d9b400f579a46}, \doxyref{ps\+\_\+image\+\_\+unref}{p.}{group__image_ga38cd469f268f5f55c45b36322543a3f6} 
+\doxyref{ps\+\_\+image\+\_\+create}{p.}{group__image_ga4d39f95e68dd60a58ff112a6442c6361}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+with\+\_\+data}{p.}{group__image_ga4e7c4002f493d3e8bfccfe455020694b}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+compatible}{p.}{group__image_ga0f4e0eca0a389aedb69b01cf6e94f42d}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+data}{p.}{group__image_ga6f0df04dd3b72b334698de97b99666f7}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+image}{p.}{group__image_ga2a0bf1bcf790bf0c32d0562349a0af2a}, \doxyref{ps\+\_\+image\+\_\+ref}{p.}{group__image_ga56a76add1af7ead02d1d9b400f579a46}, \doxyref{ps\+\_\+image\+\_\+unref}{p.}{group__image_ga38cd469f268f5f55c45b36322543a3f6} 
 \end{DoxySeeAlso}
-\mbox{\label{group__image_gaebebf1d12a7c978a5b5440b2eae4f650}} 
+\mbox{\label{group__image_ga6f0df04dd3b72b334698de97b99666f7}} 
 \index{Image@{Image}!ps\_image\_create\_from\_data@{ps\_image\_create\_from\_data}}
 \index{ps\_image\_create\_from\_data@{ps\_image\_create\_from\_data}!Image@{Image}}
 \doxysubsubsection{ps\_image\_create\_from\_data()}
-{\footnotesize\ttfamily \textbf{ ps\+\_\+image} $\ast$ ps\+\_\+image\+\_\+create\+\_\+from\+\_\+data (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+byte} $\ast$}]{data,  }\item[{\textbf{ ps\+\_\+color\+\_\+format}}]{fmt,  }\item[{int}]{width,  }\item[{int}]{height,  }\item[{int}]{pitch }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+image} $\ast$ ps\+\_\+image\+\_\+create\+\_\+from\+\_\+data (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+byte} $\ast$}]{data,  }\item[{\textbf{ ps\+\_\+color\+\_\+format}}]{fmt,  }\item[{int32\+\_\+t}]{width,  }\item[{int32\+\_\+t}]{height,  }\item[{int32\+\_\+t}]{pitch }\end{DoxyParamCaption})}
 
 
 
@@ -145,7 +145,7 @@ If the function succeeds, the return value is the pointer to a new image object.
 To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
 \end{DoxyNote}
 \begin{DoxySeeAlso}{See also}
-\doxyref{ps\+\_\+image\+\_\+create}{p.}{group__image_gad73f93a376c811065edbbc54b857f093}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+compatible}{p.}{group__image_gae649621753e8feca08b0f5e76db0513f}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+canvas}{p.}{group__image_gafb11e3545a00ac5f963cd0bc550fdb54}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+with\+\_\+data}{p.}{group__image_ga8a45a5aa2404138a2dd323b3b009740d}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+image}{p.}{group__image_ga2a0bf1bcf790bf0c32d0562349a0af2a}, \doxyref{ps\+\_\+image\+\_\+ref}{p.}{group__image_ga56a76add1af7ead02d1d9b400f579a46}, \doxyref{ps\+\_\+image\+\_\+unref}{p.}{group__image_ga38cd469f268f5f55c45b36322543a3f6} 
+\doxyref{ps\+\_\+image\+\_\+create}{p.}{group__image_ga4d39f95e68dd60a58ff112a6442c6361}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+compatible}{p.}{group__image_ga0f4e0eca0a389aedb69b01cf6e94f42d}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+canvas}{p.}{group__image_gafb11e3545a00ac5f963cd0bc550fdb54}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+with\+\_\+data}{p.}{group__image_ga4e7c4002f493d3e8bfccfe455020694b}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+image}{p.}{group__image_ga2a0bf1bcf790bf0c32d0562349a0af2a}, \doxyref{ps\+\_\+image\+\_\+ref}{p.}{group__image_ga56a76add1af7ead02d1d9b400f579a46}, \doxyref{ps\+\_\+image\+\_\+unref}{p.}{group__image_ga38cd469f268f5f55c45b36322543a3f6} 
 \end{DoxySeeAlso}
 \mbox{\label{group__image_ga2a0bf1bcf790bf0c32d0562349a0af2a}} 
 \index{Image@{Image}!ps\_image\_create\_from\_image@{ps\_image\_create\_from\_image}}
@@ -171,13 +171,13 @@ If the function succeeds, the return value is the pointer to a new image object.
 To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
 \end{DoxyNote}
 \begin{DoxySeeAlso}{See also}
-\doxyref{ps\+\_\+image\+\_\+create}{p.}{group__image_gad73f93a376c811065edbbc54b857f093}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+with\+\_\+data}{p.}{group__image_ga8a45a5aa2404138a2dd323b3b009740d}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+compatible}{p.}{group__image_gae649621753e8feca08b0f5e76db0513f}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+data}{p.}{group__image_gaebebf1d12a7c978a5b5440b2eae4f650}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+canvas}{p.}{group__image_gafb11e3545a00ac5f963cd0bc550fdb54}, \doxyref{ps\+\_\+image\+\_\+ref}{p.}{group__image_ga56a76add1af7ead02d1d9b400f579a46}, \doxyref{ps\+\_\+image\+\_\+unref}{p.}{group__image_ga38cd469f268f5f55c45b36322543a3f6} 
+\doxyref{ps\+\_\+image\+\_\+create}{p.}{group__image_ga4d39f95e68dd60a58ff112a6442c6361}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+with\+\_\+data}{p.}{group__image_ga4e7c4002f493d3e8bfccfe455020694b}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+compatible}{p.}{group__image_ga0f4e0eca0a389aedb69b01cf6e94f42d}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+data}{p.}{group__image_ga6f0df04dd3b72b334698de97b99666f7}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+canvas}{p.}{group__image_gafb11e3545a00ac5f963cd0bc550fdb54}, \doxyref{ps\+\_\+image\+\_\+ref}{p.}{group__image_ga56a76add1af7ead02d1d9b400f579a46}, \doxyref{ps\+\_\+image\+\_\+unref}{p.}{group__image_ga38cd469f268f5f55c45b36322543a3f6} 
 \end{DoxySeeAlso}
-\mbox{\label{group__image_ga8a45a5aa2404138a2dd323b3b009740d}} 
+\mbox{\label{group__image_ga4e7c4002f493d3e8bfccfe455020694b}} 
 \index{Image@{Image}!ps\_image\_create\_with\_data@{ps\_image\_create\_with\_data}}
 \index{ps\_image\_create\_with\_data@{ps\_image\_create\_with\_data}!Image@{Image}}
 \doxysubsubsection{ps\_image\_create\_with\_data()}
-{\footnotesize\ttfamily \textbf{ ps\+\_\+image} $\ast$ ps\+\_\+image\+\_\+create\+\_\+with\+\_\+data (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+byte} $\ast$}]{data,  }\item[{\textbf{ ps\+\_\+color\+\_\+format}}]{fmt,  }\item[{int}]{width,  }\item[{int}]{height,  }\item[{int}]{pitch }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+image} $\ast$ ps\+\_\+image\+\_\+create\+\_\+with\+\_\+data (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+byte} $\ast$}]{data,  }\item[{\textbf{ ps\+\_\+color\+\_\+format}}]{fmt,  }\item[{int32\+\_\+t}]{width,  }\item[{int32\+\_\+t}]{height,  }\item[{int32\+\_\+t}]{pitch }\end{DoxyParamCaption})}
 
 
 
@@ -203,7 +203,7 @@ If the function succeeds, the return value is the pointer to a new image object.
 To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
 \end{DoxyNote}
 \begin{DoxySeeAlso}{See also}
-\doxyref{ps\+\_\+image\+\_\+create}{p.}{group__image_gad73f93a376c811065edbbc54b857f093}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+compatible}{p.}{group__image_gae649621753e8feca08b0f5e76db0513f}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+canvas}{p.}{group__image_gafb11e3545a00ac5f963cd0bc550fdb54}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+data}{p.}{group__image_gaebebf1d12a7c978a5b5440b2eae4f650}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+image}{p.}{group__image_ga2a0bf1bcf790bf0c32d0562349a0af2a}, \doxyref{ps\+\_\+image\+\_\+ref}{p.}{group__image_ga56a76add1af7ead02d1d9b400f579a46}, \doxyref{ps\+\_\+image\+\_\+unref}{p.}{group__image_ga38cd469f268f5f55c45b36322543a3f6} 
+\doxyref{ps\+\_\+image\+\_\+create}{p.}{group__image_ga4d39f95e68dd60a58ff112a6442c6361}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+compatible}{p.}{group__image_ga0f4e0eca0a389aedb69b01cf6e94f42d}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+canvas}{p.}{group__image_gafb11e3545a00ac5f963cd0bc550fdb54}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+data}{p.}{group__image_ga6f0df04dd3b72b334698de97b99666f7}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+image}{p.}{group__image_ga2a0bf1bcf790bf0c32d0562349a0af2a}, \doxyref{ps\+\_\+image\+\_\+ref}{p.}{group__image_ga56a76add1af7ead02d1d9b400f579a46}, \doxyref{ps\+\_\+image\+\_\+unref}{p.}{group__image_ga38cd469f268f5f55c45b36322543a3f6} 
 \end{DoxySeeAlso}
 \mbox{\label{group__image_gad79495fd520c6eb60ac28ddebce5df4d}} 
 \index{Image@{Image}!ps\_image\_get\_format@{ps\_image\_get\_format}}
@@ -277,7 +277,7 @@ If the function succeeds, the return value is the pointer to the image object. I
 To get extended error information, call {\itshape ps\+\_\+last\+\_\+status}.
 \end{DoxyNote}
 \begin{DoxySeeAlso}{See also}
-\doxyref{ps\+\_\+image\+\_\+create}{p.}{group__image_gad73f93a376c811065edbbc54b857f093}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+with\+\_\+data}{p.}{group__image_ga8a45a5aa2404138a2dd323b3b009740d}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+compatible}{p.}{group__image_gae649621753e8feca08b0f5e76db0513f}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+data}{p.}{group__image_gaebebf1d12a7c978a5b5440b2eae4f650}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+canvas}{p.}{group__image_gafb11e3545a00ac5f963cd0bc550fdb54}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+image}{p.}{group__image_ga2a0bf1bcf790bf0c32d0562349a0af2a}, \doxyref{ps\+\_\+image\+\_\+unref}{p.}{group__image_ga38cd469f268f5f55c45b36322543a3f6} 
+\doxyref{ps\+\_\+image\+\_\+create}{p.}{group__image_ga4d39f95e68dd60a58ff112a6442c6361}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+with\+\_\+data}{p.}{group__image_ga4e7c4002f493d3e8bfccfe455020694b}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+compatible}{p.}{group__image_ga0f4e0eca0a389aedb69b01cf6e94f42d}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+data}{p.}{group__image_ga6f0df04dd3b72b334698de97b99666f7}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+canvas}{p.}{group__image_gafb11e3545a00ac5f963cd0bc550fdb54}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+image}{p.}{group__image_ga2a0bf1bcf790bf0c32d0562349a0af2a}, \doxyref{ps\+\_\+image\+\_\+unref}{p.}{group__image_ga38cd469f268f5f55c45b36322543a3f6} 
 \end{DoxySeeAlso}
 \mbox{\label{group__image_gac08ab14a69f0a88432e3883b1e50231e}} 
 \index{Image@{Image}!ps\_image\_set\_allow\_transparent@{ps\_image\_set\_allow\_transparent}}
@@ -335,5 +335,5 @@ Decrements the reference count for the image object. If the reference count on t
 \hline
 \end{DoxyParams}
 \begin{DoxySeeAlso}{See also}
-\doxyref{ps\+\_\+image\+\_\+create}{p.}{group__image_gad73f93a376c811065edbbc54b857f093}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+with\+\_\+data}{p.}{group__image_ga8a45a5aa2404138a2dd323b3b009740d}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+compatible}{p.}{group__image_gae649621753e8feca08b0f5e76db0513f}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+data}{p.}{group__image_gaebebf1d12a7c978a5b5440b2eae4f650}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+canvas}{p.}{group__image_gafb11e3545a00ac5f963cd0bc550fdb54}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+image}{p.}{group__image_ga2a0bf1bcf790bf0c32d0562349a0af2a}, \doxyref{ps\+\_\+image\+\_\+ref}{p.}{group__image_ga56a76add1af7ead02d1d9b400f579a46} 
+\doxyref{ps\+\_\+image\+\_\+create}{p.}{group__image_ga4d39f95e68dd60a58ff112a6442c6361}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+with\+\_\+data}{p.}{group__image_ga4e7c4002f493d3e8bfccfe455020694b}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+compatible}{p.}{group__image_ga0f4e0eca0a389aedb69b01cf6e94f42d}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+data}{p.}{group__image_ga6f0df04dd3b72b334698de97b99666f7}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+canvas}{p.}{group__image_gafb11e3545a00ac5f963cd0bc550fdb54}, \doxyref{ps\+\_\+image\+\_\+create\+\_\+from\+\_\+image}{p.}{group__image_ga2a0bf1bcf790bf0c32d0562349a0af2a}, \doxyref{ps\+\_\+image\+\_\+ref}{p.}{group__image_ga56a76add1af7ead02d1d9b400f579a46} 
 \end{DoxySeeAlso}

@@ -1,7 +1,27 @@
-/* Picasso - a vector graphics library
+/*
+ * Copyright (c) 2016, Zhang Ji Peng
+ * All rights reserved.
  *
- * Copyright (C) 2016 Zhang Ji Peng
- * Contact: onecoolx@gmail.com
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * * Redistributions of source code must retain the above copyright notice, this
+ *   list of conditions and the following disclaimer.
+ *
+ * * Redistributions in binary form must reproduce the above copyright notice,
+ *   this list of conditions and the following disclaimer in the documentation
+ *   and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include <stdio.h>
@@ -22,50 +42,6 @@
 #include "psx_image_io.h"
 
 #if defined(WIN32) && defined(_MSC_VER)
-
-wchar_t* pstring_create(const char* str, size_t* rlen)
-{
-    wchar_t* ustr = NULL;
-    size_t len = MultiByteToWideChar(CP_UTF8, 0, str, -1, NULL, 0);
-    if (!len) {
-        return NULL;
-    }
-
-    ustr = (wchar_t*)malloc((len + 1) * sizeof(wchar_t));
-    memset(ustr, 0, sizeof(wchar_t) * (len + 1));
-    MultiByteToWideChar(CP_UTF8, 0, str, -1, ustr, (int)len);
-
-    if (rlen) { *rlen = len; }
-    return ustr;
-}
-
-#define STAT(p, i) _wstat(p, i)
-#define FOPEN(p, m) _wfopen(p, L##m)
-
-int _file_exists(const wchar_t* path)
-{
-    struct _stat info;
-    if (STAT(path, &info) != 0) {
-        return -1;
-    }
-
-    return S_IFREG & info.st_mode ? 0 : -1;
-}
-
-size_t _file_size(const wchar_t* path)
-{
-    struct _stat info;
-    if (STAT(path, &info) != 0) {
-        return 0;
-    }
-
-    return info.st_size;
-}
-
-int _file_remove(const wchar_t* path)
-{
-    return _wremove(path);
-}
 
 module_handle _module_load(const wchar_t* path)
 {
@@ -165,32 +141,8 @@ size_t _module_get_modules(const wchar_t* dir_path, wchar_t* paths[], size_t siz
     FindClose(handle);
     return nums;
 }
+
 #else
-int _file_exists(const char* path)
-{
-    struct stat info;
-    if (stat(path, &info) != 0) {
-        return -1;
-    }
-
-    return S_ISREG(info.st_mode) ? 0 : -1;
-}
-
-size_t _file_size(const char* path)
-{
-    struct stat info;
-    if (stat(path, &info) != 0) {
-        return 0;
-    }
-
-    return info.st_size;
-}
-
-int _file_remove(const char* path)
-{
-    return remove(path);
-}
-
 #ifdef __APPLE__
     #define SO_EXT "dylib"
 #else
@@ -336,50 +288,4 @@ void _module_unload(module_handle module)
     dlclose(module);
 }
 
-char* pstring_create(const char* str, size_t* rlen)
-{
-    if (rlen) { *rlen = strlen(str); }
-    return strdup(str);
-}
-
-#define FOPEN(p, m) fopen(p, m)
-
 #endif
-
-int _file_read(const pchar* path, unsigned char* buffer, size_t buffer_size)
-{
-    size_t read_bytes = 0;
-    int retval = 0;
-
-    FILE* fp = FOPEN(path, "rb");
-    if (!fp) {
-        return -1;
-    }
-
-    read_bytes = fread(buffer, 1, buffer_size, fp);
-    if (read_bytes != buffer_size) {
-        retval = -1;
-    }
-
-    fclose(fp);
-    return retval;
-}
-
-int _file_write(const pchar* path, unsigned char* buffer, size_t buffer_size)
-{
-    size_t write_bytes = 0;
-    int retval = 0;
-
-    FILE* fp = FOPEN(path, "ab");
-    if (!fp) {
-        return -1;
-    }
-
-    write_bytes = fwrite(buffer, 1, buffer_size, fp);
-    if (write_bytes != buffer_size) {
-        retval = -1;
-    }
-
-    fclose(fp);
-    return retval;
-}

@@ -22,12 +22,12 @@ class abstract_rendering_buffer
 public:
     virtual ~abstract_rendering_buffer() {}
 
-    virtual void init(byte* ptr, unsigned int width, unsigned int height, int stride) = 0;
-    virtual void replace(byte* ptr, unsigned int width, unsigned int height, int stride) = 0;
+    virtual void init(byte* ptr, uint32_t width, uint32_t height, int32_t stride) = 0;
+    virtual void replace(byte* ptr, uint32_t width, uint32_t height, int32_t stride) = 0;
 
-    virtual unsigned int width(void) const = 0;
-    virtual unsigned int height(void) const = 0;
-    virtual int stride(void) const = 0;
+    virtual uint32_t width(void) const = 0;
+    virtual uint32_t height(void) const = 0;
+    virtual int32_t stride(void) const = 0;
     virtual byte* buffer(void) const = 0;
 
     virtual bool is_transparent(void) const = 0;
@@ -39,9 +39,6 @@ public:
     virtual rgba get_color_channel(void) const = 0;
 protected:
     abstract_rendering_buffer() {}
-private:
-    abstract_rendering_buffer(const abstract_rendering_buffer&);
-    abstract_rendering_buffer& operator=(const abstract_rendering_buffer&);
 };
 
 //Raster adapter interface
@@ -53,23 +50,20 @@ public:
     virtual void set_gamma_power(scalar) = 0;
     virtual void set_antialias(bool) = 0;
     virtual void set_transform(const trans_affine* mtx) = 0;
-    virtual void set_raster_method(unsigned int methods) = 0;
-    virtual void set_stroke_dashes(scalar start, const scalar* dashes, unsigned int num) = 0;
-    virtual void set_stroke_attr(int idx, int val) = 0;
-    virtual void set_stroke_attr_val(int idx, scalar val) = 0;
+    virtual void set_raster_method(uint32_t methods) = 0;
+    virtual void set_stroke_dashes(scalar start, const scalar* dashes, uint32_t num) = 0;
+    virtual void set_stroke_attr(int32_t idx, int32_t val) = 0;
+    virtual void set_stroke_attr_val(int32_t idx, scalar val) = 0;
 
-    virtual void set_fill_attr(int idx, int val) = 0;
+    virtual void set_fill_attr(int32_t idx, int32_t val) = 0;
 
-    virtual void add_shape(const vertex_source& vs, unsigned int id) = 0;
+    virtual void add_shape(const vertex_source& vs, uint32_t id) = 0;
     virtual void reset(void) = 0;
     virtual void commit(void) = 0;
     virtual bool is_empty(void) = 0;
     virtual bool contains(scalar x, scalar y) = 0;
 protected:
     abstract_raster_adapter() {}
-private:
-    abstract_raster_adapter(const abstract_raster_adapter&);
-    abstract_raster_adapter& operator=(const abstract_raster_adapter&);
 };
 
 //Masking layer interface
@@ -78,15 +72,12 @@ class abstract_mask_layer
 public:
     virtual ~abstract_mask_layer() {}
 
-    virtual void attach(byte* buf, unsigned int width, unsigned int height, int stride) = 0;
-    virtual void set_mask_type(int type) = 0;
+    virtual void attach(byte* buf, uint32_t width, uint32_t height, int32_t stride) = 0;
+    virtual void set_mask_type(int32_t type) = 0;
     virtual void add_filter_color(const rgba& c) = 0;
     virtual void clear_filter_colors(void) = 0;
 protected:
     abstract_mask_layer() {}
-private:
-    abstract_mask_layer(const abstract_mask_layer&);
-    abstract_mask_layer& operator=(const abstract_mask_layer&);
 };
 
 //Gradient interface
@@ -95,10 +86,10 @@ class abstract_gradient_adapter
 public:
     virtual ~abstract_gradient_adapter() {}
 
-    virtual void init_linear(int spread, scalar x1, scalar y1, scalar x2, scalar y2) = 0;
-    virtual void init_radial(int spread, scalar x1, scalar y1, scalar radius1,
+    virtual void init_linear(int32_t spread, scalar x1, scalar y1, scalar x2, scalar y2) = 0;
+    virtual void init_radial(int32_t spread, scalar x1, scalar y1, scalar radius1,
                              scalar x2, scalar y2, scalar radius2) = 0;
-    virtual void init_conic(int spread, scalar x, scalar y, scalar angle) = 0;
+    virtual void init_conic(int32_t spread, scalar x, scalar y, scalar angle) = 0;
 
     virtual void add_color_stop(scalar offset, const rgba& c) = 0;
     virtual void clear_stops(void) = 0;
@@ -106,9 +97,6 @@ public:
     virtual void transform(const trans_affine* mtx) = 0;
 protected:
     abstract_gradient_adapter() {}
-private:
-    abstract_gradient_adapter(const abstract_gradient_adapter&);
-    abstract_gradient_adapter& operator=(const abstract_gradient_adapter&);
 };
 
 // Painter interface
@@ -124,17 +112,17 @@ public:
     virtual void set_composite(comp_op op) = 0;
     // stroke
     virtual void set_stroke_color(const rgba& c) = 0;
-    virtual void set_stroke_image(const abstract_rendering_buffer* img, pix_fmt format, int filter, const rect_s& rc) = 0;
-    virtual void set_stroke_canvas(const abstract_rendering_buffer* img, pix_fmt format, int filter, const rect_s& rc) = 0;
-    virtual void set_stroke_pattern(const abstract_rendering_buffer* img, pix_fmt format, int filter, const rect_s& rc,
-                                    int xtype, int ytype, const trans_affine* mtx) = 0;
+    virtual void set_stroke_image(const abstract_rendering_buffer* img, pix_fmt format, int32_t filter, const rect_s& rc) = 0;
+    virtual void set_stroke_canvas(const abstract_rendering_buffer* img, pix_fmt format, int32_t filter, const rect_s& rc) = 0;
+    virtual void set_stroke_pattern(const abstract_rendering_buffer* img, pix_fmt format, int32_t filter, const rect_s& rc,
+                                    int32_t xtype, int32_t ytype, const trans_affine* mtx) = 0;
     virtual void set_stroke_gradient(const abstract_gradient_adapter* g) = 0;
     // fill
     virtual void set_fill_color(const rgba& c) = 0;
-    virtual void set_fill_image(const abstract_rendering_buffer* img, pix_fmt format, int filter, const rect_s& rc) = 0;
-    virtual void set_fill_canvas(const abstract_rendering_buffer* img, pix_fmt format, int filter, const rect_s& rc) = 0;
-    virtual void set_fill_pattern(const abstract_rendering_buffer* img, pix_fmt format, int filter, const rect_s& rc,
-                                  int xtype, int ytype, const trans_affine* mtx) = 0;
+    virtual void set_fill_image(const abstract_rendering_buffer* img, pix_fmt format, int32_t filter, const rect_s& rc) = 0;
+    virtual void set_fill_canvas(const abstract_rendering_buffer* img, pix_fmt format, int32_t filter, const rect_s& rc) = 0;
+    virtual void set_fill_pattern(const abstract_rendering_buffer* img, pix_fmt format, int32_t filter, const rect_s& rc,
+                                  int32_t xtype, int32_t ytype, const trans_affine* mtx) = 0;
     virtual void set_fill_gradient(const abstract_gradient_adapter* g) = 0;
     virtual void set_font_fill_color(const rgba& c) = 0;
 
@@ -153,7 +141,7 @@ public:
     virtual void apply_blur(scalar blur) = 0;
 
     // clipping
-    virtual void apply_clip_path(const vertex_source& v, int rule, const trans_affine* mtx) = 0;
+    virtual void apply_clip_path(const vertex_source& v, int32_t rule, const trans_affine* mtx) = 0;
     virtual void apply_clip_device(const rect_s& rc, scalar xoffset, scalar yoffset) = 0;
     virtual void clear_clip(void) = 0;
 
@@ -167,12 +155,9 @@ public:
                               const rgba& c, scalar x, scalar y, scalar b) = 0;
 
     //data copy
-    virtual void copy_rect_from(abstract_rendering_buffer* src, const rect& rc, int x, int y) = 0;
+    virtual void copy_rect_from(abstract_rendering_buffer* src, const rect& rc, int32_t x, int32_t y) = 0;
 protected:
     abstract_painter() {}
-private:
-    abstract_painter(const abstract_painter&);
-    abstract_painter& operator=(const abstract_painter&);
 };
 
 }

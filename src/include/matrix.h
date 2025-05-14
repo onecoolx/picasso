@@ -131,13 +131,21 @@ public:
 };
 
 // hack!! Stable matrix
-inline trans_affine stable_matrix(const trans_affine& o)
+
+inline bool is_no_scaled(const trans_affine& o)
 {
-    if (is_boxer(o.rotation())) {
-        scalar tx = Floor(o.tx());
-        scalar ty = Floor(o.ty());
+    return o.sx() == FLT_TO_SCALAR(1.0f) && o.sy() == FLT_TO_SCALAR(1.0f);
+}
+
+inline trans_affine stable_matrix(const trans_affine& o, bool* b = NULL)
+{
+    if (is_boxer(o.rotation()) && is_no_scaled(o)) {
+        scalar tx = Round(o.tx());
+        scalar ty = Round(o.ty());
+        if (b) { *b = true; }
         return trans_affine(o.sx(), o.shy(), o.shx(), o.sy(), SCALAR_TO_FLT(tx), SCALAR_TO_FLT(ty));
     } else {
+        if (b) { *b = false; }
         return trans_affine(o);
     }
 }

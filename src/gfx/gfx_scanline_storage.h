@@ -18,7 +18,7 @@ class gfx_scanline_cell_storage
 {
     typedef struct {
         T* ptr;
-        unsigned int len;
+        uint32_t len;
     } extra_span;
 
 public:
@@ -54,7 +54,7 @@ public:
 
     void remove_all(void)
     {
-        for (int i = m_extra_storage.size() - 1; i >= 0; --i) {
+        for (int32_t i = m_extra_storage.size() - 1; i >= 0; --i) {
             pod_allocator<T>::deallocate(m_extra_storage[i].ptr,
                                          m_extra_storage[i].len);
         }
@@ -62,9 +62,9 @@ public:
         m_cells.clear();
     }
 
-    int add_cells(const T* cells, unsigned int num_cells)
+    int32_t add_cells(const T* cells, uint32_t num_cells)
     {
-        int idx = m_cells.allocate_continuous_block(num_cells);
+        int32_t idx = m_cells.allocate_continuous_block(num_cells);
         if (idx >= 0) {
             T* ptr = &m_cells[idx];
             mem_copy(ptr, cells, sizeof(T) * num_cells);
@@ -75,33 +75,33 @@ public:
         s.ptr = pod_allocator<T>::allocate(num_cells);
         mem_copy(s.ptr, cells, sizeof(T) * num_cells);
         m_extra_storage.add(s);
-        return -(int)(m_extra_storage.size());
+        return -(int32_t)(m_extra_storage.size());
     }
 
-    const T* operator [] (int idx) const
+    const T* operator [] (int32_t idx) const
     {
         if (idx >= 0) {
-            if ((unsigned int)idx >= m_cells.size()) {
+            if ((uint32_t)idx >= m_cells.size()) {
                 return 0;
             }
-            return &m_cells[(unsigned int)idx];
+            return &m_cells[(uint32_t)idx];
         }
-        unsigned int i = (unsigned int)(-idx - 1);
+        uint32_t i = (uint32_t)(-idx - 1);
         if (i >= m_extra_storage.size()) {
             return 0;
         }
         return m_extra_storage[i].ptr;
     }
 
-    T* operator [] (int idx)
+    T* operator [] (int32_t idx)
     {
         if (idx >= 0) {
-            if ((unsigned int)idx >= m_cells.size()) {
+            if ((uint32_t)idx >= m_cells.size()) {
                 return 0;
             }
-            return &m_cells[(unsigned int)idx];
+            return &m_cells[(uint32_t)idx];
         }
-        unsigned int i = (unsigned int)(-idx - 1);
+        uint32_t i = (uint32_t)(-idx - 1);
         if (i >= m_extra_storage.size()) {
             return 0;
         }
@@ -111,7 +111,7 @@ public:
 private:
     void copy_extra_storage(const gfx_scanline_cell_storage<T>& v)
     {
-        for (unsigned int i = 0; i < v.m_extra_storage.size(); ++i) {
+        for (uint32_t i = 0; i < v.m_extra_storage.size(); ++i) {
             const extra_span& src = v.m_extra_storage[i];
             extra_span dst;
             dst.len = src.len;
@@ -135,13 +135,13 @@ public:
     typedef struct {
         int32_t x;
         int32_t len; // If negative, it's a solid span, covers is valid
-        int covers_id; // The index of the cells in the gfx_scanline_cell_storage
+        int32_t covers_id; // The index of the cells in the gfx_scanline_cell_storage
     } span_data;
 
     typedef struct {
-        int y;
-        unsigned int num_spans;
-        unsigned int start_span;
+        int32_t y;
+        uint32_t num_spans;
+        uint32_t start_span;
     } scanline_data;
 
     // inner class for embeded scanline
@@ -185,7 +185,7 @@ public:
             }
 
             const gfx_scanline_storage_aa* m_storage;
-            unsigned int m_span_idx;
+            uint32_t m_span_idx;
             span m_span;
         };
 
@@ -198,12 +198,12 @@ public:
             init(0);
         }
 
-        void reset(int, int) { }
-        unsigned int num_spans(void) const { return m_scanline.num_spans; }
-        int y(void) const { return m_scanline.y; }
+        void reset(int32_t, int32_t) { }
+        uint32_t num_spans(void) const { return m_scanline.num_spans; }
+        int32_t y(void) const { return m_scanline.y; }
         const_iterator begin() const { return const_iterator(*this); }
 
-        void init(unsigned int scanline_idx)
+        void init(uint32_t scanline_idx)
         {
             m_scanline_idx = scanline_idx;
             m_scanline = m_storage->scanline_by_index(m_scanline_idx);
@@ -211,7 +211,7 @@ public:
 
     private:
         const gfx_scanline_storage_aa* m_storage;
-        unsigned int m_scanline_idx;
+        uint32_t m_scanline_idx;
         scanline_data m_scanline;
     };
 
@@ -250,7 +250,7 @@ public:
     {
         scanline_data sl_this;
 
-        int y = sl.y();
+        int32_t y = sl.y();
         if (y < m_min_y) { m_min_y = y; }
         if (y > m_max_y) { m_max_y = y; }
 
@@ -259,17 +259,17 @@ public:
         sl_this.start_span = m_spans.size();
         typename Scanline::const_iterator span_iterator = sl.begin();
 
-        unsigned int num_spans = sl_this.num_spans;
+        uint32_t num_spans = sl_this.num_spans;
         for (;;) {
             span_data sp;
             sp.x = span_iterator->x;
             sp.len = span_iterator->len;
-            int len = abs(int(sp.len));
-            sp.covers_id = m_covers.add_cells(span_iterator->covers, (unsigned int)len);
+            int32_t len = abs(int32_t(sp.len));
+            sp.covers_id = m_covers.add_cells(span_iterator->covers, (uint32_t)len);
 
             m_spans.add(sp);
-            int x1 = sp.x;
-            int x2 = sp.x + len - 1;
+            int32_t x1 = sp.x;
+            int32_t x2 = sp.x + len - 1;
             if (x1 < m_min_x) { m_min_x = x1; }
             if (x2 > m_max_x) { m_max_x = x2; }
             if (--num_spans == 0) { break; }
@@ -279,10 +279,10 @@ public:
     }
 
     // iterate scanlines interface
-    int min_x(void) const { return m_min_x; }
-    int min_y(void) const { return m_min_y; }
-    int max_x(void) const { return m_max_x; }
-    int max_y(void) const { return m_max_y; }
+    int32_t min_x(void) const { return m_min_x; }
+    int32_t min_y(void) const { return m_min_y; }
+    int32_t max_x(void) const { return m_max_x; }
+    int32_t max_y(void) const { return m_max_y; }
 
     bool rewind_scanlines(void)
     {
@@ -300,13 +300,13 @@ public:
             }
             const scanline_data& sl_this = m_scanlines[m_cur_scanline];
 
-            unsigned int num_spans = sl_this.num_spans;
-            unsigned int span_idx = sl_this.start_span;
+            uint32_t num_spans = sl_this.num_spans;
+            uint32_t span_idx = sl_this.start_span;
             do {
                 const span_data& sp = m_spans[span_idx++];
                 const T* covers = covers_by_index(sp.covers_id);
                 if (sp.len < 0) {
-                    sl.add_span(sp.x, unsigned(-sp.len), *covers);
+                    sl.add_span(sp.x, uint32_t(-sp.len), *covers);
                 } else {
                     sl.add_cells(sp.x, sp.len, covers);
                 }
@@ -334,17 +334,17 @@ public:
         return true;
     }
 
-    unsigned int byte_size(void) const
+    uint32_t byte_size(void) const
     {
-        unsigned int size = sizeof(int32_t) * 4; // min_x, min_y, max_x, max_y
+        uint32_t size = sizeof(int32_t) * 4; // min_x, min_y, max_x, max_y
 
-        for (unsigned int i = 0; i < m_scanlines.size(); ++i) {
+        for (uint32_t i = 0; i < m_scanlines.size(); ++i) {
             size += sizeof(int32_t) * 3; // scanline size in bytes, Y, num_spans
 
             const scanline_data& sl_this = m_scanlines[i];
 
-            unsigned int num_spans = sl_this.num_spans;
-            unsigned int span_idx = sl_this.start_span;
+            uint32_t num_spans = sl_this.num_spans;
+            uint32_t span_idx = sl_this.start_span;
             do {
                 const span_data& sp = m_spans[span_idx++];
 
@@ -352,7 +352,7 @@ public:
                 if (sp.len < 0) {
                     size += sizeof(T); // cover
                 } else {
-                    size += sizeof(T) * (unsigned int)sp.len; // covers
+                    size += sizeof(T) * (uint32_t)sp.len; // covers
                 }
             } while (--num_spans);
         }
@@ -378,7 +378,7 @@ public:
         write_int32(data, max_y()); // max_y
         data += sizeof(int32_t);
 
-        for (unsigned int i = 0; i < m_scanlines.size(); ++i) {
+        for (uint32_t i = 0; i < m_scanlines.size(); ++i) {
             const scanline_data& sl_this = m_scanlines[i];
 
             uint8_t* size_ptr = data;
@@ -390,8 +390,8 @@ public:
             write_int32(data, sl_this.num_spans); // num_spans
             data += sizeof(int32_t);
 
-            unsigned int num_spans = sl_this.num_spans;
-            unsigned int span_idx = sl_this.start_span;
+            uint32_t num_spans = sl_this.num_spans;
+            uint32_t span_idx = sl_this.start_span;
             do {
                 const span_data& sp = m_spans[span_idx++];
                 const T* covers = covers_by_index(sp.covers_id);
@@ -406,25 +406,25 @@ public:
                     mem_copy(data, covers, sizeof(T));
                     data += sizeof(T);
                 } else {
-                    mem_copy(data, covers, unsigned(sp.len) * sizeof(T));
-                    data += sizeof(T) * unsigned(sp.len);
+                    mem_copy(data, covers, uint32_t(sp.len) * sizeof(T));
+                    data += sizeof(T) * uint32_t(sp.len);
                 }
             } while (--num_spans);
-            write_int32(size_ptr, (int32_t)((unsigned int)(data - size_ptr)));
+            write_int32(size_ptr, (int32_t)((uint32_t)(data - size_ptr)));
         }
     }
 
-    const scanline_data& scanline_by_index(unsigned int i) const
+    const scanline_data& scanline_by_index(uint32_t i) const
     {
         return (i < m_scanlines.size()) ? m_scanlines[i] : m_fake_scanline;
     }
 
-    const span_data& span_by_index(unsigned int i) const
+    const span_data& span_by_index(uint32_t i) const
     {
         return (i < m_spans.size()) ? m_spans[i] : m_fake_span;
     }
 
-    const T* covers_by_index(int i) const
+    const T* covers_by_index(int32_t i) const
     {
         return m_covers[i];
     }
@@ -435,11 +435,11 @@ private:
     picasso::pod_bvector<scanline_data, 8> m_scanlines;
     span_data m_fake_span;
     scanline_data m_fake_scanline;
-    unsigned int m_cur_scanline;
-    int m_min_x;
-    int m_min_y;
-    int m_max_x;
-    int m_max_y;
+    uint32_t m_cur_scanline;
+    int32_t m_min_x;
+    int32_t m_min_y;
+    int32_t m_max_x;
+    int32_t m_max_y;
 };
 
 // scanline storage antialias
@@ -489,7 +489,7 @@ public:
             }
 
         private:
-            int read_int32(void)
+            int32_t read_int32(void)
             {
                 int32_t val;
                 ((uint8_t*)&val)[0] = *m_ptr++;
@@ -508,20 +508,20 @@ public:
 
             const uint8_t* m_ptr;
             span m_span;
-            int m_dx;
+            int32_t m_dx;
         };
 
         friend class const_iterator;
 
         embedded_scanline() : m_ptr(0), m_y(0), m_num_spans(0), m_dx(0) { }
 
-        void reset(int, int) { }
-        unsigned int num_spans(void) const { return m_num_spans; }
-        int y(void) const { return m_y; }
+        void reset(int32_t, int32_t) { }
+        uint32_t num_spans(void) const { return m_num_spans; }
+        int32_t y(void) const { return m_y; }
         const_iterator begin(void) const { return const_iterator(*this); }
 
     private:
-        int read_int32(void)
+        int32_t read_int32(void)
         {
             int32_t val;
             ((uint8_t*)&val)[0] = *m_ptr++;
@@ -532,19 +532,19 @@ public:
         }
 
     public:
-        void init(const uint8_t* ptr, int dx, int dy)
+        void init(const uint8_t* ptr, int32_t dx, int32_t dy)
         {
             m_ptr = ptr;
             m_y = read_int32() + dy;
-            m_num_spans = (unsigned int)read_int32();
+            m_num_spans = (uint32_t)read_int32();
             m_dx = dx;
         }
 
     private:
         const uint8_t* m_ptr;
-        int m_y;
-        unsigned int m_num_spans;
-        int m_dx;
+        int32_t m_y;
+        uint32_t m_num_spans;
+        int32_t m_dx;
     };
 
 public:
@@ -562,7 +562,7 @@ public:
     }
 
     gfx_serialized_scanlines_adaptor_aa(const uint8_t* data,
-                                        unsigned int size, scalar dx, scalar dy)
+                                        uint32_t size, scalar dx, scalar dy)
         : m_data(data)
         , m_end(data + size)
         , m_ptr(data)
@@ -575,7 +575,7 @@ public:
     {
     }
 
-    void init(const uint8_t* data, unsigned size, scalar dx, scalar dy)
+    void init(const uint8_t* data, uint32_t size, scalar dx, scalar dy)
     {
         m_data = data;
         m_end = data + size;
@@ -589,7 +589,7 @@ public:
     }
 
 private:
-    int read_int32(void)
+    int32_t read_int32(void)
     {
         int32_t val;
         ((uint8_t*)&val)[0] = *m_ptr++;
@@ -599,7 +599,7 @@ private:
         return val;
     }
 
-    unsigned int read_int32u(void)
+    uint32_t read_int32u(void)
     {
         uint32_t val;
         ((uint8_t*)&val)[0] = *m_ptr++;
@@ -623,10 +623,10 @@ public:
         return m_ptr < m_end;
     }
 
-    int min_x(void) const { return m_min_x; }
-    int min_y(void) const { return m_min_y; }
-    int max_x(void) const { return m_max_x; }
-    int max_y(void) const { return m_max_y; }
+    int32_t min_x(void) const { return m_min_x; }
+    int32_t min_y(void) const { return m_min_y; }
+    int32_t max_x(void) const { return m_max_x; }
+    int32_t max_y(void) const { return m_max_y; }
 
     template <typename Scanline>
     bool sweep_scanline(Scanline& sl)
@@ -638,15 +638,15 @@ public:
             }
 
             read_int32(); // Skip scanline size in bytes
-            int y = read_int32() + m_dy;
-            unsigned int num_spans = read_int32();
+            int32_t y = read_int32() + m_dy;
+            uint32_t num_spans = read_int32();
 
             do {
-                int x = read_int32() + m_dx;
-                int len = read_int32();
+                int32_t x = read_int32() + m_dx;
+                int32_t len = read_int32();
 
                 if (len < 0) {
-                    sl.add_span(x, (unsigned int)(-len), *m_ptr);
+                    sl.add_span(x, (uint32_t)(-len), *m_ptr);
                     m_ptr += sizeof(T);
                 } else {
                     sl.add_cells(x, len, m_ptr);
@@ -670,7 +670,7 @@ public:
                 return false;
             }
 
-            unsigned int byte_size = read_int32u();
+            uint32_t byte_size = read_int32u();
             sl.init(m_ptr, m_dx, m_dy);
             m_ptr += byte_size - sizeof(int32_t);
         } while (sl.num_spans() == 0);
@@ -681,12 +681,12 @@ private:
     const uint8_t* m_data;
     const uint8_t* m_end;
     const uint8_t* m_ptr;
-    int m_dx;
-    int m_dy;
-    int m_min_x;
-    int m_min_y;
-    int m_max_x;
-    int m_max_y;
+    int32_t m_dx;
+    int32_t m_dy;
+    int32_t m_min_x;
+    int32_t m_min_y;
+    int32_t m_max_x;
+    int32_t m_max_y;
 };
 
 // serialized scanlines adaptor antialias uint8_t
@@ -702,9 +702,9 @@ public:
     } span_data;
 
     typedef struct {
-        int y;
-        unsigned int num_spans;
-        unsigned int start_span;
+        int32_t y;
+        uint32_t num_spans;
+        uint32_t start_span;
     } scanline_data;
 
     // inner class for embeded scanline
@@ -734,7 +734,7 @@ public:
 
         private:
             const gfx_scanline_storage_bin* m_storage;
-            unsigned int m_span_idx;
+            uint32_t m_span_idx;
             span_data m_span;
         };
 
@@ -747,12 +747,12 @@ public:
             init(0);
         }
 
-        void reset(int, int) { }
-        unsigned int num_spans(void) const { return m_scanline.num_spans; }
-        int y(void) const { return m_scanline.y; }
+        void reset(int32_t, int32_t) { }
+        uint32_t num_spans(void) const { return m_scanline.num_spans; }
+        int32_t y(void) const { return m_scanline.y; }
         const_iterator begin() const { return const_iterator(*this); }
 
-        void init(unsigned int scanline_idx)
+        void init(uint32_t scanline_idx)
         {
             m_scanline_idx = scanline_idx;
             m_scanline = m_storage->scanline_by_index(m_scanline_idx);
@@ -760,7 +760,7 @@ public:
 
     private:
         const gfx_scanline_storage_bin* m_storage;
-        unsigned int m_scanline_idx;
+        uint32_t m_scanline_idx;
         scanline_data m_scanline;
     };
 
@@ -797,7 +797,7 @@ public:
     {
         scanline_data sl_this;
 
-        int y = sl.y();
+        int32_t y = sl.y();
         if (y < m_min_y) { m_min_y = y; }
         if (y > m_max_y) { m_max_y = y; }
 
@@ -806,14 +806,14 @@ public:
         sl_this.start_span = m_spans.size();
         typename Scanline::const_iterator span_iterator = sl.begin();
 
-        unsigned int num_spans = sl_this.num_spans;
+        uint32_t num_spans = sl_this.num_spans;
         for (;;) {
             span_data sp;
             sp.x = span_iterator->x;
-            sp.len = (int32_t)abs((int)(span_iterator->len));
+            sp.len = (int32_t)abs((int32_t)(span_iterator->len));
             m_spans.add(sp);
-            int x1 = sp.x;
-            int x2 = sp.x + sp.len - 1;
+            int32_t x1 = sp.x;
+            int32_t x2 = sp.x + sp.len - 1;
             if (x1 < m_min_x) { m_min_x = x1; }
             if (x2 > m_max_x) { m_max_x = x2; }
             if (--num_spans == 0) { break; }
@@ -823,10 +823,10 @@ public:
     }
 
     // iterate scanlines interface
-    int min_x(void) const { return m_min_x; }
-    int min_y(void) const { return m_min_y; }
-    int max_x(void) const { return m_max_x; }
-    int max_y(void) const { return m_max_y; }
+    int32_t min_x(void) const { return m_min_x; }
+    int32_t min_y(void) const { return m_min_y; }
+    int32_t max_x(void) const { return m_max_x; }
+    int32_t max_y(void) const { return m_max_y; }
 
     bool rewind_scanlines(void)
     {
@@ -844,8 +844,8 @@ public:
             }
             const scanline_data& sl_this = m_scanlines[m_cur_scanline];
 
-            unsigned int num_spans = sl_this.num_spans;
-            unsigned int span_idx = sl_this.start_span;
+            uint32_t num_spans = sl_this.num_spans;
+            uint32_t span_idx = sl_this.start_span;
             do {
                 const span_data& sp = m_spans[span_idx++];
                 sl.add_span(sp.x, sp.len, cover_full);
@@ -873,13 +873,13 @@ public:
         return true;
     }
 
-    unsigned int byte_size(void) const
+    uint32_t byte_size(void) const
     {
-        unsigned int size = sizeof(int32_t) * 4; // min_x, min_y, max_x, max_y
+        uint32_t size = sizeof(int32_t) * 4; // min_x, min_y, max_x, max_y
 
-        for (unsigned int i = 0; i < m_scanlines.size(); ++i) {
+        for (uint32_t i = 0; i < m_scanlines.size(); ++i) {
             size += sizeof(int32_t) * 2 + // Y, num_spans
-                    (unsigned int)m_scanlines[i].num_spans * sizeof(int32_t) * 2; // X, span_len
+                    (uint32_t)m_scanlines[i].num_spans * sizeof(int32_t) * 2; // X, span_len
         }
         return size;
     }
@@ -903,7 +903,7 @@ public:
         write_int32(data, max_y()); // max_y
         data += sizeof(int32_t);
 
-        for (unsigned int i = 0; i < m_scanlines.size(); ++i) {
+        for (uint32_t i = 0; i < m_scanlines.size(); ++i) {
             const scanline_data& sl_this = m_scanlines[i];
 
             write_int32(data, sl_this.y); // Y
@@ -912,8 +912,8 @@ public:
             write_int32(data, sl_this.num_spans); // num_spans
             data += sizeof(int32_t);
 
-            unsigned int num_spans = sl_this.num_spans;
-            unsigned int span_idx = sl_this.start_span;
+            uint32_t num_spans = sl_this.num_spans;
+            uint32_t span_idx = sl_this.start_span;
             do {
                 const span_data& sp = m_spans[span_idx++];
 
@@ -926,12 +926,12 @@ public:
         }
     }
 
-    const scanline_data& scanline_by_index(unsigned int i) const
+    const scanline_data& scanline_by_index(uint32_t i) const
     {
         return (i < m_scanlines.size()) ? m_scanlines[i] : m_fake_scanline;
     }
 
-    const span_data& span_by_index(unsigned int i) const
+    const span_data& span_by_index(uint32_t i) const
     {
         return (i < m_spans.size()) ? m_spans[i] : m_fake_span;
     }
@@ -941,11 +941,11 @@ private:
     pod_bvector<scanline_data, 8> m_scanlines;
     span_data m_fake_span;
     scanline_data m_fake_scanline;
-    unsigned int m_cur_scanline;
-    int m_min_x;
-    int m_min_y;
-    int m_max_x;
-    int m_max_y;
+    uint32_t m_cur_scanline;
+    int32_t m_min_x;
+    int32_t m_min_y;
+    int32_t m_max_x;
+    int32_t m_max_y;
 };
 
 // serialized scanlines adaptor binary
@@ -986,7 +986,7 @@ public:
             }
 
         private:
-            int read_int32(void)
+            int32_t read_int32(void)
             {
                 int32_t val;
                 ((uint8_t*)&val)[0] = *m_ptr++;
@@ -998,20 +998,20 @@ public:
 
             const uint8_t* m_ptr;
             span m_span;
-            int m_dx;
+            int32_t m_dx;
         };
 
         friend class const_iterator;
 
         embedded_scanline() : m_ptr(0), m_y(0), m_num_spans(0), m_dx(0) { }
 
-        void reset(int, int) { }
-        unsigned int num_spans(void) const { return m_num_spans; }
-        int y(void) const { return m_y; }
+        void reset(int32_t, int32_t) { }
+        uint32_t num_spans(void) const { return m_num_spans; }
+        int32_t y(void) const { return m_y; }
         const_iterator begin(void) const { return const_iterator(*this); }
 
     private:
-        int read_int32(void)
+        int32_t read_int32(void)
         {
             int32_t val;
             ((uint8_t*)&val)[0] = *m_ptr++;
@@ -1022,19 +1022,19 @@ public:
         }
 
     public:
-        void init(const uint8_t* ptr, int dx, int dy)
+        void init(const uint8_t* ptr, int32_t dx, int32_t dy)
         {
             m_ptr = ptr;
             m_y = read_int32() + dy;
-            m_num_spans = (unsigned int)read_int32();
+            m_num_spans = (uint32_t)read_int32();
             m_dx = dx;
         }
 
     private:
         const uint8_t* m_ptr;
-        int m_y;
-        unsigned int m_num_spans;
-        int m_dx;
+        int32_t m_y;
+        uint32_t m_num_spans;
+        int32_t m_dx;
     };
 
 public:
@@ -1052,7 +1052,7 @@ public:
     }
 
     gfx_serialized_scanlines_adaptor_bin(const uint8_t* data,
-                                         unsigned int size, scalar dx, scalar dy)
+                                         uint32_t size, scalar dx, scalar dy)
         : m_data(data)
         , m_end(data + size)
         , m_ptr(data)
@@ -1065,7 +1065,7 @@ public:
     {
     }
 
-    void init(const uint8_t* data, unsigned int size, scalar dx, scalar dy)
+    void init(const uint8_t* data, uint32_t size, scalar dx, scalar dy)
     {
         m_data = data;
         m_end = data + size;
@@ -1079,7 +1079,7 @@ public:
     }
 
 private:
-    int read_int32(void)
+    int32_t read_int32(void)
     {
         int32_t val;
         ((uint8_t*)&val)[0] = *m_ptr++;
@@ -1103,14 +1103,14 @@ public:
         return m_ptr < m_end;
     }
 
-    int min_x(void) const { return m_min_x; }
-    int min_y(void) const { return m_min_y; }
-    int max_x(void) const { return m_max_x; }
-    int max_y(void) const { return m_max_y; }
-    int x(void) const { return m_dx; }
-    int y(void) const { return m_dy; }
-    void setX(int x) { m_dx = x; }
-    void setY(int y) { m_dy = y; }
+    int32_t min_x(void) const { return m_min_x; }
+    int32_t min_y(void) const { return m_min_y; }
+    int32_t max_x(void) const { return m_max_x; }
+    int32_t max_y(void) const { return m_max_y; }
+    int32_t x(void) const { return m_dx; }
+    int32_t y(void) const { return m_dy; }
+    void setX(int32_t x) { m_dx = x; }
+    void setY(int32_t y) { m_dy = y; }
 
     template <typename Scanline>
     bool sweep_scanline(Scanline& sl)
@@ -1121,17 +1121,17 @@ public:
                 return false;
             }
 
-            int y = read_int32() + m_dy;
-            unsigned int num_spans = read_int32();
+            int32_t y = read_int32() + m_dy;
+            uint32_t num_spans = read_int32();
 
             do {
-                int x = read_int32() + m_dx;
-                int len = read_int32();
+                int32_t x = read_int32() + m_dx;
+                int32_t len = read_int32();
 
                 if (len < 0) {
                     len = -len;
                 }
-                sl.add_span(x, (unsigned int)len, cover_full);
+                sl.add_span(x, (uint32_t)len, cover_full);
             } while (--num_spans);
 
             if (sl.num_spans()) {
@@ -1154,7 +1154,7 @@ public:
 
             // jump to the next scanline
             read_int32(); // Y
-            int num_spans = read_int32(); // num_spans
+            int32_t num_spans = read_int32(); // num_spans
             m_ptr += num_spans * sizeof(int32_t) * 2;
         } while (sl.num_spans() == 0);
         return true;
@@ -1164,12 +1164,12 @@ private:
     const uint8_t* m_data;
     const uint8_t* m_end;
     const uint8_t* m_ptr;
-    int m_dx;
-    int m_dy;
-    int m_min_x;
-    int m_min_y;
-    int m_max_x;
-    int m_max_y;
+    int32_t m_dx;
+    int32_t m_dy;
+    int32_t m_min_x;
+    int32_t m_min_y;
+    int32_t m_max_x;
+    int32_t m_max_y;
 };
 
 }

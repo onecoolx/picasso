@@ -34,98 +34,98 @@ typedef enum {
     path_flags_mask = 0xF0 //path_flags_mask
 } path_flags;
 
-inline bool is_vertex(unsigned int c)
+inline bool is_vertex(uint32_t c)
 {
     return c >= path_cmd_move_to && c < path_cmd_end_poly;
 }
 
-inline bool is_drawing(unsigned int c)
+inline bool is_drawing(uint32_t c)
 {
     return c >= path_cmd_line_to && c < path_cmd_end_poly;
 }
 
-inline bool is_stop(unsigned int c)
+inline bool is_stop(uint32_t c)
 {
     return c == path_cmd_stop;
 }
 
-inline bool is_move_to(unsigned int c)
+inline bool is_move_to(uint32_t c)
 {
     return c == path_cmd_move_to;
 }
 
-inline bool is_line_to(unsigned int c)
+inline bool is_line_to(uint32_t c)
 {
     return c == path_cmd_line_to;
 }
 
-inline bool is_curve(unsigned int c)
+inline bool is_curve(uint32_t c)
 {
     return c == path_cmd_curve3 || c == path_cmd_curve4;
 }
 
-inline bool is_curve3(unsigned int c)
+inline bool is_curve3(uint32_t c)
 {
     return c == path_cmd_curve3;
 }
 
-inline bool is_curve4(unsigned int c)
+inline bool is_curve4(uint32_t c)
 {
     return c == path_cmd_curve4;
 }
 
-inline bool is_end_poly(unsigned int c)
+inline bool is_end_poly(uint32_t c)
 {
     return (c & path_cmd_mask) == path_cmd_end_poly;
 }
 
-inline bool is_close(unsigned int c)
+inline bool is_close(uint32_t c)
 {
     return (c & ~(path_flags_cw | path_flags_ccw)) ==
            (path_cmd_end_poly | path_flags_close);
 }
 
-inline bool is_next_poly(unsigned int c)
+inline bool is_next_poly(uint32_t c)
 {
     return is_stop(c) || is_move_to(c) || is_end_poly(c);
 }
 
-inline bool is_cw(unsigned int c)
+inline bool is_cw(uint32_t c)
 {
     return (c & path_flags_cw) != 0;
 }
 
-inline bool is_ccw(unsigned int c)
+inline bool is_ccw(uint32_t c)
 {
     return (c & path_flags_ccw) != 0;
 }
 
-inline bool is_oriented(unsigned int c)
+inline bool is_oriented(uint32_t c)
 {
     return (c & (path_flags_cw | path_flags_ccw)) != 0;
 }
 
-inline bool is_closed(unsigned int c)
+inline bool is_closed(uint32_t c)
 {
     return (c & path_flags_close) != 0;
 }
 
-inline unsigned int get_close_flag(unsigned int c)
+inline uint32_t get_close_flag(uint32_t c)
 {
     return c & path_flags_close;
 }
 
-inline unsigned int clear_orientation(unsigned int c)
+inline uint32_t clear_orientation(uint32_t c)
 {
     return c & ~(path_flags_cw | path_flags_ccw);
 }
 
-inline unsigned int get_orientation(unsigned int c)
+inline uint32_t get_orientation(uint32_t c)
 {
     return c & (path_flags_cw | path_flags_ccw);
 }
 
-inline unsigned int set_orientation(unsigned int c, unsigned int o)
+inline uint32_t set_orientation(uint32_t c, uint32_t o)
 {
     return clear_orientation(c) | o;
 }
@@ -175,12 +175,12 @@ inline scalar calc_sq_distance(scalar x1, scalar y1, scalar x2, scalar y2)
 }
 
 // value calc
-inline int iround(scalar v)
+inline int32_t iround(scalar v)
 {
     return _iround(v);
 }
 
-inline unsigned int uround(scalar v)
+inline uint32_t uround(scalar v)
 {
     return _uround(v);
 }
@@ -221,7 +221,7 @@ inline bool is_boxer(scalar rad)
 // These constants determine the subpixel accuracy, to be more precise,
 // the number of bits of the fractional part of the coordinates.
 // The possible coordinate capacity in bits can be calculated by formula:
-// sizeof(int) * 8 - poly_subpixel_shift, i.e, for 32-bit integers and
+// sizeof(int32_t) * 8 - poly_subpixel_shift, i.e, for 32-bit integers and
 // 8-bits fractional part the capacity is 24 bits.
 enum {
     poly_subpixel_shift = 8, // poly_subpixel_shift
@@ -362,11 +362,11 @@ template<typename T> struct rect_base {
     T height(void) { return (y2 - y1); }
 };
 
-typedef rect_base<int> rect; //integer
+typedef rect_base<int32_t> rect; //integer
 typedef rect_base<scalar> rect_s; //scalar
 
 // color cover
-typedef unsigned char cover_type;
+typedef uint8_t cover_type;
 typedef enum {
     cover_shift = 8, //cover_shift
     cover_size = 1 << cover_shift, //cover_size
@@ -384,11 +384,11 @@ typedef enum {
 } glyph_type;
 
 typedef struct _glyph {
-    unsigned int code;
-    unsigned int index;
+    uint32_t code;
+    uint32_t index;
     glyph_type type;
     byte* data;
-    unsigned int data_size;
+    uint32_t data_size;
     rect bounds;
     scalar height;
     scalar advance_x;

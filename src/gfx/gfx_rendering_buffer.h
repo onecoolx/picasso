@@ -19,11 +19,11 @@ class gfx_rendering_buffer : public abstract_rendering_buffer
 public:
     // const_row_info
     typedef struct const_row_info {
-        int x1, x2;
+        int32_t x1, x2;
         const byte* ptr;
 
         const_row_info() : x1(0), x2(0), ptr(0) { }
-        const_row_info(int _x1, int _x2, const byte* _ptr)
+        const_row_info(int32_t _x1, int32_t _x2, const byte* _ptr)
             : x1(_x1), x2(_x2), ptr(_ptr)
         {
         }
@@ -37,14 +37,14 @@ public:
     };
 
     gfx_rendering_buffer();
-    gfx_rendering_buffer(byte* ptr, unsigned int width, unsigned int height, int stride);
+    gfx_rendering_buffer(byte* ptr, uint32_t width, uint32_t height, int32_t stride);
 
-    virtual void init(byte* ptr, unsigned int width, unsigned int height, int stride);
-    virtual void replace(byte* ptr, unsigned int width, unsigned int height, int stride);
+    virtual void init(byte* ptr, uint32_t width, uint32_t height, int32_t stride);
+    virtual void replace(byte* ptr, uint32_t width, uint32_t height, int32_t stride);
 
-    virtual unsigned int width(void) const { return m_width; }
-    virtual unsigned int height(void) const { return m_height; }
-    virtual int stride(void) const { return m_stride; }
+    virtual uint32_t width(void) const { return m_width; }
+    virtual uint32_t height(void) const { return m_height; }
+    virtual int32_t stride(void) const { return m_stride; }
     virtual byte* buffer(void) const { return m_buffer; }
 
     virtual bool is_transparent(void) const { return m_transparent; }
@@ -65,13 +65,13 @@ public:
     }
 
 public:
-    byte* row_ptr(int y) const { return m_rows[y]; }
-    byte* row_ptr(int, int y, unsigned int) const { return m_rows[y]; }
-    row_data row (int y) const { return row_data(0, m_width - 1, row_ptr(y)); }
+    byte* row_ptr(int32_t y) const { return m_rows[y]; }
+    byte* row_ptr(int32_t, int32_t y, uint32_t) const { return m_rows[y]; }
+    row_data row (int32_t y) const { return row_data(0, m_width - 1, row_ptr(y)); }
     // for optimization
-    unsigned int internal_width(void) const { return m_width; }
-    unsigned int internal_height(void) const { return m_height; }
-    int internal_stride(void) const { return m_stride; }
+    uint32_t internal_width(void) const { return m_width; }
+    uint32_t internal_height(void) const { return m_height; }
+    int32_t internal_stride(void) const { return m_stride; }
 
     void set_buffer_observer(gfx_buffer_observer* o) { m_observer = o; }
     void notify_buffer_changed(void) { if (m_observer) m_observer->buffer_notify(); }
@@ -82,9 +82,9 @@ private:
     byte* m_buffer;
     gfx_buffer_observer* m_observer;
     pod_array<byte*> m_rows;
-    unsigned int m_width; // width in pixels
-    unsigned int m_height; // height in pixels
-    int m_stride; // number of bytes per row, link pitch. can < 0
+    uint32_t m_width; // width in pixels
+    uint32_t m_height; // height in pixels
+    int32_t m_stride; // number of bytes per row, link pitch. can < 0
     // extra property
     bool m_transparent;
     bool m_has_colorkey;

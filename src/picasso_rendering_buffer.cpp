@@ -21,7 +21,7 @@ rendering_buffer::rendering_buffer()
 {
 }
 
-rendering_buffer::rendering_buffer(byte* buf, unsigned int width, unsigned int height, int stride)
+rendering_buffer::rendering_buffer(byte* buf, uint32_t width, uint32_t height, int32_t stride)
     : m_impl(0)
 {
     attach(buf, width, height, stride);
@@ -34,7 +34,7 @@ rendering_buffer::~rendering_buffer()
     }
 }
 
-void rendering_buffer::attach(byte* buf, unsigned int width, unsigned int height, int stride)
+void rendering_buffer::attach(byte* buf, uint32_t width, uint32_t height, int32_t stride)
 {
     if (m_impl) {
         get_system_device()->destroy_rendering_buffer(m_impl);
@@ -43,7 +43,7 @@ void rendering_buffer::attach(byte* buf, unsigned int width, unsigned int height
     m_impl = get_system_device()->create_rendering_buffer(buf, width, height, stride);
 }
 
-void rendering_buffer::replace(byte* buf, unsigned int width, unsigned int height, int stride)
+void rendering_buffer::replace(byte* buf, uint32_t width, uint32_t height, int32_t stride)
 {
     m_impl->replace(buf, width, height, stride);
 }
@@ -53,7 +53,7 @@ bool rendering_buffer::is_empty(void) const
     return !m_impl;
 }
 
-unsigned int rendering_buffer::width(void) const
+uint32_t rendering_buffer::width(void) const
 {
     if (m_impl) {
         return m_impl->width();
@@ -62,7 +62,7 @@ unsigned int rendering_buffer::width(void) const
     return 0;
 }
 
-unsigned int rendering_buffer::height(void) const
+uint32_t rendering_buffer::height(void) const
 {
     if (m_impl) {
         return m_impl->height();
@@ -71,7 +71,7 @@ unsigned int rendering_buffer::height(void) const
     return 0;
 }
 
-int rendering_buffer::stride(void) const
+int32_t rendering_buffer::stride(void) const
 {
     if (m_impl) {
         return m_impl->stride();

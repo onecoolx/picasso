@@ -86,7 +86,7 @@ static font_item* get_font_item(const char* name, const char* path)
 }
 
 #if ENABLE(FONT_CONFIG)
-static FcConfig* g_FcConfig = 0;
+static FcConfig* g_FcConfig = NULL;
 
 static void load_font_from_fontconfig(void)
 {
@@ -132,11 +132,11 @@ struct ParserContext {
 
     XML_Parser* parser; // The expat parser doing the work
     font_map* map;
-    int remaining_names;
-    int current_tag;
+    int32_t remaining_names;
+    int32_t current_tag;
 };
 
-static void text_callback(void* data, const char* s, int len)
+static void text_callback(void* data, const char* s, int32_t len)
 {
     ParserContext* context = (ParserContext*)data;
 
@@ -151,7 +151,7 @@ static void text_callback(void* data, const char* s, int len)
                 }
                 break;
             case FILESET_TAG: {
-                    for (int i = 0; i < context->remaining_names; i++) {
+                    for (int32_t i = 0; i < context->remaining_names; i++) {
                         char* path = context->map->at(context->map->size() - i - 1)->font_path;
                         char buffer[MAX_FONT_PATH_LENGTH] = {0};
                         strncpy(buffer, s, MIN(len, MAX_FONT_PATH_LENGTH - 1));
@@ -171,7 +171,7 @@ static void start_callback(void* data, const char* tag, const char** atts)
 {
     ParserContext* context = (ParserContext*)data;
 
-    int len = strlen(tag);
+    int32_t len = strlen(tag);
     if (strncmp(tag, "family", len) == 0) {
         context->current_tag = NO_TAG;
         context->remaining_names = 0;
@@ -195,7 +195,7 @@ static void start_callback(void* data, const char* tag, const char** atts)
 static void end_callback(void* data, const char* tag)
 {
     ParserContext* context = (ParserContext*)data;
-    int len = strlen(tag);
+    int32_t len = strlen(tag);
     if (strncmp(tag, "family", len) == 0) {
         context->current_tag = NO_TAG;
         context->remaining_names = 0;
@@ -227,7 +227,7 @@ static void parse_config_file(const char* file, font_map& map)
     bool done = false;
     while (!done) {
         fgets(buffer, sizeof(buffer), fp);
-        int len = strlen(buffer);
+        int32_t len = strlen(buffer);
         if (feof(fp) != 0) {
             done = true;
         }
@@ -256,8 +256,8 @@ static void write_default(void)
 
     if ((pf = OPENFILE(CONFIG_FILE, F("a+")))) {
 
-        fprintf(pf, "[%s]\n", "sung");
-        fprintf(pf, "path=%s\n", "sung.ttf");
+        fprintf(pf, "[%s]\n", "default");
+        fprintf(pf, "path=%s\n", "ZCOOLXiaoWei-Regular.ttf");
         fprintf(pf, "[%s]\n", "arial");
         fprintf(pf, "path=%s\n", "arial.ttf");
 
@@ -302,10 +302,17 @@ static void load_font_from_file(FILE* f)
 }
 #endif //ENABLE(FONT_CONFIG)
 
-FT_Library g_library = 0;
+FT_Library g_library = NULL;
 
 bool _load_fonts(void)
 {
+    if (g_library) {
+        return true;
+    }
+
+#if ENABLE(FONT_CONFIG)
+    FcInit();
+#endif
 #if ENABLE(FONT_CONFIG)
     load_font_from_fontconfig();
 #elif defined(__ANDROID__)
@@ -328,7 +335,7 @@ bool _load_fonts(void)
     if (!g_font_map.size()) {
 
         font_item* ansi_font = get_font_item("arial", "arial.ttf");
-        font_item* uni_font = get_font_item("sung", "sung.ttf");
+        font_item* uni_font = get_font_item("default", "default.ttf");
 
         g_font_map.add(uni_font);
         g_font_map.add(ansi_font);
@@ -345,9 +352,10 @@ void _free_fonts(void)
 {
     if (g_library) {
         FT_Done_FreeType(g_library);
+        g_library = NULL;
     }
 
-    for (unsigned int i = 0; i < g_font_map.size(); i++) {
+    for (uint32_t i = 0; i < g_font_map.size(); i++) {
         mem_free(g_font_map[i]);
     }
 
@@ -363,7 +371,7 @@ char* _font_by_name(const char* face, float size, float weight, bool italic)
     char font_key[128] = {0};
     sprintf(font_key, "%s-%4.0f-%4.0f-%d", tname, size, weight, italic ? 1 : 0);
 
-    for (unsigned int i = 0; i < g_font_map.size(); i++) {
+    for (uint32_t i = 0; i < g_font_map.size(); i++) {
         if (strncmp(font_key, g_font_map[i]->font_name, MAX_FONT_NAME_LENGTH - 1) == 0) {
             return g_font_map[i]->font_path;
         }
@@ -377,13 +385,13 @@ char* _font_by_name(const char* face, float size, float weight, bool italic)
         FcPatternAddInteger(pattern, FC_SLANT, FC_SLANT_ROMAN);
     }
 
-    if ((int)round(weight) == 400) {
+    if ((int32_t)round(weight) == 400) {
         FcPatternAddInteger(pattern, FC_WEIGHT, FC_WEIGHT_REGULAR);
-    } else if ((int)round(weight) == 500) {
+    } else if ((int32_t)round(weight) == 500) {
         FcPatternAddInteger(pattern, FC_WEIGHT, FC_WEIGHT_DEMIBOLD);
-    } else if ((int)round(weight) == 700) {
+    } else if ((int32_t)round(weight) == 700) {
         FcPatternAddInteger(pattern, FC_WEIGHT, FC_WEIGHT_BOLD);
-    } else if ((int)round(weight) == 900) {
+    } else if ((int32_t)round(weight) == 900) {
         FcPatternAddInteger(pattern, FC_WEIGHT, FC_WEIGHT_BLACK);
     } else {
         FcPatternAddInteger(pattern, FC_WEIGHT, FC_WEIGHT_REGULAR);
@@ -413,7 +421,7 @@ char* _font_by_name(const char* face, float size, float weight, bool italic)
 #else
 char* _font_by_name(const char* face, float size, float weight, bool italic)
 {
-    for (unsigned int i = 0; i < g_font_map.size(); i++)
+    for (uint32_t i = 0; i < g_font_map.size(); i++)
         if (strncasecmp(face, g_font_map[i]->font_name, MAX_FONT_NAME_LENGTH - 1) == 0) {
             return g_font_map[i]->font_path;
         }
@@ -426,9 +434,6 @@ char* _font_by_name(const char* face, float size, float weight, bool italic)
 
 bool platform_font_init(void)
 {
-#if ENABLE(FONT_CONFIG)
-    FcInit();
-#endif
     return picasso::_load_fonts();
 }
 
@@ -438,9 +443,9 @@ void platform_font_shutdown(void)
 #if ENABLE(FONT_CONFIG)
     if (picasso::g_FcConfig) {
         FcConfigDestroy(picasso::g_FcConfig);
+        picasso::g_FcConfig = NULL;
+        FcFini();
     }
-
-    FcFini();
 #endif
 }
 
