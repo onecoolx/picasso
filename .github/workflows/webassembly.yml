@@ -8,7 +8,6 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -20,6 +19,13 @@ jobs:
       
     - name: Build
       run: |
-        cd ./wasm/
+        mkdir proj
+        cp ./wasm/Makefile.em ./proj/
+        cp ./wasm/export.list ./proj/
+        cp ./wasm/lib.js ./proj/
+        cp ./wasm/pconfig.h ./proj/
+        cp ./wasm/runtime.list ./proj/
+        cp ./wasm/build_wasm.sh ./proj/
+        cd ./proj/
         ./build_wasm.sh
 
