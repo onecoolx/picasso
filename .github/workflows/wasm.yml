@@ -20,6 +20,6 @@ jobs:
       
     - name: Build
       run: |
-        emmake make -C ./wasm -f Makefile.em
-        emcc --no-entry -s"ALLOW_MEMORY_GROWTH=1" -s"EXPORTED_FUNCTIONS=@export.list" -s"EXPORTED_RUNTIME_METHODS=@runtime.list" ./wasm/libpicasso.a -o ./wasm/picasso.wasm
-        emmake make -C ./wasm -f Makefile.em clean
+        cd ./wasm/
+        ./build_wasm.sh
+
