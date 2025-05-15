@@ -8,8 +8,8 @@ on:
 
 env:
   BUILD_TYPE: Release
-  BUILD_FLAGS: -mcpu=cortex-m55 -mfloat-abi=hard -mfpu=fpv5-sp-d16
-  LINK_FLAGS: -T linker.ld -specs=nosys.specs
+  BUILD_FLAGS: "-mcpu=cortex-m55 -mfloat-abi=hard -mfpu=fpv5-sp-d16"
+  LINK_FLAGS: "-T linker.ld -specs=nosys.specs"
   FLASH_ORIGIN: "0x00000000"
   FLASH_LENGTH: "4096K"
   RAM_ORIGIN: "0x20000000"
