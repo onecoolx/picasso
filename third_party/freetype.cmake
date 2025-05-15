@@ -30,5 +30,5 @@ include_directories(${FREETYPE_DIR}/include)
 
 add_library(ft2 STATIC ${FREETYPE_SOURCES})
 install(TARGETS ft2 LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
-target_compile_definitions(ft2 PRIVATE -DDARWIN_NO_CARBON=1 -DFT2_BUILD_LIBRARY=1 -DANDROID_FONT_HACK=1)
+target_compile_definitions(ft2 PRIVATE -DDARWIN_NO_CARBON=1 -DFT2_BUILD_LIBRARY=1 -DANDROID_FONT_HACK=1 -Wno-unused-but-set-variable -Wno-empty-body)
 

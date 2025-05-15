@@ -1,10 +1,10 @@
 FREETYPE_INC=-I/usr/include/freetype2
-INC=-I./ -I../src -I../src/gfx -I../src/include -I../include ${FREETYPE_INC}
+INC=-I./ -I../src -I../src/gfx -I../src/font -I../src/include -I../include ${FREETYPE_INC}
 
 CXXFLAGS=-Wall -O3 -fno-rtti -fno-exceptions
 CXXFLAGS +=-DEXPORT 
 
-VPATH=../src ../src/include ../src/core ../src/gfx
+VPATH=../src ../src/include ../src/core ../src/gfx ../src/font
 
 objects= \
         device.o \
@@ -13,17 +13,17 @@ objects= \
         clipper.o \
         matrix.o \
         \
+        font_adapter_dummy.o \
+        font_adapter_win32.o \
+        font_adapter_freetype2.o \
+        font_load_freetype2.o \
+        \
         gfx_device.o \
         gfx_raster_adapter.o \
         gfx_gradient_adapter.o \
         gfx_image_filters.o \
         gfx_rendering_buffer.o \
-        gfx_sqrt_tables.o \
         gfx_blur.o \
-        gfx_font_adapter_dummy.o \
-        gfx_font_adapter_win32.o \
-        gfx_font_adapter_freetype2.o \
-        gfx_font_load_freetype2.o \
         \
         picasso_matrix_api.o \
         picasso_painter.o \
