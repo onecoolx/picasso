@@ -35,6 +35,13 @@ jobs:
         sudo apt-get update --fix-missing
         sudo apt-get install -y qemu-system-arm        
 
+    - name: Generate toolchain script
+      run: |
+        cat << EOF > toolchain.cmake
+
+        EOF
+        cat toolchain.cmake
+        
     - name: Generate linker.ld
       run: |
         cat << EOF > linker.ld
