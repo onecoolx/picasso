@@ -1,0 +1,111 @@
+name: ARM Cortex-M55 Build
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+env:
+  BUILD_TYPE: Release
+  BUILD_FLAGS: -mcpu=cortex-m55 -mfloat-abi=hard -mfpu=fpv5-sp-d16
+  LINK_FLAGS: -T linker.ld -specs=nosys.specs
+  FLASH_ORIGIN: "0x00000000"
+  FLASH_LENGTH: "4096K"
+  RAM_ORIGIN: "0x20000000"
+  RAM_LENGTH: "1024K"
+  STACK_SIZE: "32K"
+  HEAP_SIZE: "512K"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install ARM GNU Toolchain
+      run: |
+        wget https://developer.arm.com/-/media/Files/downloads/gnu/12.3.rel1/binrel/arm-gnu-toolchain-12.3.rel1-x86_64-arm-none-eabi.tar.xz
+        sudo tar -xf arm-gnu-toolchain-*.tar.xz -C /opt/
+        echo "/opt/arm-gnu-toolchain-12.3.rel1-x86_64-arm-none-eabi/bin" >> $GITHUB_PATH
+    
+    - name: Install QEMU for Cortex-M55
+      run: |
+        sudo apt-get update --fix-missing
+        sudo apt-get install -y qemu-system-arm        
+
+    - name: Generate linker.ld
+      run: |
+        cat << EOF > linker.ld
+        MEMORY
+        {
+          FLASH (rx)  : ORIGIN = ${{ env.FLASH_ORIGIN }}, LENGTH = ${{ env.FLASH_LENGTH }}
+          RAM (xrw)   : ORIGIN = ${{ env.RAM_ORIGIN }}, LENGTH = ${{ env.RAM_LENGTH }}
+        }
+        
+        ENTRY(Reset_Handler)
+
+        SECTIONS
+        {
+          .text :
+          {
+            *(.vectors)
+            *(.text*)
+            *(.rodata*)
+          } > FLASH
+
+          .data :
+          {
+            _sdata = .;
+            *(.data*)
+            _edata = .;
+          } > RAM AT > FLASH
+
+          .bss :
+          {
+            _sbss = .;
+            *(.bss*)
+            *(COMMON)
+            _ebss = .;
+          } > RAM
+
+          .stack :
+          {
+            . = ALIGN(8);
+            . = . + ${{ env.STACK_SIZE }};
+            . = ALIGN(8);
+            _estack = .;
+          } > RAM
+
+          .heap :
+          {
+            . = ALIGN(8);
+            _sheap = .;
+            . = . + ${{ env.HEAP_SIZE }};
+            . = ALIGN(8);
+            _eheap = .;
+          } > RAM
+        }
+        EOF
+        cat linker.ld
+      
+    - name: Configure CMake
+      run: >
+        cmake -B ${{github.workspace}}/build
+        -DCMAKE_CXX_COMPILER=arm-none-eabi-g++
+        -DCMAKE_C_COMPILER=arm-none-eabi-gcc
+        -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+        -DCMAKE_POLICY_VERSION_MINIMUM="3.5"
+        -DCMAKE_RELEASE_CXX_FLAGS=${{env.BUILD_FLAGS}}
+        -DCMAKE_RELEASE_C_FLAGS=${{env.BUILD_FLAGS}}
+        -DOPT_UNITTEST=ON
+        -S ${{ github.workspace }}
+
+    - name: Build
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+
+    - name: Test
+      working-directory: ${{github.workspace}}/build
+      run: ctest -C ${{env.BUILD_TYPE}}
+
