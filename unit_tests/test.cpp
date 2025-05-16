@@ -27,7 +27,7 @@
 #include "test.h"
 #include "lodepng.h"
 #if ENABLE_EXTENSIONS
-#include "images/psx_image_plugin.h"
+    #include "images/psx_image_plugin.h"
 #endif
 
 volatile int tmp;
@@ -50,8 +50,8 @@ static uint8_t* test_buffer = NULL;
 static ps_canvas* test_canvas = NULL;
 
 #if ENABLE_EXTENSIONS
-static void init_png_decoder(void);
-static void deinit_png_decoder(void);
+    static void init_png_decoder(void);
+    static void deinit_png_decoder(void);
 #endif
 
 void PS_Init()
