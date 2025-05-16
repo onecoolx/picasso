@@ -8,7 +8,7 @@ on:
 
 env:
   BUILD_TYPE: Release
-  BUILD_FLAGS: "-mcpu=cortex-m55 -mfloat-abi=hard -mfpu=fpv5-sp-d16 -Wno-dev"
+  BUILD_FLAGS: "-mcpu=cortex-m55 -mfloat-abi=hard -mfpu=fpv5-sp-d16 -DGTEST_HAS_PTHREAD=0"
   LINK_FLAGS: "-T linker.ld -specs=nosys.specs"
   FLASH_ORIGIN: "0x00000000"
   FLASH_LENGTH: "4096K"
