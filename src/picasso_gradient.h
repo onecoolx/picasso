@@ -27,9 +27,9 @@ public:
     gradient_adapter();
     ~gradient_adapter();
 
-    void init_linear(int spread, scalar x1, scalar y1, scalar x2, scalar y2);
-    void init_radial(int spread, scalar x1, scalar y1, scalar radius1, scalar x2, scalar y2, scalar radius2);
-    void init_conic(int spread, scalar x, scalar y, scalar angle);
+    void init_linear(int32_t spread, scalar x1, scalar y1, scalar x2, scalar y2);
+    void init_radial(int32_t spread, scalar x1, scalar y1, scalar radius1, scalar x2, scalar y2, scalar radius2);
+    void init_conic(int32_t spread, scalar x, scalar y, scalar angle);
 
     void add_color_stop(scalar offset, const rgba& c);
     void clear_stops(void);

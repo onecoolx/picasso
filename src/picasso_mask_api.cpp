@@ -16,7 +16,7 @@
 extern "C" {
 #endif
 
-ps_mask* PICAPI ps_mask_create(int w, int h)
+ps_mask* PICAPI ps_mask_create(int32_t w, int32_t h)
 {
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;
@@ -54,7 +54,7 @@ ps_mask* PICAPI ps_mask_create(int w, int h)
     }
 }
 
-ps_mask* PICAPI ps_mask_create_with_data(ps_byte* data, int w, int h)
+ps_mask* PICAPI ps_mask_create_with_data(ps_byte* data, int32_t w, int32_t h)
 {
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;

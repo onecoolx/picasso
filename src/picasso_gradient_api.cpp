@@ -28,7 +28,7 @@ ps_gradient* PICAPI ps_gradient_create_linear(ps_gradient_spread sp, const ps_po
         return 0;
     }
 
-    int spread = SPREAD_PAD;
+    int32_t spread = SPREAD_PAD;
     switch (sp) {
         case GRADIENT_SPREAD_PAD:
             spread = SPREAD_PAD;
@@ -72,7 +72,7 @@ ps_gradient* PICAPI ps_gradient_create_radial(ps_gradient_spread sp, const ps_po
         return 0;
     }
 
-    int spread = SPREAD_PAD;
+    int32_t spread = SPREAD_PAD;
     switch (sp) {
         case GRADIENT_SPREAD_PAD:
             spread = SPREAD_PAD;
@@ -117,7 +117,7 @@ ps_gradient* PICAPI ps_gradient_create_conic(ps_gradient_spread sp, const ps_poi
         return 0;
     }
 
-    int spread = SPREAD_PAD;
+    int32_t spread = SPREAD_PAD;
     switch (sp) {
         case GRADIENT_SPREAD_PAD:
             spread = SPREAD_PAD;
