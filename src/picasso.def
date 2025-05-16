@@ -14,6 +14,7 @@ EXPORTS
     ps_canvas_create_compatible
     ps_canvas_create_from_canvas
     ps_canvas_create_from_image
+    ps_canvas_create_from_mask
     ps_canvas_replace_data
     ps_canvas_ref
     ps_canvas_unref
