@@ -16,7 +16,7 @@ endif()
 FetchContent_Declare(
   googletest
   GIT_REPOSITORY https://github.com/google/googletest.git
-  GIT_TAG        v1.17.0
+  GIT_TAG        release-1.12.1
   CMAKE_ARGS -Dgtest_disable_pthreads=${DISABLE_GTEST_THREADS} -DGTEST_HAS_PTHREAD=${HAS_PTHREADS}
 )
 
