@@ -116,6 +116,8 @@ jobs:
         -DCMAKE_TOOLCHAIN_FILE=toolchain.cmake
         -DOPT_UNITTEST=ON
         -DOPT_EXTENSIONS=OFF
+        -DOPT_TESTS=OFF
+        -DOPT_DEMOS=OFF
         -S ${{ github.workspace }}
 
     - name: Build
