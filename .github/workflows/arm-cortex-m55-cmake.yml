@@ -118,6 +118,7 @@ jobs:
         -DOPT_EXTENSIONS=OFF
         -DOPT_TESTS=OFF
         -DOPT_DEMOS=OFF
+        -DOPT_THREADS=OFF
         -S ${{ github.workspace }}
 
     - name: Build

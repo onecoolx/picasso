@@ -35,6 +35,7 @@ option(OPT_DEMOS "Build example demos" ON)
 option(OPT_UNITTEST "Build unit tests" OFF)
 option(OPT_SANITIZE "Build with Sanitizer" OFF)
 option(OPT_COVERAGE "Build with Coverage" OFF)
+option(OPT_THREADS "Build with threads support" ON)
 
 option(OPT_SYSTEM_GIF "Use system giflib" OFF)
 option(OPT_SYSTEM_JPEG "Use system libjpeg" OFF)
