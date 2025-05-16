@@ -38,7 +38,17 @@ jobs:
     - name: Generate toolchain script
       run: |
         cat << EOF > toolchain.cmake
-
+        set(CMAKE_SYSTEM_NAME Generic)
+        set(CMAKE_SYSTEM_PROCESSOR arm)
+        set(CMAKE_C_COMPILER arm-none-eabi-gcc)
+        set(CMAKE_CXX_COMPILER arm-none-eabi-g++)
+        set(CMAKE_ASM_COMPILER arm-none-eabi-gcc)
+        set(CPU_FLAGS "${{ env.BUILD_FLAGS }}")
+        set(CMAKE_C_FLAGS_INIT "${CPU_FLAGS}")
+        set(CMAKE_CXX_FLAGS_INIT "${CPU_FLAGS}")
+        set(CMAKE_ASM_FLAGS_INIT "${CPU_FLAGS}")
+        set(LINKER_SCRIPT "linker.ld")
+        set(CMAKE_EXE_LINKER_FLAGS_INIT "-T ${LINKER_SCRIPT} -specs=nosys.specs")
         EOF
         cat toolchain.cmake
         
@@ -100,12 +110,9 @@ jobs:
     - name: Configure CMake
       run: >
         cmake -B ${{github.workspace}}/build
-        -DCMAKE_CXX_COMPILER=arm-none-eabi-g++
-        -DCMAKE_C_COMPILER=arm-none-eabi-gcc
         -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
         -DCMAKE_POLICY_VERSION_MINIMUM="3.5"
-        -DCMAKE_RELEASE_CXX_FLAGS=${{env.BUILD_FLAGS}}
-        -DCMAKE_RELEASE_C_FLAGS=${{env.BUILD_FLAGS}}
+        -DCMAKE_TOOLCHAIN_FILE=toolchain.cmake
         -DOPT_UNITTEST=ON
         -S ${{ github.workspace }}
 
