@@ -25,7 +25,17 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(lodepng)
 add_library(lodepng INTERFACE IMPORTED)
 
-file(GLOB_RECURSE UNIT_SOURCES ${PROJECT_ROOT}/unit_tests/*.cpp)
+file(GLOB_RECURSE PS_UNIT_SOURCES ${PROJECT_ROOT}/unit_tests/ps_*.cpp)
+if (OPT_EXTENSIONS)
+    file(GLOB_RECURSE EXT_UNIT_SOURCES ${PROJECT_ROOT}/unit_tests/ext_*.cpp)
+endif()
+
+set(UNIT_SOURCES 
+    ${PROJECT_ROOT}/unit_tests/test.cpp
+    ${PS_UNIT_SOURCES}
+    ${EXT_UNIT_SOURCES}
+)
+
 set(UNIT_SOURCES ${UNIT_SOURCES} ${lodepng_SOURCE_DIR}/lodepng.cpp)
 
 set(UNIT_TESTS unit_tests)
@@ -34,6 +44,9 @@ include_directories(${PROJECT_ROOT})
 add_executable(${UNIT_TESTS} ${UNIT_SOURCES})
 target_link_libraries(${UNIT_TESTS} PRIVATE GTest::GTest GMock::GMock lodepng ${LIB_NAME} ${LIBX_COMMON} ${LIBX_IMAGE} ${LIBX_SVG_STATIC})
 target_include_directories(${UNIT_TESTS} PRIVATE ${lodepng_SOURCE_DIR})
+if (OPT_EXTENSIONS)
+    target_compile_definitions(${UNIT_TESTS} PRIVATE ENABLE_EXTENSIONS=1)
+endif()
 
 file(COPY ${PROJECT_ROOT}/unit_tests/snapshots DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 configure_file(${PROJECT_ROOT}/unit_tests/test.png ${CMAKE_CURRENT_BINARY_DIR}/test.png COPYONLY)
