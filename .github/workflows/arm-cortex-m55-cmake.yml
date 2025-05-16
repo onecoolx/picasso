@@ -51,6 +51,8 @@ jobs:
         set(CMAKE_EXE_LINKER_FLAGS_INIT "-T \${LINKER_SCRIPT} -specs=nosys.specs")
         set(THREADS_PTHREAD_ARG OFF)
         set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
+        set(gtest_disable_pthreads ON)
+        set(BUILD_SHARED_LIBS OFF)
         EOF
         cat toolchain.cmake
         
