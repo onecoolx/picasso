@@ -5,14 +5,6 @@
 
 include(FetchContent)
 
-if (OPT_THREADS)
-set(DISABLE_GTEST_THREADS OFF)
-set(HAS_PTHREADS 1)
-else()
-set(DISABLE_GTEST_THREADS ON)
-set(HAS_PTHREADS 0)
-endif()
-
 FetchContent_Declare(
   googletest
   GIT_REPOSITORY https://github.com/google/googletest.git
