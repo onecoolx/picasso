@@ -429,10 +429,10 @@ bool font_adapter::prepare_glyph(uint32_t code)
 
         GLYPHMETRICS gm;
         int32_t total_size = GetGlyphOutlineW(m_impl->dc, code, format, &gm,
-                                          m_impl->buf_size, m_impl->buf, &m_impl->mat);
+                                              m_impl->buf_size, m_impl->buf, &m_impl->mat);
         if (total_size < 0) {
             int32_t total_size = GetGlyphOutlineW(m_impl->dc, code, GGO_METRICS, &gm,
-                                              m_impl->buf_size, m_impl->buf, &m_impl->mat);
+                                                  m_impl->buf_size, m_impl->buf, &m_impl->mat);
 
             if (total_size < 0) {
                 return false;

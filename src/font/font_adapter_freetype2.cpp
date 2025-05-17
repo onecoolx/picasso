@@ -444,7 +444,7 @@ bool font_adapter::prepare_glyph(uint32_t code)
         m_impl->cur_glyph_index = FT_Get_Char_Index(m_impl->font, code);
 
         int32_t error = FT_Load_Glyph(m_impl->font, m_impl->cur_glyph_index,
-                                  m_impl->hinting ? FT_LOAD_DEFAULT : FT_LOAD_NO_HINTING);
+                                      m_impl->hinting ? FT_LOAD_DEFAULT : FT_LOAD_NO_HINTING);
 
         bool is_sys_bitmap = false;
         if (m_impl->font->glyph->format == FT_GLYPH_FORMAT_BITMAP) {
