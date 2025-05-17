@@ -12,7 +12,7 @@
 
 // use sse2 intrinces for copy data.
 
-inline void fastcopy_sse2_32(uint8_t* __restrict dest, const uint8_t* __restrict src, int n)
+inline void fastcopy_sse2_32(uint8_t* __restrict dest, const uint8_t* __restrict src, int32_t n)
 {
     for (; ((intptr_t)dest & 15) && (n > 0); n--) {
         *dest++ = *src++;
@@ -37,7 +37,7 @@ inline void fastcopy_sse2_32(uint8_t* __restrict dest, const uint8_t* __restrict
     }
 }
 
-inline void fastcopy_sse2_16(uint8_t* __restrict dest, const uint8_t* __restrict src, int n)
+inline void fastcopy_sse2_16(uint8_t* __restrict dest, const uint8_t* __restrict src, int32_t n)
 {
     for (; ((intptr_t)dest & 15) && (n > 0); n--) {
         *dest++ = *src++;

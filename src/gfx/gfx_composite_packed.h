@@ -1051,13 +1051,13 @@ struct composite_op_packed_contrast {
         long_type dr = c.r;
         long_type dg = c.g;
         long_type db = c.b;
-        int da = base_mask;
+        int32_t da = base_mask;
         long_type d2a = da >> 1;
         uint32_t s2a = sa >> 1;
 
-        int r = (int)((((dr - d2a) * int((sr - s2a) * 2 + base_mask)) >> base_shift) + d2a);
-        int g = (int)((((dg - d2a) * int((sg - s2a) * 2 + base_mask)) >> base_shift) + d2a);
-        int b = (int)((((db - d2a) * int((sb - s2a) * 2 + base_mask)) >> base_shift) + d2a);
+        int32_t r = (int32_t)((((dr - d2a) * int32_t((sr - s2a) * 2 + base_mask)) >> base_shift) + d2a);
+        int32_t g = (int32_t)((((dg - d2a) * int32_t((sg - s2a) * 2 + base_mask)) >> base_shift) + d2a);
+        int32_t b = (int32_t)((((db - d2a) * int32_t((sb - s2a) * 2 + base_mask)) >> base_shift) + d2a);
 
         r = (r < 0) ? 0 : r;
         g = (g < 0) ? 0 : g;

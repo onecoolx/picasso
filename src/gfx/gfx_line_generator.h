@@ -90,7 +90,7 @@ public:
     }
 
     // backward-adjusted line
-    gfx_dda2_line_interpolator(int32_t y1, int32_t y2, int32_t count, int)
+    gfx_dda2_line_interpolator(int32_t y1, int32_t y2, int32_t count, int32_t)
         : m_cnt(count <= 0 ? 1 : count)
         , m_lft((y2 - y1) / m_cnt)
         , m_rem((y2 - y1) % m_cnt)

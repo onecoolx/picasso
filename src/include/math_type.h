@@ -14,7 +14,7 @@ typedef float scalar;
 #define FLT_TO_SCALAR(v)  ((scalar)(v))
 #define INT_TO_SCALAR(v)  ((scalar)(v))
 #define SCALAR_TO_FLT(v)  ((float)(v))
-#define SCALAR_TO_INT(v)  ((int)(v))
+#define SCALAR_TO_INT(v)  ((int32_t)(v))
 //math PI value
 #define PI      3.14159265358979323846f
 #define _2PI    6.28318530717958647692f

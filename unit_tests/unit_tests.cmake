@@ -46,7 +46,7 @@ add_executable(${UNIT_TESTS} ${UNIT_SOURCES})
 target_link_libraries(${UNIT_TESTS} PRIVATE GTest::GTest GMock::GMock lodepng ${LIB_NAME} ${LIBX_COMMON} ${LIBX_IMAGE} ${LIBX_SVG_STATIC})
 target_include_directories(${UNIT_TESTS} PRIVATE ${lodepng_SOURCE_DIR})
 if (OPT_EXTENSIONS)
-    target_compile_definitions(${UNIT_TESTS} PRIVATE ENABLE_EXTENSIONS=1)
+    target_compile_definitions(${UNIT_TESTS} PRIVATE -DENABLE_EXTENSIONS=1)
 endif()
 
 file(COPY ${PROJECT_ROOT}/unit_tests/snapshots DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
@@ -60,7 +60,8 @@ if (WIN32)
         COMMAND_EXPAND_LISTS
     )
 else()
-    target_compile_options(${UNIT_TESTS} PRIVATE -std=c++17)
+    target_compile_definitions(${UNIT_TESTS} PRIVATE LINUX=1)
+    target_compile_options(${UNIT_TESTS} PRIVATE -std=gnu++17)
     configure_file(${PROJECT_ROOT}/cfg/ZCOOLXiaoWei-Regular.ttf ${CMAKE_CURRENT_BINARY_DIR}/ZCOOLXiaoWei-Regular.ttf COPYONLY)
 endif()
 

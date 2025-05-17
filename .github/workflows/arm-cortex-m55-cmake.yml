@@ -9,13 +9,13 @@ on:
 env:
   BUILD_TYPE: Release
   BUILD_FLAGS: "-mcpu=cortex-m55 -mfloat-abi=hard -mfpu=fpv5-sp-d16"
-  LINK_FLAGS: "-T linker.ld -specs=nosys.specs"
+  LINK_FLAGS: "-T linker.ld --specs=nosys.specs"
   FLASH_ORIGIN: "0x00000000"
-  FLASH_LENGTH: "4096K"
+  FLASH_LENGTH: "8192K"
   RAM_ORIGIN: "0x20000000"
-  RAM_LENGTH: "1024K"
-  STACK_SIZE: "32K"
-  HEAP_SIZE: "512K"
+  RAM_LENGTH: "4096K"
+  STACK_SIZE: "64K"
+  HEAP_SIZE: "1024K"
 
 jobs:
   build:
@@ -48,11 +48,14 @@ jobs:
         set(CMAKE_CXX_FLAGS_INIT "\${CPU_FLAGS}")
         set(CMAKE_ASM_FLAGS_INIT "\${CPU_FLAGS}")
         set(LINKER_SCRIPT "linker.ld")
-        set(CMAKE_EXE_LINKER_FLAGS_INIT "-T \${LINKER_SCRIPT} -specs=nosys.specs")
+        set(CMAKE_EXE_LINKER_FLAGS_INIT "-T \${LINKER_SCRIPT} --specs=nosys.specs")
         set(THREADS_PTHREAD_ARG OFF)
         set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
         set(gtest_disable_pthreads ON)
         set(BUILD_SHARED_LIBS OFF)
+        set(gtest_disable_pthreads ON CACHE INTERNAL "")
+        add_compile_options(-fno-exceptions -fno-rtti -fno-unwind-tables)
+        add_definitions(-D_POSIX_PATH_MAX=256)
         EOF
         cat toolchain.cmake
         
@@ -76,35 +79,49 @@ jobs:
             *(.rodata*)
           } > FLASH
 
+          .ARM.exidx :
+          {
+            . = ALIGN(4);
+            __exidx_start = .;
+            *(.ARM.exidx* .gnu.linkonce.armexidx.*)
+            . = ALIGN(4);
+            __exidx_end = .;
+          } > FLASH
+
           .data :
           {
-            _sdata = .;
+            . = ALIGN(4);
+            __data_start__ = .;
             *(.data*)
-            _edata = .;
+            . = ALIGN(4);
+            __data_end__ = .;
           } > RAM AT > FLASH
 
           .bss :
           {
-            _sbss = .;
+            . = ALIGN(4);
+            __bss_start__ = .;
             *(.bss*)
             *(COMMON)
-            _ebss = .;
+            . = ALIGN(4);
+            __bss_end__ = .;
           } > RAM
+          PROVIDE(end = __bss_end__);
 
           .stack :
           {
-            . = ALIGN(8);
+            . = ALIGN(4);
             . = . + ${{ env.STACK_SIZE }};
-            . = ALIGN(8);
+            . = ALIGN(4);
             _estack = .;
           } > RAM
 
           .heap :
           {
-            . = ALIGN(8);
+            . = ALIGN(4);
             _sheap = .;
             . = . + ${{ env.HEAP_SIZE }};
-            . = ALIGN(8);
+            . = ALIGN(4);
             _eheap = .;
           } > RAM
         }
@@ -117,11 +134,11 @@ jobs:
         -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
         -DCMAKE_POLICY_VERSION_MINIMUM="3.5"
         -DCMAKE_TOOLCHAIN_FILE=toolchain.cmake
+        -DOPT_SYSTEM_MALLOC=ON
         -DOPT_UNITTEST=ON
         -DOPT_EXTENSIONS=OFF
         -DOPT_TESTS=OFF
         -DOPT_DEMOS=OFF
-        -DOPT_THREADS=OFF
         -S ${{ github.workspace }}
 
     - name: Build

@@ -144,13 +144,13 @@ public:
             m_interpolator->coordinates(&x, &y);
             int32_t d = m_gradient_function->calculate(x >> downscale_shift,
                                                        y >> downscale_shift, m_d2);
-            d = ((d - m_d1) * (int)m_color_function->size()) / dd;
+            d = ((d - m_d1) * (int32_t)m_color_function->size()) / dd;
 
             if (d < 0) {
                 d = 0;
             }
 
-            if (d >= (int)m_color_function->size()) {
+            if (d >= (int32_t)m_color_function->size()) {
                 d = m_color_function->size() - 1;
             }
 

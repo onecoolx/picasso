@@ -83,7 +83,7 @@ private:
 };
 
 // filter creater
-image_filter_adapter* create_image_filter(int filter)
+image_filter_adapter* create_image_filter(int32_t filter)
 {
     switch (filter) {
         case FILTER_BILINEAR:
