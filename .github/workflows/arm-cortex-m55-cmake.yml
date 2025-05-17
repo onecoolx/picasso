@@ -9,7 +9,7 @@ on:
 env:
   BUILD_TYPE: Release
   BUILD_FLAGS: "-mcpu=cortex-m55 -mfloat-abi=hard -mfpu=fpv5-sp-d16"
-  LINK_FLAGS: "-T linker.ld --specs=nosys.specs"
+  LINK_FLAGS: "-T ./linker.ld --specs=nosys.specs"
   FLASH_ORIGIN: "0x00000000"
   FLASH_LENGTH: "8192K"
   RAM_ORIGIN: "0x20000000"
