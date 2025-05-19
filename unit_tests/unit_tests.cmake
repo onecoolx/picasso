@@ -38,6 +38,7 @@ set(UNIT_SOURCES
 )
 
 set(UNIT_SOURCES ${UNIT_SOURCES} ${lodepng_SOURCE_DIR}/lodepng.cpp)
+set(UNIT_SOURCES ${UNIT_SOURCES} ${PLATFORM_SPECIAL})
 
 set(UNIT_TESTS unit_tests)
 
