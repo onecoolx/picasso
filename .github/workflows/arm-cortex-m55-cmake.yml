@@ -132,6 +132,15 @@ jobs:
         -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
         -DCMAKE_POLICY_VERSION_MINIMUM="3.5"
         -DCMAKE_TOOLCHAIN_FILE=${{github.workspace}}/build/toolchain.cmake
+        -DOPT_FORMAT_ABGR=OFF
+        -DOPT_FORMAT_ARGB=OFF
+        -DOPT_FORMAT_BGRA=OFF
+        -DOPT_FORMAT_RGB=OFF
+        -DOPT_FORMAT_BGR=OFF
+        -DOPT_FORMAT_RGB565=OFF
+        -DOPT_FORMAT_RGB555=OFF
+        -DOPT_FORMAT_A8=OFF
+        -DOPT_LOW_MEMORY=ON
         -DOPT_SYSTEM_MALLOC=ON
         -DOPT_UNITTEST=ON
         -DOPT_EXTENSIONS=OFF
