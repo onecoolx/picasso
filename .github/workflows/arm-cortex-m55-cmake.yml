@@ -49,11 +49,11 @@ jobs:
         set(CMAKE_EXE_LINKER_FLAGS_INIT "-T ${{github.workspace}}/build/linker.ld --specs=nosys.specs ")
         set(THREADS_PTHREAD_ARG OFF)
         set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
-        set(gtest_disable_pthreads ON)
         set(BUILD_SHARED_LIBS OFF)
         set(gtest_disable_pthreads ON CACHE INTERNAL "")
-        add_compile_options(-fno-exceptions -fno-rtti -fno-unwind-tables)
-        add_definitions(-D_POSIX_PATH_MAX=256)
+        add_compile_options(-fno-exceptions -fno-rtti -fno-unwind-tables -g0 -ffunction-sections -fdata-sections)
+        add_link_options(-Wl,--gc-sections)
+        add_definitions(-D_POSIX_PATH_MAX=256 -D_POSIX_C_SOURCE=200809L -DGTEST_HAS_POSIX_RE=0 -DGTEST_HAS_STREAM_REDIRECTION=0 -DGTEST_OS_ESP8266=1)
         EOF
         cat ${{github.workspace}}/build/toolchain.cmake
         
