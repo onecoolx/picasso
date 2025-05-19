@@ -54,6 +54,7 @@ jobs:
         add_compile_options(-fno-exceptions -fno-rtti -fno-unwind-tables -g0 -ffunction-sections -fdata-sections)
         add_link_options(-Wl,--gc-sections)
         add_definitions(-D_POSIX_PATH_MAX=256 -D_POSIX_C_SOURCE=200809L -DGTEST_HAS_POSIX_RE=0 -DGTEST_HAS_STREAM_REDIRECTION=0 -DGTEST_OS_ESP8266=1)
+        set(PLATFORM_SPECIAL ${{github.workspace}}/build/gtest.cpp)
         EOF
         cat ${{github.workspace}}/build/toolchain.cmake
         
@@ -66,7 +67,7 @@ jobs:
           RAM (xrw)   : ORIGIN = ${{ env.RAM_ORIGIN }}, LENGTH = ${{ env.RAM_LENGTH }}
         }
         
-        ENTRY(Reset_Handler)
+        ENTRY(main)
 
         SECTIONS
         {
@@ -125,7 +126,22 @@ jobs:
         }
         EOF
         cat ${{github.workspace}}/build/linker.ld
-      
+
+    - name: Generate gtest.cpp
+      run: |
+        cat << EOF > ${{github.workspace}}/build/gtest.cpp
+        #include "gtest/gtest.h"
+        extern "C" void setup();
+        extern "C" void loop();
+        extern "C" int main(int argc, char* argv[])
+        {
+          setup();
+          loop();
+          return 0;
+        }
+        EOF
+        cat ${{github.workspace}}/build/gtest.cpp
+    
     - name: Configure CMake
       run: >
         cmake -B ${{github.workspace}}/build
