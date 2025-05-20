@@ -179,12 +179,12 @@ jobs:
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
     - name: Run Tests with QEMU
-      run: |
-          qemu-system-arm \
-            -M mps3-an547 \
-            -cpu cortex-m55 \
-            -nographic \
-            -kernel ${{github.workspace}}/build/unit_tests \
-            -semihosting-config enable=on,target=native \
+      run: >
+          qemu-system-arm 
+            -M mps3-an547 
+            -cpu cortex-m55 
+            -nographic 
+            -kernel ${{github.workspace}}/build/unit_tests 
+            -semihosting-config enable=on,target=native 
             -serial mon:stdio
     
