@@ -10,11 +10,11 @@ env:
   BUILD_TYPE: Release
   BUILD_FLAGS: "-mcpu=cortex-m55 -mfloat-abi=hard -mfpu=fpv5-sp-d16"
   FLASH_ORIGIN: "0x00000000"
-  FLASH_LENGTH: "8192K"
+  FLASH_LENGTH: "16M"
   RAM_ORIGIN: "0x20000000"
-  RAM_LENGTH: "4096K"
+  RAM_LENGTH: "256M"
   STACK_SIZE: "64K"
-  HEAP_SIZE: "1024K"
+  HEAP_SIZE: "2048K"
 
 jobs:
   build:
@@ -71,11 +71,15 @@ jobs:
 
         SECTIONS
         {
+          .vectors : {
+            KEEP(*(.vectors))
+          } > FLASH  
           .text :
           {
-            *(.vectors)
             *(.text*)
             *(.rodata*)
+            . = ALIGN(4);
+            _etext = .; 
           } > FLASH
 
           .ARM.exidx :
@@ -87,14 +91,14 @@ jobs:
             __exidx_end = .;
           } > FLASH
 
-          .data :
+          .data : AT (_etext) 
           {
             . = ALIGN(4);
             __data_start__ = .;
             *(.data*)
             . = ALIGN(4);
             __data_end__ = .;
-          } > RAM AT > FLASH
+          } > RAM
 
           .bss :
           {
@@ -107,7 +111,7 @@ jobs:
           } > RAM
           PROVIDE(end = __bss_end__);
 
-          .stack :
+          .stack (NOLOAD) :
           {
             . = ALIGN(4);
             . = . + ${{ env.STACK_SIZE }};
@@ -115,7 +119,7 @@ jobs:
             _estack = .;
           } > RAM
 
-          .heap :
+          .heap (NOLOAD) :
           {
             . = ALIGN(4);
             _sheap = .;
@@ -123,6 +127,11 @@ jobs:
             . = ALIGN(4);
             _eheap = .;
           } > RAM
+          
+          /DISCARD/ : {
+          *(.comment)
+          *(.ARM.attributes)
+          }
         }
         EOF
         cat ${{github.workspace}}/build/linker.ld
