@@ -76,14 +76,7 @@ jobs:
             KEEP(*(.isr_vectors))
             . = ALIGN(4);
           } > FLASH  
-          .text :
-          {
-            *(.text*)
-            *(.rodata*)
-            . = ALIGN(4);
-            _etext = .; 
-          } > FLASH
-
+          
           .ARM.exidx :
           {
             . = ALIGN(4);
@@ -92,8 +85,16 @@ jobs:
             . = ALIGN(4);
             __exidx_end = .;
           } > FLASH
+          
+          .text :
+          {
+            *(.text*)
+            *(.rodata*)
+            . = ALIGN(4);
+            _etext = .; 
+          } > FLASH
 
-          .data : AT (__exidx_end) 
+          .data : AT (_etext) 
           {
             . = ALIGN(4);
             __data_start__ = .;
