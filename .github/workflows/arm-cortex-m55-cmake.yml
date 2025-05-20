@@ -91,7 +91,7 @@ jobs:
             __exidx_end = .;
           } > FLASH
 
-          .data : AT (_etext) 
+          .data : AT (__exidx_end) 
           {
             . = ALIGN(4);
             __data_start__ = .;
