@@ -67,7 +67,7 @@ jobs:
           RAM (xrw)   : ORIGIN = ${{ env.RAM_ORIGIN }}, LENGTH = ${{ env.RAM_LENGTH }}
         }
         
-        ENTRY(main)
+        ENTRY(Reset_Handler)
 
         SECTIONS
         {
