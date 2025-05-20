@@ -71,8 +71,10 @@ jobs:
 
         SECTIONS
         {
-          .vectors : {
-            KEEP(*(.vectors))
+          .isr_vectors : {
+            . = ALIGN(4);
+            KEEP(*(.isr_vectors))
+            . = ALIGN(4);
           } > FLASH  
           .text :
           {
@@ -113,18 +115,18 @@ jobs:
 
           .stack (NOLOAD) :
           {
-            . = ALIGN(4);
+            . = ALIGN(8);
             . = . + ${{ env.STACK_SIZE }};
-            . = ALIGN(4);
+            . = ALIGN(8);
             _estack = .;
           } > RAM
 
           .heap (NOLOAD) :
           {
-            . = ALIGN(4);
+            . = ALIGN(8);
             _sheap = .;
             . = . + ${{ env.HEAP_SIZE }};
-            . = ALIGN(4);
+            . = ALIGN(8);
             _eheap = .;
           } > RAM
           
