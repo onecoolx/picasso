@@ -25,9 +25,9 @@ jobs:
 
     - name: Install ARM GNU Toolchain
       run: |
-        wget https://developer.arm.com/-/media/Files/downloads/gnu/12.3.rel1/binrel/arm-gnu-toolchain-12.3.rel1-x86_64-arm-none-eabi.tar.xz
+        wget https://developer.arm.com/-/media/Files/downloads/gnu/14.2.rel1/binrel/arm-gnu-toolchain-14.2.rel1-x86_64-arm-none-eabi.tar.xz
         sudo tar -xf arm-gnu-toolchain-*.tar.xz -C /opt/
-        echo "/opt/arm-gnu-toolchain-12.3.rel1-x86_64-arm-none-eabi/bin" >> $GITHUB_PATH
+        echo "/opt/arm-gnu-toolchain-14.2.rel1-x86_64-arm-none-eabi/bin" >> $GITHUB_PATH
     
     - name: Install QEMU for Cortex-M55
       run: |
