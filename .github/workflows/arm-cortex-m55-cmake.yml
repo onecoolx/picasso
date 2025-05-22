@@ -10,11 +10,11 @@ env:
   BUILD_TYPE: Release
   BUILD_FLAGS: "-mcpu=cortex-m55 -mfloat-abi=hard -mfpu=fpv5-sp-d16"
   FLASH_ORIGIN: "0x00000000"
-  FLASH_LENGTH: "8192K"
+  FLASH_LENGTH: "2M"
   RAM_ORIGIN: "0x20000000"
-  RAM_LENGTH: "4096K"
+  RAM_LENGTH: "4M"
   STACK_SIZE: "64K"
-  HEAP_SIZE: "1024K"
+  HEAP_SIZE: "512K"
 
 jobs:
   build:
@@ -25,9 +25,9 @@ jobs:
 
     - name: Install ARM GNU Toolchain
       run: |
-        wget https://developer.arm.com/-/media/Files/downloads/gnu/12.3.rel1/binrel/arm-gnu-toolchain-12.3.rel1-x86_64-arm-none-eabi.tar.xz
+        wget https://developer.arm.com/-/media/Files/downloads/gnu/14.2.rel1/binrel/arm-gnu-toolchain-14.2.rel1-x86_64-arm-none-eabi.tar.xz
         sudo tar -xf arm-gnu-toolchain-*.tar.xz -C /opt/
-        echo "/opt/arm-gnu-toolchain-12.3.rel1-x86_64-arm-none-eabi/bin" >> $GITHUB_PATH
+        echo "/opt/arm-gnu-toolchain-14.2.rel1-x86_64-arm-none-eabi/bin" >> $GITHUB_PATH
     
     - name: Install QEMU for Cortex-M55
       run: |
@@ -67,17 +67,16 @@ jobs:
           RAM (xrw)   : ORIGIN = ${{ env.RAM_ORIGIN }}, LENGTH = ${{ env.RAM_LENGTH }}
         }
         
-        ENTRY(main)
+        ENTRY(_start)
 
         SECTIONS
         {
-          .text :
-          {
-            *(.vectors)
-            *(.text*)
-            *(.rodata*)
-          } > FLASH
-
+          .isr_vectors : {
+            . = ALIGN(4);
+            KEEP(*(.isr_vectors))
+            . = ALIGN(4);
+          } > FLASH  
+          
           .ARM.exidx :
           {
             . = ALIGN(4);
@@ -86,15 +85,23 @@ jobs:
             . = ALIGN(4);
             __exidx_end = .;
           } > FLASH
+          
+          .text :
+          {
+            *(.text*)
+            *(.rodata*)
+            . = ALIGN(4);
+            _etext = .; 
+          } > FLASH
 
-          .data :
+          .data : AT (_etext) 
           {
             . = ALIGN(4);
             __data_start__ = .;
             *(.data*)
             . = ALIGN(4);
             __data_end__ = .;
-          } > RAM AT > FLASH
+          } > RAM
 
           .bss :
           {
@@ -107,22 +114,27 @@ jobs:
           } > RAM
           PROVIDE(end = __bss_end__);
 
-          .stack :
+          .stack (NOLOAD) :
           {
-            . = ALIGN(4);
+            . = ALIGN(8);
             . = . + ${{ env.STACK_SIZE }};
-            . = ALIGN(4);
+            . = ALIGN(8);
             _estack = .;
           } > RAM
 
-          .heap :
+          .heap (NOLOAD) :
           {
-            . = ALIGN(4);
+            . = ALIGN(8);
             _sheap = .;
             . = . + ${{ env.HEAP_SIZE }};
-            . = ALIGN(4);
+            . = ALIGN(8);
             _eheap = .;
           } > RAM
+          
+          /DISCARD/ : {
+          *(.comment)
+          *(.ARM.attributes)
+          }
         }
         EOF
         cat ${{github.workspace}}/build/linker.ld
@@ -169,11 +181,5 @@ jobs:
 
     - name: Run Tests with QEMU
       run: |
-          qemu-system-arm \
-            -M mps3-an547 \
-            -cpu cortex-m55 \
-            -nographic \
-            -kernel ${{github.workspace}}/build/unit_tests \
-            -semihosting-config enable=on,target=native \
-            -serial mon:stdio
+          qemu-system-arm -M mps3-an547 -cpu cortex-m55 -nographic -kernel ${{github.workspace}}/build/unit_tests -semihosting-config enable=on,target=native -serial mon:stdio
     
