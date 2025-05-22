@@ -10,11 +10,11 @@ env:
   BUILD_TYPE: Release
   BUILD_FLAGS: "-mcpu=cortex-m55 -mfloat-abi=hard -mfpu=fpv5-sp-d16"
   FLASH_ORIGIN: "0x00000000"
-  FLASH_LENGTH: "16M"
+  FLASH_LENGTH: "2M"
   RAM_ORIGIN: "0x20000000"
-  RAM_LENGTH: "256M"
+  RAM_LENGTH: "4M"
   STACK_SIZE: "64K"
-  HEAP_SIZE: "2048K"
+  HEAP_SIZE: "512K"
 
 jobs:
   build:
