@@ -53,7 +53,7 @@ jobs:
       run: |
         mkdir -p build-${{ matrix.arch }}
         cd build-${{ matrix.arch }}
-        cmake -DCMAKE_TOOLCHAIN_FILE=../${{ matrix.arch }}-toolchain.cmake ..
+        cmake -DCMAKE_TOOLCHAIN_FILE=../${{ matrix.arch }}-toolchain.cmake -DOPT_UNITTEST=ON ..
 
     - name: Build
       run: |
