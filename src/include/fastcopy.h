@@ -15,9 +15,9 @@
 #define fastcopy(d, s, n) fastcopy_sse2_32((uint8_t*)(d), (uint8_t*)(s), n)
 
 #else
-inline void fastcopy4(uint8_t* __restrict dest, const uint8_t* __restrict src, int n)
+inline void fastcopy4(uint8_t* __restrict dest, const uint8_t* __restrict src, int32_t n)
 {
-    _REGISTER_ int i;
+    _REGISTER_ int32_t i;
     for (i = 0; i < (n & 3); i++) {
         *dest++ = *src++;
     }

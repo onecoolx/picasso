@@ -107,7 +107,7 @@ public:
     gfx_serialized_scanlines_adaptor_bin cur_font_storage_bin;
 };
 
-font_adapter::font_adapter(const char* name, int charset, scalar size, scalar weight,
+font_adapter::font_adapter(const char* name, int32_t charset, scalar size, scalar weight,
                            bool italic, bool hint, bool flip, bool a, const trans_affine* mtx)
     : m_impl(new font_adapter_impl)
 {
@@ -116,7 +116,7 @@ font_adapter::font_adapter(const char* name, int charset, scalar size, scalar we
     m_impl->flip_y = flip;
     m_impl->hinting = hint;
     m_impl->weight = weight;
-    int error = FT_New_Face(m_impl->library, _font_by_name(name, size, weight, italic), 0, &m_impl->font);
+    int32_t error = FT_New_Face(m_impl->library, _font_by_name(name, size, weight, italic), 0, &m_impl->font);
     if ((error == 0) && m_impl->font) {
         FT_Set_Pixel_Sizes(m_impl->font, 0, uround(size));
         FT_Select_Charmap(m_impl->font, char_set);
@@ -149,7 +149,7 @@ void font_adapter::deactive(void)
 {
 }
 
-static inline float int26p6_to_flt(int p)
+static inline float int26p6_to_flt(int32_t p)
 {
     return float(p) / 64.0f;
 }
@@ -181,13 +181,13 @@ static bool decompose_ft_outline(const FT_Outline& outline,
     FT_Vector* limit;
     unsigned char* tags;
 
-    int first; // index of first point in contour
+    int32_t first; // index of first point in contour
     unsigned char tag; // current point's state
 
     first = 0;
 
-    for (int n = 0; n < outline.n_contours; n++) {
-        int last; // index of last point in contour
+    for (int32_t n = 0; n < outline.n_contours; n++) {
+        int32_t last; // index of last point in contour
 
         last = outline.contours[n];
         limit = outline.points + last;
@@ -407,14 +407,14 @@ static rect get_bounding_rect(graphic_path& path)
 {
     rect_s rc(0, 0, 0, 0);
     bounding_rect(path, 0, &rc.x1, &rc.y1, &rc.x2, &rc.y2);
-    return rect((int)Floor(rc.x1), (int)Floor(rc.y1), (int)Ceil(rc.x2), (int)Ceil(rc.y2));
+    return rect((int32_t)Floor(rc.x1), (int32_t)Floor(rc.y1), (int32_t)Ceil(rc.x2), (int32_t)Ceil(rc.y2));
 }
 
-static void decompose_ft_bitmap_mono(const FT_Bitmap& bitmap, int x, int y,
+static void decompose_ft_bitmap_mono(const FT_Bitmap& bitmap, int32_t x, int32_t y,
                                      bool flip_y, gfx_scanline_bin& sl, gfx_scanline_storage_bin& storage)
 {
     const byte* buf = (const byte*)bitmap.buffer;
-    int pitch = bitmap.pitch;
+    int32_t pitch = bitmap.pitch;
     sl.reset(x, x + bitmap.width);
     storage.prepare();
     if (flip_y) {
@@ -423,10 +423,10 @@ static void decompose_ft_bitmap_mono(const FT_Bitmap& bitmap, int x, int y,
         pitch = -pitch;
     }
 
-    for (int i = 0; i < (int)bitmap.rows; i++) {
+    for (int32_t i = 0; i < (int32_t)bitmap.rows; i++) {
         sl.reset_spans();
         bitset_iterator bits(buf, 0);
-        for (int j = 0; j < (int)bitmap.width; j++) {
+        for (int32_t j = 0; j < (int32_t)bitmap.width; j++) {
             if (bits.bit()) { sl.add_cell(x + j, cover_full); } //do nothing
             ++bits;
         }
@@ -443,8 +443,8 @@ bool font_adapter::prepare_glyph(uint32_t code)
     if (m_impl->font) {
         m_impl->cur_glyph_index = FT_Get_Char_Index(m_impl->font, code);
 
-        int error = FT_Load_Glyph(m_impl->font, m_impl->cur_glyph_index,
-                                  m_impl->hinting ? FT_LOAD_DEFAULT : FT_LOAD_NO_HINTING);
+        int32_t error = FT_Load_Glyph(m_impl->font, m_impl->cur_glyph_index,
+                                      m_impl->hinting ? FT_LOAD_DEFAULT : FT_LOAD_NO_HINTING);
 
         bool is_sys_bitmap = false;
         if (m_impl->font->glyph->format == FT_GLYPH_FORMAT_BITMAP) {
@@ -454,13 +454,13 @@ bool font_adapter::prepare_glyph(uint32_t code)
         if (error == 0) {
             if (m_impl->antialias && !is_sys_bitmap) {
                 if (m_impl->weight == 500) {
-                    int strength = 1 << 5;
+                    int32_t strength = 1 << 5;
                     FT_Outline_Embolden(&(m_impl->font->glyph->outline), strength);
                 } else if (m_impl->weight == 700) {
-                    int strength = 1 << 6;
+                    int32_t strength = 1 << 6;
                     FT_Outline_Embolden(&(m_impl->font->glyph->outline), strength);
                 } else if (m_impl->weight == 900) {
-                    int strength = 1 << 7;
+                    int32_t strength = 1 << 7;
                     FT_Outline_Embolden(&(m_impl->font->glyph->outline), strength);
                 }
                 // outline text
@@ -497,13 +497,13 @@ bool font_adapter::prepare_glyph(uint32_t code)
                     }
                 } else {
                     if (m_impl->weight == 500) {
-                        int strength = 1 << 5;
+                        int32_t strength = 1 << 5;
                         FT_Outline_Embolden(&(m_impl->font->glyph->outline), strength);
                     } else if (m_impl->weight == 700) {
-                        int strength = 1 << 6;
+                        int32_t strength = 1 << 6;
                         FT_Outline_Embolden(&(m_impl->font->glyph->outline), strength);
                     } else if (m_impl->weight == 900) {
-                        int strength = 1 << 7;
+                        int32_t strength = 1 << 7;
                         FT_Outline_Embolden(&(m_impl->font->glyph->outline), strength);
                     }
 
@@ -563,8 +563,8 @@ void font_adapter::destroy_storage(void*)
 void font_adapter::translate_storage(void* storage, scalar x, scalar y)
 {
     gfx_serialized_scanlines_adaptor_bin* sd = (gfx_serialized_scanlines_adaptor_bin*)storage;
-    int ox = sd->x();
-    int oy = sd->y();
+    int32_t ox = sd->x();
+    int32_t oy = sd->y();
     sd->setX(ox + SCALAR_TO_INT(Ceil(x)));
     sd->setY(oy + SCALAR_TO_INT(Ceil(y)));
 }

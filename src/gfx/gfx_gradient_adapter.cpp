@@ -18,7 +18,7 @@ class gradient_x
 {
 public:
     void init(scalar, scalar, scalar) { }
-    static int32_t calculate(int32_t x, int, int) { return x; }
+    static int32_t calculate(int32_t x, int32_t, int32_t) { return x; }
 };
 
 // gradient_conic
@@ -75,7 +75,7 @@ public:
         update_values();
     }
 
-    int32_t calculate(int32_t x, int32_t y, int) const
+    int32_t calculate(int32_t x, int32_t y, int32_t) const
     {
         scalar dx = INT_TO_SCALAR(x - m_fx);
         scalar dy = INT_TO_SCALAR(y - m_fy);

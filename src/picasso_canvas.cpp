@@ -18,7 +18,7 @@
 
 namespace picasso {
 
-int _bytes_per_color(ps_color_format fmt)
+int32_t _bytes_per_color(ps_color_format fmt)
 {
     switch (fmt) {
 #if ENABLE(FORMAT_RGBA)
@@ -114,7 +114,7 @@ static inline painter* get_painter_from_format(ps_color_format fmt)
 extern "C" {
 #endif
 
-ps_canvas* PICAPI ps_canvas_create(ps_color_format fmt, int w, int h)
+ps_canvas* PICAPI ps_canvas_create(ps_color_format fmt, int32_t w, int32_t h)
 {
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;
@@ -139,7 +139,7 @@ ps_canvas* PICAPI ps_canvas_create(ps_color_format fmt, int w, int h)
         p->host = NULL;
         p->mask = NULL;
         new ((void*) & (p->buffer)) picasso::rendering_buffer;
-        int pitch = picasso::_bytes_per_color(fmt) * w;
+        int32_t pitch = picasso::_bytes_per_color(fmt) * w;
         byte* buf = NULL;
         if ((buf = (byte*)BufferAlloc(h * pitch))) {
             p->flage = buffer_alloc_surface;
@@ -167,7 +167,7 @@ ps_canvas* PICAPI ps_canvas_create(ps_color_format fmt, int w, int h)
     }
 }
 
-ps_canvas* PICAPI ps_canvas_create_compatible(const ps_canvas* c, int w, int h)
+ps_canvas* PICAPI ps_canvas_create_compatible(const ps_canvas* c, int32_t w, int32_t h)
 {
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;
@@ -200,7 +200,7 @@ ps_canvas* PICAPI ps_canvas_create_compatible(const ps_canvas* c, int w, int h)
         p->host = NULL;
         p->mask = NULL;
         new ((void*) & (p->buffer)) picasso::rendering_buffer;
-        int pitch = picasso::_bytes_per_color(c->fmt) * w;
+        int32_t pitch = picasso::_bytes_per_color(c->fmt) * w;
         byte* buf = NULL;
         if ((buf = (byte*)BufferAlloc(h * pitch))) {
             p->flage = buffer_alloc_surface;
@@ -273,7 +273,7 @@ ps_canvas* PICAPI ps_canvas_create_from_canvas(ps_canvas* c, const ps_rect* r)
         p->flage = buffer_alloc_canvas;
         p->host = (void*)ps_canvas_ref(c);
         p->mask = NULL;
-        int bpp = picasso::_bytes_per_color(c->fmt);
+        int32_t bpp = picasso::_bytes_per_color(c->fmt);
         new ((void*) & (p->buffer)) picasso::rendering_buffer;
         p->buffer.attach(c->buffer.buffer() + _iround(rc.y * c->buffer.stride() + rc.x * bpp),
                          _iround(rc.w), _iround(rc.h), c->buffer.stride());
@@ -328,7 +328,7 @@ ps_canvas* PICAPI ps_canvas_create_from_image(ps_image* i, const ps_rect* r)
         p->flage = buffer_alloc_image;
         p->host = (void*)ps_image_ref(i);
         p->mask = NULL;
-        int bpp = picasso::_bytes_per_color(i->fmt);
+        int32_t bpp = picasso::_bytes_per_color(i->fmt);
         new ((void*) & (p->buffer)) picasso::rendering_buffer;
         p->buffer.attach(i->buffer.buffer() + _iround(rc.y * i->buffer.stride() + rc.x * bpp),
                          _iround(rc.w), _iround(rc.h), i->buffer.stride());
@@ -383,7 +383,7 @@ ps_canvas* PICAPI ps_canvas_create_from_mask(ps_mask* m, const ps_rect* r)
         p->flage = buffer_alloc_mask;
         p->host = (void*)ps_mask_ref(m);
         p->mask = NULL;
-        int bpp = picasso::_bytes_per_color(p->fmt);
+        int32_t bpp = picasso::_bytes_per_color(p->fmt);
         new ((void*) & (p->buffer)) picasso::rendering_buffer;
         p->buffer.attach(m->mask.buffer() + _iround(rc.y * m->mask.stride() + rc.x * bpp),
                          _iround(rc.w), _iround(rc.h), m->mask.stride());
@@ -397,7 +397,7 @@ ps_canvas* PICAPI ps_canvas_create_from_mask(ps_mask* m, const ps_rect* r)
     }
 }
 
-ps_canvas* PICAPI ps_canvas_create_with_data(ps_byte* addr, ps_color_format fmt, int w, int h, int pitch)
+ps_canvas* PICAPI ps_canvas_create_with_data(ps_byte* addr, ps_color_format fmt, int32_t w, int32_t h, int32_t pitch)
 {
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;
@@ -435,7 +435,7 @@ ps_canvas* PICAPI ps_canvas_create_with_data(ps_byte* addr, ps_color_format fmt,
 }
 
 ps_canvas* PICAPI ps_canvas_replace_data(ps_canvas* canvas, ps_byte* addr,
-                                         ps_color_format fmt, int w, int h, int pitch)
+                                         ps_color_format fmt, int32_t w, int32_t h, int32_t pitch)
 {
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;
@@ -608,7 +608,7 @@ void PICAPI ps_canvas_bitblt(ps_canvas* src, const ps_rect* r, ps_canvas* dst, c
         return;
     }
 
-    int x = 0, y = 0;
+    int32_t x = 0, y = 0;
     if (l) {
         x = _iround(l->x);
         y = _iround(l->y);

@@ -26,7 +26,9 @@
 
 #include "test.h"
 #include "lodepng.h"
-#include "images/psx_image_plugin.h"
+#if ENABLE_EXTENSIONS
+    #include "images/psx_image_plugin.h"
+#endif
 
 volatile int tmp;
 static int dummy[4096000];
@@ -47,15 +49,19 @@ const uint8_t tolerance = 5;
 static uint8_t* test_buffer = NULL;
 static ps_canvas* test_canvas = NULL;
 
-static void init_png_decoder(void);
-static void deinit_png_decoder(void);
+#if ENABLE_EXTENSIONS
+    static void init_png_decoder(void);
+    static void deinit_png_decoder(void);
+#endif
 
 void PS_Init()
 {
     printf("picasso initialize\n");
     ASSERT_NE(False, ps_initialize());
+#if ENABLE_EXTENSIONS
     ASSERT_NE(0, psx_image_init());
     init_png_decoder();
+#endif
     int v = ps_version();
     fprintf(stderr, "picasso version %d \n", v);
     ASSERT_EQ(STATUS_SUCCEED, ps_last_status());
@@ -75,9 +81,11 @@ void PS_Shutdown()
         test_buffer = NULL;
     }
 
-    deinit_png_decoder();
     printf("picasso shutdown\n");
+#if ENABLE_EXTENSIONS
+    deinit_png_decoder();
     psx_image_shutdown();
+#endif
     ps_shutdown();
     ASSERT_EQ(STATUS_SUCCEED, ps_last_status());
 }
@@ -230,6 +238,7 @@ static void _generate_diff_image(std::vector<uint8_t>& diffImage, const uint8_t*
     return result;
 }
 
+#if ENABLE_EXTENSIONS
 struct lode_png_image_ctx {
     std::vector<uint8_t> image;
     unsigned int width;
@@ -290,3 +299,4 @@ static void deinit_png_decoder(void)
 {
     psx_image_unregister_operator(&png_coder);
 }
+#endif

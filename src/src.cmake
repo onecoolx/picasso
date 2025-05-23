@@ -54,8 +54,9 @@ install(TARGETS ${LIB_NAME} LIBRARY DESTINATION lib ARCHIVE DESTINATION lib RUNT
 set_target_properties(${LIB_NAME} PROPERTIES VERSION ${VERSION_INFO} SOVERSION ${VERSION_MAJOR})
 
 if (ANDROID)
-    target_include_directories(${LIB_NAME} PRIVATE ${PROJECT_ROOT}/android/freetype/include ${PROJECT_ROOT}/android/expat/lib)
     target_link_libraries(${LIB_NAME} PUBLIC ft2 expat)
+elseif (OPT_INTERNAL_FREETYPE)
+    target_link_libraries(${LIB_NAME} PUBLIC ft2)
 elseif (UNIX AND NOT APPLE)
     find_package(Freetype REQUIRED)
     find_package(Fontconfig REQUIRED)

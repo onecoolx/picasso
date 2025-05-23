@@ -49,11 +49,11 @@ public:
 
     uint32_t width(void) const { return m_buffer->internal_width(); }
     uint32_t height(void) const { return m_buffer->internal_height(); }
-    int stride(void) const { return m_buffer->internal_stride(); }
+    int32_t stride(void) const { return m_buffer->internal_stride(); }
 
-    byte* row_ptr(int y) { return m_buffer->row_ptr(y); }
-    const byte* row_ptr(int y) const { return m_buffer->row_ptr(y); }
-    row_data row(int y) const { return m_buffer->row(y); }
+    byte* row_ptr(int32_t y) { return m_buffer->row_ptr(y); }
+    const byte* row_ptr(int32_t y) const { return m_buffer->row_ptr(y); }
+    row_data row(int32_t y) const { return m_buffer->row(y); }
 
     void alpha(scalar a) { m_alpha_factor = uround(a * base_mask); }
     scalar alpha(void) const { return INT_TO_SCALAR(m_alpha_factor) / FLT_TO_SCALAR(255.0f); }
@@ -64,7 +64,7 @@ public:
         return (byte*)&zero;
     }
 
-    byte* pix_ptr(int x, int y) const
+    byte* pix_ptr(int32_t x, int32_t y) const
     {
         return m_buffer->row_ptr(y) + x * pix_width;
     }
@@ -72,24 +72,24 @@ public:
     void blend_op(uint32_t op) { m_blend_op = op; }
     uint32_t blend_op(void) const { return m_blend_op; }
 
-    color_type pixel(int x, int y) const
+    color_type pixel(int32_t x, int32_t y) const
     {
         return blender_type::make_color(((pixel_type*)m_buffer->row_ptr(y))[x]);
     }
 
-    void copy_pixel(int x, int y, const color_type& c)
+    void copy_pixel(int32_t x, int32_t y, const color_type& c)
     {
         ((pixel_type*)m_buffer->row_ptr(x, y, 1))[x] = blender_type::make_pix(c.r, c.g, c.b);
     }
 
-    void blend_pixel(int x, int y, const color_type& c, uint8_t cover)
+    void blend_pixel(int32_t x, int32_t y, const color_type& c, uint8_t cover)
     {
         blender_type::blend_pix(m_blend_op,
                                 (pixel_type*)m_buffer->row_ptr(x, y, 1) + x,
                                 c.r, c.g, c.b, (value_type)alpha_mul(c.a, m_alpha_factor), cover);
     }
 
-    void copy_hline(int x, int y, uint32_t len, const color_type& c)
+    void copy_hline(int32_t x, int32_t y, uint32_t len, const color_type& c)
     {
         pixel_type* p = (pixel_type*)m_buffer->row_ptr(x, y, len) + x;
         pixel_type v = blender_type::make_pix(c.r, c.g, c.b);
@@ -98,7 +98,7 @@ public:
         } while (--len);
     }
 
-    void copy_vline(int x, int y, uint32_t len, const color_type& c)
+    void copy_vline(int32_t x, int32_t y, uint32_t len, const color_type& c)
     {
         pixel_type v = blender_type::make_pix(c.r, c.g, c.b);
         do {
@@ -107,7 +107,7 @@ public:
         } while (--len);
     }
 
-    void blend_hline(int x, int y, uint32_t len, const color_type& c, uint8_t cover)
+    void blend_hline(int32_t x, int32_t y, uint32_t len, const color_type& c, uint8_t cover)
     {
         pixel_type* p = (pixel_type*)m_buffer->row_ptr(x, y, len) + x;
         _REGISTER_ value_type alpha = (value_type)alpha_mul(c.a, m_alpha_factor);
@@ -126,7 +126,7 @@ public:
         }
     }
 
-    void blend_vline(int x, int y, uint32_t len, const color_type& c, uint8_t cover)
+    void blend_vline(int32_t x, int32_t y, uint32_t len, const color_type& c, uint8_t cover)
     {
         _REGISTER_ value_type alpha = (value_type)alpha_mul(c.a, m_alpha_factor);
         do {
@@ -136,7 +136,7 @@ public:
         } while (--len);
     }
 
-    void blend_solid_hspan(int x, int y, uint32_t len, const color_type& c, const uint8_t* covers)
+    void blend_solid_hspan(int32_t x, int32_t y, uint32_t len, const color_type& c, const uint8_t* covers)
     {
         pixel_type* p = (pixel_type*)m_buffer->row_ptr(x, y, len) + x;
         _REGISTER_ value_type alpha = (value_type)alpha_mul(c.a, m_alpha_factor);
@@ -147,7 +147,7 @@ public:
         } while (--len);
     }
 
-    void blend_solid_vspan(int x, int y, uint32_t len, const color_type& c, const uint8_t* covers)
+    void blend_solid_vspan(int32_t x, int32_t y, uint32_t len, const color_type& c, const uint8_t* covers)
     {
         _REGISTER_ value_type alpha = (value_type)alpha_mul(c.a, m_alpha_factor);
         do {
@@ -157,7 +157,7 @@ public:
         } while (--len);
     }
 
-    void copy_color_hspan(int x, int y, uint32_t len, const color_type* colors)
+    void copy_color_hspan(int32_t x, int32_t y, uint32_t len, const color_type* colors)
     {
         pixel_type* p = (pixel_type*)m_buffer->row_ptr(x, y, len) + x;
         do {
@@ -166,7 +166,7 @@ public:
         } while (--len);
     }
 
-    void copy_color_vspan(int x, int y, uint32_t len, const color_type* colors)
+    void copy_color_vspan(int32_t x, int32_t y, uint32_t len, const color_type* colors)
     {
         do {
             pixel_type* p = (pixel_type*)m_buffer->row_ptr(x, y++, 1) + x;
@@ -175,7 +175,7 @@ public:
         } while (--len);
     }
 
-    void blend_color_hspan(int x, int y, uint32_t len,
+    void blend_color_hspan(int32_t x, int32_t y, uint32_t len,
                            const color_type* colors, const uint8_t* covers, uint8_t cover)
     {
         pixel_type* p = (pixel_type*)m_buffer->row_ptr(x, y, len) + x;
@@ -191,7 +191,7 @@ public:
         } while (--len);
     }
 
-    void blend_color_vspan(int x, int y, uint32_t len,
+    void blend_color_vspan(int32_t x, int32_t y, uint32_t len,
                            const color_type* colors, const uint8_t* covers, uint8_t cover)
     {
         do {
@@ -212,7 +212,7 @@ public:
     }
 
     template <typename RenBuffer2>
-    void copy_point_from(const RenBuffer2& from, int xdst, int ydst, int xsrc, int ysrc)
+    void copy_point_from(const RenBuffer2& from, int32_t xdst, int32_t ydst, int32_t xsrc, int32_t ysrc)
     {
         const byte* p = from.row_ptr(ysrc);
         if (p) {
@@ -222,7 +222,7 @@ public:
     }
 
     template <typename RenBuffer2>
-    void copy_from(const RenBuffer2& from, int xdst, int ydst, int xsrc, int ysrc, uint32_t len)
+    void copy_from(const RenBuffer2& from, int32_t xdst, int32_t ydst, int32_t xsrc, int32_t ysrc, uint32_t len)
     {
         const byte* p = from.row_ptr(ysrc);
         if (p) {
@@ -232,8 +232,8 @@ public:
     }
 
     template <typename SrcPixelFormatRenderer>
-    void blend_from(const SrcPixelFormatRenderer& from, int xdst, int ydst,
-                    int xsrc, int ysrc, uint32_t len, uint8_t cover)
+    void blend_from(const SrcPixelFormatRenderer& from, int32_t xdst, int32_t ydst,
+                    int32_t xsrc, int32_t ysrc, uint32_t len, uint8_t cover)
     {
         typedef typename SrcPixelFormatRenderer::order_type src_order;
         const value_type* psrc = (const value_type*)from.row_ptr(ysrc);
@@ -255,8 +255,8 @@ public:
     }
 
     template <typename SrcPixelFormatRenderer>
-    void blend_point_from(const SrcPixelFormatRenderer& from, int xdst, int ydst,
-                          int xsrc, int ysrc, uint8_t cover)
+    void blend_point_from(const SrcPixelFormatRenderer& from, int32_t xdst, int32_t ydst,
+                          int32_t xsrc, int32_t ysrc, uint8_t cover)
     {
         typedef typename SrcPixelFormatRenderer::order_type src_order;
         const value_type* psrc = (const value_type*)from.row_ptr(ysrc);
@@ -274,7 +274,7 @@ public:
 
     template <typename SrcPixelFormatRenderer>
     void blend_from_color(const SrcPixelFormatRenderer& from, const color_type& color,
-                          int xdst, int ydst, int xsrc, int ysrc, uint32_t len, uint8_t cover)
+                          int32_t xdst, int32_t ydst, int32_t xsrc, int32_t ysrc, uint32_t len, uint8_t cover)
     {
         typedef typename SrcPixelFormatRenderer::value_type src_value_type;
         const src_value_type* psrc = (src_value_type*)from.row_ptr(ysrc);
@@ -294,7 +294,7 @@ public:
 
     template <class SrcPixelFormatRenderer>
     void blend_from_lut(const SrcPixelFormatRenderer& from, const color_type* color_lut,
-                        int xdst, int ydst, int xsrc, int ysrc, uint32_t len, uint8_t cover)
+                        int32_t xdst, int32_t ydst, int32_t xsrc, int32_t ysrc, uint32_t len, uint8_t cover)
     {
         typedef typename SrcPixelFormatRenderer::value_type src_value_type;
         const src_value_type* psrc = (src_value_type*)from.row_ptr(ysrc);

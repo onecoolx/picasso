@@ -62,11 +62,11 @@ void font_engine::set_transform(const trans_affine& mtx)
     }
 }
 
-int font_engine::find_font(const char* font_signature)
+int32_t font_engine::find_font(const char* font_signature)
 {
     for (uint32_t i = 0; i < m_num_fonts; i++) {
         if (strcmp(m_fonts[i]->signature(), font_signature) == 0) {
-            return (int)i;
+            return (int32_t)i;
         }
     }
     return -1;
@@ -82,7 +82,7 @@ bool font_engine::create_font(const font_desc& desc)
         m_current->deactive();
     }
 
-    int idx = find_font(m_signature);
+    int32_t idx = find_font(m_signature);
     if (idx >= 0) {
         m_current = m_fonts[idx];
     } else {
@@ -125,12 +125,12 @@ bool font::create_signature(const font_desc& desc, const trans_affine& mtx, bool
              "%s,%d,%3d,%3d,%d,%d,%d,%d-",
              desc.name(),
              desc.charset(),
-             (int)desc.height(),
-             (int)desc.weight(),
-             (int)desc.italic(),
-             (int)desc.hint(),
-             (int)desc.flip_y(),
-             (int)anti);
+             (int32_t)desc.height(),
+             (int32_t)desc.weight(),
+             (int32_t)desc.italic(),
+             (int32_t)desc.hint(),
+             (int32_t)desc.flip_y(),
+             (int32_t)anti);
 
     char mbuf[64] = {0};
     snprintf(mbuf, 64,

@@ -43,7 +43,7 @@ ps_font* _default_font(void);
 void _path_operation(conv_clipper::clip_op op, const graphic_path& a, const graphic_path& b, graphic_path& r);
 
 // Format
-int _bytes_per_color(ps_color_format fmt);
+int32_t _bytes_per_color(ps_color_format fmt);
 
 } // namespace picasso
 

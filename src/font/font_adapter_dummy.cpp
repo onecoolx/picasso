@@ -32,8 +32,8 @@
 // dummy font interface
 namespace picasso {
 
-font_adapter::font_adapter(const char* name, int charset, scalar size, scalar weight,
-                           bool italic, bool hint, bool flip, bool a, const trans_affine* mtx) { }
+font_adapter::font_adapter(const char* name, int32_t charset, scalar size, scalar weight,
+                           bool italic, bool hint, bool flip, bool a, const trans_affine* mtx) { m_impl = NULL; }
 font_adapter::~font_adapter() { }
 void font_adapter::active(void) { }
 void font_adapter::deactive(void) { }

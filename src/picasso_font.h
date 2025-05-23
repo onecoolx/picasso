@@ -92,7 +92,7 @@ public:
         return *this;
     }
 
-    void set_charset(int charset) { m_charset = charset; }
+    void set_charset(int32_t charset) { m_charset = charset; }
     void set_height(scalar h) { m_height = h; }
     void set_weight(scalar w) { m_weight = w; }
     void set_italic(bool i) { m_italic = i; }
@@ -100,7 +100,7 @@ public:
     void set_flip_y(bool f) { m_flip_y = f; }
 
     const char* name(void) const { return m_name; }
-    int charset(void) const { return m_charset; }
+    int32_t charset(void) const { return m_charset; }
     scalar height(void) const { return m_height; }
     scalar weight(void) const { return m_weight; }
     bool italic(void) const { return m_italic; }
@@ -109,7 +109,7 @@ public:
 
 private:
     char* m_name;
-    int m_charset;
+    int32_t m_charset;
     scalar m_height;
     scalar m_weight;
     bool m_italic;
@@ -258,7 +258,7 @@ public:
     static bool initialize(void);
     static void shutdown(void);
 private:
-    int find_font(const char* font_signature);
+    int32_t find_font(const char* font_signature);
 
     font** m_fonts;
     font* m_current;

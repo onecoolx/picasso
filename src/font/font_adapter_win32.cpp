@@ -128,11 +128,11 @@ public:
     KERNINGPAIR* kerning_pairs;
 };
 
-font_adapter::font_adapter(const char* name, int charset, scalar height, scalar weight,
+font_adapter::font_adapter(const char* name, int32_t charset, scalar height, scalar weight,
                            bool italic, bool hint, bool flip, bool a, const trans_affine* mtx)
     : m_impl(new font_adapter_impl)
 {
-    int char_set = (charset == charset_latin1) ? ANSI_CHARSET : DEFAULT_CHARSET;
+    int32_t char_set = (charset == charset_latin1) ? ANSI_CHARSET : DEFAULT_CHARSET;
     m_impl->antialias = a;
     m_impl->flip_y = flip;
     m_impl->hinting = hint;
@@ -218,7 +218,7 @@ uint32_t font_adapter::units_per_em(void) const
     return m_impl->units_per_em;
 }
 
-static int pair_less(const void* v1, const void* v2)
+static int32_t pair_less(const void* v1, const void* v2)
 {
     if (((KERNINGPAIR*)v1)->wFirst != ((KERNINGPAIR*)v2)->wFirst) {
         return ((KERNINGPAIR*)v1)->wFirst - ((KERNINGPAIR*)v2)->wFirst;
@@ -260,14 +260,14 @@ void font_adapter::add_kerning(uint32_t first, uint32_t second, scalar* x, scala
             m_impl->load_kerning_pairs();
         }
 
-        int end = m_impl->num_kerning_pairs - 1;
-        int beg = 0;
+        int32_t end = m_impl->num_kerning_pairs - 1;
+        int32_t beg = 0;
         KERNINGPAIR t;
         t.wFirst = (WORD)first;
         t.wSecond = (WORD)second;
 
         while (beg <= end) {
-            int mid = (end + beg) / 2;
+            int32_t mid = (end + beg) / 2;
             if (m_impl->kerning_pairs[mid].wFirst == t.wFirst &&
                 m_impl->kerning_pairs[mid].wSecond == t.wSecond) {
                 scalar dx = INT_TO_SCALAR(m_impl->kerning_pairs[mid].iKernAmount);
@@ -292,10 +292,10 @@ static inline float fx_to_flt(const FIXED& p)
     return float(p.value) + float(p.fract) * (1.0f / 65536.0f);
 }
 
-static void decompose_win32_glyph_bitmap_mono(const char* gbuf, int w, int h, int x, int y,
+static void decompose_win32_glyph_bitmap_mono(const char* gbuf, int32_t w, int32_t h, int32_t x, int32_t y,
                                               bool flip_y, gfx_scanline_bin& sl, gfx_scanline_storage_bin& storage)
 {
-    int pitch = ((w + 31) >> 5) << 2;
+    int32_t pitch = ((w + 31) >> 5) << 2;
     const byte* buf = (const byte*)gbuf;
     sl.reset(x, x + w);
     storage.prepare();
@@ -306,10 +306,10 @@ static void decompose_win32_glyph_bitmap_mono(const char* gbuf, int w, int h, in
         pitch = -pitch;
     }
 
-    for (int i = 0; i < h; i++) {
+    for (int32_t i = 0; i < h; i++) {
         sl.reset_spans();
         bitset_iterator bits(buf, 0);
-        int j;
+        int32_t j;
         for (j = 0; j < w; j++) {
             if (bits.bit()) { sl.add_cell(x + j, cover_full); }
             ++bits;
@@ -355,7 +355,7 @@ static bool decompose_win32_glyph_outline(const char* gbuf, uint32_t total_size,
             const TTPOLYCURVE* pc = (const TTPOLYCURVE*)cur_poly;
 
             if (pc->wType == TT_PRIM_LINE) {
-                for (int i = 0; i < pc->cpfx; i++) {
+                for (int32_t i = 0; i < pc->cpfx; i++) {
                     x = fx_to_flt(pc->apfx[i].x);
                     y = fx_to_flt(pc->apfx[i].y);
                     //FIXME: it is needed ?
@@ -368,14 +368,14 @@ static bool decompose_win32_glyph_outline(const char* gbuf, uint32_t total_size,
             }
 
             if (pc->wType == TT_PRIM_QSPLINE) {
-                for (int u = 0; u < pc->cpfx - 1; u++) { // Walk through points in spline
+                for (int32_t u = 0; u < pc->cpfx - 1; u++) { // Walk through points in spline
                     POINTFX pnt_b = pc->apfx[u]; // B is always the current point
                     POINTFX pnt_c = pc->apfx[u + 1];
 
                     if (u < pc->cpfx - 2) { // If not on last spline, compute C
                         // midpoint (x,y)
-                        *(int*)&pnt_c.x = (*(int*)&pnt_b.x + * (int*)&pnt_c.x) / 2;
-                        *(int*)&pnt_c.y = (*(int*)&pnt_b.y + * (int*)&pnt_c.y) / 2;
+                        *(int32_t*)&pnt_c.x = (*(int32_t*)&pnt_b.x + * (int32_t*)&pnt_c.x) / 2;
+                        *(int32_t*)&pnt_c.y = (*(int32_t*)&pnt_b.y + * (int32_t*)&pnt_c.y) / 2;
                     }
 
                     scalar x2, y2;
@@ -406,7 +406,7 @@ static rect get_bounding_rect(graphic_path& path)
 {
     rect_s rc(0, 0, 0, 0);
     bounding_rect(path, 0, &rc.x1, &rc.y1, &rc.x2, &rc.y2);
-    return rect((int)Floor(rc.x1), (int)Floor(rc.y1), (int)Ceil(rc.x2), (int)Ceil(rc.y2));
+    return rect((int32_t)Floor(rc.x1), (int32_t)Floor(rc.y1), (int32_t)Ceil(rc.x2), (int32_t)Ceil(rc.y2));
 }
 
 #ifndef GGO_UNHINTED         // For compatibility with old SDKs.
@@ -418,7 +418,7 @@ bool font_adapter::prepare_glyph(uint32_t code)
     if (m_impl->dc) {
 
         bool sys_bitmap = false;
-        int format = GGO_NATIVE;
+        int32_t format = GGO_NATIVE;
 
         if (!m_impl->antialias && m_impl->matrix.is_identity()) { //matrix is identity
             sys_bitmap = true;
@@ -428,11 +428,11 @@ bool font_adapter::prepare_glyph(uint32_t code)
         if (!m_impl->hinting) { format |= GGO_UNHINTED; }
 
         GLYPHMETRICS gm;
-        int total_size = GetGlyphOutlineW(m_impl->dc, code, format, &gm,
-                                          m_impl->buf_size, m_impl->buf, &m_impl->mat);
-        if (total_size < 0) {
-            int total_size = GetGlyphOutlineW(m_impl->dc, code, GGO_METRICS, &gm,
+        int32_t total_size = GetGlyphOutlineW(m_impl->dc, code, format, &gm,
                                               m_impl->buf_size, m_impl->buf, &m_impl->mat);
+        if (total_size < 0) {
+            int32_t total_size = GetGlyphOutlineW(m_impl->dc, code, GGO_METRICS, &gm,
+                                                  m_impl->buf_size, m_impl->buf, &m_impl->mat);
 
             if (total_size < 0) {
                 return false;
@@ -556,8 +556,8 @@ void font_adapter::destroy_storage(void*)
 void font_adapter::translate_storage(void* storage, scalar x, scalar y)
 {
     gfx_serialized_scanlines_adaptor_bin* sd = (gfx_serialized_scanlines_adaptor_bin*)storage;
-    int ox = sd->x();
-    int oy = sd->y();
+    int32_t ox = sd->x();
+    int32_t oy = sd->y();
     sd->setX(ox + SCALAR_TO_INT(x));
     sd->setY(oy + SCALAR_TO_INT(y));
 }

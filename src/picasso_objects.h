@@ -574,7 +574,7 @@ extern "C" {
 #endif
 
 struct _ps_context {
-    int refcount;
+    int32_t refcount;
     ps_canvas* canvas;
     picasso::context_state* state;
     ps_bool font_antialias;
@@ -597,7 +597,7 @@ enum {
 };
 
 struct _ps_canvas {
-    int refcount;
+    int32_t refcount;
     ps_color_format fmt;
     picasso::painter* p;
     uint32_t flage;
@@ -607,7 +607,7 @@ struct _ps_canvas {
 };
 
 struct _ps_image {
-    int refcount;
+    int32_t refcount;
     ps_color_format fmt;
     uint32_t flage;
     void* host;
@@ -615,7 +615,7 @@ struct _ps_image {
 };
 
 struct _ps_pattern {
-    int refcount;
+    int32_t refcount;
     picasso::trans_affine matrix;
     ps_wrap_type xtype;
     ps_wrap_type ytype;
@@ -623,28 +623,28 @@ struct _ps_pattern {
 };
 
 struct _ps_gradient {
-    int refcount;
+    int32_t refcount;
     picasso::gradient_adapter gradient;
 };
 
 struct _ps_matrix {
-    int refcount;
+    int32_t refcount;
     picasso::trans_affine matrix;
 };
 
 struct _ps_path {
-    int refcount;
+    int32_t refcount;
     picasso::graphic_path path;
 };
 
 struct _ps_mask {
-    int refcount;
+    int32_t refcount;
     uint32_t flage;
     picasso::mask_layer mask;
 };
 
 struct _ps_font {
-    int refcount;
+    int32_t refcount;
     picasso::font_desc desc;
 };
 

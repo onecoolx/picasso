@@ -1,0 +1,31 @@
+name: WebAssembly Build
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install EMCC tools
+      run: |
+        sudo apt-get update --fix-missing
+        sudo apt-get install emscripten
+      
+    - name: Build
+      run: |
+        mkdir proj
+        cp ./wasm/Makefile.em ./proj/
+        cp ./wasm/export.list ./proj/
+        cp ./wasm/lib.js ./proj/
+        cp ./wasm/pconfig.h ./proj/
+        cp ./wasm/runtime.list ./proj/
+        cp ./wasm/build_wasm.sh ./proj/
+        cd ./proj/
+        ./build_wasm.sh
+

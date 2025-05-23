@@ -90,7 +90,7 @@ public:
     scalar cur_advance_y;
 };
 
-font_adapter::font_adapter(const char* name, int charset, scalar size, scalar weight,
+font_adapter::font_adapter(const char* name, int32_t charset, scalar size, scalar weight,
                                 bool italic, bool hint, bool flip, bool a, const trans_affine* mtx)
     :m_impl(new font_adapter_impl)
 {
@@ -162,7 +162,7 @@ static rect get_bounding_rect(graphic_path& path)
 {
     rect_s rc(0,0,0,0);
     bounding_rect(path, 0, &rc.x1, &rc.y1, &rc.x2, &rc.y2);
-    return rect((int)Floor(rc.x1), (int)Floor(rc.y1), (int)Ceil(rc.x2), (int)Ceil(rc.y2));
+    return rect((int32_t)Floor(rc.x1), (int32_t)Floor(rc.y1), (int32_t)Ceil(rc.x2), (int32_t)Ceil(rc.y2));
 }
 
 bool font_adapter::prepare_glyph(uint32_t code)
