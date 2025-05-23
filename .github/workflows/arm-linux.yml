@@ -27,6 +27,7 @@ jobs:
         fi
     - name: Generate Toolchain cmake
       run : |
+        if [ "${{ matrix.arch }}" = "arm32" ]; then
         cat << EOF > arm32-toolchain.cmake
           set(CMAKE_SYSTEM_NAME Linux)
           set(CMAKE_SYSTEM_PROCESSOR arm)
@@ -35,15 +36,18 @@ jobs:
           set(CMAKE_CXX_COMPILER ${TOOLCHAIN_PREFIX}-g++)
         EOF
         cat arm32-toolchain.cmake
-
+        fi
+        
+        if [ "${{ matrix.arch }}" = "arm64" ]; then
         cat << EOF > arm64-toolchain.cmake
           set(CMAKE_SYSTEM_NAME Linux)
           set(CMAKE_SYSTEM_PROCESSOR aarch64)
           set(TOOLCHAIN_PREFIX aarch64-linux-gnu)
           set(CMAKE_C_COMPILER ${TOOLCHAIN_PREFIX}-gcc)
           set(CMAKE_CXX_COMPILER ${TOOLCHAIN_PREFIX}-g++)
-        EOF    
+        EOF
         cat arm64-toolchain.cmake
+        fi
 
     - name: Configure CMake
       run: |
