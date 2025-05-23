@@ -1,0 +1,78 @@
+name: Arm Build
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch: [ arm32, arm64 ] 
+    steps:
+    - name: Checkout 
+      uses: actions/checkout@v4
+      
+    - name: Install ARM Toolchains and QEMU
+      run: |
+        sudo apt-get update
+        if [ "${{ matrix.arch }}" = "arm32" ]; then
+          sudo apt-get install -y gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf qemu-user-static
+        fi
+        if [ "${{ matrix.arch }}" = "arm64" ]; then
+          sudo apt-get install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu qemu-system-arm
+        fi
+    - name: Generate Toolchain cmake
+      run : |
+        if [ "${{ matrix.arch }}" = "arm32" ]; then
+          cat << EOF > ${{ matrix.arch }}-toolchain.cmake
+          set(CMAKE_SYSTEM_NAME Linux)
+          set(CMAKE_SYSTEM_PROCESSOR arm)
+          set(TOOLCHAIN_PREFIX arm-linux-gnueabihf)
+          set(CMAKE_C_COMPILER ${TOOLCHAIN_PREFIX}-gcc)
+          set(CMAKE_CXX_COMPILER ${TOOLCHAIN_PREFIX}-g++)
+          EOF
+          cat ${{ matrix.arch }}-toolchain.cmake
+        fi
+        if [ "${{ matrix.arch }}" = "arm64" ]; then
+          cat << EOF > ${{ matrix.arch }}-toolchain.cmake
+          set(CMAKE_SYSTEM_NAME Linux)
+          set(CMAKE_SYSTEM_PROCESSOR aarch64)
+          set(TOOLCHAIN_PREFIX aarch64-linux-gnu)
+          set(CMAKE_C_COMPILER ${TOOLCHAIN_PREFIX}-gcc)
+          set(CMAKE_CXX_COMPILER ${TOOLCHAIN_PREFIX}-g++)
+          EOF
+          cat ${{ matrix.arch }}-toolchain.cmake
+        fi
+
+    - name: Configure CMake
+      run: |
+        mkdir -p build-${{ matrix.arch }}
+        cd build-${{ matrix.arch }}
+        cmake -DCMAKE_TOOLCHAIN_FILE=../${{ matrix.arch }}-toolchain.cmake ..
+
+    - name: Build
+      run: |
+        cd build-${{ matrix.arch }}
+        cmake --build . --parallel
+
+    - name: Run Tests with QEMU
+      run: |
+        cd build-${{ matrix.arch }}
+        if [ "${{ matrix.arch }}" = "arm32" ]; then
+            qemu-arm-static -L /usr/arm-linux-gnueabihf ./build-${{ matrix.arch }}/unit_tests
+        elif [ "${{ matrix.arch }}" = "arm64" ]; then
+            qemu-system-aarch64 -machine virt -cpu cortex-a57 -nographic \
+              -kernel ./build-${{ matrix.arch }}/unit_tests -append "run_tests"
+        fi
+
+    - name: Upload Test Reaults
+      if: always()
+      uses: actions/upload-artifact@v4.6.2
+      with:
+        name: test-snpashots-${{ matrix.arch }}
+        path: |
+          build-${{ matrix.arch }}/snapshots/
