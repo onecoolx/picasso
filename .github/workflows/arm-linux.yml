@@ -15,7 +15,27 @@ jobs:
     steps:
     - name: Checkout 
       uses: actions/checkout@v4
-      
+    
+    - name: Enable Multi Arch Support
+      run: |
+        sudo dpkg --add-architecture armhf  # for ARM32
+        sudo dpkg --add-architecture arm64  # for ARM64
+        sudo apt-get update
+    - name: Install ARM Freetype
+      run: |
+        if [ "${{ matrix.arch }}" = "arm32" ]; then
+        sudo apt-get install -y \
+          libfreetype6:armhf \
+          libfreetype-dev:armhf \
+          crossbuild-essential-armhf
+        fi
+        if [ "${{ matrix.arch }}" = "arm64" ]; then
+        sudo apt-get install -y \
+          libfreetype6:arm64 \
+          libfreetype-dev:arm64 \
+          crossbuild-essential-arm64
+        fi
+    
     - name: Install ARM Toolchains and QEMU
       run: |
         sudo apt-get update
