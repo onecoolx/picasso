@@ -27,6 +27,7 @@ option(OPT_FREE_TYPE2 "Build FreeType2 is support." OFF)
 option(OPT_FONT_CONFIG "Build FontConfig is support." OFF)
 option(OPT_LOW_MEMORY "Build Low Memory used support." OFF)
 option(OPT_SYSTEM_MALLOC "Build System Memory Allocator (new/delete/malloc/free/realloc/calloc) used support." OFF)
+option(OPT_INTERNAL_FREETYPE "Build with internal freetype2 code" OFF)
 
 option(OPT_EXTENSIONS "Build extension libraries." ON)
 

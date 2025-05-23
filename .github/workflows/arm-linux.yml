@@ -34,7 +34,6 @@ jobs:
           set(TOOLCHAIN_PREFIX arm-linux-gnueabihf)
           set(CMAKE_C_COMPILER \${TOOLCHAIN_PREFIX}-gcc)
           set(CMAKE_CXX_COMPILER \${TOOLCHAIN_PREFIX}-g++)
-          set(ANDROID ON) 
         EOF
         cat arm32-toolchain.cmake
         fi
@@ -46,7 +45,6 @@ jobs:
           set(TOOLCHAIN_PREFIX aarch64-linux-gnu)
           set(CMAKE_C_COMPILER \${TOOLCHAIN_PREFIX}-gcc)
           set(CMAKE_CXX_COMPILER \${TOOLCHAIN_PREFIX}-g++)
-          set(ANDROID ON) 
         EOF
         cat arm64-toolchain.cmake
         fi
@@ -55,7 +53,7 @@ jobs:
       run: |
         mkdir -p build-${{ matrix.arch }}
         cd build-${{ matrix.arch }}
-        cmake -DCMAKE_TOOLCHAIN_FILE=../${{ matrix.arch }}-toolchain.cmake -DOPT_UNITTEST=ON -DOPT_DEMOS=OFF -DOPT_TESTS=OFF ..
+        cmake -DCMAKE_TOOLCHAIN_FILE=../${{ matrix.arch }}-toolchain.cmake -DOPT_UNITTEST=ON -DOPT_DEMOS=OFF -DOPT_TESTS=OFF -DOPT_INTERNAL_FREETYPE=ON ..
 
     - name: Build
       run: |

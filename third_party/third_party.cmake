@@ -6,6 +6,8 @@
 if (ANDROID)
 include (${CMAKE_CURRENT_LIST_DIR}/freetype.cmake)
 include (${CMAKE_CURRENT_LIST_DIR}/expat.cmake)
+else(OPT_INTERNAL_FREETYPE)
+include (${CMAKE_CURRENT_LIST_DIR}/freetype.cmake)
 endif()
 
 if (NOT APPLE)
