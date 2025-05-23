@@ -35,6 +35,7 @@ jobs:
           set(CMAKE_C_COMPILER ${TOOLCHAIN_PREFIX}-gcc)
           set(CMAKE_CXX_COMPILER ${TOOLCHAIN_PREFIX}-g++)
           EOF
+          
           cat ${{ matrix.arch }}-toolchain.cmake
         fi
         if [ "${{ matrix.arch }}" = "arm64" ]; then
@@ -45,6 +46,7 @@ jobs:
           set(CMAKE_C_COMPILER ${TOOLCHAIN_PREFIX}-gcc)
           set(CMAKE_CXX_COMPILER ${TOOLCHAIN_PREFIX}-g++)
           EOF
+          
           cat ${{ matrix.arch }}-toolchain.cmake
         fi
 
