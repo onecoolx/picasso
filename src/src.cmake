@@ -55,7 +55,7 @@ set_target_properties(${LIB_NAME} PROPERTIES VERSION ${VERSION_INFO} SOVERSION $
 
 if (ANDROID)
     target_link_libraries(${LIB_NAME} PUBLIC ft2 expat)
-else(OPT_INTERNAL_FREETYPE)
+elseif (OPT_INTERNAL_FREETYPE)
     target_link_libraries(${LIB_NAME} PUBLIC ft2)
 elseif (UNIX AND NOT APPLE)
     find_package(Freetype REQUIRED)
