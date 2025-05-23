@@ -18,7 +18,16 @@ jobs:
     
     - name: Enable Multi Arch Support
       run: |
-        sudo apt-get clean
+        sudo rm -f /etc/apt/sources.list.d/*
+        sudo tee /etc/apt/sources.list << EOL
+        deb [arch=amd64] https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy main restricted
+        deb [arch=amd64] https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy-updates main restricted
+        deb [arch=armhf,arm64] https://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/ jammy main restricted
+        deb [arch=armhf,arm64] https://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/ jammy-updates main restricted
+        deb [arch=armhf,arm64] https://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/ jammy-security main restricted
+        EOL
+        sudo dpkg --add-architecture armhf
+        sudo dpkg --add-architecture arm64
         sudo apt-get update --fix-missing
     - name: Install ARM Freetype
       run: |
