@@ -35,6 +35,11 @@ jobs:
           sleep 10
           [ $i -eq 5 ] && exit 1
         done
+
+        sudo apt-get install -y \
+          aptitude \
+          debian-archive-keyring \
+          ubuntu-keyring
         
         sudo apt-get install -y \
           ca-certificates \
@@ -44,6 +49,31 @@ jobs:
         sudo rm -rf /var/lib/apt/lists/*
         sudo apt-get clean
         sudo apt-get update --fix-missing
+
+    - name: Install ARM Toolchains
+      run: |
+        sudo apt-get install -y \
+          crossbuild-essential-armhf \
+          crossbuild-essential-arm64 \
+          gcc-arm-linux-gnueabihf \
+          g++-arm-linux-gnueabihf \
+          gcc-aarch64-linux-gnu \
+          g++-aarch64-linux-gnu
+
+    - name: Install Core Dependencies
+      run: |
+        sudo aptitude install -y \
+          libfreetype6:armhf \
+          libfreetype-dev:armhf \
+          libfreetype6:arm64 \
+          libfreetype-dev:arm64 \
+
+          zlib1g:arm64 \
+          zlib1g-dev:arm64 \
+          libpng16-16:armhf \
+          libpng-dev:armhf \
+          libpng16-16:arm64 \
+          libpng-dev:arm64
         
     - name: Install ARM Freetype
       run: |
@@ -51,12 +81,20 @@ jobs:
         sudo apt-get install -y \
           libfreetype6:armhf \
           libfreetype-dev:armhf \
+          zlib1g:armhf \
+          zlib1g-dev:armhf \
+          zlib1g:arm64 \
+          zlib1g-dev:arm64 \
           crossbuild-essential-armhf
         fi
         if [ "${{ matrix.arch }}" = "arm64" ]; then
         sudo apt-get install -y \
           libfreetype6:arm64 \
           libfreetype-dev:arm64 \
+          zlib1g:arm64 \
+          zlib1g-dev:arm64 \
+          libpng16-16:arm64 \
+          libpng-dev:arm64
           crossbuild-essential-arm64
         fi
     
