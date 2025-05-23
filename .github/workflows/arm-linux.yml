@@ -34,7 +34,7 @@ jobs:
           set(TOOLCHAIN_PREFIX arm-linux-gnueabihf)
           set(CMAKE_C_COMPILER \${TOOLCHAIN_PREFIX}-gcc)
           set(CMAKE_CXX_COMPILER \${TOOLCHAIN_PREFIX}-g++)
-          add_compile_definitions(__ANDROID__=1) 
+          set(ANDROID ON) 
         EOF
         cat arm32-toolchain.cmake
         fi
@@ -46,7 +46,7 @@ jobs:
           set(TOOLCHAIN_PREFIX aarch64-linux-gnu)
           set(CMAKE_C_COMPILER \${TOOLCHAIN_PREFIX}-gcc)
           set(CMAKE_CXX_COMPILER \${TOOLCHAIN_PREFIX}-g++)
-          add_compile_definitions(__ANDROID__=1) 
+          set(ANDROID ON) 
         EOF
         cat arm64-toolchain.cmake
         fi
