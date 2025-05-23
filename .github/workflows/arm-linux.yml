@@ -44,21 +44,6 @@ jobs:
         sudo rm -rf /var/lib/apt/lists/*
         sudo apt-get clean
         sudo apt-get update --fix-missing
-
-    - name: Install Core Dependencies
-      run: |
-        sudo aptitude install -y \
-          libfreetype6:armhf \
-          libfreetype-dev:armhf \
-          libfreetype6:arm64 \
-          libfreetype-dev:arm64 \
-
-          zlib1g:arm64 \
-          zlib1g-dev:arm64 \
-          libpng16-16:armhf \
-          libpng-dev:armhf \
-          libpng16-16:arm64 \
-          libpng-dev:arm64
         
     - name: Install ARM Freetype
       run: |
