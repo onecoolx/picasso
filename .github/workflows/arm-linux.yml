@@ -64,10 +64,10 @@ jobs:
       run: |
         cd build-${{ matrix.arch }}
         if [ "${{ matrix.arch }}" = "arm32" ]; then
-            qemu-arm-static -L /usr/arm-linux-gnueabihf ./build-${{ matrix.arch }}/unit_tests
+            qemu-arm-static -L /usr/arm-linux-gnueabihf ./unit_tests
         fi
         if [ "${{ matrix.arch }}" = "arm64" ]; then
-            qemu-aarch64-static -L /usr/aarch64-linux-gnu/ ./build-${{ matrix.arch }}/unit_tests
+            qemu-aarch64-static -L /usr/aarch64-linux-gnu/ ./unit_tests
         fi
 
     - name: Upload Test Reaults
