@@ -23,7 +23,7 @@ jobs:
           sudo apt-get install -y gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf qemu-user-static
         fi
         if [ "${{ matrix.arch }}" = "arm64" ]; then
-          sudo apt-get install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu qemu-system-arm
+          sudo apt-get install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu qemu-user-static
         fi
     - name: Generate Toolchain cmake
       run : |
@@ -66,8 +66,7 @@ jobs:
         if [ "${{ matrix.arch }}" = "arm32" ]; then
             qemu-arm-static -L /usr/arm-linux-gnueabihf ./build-${{ matrix.arch }}/unit_tests
         elif [ "${{ matrix.arch }}" = "arm64" ]; then
-            qemu-system-aarch64 -machine virt -cpu cortex-a57 -nographic \
-              -kernel ./build-${{ matrix.arch }}/unit_tests -append "run_tests"
+            qemu-aarch64-static -L /usr/aarch64-linux-gnu/ ./build-${{ matrix.arch }}/unit_tests
         fi
 
     - name: Upload Test Reaults

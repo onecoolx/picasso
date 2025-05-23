@@ -74,9 +74,27 @@ void CompareArrays(const T* expected, const T* actual, size_t length)
     #define SYSTEM "linux"
 #endif
 
+#if defined(__i386__) \
+    || defined(i386)     \
+    || defined(_M_IX86)  \
+    || defined(_X86_)    \
+    || defined(__THW_INTEL) \
+    || defined(__x86_64__) \
+    || defined(_M_X64)
+    #define ARCH "x86"
+#elif defined(arm) \
+    || defined(__arm__) \
+    || defined(ARM) \
+    || defined(_ARM_)
+    #define ARCH "arm"
+#else
+    #define ARCH "unknown"
+#endif
+
+
 #define EXPECT_SYS_SNAPSHOT_EQ(actual) \
     do { \
-        ::testing::AssertionResult pixels = CompareToImage("./snapshots/" SNAPSHOT_PATH "/" #actual "_" SYSTEM ".png"); \
+        ::testing::AssertionResult pixels = CompareToImage("./snapshots/" SNAPSHOT_PATH "/" #actual "_" SYSTEM "_" ARCH ".png"); \
         EXPECT_TRUE(pixels); \
     } while(0)
 
