@@ -91,7 +91,6 @@ void CompareArrays(const T* expected, const T* actual, size_t length)
     #define ARCH "unknown"
 #endif
 
-
 #define EXPECT_SYS_SNAPSHOT_EQ(actual) \
     do { \
         ::testing::AssertionResult pixels = CompareToImage("./snapshots/" SNAPSHOT_PATH "/" #actual "_" SYSTEM "_" ARCH ".png"); \
