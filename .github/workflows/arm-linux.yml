@@ -45,21 +45,6 @@ jobs:
         sudo apt-get clean
         sudo apt-get update --fix-missing
 
-    - name: Install ARM Toolchains
-      run: |
-        if [ "${{ matrix.arch }}" = "arm32" ]; then
-        sudo apt-get install -y \
-          crossbuild-essential-armhf \
-          gcc-arm-linux-gnueabihf \
-          g++-arm-linux-gnueabihf
-        fi
-        if [ "${{ matrix.arch }}" = "arm64" ]; then
-        sudo apt-get install -y \
-          crossbuild-essential-arm64 \
-          gcc-aarch64-linux-gnu \
-          g++-aarch64-linux-gnu
-        fi
-
     - name: Install Core Dependencies
       run: |
         sudo aptitude install -y \
