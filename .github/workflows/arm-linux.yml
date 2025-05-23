@@ -65,7 +65,8 @@ jobs:
         cd build-${{ matrix.arch }}
         if [ "${{ matrix.arch }}" = "arm32" ]; then
             qemu-arm-static -L /usr/arm-linux-gnueabihf ./build-${{ matrix.arch }}/unit_tests
-        elif [ "${{ matrix.arch }}" = "arm64" ]; then
+        fi
+        if [ "${{ matrix.arch }}" = "arm64" ]; then
             qemu-aarch64-static -L /usr/aarch64-linux-gnu/ ./build-${{ matrix.arch }}/unit_tests
         fi
 
