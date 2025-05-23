@@ -28,26 +28,24 @@ jobs:
     - name: Generate Toolchain cmake
       run : |
         if [ "${{ matrix.arch }}" = "arm32" ]; then
-          cat << EOF > ${{ matrix.arch }}-toolchain.cmake
+        cat << EOF > ${{ matrix.arch }}-toolchain.cmake
           set(CMAKE_SYSTEM_NAME Linux)
           set(CMAKE_SYSTEM_PROCESSOR arm)
           set(TOOLCHAIN_PREFIX arm-linux-gnueabihf)
           set(CMAKE_C_COMPILER ${TOOLCHAIN_PREFIX}-gcc)
           set(CMAKE_CXX_COMPILER ${TOOLCHAIN_PREFIX}-g++)
-          EOF
-          
-          cat ${{ matrix.arch }}-toolchain.cmake
+        EOF
+        cat ${{ matrix.arch }}-toolchain.cmake
         fi
         if [ "${{ matrix.arch }}" = "arm64" ]; then
-          cat << EOF > ${{ matrix.arch }}-toolchain.cmake
+        cat << EOF > ${{ matrix.arch }}-toolchain.cmake
           set(CMAKE_SYSTEM_NAME Linux)
           set(CMAKE_SYSTEM_PROCESSOR aarch64)
           set(TOOLCHAIN_PREFIX aarch64-linux-gnu)
           set(CMAKE_C_COMPILER ${TOOLCHAIN_PREFIX}-gcc)
           set(CMAKE_CXX_COMPILER ${TOOLCHAIN_PREFIX}-g++)
-          EOF
-          
-          cat ${{ matrix.arch }}-toolchain.cmake
+        EOF    
+        cat ${{ matrix.arch }}-toolchain.cmake
         fi
 
     - name: Configure CMake
