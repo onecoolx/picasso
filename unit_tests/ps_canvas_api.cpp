@@ -26,7 +26,7 @@
 
 #include "test.h"
 
-class ContextTest : public ::testing::Test
+class CanvasTest : public ::testing::Test
 {
 protected:
     static void SetUpTestSuite()
@@ -41,60 +41,30 @@ protected:
 
     void SetUp() override
     {
-        canvas = ps_canvas_create(COLOR_FORMAT_RGBA, 200, 200);
-        ctx = ps_context_create(canvas, NULL);
     }
 
     void TearDown() override
     {
-        ps_context_unref(ctx);
-        ps_canvas_unref(canvas);
     }
 
-    ps_canvas* canvas;
-    ps_context* ctx;
 };
 
-TEST_F(ContextTest, CreateAndRef)
+TEST_F(CanvasTest, CanvasWithDataAndCompatible)
 {
-    ps_context* ctx2 = ps_context_create(canvas, NULL);
-    ASSERT_TRUE(ctx2);
-    ps_context_unref(ctx2);
+    uint8_t buf[200] = {0};
+    ps_canvas* newCanvas = ps_canvas_create_with_data(buf, COLOR_FORMAT_RGB565, 10, 10, 20);
+    ps_canvas* newCanvas2 = ps_canvas_create_compatible(newCanvas, 20, 20);
 
-    ps_context* ctx3 = ps_context_create(canvas, ctx);
-    ASSERT_TRUE(ctx3);
-    ps_context_unref(ctx3);
+    ASSERT_EQ(ps_canvas_get_format(newCanvas), ps_canvas_get_format(newCanvas2));
 
-    ASSERT_EQ(STATUS_SUCCEED, ps_last_status());
-}
-
-TEST_F(ContextTest, CanvasAssociation)
-{
-    ps_canvas* newCanvas = ps_canvas_create(COLOR_FORMAT_ARGB, 400, 300);
-    ps_context_set_canvas(ctx, newCanvas);
-    ASSERT_EQ(STATUS_SUCCEED, ps_last_status());
-
-    ps_canvas* canvas = ps_context_get_canvas(ctx);
-    ASSERT_EQ(canvas, newCanvas);
-    ASSERT_EQ(STATUS_SUCCEED, ps_last_status());
+    ps_size s;
+    ps_bool r = ps_canvas_get_size(newCanvas2, &s);
+    ASSERT_FLOAT_EQ(s.w, 20.0f);
+    ASSERT_FLOAT_EQ(s.h, 20.0f);
+    ASSERT_EQ(r, True);
 
     ps_canvas_unref(newCanvas);
+    ps_canvas_unref(newCanvas2);
 
-    ASSERT_EQ(STATUS_SUCCEED, ps_last_status());
-}
-
-TEST_F(ContextTest, AntialiasAndGamma)
-{
-    // gamma
-    float g = 1.5;
-    float old = ps_set_gamma(ctx, g);
-    ASSERT_EQ(STATUS_SUCCEED, ps_last_status());
-
-    old = ps_set_gamma(ctx, old);
-    EXPECT_EQ(g, old);
-
-    ps_set_antialias(ctx, True);
-    ASSERT_EQ(STATUS_SUCCEED, ps_last_status());
-    ps_set_antialias(ctx, False);
     ASSERT_EQ(STATUS_SUCCEED, ps_last_status());
 }
