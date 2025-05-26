@@ -563,7 +563,7 @@ PEXPORT ps_canvas* PICAPI ps_canvas_create_from_mask(ps_mask* mask, const ps_rec
  * \param height  The height, in pixels, of the required canvas.
  * \param pitch   The number of bytes per row, of the required canvas.
  *
- * \return If the function succeeds, the return value is the pointer to a new canvas object.
+ * \return If the function succeeds, the return value is the pointer to the canvas object.
  *         If the function fails, the return value is NULL.
  *
  * \note The data's color format must be equal with target canvas, otherwish will
