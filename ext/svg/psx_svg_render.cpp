@@ -197,6 +197,15 @@ static INLINE void copy_draw_attrs(ps_draw_attrs* attrs, const ps_draw_attrs* ot
     attrs->stroke_ref = other->stroke_ref;
 }
 
+static INLINE char* dup_string_val(const _svg_list_builder_state* state, const psx_svg_attr* val)
+{
+    size_t len = strlen(val->value.sval);
+    char* ret = (char*)state->list->alloc(len + 1);
+    mem_copy(ret, val->value.sval, len);
+    ret[len] = '\0';
+    return ret;
+}
+
 static INLINE void set_draw_attr(const _svg_list_builder_state* state, ps_draw_attrs* attrs, int32_t attr_id, const psx_svg_attr* val)
 {
     switch (attr_id) {
@@ -210,14 +219,7 @@ static INLINE void set_draw_attr(const _svg_list_builder_state* state, ps_draw_a
                     return;
                 } else {
                     if (val->val_type == SVG_ATTR_VALUE_PTR) {
-                        // FIXME: reduce string dup function
-                        size_t len = strlen(val->value.sval);
-                        char* link = (char*)state->list->alloc(len + 1);
-                        mem_copy(link, val->value.sval, len);
-                        link[len] = '\0';
-
-                        attrs->fill_ref = link;
-
+                        attrs->fill_ref = dup_string_val(state, val);
                         attrs->flags &= ~RENDER_ATTR_FILL;
                         attrs->flags |= RENDER_ATTR_REF_FILL;
                     } else {
@@ -257,14 +259,7 @@ static INLINE void set_draw_attr(const _svg_list_builder_state* state, ps_draw_a
                     return;
                 } else {
                     if (val->val_type == SVG_ATTR_VALUE_PTR) {
-                        //FIXME: reduce string dup function.
-                        size_t len = strlen(val->value.sval);
-                        char* link = (char*)state->list->alloc(len + 1);
-                        mem_copy(link, val->value.sval, len);
-                        link[len] = '\0';
-
-                        attrs->stroke_ref = link;
-
+                        attrs->stroke_ref = dup_string_val(state, val);
                         attrs->flags &= ~RENDER_ATTR_STROKE;
                         attrs->flags |= RENDER_ATTR_REF_STROKE;
                     } else {
@@ -1070,15 +1065,8 @@ public:
             case SVG_ATTR_Y:
                 m_y = attr->value.fval;
                 break;
-            case SVG_ATTR_XLINK_HREF: {
-                    //FIXME: reduce string dup function
-                    size_t len = strlen(attr->value.sval);
-                    char* xlink = (char*)state->list->alloc(len + 1);
-                    mem_copy(xlink, attr->value.sval, len);
-                    xlink[len] = '\0';
-
-                    m_xlink = xlink;
-                }
+            case SVG_ATTR_XLINK_HREF:
+                m_xlink = dup_string_val(state, attr);
                 break;
         }
     }
@@ -1096,6 +1084,7 @@ public:
         if (m_linked) {
             m_linked->prepare(ctx);
             prepare(ctx);
+            // FIXME: use with own gradient !!!!!!
             m_linked->render(ctx, mtx);
         }
 
@@ -1360,6 +1349,7 @@ public:
         ps_get_font_info(ctx, &info);
 
         if (ps_path_is_empty(m_path)) {
+            // FIXME:  text and span  redraw !!!!!!!!!!!!!!!!!
             ps_matrix* mtx = ps_matrix_create();
             ps_matrix_translate(mtx, m_x, m_y);
 
@@ -1775,6 +1765,8 @@ public:
         ps_gradient* gradient = NULL;
         ps_rect bound;
         obj->get_bounding_rect(&bound);
+
+        //FIXME: user space persecent !!!!!  LVGL fix !
 
         ps_matrix* mtx = ps_matrix_create();
 
