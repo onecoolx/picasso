@@ -1094,7 +1094,7 @@ public:
 
     void get_xlink(void) const
     {
-        if (!m_linked) {
+        if (!m_linked && m_xlink) {
             render_obj_base* head = m_head;
             while (head) {
                 if (head->id() && strcmp(m_xlink, head->id()) == 0) {
@@ -1264,8 +1264,12 @@ public:
     {
     }
 
-    virtual void render_content(ps_context* ctx, ps_path* contents, ps_matrix* offset_matrix, float yoffset)
+    virtual void render_content(ps_context* ctx, ps_path* contents, ps_matrix* offset_matrix, float yoffset, bool rebuild_path)
     {
+        if (!rebuild_path) {
+            return;
+        }
+
         ps_path* glyph_path = ps_path_create();
 
         ps_matrix* mtx = ps_matrix_create_copy(offset_matrix);
@@ -1348,18 +1352,20 @@ public:
         ps_font_info info;
         ps_get_font_info(ctx, &info);
 
+        bool build_path = false;
         if (ps_path_is_empty(m_path)) {
-            // FIXME:  text and span  redraw !!!!!!!!!!!!!!!!!
-            ps_matrix* mtx = ps_matrix_create();
-            ps_matrix_translate(mtx, m_x, m_y);
-
-            // draw text contents and spans
-            for (uint32_t i = 0; i < psx_array_size(&m_contents); i++) {
-                svg_render_content* content = *(psx_array_get(&m_contents, i, svg_render_content*));
-                content->render_content(ctx, m_path, mtx, -info.ascent);
-            }
-            ps_matrix_unref(mtx);
+            build_path = true;
         }
+
+        ps_matrix* mtx = ps_matrix_create();
+        ps_matrix_translate(mtx, m_x, m_y);
+
+        // draw text contents and spans
+        for (uint32_t i = 0; i < psx_array_size(&m_contents); i++) {
+            svg_render_content* content = *(psx_array_get(&m_contents, i, svg_render_content*));
+            content->render_content(ctx, m_path, mtx, -info.ascent, build_path);
+        }
+        ps_matrix_unref(mtx);
 
         ps_set_font(ctx, old_font);
 
@@ -1454,7 +1460,7 @@ public:
         this->svg_render_tspan::~svg_render_tspan();
     }
 
-    virtual void render_content(ps_context* ctx, ps_path*, ps_matrix* offset_matrix, float)
+    virtual void render_content(ps_context* ctx, ps_path*, ps_matrix* offset_matrix, float, bool)
     {
         ps_save(ctx);
         prepare(ctx);
