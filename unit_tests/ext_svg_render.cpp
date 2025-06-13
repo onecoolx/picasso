@@ -522,3 +522,12 @@ TEST_F(SVGRenderTest, ImageTest)
     draw_svg(svg_image_13);
     EXPECT_SNAPSHOT_EQ(svg_image_13);
 }
+
+TEST_F(SVGRenderTest, BadCaseTest)
+{
+    // invalid <use> xlink:href attr
+    const char* svg_badcase_1 = "<svg width=\"200\" height=\"200\">"
+                                "<rect id=\"rect1\" x=\"10\" y=\"10\" width=\"100\" height=\"100\" />"
+                                "<use xlink=\"#rect1\"></svg>";
+    draw_svg(svg_badcase_1);
+}
