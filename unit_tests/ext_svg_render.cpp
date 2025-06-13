@@ -414,6 +414,18 @@ TEST_F(SVGRenderTest, TextTest)
                                     "</text></svg>";
     draw_svg(svg_text_gradient);
     EXPECT_SYS_SNAPSHOT_EQ(svg_text_gradient);
+
+    const char* svg_text_use_gradient = "<svg><defs><linearGradient id=\"g1\">"
+                                        "<stop offset=\"0.1\" stop-color=\"blue\"/>"
+                                        "<stop offset =\"0.8\" stop-color=\"red\"/>"
+                                        "</linearGradient></defs>"
+                                        "<text id=\"text1\" fill=\"url(#g1)\" x=20 y=60"
+                                        " font-family=\"sans-serif\" font-size=\"48px\" font-weight=\"bold\">"
+                                        "hello <tspan fill=\"green\" font-size=\"24px\">all</tspan> world"
+                                        "</text><use x=\"20\" y=\"100\" xlink:href=\"#text1\"/></svg>";
+    draw_svg(svg_text_use_gradient);
+    EXPECT_SYS_SNAPSHOT_EQ(svg_text_use_gradient);
+
 }
 
 TEST_F(SVGRenderTest, ImageTest)
