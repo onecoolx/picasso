@@ -1771,7 +1771,7 @@ public:
         ps_gradient* gradient = NULL;
 
         if (m_units == SVG_GRADIENT_UNITS_USER_SPACE) {
-            render_obj_base * head = m_head;
+            render_obj_base* head = m_head;
             while (head) {
                 if (head->type() == SVG_TAG_SVG) {
                     obj = head; // viewport
