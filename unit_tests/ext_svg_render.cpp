@@ -235,6 +235,18 @@ TEST_F(SVGRenderTest, ShapesTest)
                                      "</linearGradient></defs></svg>";
     draw_svg(svg_shapes_linear6);
     EXPECT_SNAPSHOT_EQ(svg_shapes_linear6);
+
+    const char* svg_shapes_linear7 = "<svg width=\'400\' height=\'400\' viewBox=\'0 0 400 400\' fill=\'none\' xmlns=\'http://www.w3.org/2000/svg\'>"
+                                     "<rect x=\'10\' y=\'10\' width=\'100\' height=\'100\' fill=\'url(#gradient1)\'/>"
+                                     "<rect x=\'120\' y=\'10\' width=\'100\' height=\'100\' fill=\'url(#gradient1)\'/>"
+                                     "<rect x=\'230\' y=\'10\' width=\'100\' height=\'100\' fill=\'url(#gradient1)\'/>"
+                                     "<defs><linearGradient id=\'gradient1\' x1=\'%0\' y1=\'0%\' "
+                                     "x2=\'100%\' y2=\'0%\' gradientUnits=\'userSpaceOnUse\' >"
+                                     "<stop offset=\'0\' stop-color=\'red\' stop-opacity=\'1\'/>"
+                                     "<stop offset=\'1\' stop-color=\'green\' stop-opacity=\'1\'/>"
+                                     "</linearGradient></defs></svg>";
+    draw_svg(svg_shapes_linear7);
+    EXPECT_SNAPSHOT_EQ(svg_shapes_linear7);
 }
 
 TEST_F(SVGRenderTest, ComplexPath)

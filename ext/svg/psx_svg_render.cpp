@@ -1769,38 +1769,39 @@ public:
     void setup_gradient(ps_context* ctx, const render_obj_base* obj, bool fill)
     {
         ps_gradient* gradient = NULL;
+
+        if (m_units == SVG_GRADIENT_UNITS_USER_SPACE) {
+            render_obj_base * head = m_head;
+            while (head) {
+                if (head->type() == SVG_TAG_SVG) {
+                    obj = head; // viewport
+                    break;
+                }
+                head = head->next();
+            }
+        }
+
         ps_rect bound;
         obj->get_bounding_rect(&bound);
-
-        //FIXME: user space persecent !!!!!  LVGL fix !
 
         ps_matrix* mtx = ps_matrix_create();
 
         if (m_tag == SVG_TAG_RADIAL_GRADIENT) {
-            float cx = m_cx;
-            float cy = m_cy;
-            float cr = m_cr;
-
+            float cx = PCT_TO_PX(m_cx, bound.w);
+            float cy = PCT_TO_PX(m_cy, bound.h);
+            float cr = PCT_TO_PX(m_cr, MAX(bound.w, bound.h));
             if (m_units == SVG_GRADIENT_UNITS_OBJECT) {
-                cx = PCT_TO_PX(m_cx, bound.w);
-                cy = PCT_TO_PX(m_cy, bound.h);
-                cr = PCT_TO_PX(m_cr, MAX(bound.w, bound.h));
                 ps_matrix_translate(mtx, bound.x, bound.y);
             }
             ps_point c = { cx, cy };
             gradient = ps_gradient_create_radial(GRADIENT_SPREAD_PAD, &c, 0, &c, cr);
             ps_gradient_transform(gradient, mtx);
         } else {
-            float x1 = m_x1;
-            float y1 = m_y1;
-            float x2 = m_x2;
-            float y2 = m_y2;
-
+            float x1 = PCT_TO_PX(m_x1, bound.w);
+            float y1 = PCT_TO_PX(m_y1, bound.h);
+            float x2 = PCT_TO_PX(m_x2, bound.w);
+            float y2 = PCT_TO_PX(m_y2, bound.h);
             if (m_units == SVG_GRADIENT_UNITS_OBJECT) {
-                x1 = PCT_TO_PX(m_x1, bound.w);
-                y1 = PCT_TO_PX(m_y1, bound.h);
-                x2 = PCT_TO_PX(m_x2, bound.w);
-                y2 = PCT_TO_PX(m_y2, bound.h);
                 ps_matrix_translate(mtx, bound.x, bound.y);
             }
             ps_point s = { x1, y1 };
