@@ -40,7 +40,7 @@ extern "C" {
 #define ATTR_VALUE_LEN(attr) ((uint32_t)((attr)->value_end - (attr)->value_start))
 #define BUF_LEN(s, e) ((uint32_t)((e) - (s)))
 
-#define DEG_TO_RAD(d) ((d) * M_PI / 180.0f)
+#define DEG_TO_RAD(d) ((float)((d) * M_PI / 180.0f))
 
 static const struct {
     const char* name;
