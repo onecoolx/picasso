@@ -40,6 +40,8 @@ extern "C" {
 #define ATTR_VALUE_LEN(attr) ((uint32_t)((attr)->value_end - (attr)->value_start))
 #define BUF_LEN(s, e) ((uint32_t)((e) - (s)))
 
+#define DEG_TO_RAD(d) ((d) * M_PI / 180.0f)
+
 static const struct {
     const char* name;
     uint32_t name_len;
@@ -1182,6 +1184,7 @@ static INLINE void _process_transform(psx_svg_node* node, psx_svg_attr_type type
 static INLINE bool _is_relative_cmd(char cmd)
 {
     switch (cmd) {
+        case 'a':
         case 'm':
         case 'l':
         case 'h':
@@ -1192,6 +1195,7 @@ static INLINE bool _is_relative_cmd(char cmd)
         case 't':
         case 'z':
             return true;
+        case 'A':
         case 'M':
         case 'L':
         case 'H':
@@ -1208,7 +1212,7 @@ static INLINE bool _is_relative_cmd(char cmd)
 
 static INLINE bool _is_path_cmd(char ch)
 {
-    return ch != 0 && strchr("MLHVCSQTZmlhvcsqtz", ch) != NULL;
+    return ch != 0 && strchr("AMLHVCSQTZamlhvcsqtz", ch) != NULL;
 }
 
 static INLINE void _process_path_value(psx_svg_node* node, psx_svg_attr_type type, const char* val_start,
@@ -1428,6 +1432,36 @@ static INLINE void _process_path_value(psx_svg_node* node, psx_svg_attr_type typ
                     cur_ctrlPoint.y = point[0].y;
                     cur_point.x = point[1].x;
                     cur_point.y = point[1].y;
+                }
+                break;
+            case 'A':
+            case 'a': {
+                    float rx = 0.0f;
+                    ptr = _parse_number(ptr, val_end, &rx);
+                    float ry = 0.0f;
+                    ptr = _parse_number(ptr, val_end, &ry);
+                    float rotate = 0.0f;
+                    ptr = _parse_number(ptr, val_end, &rotate);
+                    float large_arc = 0.0f;
+                    ptr = _parse_number(ptr, val_end, &large_arc);
+                    float sweep = 0.0f;
+                    ptr = _parse_number(ptr, val_end, &sweep);
+
+                    float xval = 0.0f;
+                    ptr = _parse_number(ptr, val_end, &xval);
+                    float yval = 0.0f;
+                    ptr = _parse_number(ptr, val_end, &yval);
+                    if (relative) {
+                        xval += cur_point.x;
+                        yval += cur_point.y;
+                    }
+
+                    ps_point pt;
+                    pt.x = xval;
+                    pt.y = yval;
+                    ps_path_arc_to(path, rx, ry, DEG_TO_RAD(rotate), (int32_t)large_arc > 0 ? True : False, (int32_t)sweep > 0 ? True : False, &pt);
+                    cur_point.x = xval;
+                    cur_point.y = yval;
                 }
                 break;
             case 'Z':
