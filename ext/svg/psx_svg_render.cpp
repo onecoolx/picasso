@@ -589,15 +589,102 @@ public:
         , m_width(0)
         , m_height(0)
         , m_fill(false)
+        , m_hasViewBox(false)
+        , m_ratio(SVG_ASPECT_RATIO_XMID_YMID | SVG_ASPECT_RATIO_OPT_MEET)
     {
+        m_viewBox[0] = m_viewBox[1] = m_viewBox[2] = m_viewBox[3] = 0.0f;
     }
 
     void render(ps_context* ctx, const ps_matrix*)
     {
+        float width = m_width;
+        float height = m_height;
+
+        if (m_hasViewBox) {
+            float* vals = m_viewBox;
+
+            float scale = 1.0f;
+            float scale_x = 1.0f;
+            float scale_y = 1.0f;
+            float tx = -vals[0];
+            float ty = -vals[1];
+            float vw = vals[2];
+            float vh = vals[3];
+
+            if (m_width > 1 && vw > 0) {
+                scale_x = m_width / vw;
+            } else if (m_width > 0 && m_width <= 1.0f) {
+                scale_x = m_width;
+            }
+            if (m_height > 1 && vh > 0) {
+                scale_y = m_height / vh;
+            } else if (m_height > 0 && m_height <= 1.0f) {
+                scale_y = m_height;
+            }
+
+            width = scale_x * vw;
+            height = scale_y * vh;
+
+            if ((m_ratio & 0x1) == SVG_ASPECT_RATIO_OPT_SLICE) {
+                scale = MAX(scale_x, scale_y);
+            } else if ((m_ratio & 0x1) == SVG_ASPECT_RATIO_OPT_MEET) {
+                scale = MIN(scale_x, scale_y);
+            }
+
+            if ((m_ratio & ~0x1) == SVG_ASPECT_RATIO_NONE) {
+                ps_matrix_translate(m_matrix, tx, ty);
+                ps_matrix_scale(m_matrix, scale_x, scale_y);
+            } else {
+                switch (m_ratio & ~0x1) {
+                    case SVG_ASPECT_RATIO_XMID_YMIN: {
+                            tx += (width - vw * scale) / 2;
+                        }
+                        break;
+                    case SVG_ASPECT_RATIO_XMAX_YMIN: {
+                            tx += width - vw * scale;
+                        }
+                        break;
+                    case SVG_ASPECT_RATIO_XMIN_YMID: {
+                            ty += (height - vh * scale) / 2;
+                        }
+                        break;
+                    case SVG_ASPECT_RATIO_XMID_YMID: {
+                            tx += (width - vw * scale) / 2;
+                            ty += (height - vh * scale) / 2;
+                        }
+                        break;
+                    case SVG_ASPECT_RATIO_XMAX_YMID: {
+                            tx += width - vw * scale;
+                            ty += (height - vh * scale) / 2;
+                        }
+                        break;
+                    case SVG_ASPECT_RATIO_XMIN_YMAX: {
+                            ty += height - vh * scale;
+                        }
+                        break;
+                    case SVG_ASPECT_RATIO_XMID_YMAX: {
+                            tx += (width - vw * scale) / 2;
+                            ty += height - vh * scale;
+                        }
+                        break;
+                    case SVG_ASPECT_RATIO_XMAX_YMAX: {
+                            tx += width - vw * scale;
+                            ty += height - vh * scale;
+                        }
+                        break;
+                    case SVG_ASPECT_RATIO_XMIN_YMIN:
+                    case SVG_ASPECT_RATIO_NONE:
+                        break;
+                }
+                ps_matrix_translate(m_matrix, tx, ty);
+                ps_matrix_scale(m_matrix, scale, scale);
+            }
+        }
+
         if (m_fill) {
             ps_save(ctx);
             ps_transform(ctx, m_matrix);
-            ps_rect rc = { 0, 0, m_width, m_height };
+            ps_rect rc = { 0, 0, width, height };
             prepare(ctx);
             ps_set_composite_operator(ctx, COMPOSITE_SRC);
             ps_rectangle(ctx, &rc);
@@ -618,22 +705,8 @@ public:
             case SVG_ATTR_VIEWBOX: {
                     if (attr->class_type == SVG_ATTR_VALUE_INITIAL) {
                         float* vals = (float*)attr->value.val;
-                        float scale_x = 1.0f;
-                        float scale_y = 1.0f;
-                        float trans_x = vals[0];
-                        float trans_y = vals[1];
-
-                        if (m_width > 0 && vals[2] > 0) {
-                            scale_x = m_width / vals[2];
-                        }
-                        if (m_height > 0 && vals[3] > 0) {
-                            scale_y = m_height / vals[3];
-                        }
-                        m_width = scale_x * vals[2];
-                        m_height = scale_y * vals[3];
-
-                        ps_matrix_translate(m_matrix, -trans_x, -trans_y);
-                        ps_matrix_scale(m_matrix, scale_x, scale_y);
+                        mem_copy(m_viewBox, vals, sizeof(float) * 4);
+                        m_hasViewBox = true;
                         state->global_matrix = m_matrix;
                     }
                 }
@@ -656,6 +729,12 @@ public:
                     }
                 }
                 break;
+            case SVG_ATTR_PRESERVE_ASPECT_RATIO: {
+                    if (attr->class_type == SVG_ATTR_VALUE_INITIAL) {
+                        m_ratio = attr->value.uval;
+                    }
+                }
+                break;
         }
     }
 
@@ -672,6 +751,9 @@ private:
     float m_width;
     float m_height;
     bool m_fill;
+    bool m_hasViewBox;
+    float m_viewBox[4];
+    uint32_t m_ratio;
 };
 
 // rect
