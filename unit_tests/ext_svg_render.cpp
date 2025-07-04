@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025, Zhang Ji Peng
+  Copyright (c) 2025, Zhang Ji Peng
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -379,6 +379,22 @@ TEST_F(SVGRenderTest, ComplexPath)
                                 "</svg>";
     draw_svg(svg_complex_8);
     EXPECT_SYS_SNAPSHOT_EQ(svg_complex_8);
+
+    const char* svg_complex_9 = "<svg width=\"400\" height=\"400\" viewBox=\"0 0 800 800\">"
+                                "<defs><g id=\"g1\" fill=\"red\">"
+                                "<circle cx=\"100\" cy=\"100\" r=\"40\"/>"
+                                "<rect x=\"20\" y=\"160\" width=\"100\" height=\"100\"/>"
+                                "</g>"
+                                "<linearGradient id=\"gad\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"0%\">"
+                                "<stop offset=\"0\" stop-color=\"red\" />"
+                                "<stop offset=\"0.5\" stop-color=\"green\" />"
+                                "<stop offset=\"1\" stop-color=\"blue\" />"
+                                "</linearGradient></defs>"
+                                "<use xlink:href=\"#g1\" x=\"50\" y=\"0\" />"
+                                "<use xlink:href=\"#g1\" x=\"250\" y=\"0\" fill=\"url(#gad)\" />"
+                                "</svg>";
+    draw_svg(svg_complex_9);
+    EXPECT_SYS_SNAPSHOT_EQ(svg_complex_9);
 }
 
 TEST_F(SVGRenderTest, GroupTest)

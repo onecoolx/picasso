@@ -375,19 +375,19 @@ static INLINE ps_draw_attrs* get_current_attrs(_svg_list_builder_state* state)
     return attrs;
 }
 
-typedef enum {
+enum {
     RENDER_NORMAL = 0,
     RENDER_IN_DEFS = 1,
     RENDER_IN_GROUP = 2,
     RENDER_IN_TEXT = 4,
-} svg_render_type;
+};
 
 class render_obj_base : public psx_svg_render_obj
 {
 public:
     render_obj_base(const psx_svg_node* node)
         : m_next(NULL)
-        , m_render_type(RENDER_NORMAL)
+        , m_render_types(RENDER_NORMAL)
         , m_id(NULL)
         , m_head(NULL)
         , m_draw_attrs(NULL)
@@ -530,8 +530,10 @@ public:
     ps_draw_attrs* get_draw_attrs(void) const { return m_draw_attrs; }
 
     psx_svg_tag type(void) const { return m_tag; }
-    svg_render_type render_type(void) const { return m_render_type; }
-    void set_render_type(svg_render_type render_type) { m_render_type = render_type; }
+    uint32_t render_types(void) const { return m_render_types & 7; }
+    void add_render_type(uint32_t type) { m_render_types |= type; }
+    bool has_render_type(uint32_t type) const { return m_render_types & type; }
+    void clear_render_type(uint32_t type) { m_render_types &= ~type; }
 
     void set_matrix(const psx_svg_matrix* mtx)
     {
@@ -558,7 +560,7 @@ public:
 protected:
     render_obj_base* m_next;
     psx_svg_tag m_tag;
-    svg_render_type m_render_type;
+    uint32_t m_render_types;
     const char* m_id;
     render_obj_base* m_head;
     ps_matrix* m_matrix;
@@ -1234,7 +1236,7 @@ public:
         for (uint32_t i = 0; i < psx_array_size(&m_items); i++) {
             render_obj_base* item = *(psx_array_get(&m_items, i, render_obj_base*));
 
-            if (item->render_type() == RENDER_IN_GROUP) {
+            if (item->has_render_type(RENDER_IN_GROUP)) {
                 ps_save(ctx);
                 item->prepare(ctx);
                 item->render(ctx, matrix);
@@ -2148,15 +2150,15 @@ static bool svg_doc_walk(const psx_tree_node* node, void* data)
     }
 
     if (state->in_defs) {
-        obj->set_render_type(RENDER_IN_DEFS);
+        obj->add_render_type(RENDER_IN_DEFS);
     }
 
     if (state->in_group_deps > 0) {
-        obj->set_render_type(RENDER_IN_GROUP);
+        obj->add_render_type(RENDER_IN_GROUP);
     }
 
     if (state->in_text) {
-        obj->set_render_type(RENDER_IN_TEXT);
+        obj->add_render_type(RENDER_IN_TEXT);
     }
 
     if (state->tail == NULL) {
@@ -2210,7 +2212,7 @@ static bool svg_doc_walk_after(const psx_tree_node* node, void* data)
 
     if (svg_node->type() == SVG_TAG_TEXT) {
         svg_render_text* text = (svg_render_text*)svg_node->render();
-        text->set_render_type(RENDER_NORMAL);
+        text->clear_render_type(RENDER_IN_TEXT);
         state->cur_text = NULL;
         state->in_text = false;
     }
@@ -2227,7 +2229,7 @@ static bool svg_doc_walk_after(const psx_tree_node* node, void* data)
 
         state->in_group_deps--;
         if (state->in_group_deps == 0) {
-            group->set_render_type(RENDER_NORMAL);
+            group->clear_render_type(RENDER_IN_GROUP);
         }
     }
 
@@ -2315,7 +2317,7 @@ bool psx_svg_render_list_draw(ps_context* ctx, const psx_svg_render_list* render
 
     render_obj_base* head = list->head();
     while (head) {
-        if (head->render_type() == RENDER_NORMAL) {
+        if (head->render_types() == RENDER_NORMAL) {
             head->render(ctx, NULL);
         }
         head = head->next();
