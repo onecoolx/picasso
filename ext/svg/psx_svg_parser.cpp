@@ -1249,11 +1249,13 @@ static INLINE void _process_path_value(psx_svg_node* node, psx_svg_attr_type typ
                     ch = cur_cmd;
                 }
             } else {
+                LOG_ERROR("Invalid path command sequence\n");
                 break;
             }
         } else if (_is_path_cmd(ch)) {
             ++ptr;
         } else {
+            LOG_ERROR("Unrecognized path command: '%c'\n", ch);
             break;
         }
 
