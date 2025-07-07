@@ -97,7 +97,7 @@ static INLINE void psx_log(const char* format, ...)
 {
     va_list args;
     va_start(args, format);
-    fprintf(stderr, format, args);
+    vfprintf(stderr, format, args);
     va_end(args);
 }
 #define LOG_ERROR(...) \
