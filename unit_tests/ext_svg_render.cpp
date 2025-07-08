@@ -265,6 +265,14 @@ TEST_F(SVGRenderTest, ShapesTest)
                                           " fill=\"none\" stroke=\"red\" stroke-width=\"5\"/></svg>";
     draw_svg(svg_shapes_svg2ext_arc1);
     EXPECT_SNAPSHOT_EQ(svg_shapes_svg2ext_arc1);
+
+    const char* svg_shapes_use_transform = "<?xml version='1.0'?>"
+                                           "<svg><rect id='r1' x='50' y='50' width='100' height='100' fill='green'/>"
+                                           "<g transform='rotate(45 220,250)'>"
+                                           "<use x='80' y='80' xlink:href='#r1' transform='scale(0.5)'/>"
+                                           "</g></svg>";
+    draw_svg(svg_shapes_use_transform);
+    EXPECT_SNAPSHOT_EQ(svg_shapes_use_transform);
 }
 
 TEST_F(SVGRenderTest, ComplexPath)
