@@ -684,14 +684,11 @@ public:
         }
 
         if (m_fill) {
-            ps_save(ctx);
             ps_transform(ctx, m_matrix);
             ps_rect rc = { 0, 0, width, height };
-            prepare(ctx);
             ps_set_composite_operator(ctx, COMPOSITE_SRC);
             ps_rectangle(ctx, &rc);
             ps_fill(ctx);
-            ps_restore(ctx);
         }
     }
 
@@ -772,12 +769,10 @@ public:
 
     void render(ps_context* ctx, const ps_matrix* matrix)
     {
-        ps_save(ctx);
         ps_transform(ctx, m_matrix);
         if (matrix) {
             ps_transform(ctx, matrix);
         }
-        prepare(ctx);
 
         float rx = m_rx;
         float ry = m_ry;
@@ -793,7 +788,6 @@ public:
             ps_rounded_rect(ctx, &m_rc, rx, ry, rx, ry, rx, ry, rx, ry);
         }
         paint(ctx);
-        ps_restore(ctx);
     }
 
     void set_attr(const psx_svg_attr* attr, _svg_list_builder_state* state)
@@ -848,18 +842,15 @@ public:
 
     void render(ps_context* ctx, const ps_matrix* matrix)
     {
-        ps_save(ctx);
         ps_transform(ctx, m_matrix);
         if (matrix) {
             ps_transform(ctx, matrix);
         }
-        prepare(ctx);
 
         ps_rect rc = { m_cx - m_r, m_cy - m_r, m_r + m_r, m_r + m_r };
         ps_ellipse(ctx, &rc);
 
         paint(ctx);
-        ps_restore(ctx);
     }
 
     void set_attr(const psx_svg_attr* attr, _svg_list_builder_state* state)
@@ -907,18 +898,15 @@ public:
 
     void render(ps_context* ctx, const ps_matrix* matrix)
     {
-        ps_save(ctx);
         ps_transform(ctx, m_matrix);
         if (matrix) {
             ps_transform(ctx, matrix);
         }
-        prepare(ctx);
 
         ps_rect rc = { m_cx - m_rx, m_cy - m_ry, m_rx + m_rx, m_ry + m_ry };
         ps_ellipse(ctx, &rc);
 
         paint(ctx);
-        ps_restore(ctx);
     }
 
     void set_attr(const psx_svg_attr* attr, _svg_list_builder_state* state)
@@ -970,12 +958,10 @@ public:
 
     void render(ps_context* ctx, const ps_matrix* matrix)
     {
-        ps_save(ctx);
         ps_transform(ctx, m_matrix);
         if (matrix) {
             ps_transform(ctx, matrix);
         }
-        prepare(ctx);
 
         ps_point p1 = { m_x1, m_y1 };
         ps_move_to(ctx, &p1);
@@ -983,7 +969,6 @@ public:
         ps_line_to(ctx, &p2);
 
         paint(ctx);
-        ps_restore(ctx);
     }
 
     void set_attr(const psx_svg_attr* attr, _svg_list_builder_state* state)
@@ -1042,17 +1027,13 @@ public:
 
     void render(ps_context* ctx, const ps_matrix* matrix)
     {
-        ps_save(ctx);
         ps_transform(ctx, m_matrix);
         if (matrix) {
             ps_transform(ctx, matrix);
         }
-        prepare(ctx);
-
         ps_set_path(ctx, m_path);
 
         paint(ctx);
-        ps_restore(ctx);
     }
 
     void set_attr(const psx_svg_attr* attr, _svg_list_builder_state* state)
@@ -1157,23 +1138,20 @@ public:
 
     void render(ps_context* ctx, const ps_matrix* matrix)
     {
-        ps_save(ctx);
+        ps_translate(ctx, m_x, m_y);
         ps_transform(ctx, m_matrix);
 
-        ps_matrix* mtx = ps_matrix_create();
-        ps_matrix_translate(mtx, m_x, m_y);
-
+        if (matrix) {
+            ps_transform(ctx, matrix);
+        }
         get_xlink();
 
         if (m_linked) {
             m_linked->prepare(ctx);
-            prepare(ctx);
+            prepare(ctx); // FIXME: use other !!!
             // FIXME: use with own gradient !!!!!!
-            m_linked->render(ctx, mtx);
+            m_linked->render(ctx, NULL);
         }
-
-        ps_matrix_unref(mtx);
-        ps_restore(ctx);
     }
 
     void get_xlink(void) const
@@ -1229,9 +1207,10 @@ public:
 
     void render(ps_context* ctx, const ps_matrix* matrix)
     {
-        ps_save(ctx);
-        ps_transform(ctx, m_matrix);
-        prepare(ctx);
+        ps_matrix* mtx = ps_matrix_create_copy(m_matrix);
+        if (matrix) {
+            ps_matrix_multiply(mtx, mtx, matrix);
+        }
 
         for (uint32_t i = 0; i < psx_array_size(&m_items); i++) {
             render_obj_base* item = *(psx_array_get(&m_items, i, render_obj_base*));
@@ -1239,11 +1218,12 @@ public:
             if (item->has_render_type(RENDER_IN_GROUP)) {
                 ps_save(ctx);
                 item->prepare(ctx);
-                item->render(ctx, matrix);
+                item->render(ctx, mtx);
                 ps_restore(ctx);
             }
         }
-        ps_restore(ctx);
+
+        ps_matrix_unref(mtx);
     }
 
     void get_bounding_rect(ps_rect* rc) const
@@ -1425,12 +1405,10 @@ public:
 
     void render(ps_context* ctx, const ps_matrix* matrix)
     {
-        ps_save(ctx);
         ps_transform(ctx, m_matrix);
         if (matrix) {
             ps_transform(ctx, matrix);
         }
-        prepare(ctx);
 
         ps_font* old_font = ps_set_font(ctx, m_font);
         ps_font_info info;
@@ -1456,7 +1434,6 @@ public:
         ps_set_path(ctx, m_path);
 
         paint(ctx);
-        ps_restore(ctx);
     }
 
     void set_attr(const psx_svg_attr* attr, _svg_list_builder_state* state)
@@ -1636,12 +1613,10 @@ public:
             return;
         }
 
-        ps_save(ctx);
         ps_transform(ctx, m_matrix);
         if (matrix) {
             ps_transform(ctx, matrix);
         }
-        prepare(ctx);
 
         float img_w = (float)m_image->width;
         float img_h = (float)m_image->height;
@@ -1720,7 +1695,6 @@ public:
         ps_set_alpha(ctx, m_opacity);
         ps_clip_rect(ctx, &m_rc);
         paint(ctx);
-        ps_restore(ctx);
     }
 
     void set_attr(const psx_svg_attr* attr, _svg_list_builder_state* state)
@@ -2318,7 +2292,10 @@ bool psx_svg_render_list_draw(ps_context* ctx, const psx_svg_render_list* render
     render_obj_base* head = list->head();
     while (head) {
         if (head->render_types() == RENDER_NORMAL) {
+            ps_save(ctx);
+            head->prepare(ctx);
             head->render(ctx, NULL);
+            ps_restore(ctx);
         }
         head = head->next();
     }
