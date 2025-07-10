@@ -206,10 +206,26 @@ static INLINE char* dup_string_val(const _svg_list_builder_state* state, const p
     return ret;
 }
 
-static INLINE void set_draw_attr(const _svg_list_builder_state* state, ps_draw_attrs* attrs, int32_t attr_id, const psx_svg_attr* val)
+static INLINE ps_draw_attrs* get_current_attrs(_svg_list_builder_state* state)
+{
+    ps_draw_attrs* attrs = state->draw_attrs;
+    if (attrs->ref_count == 0) {
+        return attrs;
+    }
+
+    attrs = (ps_draw_attrs*)state->list->alloc(sizeof(ps_draw_attrs));
+    // copy attrs
+    copy_draw_attrs(attrs, state->draw_attrs);
+    attrs->ref_count = 0;
+    state->draw_attrs = attrs;
+    return attrs;
+}
+
+static INLINE void set_draw_attr(_svg_list_builder_state* state, int32_t attr_id, const psx_svg_attr* val)
 {
     switch (attr_id) {
         case SVG_ATTR_FILL: {
+                ps_draw_attrs* attrs = get_current_attrs(state);
                 if (val->class_type == SVG_ATTR_VALUE_NONE) {
                     attrs->flags &= ~RENDER_FILL;
                     return;
@@ -232,6 +248,7 @@ static INLINE void set_draw_attr(const _svg_list_builder_state* state, ps_draw_a
                 break;
             }
         case SVG_ATTR_FILL_RULE: {
+                ps_draw_attrs* attrs = get_current_attrs(state);
                 if (val->class_type == SVG_ATTR_VALUE_INHERIT) {
                     attrs->flags &= ~RENDER_ATTR_FILL_RULE;
                     return;
@@ -241,6 +258,7 @@ static INLINE void set_draw_attr(const _svg_list_builder_state* state, ps_draw_a
                 break;
             }
         case SVG_ATTR_FILL_OPACITY: {
+                ps_draw_attrs* attrs = get_current_attrs(state);
                 if (val->class_type == SVG_ATTR_VALUE_INHERIT) {
                     attrs->flags &= ~RENDER_ATTR_FILL_OPACITY;
                     return;
@@ -250,6 +268,7 @@ static INLINE void set_draw_attr(const _svg_list_builder_state* state, ps_draw_a
                 break;
             }
         case SVG_ATTR_STROKE: {
+                ps_draw_attrs* attrs = get_current_attrs(state);
                 if (val->class_type == SVG_ATTR_VALUE_NONE) {
                     attrs->flags &= ~RENDER_STROKE;
                     return;
@@ -272,6 +291,7 @@ static INLINE void set_draw_attr(const _svg_list_builder_state* state, ps_draw_a
                 break;
             }
         case SVG_ATTR_STROKE_OPACITY: {
+                ps_draw_attrs* attrs = get_current_attrs(state);
                 if (val->class_type == SVG_ATTR_VALUE_INHERIT) {
                     attrs->flags &= ~RENDER_ATTR_STROKE_OPACITY;
                     return;
@@ -281,6 +301,7 @@ static INLINE void set_draw_attr(const _svg_list_builder_state* state, ps_draw_a
                 break;
             }
         case SVG_ATTR_STROKE_WIDTH: {
+                ps_draw_attrs* attrs = get_current_attrs(state);
                 if (val->class_type == SVG_ATTR_VALUE_INHERIT) {
                     attrs->flags &= ~RENDER_ATTR_STROKE_WIDTH;
                     return;
@@ -290,6 +311,7 @@ static INLINE void set_draw_attr(const _svg_list_builder_state* state, ps_draw_a
                 break;
             }
         case SVG_ATTR_STROKE_LINECAP: {
+                ps_draw_attrs* attrs = get_current_attrs(state);
                 if (val->class_type == SVG_ATTR_VALUE_INHERIT) {
                     attrs->flags &= ~RENDER_ATTR_STROKE_LINECAP;
                     return;
@@ -299,6 +321,7 @@ static INLINE void set_draw_attr(const _svg_list_builder_state* state, ps_draw_a
                 break;
             }
         case SVG_ATTR_STROKE_LINEJOIN: {
+                ps_draw_attrs* attrs = get_current_attrs(state);
                 if (val->class_type == SVG_ATTR_VALUE_INHERIT) {
                     attrs->flags &= ~RENDER_ATTR_STROKE_LINEJOIN;
                     return;
@@ -308,6 +331,7 @@ static INLINE void set_draw_attr(const _svg_list_builder_state* state, ps_draw_a
                 break;
             }
         case SVG_ATTR_STROKE_MITER_LIMIT: {
+                ps_draw_attrs* attrs = get_current_attrs(state);
                 if (val->class_type == SVG_ATTR_VALUE_INHERIT) {
                     attrs->flags &= ~RENDER_ATTR_STROKE_MITER_LIMIT;
                     return;
@@ -317,6 +341,7 @@ static INLINE void set_draw_attr(const _svg_list_builder_state* state, ps_draw_a
                 break;
             }
         case SVG_ATTR_STROKE_DASH_ARRAY: {
+                ps_draw_attrs* attrs = get_current_attrs(state);
                 if (val->class_type == SVG_ATTR_VALUE_NONE) {
                     attrs->stroke_dash_array = NULL;
                     attrs->stroke_dash_num = 0;
@@ -341,6 +366,7 @@ static INLINE void set_draw_attr(const _svg_list_builder_state* state, ps_draw_a
                 break;
             }
         case SVG_ATTR_STROKE_DASH_OFFSET: {
+                ps_draw_attrs* attrs = get_current_attrs(state);
                 if (val->class_type == SVG_ATTR_VALUE_INHERIT) {
                     attrs->flags &= ~RENDER_ATTR_STROKE_DASH_OFFSET;
                     return;
@@ -357,21 +383,6 @@ static INLINE ps_draw_attrs* draw_attrs_create(svg_render_list_impl* list)
     ps_draw_attrs* attrs = (ps_draw_attrs*)list->alloc(sizeof(ps_draw_attrs));
     // init attrs
     init_draw_attrs(attrs);
-    return attrs;
-}
-
-static INLINE ps_draw_attrs* get_current_attrs(_svg_list_builder_state* state)
-{
-    ps_draw_attrs* attrs = state->draw_attrs;
-    if (attrs->ref_count == 0) {
-        return attrs;
-    }
-
-    attrs = (ps_draw_attrs*)state->list->alloc(sizeof(ps_draw_attrs));
-    // copy attrs
-    copy_draw_attrs(attrs, state->draw_attrs);
-    attrs->ref_count = 0;
-    state->draw_attrs = attrs;
     return attrs;
 }
 
@@ -468,15 +479,8 @@ public:
                     ps_reset_line_dash(ctx);
                 }
             }
-        }
-    }
 
-    void paint(ps_context* ctx) const
-    {
-        if (m_draw_attrs) {
-            ps_draw_attrs* attrs = m_draw_attrs;
-
-            if (attrs->flags & RENDER_ATTR_REF_FILL) {
+            if (m_draw_attrs->flags & RENDER_ATTR_REF_FILL) {
                 render_obj_base* head = m_head;
                 while (head) {
                     if (head->id()) {
@@ -489,7 +493,7 @@ public:
                 }
             }
 
-            if (attrs->flags & RENDER_ATTR_REF_STROKE) {
+            if (m_draw_attrs->flags & RENDER_ATTR_REF_STROKE) {
                 render_obj_base* head = m_head;
                 while (head) {
                     if (head->id()) {
@@ -501,6 +505,13 @@ public:
                     head = head->next();
                 }
             }
+        }
+    }
+
+    void paint(ps_context* ctx) const
+    {
+        if (m_draw_attrs) {
+            ps_draw_attrs* attrs = m_draw_attrs;
 
             if (m_global_matrix) {
                 ps_transform(ctx, m_global_matrix);
@@ -577,8 +588,7 @@ void render_obj_base::set_attr(const psx_svg_attr* attr, _svg_list_builder_state
         }
         set_matrix((psx_svg_matrix*)attr->value.val);
     } else {
-        ps_draw_attrs* draw_attrs = get_current_attrs(state);
-        set_draw_attr(state, draw_attrs, attr->attr_id, attr);
+        set_draw_attr(state, attr->attr_id, attr);
     }
 }
 
@@ -713,8 +723,7 @@ public:
             case SVG_ATTR_VIEWPORT_FILL: {
                     if (attr->class_type == SVG_ATTR_VALUE_INITIAL
                         && attr->val_type == SVG_ATTR_VALUE_DATA) {
-                        ps_draw_attrs* draw_attrs = get_current_attrs(state);
-                        set_draw_attr(state, draw_attrs, SVG_ATTR_FILL, attr);
+                        set_draw_attr(state, SVG_ATTR_FILL, attr);
                         m_fill = true;
                     } else if (attr->class_type == SVG_ATTR_VALUE_NONE) {
                         m_fill = false;
@@ -723,8 +732,7 @@ public:
                 break;
             case SVG_ATTR_VIEWPORT_FILL_OPACITY: {
                     if (attr->class_type == SVG_ATTR_VALUE_INITIAL) {
-                        ps_draw_attrs* draw_attrs = get_current_attrs(state);
-                        set_draw_attr(state, draw_attrs, SVG_ATTR_FILL_OPACITY, attr);
+                        set_draw_attr(state, SVG_ATTR_FILL_OPACITY, attr);
                     }
                 }
                 break;
@@ -1031,8 +1039,8 @@ public:
         if (matrix) {
             ps_transform(ctx, matrix);
         }
-        ps_set_path(ctx, m_path);
 
+        ps_set_path(ctx, m_path);
         paint(ctx);
     }
 
@@ -1136,6 +1144,15 @@ public:
         }
     }
 
+    void prepare(ps_context* ctx) const
+    {
+        render_obj_base::prepare(ctx);
+        get_xlink();
+        if (m_linked) {
+            m_linked->prepare(ctx);
+        }
+    }
+
     void render(ps_context* ctx, const ps_matrix* matrix)
     {
         ps_translate(ctx, m_x, m_y);
@@ -1147,9 +1164,6 @@ public:
         get_xlink();
 
         if (m_linked) {
-            m_linked->prepare(ctx);
-            prepare(ctx); // FIXME: use other !!!
-            // FIXME: use with own gradient !!!!!!
             m_linked->render(ctx, NULL);
         }
     }
@@ -1328,7 +1342,7 @@ public:
     {
     }
 
-    virtual void render_content(ps_context* ctx, ps_path* contents, ps_matrix* offset_matrix, float yoffset, bool rebuild_path)
+    virtual void build_content(ps_context* ctx, ps_path* contents, ps_matrix* offset_matrix, float yoffset, bool rebuild_path)
     {
         if (!rebuild_path) {
             return;
@@ -1403,13 +1417,8 @@ public:
         this->svg_render_text::~svg_render_text();
     }
 
-    void render(ps_context* ctx, const ps_matrix* matrix)
+    void prepare(ps_context* ctx) const
     {
-        ps_transform(ctx, m_matrix);
-        if (matrix) {
-            ps_transform(ctx, matrix);
-        }
-
         ps_font* old_font = ps_set_font(ctx, m_font);
         ps_font_info info;
         ps_get_font_info(ctx, &info);
@@ -1425,14 +1434,28 @@ public:
         // draw text contents and spans
         for (uint32_t i = 0; i < psx_array_size(&m_contents); i++) {
             svg_render_content* content = *(psx_array_get(&m_contents, i, svg_render_content*));
-            content->render_content(ctx, m_path, mtx, -info.ascent, build_path);
+            content->build_content(ctx, m_path, mtx, -info.ascent, build_path);
         }
         ps_matrix_unref(mtx);
 
         ps_set_font(ctx, old_font);
+        render_obj_base::prepare(ctx);
+    }
+
+    void render(ps_context* ctx, const ps_matrix* matrix)
+    {
+        ps_transform(ctx, m_matrix);
+        if (matrix) {
+            ps_transform(ctx, matrix);
+        }
+
+        // draw text contents and spans
+        for (uint32_t i = 0; i < psx_array_size(&m_contents); i++) {
+            svg_render_content* content = *(psx_array_get(&m_contents, i, svg_render_content*));
+            content->render(ctx, NULL);
+        }
 
         ps_set_path(ctx, m_path);
-
         paint(ctx);
     }
 
@@ -1521,11 +1544,8 @@ public:
         this->svg_render_tspan::~svg_render_tspan();
     }
 
-    virtual void render_content(ps_context* ctx, ps_path*, ps_matrix* offset_matrix, float, bool)
+    virtual void build_content(ps_context* ctx, ps_path*, ps_matrix* offset_matrix, float, bool)
     {
-        ps_save(ctx);
-        prepare(ctx);
-
         ps_font* old_font = ps_set_font(ctx, m_font);
         ps_font_info info;
         ps_get_font_info(ctx, &info);
@@ -1555,9 +1575,13 @@ public:
         }
 
         ps_set_font(ctx, old_font);
+    }
 
+    void render(ps_context* ctx, const ps_matrix* matrix)
+    {
+        ps_save(ctx);
+        prepare(ctx);
         ps_set_path(ctx, m_path);
-
         paint(ctx);
         ps_restore(ctx);
     }
