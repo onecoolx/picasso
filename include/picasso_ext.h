@@ -48,6 +48,15 @@ typedef enum {
     S_FAILURE = 5,
 } psx_result;
 
+/**
+ * \fn const char* psx_result_get_string(psx_result result)
+ * \brief Return the string of result code.
+ *
+ * \param result The status code of result.
+ * \return The string of result code.
+ */
+const char* psx_result_get_string(psx_result result);
+
 /** @} end of extensions */
 
 #ifdef __cplusplus

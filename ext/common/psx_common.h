@@ -92,14 +92,6 @@
 /* assert */
 #define ASSERT(cond) assert((cond))
 
-/* logs*/
-static INLINE void psx_log(const char* format, ...)
-{
-    va_list args;
-    va_start(args, format);
-    vfprintf(stderr, format, args);
-    va_end(args);
-}
 #define LOG_ERROR(...) \
     psx_log(__VA_ARGS__)
 
@@ -108,5 +100,16 @@ static INLINE void psx_log(const char* format, ...)
     private: \
     type(const type& o); \
     type& operator=(const type& o); \
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/* logs*/
+void psx_log(const char* format, ...);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /*_PSX_COMMON_H_*/

@@ -273,7 +273,7 @@ module_handle _module_load(const char* path)
 {
     void* dl = dlopen(path, RTLD_LAZY);
     if (!dl) {
-        fprintf(stderr, "Load Module [%s] failed: %s\n", path, dlerror());
+        LOG_ERROR("Load Module [%s] failed: %s\n", path, dlerror());
     }
     return dl;
 }
