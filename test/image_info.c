@@ -45,7 +45,7 @@ int main(int argc, char* argv[])
              path, data->width, data->height, data->pitch, data->format, (int)data->num_frames);
 
     if ((ret = psx_image_save_to_file(data, argv[2], argv[3], q)) != S_OK)
-        fprintf(stderr,"Save image faild : %s\n", psx_result_get_string((psx_result)ret));
+        fprintf(stderr,"Save image faild : %d\n", ret);
 
     psx_image_destroy(data);
 exit:
