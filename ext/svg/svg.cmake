@@ -54,7 +54,7 @@ set(PXSVG_IMG_SOURCES
 add_library(${LIBX_SVG_IMAGE} ${PXSVG_IMG_SOURCES})
 install(TARGETS ${LIBX_SVG_IMAGE} LIBRARY DESTINATION lib/modules ARCHIVE DESTINATION lib/modules)
 
-target_link_libraries(${LIBX_SVG_IMAGE} PUBLIC ${LIBX_SVG} ${IMAGEIO_LIBRARY})
+target_link_libraries(${LIBX_SVG_IMAGE} PUBLIC ${LIBX_SVG} ${IMAGEIO_LIBRARY} ${LIBX_COMMON} ${LIB_NAME})
 
 set_target_properties(${LIBX_SVG_IMAGE}
     PROPERTIES
