@@ -34,6 +34,9 @@
 #include "psx_image.h"
 #include "psx_image_plugin.h"
 #include "psx_image_io.h"
+#if defined(WIN32) && defined(_MSC_VER)
+    #include <windows.h>
+#endif
 
 struct svg_image_ctx {
     psx_svg_render* svg_render;
