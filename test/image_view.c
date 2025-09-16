@@ -67,8 +67,10 @@ void init_context (ps_context* gc, ps_canvas* cs, unsigned char* buf)
 
 void dini_context (ps_context* gc)
 {
-    if (image)
+    if (image) {
         psx_image_destroy(image);
+        image = NULL;
+    }
 }
 
 void set_image_data(unsigned char* data, ps_color_format fmt, int w, int h, int p)

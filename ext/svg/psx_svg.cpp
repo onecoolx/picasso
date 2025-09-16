@@ -162,6 +162,15 @@ void PICAPI psx_svg_render_destroy(psx_svg_render* render)
     }
 }
 
+ps_bool PICAPI psx_svg_render_get_size(const psx_svg_render* render, ps_size* rsize)
+{
+    if (!render || !rsize) {
+        return False;
+    }
+
+    return psx_svg_render_list_get_size((const psx_svg_render_list*)render, rsize) ? True : False;
+}
+
 psx_result PICAPI psx_svg_render_draw(ps_context* ctx, const psx_svg_render* render)
 {
     if (!ctx || !render) {

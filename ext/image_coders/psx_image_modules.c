@@ -50,13 +50,13 @@ int modules_init(struct image_modules_mgr* mgr)
 
     dir_path = _module_get_modules_dir(modules_dir, PATH_MAX);
     if (!dir_path) {
-        fprintf(stderr, "no image modules directory found!\n");
+        LOG_ERROR("No image modules directory found! you can set the `PS_IMAGE_MODULES_DIR` environment variable to the modules path.\n");
         return -1;
     }
 
     nums = _module_get_modules(dir_path, NULL, 0);
     if (!nums) {
-        fprintf(stderr, "no image modules found!\n");
+        LOG_ERROR("No image modules found! you can set the `PS_IMAGE_MODULES_DIR` environment variable to the modules path.\n");
         return -1;
     }
 

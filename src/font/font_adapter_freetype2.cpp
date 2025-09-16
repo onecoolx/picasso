@@ -47,7 +47,8 @@ using namespace gfx;
 
 namespace picasso {
 
-extern FT_Library g_library;
+extern FT_Library _get_ft_library(void);
+
 extern char* _font_by_name(const char* face, float size, float weight, bool italic);
 
 class font_adapter_impl
@@ -64,7 +65,7 @@ public:
         , descent(0)
         , leading(0)
         , units_per_em(0)
-        , library(g_library)
+        , library(_get_ft_library())
         , cur_glyph_index(0)
         , cur_data_size(0)
         , cur_data_type(glyph_type_outline)

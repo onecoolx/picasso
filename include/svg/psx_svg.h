@@ -128,7 +128,7 @@ PEXPORT void PICAPI psx_svg_destroy(psx_svg* doc);
  * \return If successs, the return value is the pointer to new psx_svg_render object.
  *         If fails, the return value is NULL, and result will be return by \a err_code.
  *
- * \sa psx_svg_render_destroy psx_svg_render_draw
+ * \sa psx_svg_render_destroy psx_svg_render_draw psx_svg_render_get_size
  */
 PEXPORT psx_svg_render* PICAPI psx_svg_render_create(const psx_svg* doc, psx_result* err_code);
 
@@ -138,9 +138,22 @@ PEXPORT psx_svg_render* PICAPI psx_svg_render_create(const psx_svg* doc, psx_res
  *
  * \param render Pointer to an existing psx_svg_render object.
  *
- * \sa psx_svg_render_draw psx_svg_render_create
+ * \sa psx_svg_render_draw psx_svg_render_create psx_svg_render_get_size
  */
 PEXPORT void PICAPI psx_svg_render_destroy(psx_svg_render* render);
+
+/**
+ * \fn ps_bool psx_svg_render_get_size(psx_svg_render* render, ps_size* rsize);
+ * \brief Return the size of the SVG image render.
+ *
+ * \param render Pointer to an existing SVG render object.
+ * \param rsize  Pointer to a buffer to receiving the size.
+ *
+ * \return  True if is success, otherwise False.
+ *
+ * \sa psx_svg_render_draw psx_svg_render_create psx_svg_render_destroy
+ */
+PEXPORT ps_bool PICAPI psx_svg_render_get_size(const psx_svg_render* render, ps_size* rsize);
 
 /**
  * \fn psx_result PICAPI psx_svg_render_draw(ps_context* ctx, const psx_svg_render* render)
@@ -151,7 +164,7 @@ PEXPORT void PICAPI psx_svg_render_destroy(psx_svg_render* render);
  *
  * \return Result code returned.
  *
- * \sa psx_svg_render_draw psx_svg_render_create
+ * \sa psx_svg_render_destroy psx_svg_render_create psx_svg_render_get_size
  */
 PEXPORT psx_result PICAPI psx_svg_render_draw(ps_context* ctx, const psx_svg_render* render);
 

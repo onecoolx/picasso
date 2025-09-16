@@ -43,6 +43,9 @@
 #define DEFAULT_FONT_FAMILY "sans-serif"
 #define DEFAULT_FONT_SIZE 16
 
+#define DEF_SVG_WIDTH 640
+#define DEF_SVG_HEIGHT 640
+
 class render_obj_base;
 
 class svg_render_list_impl : public psx_svg_render_list
@@ -750,8 +753,31 @@ public:
         if (rc) {
             rc->x = 0;
             rc->y = 0;
-            rc->w = m_width;
-            rc->h = m_height;
+            if (m_hasViewBox) {
+                const float* vals = m_viewBox;
+
+                float scale_x = 1.0f;
+                float scale_y = 1.0f;
+                float vw = vals[2];
+                float vh = vals[3];
+
+                if (m_width > 1 && vw > 0) {
+                    scale_x = m_width / vw;
+                } else if (m_width > 0 && m_width <= 1.0f) {
+                    scale_x = m_width;
+                }
+                if (m_height > 1 && vh > 0) {
+                    scale_y = m_height / vh;
+                } else if (m_height > 0 && m_height <= 1.0f) {
+                    scale_y = m_height;
+                }
+
+                rc->w = scale_x * vw;
+                rc->h = scale_y * vh;
+            } else {
+                rc->w = m_width ? m_width : DEF_SVG_WIDTH;
+                rc->h = m_height ? m_height : DEF_SVG_HEIGHT;
+            }
         }
     }
 private:
@@ -2298,6 +2324,29 @@ void psx_svg_render_list_destroy(psx_svg_render_list* list)
         }
         delete list;
     }
+}
+
+bool psx_svg_render_list_get_size(const psx_svg_render_list* render, ps_size* rsize)
+{
+    if (!rsize || !render) {
+        LOG_ERROR("Invalid arguements for svg render!\n");
+        return false;
+    }
+
+    svg_render_list_impl* list = (svg_render_list_impl*)render;
+    render_obj_base* head = list->head();
+    while (head) {
+        if (head->type() == SVG_TAG_SVG) {
+            svg_render_viewport* viewport = (svg_render_viewport*)head;
+            ps_rect rc;
+            viewport->get_bounding_rect(&rc);
+            rsize->w = rc.w;
+            rsize->h = rc.h;
+            return true;
+        }
+        head = head->next();
+    }
+    return false;
 }
 
 bool psx_svg_render_list_draw(ps_context* ctx, const psx_svg_render_list* render)

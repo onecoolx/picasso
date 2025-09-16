@@ -24,43 +24,34 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _PSX_SVG_RENDER_H_
-#define _PSX_SVG_RENDER_H_
+#include <picasso_ext.h>
 
 #include "psx_common.h"
-#include "psx_svg_node.h"
 
-class psx_svg_render_obj
+void psx_log(const char* format, ...)
 {
-public:
-    virtual ~psx_svg_render_obj() { }
-    virtual psx_svg_tag type(void) const = 0;
-    virtual void render(ps_context* ctx, const ps_matrix* matrix) = 0;
-    virtual void get_bounding_rect(ps_rect* rc) const = 0;
-    virtual void update(const psx_svg_node* node) = 0;
-};
-
-class psx_svg_render_list
-{
-public:
-    virtual ~psx_svg_render_list() { }
-    virtual uint32_t get_bytes_size(void) const = 0;
-};
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-psx_svg_render_list* psx_svg_render_list_create(const psx_svg_node* doc);
-
-void psx_svg_render_list_destroy(psx_svg_render_list* list);
-
-bool psx_svg_render_list_draw(ps_context* ctx, const psx_svg_render_list* render);
-
-bool psx_svg_render_list_get_size(const psx_svg_render_list* render, ps_size* rsize);
-
-#ifdef __cplusplus
+    va_list args;
+    va_start(args, format);
+    vfprintf(stderr, format, args);
+    va_end(args);
 }
-#endif
 
-#endif /*_PSX_SVG_RENDER_H_*/
+const char* psx_result_get_string(psx_result result)
+{
+    switch (result) {
+        case S_OK:
+            return "Ok";
+        case S_BAD_PARAMS:
+            return "Bad parameters";
+        case S_NOT_SUPPORT:
+            return "Not support";
+        case S_OUT_OF_MEMORY:
+            return "Out of memory";
+        case S_INIT_FAILURE:
+            return "Init failure";
+        case S_FAILURE:
+            return "Internal failure";
+        default:
+            return "Unknown";
+    }
+}
