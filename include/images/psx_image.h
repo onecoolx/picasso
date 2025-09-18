@@ -218,7 +218,7 @@ typedef int32_t (*image_writer_fn)(void* param, const ps_byte* data, size_t leng
  * \sa psx_image_save_to_file
  */
 PEXPORT int32_t PICAPI psx_image_save(const psx_image* image, image_writer_fn func,
-                                  void* param, const char* type, float quality);
+                                      void* param, const char* type, float quality);
 
 /**
  * \fn int32_t psx_image_save_to_file(const psx_image* image, const char* file_name, const char* type, float quality)
@@ -234,7 +234,7 @@ PEXPORT int32_t PICAPI psx_image_save(const psx_image* image, image_writer_fn fu
  * \sa psx_image_save
  */
 PEXPORT int32_t PICAPI psx_image_save_to_file(const psx_image* image, const char* file_name,
-                                          const char* type, float quality);
+                                              const char* type, float quality);
 
 /**
  * \fn int32_t psx_image_destroy(psx_image* image)

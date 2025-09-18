@@ -375,7 +375,7 @@ static int32_t write_gif_from_memory(GifFileType* gif, const GifByteType* buf, i
 }
 
 static int32_t write_gif_info(const psx_image* image, image_writer_fn func, void* param,
-                          float quality, psx_image_header* header)
+                              float quality, psx_image_header* header)
 {
     size_t buf_size;
 #if GIFLIB_MAJOR >= 5

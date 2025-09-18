@@ -337,7 +337,7 @@ error:
 }
 
 static int32_t save_psx_image(psx_image_operator* op, const psx_image* image,
-                          image_writer_fn func, void* param, float quality)
+                              image_writer_fn func, void* param, float quality)
 {
     int32_t i;
     int32_t ret = S_OK;
