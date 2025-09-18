@@ -42,7 +42,7 @@ protected:
     void SetUp() override
     {
         canvas = ps_canvas_create(COLOR_FORMAT_RGBA, 200, 200);
-        ctx = ps_context_create(canvas, 0);
+        ctx = ps_context_create(canvas, NULL);
     }
 
     void TearDown() override
@@ -54,6 +54,34 @@ protected:
     ps_canvas* canvas;
     ps_context* ctx;
 };
+
+TEST_F(ContextTest, CreateAndRef)
+{
+    ps_context* ctx2 = ps_context_create(canvas, NULL);
+    ASSERT_TRUE(ctx2);
+    ps_context_unref(ctx2);
+
+    ps_context* ctx3 = ps_context_create(canvas, ctx);
+    ASSERT_TRUE(ctx3);
+    ps_context_unref(ctx3);
+
+    ASSERT_EQ(STATUS_SUCCEED, ps_last_status());
+}
+
+TEST_F(ContextTest, CanvasAssociation)
+{
+    ps_canvas* newCanvas = ps_canvas_create(COLOR_FORMAT_ARGB, 400, 300);
+    ps_context_set_canvas(ctx, newCanvas);
+    ASSERT_EQ(STATUS_SUCCEED, ps_last_status());
+
+    ps_canvas* canvas = ps_context_get_canvas(ctx);
+    ASSERT_EQ(canvas, newCanvas);
+    ASSERT_EQ(STATUS_SUCCEED, ps_last_status());
+
+    ps_canvas_unref(newCanvas);
+
+    ASSERT_EQ(STATUS_SUCCEED, ps_last_status());
+}
 
 TEST_F(ContextTest, AntialiasAndGamma)
 {

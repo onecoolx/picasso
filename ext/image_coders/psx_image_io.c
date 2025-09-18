@@ -47,7 +47,7 @@ module_handle _module_load(const wchar_t* path)
 {
     HMODULE dl = LoadLibraryW(path);
     if (!dl) {
-        fwprintf(stderr, L"Load Module [%s] failed code: %x\n", path, (int)GetLastError());
+        fwprintf(stderr, L"Load Module [%s] failed code: %x\n", path, (int32_t)GetLastError());
     }
     return (module_handle)dl;
 }
@@ -72,12 +72,12 @@ static wchar_t* _get_current_path(wchar_t* buffer, size_t len, size_t* rlen)
     return buffer;
 }
 
-static int _directory_is_exists(const wchar_t* path)
+static int32_t _directory_is_exists(const wchar_t* path)
 {
     WIN32_FIND_DATA fd;
     HANDLE h = FindFirstFile(path, &fd);
     BOOL b = fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY ? TRUE : FALSE;
-    int ret = ((h != INVALID_HANDLE_VALUE) && b) ? 0 : -1;
+    int32_t ret = ((h != INVALID_HANDLE_VALUE) && b) ? 0 : -1;
     FindClose(h);
     return ret;
 }
@@ -273,7 +273,7 @@ module_handle _module_load(const char* path)
 {
     void* dl = dlopen(path, RTLD_LAZY);
     if (!dl) {
-        fprintf(stderr, "Load Module [%s] failed: %s\n", path, dlerror());
+        LOG_ERROR("Load Module [%s] failed: %s\n", path, dlerror());
     }
     return dl;
 }

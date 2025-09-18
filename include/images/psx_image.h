@@ -51,7 +51,7 @@ typedef struct _psx_image_frame {
     /** sizeof image data in bytes */
     size_t size;
     /** current frame duration (in milliseconds, 0 ignore) */
-    int duration;
+    int32_t duration;
 } psx_image_frame;
 
 /**
@@ -59,11 +59,11 @@ typedef struct _psx_image_frame {
  */
 typedef struct _psx_image {
     /** image width */
-    int width;
+    int32_t width;
     /** image height */
-    int height;
+    int32_t height;
     /** bytes of a scanline */
-    int pitch;
+    int32_t pitch;
     /** image format */
     ps_color_format format;
     /** image data frames */
@@ -129,28 +129,28 @@ typedef struct _psx_image {
  */
 
 /**
- * \fn int psx_image_init(void)
+ * \fn int32_t psx_image_init(void)
  * \brief Initialze the library and load resources.
  *
  * \return Result code returned.
  *
  * \sa psx_image_shutdown
  */
-PEXPORT int PICAPI psx_image_init(void);
+PEXPORT int32_t PICAPI psx_image_init(void);
 
 /**
- * \fn int psx_image_shutdown(void)
+ * \fn int32_t psx_image_shutdown(void)
  * \brief Release resources and shutdoen.
  *
  * \return Result code returned.
  *
  * \sa psx_image_init
  */
-PEXPORT int PICAPI psx_image_shutdown(void);
+PEXPORT int32_t PICAPI psx_image_shutdown(void);
 
 /**
  * \fn psx_image* psx_image_create_from_data(ps_byte* data, ps_color_format fmt,
- *                                                   int width, int height, int pitch, int* err_code)
+ *                                                   int32_t width, int32_t height, int32_t pitch, int32_t* err_code)
  * \brief Create a new psx_image using a copy of given address in memory.
  *
  * \param data      A pointer to the destination in memory where the drawing is to be rendered.
@@ -167,10 +167,10 @@ PEXPORT int PICAPI psx_image_shutdown(void);
  * \sa psx_image_load psx_image_load_from_memory psx_image_destroy
  */
 PEXPORT psx_image* PICAPI psx_image_create_from_data(ps_byte* data, ps_color_format fmt,
-                                                     int width, int height, int pitch, int* err_code);
+                                                     int32_t width, int32_t height, int32_t pitch, int32_t* err_code);
 
 /**
- * \fn psx_image* psx_image_load(const char* file_name, int* err_code)
+ * \fn psx_image* psx_image_load(const char* file_name, int32_t* err_code)
  * \brief Create a new psx_image object and load from file.
  *
  * \param file_name  The image file path which will be loaded, which is encoded by utf8.
@@ -181,10 +181,10 @@ PEXPORT psx_image* PICAPI psx_image_create_from_data(ps_byte* data, ps_color_for
  *
  * \sa psx_image_destroy psx_image_load_from_memory psx_image_create_from_data
  */
-PEXPORT psx_image* PICAPI psx_image_load(const char* file_name, int* err_code);
+PEXPORT psx_image* PICAPI psx_image_load(const char* file_name, int32_t* err_code);
 
 /**
- * \fn psx_image* psx_image_load_from_memory(const ps_byte* data, size_t length, int* err_code)
+ * \fn psx_image* psx_image_load_from_memory(const ps_byte* data, size_t length, int32_t* err_code)
  * \brief Create a new psx_image object and load data from memory.
  *
  * \param data       Pointer to data buffer in memeory.
@@ -196,15 +196,15 @@ PEXPORT psx_image* PICAPI psx_image_load(const char* file_name, int* err_code);
  *
  * \sa psx_image_destroy psx_image_load
  */
-PEXPORT psx_image* PICAPI psx_image_load_from_memory(const ps_byte* data, size_t length, int* err_code);
+PEXPORT psx_image* PICAPI psx_image_load_from_memory(const ps_byte* data, size_t length, int32_t* err_code);
 
 /**
  * \brief Callback function for saving image data.
  */
-typedef int (*image_writer_fn)(void* param, const ps_byte* data, size_t length);
+typedef int32_t (*image_writer_fn)(void* param, const ps_byte* data, size_t length);
 
 /**
- * \fn int psx_image_save(const psx_image* image, image_writer_fn func, void* param, const char* type, float quality)
+ * \fn int32_t psx_image_save(const psx_image* image, image_writer_fn func, void* param, const char* type, float quality)
  * \brief Encoding psx_image to a gaving format and output it.
  *
  * \param image     Pointer to an psx_image object.
@@ -217,11 +217,11 @@ typedef int (*image_writer_fn)(void* param, const ps_byte* data, size_t length);
  *
  * \sa psx_image_save_to_file
  */
-PEXPORT int PICAPI psx_image_save(const psx_image* image, image_writer_fn func,
-                                  void* param, const char* type, float quality);
+PEXPORT int32_t PICAPI psx_image_save(const psx_image* image, image_writer_fn func,
+                                      void* param, const char* type, float quality);
 
 /**
- * \fn int psx_image_save_to_file(const psx_image* image, const char* file_name, const char* type, float quality)
+ * \fn int32_t psx_image_save_to_file(const psx_image* image, const char* file_name, const char* type, float quality)
  * \brief Encoding psx_image to a gaving format and output to a file.
  *
  * \param image     Pointer to an psx_image object.
@@ -233,11 +233,11 @@ PEXPORT int PICAPI psx_image_save(const psx_image* image, image_writer_fn func,
  *
  * \sa psx_image_save
  */
-PEXPORT int PICAPI psx_image_save_to_file(const psx_image* image, const char* file_name,
-                                          const char* type, float quality);
+PEXPORT int32_t PICAPI psx_image_save_to_file(const psx_image* image, const char* file_name,
+                                              const char* type, float quality);
 
 /**
- * \fn int psx_image_destroy(psx_image* image)
+ * \fn int32_t psx_image_destroy(psx_image* image)
  * \brief Destroy the psx_image object and release resources.
  *
  * \param image  Pointer to an existing psx_image object.
@@ -246,7 +246,7 @@ PEXPORT int PICAPI psx_image_save_to_file(const psx_image* image, const char* fi
  *
  * \sa psx_image_load psx_image_load_from_memory
  */
-PEXPORT int PICAPI psx_image_destroy(psx_image* image);
+PEXPORT int32_t PICAPI psx_image_destroy(psx_image* image);
 /** @} end of extimg imgfunctions */
 /** @} end of extimg */
 /** @} end of extensions */

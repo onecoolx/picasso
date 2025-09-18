@@ -10,6 +10,8 @@ set(PXCOMMON_SOURCES
     ${PXCOMMON_DIR}/psx_linear_allocator.c
     ${PXCOMMON_DIR}/psx_file.h
     ${PXCOMMON_DIR}/psx_file.c
+    ${PXCOMMON_DIR}/psx_common.h
+    ${PXCOMMON_DIR}/psx_common.c
 )
 
 set(LIBX_COMMON psx_common)

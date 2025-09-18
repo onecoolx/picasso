@@ -42,3 +42,21 @@ endif()
 include_directories(${PXSVG_DIR} ${PROJECT_ROOT}/ext/common ${PROJECT_ROOT}/include ${PROJECT_ROOT}/include/images ${PROJECT_ROOT}/include/svg)
 target_link_libraries(${LIBX_SVG} PRIVATE ${LIB_NAME} ${LIBX_IMAGE} ${LIBX_COMMON})
 
+
+
+set(LIBX_SVG_IMAGE psxm_image_svg)
+
+set(PXSVG_IMG_SOURCES 
+    ${PXSVG_DIR}/../image_coders/psx_image_io.h
+    ${PXSVG_DIR}/../image_coders/psx_image_io.c
+    ${PXSVG_DIR}/psx_svg_module.c
+)
+add_library(${LIBX_SVG_IMAGE} ${PXSVG_IMG_SOURCES})
+install(TARGETS ${LIBX_SVG_IMAGE} LIBRARY DESTINATION lib/modules ARCHIVE DESTINATION lib/modules)
+
+target_link_libraries(${LIBX_SVG_IMAGE} PUBLIC ${LIBX_SVG} ${IMAGEIO_LIBRARY} ${LIBX_COMMON} ${LIB_NAME})
+
+set_target_properties(${LIBX_SVG_IMAGE}
+    PROPERTIES
+    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/modules"
+)

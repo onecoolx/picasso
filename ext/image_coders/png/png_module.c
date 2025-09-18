@@ -42,7 +42,7 @@
 struct png_image_ctx {
     png_structp png_ptr;
     png_infop info_ptr;
-    int interlace_pass;
+    int32_t interlace_pass;
     // read
     uint8_t* pos;
     uint8_t* end;
@@ -62,10 +62,10 @@ static void png_read_data(png_structp png_ptr, png_bytep data, png_size_t length
     ctx->pos += length;
 }
 
-static int read_png_info(const ps_byte* data, size_t len, psx_image_header* header)
+static int32_t read_png_info(const ps_byte* data, size_t len, psx_image_header* header)
 {
     png_uint_32 width, height;
-    int bit_depth, color_type, interlace_type, rowbytes, bpp;
+    int32_t bit_depth, color_type, interlace_type, rowbytes, bpp;
     double screen_gamma = 2.2; // typical value
     double gamma;
     png_color_16p dib_background;
@@ -146,7 +146,7 @@ static int read_png_info(const ps_byte* data, size_t len, psx_image_header* head
 
     // update info after applying transformations
     png_read_update_info(ctx->png_ptr, ctx->info_ptr);
-    rowbytes = (int)png_get_rowbytes(ctx->png_ptr, ctx->info_ptr);
+    rowbytes = (int32_t)png_get_rowbytes(ctx->png_ptr, ctx->info_ptr);
     bpp = rowbytes / width;
 
     header->priv = ctx;
@@ -161,7 +161,7 @@ static int read_png_info(const ps_byte* data, size_t len, psx_image_header* head
     return 0;
 }
 
-static int release_read_png_info(psx_image_header* header)
+static int32_t release_read_png_info(psx_image_header* header)
 {
     struct png_image_ctx* ctx = (struct png_image_ctx*)header->priv;
     png_destroy_read_struct(&ctx->png_ptr, &ctx->info_ptr, NULL);
@@ -169,9 +169,9 @@ static int release_read_png_info(psx_image_header* header)
     return 0;
 }
 
-static int decode_png_data(psx_image_header* header, const psx_image* image, psx_image_frame* frame, int idx, ps_byte* buffer, size_t buffer_len)
+static int32_t decode_png_data(psx_image_header* header, const psx_image* image, psx_image_frame* frame, int32_t idx, ps_byte* buffer, size_t buffer_len)
 {
-    int y, p;
+    int32_t y, p;
     struct png_image_ctx* ctx = (struct png_image_ctx*)header->priv;
 
     if (setjmp(png_jmpbuf(ctx->png_ptr))) { // error occurred
@@ -195,7 +195,7 @@ static void png_write_data(png_structp png_ptr, png_bytep data, png_size_t lengt
     ctx->writer(ctx->writer_param, data, length);
 }
 
-static int get_bpp(ps_color_format fmt)
+static int32_t get_bpp(ps_color_format fmt)
 {
     switch (fmt) {
         case COLOR_FORMAT_RGBA:
@@ -214,7 +214,7 @@ static int get_bpp(ps_color_format fmt)
     }
 }
 
-static int get_depth(ps_color_format fmt)
+static int32_t get_depth(ps_color_format fmt)
 {
     switch (fmt) {
         case COLOR_FORMAT_RGBA:
@@ -233,7 +233,7 @@ static int get_depth(ps_color_format fmt)
     }
 }
 
-static int write_png_info(const psx_image* image, image_writer_fn func, void* param, float quality, psx_image_header* header)
+static int32_t write_png_info(const psx_image* image, image_writer_fn func, void* param, float quality, psx_image_header* header)
 {
     uint32_t fmt;
     struct png_image_ctx* ctx = (struct png_image_ctx*)calloc(1, sizeof(struct png_image_ctx));
@@ -294,13 +294,13 @@ static int write_png_info(const psx_image* image, image_writer_fn func, void* pa
     header->pitch = image->pitch;
     header->depth = get_depth(image->format);
     header->bpp = get_bpp(image->format);
-    header->format = (int)image->format;
+    header->format = (int32_t)image->format;
     header->alpha = (fmt == PNG_COLOR_TYPE_RGB_ALPHA) ? 1 : 0;
     header->frames = 1;
     return 0;
 }
 
-static int release_write_png_info(psx_image_header* header)
+static int32_t release_write_png_info(psx_image_header* header)
 {
     struct png_image_ctx* ctx = (struct png_image_ctx*)header->priv;
     png_destroy_write_struct(&ctx->png_ptr, &ctx->info_ptr);
@@ -310,16 +310,16 @@ static int release_write_png_info(psx_image_header* header)
 
 static void png_convert_32bit(psx_image_header* header, const ps_byte* buffer, size_t buffer_len, ps_byte* cbuf)
 {
-    int y;
+    int32_t y;
     struct png_image_ctx* ctx = (struct png_image_ctx*)header->priv;
 
     for (y = 0; y < header->height; y++) {
         ps_byte* row = (ps_byte*)(buffer + header->pitch * y);
-        if (header->format == (int)COLOR_FORMAT_BGRA) {
+        if (header->format == (int32_t)COLOR_FORMAT_BGRA) {
             _bgra_to_rgba(cbuf, row, header->width);
-        } else if (header->format == (int)COLOR_FORMAT_ABGR) {
+        } else if (header->format == (int32_t)COLOR_FORMAT_ABGR) {
             _abgr_to_rgba(cbuf, row, header->width);
-        } else if (header->format == (int)COLOR_FORMAT_ARGB) {
+        } else if (header->format == (int32_t)COLOR_FORMAT_ARGB) {
             _argb_to_rgba(cbuf, row, header->width);
         }
 
@@ -329,16 +329,16 @@ static void png_convert_32bit(psx_image_header* header, const ps_byte* buffer, s
 
 static void png_convert_24bit(psx_image_header* header, const ps_byte* buffer, size_t buffer_len, ps_byte* cbuf)
 {
-    int y;
+    int32_t y;
     struct png_image_ctx* ctx = (struct png_image_ctx*)header->priv;
 
     for (y = 0; y < header->height; y++) {
         ps_byte* row = (ps_byte*)(buffer + header->pitch * y);
-        if (header->format == (int)COLOR_FORMAT_BGR) {
+        if (header->format == (int32_t)COLOR_FORMAT_BGR) {
             _bgr_to_rgb(cbuf, row, header->width);
-        } else if (header->format == (int)COLOR_FORMAT_RGB565) {
+        } else if (header->format == (int32_t)COLOR_FORMAT_RGB565) {
             _rgb565_to_rgb(cbuf, row, header->width);
-        } else if (header->format == (int)COLOR_FORMAT_RGB555) {
+        } else if (header->format == (int32_t)COLOR_FORMAT_RGB555) {
             _rgb555_to_rgb(cbuf, row, header->width);
         }
 
@@ -346,9 +346,9 @@ static void png_convert_24bit(psx_image_header* header, const ps_byte* buffer, s
     }
 }
 
-static int encode_png_data(psx_image_header* header, const psx_image* image, psx_image_frame* frame, int idx, const ps_byte* buffer, size_t buffer_len, int* ret)
+static int32_t encode_png_data(psx_image_header* header, const psx_image* image, psx_image_frame* frame, int32_t idx, const ps_byte* buffer, size_t buffer_len, int32_t* ret)
 {
-    int y;
+    int32_t y;
     struct png_image_ctx* ctx = (struct png_image_ctx*)header->priv;
 
     ps_byte* cbuf = (ps_byte*)calloc(1, header->pitch);
@@ -361,15 +361,15 @@ static int encode_png_data(psx_image_header* header, const psx_image* image, psx
         return -1;
     }
 
-    if (header->format == (int)COLOR_FORMAT_RGBA || header->format == (int)COLOR_FORMAT_RGB) {
+    if (header->format == (int32_t)COLOR_FORMAT_RGBA || header->format == (int32_t)COLOR_FORMAT_RGB) {
         for (y = 0; y < header->height; y++) {
             ps_byte* row = (ps_byte*)(buffer + header->pitch * y);
             png_write_row(ctx->png_ptr, row);
         }
     } else {
-        if (header->format == (int)COLOR_FORMAT_BGRA
-            || header->format == (int)COLOR_FORMAT_ABGR
-            || header->format == (int)COLOR_FORMAT_ARGB) {
+        if (header->format == (int32_t)COLOR_FORMAT_BGRA
+            || header->format == (int32_t)COLOR_FORMAT_ABGR
+            || header->format == (int32_t)COLOR_FORMAT_ARGB) {
             // convert to 32bit
             png_convert_32bit(header, buffer, buffer_len, cbuf);
         } else {
@@ -386,8 +386,8 @@ static int encode_png_data(psx_image_header* header, const psx_image* image, psx
 static psx_image_operator* png_coder = NULL;
 static module_handle lib_image = INVALID_HANDLE;
 
-typedef int (*register_func)(const char*, const ps_byte*, size_t, size_t, psx_priority_level, psx_image_operator*);
-typedef int (*unregister_func)(psx_image_operator*);
+typedef int32_t (*register_func)(const char*, const ps_byte*, size_t, size_t, psx_priority_level, psx_image_operator*);
+typedef int32_t (*unregister_func)(psx_image_operator*);
 
 #if defined(WIN32) && defined(_MSC_VER)
 static wchar_t g_path[MAX_PATH];
@@ -455,7 +455,7 @@ void psx_image_module_shutdown(void)
     }
 }
 
-const char* psx_image_module_get_string(int idx)
+const char* psx_image_module_get_string(int32_t idx)
 {
     switch (idx) {
         case MODULE_NAME:

@@ -24,42 +24,47 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _PSX_SVG_PARSER_H_
-#define _PSX_SVG_PARSER_H_
+#include "test.h"
 
-#include "psx_common.h"
-#include "psx_svg_node.h"
-#include "psx_xml_token.h"
+class CanvasTest : public ::testing::Test
+{
+protected:
+    static void SetUpTestSuite()
+    {
+        PS_Init();
+    }
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+    static void TearDownTestSuite()
+    {
+        PS_Shutdown();
+    }
 
-enum {
-    SVG_PARSER_PROCESS = 0,
-    SVG_PARSER_IGNORE,
+    void SetUp() override
+    {
+    }
+
+    void TearDown() override
+    {
+    }
+
 };
 
-typedef struct {
-    uint32_t state;
-    char* ignore_name;
-    uint32_t ignore_len;
-    int32_t dpi;
-    psx_svg_node* doc_root;
-    psx_svg_node* cur_node;
-} psx_svg_parser;
+TEST_F(CanvasTest, CanvasWithDataAndCompatible)
+{
+    uint8_t buf[200] = {0};
+    ps_canvas* newCanvas = ps_canvas_create_with_data(buf, COLOR_FORMAT_RGB565, 10, 10, 20);
+    ps_canvas* newCanvas2 = ps_canvas_create_compatible(newCanvas, 20, 20);
 
-void psx_svg_parser_init(psx_svg_parser* parser);
-void psx_svg_parser_destroy(psx_svg_parser* parser);
-bool psx_svg_parser_token(psx_svg_parser* parser, const psx_xml_token* token);
-bool psx_svg_parser_is_finish(psx_svg_parser* parser);
+    ASSERT_EQ(ps_canvas_get_format(newCanvas), ps_canvas_get_format(newCanvas2));
 
-#ifdef _DEBUG
-void psx_svg_dump_tree(psx_svg_node* root, int32_t depth);
-#endif
+    ps_size s;
+    ps_bool r = ps_canvas_get_size(newCanvas2, &s);
+    ASSERT_FLOAT_EQ(s.w, 20.0f);
+    ASSERT_FLOAT_EQ(s.h, 20.0f);
+    ASSERT_EQ(r, True);
 
-#ifdef __cplusplus
+    ps_canvas_unref(newCanvas);
+    ps_canvas_unref(newCanvas2);
+
+    ASSERT_EQ(STATUS_SUCCEED, ps_last_status());
 }
-#endif
-
-#endif /*_PSX_SVG_PARSER_H_*/

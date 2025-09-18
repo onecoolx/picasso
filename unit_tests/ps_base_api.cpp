@@ -24,42 +24,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _PSX_SVG_PARSER_H_
-#define _PSX_SVG_PARSER_H_
+#include "test.h"
 
-#include "psx_common.h"
-#include "psx_svg_node.h"
-#include "psx_xml_token.h"
+class PicassoTest : public ::testing::Test
+{
+protected:
+    void SetUp() override
+    {
+        ASSERT_TRUE(ps_initialize());
+    }
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-enum {
-    SVG_PARSER_PROCESS = 0,
-    SVG_PARSER_IGNORE,
+    void TearDown() override
+    {
+        ps_shutdown();
+    }
 };
 
-typedef struct {
-    uint32_t state;
-    char* ignore_name;
-    uint32_t ignore_len;
-    int32_t dpi;
-    psx_svg_node* doc_root;
-    psx_svg_node* cur_node;
-} psx_svg_parser;
-
-void psx_svg_parser_init(psx_svg_parser* parser);
-void psx_svg_parser_destroy(psx_svg_parser* parser);
-bool psx_svg_parser_token(psx_svg_parser* parser, const psx_xml_token* token);
-bool psx_svg_parser_is_finish(psx_svg_parser* parser);
-
-#ifdef _DEBUG
-void psx_svg_dump_tree(psx_svg_node* root, int32_t depth);
-#endif
-
-#ifdef __cplusplus
+TEST_F(PicassoTest, BasicTypes)
+{
+    EXPECT_EQ(True, 1);
+    EXPECT_EQ(False, 0);
+    EXPECT_EQ(sizeof(ps_uchar16), 2);
+    EXPECT_EQ(sizeof(ps_schar16), 2);
+    EXPECT_EQ(sizeof(ps_byte), 1);
 }
-#endif
 
-#endif /*_PSX_SVG_PARSER_H_*/
+TEST_F(PicassoTest, VersionAndInit)
+{
+    EXPECT_GT(ps_version(), 0);
+    EXPECT_EQ(ps_last_status(), STATUS_SUCCEED);
+}

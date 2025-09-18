@@ -37,7 +37,7 @@ typedef void (*mod_func)(void);
 
 static pchar modules_dir[PATH_MAX];
 
-int modules_init(struct image_modules_mgr* mgr)
+int32_t modules_init(struct image_modules_mgr* mgr)
 {
     pchar* dir_path = NULL;
     pchar** mod_paths = NULL;
@@ -50,13 +50,13 @@ int modules_init(struct image_modules_mgr* mgr)
 
     dir_path = _module_get_modules_dir(modules_dir, PATH_MAX);
     if (!dir_path) {
-        fprintf(stderr, "no image modules directory found!\n");
+        LOG_ERROR("No image modules directory found! you can set the `PS_IMAGE_MODULES_DIR` environment variable to the modules path.\n");
         return -1;
     }
 
     nums = _module_get_modules(dir_path, NULL, 0);
     if (!nums) {
-        fprintf(stderr, "no image modules found!\n");
+        LOG_ERROR("No image modules found! you can set the `PS_IMAGE_MODULES_DIR` environment variable to the modules path.\n");
         return -1;
     }
 
@@ -172,8 +172,8 @@ static char* copy_magic(const char* str, size_t len)
     return dst;
 }
 
-int psx_image_register_operator(const char* type, const ps_byte* header_magic,
-                                size_t magic_offset, size_t magic_len, psx_priority_level level, psx_image_operator* coder)
+int32_t psx_image_register_operator(const char* type, const ps_byte* header_magic,
+                                    size_t magic_offset, size_t magic_len, psx_priority_level level, psx_image_operator* coder)
 {
     struct image_modules_mgr* mgr = NULL;
     struct list_hdr* ptr = NULL;
@@ -203,7 +203,7 @@ int psx_image_register_operator(const char* type, const ps_byte* header_magic,
         new_entry->magic_hdr = copy_magic((const char*)header_magic, magic_len);
         new_entry->magic_offset = magic_offset;
         new_entry->magic_len = magic_len;
-        new_entry->level = (int)level;
+        new_entry->level = (int32_t)level;
         new_entry->type_name = strdup(type);
         new_entry->op = coder;
 
@@ -220,7 +220,7 @@ int psx_image_register_operator(const char* type, const ps_byte* header_magic,
         entry->magic_hdr = copy_magic((const char*)header_magic, magic_len);
         entry->magic_offset = magic_offset;
         entry->magic_len = magic_len;
-        entry->level = (int)level;
+        entry->level = (int32_t)level;
         entry->type_name = strdup(type);
         entry->op = coder;
 
@@ -231,7 +231,7 @@ int psx_image_register_operator(const char* type, const ps_byte* header_magic,
     return S_OK;
 }
 
-int psx_image_unregister_operator(psx_image_operator* coder)
+int32_t psx_image_unregister_operator(psx_image_operator* coder)
 {
     struct image_modules_mgr* mgr = NULL;
     struct list_hdr* ptr = NULL;

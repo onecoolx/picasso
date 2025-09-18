@@ -40,6 +40,8 @@ extern "C" {
 #define ATTR_VALUE_LEN(attr) ((uint32_t)((attr)->value_end - (attr)->value_start))
 #define BUF_LEN(s, e) ((uint32_t)((e) - (s)))
 
+#define DEG_TO_RAD(d) ((float)((d) * M_PI / 180.0f))
+
 static const struct {
     const char* name;
     uint32_t name_len;
@@ -474,7 +476,7 @@ static INLINE const char* _parse_color(const char* str, const char* str_end, uin
         float vals[3] = {0};
         uint8_t alpha = 255;
 
-        for (int i = 0; i < 3; i++) {
+        for (int32_t i = 0; i < 3; i++) {
             str = _parse_number(str, ptr, &vals[i]);
             if (!str) { valid_color = false; }
 
@@ -506,7 +508,7 @@ static INLINE const char* _parse_color(const char* str, const char* str_end, uin
         bool valid_color = true;
         float vals[3] = {0};
 
-        for (int i = 0; i < 3; i++) {
+        for (int32_t i = 0; i < 3; i++) {
             str = _parse_number(str, ptr, &vals[i]);
             if (!str) { valid_color = false; }
 
@@ -549,7 +551,7 @@ static INLINE const char* _parse_matrix(const char* str, const char* str_end, ui
     switch (type) {
         case SVG_TRANSFORM_TYPE_MATRIX: {
                 float vals[6] = {0};
-                for (int i = 0; i < 6; i++) {
+                for (int32_t i = 0; i < 6; i++) {
                     ptr = _parse_number(ptr, str_end, &vals[i]);
                     if (!ptr) {
                         return str;
@@ -740,7 +742,7 @@ static INLINE void _process_view_box(psx_svg_node* node, psx_svg_attr_type type,
     float* vals = (float*)mem_malloc(sizeof(float) * 4);
     memset(vals, 0, sizeof(float) * 4);
     const char* ptr = val_start;
-    for (int i = 0; i < 4; i++) {
+    for (int32_t i = 0; i < 4; i++) {
         ptr = _parse_number(ptr, val_end, &vals[i]);
         if (!ptr) {
             attr->val_type = SVG_ATTR_VALUE_DATA;
@@ -1182,6 +1184,7 @@ static INLINE void _process_transform(psx_svg_node* node, psx_svg_attr_type type
 static INLINE bool _is_relative_cmd(char cmd)
 {
     switch (cmd) {
+        case 'a':
         case 'm':
         case 'l':
         case 'h':
@@ -1192,6 +1195,7 @@ static INLINE bool _is_relative_cmd(char cmd)
         case 't':
         case 'z':
             return true;
+        case 'A':
         case 'M':
         case 'L':
         case 'H':
@@ -1208,7 +1212,7 @@ static INLINE bool _is_relative_cmd(char cmd)
 
 static INLINE bool _is_path_cmd(char ch)
 {
-    return ch != 0 && strchr("MLHVCSQTZmlhvcsqtz", ch) != NULL;
+    return ch != 0 && strchr("AMLHVCSQTZamlhvcsqtz", ch) != NULL;
 }
 
 static INLINE void _process_path_value(psx_svg_node* node, psx_svg_attr_type type, const char* val_start,
@@ -1245,11 +1249,13 @@ static INLINE void _process_path_value(psx_svg_node* node, psx_svg_attr_type typ
                     ch = cur_cmd;
                 }
             } else {
+                LOG_ERROR("Invalid path command sequence\n");
                 break;
             }
         } else if (_is_path_cmd(ch)) {
             ++ptr;
         } else {
+            LOG_ERROR("Unrecognized path command: '%c'\n", ch);
             break;
         }
 
@@ -1325,7 +1331,7 @@ static INLINE void _process_path_value(psx_svg_node* node, psx_svg_attr_type typ
             case 'C':
             case 'c': {
                     ps_point point[3];
-                    for (int i = 0; i < 3; i++) {
+                    for (int32_t i = 0; i < 3; i++) {
                         float xval = 0.0f;
                         ptr = _parse_number(ptr, val_end, &xval);
                         float yval = 0.0f;
@@ -1356,7 +1362,7 @@ static INLINE void _process_path_value(psx_svg_node* node, psx_svg_attr_type typ
                         point[0].y = cur_point.y;
                     }
 
-                    for (int i = 1; i < 3; i++) {
+                    for (int32_t i = 1; i < 3; i++) {
                         float xval = 0.0f;
                         ptr = _parse_number(ptr, val_end, &xval);
                         float yval = 0.0f;
@@ -1379,7 +1385,7 @@ static INLINE void _process_path_value(psx_svg_node* node, psx_svg_attr_type typ
             case 'Q':
             case 'q': {
                     ps_point point[2];
-                    for (int i = 0; i < 2; i++) {
+                    for (int32_t i = 0; i < 2; i++) {
                         float xval = 0.0f;
                         ptr = _parse_number(ptr, val_end, &xval);
                         float yval = 0.0f;
@@ -1410,7 +1416,7 @@ static INLINE void _process_path_value(psx_svg_node* node, psx_svg_attr_type typ
                         point[0].y = cur_point.y;
                     }
 
-                    for (int i = 1; i < 2; i++) {
+                    for (int32_t i = 1; i < 2; i++) {
                         float xval = 0.0f;
                         ptr = _parse_number(ptr, val_end, &xval);
                         float yval = 0.0f;
@@ -1428,6 +1434,36 @@ static INLINE void _process_path_value(psx_svg_node* node, psx_svg_attr_type typ
                     cur_ctrlPoint.y = point[0].y;
                     cur_point.x = point[1].x;
                     cur_point.y = point[1].y;
+                }
+                break;
+            case 'A':
+            case 'a': {
+                    float rx = 0.0f;
+                    ptr = _parse_number(ptr, val_end, &rx);
+                    float ry = 0.0f;
+                    ptr = _parse_number(ptr, val_end, &ry);
+                    float rotate = 0.0f;
+                    ptr = _parse_number(ptr, val_end, &rotate);
+                    float large_arc = 0.0f;
+                    ptr = _parse_number(ptr, val_end, &large_arc);
+                    float sweep = 0.0f;
+                    ptr = _parse_number(ptr, val_end, &sweep);
+
+                    float xval = 0.0f;
+                    ptr = _parse_number(ptr, val_end, &xval);
+                    float yval = 0.0f;
+                    ptr = _parse_number(ptr, val_end, &yval);
+                    if (relative) {
+                        xval += cur_point.x;
+                        yval += cur_point.y;
+                    }
+
+                    ps_point pt;
+                    pt.x = xval;
+                    pt.y = yval;
+                    ps_path_arc_to(path, rx, ry, DEG_TO_RAD(rotate), (int32_t)large_arc > 0 ? True : False, (int32_t)sweep > 0 ? True : False, &pt);
+                    cur_point.x = xval;
+                    cur_point.y = yval;
                 }
                 break;
             case 'Z':
@@ -2092,13 +2128,13 @@ bool psx_svg_parser_token(psx_svg_parser* parser, const psx_xml_token* token)
 
 #ifdef _DEBUG
 #include <stdio.h>
-void psx_svg_dump_tree(psx_svg_node* root, int depth)
+void psx_svg_dump_tree(psx_svg_node* root, int32_t depth)
 {
     if (!root) {
         return;
     }
 
-    for (int i = 0; i < depth; i++) {
+    for (int32_t i = 0; i < depth; i++) {
         fprintf(stderr, "  ");
     }
     if (root->type() == SVG_TAG_CONTENT) {
@@ -2113,7 +2149,7 @@ void psx_svg_dump_tree(psx_svg_node* root, int depth)
 
     uint32_t len = root->attr_count();
     for (uint32_t i = 0; i < len; i++) {
-        for (int j = 0; j < depth; j++) {
+        for (int32_t j = 0; j < depth; j++) {
             fprintf(stderr, "  ");
         }
         psx_svg_attr* attr = root->attr_at(i);

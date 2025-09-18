@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025, Zhang Ji Peng
+  Copyright (c) 2025, Zhang Ji Peng
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -235,6 +235,44 @@ TEST_F(SVGRenderTest, ShapesTest)
                                      "</linearGradient></defs></svg>";
     draw_svg(svg_shapes_linear6);
     EXPECT_SNAPSHOT_EQ(svg_shapes_linear6);
+
+    const char* svg_shapes_linear7 = "<svg width=\'400\' height=\'400\' viewBox=\'0 0 400 400\' fill=\'none\' xmlns=\'http://www.w3.org/2000/svg\'>"
+                                     "<rect x=\'10\' y=\'10\' width=\'100\' height=\'100\' fill=\'url(#gradient1)\'/>"
+                                     "<rect x=\'120\' y=\'10\' width=\'100\' height=\'100\' fill=\'url(#gradient1)\'/>"
+                                     "<rect x=\'230\' y=\'10\' width=\'100\' height=\'100\' fill=\'url(#gradient1)\'/>"
+                                     "<defs><linearGradient id=\'gradient1\' x1=\'%0\' y1=\'0%\' "
+                                     "x2=\'100%\' y2=\'0%\' gradientUnits=\'userSpaceOnUse\' >"
+                                     "<stop offset=\'0\' stop-color=\'red\' stop-opacity=\'1\'/>"
+                                     "<stop offset=\'1\' stop-color=\'green\' stop-opacity=\'1\'/>"
+                                     "</linearGradient></defs></svg>";
+    draw_svg(svg_shapes_linear7);
+    EXPECT_SNAPSHOT_EQ(svg_shapes_linear7);
+
+    const char* svg_shapes_svg2ext_arc1 = "<?xml version=\"1.0\" standalone=\"no\"?>"
+                                          "<svg width=\"12cm\" height=\"5.25cm\" viewBox=\"0 0 1200 400\""
+                                          "xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\">"
+                                          "<rect x=\"1\" y=\"1\" width=\"1198\" height=\"398\""
+                                          " fill=\"none\" stroke=\"blue\" stroke-width=\"1\" />"
+                                          " <path d=\"M300,200 h-150 a150,150 0 1,0 150,-150 z\""
+                                          " fill=\"red\" stroke=\"blue\" stroke-width=\"5\" />"
+                                          " <path d=\"M275,175 v-150 a150,150 0 0,0 -150,150 z\""
+                                          " fill=\"yellow\" stroke=\"blue\" stroke-width=\"5\" />"
+                                          "<path d=\"M600,350 l 50,-25"
+                                          " a25,25 -30 0,1 50,-25 l 50,-25"
+                                          " a25,50 -30 0,1 50,-25 l 50,-25"
+                                          " a25,75 -30 0,1 50,-25 l 50,-25"
+                                          " a25,100 -30 0,1 50,-25 l 50,-25\""
+                                          " fill=\"none\" stroke=\"red\" stroke-width=\"5\"/></svg>";
+    draw_svg(svg_shapes_svg2ext_arc1);
+    EXPECT_SNAPSHOT_EQ(svg_shapes_svg2ext_arc1);
+
+    const char* svg_shapes_use_transform = "<?xml version='1.0'?>"
+                                           "<svg><rect id='r1' x='50' y='50' width='100' height='100' fill='green'/>"
+                                           "<g transform='rotate(45 220,250)'>"
+                                           "<use x='80' y='80' xlink:href='#r1' transform='scale(0.5)'/>"
+                                           "</g></svg>";
+    draw_svg(svg_shapes_use_transform);
+    EXPECT_SNAPSHOT_EQ(svg_shapes_use_transform);
 }
 
 TEST_F(SVGRenderTest, ComplexPath)
@@ -349,6 +387,36 @@ TEST_F(SVGRenderTest, ComplexPath)
                                 "</svg>";
     draw_svg(svg_complex_8);
     EXPECT_SYS_SNAPSHOT_EQ(svg_complex_8);
+
+    const char* svg_complex_9 = "<svg width=\"400\" height=\"400\" viewBox=\"0 0 800 800\">"
+                                "<defs><g id=\"g1\" fill=\"red\">"
+                                "<circle cx=\"100\" cy=\"100\" r=\"40\"/>"
+                                "<rect x=\"20\" y=\"160\" width=\"100\" height=\"100\"/>"
+                                "</g>"
+                                "<linearGradient id=\"gad\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"0%\">"
+                                "<stop offset=\"0\" stop-color=\"red\" />"
+                                "<stop offset=\"0.5\" stop-color=\"green\" />"
+                                "<stop offset=\"1\" stop-color=\"blue\" />"
+                                "</linearGradient></defs>"
+                                "<use xlink:href=\"#g1\" x=\"50\" y=\"0\" />"
+                                "<use xlink:href=\"#g1\" x=\"250\" y=\"0\" fill=\"url(#gad)\" />"
+                                "</svg>";
+    draw_svg(svg_complex_9);
+    EXPECT_SYS_SNAPSHOT_EQ(svg_complex_9);
+
+    const char* svg_complex_10 = "<svg width=\"400\" height=\"400\" viewBox=\"0 0 800 800\">"
+                                 "<defs>"
+                                 "<circle id=\"g1\" cx=\"100\" cy=\"100\" r=\"40\"/>"
+                                 "<linearGradient id=\"gad\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"0%\">"
+                                 "<stop offset=\"0\" stop-color=\"red\" />"
+                                 "<stop offset=\"0.5\" stop-color=\"green\" />"
+                                 "<stop offset=\"1\" stop-color=\"blue\" />"
+                                 "</linearGradient></defs>"
+                                 "<use xlink:href=\"#g1\" x=\"50\" y=\"0\" />"
+                                 "<use xlink:href=\"#g1\" x=\"250\" y=\"0\" fill=\"url(#gad)\" />"
+                                 "</svg>";
+    draw_svg(svg_complex_10);
+    EXPECT_SYS_SNAPSHOT_EQ(svg_complex_10);
 }
 
 TEST_F(SVGRenderTest, GroupTest)
@@ -414,6 +482,18 @@ TEST_F(SVGRenderTest, TextTest)
                                     "</text></svg>";
     draw_svg(svg_text_gradient);
     EXPECT_SYS_SNAPSHOT_EQ(svg_text_gradient);
+
+    const char* svg_text_use_gradient = "<svg><defs><linearGradient id=\"g1\">"
+                                        "<stop offset=\"0.1\" stop-color=\"blue\"/>"
+                                        "<stop offset =\"0.8\" stop-color=\"red\"/>"
+                                        "</linearGradient></defs>"
+                                        "<text id=\"text1\" fill=\"url(#g1)\" x=20 y=60"
+                                        " font-family=\"sans-serif\" font-size=\"48px\" font-weight=\"bold\">"
+                                        "hello <tspan fill=\"green\" font-size=\"24px\">all</tspan> world"
+                                        "</text><use x=\"20\" y=\"100\" xlink:href=\"#text1\"/></svg>";
+    draw_svg(svg_text_use_gradient);
+    EXPECT_SYS_SNAPSHOT_EQ(svg_text_use_gradient);
+
 }
 
 TEST_F(SVGRenderTest, ImageTest)
@@ -509,4 +589,13 @@ TEST_F(SVGRenderTest, ImageTest)
                                "</svg>";
     draw_svg(svg_image_13);
     EXPECT_SNAPSHOT_EQ(svg_image_13);
+}
+
+TEST_F(SVGRenderTest, BadCaseTest)
+{
+    // invalid <use> xlink:href attr
+    const char* svg_badcase_1 = "<svg width=\"200\" height=\"200\">"
+                                "<rect id=\"rect1\" x=\"10\" y=\"10\" width=\"100\" height=\"100\" />"
+                                "<use xlink=\"#rect1\"></svg>";
+    draw_svg(svg_badcase_1);
 }

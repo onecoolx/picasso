@@ -302,7 +302,12 @@ static void load_font_from_file(FILE* f)
 }
 #endif //ENABLE(FONT_CONFIG)
 
-FT_Library g_library = NULL;
+static FT_Library g_library = NULL;
+
+FT_Library _get_ft_library(void)
+{
+    return g_library;
+}
 
 bool _load_fonts(void)
 {

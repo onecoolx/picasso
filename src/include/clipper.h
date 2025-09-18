@@ -22,12 +22,12 @@ typedef enum {
 } polygon_op;
 
 typedef struct {
-    int num_vertices; // number of vertices in list
+    int32_t num_vertices; // number of vertices in list
     vertex_s* vertex; // vertex array pointer
 } vertex_list;
 
 typedef struct {
-    int num_contours; // number of contours in polygon
+    int32_t num_contours; // number of contours in polygon
     vertex_list* contour; // contour vector pointer
 } polygon;
 

@@ -57,6 +57,8 @@ void psx_svg_render_list_destroy(psx_svg_render_list* list);
 
 bool psx_svg_render_list_draw(ps_context* ctx, const psx_svg_render_list* render);
 
+bool psx_svg_render_list_get_size(const psx_svg_render_list* render, ps_size* rsize);
+
 #ifdef __cplusplus
 }
 #endif

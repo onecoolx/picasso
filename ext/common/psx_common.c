@@ -24,42 +24,34 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _PSX_SVG_PARSER_H_
-#define _PSX_SVG_PARSER_H_
+#include <picasso_ext.h>
 
 #include "psx_common.h"
-#include "psx_svg_node.h"
-#include "psx_xml_token.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-enum {
-    SVG_PARSER_PROCESS = 0,
-    SVG_PARSER_IGNORE,
-};
-
-typedef struct {
-    uint32_t state;
-    char* ignore_name;
-    uint32_t ignore_len;
-    int32_t dpi;
-    psx_svg_node* doc_root;
-    psx_svg_node* cur_node;
-} psx_svg_parser;
-
-void psx_svg_parser_init(psx_svg_parser* parser);
-void psx_svg_parser_destroy(psx_svg_parser* parser);
-bool psx_svg_parser_token(psx_svg_parser* parser, const psx_xml_token* token);
-bool psx_svg_parser_is_finish(psx_svg_parser* parser);
-
-#ifdef _DEBUG
-void psx_svg_dump_tree(psx_svg_node* root, int32_t depth);
-#endif
-
-#ifdef __cplusplus
+void psx_log(const char* format, ...)
+{
+    va_list args;
+    va_start(args, format);
+    vfprintf(stderr, format, args);
+    va_end(args);
 }
-#endif
 
-#endif /*_PSX_SVG_PARSER_H_*/
+const char* psx_result_get_string(psx_result result)
+{
+    switch (result) {
+        case S_OK:
+            return "Ok";
+        case S_BAD_PARAMS:
+            return "Bad parameters";
+        case S_NOT_SUPPORT:
+            return "Not support";
+        case S_OUT_OF_MEMORY:
+            return "Out of memory";
+        case S_INIT_FAILURE:
+            return "Init failure";
+        case S_FAILURE:
+            return "Internal failure";
+        default:
+            return "Unknown";
+    }
+}
