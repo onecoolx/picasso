@@ -36,7 +36,7 @@ struct image_coder_node {
     char* magic_hdr;
     size_t magic_offset;
     size_t magic_len;
-    int level;
+    int32_t level;
     char* type_name;
     psx_image_operator* op;
 };
@@ -53,7 +53,7 @@ struct image_modules_mgr {
     size_t num_modules;
 };
 
-int modules_init(struct image_modules_mgr* mgr);
+int32_t modules_init(struct image_modules_mgr* mgr);
 
 void modules_destroy(struct image_modules_mgr* mgr);
 

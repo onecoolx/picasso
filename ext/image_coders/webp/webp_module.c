@@ -53,7 +53,7 @@ struct webp_image_ctx {
     void* writer_param;
 };
 
-static int read_webp_info(const ps_byte* data, size_t len, psx_image_header* header)
+static int32_t read_webp_info(const ps_byte* data, size_t len, psx_image_header* header)
 {
     WEBP_CSP_MODE color_mode;
     WebPBitstreamFeatures* bitstream = NULL;
@@ -104,9 +104,9 @@ static int read_webp_info(const ps_byte* data, size_t len, psx_image_header* hea
     return 0;
 }
 
-static int decode_webp_data(psx_image_header* header, const psx_image* image, psx_image_frame* frame, int idx, ps_byte* buffer, size_t buffer_len)
+static int32_t decode_webp_data(psx_image_header* header, const psx_image* image, psx_image_frame* frame, int32_t idx, ps_byte* buffer, size_t buffer_len)
 {
-    int y, stride;
+    int32_t y, stride;
     VP8StatusCode status = VP8_STATUS_OK;
 
     struct webp_image_ctx* ctx = (struct webp_image_ctx*)header->priv;
@@ -127,7 +127,7 @@ static int decode_webp_data(psx_image_header* header, const psx_image* image, ps
     return 0;
 }
 
-static int release_read_webp_info(psx_image_header* header)
+static int32_t release_read_webp_info(psx_image_header* header)
 {
     struct webp_image_ctx* ctx = (struct webp_image_ctx*)header->priv;
     WebPFreeDecBuffer(ctx->output_buffer);
@@ -135,7 +135,7 @@ static int release_read_webp_info(psx_image_header* header)
     return 0;
 }
 
-static int get_bpp(ps_color_format fmt)
+static int32_t get_bpp(ps_color_format fmt)
 {
     switch (fmt) {
         case COLOR_FORMAT_RGBA:
@@ -154,7 +154,7 @@ static int get_bpp(ps_color_format fmt)
     }
 }
 
-static int get_depth(ps_color_format fmt)
+static int32_t get_depth(ps_color_format fmt)
 {
     switch (fmt) {
         case COLOR_FORMAT_RGBA:
@@ -173,14 +173,14 @@ static int get_depth(ps_color_format fmt)
     }
 }
 
-static int memory_write(const uint8_t* data, size_t data_size, const WebPPicture* picture)
+static int32_t memory_write(const uint8_t* data, size_t data_size, const WebPPicture* picture)
 {
     struct webp_image_ctx* ctx = (struct webp_image_ctx*)picture->custom_ptr;
     ctx->writer(ctx->writer_param, data, data_size);
     return 1;
 }
 
-static int write_webp_info(const psx_image* image, image_writer_fn func, void* param, float quality, psx_image_header* header)
+static int32_t write_webp_info(const psx_image* image, image_writer_fn func, void* param, float quality, psx_image_header* header)
 {
     struct webp_image_ctx* ctx = (struct webp_image_ctx*)calloc(1, sizeof(struct webp_image_ctx));
     if (!ctx) {
@@ -213,17 +213,17 @@ static int write_webp_info(const psx_image* image, image_writer_fn func, void* p
     header->pitch = image->pitch;
     header->depth = get_depth(image->format);
     header->bpp = get_bpp(image->format);
-    header->format = (int)image->format;
+    header->format = (int32_t)image->format;
     header->alpha = (header->bpp == 4) ? 1 : 0;
     header->frames = 1;
     return 0;
 }
 
-static int webp_convert_32bit(psx_image_header* header, const ps_byte* buffer, size_t buffer_len, int is_argb)
+static int32_t webp_convert_32bit(psx_image_header* header, const ps_byte* buffer, size_t buffer_len, int32_t is_argb)
 {
-    int x, y;
-    int width = header->width;
-    int height = header->height;
+    int32_t x, y;
+    int32_t width = header->width;
+    int32_t height = header->height;
 
     struct webp_image_ctx* ctx = (struct webp_image_ctx*)header->priv;
 
@@ -234,7 +234,7 @@ static int webp_convert_32bit(psx_image_header* header, const ps_byte* buffer, s
     if (is_argb) {
         for (y = 0; y < height; ++y) {
             uint32_t* const dst = &ctx->pic.argb[y * ctx->pic.argb_stride];
-            const int offset = y * header->pitch;
+            const int32_t offset = y * header->pitch;
             for (x = 0; x < width; ++x) {
                 uint8_t* argb = (uint8_t*)(dst + x);
                 const uint8_t* pix = buffer + offset + x * header->bpp;
@@ -247,7 +247,7 @@ static int webp_convert_32bit(psx_image_header* header, const ps_byte* buffer, s
     } else { // abgr
         for (y = 0; y < height; ++y) {
             uint32_t* const dst = &ctx->pic.argb[y * ctx->pic.argb_stride];
-            const int offset = y * header->pitch;
+            const int32_t offset = y * header->pitch;
             for (x = 0; x < width; ++x) {
                 uint8_t* argb = (uint8_t*)(dst + x);
                 const uint8_t* pix = buffer + offset + x * header->bpp;
@@ -261,11 +261,11 @@ static int webp_convert_32bit(psx_image_header* header, const ps_byte* buffer, s
     return 1;
 }
 
-static int webp_convert_16bit(psx_image_header* header, const ps_byte* buffer, size_t buffer_len, int is_rgb565)
+static int32_t webp_convert_16bit(psx_image_header* header, const ps_byte* buffer, size_t buffer_len, int32_t is_rgb565)
 {
-    int x, y;
-    int width = header->width;
-    int height = header->height;
+    int32_t x, y;
+    int32_t width = header->width;
+    int32_t height = header->height;
 
     struct webp_image_ctx* ctx = (struct webp_image_ctx*)header->priv;
 
@@ -275,7 +275,7 @@ static int webp_convert_16bit(psx_image_header* header, const ps_byte* buffer, s
 
     for (y = 0; y < height; ++y) {
         uint32_t* const dst = &ctx->pic.argb[y * ctx->pic.argb_stride];
-        const int offset = y * header->pitch;
+        const int32_t offset = y * header->pitch;
         for (x = 0; x < width; ++x) {
             uint8_t cbuf[4] = {0};
             uint8_t* argb = (uint8_t*)dst + x * 4;
@@ -294,9 +294,9 @@ static int webp_convert_16bit(psx_image_header* header, const ps_byte* buffer, s
     return 1;
 }
 
-static int encode_webp_data(psx_image_header* header, const psx_image* image, psx_image_frame* frame, int idx, const ps_byte* buffer, size_t buffer_len, int* ret)
+static int32_t encode_webp_data(psx_image_header* header, const psx_image* image, psx_image_frame* frame, int32_t idx, const ps_byte* buffer, size_t buffer_len, int32_t* ret)
 {
-    int ok;
+    int32_t ok;
 
     struct webp_image_ctx* ctx = (struct webp_image_ctx*)header->priv;
 
@@ -338,7 +338,7 @@ static int encode_webp_data(psx_image_header* header, const psx_image* image, ps
     return 0;
 }
 
-static int release_write_webp_info(psx_image_header* header)
+static int32_t release_write_webp_info(psx_image_header* header)
 {
     struct webp_image_ctx* ctx = (struct webp_image_ctx*)header->priv;
     WebPPictureFree(&ctx->pic);
@@ -349,8 +349,8 @@ static int release_write_webp_info(psx_image_header* header)
 static psx_image_operator* webp_coder = NULL;
 static module_handle lib_image = INVALID_HANDLE;
 
-typedef int (*register_func)(const char*, const ps_byte*, size_t, size_t, psx_priority_level, psx_image_operator*);
-typedef int (*unregister_func)(psx_image_operator*);
+typedef int32_t (*register_func)(const char*, const ps_byte*, size_t, size_t, psx_priority_level, psx_image_operator*);
+typedef int32_t (*unregister_func)(psx_image_operator*);
 
 #if defined(WIN32) && defined(_MSC_VER)
 static wchar_t g_path[MAX_PATH];
@@ -418,7 +418,7 @@ void psx_image_module_shutdown(void)
     }
 }
 
-const char* psx_image_module_get_string(int idx)
+const char* psx_image_module_get_string(int32_t idx)
 {
     switch (idx) {
         case MODULE_NAME:

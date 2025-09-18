@@ -476,7 +476,7 @@ static INLINE const char* _parse_color(const char* str, const char* str_end, uin
         float vals[3] = {0};
         uint8_t alpha = 255;
 
-        for (int i = 0; i < 3; i++) {
+        for (int32_t i = 0; i < 3; i++) {
             str = _parse_number(str, ptr, &vals[i]);
             if (!str) { valid_color = false; }
 
@@ -508,7 +508,7 @@ static INLINE const char* _parse_color(const char* str, const char* str_end, uin
         bool valid_color = true;
         float vals[3] = {0};
 
-        for (int i = 0; i < 3; i++) {
+        for (int32_t i = 0; i < 3; i++) {
             str = _parse_number(str, ptr, &vals[i]);
             if (!str) { valid_color = false; }
 
@@ -551,7 +551,7 @@ static INLINE const char* _parse_matrix(const char* str, const char* str_end, ui
     switch (type) {
         case SVG_TRANSFORM_TYPE_MATRIX: {
                 float vals[6] = {0};
-                for (int i = 0; i < 6; i++) {
+                for (int32_t i = 0; i < 6; i++) {
                     ptr = _parse_number(ptr, str_end, &vals[i]);
                     if (!ptr) {
                         return str;
@@ -742,7 +742,7 @@ static INLINE void _process_view_box(psx_svg_node* node, psx_svg_attr_type type,
     float* vals = (float*)mem_malloc(sizeof(float) * 4);
     memset(vals, 0, sizeof(float) * 4);
     const char* ptr = val_start;
-    for (int i = 0; i < 4; i++) {
+    for (int32_t i = 0; i < 4; i++) {
         ptr = _parse_number(ptr, val_end, &vals[i]);
         if (!ptr) {
             attr->val_type = SVG_ATTR_VALUE_DATA;
@@ -1331,7 +1331,7 @@ static INLINE void _process_path_value(psx_svg_node* node, psx_svg_attr_type typ
             case 'C':
             case 'c': {
                     ps_point point[3];
-                    for (int i = 0; i < 3; i++) {
+                    for (int32_t i = 0; i < 3; i++) {
                         float xval = 0.0f;
                         ptr = _parse_number(ptr, val_end, &xval);
                         float yval = 0.0f;
@@ -1362,7 +1362,7 @@ static INLINE void _process_path_value(psx_svg_node* node, psx_svg_attr_type typ
                         point[0].y = cur_point.y;
                     }
 
-                    for (int i = 1; i < 3; i++) {
+                    for (int32_t i = 1; i < 3; i++) {
                         float xval = 0.0f;
                         ptr = _parse_number(ptr, val_end, &xval);
                         float yval = 0.0f;
@@ -1385,7 +1385,7 @@ static INLINE void _process_path_value(psx_svg_node* node, psx_svg_attr_type typ
             case 'Q':
             case 'q': {
                     ps_point point[2];
-                    for (int i = 0; i < 2; i++) {
+                    for (int32_t i = 0; i < 2; i++) {
                         float xval = 0.0f;
                         ptr = _parse_number(ptr, val_end, &xval);
                         float yval = 0.0f;
@@ -1416,7 +1416,7 @@ static INLINE void _process_path_value(psx_svg_node* node, psx_svg_attr_type typ
                         point[0].y = cur_point.y;
                     }
 
-                    for (int i = 1; i < 2; i++) {
+                    for (int32_t i = 1; i < 2; i++) {
                         float xval = 0.0f;
                         ptr = _parse_number(ptr, val_end, &xval);
                         float yval = 0.0f;
@@ -2128,13 +2128,13 @@ bool psx_svg_parser_token(psx_svg_parser* parser, const psx_xml_token* token)
 
 #ifdef _DEBUG
 #include <stdio.h>
-void psx_svg_dump_tree(psx_svg_node* root, int depth)
+void psx_svg_dump_tree(psx_svg_node* root, int32_t depth)
 {
     if (!root) {
         return;
     }
 
-    for (int i = 0; i < depth; i++) {
+    for (int32_t i = 0; i < depth; i++) {
         fprintf(stderr, "  ");
     }
     if (root->type() == SVG_TAG_CONTENT) {
@@ -2149,7 +2149,7 @@ void psx_svg_dump_tree(psx_svg_node* root, int depth)
 
     uint32_t len = root->attr_count();
     for (uint32_t i = 0; i < len; i++) {
-        for (int j = 0; j < depth; j++) {
+        for (int32_t j = 0; j < depth; j++) {
             fprintf(stderr, "  ");
         }
         psx_svg_attr* attr = root->attr_at(i);

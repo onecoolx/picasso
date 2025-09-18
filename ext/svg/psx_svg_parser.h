@@ -55,7 +55,7 @@ bool psx_svg_parser_token(psx_svg_parser* parser, const psx_xml_token* token);
 bool psx_svg_parser_is_finish(psx_svg_parser* parser);
 
 #ifdef _DEBUG
-void psx_svg_dump_tree(psx_svg_node* root, int depth);
+void psx_svg_dump_tree(psx_svg_node* root, int32_t depth);
 #endif
 
 #ifdef __cplusplus

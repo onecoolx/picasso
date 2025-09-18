@@ -52,7 +52,7 @@ struct cg_image_ctx {
     void* writer_param;
 };
 
-static int read_image_info(const ps_byte* data, size_t len, psx_image_header* header)
+static int32_t read_image_info(const ps_byte* data, size_t len, psx_image_header* header)
 {
     CFDataRef cg_data = CFDataCreate(kCFAllocatorDefault, data, len);
     if (!cg_data) {
@@ -74,27 +74,27 @@ static int read_image_info(const ps_byte* data, size_t len, psx_image_header* he
         return -1; // out of memory
     }
 
-    int bpp = 4; // 4 bytes per pixel
+    int32_t bpp = 4; // 4 bytes per pixel
     size_t width = CGImageGetWidth(image);
     size_t height = CGImageGetHeight(image);
     size_t rowbytes = width * bpp;
 
     header->priv = ctx;
-    header->width = (int)width;
-    header->height = (int)height;
-    header->pitch = (int)rowbytes;
+    header->width = (int32_t)width;
+    header->height = (int32_t)height;
+    header->pitch = (int32_t)rowbytes;
     header->depth = 32;
     header->bpp = bpp;
     header->format = 0;
     header->alpha = 1;
-    header->frames = (int)CGImageSourceGetCount(ctx->source);
+    header->frames = (int32_t)CGImageSourceGetCount(ctx->source);
 
     CGImageRelease(image);
     CFRelease(cg_data);
     return 0;
 }
 
-static int release_read_image_info(psx_image_header* header)
+static int32_t release_read_image_info(psx_image_header* header)
 {
     struct cg_image_ctx* ctx = (struct cg_image_ctx*)header->priv;
     CFRelease(ctx->source);
@@ -102,12 +102,12 @@ static int release_read_image_info(psx_image_header* header)
     return 0;
 }
 
-static int decode_image_data(psx_image_header* header, const psx_image* image, psx_image_frame* frame, int idx, ps_byte* buffer, size_t buffer_len)
+static int32_t decode_image_data(psx_image_header* header, const psx_image* image, psx_image_frame* frame, int32_t idx, ps_byte* buffer, size_t buffer_len)
 {
     struct cg_image_ctx* ctx = (struct cg_image_ctx*)header->priv;
 
-    int width = header->width;
-    int height = header->height;
+    int32_t width = header->width;
+    int32_t height = header->height;
 
     size_t bitsPerComponent = 8;
     CGBitmapInfo cgInfo = kCGBitmapByteOrder32Big | kCGImageAlphaNoneSkipLast;
@@ -130,7 +130,7 @@ static int decode_image_data(psx_image_header* header, const psx_image* image, p
     return 0;
 }
 
-static int get_bpp(ps_color_format fmt)
+static int32_t get_bpp(ps_color_format fmt)
 {
     switch (fmt) {
     case COLOR_FORMAT_RGBA:
@@ -149,7 +149,7 @@ static int get_bpp(ps_color_format fmt)
     }
 }
 
-static int get_depth(ps_color_format fmt)
+static int32_t get_depth(ps_color_format fmt)
 {
     switch (fmt) {
     case COLOR_FORMAT_RGBA:
@@ -179,7 +179,7 @@ static const CGDataConsumerCallbacks callbacks = {
     .putBytes = consumer_putbytes,
 };
 
-static int write_image_info(const psx_image* image, image_writer_fn func, void* param, float quality, psx_image_header* header)
+static int32_t write_image_info(const psx_image* image, image_writer_fn func, void* param, float quality, psx_image_header* header)
 {
     struct cg_image_ctx* ctx = (struct cg_image_ctx*)calloc(1, sizeof(struct cg_image_ctx));
     if (!ctx) {
@@ -197,13 +197,13 @@ static int write_image_info(const psx_image* image, image_writer_fn func, void* 
     header->pitch = image->pitch;
     header->depth = get_depth(image->format);
     header->bpp = get_bpp(image->format);
-    header->format = (int)image->format;
+    header->format = (int32_t)image->format;
     header->alpha = 1;
     header->frames = 1;
     return 0;
 }
 
-static int release_write_image_info(psx_image_header* header)
+static int32_t release_write_image_info(psx_image_header* header)
 {
     struct cg_image_ctx* ctx = (struct cg_image_ctx*)header->priv;
     CGDataConsumerRelease(ctx->consumer);
@@ -211,8 +211,8 @@ static int release_write_image_info(psx_image_header* header)
     return 0;
 }
 
-static int encode_image_data(psx_image_header* header, const psx_image* image, psx_image_frame* frame,
-                                                                     int idx, const ps_byte* buffer, size_t buffer_len, int* ret)
+static int32_t encode_image_data(psx_image_header* header, const psx_image* image, psx_image_frame* frame,
+                                                                     int32_t idx, const ps_byte* buffer, size_t buffer_len, int32_t* ret)
 {
     struct cg_image_ctx* ctx = (struct cg_image_ctx*)header->priv;
     
@@ -251,8 +251,8 @@ static int encode_image_data(psx_image_header* header, const psx_image* image, p
 static psx_image_operator * cg_coder = NULL;
 static module_handle lib_image = INVALID_HANDLE;
 
-typedef int (*register_func)(const char*, const ps_byte*, size_t, size_t, psx_priority_level, psx_image_operator*);
-typedef int (*unregister_func)(psx_image_operator*);
+typedef int32_t (*register_func)(const char*, const ps_byte*, size_t, size_t, psx_priority_level, psx_image_operator*);
+typedef int32_t (*unregister_func)(psx_image_operator*);
 
 void psx_image_module_init(void)
 {
@@ -303,7 +303,7 @@ void psx_image_module_shutdown(void)
         _module_unload(lib_image);
 }
 
-const char* psx_image_module_get_string(int idx)
+const char* psx_image_module_get_string(int32_t idx)
 {
     switch (idx) {
         case MODULE_NAME:

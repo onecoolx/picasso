@@ -8,15 +8,15 @@
 #include "drawFunc.h"
 #include "timeuse.h"
 
+#define DEF_WIDTH 640
+#define DEF_HEIGHT 480
 
 GdkPixbuf * pixbuf;
 GdkPixbuf * pixa;
 GdkPixbuf * pixb;
 
-
 static ps_context *context;
 static ps_canvas *canvas;
-
 
 gboolean expose (GtkWidget *widget, GdkEventExpose *event)
 {
@@ -26,7 +26,7 @@ gboolean expose (GtkWidget *widget, GdkEventExpose *event)
     draw_test(0, context);
     t2 = get_time();
     fprintf(stderr, "draw frame use %.6f ms --- %.6f fps\n", (double)(t2-t1), 1000.0/(t2-t1 ? t2-t1 : 1));
-    gdk_draw_pixbuf(widget->window, widget->style->white_gc, pixbuf, 0, 0, 0, 0, 640, 480, 0,0,0);
+    gdk_draw_pixbuf(widget->window, widget->style->white_gc, pixbuf, 0, 0, 0, 0, DEF_WIDTH, DEF_HEIGHT, 0,0,0);
     return FALSE;
 }
 
@@ -51,12 +51,12 @@ gboolean time_func(gpointer data)
 static void init_pixbuf()
 {
     GError * e = 0;
-    pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8, 640, 480);
+    pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8, DEF_WIDTH, DEF_HEIGHT);
     pixa = gdk_pixbuf_new_from_file("selt2.png", &e); 
     pixb = gdk_pixbuf_new_from_file("pat.png", &e); 
 
     guchar* buf = gdk_pixbuf_get_pixels(pixbuf);
-    canvas = ps_canvas_create_with_data((ps_byte*)buf, COLOR_FORMAT_RGB, 640, 480, 640*3);
+    canvas = ps_canvas_create_with_data((ps_byte*)buf, COLOR_FORMAT_RGB, DEF_WIDTH, DEF_HEIGHT, DEF_WIDTH*3);
     context = ps_context_create(canvas, 0);
     init_context(context, canvas, buf);    
 
@@ -104,7 +104,7 @@ int main(int argc, char* argv[])
 
     drawarea = gtk_drawing_area_new();
 
-    gtk_window_set_default_size(GTK_WINDOW(window), 640, 480);
+    gtk_window_set_default_size(GTK_WINDOW(window), DEF_WIDTH, DEF_HEIGHT);
 
     g_signal_connect (G_OBJECT(window), "destroy", G_CALLBACK (destroy), NULL);
 

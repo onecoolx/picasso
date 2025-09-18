@@ -42,7 +42,7 @@ struct svg_image_ctx {
     psx_svg_render* svg_render;
 };
 
-static int read_svg_info(const ps_byte* data, size_t len, psx_image_header* header)
+static int32_t read_svg_info(const ps_byte* data, size_t len, psx_image_header* header)
 {
     struct svg_image_ctx* ctx = (struct svg_image_ctx*)calloc(1, sizeof(struct svg_image_ctx));
     if (!ctx) {
@@ -91,7 +91,7 @@ static int read_svg_info(const ps_byte* data, size_t len, psx_image_header* head
     return 0;
 }
 
-static int release_read_svg_info(psx_image_header* header)
+static int32_t release_read_svg_info(psx_image_header* header)
 {
     struct svg_image_ctx* ctx = (struct svg_image_ctx*)header->priv;
     psx_svg_render_destroy(ctx->svg_render);
@@ -99,7 +99,7 @@ static int release_read_svg_info(psx_image_header* header)
     return 0;
 }
 
-static int decode_svg_data(psx_image_header* header, const psx_image* image, psx_image_frame* frame, int idx, ps_byte* buffer, size_t buffer_len)
+static int32_t decode_svg_data(psx_image_header* header, const psx_image* image, psx_image_frame* frame, int32_t idx, ps_byte* buffer, size_t buffer_len)
 {
     struct svg_image_ctx* ctx = (struct svg_image_ctx*)header->priv;
 
@@ -116,8 +116,8 @@ static int decode_svg_data(psx_image_header* header, const psx_image* image, psx
 static psx_image_operator* svg_coder = NULL;
 static module_handle lib_image = INVALID_HANDLE;
 
-typedef int (*register_func)(const char*, const ps_byte*, size_t, size_t, psx_priority_level, psx_image_operator*);
-typedef int (*unregister_func)(psx_image_operator*);
+typedef int32_t (*register_func)(const char*, const ps_byte*, size_t, size_t, psx_priority_level, psx_image_operator*);
+typedef int32_t (*unregister_func)(psx_image_operator*);
 
 #if defined(WIN32) && defined(_MSC_VER)
 static wchar_t g_path[MAX_PATH];
@@ -183,7 +183,7 @@ void psx_image_module_shutdown(void)
     }
 }
 
-const char* psx_image_module_get_string(int idx)
+const char* psx_image_module_get_string(int32_t idx)
 {
     switch (idx) {
         case MODULE_NAME:
