@@ -245,7 +245,7 @@ static void _term_destination(j_compress_ptr cinfo)
 }
 
 static int32_t write_jpg_info(const psx_image* image, image_writer_fn func, void* param,
-                          float quality, psx_image_header* header)
+                              float quality, psx_image_header* header)
 {
     struct jpeg_image_ctx* ctx = (struct jpeg_image_ctx*)calloc(1, sizeof(struct jpeg_image_ctx));
     if (!ctx) {

@@ -77,7 +77,7 @@ typedef struct _psx_image_operator {
     int32_t (*release_read_header_info)(psx_image_header* header);
     /** Create a image writer header. */
     int32_t (*write_header_info)(const psx_image* image, image_writer_fn func,
-                             void* param, float quality, psx_image_header* header);
+                                 void* param, float quality, psx_image_header* header);
     /** Write image data frames. */
     int32_t (*encode_image_data)(psx_image_header* header, const psx_image* image, psx_image_frame* frame, int32_t idx, const ps_byte* buffer, size_t buffer_len, int32_t* ret);
     /** Release writer resources. */
@@ -121,7 +121,7 @@ typedef enum _psx_priority_level {
  * \sa psx_image_unregister_operator
  */
 PEXPORT int32_t psx_image_register_operator(const char* type, const ps_byte* signature, size_t sig_offset, size_t sig_len,
-                                        psx_priority_level level, psx_image_operator* coder);
+                                            psx_priority_level level, psx_image_operator* coder);
 
 /**
  * \fn int32_t psx_image_unregister_operator(psx_image_operator* coder)
