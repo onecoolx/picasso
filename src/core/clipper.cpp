@@ -93,8 +93,8 @@ typedef struct v_shape { // Internal vertex list datatype
 } vertex_node;
 
 typedef struct p_shape { // Internal contour / tristrip type
-    int active; // Active flag / vertex count
-    int hole; // Hole / external contour flag
+    int32_t active; // Active flag / vertex count
+    int32_t hole; // Hole / external contour flag
     vertex_node* v[2]; // Left and right vertex list ptrs
     struct p_shape* next; // Pointer to next polygon contour
     struct p_shape* proxy; // Pointer to actual structure used
@@ -107,9 +107,9 @@ typedef struct edge_shape {
     scalar xb; // Scanbeam bottom x coordinate
     scalar xt; // Scanbeam top x coordinate
     scalar dx; // Change in x for a unit y increase
-    int type; // Clip / subject edge flag
-    int bundle[2][2]; // Bundle edge flags
-    int bside[2]; // Bundle left / right indicators
+    int32_t type; // Clip / subject edge flag
+    int32_t bundle[2][2]; // Bundle edge flags
+    int32_t bside[2]; // Bundle left / right indicators
     bundle_state bstate[2]; // Edge bundle state
     polygon_node* outp[2]; // Output polygon / tristrip pointer
     struct edge_shape* prev; // Previous edge in the AET
@@ -249,7 +249,7 @@ static edge_node** bound_list(lmt_node** lmt, scalar y)
     }
 }
 
-static void add_to_sbtree(int* entries, sb_tree** sbtree, scalar y)
+static void add_to_sbtree(int32_t* entries, sb_tree** sbtree, scalar y)
 {
     if (!*sbtree) {
         // Add a new tree node here
@@ -271,7 +271,7 @@ static void add_to_sbtree(int* entries, sb_tree** sbtree, scalar y)
     }
 }
 
-static void build_sbt(int* entries, scalar* sbt, sb_tree* sbtree)
+static void build_sbt(int32_t* entries, scalar* sbt, sb_tree* sbtree)
 {
     if (sbtree->less) {
         build_sbt(entries, sbt, sbtree->less);
@@ -292,12 +292,12 @@ static void free_sbtree(sb_tree** sbtree)
     }
 }
 
-static int count_optimal_vertices(vertex_list c)
+static int32_t count_optimal_vertices(vertex_list c)
 {
-    int result = 0;
+    int32_t result = 0;
     // Ignore non-contributing contours
     if (c.num_vertices > 0) {
-        for (int i = 0; i < c.num_vertices; i++) {
+        for (int32_t i = 0; i < c.num_vertices; i++) {
             // Ignore superfluous vertices embedded in horizontal edges
             if (OPTIMAL(c.vertex, i, c.num_vertices)) {
                 result++;
@@ -308,10 +308,10 @@ static int count_optimal_vertices(vertex_list c)
 }
 
 static edge_node* build_lmt(lmt_node** lmt, sb_tree** sbtree,
-                            int* sbt_entries, polygon* p, int type, polygon_op op)
+                            int32_t* sbt_entries, polygon* p, int32_t type, polygon_op op)
 {
-    int c, i, min, max, num_edges, v, num_vertices;
-    int total_vertices = 0, e_index = 0;
+    int32_t c, i, min, max, num_edges, v, num_vertices;
+    int32_t total_vertices = 0, e_index = 0;
     edge_node* e, * edge_table;
 
     for (c = 0; c < p->num_contours; c++) {
@@ -568,9 +568,9 @@ static void build_intersection_table(it_node** it, edge_node* aet, scalar dy)
     }
 }
 
-static int count_contours(polygon_node* polygon)
+static int32_t count_contours(polygon_node* polygon)
 {
-    int nc, nv;
+    int32_t nc, nv;
     vertex_node* v, * nextv;
 
     for (nc = 0; polygon; polygon = polygon->next) {
@@ -699,14 +699,14 @@ static bbox* create_contour_bboxes(polygon* p)
     bbox* box = (bbox*)mem_malloc(p->num_contours * sizeof(bbox));
 
     // Construct contour bounding boxes
-    for (int c = 0; c < p->num_contours; c++) {
+    for (int32_t c = 0; c < p->num_contours; c++) {
         // Initialise bounding box extent
         box[c].xmin = FLT_MAX;
         box[c].ymin = FLT_MAX;
         box[c].xmax = -FLT_MAX;
         box[c].ymax = -FLT_MAX;
 
-        for (int v = 0; v < p->contour[c].num_vertices; v++) {
+        for (int32_t v = 0; v < p->contour[c].num_vertices; v++) {
             // Adjust bounding box
             if (p->contour[c].vertex[v].x < box[c].xmin) {
                 box[c].xmin = p->contour[c].vertex[v].x;
@@ -731,12 +731,12 @@ static bbox* create_contour_bboxes(polygon* p)
 static void minimax_test(polygon* subj, polygon* clip, polygon_op op)
 {
     bbox* s_bbox, * c_bbox;
-    int s, c, * o_table, overlap;
+    int32_t s, c, * o_table, overlap;
 
     s_bbox = create_contour_bboxes(subj);
     c_bbox = create_contour_bboxes(clip);
 
-    o_table = (int*)mem_malloc(subj->num_contours * clip->num_contours * sizeof(int));
+    o_table = (int32_t*)mem_malloc(subj->num_contours * clip->num_contours * sizeof(int32_t));
 
     // Check all subject contour bounding boxes against clip boxes
     for (s = 0; s < subj->num_contours; s++) {
@@ -782,7 +782,7 @@ static void minimax_test(polygon* subj, polygon* clip, polygon_op op)
 
 void free_polygon(polygon* p)
 {
-    for (int c = 0; c < p->num_contours; c++) {
+    for (int32_t c = 0; c < p->num_contours; c++) {
         mem_free(p->contour[c].vertex);
     }
     mem_free(p->contour);
@@ -799,9 +799,9 @@ void polygon_clip(polygon_op op, polygon* subj, polygon* clip, polygon* result)
     polygon_node* out_poly = NULL, * p, * q, * poly, * npoly, * cf = NULL;
     vertex_node* vtx, * nv;
     h_state horiz[2];
-    int in[2], exists[2], parity[2] = {LEFT, LEFT};
-    int c, v, contributing = 0, search, scanbeam = 0, sbt_entries = 0;
-    int vclass, bl = 0, br = 0, tl = 0, tr = 0;
+    int32_t in[2], exists[2], parity[2] = {LEFT, LEFT};
+    int32_t c, v, contributing = 0, search, scanbeam = 0, sbt_entries = 0;
+    int32_t vclass, bl = 0, br = 0, tl = 0, tr = 0;
     scalar* sbt = NULL, xb, px, yb, yt = 0, dy = 0, ix, iy;
 
     // Test for trivial NULL result cases

@@ -74,7 +74,7 @@ struct gif_image_ctx {
     GifByteType* output_buffer;
 };
 
-static int read_gif_from_memory(GifFileType* gif, GifByteType* buf, int len)
+static int32_t read_gif_from_memory(GifFileType* gif, GifByteType* buf, int32_t len)
 {
     struct gif_image_ctx* data = (struct gif_image_ctx*)gif->UserData;
     if ((data->pos + len) > data->len) {
@@ -85,10 +85,10 @@ static int read_gif_from_memory(GifFileType* gif, GifByteType* buf, int len)
     return len;
 }
 
-static int read_gif_info(const ps_byte* data, size_t len, psx_image_header* header)
+static int32_t read_gif_info(const ps_byte* data, size_t len, psx_image_header* header)
 {
 #if GIFLIB_MAJOR >= 5
-    int errorcode = 0;
+    int32_t errorcode = 0;
 #endif
 
     struct gif_image_ctx* ctx = (struct gif_image_ctx*)calloc(1, sizeof(struct gif_image_ctx));
@@ -130,11 +130,11 @@ static int read_gif_info(const ps_byte* data, size_t len, psx_image_header* head
     return 0;
 }
 
-static int get_gif_transparent_color(GifFileType* gif, int frame)
+static int32_t get_gif_transparent_color(GifFileType* gif, int32_t frame)
 {
-    int x;
+    int32_t x;
     ExtensionBlock* ext = gif->SavedImages[frame].ExtensionBlocks;
-    int len = gif->SavedImages[frame].ExtensionBlockCount;
+    int32_t len = gif->SavedImages[frame].ExtensionBlockCount;
     for (x = 0; x < len; ++x, ++ext) {
         if ((ext->Function == GRAPHICS_EXT_FUNC_CODE) && (ext->Bytes[0] & 1)) {
             return ext->Bytes[3] == 0 ? 0 : (uint8_t) ext->Bytes[3];
@@ -143,11 +143,11 @@ static int get_gif_transparent_color(GifFileType* gif, int frame)
     return -1;
 }
 
-static int get_gif_delay_time(GifFileType* gif, int frame)
+static int32_t get_gif_delay_time(GifFileType* gif, int32_t frame)
 {
-    int x;
+    int32_t x;
     ExtensionBlock* ext = gif->SavedImages[frame].ExtensionBlocks;
-    int len = gif->SavedImages[frame].ExtensionBlockCount;
+    int32_t len = gif->SavedImages[frame].ExtensionBlockCount;
     for (x = 0; x < len; ++x, ++ext) {
         if (ext->Function == GRAPHICS_EXT_FUNC_CODE) {
             return ((ext->Bytes[2] << 8) | (ext->Bytes[1])) * 10; // ms
@@ -156,11 +156,11 @@ static int get_gif_delay_time(GifFileType* gif, int frame)
     return 0;
 }
 
-static int get_gif_disposal_method(GifFileType* gif, int frame)
+static int32_t get_gif_disposal_method(GifFileType* gif, int32_t frame)
 {
-    int x;
+    int32_t x;
     ExtensionBlock* ext = gif->SavedImages[frame].ExtensionBlocks;
-    int len = gif->SavedImages[frame].ExtensionBlockCount;
+    int32_t len = gif->SavedImages[frame].ExtensionBlockCount;
     for (x = 0; x < len; ++x, ++ext) {
         if (ext->Function == GRAPHICS_EXT_FUNC_CODE) {
             return (ext->Bytes[0] >> 2);
@@ -169,12 +169,12 @@ static int get_gif_disposal_method(GifFileType* gif, int frame)
     return 0;
 }
 
-static int decode_gif_data(psx_image_header* header, const psx_image* image, psx_image_frame* frame, int idx, ps_byte* buffer, size_t buffer_len)
+static int32_t decode_gif_data(psx_image_header* header, const psx_image* image, psx_image_frame* frame, int32_t idx, ps_byte* buffer, size_t buffer_len)
 {
-    int x, y, z;
-    int bg_color = 0;
-    int alpha_color = 0;
-    int disposal = 0;
+    int32_t x, y, z;
+    int32_t bg_color = 0;
+    int32_t alpha_color = 0;
+    int32_t disposal = 0;
     struct GifImageDesc* img = NULL;
     struct ColorMapObject* colormap = NULL;
     uint8_t* src_data = NULL;
@@ -247,8 +247,8 @@ static int decode_gif_data(psx_image_header* header, const psx_image* image, psx
             }
         } else {
             // Image does not take up whole "screen" so we need to fill-in the background
-            int bottom = img->Top + img->Height;
-            int right = img->Left + img->Width;
+            int32_t bottom = img->Top + img->Height;
+            int32_t right = img->Left + img->Width;
 
             if (idx > 0) { // copy previous frame data
                 psx_image_frame* prevFrame = &image->frames[idx - 1];
@@ -299,8 +299,8 @@ static int decode_gif_data(psx_image_header* header, const psx_image* image, psx
         // Image is interlaced so that it streams nice over 14.4k and 28.8k modems :)
         // We first load in 1/8 of the image, followed by another 1/8, followed by
         // 1/4 and finally the remaining 1/2.
-        int ioffs[] = { 0, 4, 2, 1 };
-        int ijumps[] = { 8, 8, 4, 2 };
+        int32_t ioffs[] = { 0, 4, 2, 1 };
+        int32_t ijumps[] = { 8, 8, 4, 2 };
 
         for (z = 0; z < 4; z++) {
             for (y = ioffs[z]; y < header->height; y += ijumps[z]) {
@@ -321,7 +321,7 @@ static int decode_gif_data(psx_image_header* header, const psx_image* image, psx
     return 0;
 }
 
-static int release_read_gif_info(psx_image_header* header)
+static int32_t release_read_gif_info(psx_image_header* header)
 {
     struct gif_image_ctx* ctx = (struct gif_image_ctx*)header->priv;
     GIF_CLOSE_DFILE(ctx->gif);
@@ -329,7 +329,7 @@ static int release_read_gif_info(psx_image_header* header)
     return 0;
 }
 
-static int get_bpp(ps_color_format fmt)
+static int32_t get_bpp(ps_color_format fmt)
 {
     switch (fmt) {
         case COLOR_FORMAT_RGBA:
@@ -348,7 +348,7 @@ static int get_bpp(ps_color_format fmt)
     }
 }
 
-static int get_depth(ps_color_format fmt)
+static int32_t get_depth(ps_color_format fmt)
 {
     switch (fmt) {
         case COLOR_FORMAT_RGBA:
@@ -367,19 +367,19 @@ static int get_depth(ps_color_format fmt)
     }
 }
 
-static int write_gif_from_memory(GifFileType* gif, const GifByteType* buf, int len)
+static int32_t write_gif_from_memory(GifFileType* gif, const GifByteType* buf, int32_t len)
 {
     struct gif_image_ctx* ctx = (struct gif_image_ctx*)gif->UserData;
     ctx->writer(ctx->writer_param, buf, len);
     return len;
 }
 
-static int write_gif_info(const psx_image* image, image_writer_fn func, void* param,
+static int32_t write_gif_info(const psx_image* image, image_writer_fn func, void* param,
                           float quality, psx_image_header* header)
 {
     size_t buf_size;
 #if GIFLIB_MAJOR >= 5
-    int errorcode = 0;
+    int32_t errorcode = 0;
 #endif
 
     struct gif_image_ctx* ctx = (struct gif_image_ctx*)calloc(1, sizeof(struct gif_image_ctx));
@@ -463,13 +463,13 @@ static int write_gif_info(const psx_image* image, image_writer_fn func, void* pa
     header->pitch = image->pitch;
     header->depth = get_depth(image->format);
     header->bpp = get_bpp(image->format);
-    header->format = (int)image->format;
+    header->format = (int32_t)image->format;
     header->alpha = 1;
-    header->frames = (int)image->num_frames;
+    header->frames = (int32_t)image->num_frames;
     return 0;
 }
 
-static void gif_get_pixel_rgba_premultiply(int format, ps_byte* input_buffer, uint32_t idx, uint32_t rgba[])
+static void gif_get_pixel_rgba_premultiply(int32_t format, ps_byte* input_buffer, uint32_t idx, uint32_t rgba[])
 {
     uint8_t color[4] = {0, 0, 0, 255}; // opaque black
 
@@ -516,11 +516,11 @@ static void gif_get_pixel_rgba_premultiply(int format, ps_byte* input_buffer, ui
     rgba[3] = (uint32_t)color[3];
 }
 
-static int encode_gif_data(psx_image_header* header, const psx_image* image, psx_image_frame* frame, int idx, const ps_byte* buffer, size_t buffer_len, int* ret)
+static int32_t encode_gif_data(psx_image_header* header, const psx_image* image, psx_image_frame* frame, int32_t idx, const ps_byte* buffer, size_t buffer_len, int32_t* ret)
 {
-    int x, y;
+    int32_t x, y;
     ColorMapObject* output_map = NULL;
-    int map_size = 256;
+    int32_t map_size = 256;
 
     struct gif_image_ctx* ctx = (struct gif_image_ctx*)header->priv;
 
@@ -558,7 +558,7 @@ static int encode_gif_data(psx_image_header* header, const psx_image* image, psx
 
         EGifGCBToExtension(&gcb, extension);
 #else
-        int delay = frame->duration / 10;
+        int32_t delay = frame->duration / 10;
         extension[0] = 0;
         extension[1] = LOBYTE(delay);
         extension[2] = HIBYTE(delay);
@@ -584,7 +584,7 @@ static int encode_gif_data(psx_image_header* header, const psx_image* image, psx
     return 0;
 }
 
-static int release_write_gif_info(psx_image_header* header)
+static int32_t release_write_gif_info(psx_image_header* header)
 {
     struct gif_image_ctx* ctx = (struct gif_image_ctx*)header->priv;
 
@@ -610,8 +610,8 @@ static int release_write_gif_info(psx_image_header* header)
 static psx_image_operator* gif_coder = NULL;
 static module_handle lib_image = INVALID_HANDLE;
 
-typedef int (*register_func)(const char*, const ps_byte*, size_t, size_t, psx_priority_level, psx_image_operator*);
-typedef int (*unregister_func)(psx_image_operator*);
+typedef int32_t (*register_func)(const char*, const ps_byte*, size_t, size_t, psx_priority_level, psx_image_operator*);
+typedef int32_t (*unregister_func)(psx_image_operator*);
 
 #if defined(WIN32) && defined(_MSC_VER)
 static wchar_t g_path[MAX_PATH];
@@ -679,7 +679,7 @@ void psx_image_module_shutdown(void)
     }
 }
 
-const char* psx_image_module_get_string(int idx)
+const char* psx_image_module_get_string(int32_t idx)
 {
     switch (idx) {
         case MODULE_NAME:

@@ -52,7 +52,7 @@ static ps_color_format get_format(const psx_image_header* hdr)
     }
 }
 
-static int get_bpp(ps_color_format fmt)
+static int32_t get_bpp(ps_color_format fmt)
 {
     switch (fmt) {
         case COLOR_FORMAT_RGBA:
@@ -76,7 +76,7 @@ struct image_modules_mgr* _get_modules(void)
     return g_modules;
 }
 
-int PICAPI psx_image_init(void)
+int32_t PICAPI psx_image_init(void)
 {
     ps_initialize();
 
@@ -93,7 +93,7 @@ int PICAPI psx_image_init(void)
     return S_OK;
 }
 
-int PICAPI psx_image_shutdown(void)
+int32_t PICAPI psx_image_shutdown(void)
 {
     if (g_modules) {
         modules_destroy(g_modules);
@@ -106,9 +106,9 @@ int PICAPI psx_image_shutdown(void)
 }
 
 psx_image* PICAPI psx_image_create_from_data(ps_byte* data, ps_color_format fmt,
-                                             int width, int height, int pitch, int* err_code)
+                                             int32_t width, int32_t height, int32_t pitch, int32_t* err_code)
 {
-    int i;
+    int32_t i;
     size_t size;
     psx_image* image;
 
@@ -119,7 +119,7 @@ psx_image* PICAPI psx_image_create_from_data(ps_byte* data, ps_color_format fmt,
         return NULL;
     }
 
-    if ((int)fmt < 0 || fmt >= COLOR_FORMAT_UNKNOWN) {
+    if ((int32_t)fmt < 0 || fmt >= COLOR_FORMAT_UNKNOWN) {
         if (err_code) {
             *err_code = S_BAD_PARAMS;
         }
@@ -191,7 +191,7 @@ psx_image* PICAPI psx_image_create_from_data(ps_byte* data, ps_color_format fmt,
     return image;
 }
 
-psx_image* PICAPI psx_image_load(const char* name, int* err_code)
+psx_image* PICAPI psx_image_load(const char* name, int32_t* err_code)
 {
     size_t size;
     ps_byte* file_data;
@@ -293,7 +293,7 @@ static psx_image* load_psx_image(psx_image_operator* op, const ps_byte* data, si
                 goto error;
             }
 
-            if (op->decode_image_data(&header, image, &image->frames[i], (int)i, image->frames[i].data, size) != 0) {
+            if (op->decode_image_data(&header, image, &image->frames[i], (int32_t)i, image->frames[i].data, size) != 0) {
                 goto error;
             }
 
@@ -336,11 +336,11 @@ error:
     return NULL;
 }
 
-static int save_psx_image(psx_image_operator* op, const psx_image* image,
+static int32_t save_psx_image(psx_image_operator* op, const psx_image* image,
                           image_writer_fn func, void* param, float quality)
 {
-    int i;
-    int ret = S_OK;
+    int32_t i;
+    int32_t ret = S_OK;
     psx_image_header header;
     if (!op->write_header_info || !op->encode_image_data) {
         return S_NOT_SUPPORT;
@@ -362,7 +362,7 @@ static int save_psx_image(psx_image_operator* op, const psx_image* image,
     return ret;
 }
 
-psx_image* PICAPI psx_image_load_from_memory(const ps_byte* data, size_t length, int* err_code)
+psx_image* PICAPI psx_image_load_from_memory(const ps_byte* data, size_t length, int32_t* err_code)
 {
     struct image_coder_node* node = NULL;
     psx_image* image = NULL;
@@ -404,10 +404,10 @@ psx_image* PICAPI psx_image_load_from_memory(const ps_byte* data, size_t length,
     return image;
 }
 
-int PICAPI psx_image_save(const psx_image* image, image_writer_fn func, void* param, const char* type, float quality)
+int32_t PICAPI psx_image_save(const psx_image* image, image_writer_fn func, void* param, const char* type, float quality)
 {
     struct image_coder_node* node = NULL;
-    int ret = S_OK;
+    int32_t ret = S_OK;
     if (!image || !func || !type || quality <= 0.0f) {
         return S_BAD_PARAMS;
     }
@@ -430,7 +430,7 @@ int PICAPI psx_image_save(const psx_image* image, image_writer_fn func, void* pa
     return ret;
 }
 
-static int file_writer(void* param, const ps_byte* data, size_t len)
+static int32_t file_writer(void* param, const ps_byte* data, size_t len)
 {
     const pchar* path = (const pchar*)param;
     if (psx_file_write(path, (const uint8_t*)data, len)) {
@@ -440,9 +440,9 @@ static int file_writer(void* param, const ps_byte* data, size_t len)
     }
 }
 
-int PICAPI psx_image_save_to_file(const psx_image* image, const char* name, const char* type, float quality)
+int32_t PICAPI psx_image_save_to_file(const psx_image* image, const char* name, const char* type, float quality)
 {
-    int ret;
+    int32_t ret;
     pchar* file_name;
 
     if (!image || !name || !type || quality <= 0.0f) {
@@ -457,7 +457,7 @@ int PICAPI psx_image_save_to_file(const psx_image* image, const char* name, cons
     return ret;
 }
 
-int PICAPI psx_image_destroy(psx_image* image)
+int32_t PICAPI psx_image_destroy(psx_image* image)
 {
     size_t i;
     if (!image) {

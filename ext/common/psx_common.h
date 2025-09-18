@@ -45,7 +45,8 @@
     #include <stdbool.h>
 #else
     #if !defined(_MSC_VER)
-        typedef int bool;
+        #include <stddef.h>
+        typedef int32_t bool;
         #define true 1;
         #define false 0;
     #endif
