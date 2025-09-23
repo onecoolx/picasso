@@ -5,8 +5,11 @@ project(picasso LANGUAGES C CXX ASM HOMEPAGE_URL https://onecoolx.github.io/pica
 set(PROJECT_ROOT ${CMAKE_CURRENT_LIST_DIR})
 set(PROJECT_OUT ${CMAKE_CURRENT_BINARY_DIR})
 
-set(VERSION_MAJOR 2)
-set(VERSION_MINOR 8)
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+set(VERSION_MAJOR 3)
+set(VERSION_MINOR 0)
 set(VERSION_MICRO 0)
 set(VERSION_INFO ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_MICRO})
 
@@ -29,6 +32,9 @@ option(OPT_LOW_MEMORY "Build Low Memory used support." OFF)
 option(OPT_SYSTEM_MALLOC "Build System Memory Allocator (new/delete/malloc/free/realloc/calloc) used support." OFF)
 option(OPT_INTERNAL_FREETYPE "Build with internal freetype2 code" OFF)
 
+option(OPT_GFX_BACKEND "Using Gfx Software rendering backend" ON)
+option(OPT_GLES2_BACKEND "Using OpenGLES 2.0 rendering backend" OFF)
+
 option(OPT_EXTENSIONS "Build extension libraries." ON)
 
 option(OPT_TESTS "Build test apps" ON)
@@ -47,30 +53,36 @@ if (NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Debug CACHE STRING "Build type" FORCE)
 endif()
 
+if (OPT_GLES2_BACKEND)
+find_library(OpenGL EGL)
+find_library(OpenGL GLES2)
+set(ENABLE_OPENGL_ES2 1)
+endif(OPT_GLES2_BACKEND)
+
 include (${CMAKE_CURRENT_LIST_DIR}/build/configs.cmake)
 include (${CMAKE_CURRENT_LIST_DIR}/build/defines.cmake)
 include (${CMAKE_CURRENT_LIST_DIR}/src/src.cmake)
 
+if (OPT_EXTENSIONS)
 find_library(ZLIB z)
 find_library(PNG png)
 find_library(JPEG jpeg)
 find_library(GIF gif)
 find_library(WEBP webp)
 
-if (OPT_EXTENSIONS)
 include (${CMAKE_CURRENT_LIST_DIR}/third_party/third_party.cmake)
 include (${CMAKE_CURRENT_LIST_DIR}/ext/ext.cmake)
-endif()
+endif(OPT_EXTENSIONS)
 
 include (${CMAKE_CURRENT_LIST_DIR}/include/include.cmake)
 
 if (OPT_TESTS)
 include (${CMAKE_CURRENT_LIST_DIR}/test/test.cmake)
-endif()
+endif(OPT_TESTS)
 
 if (OPT_DEMOS)
 include (${CMAKE_CURRENT_LIST_DIR}/demos/demos.cmake)
-endif()
+endif(OPT_DEMOS)
 
 if (OPT_UNITTEST)
 enable_testing()

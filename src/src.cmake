@@ -29,6 +29,15 @@ elseif (APPLE)
     )
 endif()
 
+if (OPT_GLES2_BACKEND)
+    file(GLOB_RECURSE SOURCES_GLES2 ${PROJECT_ROOT}/src/gles2/*.cpp)
+    set(SOURCES
+        ${SOURCES}
+        ${SOURCES_GLES2}
+    )
+    set(LIB_NAME_GLES picasso2_gles2)
+endif(OPT_GLES2_BACKEND)
+
 add_definitions(-DEXPORT)
 if (BUILD_SHARED_LIBS)
   set(BUILD_LIBS_TYPE SHARED)
@@ -49,24 +58,27 @@ else()
     math(EXPR PICASSO_VERSION "${PICASSO_VERSION} + ${VERSION_MICRO}")
 endif()
 
-add_library(${LIB_NAME} ${BUILD_LIBS_TYPE} ${SOURCES})
-install(TARGETS ${LIB_NAME} LIBRARY DESTINATION lib ARCHIVE DESTINATION lib RUNTIME DESTINATION bin)
-set_target_properties(${LIB_NAME} PROPERTIES VERSION ${VERSION_INFO} SOVERSION ${VERSION_MAJOR})
+foreach(lib_name ${LIB_NAME} ${LIB_NAME_GLES})
+
+add_library(${lib_name} ${BUILD_LIBS_TYPE} ${SOURCES})
+install(TARGETS ${lib_name} LIBRARY DESTINATION lib ARCHIVE DESTINATION lib RUNTIME DESTINATION bin)
+set_target_properties(${lib_name} PROPERTIES VERSION ${VERSION_INFO} SOVERSION ${VERSION_MAJOR})
 
 if (ANDROID)
-    target_link_libraries(${LIB_NAME} PUBLIC ft2 expat)
+    target_link_libraries(${lib_name} PUBLIC ft2 expat)
 elseif (OPT_INTERNAL_FREETYPE)
-    target_link_libraries(${LIB_NAME} PUBLIC ft2)
+    target_link_libraries(${lib_name} PUBLIC ft2)
 elseif (UNIX AND NOT APPLE)
     find_package(Freetype REQUIRED)
     find_package(Fontconfig REQUIRED)
-    target_include_directories(${LIB_NAME} PRIVATE ${FREETYPE_INCLUDE_DIRS} ${FONTCONFIG_INCLUDE_DIRS})
-    target_link_libraries(${LIB_NAME} PUBLIC Freetype::Freetype Fontconfig::Fontconfig)
+    target_include_directories(${lib_name} PRIVATE ${FREETYPE_INCLUDE_DIRS} ${FONTCONFIG_INCLUDE_DIRS})
+    target_link_libraries(${lib_name} PUBLIC Freetype::Freetype Fontconfig::Fontconfig)
 elseif (APPLE)
     find_library(CORETEXT_LIBRARY CoreText)
     find_library(COREGRAPHICS_LIBRARY CoreGraphics)
     find_library(COREFOUNDATION_LIBRARY CoreFoundation)
-    target_link_libraries(${LIB_NAME} PUBLIC ${CORETEXT_LIBRARY} ${COREGRAPHICS_LIBRARY} ${COREFOUNDATION_LIBRARY})
+    target_link_libraries(${lib_name} PUBLIC ${CORETEXT_LIBRARY} ${COREGRAPHICS_LIBRARY} ${COREFOUNDATION_LIBRARY})
 endif()
 
+endforeach()
 

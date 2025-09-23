@@ -1,4 +1,4 @@
-LIBRARY  picasso2_sw
+LIBRARY  picasso3_sw
 EXPORTS
     ps_version
     ps_initialize

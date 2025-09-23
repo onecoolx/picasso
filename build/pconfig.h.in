@@ -46,6 +46,9 @@
 /* Define if System memory allocator is supported. */
 #cmakedefine ENABLE_SYSTEM_MALLOC @ENABLE_SYSTEM_MALLOC@
 
+/* Define if OpenGL ES 2.0 backend is supported. */
+#cmakedefine ENABLE_OPENGL_ES2 @ENABLE_OPENGL_ES2@
+
 /* Have stdint.h */
 #cmakedefine HAVE_STDINT_H @HAVE_STDINT_H@
 
