@@ -887,7 +887,6 @@ void PICAPI ps_rectangle(ps_context* ctx, const ps_rect* pr)
         return;
     }
 
-    ctx->path.set_shape(picasso::graphic_path::shape_rectangle); //It is because boder edge.
     ctx->path.move_to(FLT_TO_SCALAR(floor(pr->x)), FLT_TO_SCALAR(floor(pr->y)));
     ctx->path.hline_rel(FLT_TO_SCALAR(floor(pr->w)));
     ctx->path.vline_rel(FLT_TO_SCALAR(floor(pr->h)));

@@ -19,13 +19,6 @@ class trans_affine;
 class graphic_path : public vertex_container
 {
 public:
-    typedef enum {
-        shape_polygon = 0,
-        shape_rectangle = 1,
-        shape_ellipse = 2,
-        shape_rounded_rect = 3,
-    } shape_type;
-
     graphic_path();
     graphic_path(const graphic_path& o);
 
@@ -113,10 +106,6 @@ public:
     virtual void add_vertex(scalar x, scalar y, uint32_t cmd);
     virtual void remove_all(void);
 
-    // sheap type
-    void set_shape(shape_type s) { m_shape = s; }
-    shape_type get_shape(void) const { return (shape_type)m_shape; }
-
     // serialize
     void serialize_to(byte* buffer);
     void serialize_from(uint32_t num, byte* buffer, uint32_t buf_len);
@@ -143,7 +132,6 @@ private:
     pod_vector<vertex_s> m_vertices;
     pod_vector<uint32_t> m_cmds;
     uint32_t m_iterator;
-    uint32_t m_shape;
 };
 
 inline bool operator != (const graphic_path& a, const graphic_path& b)

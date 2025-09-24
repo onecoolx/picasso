@@ -20,7 +20,6 @@ graphic_path::graphic_path()
     : m_vertices(DEFAULT_VERTEICES)
     , m_cmds(DEFAULT_VERTEICES)
     , m_iterator(0)
-    , m_shape(shape_polygon)
 {
 }
 
@@ -33,7 +32,6 @@ graphic_path::graphic_path(const graphic_path& o)
     m_vertices = o.m_vertices;
     m_cmds = o.m_cmds;
     m_iterator = o.m_iterator;
-    m_shape = o.m_shape;
 }
 
 graphic_path& graphic_path::operator=(const graphic_path& o)
@@ -45,7 +43,6 @@ graphic_path& graphic_path::operator=(const graphic_path& o)
     m_vertices = o.m_vertices;
     m_cmds = o.m_cmds;
     m_iterator = o.m_iterator;
-    m_shape = o.m_shape;
 
     return *this;
 }
@@ -54,7 +51,6 @@ void graphic_path::remove_all(void)
 {
     remove_all_impl();
     m_iterator = 0;
-    m_shape = shape_polygon;
 }
 
 void graphic_path::free_all(void)
