@@ -54,9 +54,10 @@ if (NOT CMAKE_BUILD_TYPE)
 endif()
 
 if (OPT_GLES2_BACKEND)
-find_library(OpenGL EGL)
-find_library(OpenGL GLES2)
+find_library(OpenGL EGL REQUIRED)
+find_library(OpenGL GLES2 REQUIRED)
 set(ENABLE_OPENGL_ES2 1)
+set(ENABLE_EGL 1)
 endif(OPT_GLES2_BACKEND)
 
 include (${CMAKE_CURRENT_LIST_DIR}/build/configs.cmake)

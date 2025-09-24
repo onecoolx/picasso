@@ -7,6 +7,7 @@
 #include <GLES2/gl2.h>
 
 #include "picasso.h"
+#include "picasso_gpu.h"
 #include "drawFunc.h"
 #include "timeuse.h"
 #include "glut.h"
@@ -104,6 +105,9 @@ static int initEGL(GLES2_CONTEXT* ctx)
     ctx->window = window;
     ctx->display = native_dpy;
 
+    pcanvas = ps_canvas_create_for_gpu_surface(surface, context);
+    pcontext = ps_context_create(pcanvas, 0);
+
     return GL_TRUE;
 }
 
@@ -156,7 +160,7 @@ int main(int argc, char*argv[])
     memset(&ctx, 0, sizeof(GLES2_CONTEXT));
 
     __argc = argc;
-    __argv = argv;
+    __argv = (const char**)argv;
 
     ctx.width = 640;
     ctx.height = 480;
@@ -174,6 +178,9 @@ int main(int argc, char*argv[])
         drawFrame(&ctx);
         eglSwapBuffers(ctx.eglDisplay, ctx.eglSurface);
     }
+
+    ps_context_unref(pcontext);
+    ps_canvas_unref(pcanvas);
 
     DestroyNativeWindow(ctx.display, ctx.window);
     DestroyNativeDisplay(ctx.display);

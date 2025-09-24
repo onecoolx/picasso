@@ -49,6 +49,9 @@
 /* Define if OpenGL ES 2.0 backend is supported. */
 #cmakedefine ENABLE_OPENGL_ES2 @ENABLE_OPENGL_ES2@
 
+/* Define if EGL backend is supported. */
+#cmakedefine ENABLE_EGL @ENABLE_EGL@
+
 /* Have stdint.h */
 #cmakedefine HAVE_STDINT_H @HAVE_STDINT_H@
 
