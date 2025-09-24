@@ -13,7 +13,7 @@ include_directories(${PROJECT_ROOT}/include
                     ${PROJECT_ROOT}/src/simd
                     ${PROJECT_OUT}/include)
 
-set(LIB_NAME picasso2_sw)
+set(LIB_NAME picasso3_sw)
 
 if (WIN32)
     set(SOURCES
@@ -35,7 +35,7 @@ if (OPT_GLES2_BACKEND)
         ${SOURCES}
         ${SOURCES_GLES2}
     )
-    set(LIB_NAME_GLES picasso2_gles2)
+    set(LIB_NAME_GLES picasso3_gles2)
 endif(OPT_GLES2_BACKEND)
 
 add_definitions(-DEXPORT)
