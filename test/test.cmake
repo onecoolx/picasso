@@ -11,10 +11,10 @@ if (WIN32)
     set(thread_file ${PROJECT_ROOT}/test/win32/thr_win32.c)
     set(main_file ${PROJECT_ROOT}/test/win32/testWin.c)
     set(app_type WIN32)
-    add_custom_command(TARGET picasso2_sw POST_BUILD
+    add_custom_command(TARGET ${LIB_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy "${PROJECT_ROOT}/test/pat.bmp" "$(ProjectDir)/$(Configuration)" 
     ) 
-    add_custom_command(TARGET picasso2_sw POST_BUILD
+    add_custom_command(TARGET ${LIB_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy "${PROJECT_ROOT}/test/selt2.bmp" "$(ProjectDir)/$(Configuration)" 
     ) 
     set(host_gui_inc ${PROJECT_ROOT}/test/)

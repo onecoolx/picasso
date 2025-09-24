@@ -51,6 +51,6 @@ foreach(demo_file ${DEMOS_SOURCES})
         set_source_files_properties(${plat_file} PROPERTIES COMPILE_FLAGS "-fobjc-arc")
     endif()
     include_directories(${demo} ${plat_gui_inc})
-    target_link_libraries(${demo} PRIVATE picasso2_sw PUBLIC ${plat_gui_lib})
+    target_link_libraries(${demo} PRIVATE ${LIB_NAME} PUBLIC ${plat_gui_lib})
 
 endforeach(demo_file ${DEMOS_SOURCES})
