@@ -26,7 +26,6 @@
 
 #define SNAPSHOT_PATH "svg"
 #include "test.h"
-#include "timeuse.h"
 
 #include "psx_svg_node.h"
 #include "psx_svg_render.h"
