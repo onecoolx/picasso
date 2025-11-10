@@ -24,58 +24,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _PERF_TU_H_
-#define _PERF_TU_H_
+#include "test.h"
 
-#include "stdlib.h"
-#include "stdio.h"
-#include "time.h"
-#if defined(LINUX) || defined(UNIX)
-    #include "unistd.h"
-    #include "sys/time.h"
-#endif
-#if defined(WIN32)
-    #include <windows.h>
-#endif
+PERF_TEST_DEFINE(Matrix);
 
-#if defined(WIN32)
-typedef LARGE_INTEGER clocktime_t;
-
-static inline clocktime_t get_clock()
+PERF_TEST(Matrix, MatrixCreateDestroy)
 {
-    LARGE_INTEGER t;
-    QueryPerformanceCounter(&t);
-    return t;
+    for (int i = 0; i < 1000; i++) {
+        ps_matrix* m = ps_matrix_create();
+        ps_matrix_unref(m);
+    }
 }
-
-static inline double get_clock_used_ms(LARGE_INTEGER t1, LARGE_INTEGER t2)
-{
-    LARGE_INTEGER f;
-    QueryPerformanceFrequency(&f);
-    return ((double)(t2.QuadPart - t1.QuadPart) / (double)f.QuadPart) * 1000;
-}
-
-#else
-typedef struct timespec clocktime_t;
-
-static inline clocktime_t get_clock()
-{
-    struct timespec ts;
-#ifdef CLOCK_MONOTONIC_RAW
-    clock_gettime(CLOCK_MONOTONIC_RAW, &ts);
-#else
-    clock_gettime(CLOCK_MONOTONIC, &ts);
-#endif
-    return ts;
-}
-
-static inline double get_clock_used_ms(const clocktime_t& t1, const clocktime_t& t2)
-{
-    double st1 = t1.tv_sec * 1000.0 + t1.tv_nsec / 1000000.0;
-    double st2 = t2.tv_sec * 1000.0 + t2.tv_nsec / 1000000.0;
-    return st2 - st1;
-}
-
-#endif
-
-#endif

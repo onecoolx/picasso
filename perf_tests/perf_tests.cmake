@@ -1,6 +1,6 @@
 # Picasso - a vector graphics library
 # 
-# Copyright (C) 2024 Zhang Ji Peng
+# Copyright (C) 2025 Zhang Ji Peng
 # Contact: onecoolx@gmail.com
 
 include(FetchContent)
@@ -17,6 +17,18 @@ target_link_libraries(GTest::GTest INTERFACE gtest_main)
 add_library(GMock::GMock INTERFACE IMPORTED)
 target_link_libraries(GMock::GMock INTERFACE gmock_main)
 
+
+FetchContent_Declare(
+  cJSON
+  GIT_REPOSITORY https://github.com/DaveGamble/cJSON.git
+  GIT_TAG        c859b25 # release 1.7.19 version
+)
+FetchContent_MakeAvailable(cJSON)
+add_library(CJson::CJson INTERFACE IMPORTED)
+target_compile_definitions(CJson::CJson INTERFACE ENABLE_CJSON_TEST=OFF)
+target_link_libraries(CJson::CJson INTERFACE cjson)
+
+
 file(GLOB_RECURSE PS_PERF_SOURCES ${PROJECT_ROOT}/perf_tests/ps_*.cpp)
 if (OPT_EXTENSIONS)
     file(GLOB_RECURSE EXT_PERF_SOURCES ${PROJECT_ROOT}/perf_tests/ext_*.cpp)
@@ -29,15 +41,14 @@ set(PERF_SOURCES
     ${EXT_PERF_SOURCES}
 )
 
-#set(PERF_SOURCES ${PERF_SOURCES} ${lodepng_SOURCE_DIR}/lodepng.cpp)
 set(PERF_SOURCES ${PERF_SOURCES} ${PLATFORM_SPECIAL})
 
 set(PERF_TESTS perf_tests)
 
 include_directories(${PROJECT_ROOT})
 add_executable(${PERF_TESTS} ${PERF_SOURCES})
-target_link_libraries(${PERF_TESTS} PRIVATE GTest::GTest GMock::GMock ${LIB_NAME} ${LIBX_IMAGE} ${LIBX_SVG_STATIC} ${LIBX_COMMON})
-target_include_directories(${PERF_TESTS} PRIVATE ${lodepng_SOURCE_DIR})
+target_link_libraries(${PERF_TESTS} PRIVATE GTest::GTest GMock::GMock CJson::CJson ${LIB_NAME} ${LIBX_IMAGE} ${LIBX_SVG_STATIC} ${LIBX_COMMON})
+target_include_directories(${PERF_TESTS} PRIVATE ${cJSON_SOURCE_DIR})
 if (OPT_EXTENSIONS)
     target_compile_definitions(${PERF_TESTS} PRIVATE -DENABLE_EXTENSIONS=1)
 endif()
