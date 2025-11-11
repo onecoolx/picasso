@@ -38,44 +38,29 @@
     #include <windows.h>
 #endif
 
+typedef double clocktime_t;
+
 #if defined(WIN32)
-typedef LARGE_INTEGER clocktime_t;
-
-static inline clocktime_t get_clock()
+static inline double get_clock()
 {
-    LARGE_INTEGER t;
-    QueryPerformanceCounter(&t);
-    return t;
-}
-
-static inline double get_clock_used_ms(LARGE_INTEGER t1, LARGE_INTEGER t2)
-{
-    LARGE_INTEGER f;
-    QueryPerformanceFrequency(&f);
-    return ((double)(t2.QuadPart - t1.QuadPart) / (double)f.QuadPart) * 1000;
+    LARGE_INTEGER counter, frequency;
+    QueryPerformanceFrequency(&frequency);
+    QueryPerformanceCounter(&counter);
+    return static_cast<double>(counter.QuadPart) / static_cast<double>(frequency.QuadPart);
 }
 
 #else
-typedef struct timespec clocktime_t;
-
-static inline clocktime_t get_clock()
+static inline double get_clock()
 {
     struct timespec ts;
-#ifdef CLOCK_MONOTONIC_RAW
-    clock_gettime(CLOCK_MONOTONIC_RAW, &ts);
-#else
     clock_gettime(CLOCK_MONOTONIC, &ts);
-#endif
-    return ts;
+    return static_cast<double>(ts.tv_sec) + static_cast<double>(ts.tv_nsec) / 1000000000.0;
 }
+#endif
 
-static inline double get_clock_used_ms(const clocktime_t& t1, const clocktime_t& t2)
+static inline double get_clock_used_ms(double t1, double t2)
 {
-    double st1 = t1.tv_sec * 1000.0 + t1.tv_nsec / 1000000.0;
-    double st2 = t2.tv_sec * 1000.0 + t2.tv_nsec / 1000000.0;
-    return st2 - st1;
+    return (t2 - t1) * 1000.0;
 }
-
-#endif
 
 #endif

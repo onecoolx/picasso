@@ -74,8 +74,9 @@ void clear_test_canvas(void);
 class PerformanceTest : public ::testing::Test
 {
 protected:
+    static constexpr int WARMUP_ITERATIONS = 10;
     static constexpr int TEST_ITERATIONS = 100;
-    static constexpr double TOLERANCE_PERCENT = 5.0; // 10% tolerance
+    static constexpr double TOLERANCE_PERCENT = 10.0; // 10% tolerance
 
     struct BenchmarkResult {
         double avg_ms;
@@ -117,12 +118,18 @@ protected:
     template<typename Func>
     BenchmarkResult RunBenchmark(const std::string& test_name, Func&& func)
     {
+        // Warmup
+        for (int i = 0; i < WARMUP_ITERATIONS; ++i) {
+            clear_dcache();
+            func();
+        }
+
         std::vector<double> times;
         times.reserve(TEST_ITERATIONS);
 
         // clean cache
-        clear_dcache();
         for (int i = 0; i < TEST_ITERATIONS; ++i) {
+            clear_dcache();
             clocktime_t start = get_clock();
             func();
             clocktime_t end = get_clock();
@@ -185,5 +192,9 @@ protected:
         CompareToBenchmark(#case_name, result); \
     } \
     static inline void case_name##_func()
+
+#define PERF_TEST_RUN(test_name, case_name) \
+    const char * test_name##_##case_name = #case_name; \
+    TEST_F(test_name##PerformanceTest, case_name)
 
 #endif

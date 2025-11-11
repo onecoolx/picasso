@@ -30,8 +30,22 @@ PERF_TEST_DEFINE(Matrix);
 
 PERF_TEST(Matrix, MatrixCreateDestroy)
 {
-    for (int i = 0; i < 1000; i++) {
+    for (int i = 0; i < 10000; i++) {
         ps_matrix* m = ps_matrix_create();
         ps_matrix_unref(m);
     }
+}
+
+PERF_TEST_RUN(Matrix, MatrixTranslate)
+{
+    ps_matrix* m = ps_matrix_create();
+
+    auto result = RunBenchmark(Matrix_MatrixTranslate, [&]() {
+        for (int i = 0; i < 10000; i++) {
+            ps_matrix_translate(m, i, i);
+        }
+    });
+
+    CompareToBenchmark(Matrix_MatrixTranslate, result);
+    ps_matrix_unref(m);
 }
