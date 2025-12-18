@@ -363,10 +363,10 @@ ps_canvas* PICAPI ps_canvas_create_from_mask(ps_mask* m, const ps_rect* r)
             rc.y = r->y;
         }
         if (r->w > 0) {
-            rc.w = r->w;
+            rc.w = MIN(rc.w - rc.x, r->w);
         }
         if (r->h > 0) {
-            rc.h = r->h;
+            rc.h = MIN(rc.h - rc.y, r->h);
         }
     }
 
