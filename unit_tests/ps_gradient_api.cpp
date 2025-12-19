@@ -352,7 +352,7 @@ TEST_F(GradientTest, DrawTransformedGradient)
     ps_matrix* matrix = ps_matrix_create();
     ps_matrix_translate(matrix, 100, 100);
     ps_matrix_translate(matrix, -50, -50);
-    ps_matrix_rotate(matrix, 45 * M_PI / 180);
+    ps_matrix_rotate(matrix, (float)(45 * M_PI / 180.0f));
     ps_matrix_translate(matrix, 50, 50);
     ps_gradient_transform(gradient, matrix);
 
