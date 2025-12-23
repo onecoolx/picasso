@@ -464,7 +464,7 @@ TEST_F(ContextTest, DrawRegressionText)
     f = ps_set_font(ctx, f);
     ps_font_unref(f);
 
-    EXPECT_SNAPSHOT_EQ(context_text_rendering);
+    EXPECT_SYS_SNAPSHOT_EQ(context_text_rendering);
 }
 
 TEST_F(ContextTest, DrawRegressionRects)
