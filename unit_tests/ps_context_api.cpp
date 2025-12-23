@@ -518,3 +518,196 @@ TEST_F(ContextTest, DrawComplexPath)
 
     EXPECT_SNAPSHOT_EQ(context_complex_star_path);
 }
+
+// Blur attribute tests
+TEST_F(ContextTest, BlurBasicFunctionality)
+{
+    // Test default blur is 0
+    float oldBlur = ps_set_blur(ctx, 0.5f);
+    EXPECT_FLOAT_EQ(0.0f, oldBlur);
+    ASSERT_EQ(STATUS_SUCCEED, ps_last_status());
+
+    // Test setting blur returns previous value
+    oldBlur = ps_set_blur(ctx, 0.8f);
+    EXPECT_FLOAT_EQ(0.5f, oldBlur);
+    ASSERT_EQ(STATUS_SUCCEED, ps_last_status());
+}
+
+TEST_F(ContextTest, BlurRangeValidation)
+{
+    // Test lower bound clamping
+    float oldBlur = ps_set_blur(ctx, -0.5f);
+    EXPECT_FLOAT_EQ(0.0f, oldBlur); // Previous value from last test
+    ASSERT_EQ(STATUS_SUCCEED, ps_last_status());
+
+    // Test upper bound clamping
+    oldBlur = ps_set_blur(ctx, 1.5f);
+    EXPECT_FLOAT_EQ(0.0f, oldBlur); // Should be clamped to 0
+    ASSERT_EQ(STATUS_SUCCEED, ps_last_status());
+
+    // Test exact boundary values
+    ps_set_blur(ctx, 0.0f);
+    ASSERT_EQ(STATUS_SUCCEED, ps_last_status());
+
+    ps_set_blur(ctx, 1.0f);
+    ASSERT_EQ(STATUS_SUCCEED, ps_last_status());
+}
+
+TEST_F(ContextTest, BlurWithDrawingOperations)
+{
+    clear_test_canvas();
+
+    ps_color color = {1.0f, 0.0f, 0.0f, 1.0f}; // Red
+    ps_set_source_color(ctx, &color);
+    ps_set_blur(ctx, 0.5f);
+
+    // Test blur with stroke
+    ps_rect rc = {20, 20, 60, 60};
+    ps_rectangle(ctx, &rc);
+    ps_stroke(ctx);
+
+    // Test blur with fill
+    ps_set_blur(ctx, 0.8f);
+    ps_rect rc1 = {100, 100, 60, 60};
+    ps_rectangle(ctx, &rc1);
+    ps_fill(ctx);
+
+    // Test blur with paint
+    ps_set_blur(ctx, 0.3f);
+    ps_rect rc2 = {180, 20, 60, 60};
+    ps_rectangle(ctx, &rc2);
+    ps_paint(ctx);
+
+    EXPECT_SNAPSHOT_EQ(context_blur_drawing_operations);
+}
+
+TEST_F(ContextTest, BlurWithShadows)
+{
+    clear_test_canvas();
+
+    ps_color color = {0.0f, 1.0f, 0.0f, 1.0f}; // Green
+    ps_set_source_color(ctx, &color);
+
+    // Set shadow with blur
+    ps_set_shadow(ctx, 5.0f, 5.0f, 0.5f);
+    ps_color c = {0.0f, 0.0f, 0.0f, 0.5f};
+    ps_set_shadow_color(ctx, &c); // Semi-transparent black
+
+    // Set context blur as well
+    ps_set_blur(ctx, 0.3f);
+
+    ps_rect rc = {50, 50, 100, 100};
+    ps_rectangle(ctx, &rc);
+    ps_fill(ctx);
+
+    EXPECT_SNAPSHOT_EQ(context_blur_with_shadows);
+}
+
+TEST_F(ContextTest, BlurStateSaveRestore)
+{
+    clear_test_canvas();
+
+    // Set initial blur
+    ps_set_blur(ctx, 0.5f);
+
+    // Save state
+    ps_save(ctx);
+
+    // Change blur
+    ps_set_blur(ctx, 0.8f);
+
+    // Draw with new blur
+    ps_color color = {1.0f, 0.0f, 0.0f, 1.0f};
+    ps_set_source_color(ctx, &color);
+    ps_rect rc1 = { 20, 20, 80, 80 };
+    ps_rectangle(ctx, &rc1);
+    ps_fill(ctx);
+
+    // Restore state
+    ps_restore(ctx);
+
+    // Draw with restored blur
+    ps_color blueColor = {0.0f, 0.0f, 1.0f, 1.0f};
+    ps_set_source_color(ctx, &blueColor);
+    ps_rect rc2 = { 120, 120, 80, 80 };
+    ps_rectangle(ctx, &rc2);
+    ps_fill(ctx);
+
+    EXPECT_SNAPSHOT_EQ(context_blur_state_save_restore);
+}
+
+TEST_F(ContextTest, BlurBadCases)
+{
+    // Test with null context
+    float result = ps_set_blur(NULL, 0.5f);
+    EXPECT_FLOAT_EQ(0.0f, result);
+    ASSERT_EQ(STATUS_INVALID_ARGUMENT, ps_last_status());
+}
+
+TEST_F(ContextTest, BlurVisualRegression)
+{
+    clear_test_canvas();
+
+    ps_color color = {1.0f, 0.5f, 0.0f, 1.0f}; // Orange
+    ps_set_source_color(ctx, &color);
+
+    // Create gradient blur effect
+    for (int i = 0; i < 5; i++) {
+        ps_set_blur(ctx, i * 0.2f);
+        ps_rect rc = {20.0f + i * 50.0f, 50.0f, 25.0f, 80.0f};
+        ps_rectangle(ctx, &rc);
+        ps_fill(ctx);
+    }
+
+    EXPECT_SNAPSHOT_EQ(context_blur_gradient_effect);
+}
+
+TEST_F(ContextTest, BlurWithComplexPaths)
+{
+    clear_test_canvas();
+
+    ps_color color = {0.5f, 0.0f, 1.0f, 1.0f}; // Purple
+    ps_set_source_color(ctx, &color);
+    ps_set_blur(ctx, 0.6f);
+
+    ps_point startPt = {100.0f, 50.0f};
+    ps_move_to(ctx, &startPt);
+
+    ps_point fcp1 = {150.0f, 20.0f};
+    ps_point scp1 = {200.0f, 80.0f};
+    ps_point ep1 = {250.0f, 50.0f};
+    ps_bezier_curve_to(ctx, &fcp1, &scp1, &ep1);
+
+    ps_point fcp2 = {200.0f, 120.0f};
+    ps_point scp2 = {150.0f, 80.0f};
+    ps_point ep2 = {100.0f, 150.0f};
+    ps_bezier_curve_to(ctx, &fcp2, &scp2, &ep2);
+
+    ps_close_path(ctx);
+
+    ps_fill(ctx);
+
+    EXPECT_SNAPSHOT_EQ(context_blur_complex_path);
+}
+
+TEST_F(ContextTest, BlurWithAntialias)
+{
+    clear_test_canvas();
+
+    ps_color color = {0.0f, 0.8f, 0.8f, 1.0f}; // Cyan
+    ps_set_source_color(ctx, &color);
+    ps_set_blur(ctx, 0.4f);
+
+    ps_set_antialias(ctx, True);
+    ps_rect ellipseRect1 = {40.0f, 50.0f, 80.0f, 60.0f};
+    ps_ellipse(ctx, &ellipseRect1);
+    ps_fill(ctx);
+
+    // Test with antialias off
+    ps_set_antialias(ctx, False);
+    ps_rect ellipseRect2 = {140.0f, 50.0f, 80.0f, 60.0f};
+    ps_ellipse(ctx, &ellipseRect2);
+    ps_fill(ctx);
+
+    EXPECT_SNAPSHOT_EQ(context_blur_antialias);
+}
