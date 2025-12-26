@@ -50,7 +50,7 @@ protected:
     ps_context* ctx;
 };
 
-#define ps_text_out(ctx, x, y, str) ps_text_out_length((ctx), (x), (y), (str), (uint32_t)strlen((str)))
+#define ps_text_out(ctx, x, y, str) ps_text_out_length((ctx), (float)(x), (float)(y), (str), (uint32_t)strlen((str)))
 
 // Font creation tests
 TEST_F(FontTest, CreateFontValidParams)
@@ -429,7 +429,7 @@ TEST_F(FontTest, DrawDifferentSizes)
         ps_set_text_color(ctx, &colors[i]);
 
         ps_font* oldFont = ps_set_font(ctx, font);
-        ps_text_out(ctx, 50, 100 + i * 30, text);
+        ps_text_out(ctx, 50.0f, 100 + i * 30.0f, text);
 
         ps_set_font(ctx, oldFont); // reset font
 
