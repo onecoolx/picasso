@@ -1868,8 +1868,8 @@ TEST_F(FontTest, TextMeasurementAccuracy)
     const char* test_text = "Measurement Test";
     ps_size extent1, extent2;
 
-    ps_bool result1 = ps_get_text_extent(ctx, test_text, strlen(test_text), &extent1);
-    ps_bool result2 = ps_get_text_extent(ctx, test_text, strlen(test_text), &extent2);
+    ps_bool result1 = ps_get_text_extent(ctx, test_text, (uint32_t)strlen(test_text), &extent1);
+    ps_bool result2 = ps_get_text_extent(ctx, test_text, (uint32_t)strlen(test_text), &extent2);
 
     ASSERT_TRUE(result1);
     ASSERT_TRUE(result2);
