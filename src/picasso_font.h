@@ -259,6 +259,7 @@ public:
     static void shutdown(void);
 private:
     int32_t find_font(const char* font_signature);
+    void relayout_fonts(void);
 
     font** m_fonts;
     font* m_current;

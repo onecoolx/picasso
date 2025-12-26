@@ -211,9 +211,15 @@ void PICAPI ps_font_set_weight(ps_font* f, int32_t w)
         return;
     }
 
-    if (!f || w < 100 || w > 900) {
+    if (!f) {
         global_status = STATUS_INVALID_ARGUMENT;
         return;
+    }
+
+    if (w < 100) {
+        w = 100;
+    } else if (w > 900) {
+        w = 900;
     }
 
     f->desc.set_weight(FLT_TO_SCALAR(w));
@@ -304,7 +310,7 @@ void PICAPI ps_text_out_length(ps_context* ctx, float x, float y, const char* te
         gy += ctx->fonts->current_font()->ascent() + ctx->fonts->current_font()->leading();
 
         const char* p = text;
-        while (*p && len) {
+        while (len && *p) {
             _REGISTER_ char c = *p;
             const picasso::glyph* glyph = ctx->fonts->current_font()->get_glyph(c);
             if (glyph) {
@@ -345,7 +351,7 @@ void PICAPI ps_wide_text_out_length(ps_context* ctx, float x, float y, const ps_
         gy += ctx->fonts->current_font()->ascent();
 
         const ps_uchar16* p = text;
-        while (*p && len) {
+        while (len && *p) {
             _REGISTER_ ps_uchar16 c = *p;
             const picasso::glyph* glyph = ctx->fonts->current_font()->get_glyph(c);
             if (glyph) {
@@ -368,7 +374,7 @@ void PICAPI ps_wide_text_out_length(ps_context* ctx, float x, float y, const ps_
 }
 
 void PICAPI ps_draw_text(ps_context* ctx, const ps_rect* area, const void* text, uint32_t len,
-                         ps_draw_text_type type, ps_text_align align)
+                         ps_draw_text_type type, uint32_t align)
 {
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;
@@ -391,22 +397,34 @@ void PICAPI ps_draw_text(ps_context* ctx, const ps_rect* area, const void* text,
 
         // align layout
         scalar w = 0, h = 0;
-        const picasso::glyph* glyph_test = NULL;
+        uint32_t tl = len;
 
         if (ctx->state->font->desc.charset() == CHARSET_ANSI) {
             const char* p = (const char*)text;
-            glyph_test = ctx->fonts->current_font()->get_glyph(*p);
+            while (tl && *p) {
+                _REGISTER_ char c = *p;
+                const picasso::glyph* glyph = ctx->fonts->current_font()->get_glyph(c);
+                if (glyph) {
+                    w += glyph->advance_x;
+                }
+
+                tl--;
+                p++;
+            }
         } else {
             const ps_uchar16* p = (const ps_uchar16*)text;
-            glyph_test = ctx->fonts->current_font()->get_glyph(*p);
-        }
+            while (tl && *p) {
+                _REGISTER_ ps_uchar16 c = *p;
+                const picasso::glyph* glyph = ctx->fonts->current_font()->get_glyph(c);
+                if (glyph) {
+                    w += glyph->advance_x;
+                }
 
-        if (glyph_test) {
-            w = glyph_test->advance_x;
-            h = glyph_test->height; //Note: advance_y always 0.
+                tl--;
+                p++;
+            }
         }
-
-        w *= len; //FIXME: estimate!
+        h = SCALAR_TO_FLT(ctx->fonts->current_font()->height());
 
         if (align & TEXT_ALIGN_LEFT) {
             x = FLT_TO_SCALAR(area->x);
@@ -421,10 +439,10 @@ void PICAPI ps_draw_text(ps_context* ctx, const ps_rect* area, const void* text,
             y += ctx->fonts->current_font()->ascent();
         } else if (align & TEXT_ALIGN_BOTTOM) {
             y = FLT_TO_SCALAR(area->y + (area->h - SCALAR_TO_FLT(h)));
-            y -= ctx->fonts->current_font()->descent();
+            y += ctx->fonts->current_font()->ascent() - ctx->fonts->current_font()->leading();
         } else {
             y = FLT_TO_SCALAR(area->y + (area->h - SCALAR_TO_FLT(h)) / 2);
-            y += (ctx->fonts->current_font()->ascent() - ctx->fonts->current_font()->descent()) / 2;
+            y += ctx->fonts->current_font()->ascent() - ctx->fonts->current_font()->leading();
         }
 
         // draw the text
@@ -520,7 +538,7 @@ ps_bool PICAPI ps_get_text_extent(ps_context* ctx, const void* text, uint32_t le
     if (create_device_font(ctx)) {
         if (ctx->state->font->desc.charset() == CHARSET_ANSI) {
             const char* p = (const char*)text;
-            while (*p && len) {
+            while (len && *p) {
                 _REGISTER_ char c = *p;
                 const picasso::glyph* glyph = ctx->fonts->current_font()->get_glyph(c);
                 if (glyph) {
@@ -532,7 +550,7 @@ ps_bool PICAPI ps_get_text_extent(ps_context* ctx, const void* text, uint32_t le
             }
         } else {
             const ps_uchar16* p = (const ps_uchar16*)text;
-            while (*p && len) {
+            while (len && *p) {
                 _REGISTER_ ps_uchar16 c = *p;
                 const picasso::glyph* glyph = ctx->fonts->current_font()->get_glyph(c);
                 if (glyph) {

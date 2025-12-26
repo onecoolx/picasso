@@ -37,7 +37,6 @@
 
 void PS_Init();
 void PS_Shutdown();
-void clear_dcache(void);
 ps_canvas* get_test_canvas(void);
 void clear_test_canvas(void);
 

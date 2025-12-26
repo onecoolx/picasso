@@ -2355,7 +2355,7 @@ typedef enum _ps_draw_text_type {
 /**
  * \brief Text align mode for drawing text.
  */
-typedef enum _ps_text_align {
+enum _ps_text_align {
     /**
      * Centers text horizontally in the rectangle.
      */
@@ -2376,11 +2376,11 @@ typedef enum _ps_text_align {
      * Aligns text to right.
      */
     TEXT_ALIGN_RIGHT = 8,
-} ps_text_align;
+};
 
 /**
  * \fn void ps_draw_text(ps_context* ctx, const ps_rect* area, const void* text, uint32_t length,
- *                                                                         ps_draw_text_type type, ps_text_align align)
+ *                                                                         ps_draw_text_type type, uint32_t align)
  * \brief Draw text in a rectangle area, using font object which is selected in graphic context.
  *
  * \param ctx     Pointer to an existing context object.
@@ -2393,7 +2393,7 @@ typedef enum _ps_text_align {
  * \sa ps_text_out_length, ps_wide_text_out_length
  */
 PEXPORT void PICAPI ps_draw_text(ps_context* ctx, const ps_rect* area, const void* text,
-                                 uint32_t length, ps_draw_text_type type, ps_text_align align);
+                                 uint32_t length, ps_draw_text_type type, uint32_t align);
 
 /**
  * \fn ps_bool ps_get_glyph(ps_context* ctx, int32_t ch, ps_glyph* glyph)

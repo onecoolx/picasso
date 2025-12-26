@@ -258,8 +258,11 @@ static void write_default(void)
 
         fprintf(pf, "[%s]\n", "default");
         fprintf(pf, "path=%s\n", "ZCOOLXiaoWei-Regular.ttf");
-        fprintf(pf, "[%s]\n", "arial");
-        fprintf(pf, "path=%s\n", "arial.ttf");
+
+        /* Note: add more default fonts like this
+         * fprintf(pf, "[%s]\n", "arial");
+         * fprintf(pf, "path=%s\n", "arial.ttf");
+         */
 
         fclose(pf);
     }
@@ -334,6 +337,10 @@ bool _load_fonts(void)
     } else {
         // not found config file.
         write_default();
+
+        pf = OPENFILE(CONFIG_FILE, F("r"));
+        load_font_from_file(pf);
+        fclose(pf);
     }
 #endif
 

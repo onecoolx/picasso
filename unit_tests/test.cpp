@@ -30,22 +30,7 @@
     #include "images/psx_image_plugin.h"
 #endif
 
-volatile int tmp;
-static int dummy[4096000];
-void clear_dcache(void)
-{
-    int sum = 0;
-    for (int i = 0; i < 4096000; i++) {
-        dummy[i] = 2;
-    }
-    for (int i = 0; i < 4096000; i++) {
-        sum += dummy[i];
-    }
-
-    tmp = sum;
-}
-
-const uint8_t tolerance = 5;
+const uint8_t tolerance = 5; // pixels compare tolerance
 static uint8_t* test_buffer = NULL;
 static ps_canvas* test_canvas = NULL;
 
