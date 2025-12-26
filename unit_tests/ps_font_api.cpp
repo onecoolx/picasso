@@ -50,7 +50,7 @@ protected:
     ps_context* ctx;
 };
 
-#define ps_text_out(ctx, x, y, str) ps_text_out_length((ctx), (x), (y), (str), strlen((str)))
+#define ps_text_out(ctx, x, y, str) ps_text_out_length((ctx), (x), (y), (str), (uint32_t)strlen((str)))
 
 // Font creation tests
 TEST_F(FontTest, CreateFontValidParams)
