@@ -613,7 +613,7 @@ TEST_F(FontTest, GetTextExtentUnicode)
     ASSERT_TRUE(result);
     ASSERT_EQ(STATUS_SUCCEED, ps_last_status());
 
-    ASSERT_GE(extent.w, 0.0f); 
+    ASSERT_GE(extent.w, 0.0f);
     ASSERT_GE(extent.h, 0.0f);
 
     ps_set_font(ctx, oldFont); // reset font
