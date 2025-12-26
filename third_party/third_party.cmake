@@ -6,7 +6,7 @@
 if (ANDROID)
 include (${CMAKE_CURRENT_LIST_DIR}/freetype.cmake)
 include (${CMAKE_CURRENT_LIST_DIR}/expat.cmake)
-elseif (OPT_INTERNAL_FREETYPE)
+elseif (UNIX AND OPT_INTERNAL_FREETYPE)
 include (${CMAKE_CURRENT_LIST_DIR}/freetype.cmake)
 endif()
 
