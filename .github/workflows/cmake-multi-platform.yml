@@ -78,7 +78,6 @@ jobs:
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         -DCMAKE_POLICY_VERSION_MINIMUM="3.5"
         -DOPT_UNITTEST=ON
-        -DOPT_FREE_TYPE2=ON
         -DOPT_INTERNAL_FREETYPE=ON
         -S ${{ github.workspace }}
 
