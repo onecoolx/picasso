@@ -185,7 +185,7 @@ psx_result PICAPI psx_svg_render_draw(ps_context* ctx, const psx_svg_render* ren
 
 psx_result PICAPI psx_svg_init(void)
 {
-    return (psx_result)psx_image_init();
+    return psx_image_init();
 }
 
 void PICAPI psx_svg_shutdown(void)

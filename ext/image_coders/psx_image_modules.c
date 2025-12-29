@@ -108,7 +108,8 @@ struct image_coder_node* get_first_operator(struct image_modules_mgr* mgr, const
 
     list_for_each(&(mgr->coders), ptr) {
         entry = (struct image_coder_node*)ptr;
-        if (memcmp(data + entry->magic_offset, entry->magic_hdr, entry->magic_len) == 0) {
+        if (entry && (len > (entry->magic_offset + entry->magic_len))
+            && memcmp(data + entry->magic_offset, entry->magic_hdr, entry->magic_len) == 0) {
             break;
         }
         entry = NULL;

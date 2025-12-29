@@ -6,7 +6,7 @@
  * This file includes all interfaces of picasso extended image decoders.
  \verbatim
 
-    Copyright (C) 2008 ~ 2024  Zhang Ji Peng
+    Copyright (C) 2008 ~ 2026  Zhang Ji Peng
 
     All rights reserved.
 
@@ -136,17 +136,15 @@ typedef struct _psx_image {
  *
  * \sa psx_image_shutdown
  */
-PEXPORT int32_t PICAPI psx_image_init(void);
+PEXPORT psx_result PICAPI psx_image_init(void);
 
 /**
  * \fn int32_t psx_image_shutdown(void)
- * \brief Release resources and shutdoen.
- *
- * \return Result code returned.
+ * \brief Release resources and shutdown.
  *
  * \sa psx_image_init
  */
-PEXPORT int32_t PICAPI psx_image_shutdown(void);
+PEXPORT void PICAPI psx_image_shutdown(void);
 
 /**
  * \fn psx_image* psx_image_create_from_data(ps_byte* data, ps_color_format fmt,

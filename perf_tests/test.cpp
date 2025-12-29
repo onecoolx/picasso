@@ -106,6 +106,7 @@ void PerformanceTest::LoadBaseline()
 
     std::ifstream file(baseline_file);
     if (!file.is_open()) {
+        need_write_baseline = true;
         return;
     }
 
@@ -115,6 +116,7 @@ void PerformanceTest::LoadBaseline()
 
     if (json_str.empty()) {
         std::cerr << "Error: JSON file is empty" << std::endl;
+        need_write_baseline = true;
         return;
     }
 
@@ -125,12 +127,14 @@ void PerformanceTest::LoadBaseline()
             std::cerr << "Error: JSON parse error before: " << error_ptr << std::endl;
         }
         std::cerr << "Error: Failed to parse JSON from file " << baseline_file << std::endl;
+        need_write_baseline = true;
         return;
     }
 
     if (cJSON_IsObject(root) == 0) {
         std::cerr << "Error: Root JSON element is not an object" << std::endl;
         cJSON_Delete(root);
+        need_write_baseline = true;
         return;
     }
 

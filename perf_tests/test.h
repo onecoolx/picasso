@@ -86,6 +86,7 @@ protected:
 
     std::map<std::string, BenchmarkResult> baseline_data;
     std::string baseline_file;
+    bool need_write_baseline;
 
     static void SetUpTestSuite()
     {
@@ -104,12 +105,15 @@ protected:
 
     void SetUp() override
     {
+        need_write_baseline = false;
         LoadBaseline();
     }
 
     void TearDown() override
     {
-        SaveBaseline();
+        if (need_write_baseline) {
+            SaveBaseline();
+        }
     }
 
     void LoadBaseline();

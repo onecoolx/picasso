@@ -76,7 +76,7 @@ struct image_modules_mgr* _get_modules(void)
     return g_modules;
 }
 
-int32_t PICAPI psx_image_init(void)
+psx_result PICAPI psx_image_init(void)
 {
     ps_initialize();
 
@@ -93,7 +93,7 @@ int32_t PICAPI psx_image_init(void)
     return S_OK;
 }
 
-int32_t PICAPI psx_image_shutdown(void)
+void PICAPI psx_image_shutdown(void)
 {
     if (g_modules) {
         modules_destroy(g_modules);
@@ -102,7 +102,6 @@ int32_t PICAPI psx_image_shutdown(void)
     }
 
     ps_shutdown();
-    return S_OK;
 }
 
 psx_image* PICAPI psx_image_create_from_data(ps_byte* data, ps_color_format fmt,
