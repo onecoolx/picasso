@@ -86,6 +86,8 @@ void CompareArrays(const T* expected, const T* actual, size_t length)
     || defined(ARM) \
     || defined(_ARM_)
     #define ARCH "arm"
+#elif defined(__aarch64__)
+    #define ARCH "arm64"
 #else
     #define ARCH "unknown"
 #endif
