@@ -4,6 +4,7 @@
 [![Arm Build](https://github.com/onecoolx/picasso/actions/workflows/arm-linux.yml/badge.svg)](https://github.com/onecoolx/picasso/actions/workflows/arm-linux.yml)
 [![WebAssembly Build](https://github.com/onecoolx/picasso/actions/workflows/webassembly.yml/badge.svg)](https://github.com/onecoolx/picasso/actions/workflows/webassembly.yml)
 [![CodeFactor](https://www.codefactor.io/repository/github/onecoolx/picasso/badge)](https://www.codefactor.io/repository/github/onecoolx/picasso)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/onecoolx/picasso)
 
 Copyright (C) 2008 ~ 2025 Zhang Ji Peng  (onecoolx@gmail.com)
 
