@@ -403,10 +403,10 @@ psx_image* PICAPI psx_image_load_from_memory(const ps_byte* data, size_t length,
     return image;
 }
 
-int32_t PICAPI psx_image_save(const psx_image* image, image_writer_fn func, void* param, const char* type, float quality)
+psx_result PICAPI psx_image_save(const psx_image* image, image_writer_fn func, void* param, const char* type, float quality)
 {
     struct image_coder_node* node = NULL;
-    int32_t ret = S_OK;
+    psx_result ret = S_OK;
     if (!image || !func || !type || quality <= 0.0f) {
         return S_BAD_PARAMS;
     }
@@ -439,31 +439,28 @@ static int32_t file_writer(void* param, const ps_byte* data, size_t len)
     }
 }
 
-int32_t PICAPI psx_image_save_to_file(const psx_image* image, const char* name, const char* type, float quality)
+psx_result PICAPI psx_image_save_to_file(const psx_image* image, const char* name, const char* type, float quality)
 {
-    int32_t ret;
-    pchar* file_name;
-
     if (!image || !name || !type || quality <= 0.0f) {
         return S_BAD_PARAMS;
     }
-    file_name = psx_path_create(name, NULL);
+
+    pchar* file_name = psx_path_create(name, NULL);
     if (psx_file_exists(file_name)) {
         psx_file_remove(file_name); // remove old file.
     }
-    ret = psx_image_save(image, file_writer, (void*)file_name, type, quality);
+    psx_result ret = psx_image_save(image, file_writer, (void*)file_name, type, quality);
     psx_path_destroy(file_name);
     return ret;
 }
 
-int32_t PICAPI psx_image_destroy(psx_image* image)
+void PICAPI psx_image_destroy(psx_image* image)
 {
-    size_t i;
     if (!image) {
-        return S_BAD_PARAMS;
+        return;
     }
 
-    for (i = 0; i < image->num_frames; i++) {
+    for (size_t i = 0; i < image->num_frames; i++) {
         // free buffer pixels data and ps_image object.
         if (image->frames[i].img) {
             ps_image_unref(image->frames[i].img);
@@ -473,5 +470,4 @@ int32_t PICAPI psx_image_destroy(psx_image* image)
 
     free(image->frames);
     free(image);
-    return S_OK;
 }

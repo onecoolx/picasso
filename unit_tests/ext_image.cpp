@@ -32,6 +32,8 @@
 class PsxImagTest : public ::testing::Test
 {
 protected:
+    static psx_image_operator test_operator;
+
     static void SetUpTestSuite()
     {
         PS_Init();
@@ -44,6 +46,36 @@ protected:
         PS_Shutdown();
         psx_image_shutdown();
     }
+
+    static int32_t test_read_header(const ps_byte* data, size_t len, psx_image_header* header)
+    {
+        header->width = 100;
+        header->height = 100;
+        header->pitch = 400;
+        header->bpp = 4;
+        header->format = 0;
+        header->alpha = 1;
+        header->frames = 1;
+        return 0;
+    }
+
+    static int32_t test_decode_data(psx_image_header* header, const psx_image* image,
+                                    psx_image_frame* frame, int32_t idx, ps_byte* buffer, size_t buffer_len)
+    {
+        return 0;
+    }
+
+    static int32_t test_release_header(psx_image_header* header)
+    {
+        return 0;
+    }
+};
+
+psx_image_operator PsxImagTest::test_operator = {
+    test_read_header,
+    test_decode_data,
+    test_release_header,
+    nullptr, nullptr, nullptr
 };
 
 TEST_F(PsxImagTest, LoadFromMemoryNoData)
@@ -63,11 +95,73 @@ TEST_F(PsxImagTest, LoadFromMemoryInvalid)
     EXPECT_EQ(nullptr, img);
 }
 
-
-TEST_F(PsxImagTest, LoadFromFile) {
+TEST_F(PsxImagTest, LoadFromFile)
+{
     psx_image* img = psx_image_load("test.png", NULL);
     EXPECT_NE(nullptr, img);
     EXPECT_GT(img->width, 0);
     EXPECT_GT(img->height, 0);
     psx_image_destroy(img);
+}
+
+TEST_F(PsxImagTest, SaveToFile)
+{
+    psx_image* img = psx_image_load("test.png", NULL);
+    ASSERT_NE(nullptr, img);
+
+    psx_result result = psx_image_save_to_file(img, "output.png", "png", 90);
+    EXPECT_EQ(S_NOT_SUPPORT, result);
+
+    psx_image_destroy(img);
+}
+
+TEST_F(PsxImagTest, ImageFrameAccess)
+{
+    psx_image* img = psx_image_load("test.png", NULL);
+    ASSERT_NE(nullptr, img);
+
+    ps_image* first_img = IMG_OBJ(img);
+    EXPECT_NE(nullptr, first_img);
+
+    ps_byte* first_data = IMG_DATA(img);
+    EXPECT_NE(nullptr, first_data);
+
+    psx_image_destroy(img);
+}
+
+// Module Management Tests
+TEST_F(PsxImagTest, RegisterUnregisterOperator)
+{
+    psx_result result = psx_image_register_operator(
+                            "test", (ps_byte*)"TEST", 0, 4, PRIORITY_DEFAULT, &test_operator);
+    EXPECT_EQ(0, result);
+
+    result = psx_image_unregister_operator(&test_operator);
+    EXPECT_EQ(0, result);
+}
+
+TEST_F(PsxImagTest, RegisterInvalidParams)
+{
+    psx_result result = psx_image_register_operator(
+                            "test", (ps_byte*)"TEST", 0, 4, PRIORITY_DEFAULT, nullptr);
+    EXPECT_NE(0, result);
+
+    result = psx_image_register_operator(
+                 nullptr, (ps_byte*)"TEST", 0, 4, PRIORITY_DEFAULT, &test_operator);
+    EXPECT_NE(0, result);
+}
+
+TEST_F(PsxImagTest, PriorityLevels)
+{
+    psx_image_operator op1 = test_operator;
+    psx_image_operator op2 = test_operator;
+    psx_image_operator op3 = test_operator;
+
+    psx_image_register_operator("low", (ps_byte*)"LOW", 0, 3, PRIORITY_EXTENTED, &op1);
+    psx_image_register_operator("default", (ps_byte*)"DEF", 0, 3, PRIORITY_DEFAULT, &op2);
+    psx_image_register_operator("master", (ps_byte*)"MAS", 0, 3, PRIORITY_MASTER, &op3);
+
+    psx_image_unregister_operator(&op1);
+    psx_image_unregister_operator(&op2);
+    psx_image_unregister_operator(&op3);
 }

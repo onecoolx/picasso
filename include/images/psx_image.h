@@ -202,7 +202,7 @@ PEXPORT psx_image* PICAPI psx_image_load_from_memory(const ps_byte* data, size_t
 typedef int32_t (*image_writer_fn)(void* param, const ps_byte* data, size_t length);
 
 /**
- * \fn int32_t psx_image_save(const psx_image* image, image_writer_fn func, void* param, const char* type, float quality)
+ * \fn psx_result psx_image_save(const psx_image* image, image_writer_fn func, void* param, const char* type, float quality)
  * \brief Encoding psx_image to a gaving format and output it.
  *
  * \param image     Pointer to an psx_image object.
@@ -215,11 +215,11 @@ typedef int32_t (*image_writer_fn)(void* param, const ps_byte* data, size_t leng
  *
  * \sa psx_image_save_to_file
  */
-PEXPORT int32_t PICAPI psx_image_save(const psx_image* image, image_writer_fn func,
-                                      void* param, const char* type, float quality);
+PEXPORT psx_result PICAPI psx_image_save(const psx_image* image, image_writer_fn func,
+                                         void* param, const char* type, float quality);
 
 /**
- * \fn int32_t psx_image_save_to_file(const psx_image* image, const char* file_name, const char* type, float quality)
+ * \fn psx_result psx_image_save_to_file(const psx_image* image, const char* file_name, const char* type, float quality)
  * \brief Encoding psx_image to a gaving format and output to a file.
  *
  * \param image     Pointer to an psx_image object.
@@ -231,8 +231,8 @@ PEXPORT int32_t PICAPI psx_image_save(const psx_image* image, image_writer_fn fu
  *
  * \sa psx_image_save
  */
-PEXPORT int32_t PICAPI psx_image_save_to_file(const psx_image* image, const char* file_name,
-                                              const char* type, float quality);
+PEXPORT psx_result PICAPI psx_image_save_to_file(const psx_image* image, const char* file_name,
+                                                 const char* type, float quality);
 
 /**
  * \fn int32_t psx_image_destroy(psx_image* image)
@@ -240,11 +240,9 @@ PEXPORT int32_t PICAPI psx_image_save_to_file(const psx_image* image, const char
  *
  * \param image  Pointer to an existing psx_image object.
  *
- * \return Result code returned.
- *
  * \sa psx_image_load psx_image_load_from_memory
  */
-PEXPORT int32_t PICAPI psx_image_destroy(psx_image* image);
+PEXPORT void PICAPI psx_image_destroy(psx_image* image);
 /** @} end of extimg imgfunctions */
 /** @} end of extimg */
 /** @} end of extensions */
