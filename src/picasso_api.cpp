@@ -377,6 +377,11 @@ ps_filter PICAPI ps_set_filter(ps_context* ctx, ps_filter filter)
         return FILTER_UNKNOWN;
     }
 
+    if (filter < FILTER_NEAREST || filter > FILTER_QUADRIC) {
+        global_status = STATUS_INVALID_ARGUMENT;
+        return FILTER_UNKNOWN;
+    }
+
     ps_filter old = ctx->state->filter;
     ctx->state->filter = filter;
     global_status = STATUS_SUCCEED;
@@ -1402,8 +1407,8 @@ ps_composite PICAPI ps_set_composite_operator(ps_context* ctx, ps_composite comp
             ctx->state->composite = picasso::comp_op_luminosity;
             break;
         default:
-            global_status = STATUS_UNKNOWN_ERROR;
-            return op;
+            global_status = STATUS_INVALID_ARGUMENT;
+            return COMPOSITE_ERROR;
     }
     global_status = STATUS_SUCCEED;
     return op;
