@@ -33,6 +33,7 @@ endif()
 
 set(UNIT_SOURCES 
     ${PROJECT_ROOT}/unit_tests/test.cpp
+    ${PROJECT_ROOT}/unit_tests/pat565.cpp
     ${PS_UNIT_SOURCES}
     ${EXT_UNIT_SOURCES}
 )

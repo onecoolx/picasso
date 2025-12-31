@@ -27,6 +27,7 @@
 #define SNAPSHOT_PATH "draw"
 
 #include "test.h"
+#include "pat565.h"
 
 class PaintTest : public ::testing::Test
 {
@@ -46,6 +47,8 @@ protected:
         clear_test_canvas();
         ctx = ps_context_create(get_test_canvas(), nullptr);
         path = ps_path_create();
+        image = nullptr;
+
         ASSERT_NE(ctx, nullptr);
         ASSERT_NE(path, nullptr);
     }
@@ -54,6 +57,7 @@ protected:
     {
         if (path) { ps_path_unref(path); }
         if (ctx) { ps_context_unref(ctx); }
+        if (image) { ps_image_unref(image); }
     }
 
     void createTestPath()
@@ -118,8 +122,14 @@ protected:
         ps_path_sub_close(path);
     }
 
+    void createTestImage()
+    {
+        image = ps_image_create_from_data(pat565.bits, COLOR_FORMAT_RGB565, pat565.width, pat565.height, pat565.pitch);
+    }
+
     ps_context* ctx;
     ps_path* path;
+    ps_image* image;
 };
 
 // Stroke Tests
@@ -710,19 +720,53 @@ TEST_F(PaintTest, BadCaseInvalidCompositeOperator)
     EXPECT_EQ(ps_last_status(), STATUS_INVALID_ARGUMENT);
 }
 
-#if 0
 // Filter Tests
 TEST_F(PaintTest, FilterTypes)
 {
-    createTestPath();
-    ps_filter old_filter = ps_set_filter(ctx, FILTER_BILINEAR);
+    createComplexPath();
+    createTestImage();
+
+    ps_filter old_filter = ps_set_filter(ctx, FILTER_NEAREST);
     EXPECT_NE(old_filter, FILTER_UNKNOWN);
-    ps_color color = {1.0f, 0.0f, 0.0f, 1.0f};
-    ps_set_source_color(ctx, &color);
+    ps_set_source_image(ctx, image);
+    ps_set_path(ctx, path);
     ps_fill(ctx);
-    EXPECT_SNAPSHOT_EQ(filter_bilinear);
+
+    ps_translate(ctx, 150, 0);
+
+    old_filter = ps_set_filter(ctx, FILTER_BILINEAR);
+    EXPECT_NE(old_filter, FILTER_UNKNOWN);
+    ps_set_source_image(ctx, image);
+    ps_set_path(ctx, path);
+    ps_fill(ctx);
+
+    ps_translate(ctx, 150, 0);
+
+    old_filter = ps_set_filter(ctx, FILTER_GAUSSIAN);
+    EXPECT_NE(old_filter, FILTER_UNKNOWN);
+    ps_set_source_image(ctx, image);
+    ps_set_path(ctx, path);
+    ps_fill(ctx);
+
+    ps_identity(ctx);
+    ps_translate(ctx, 0, 200);
+
+    old_filter = ps_set_filter(ctx, FILTER_BICUBIC);
+    EXPECT_NE(old_filter, FILTER_UNKNOWN);
+    ps_set_source_image(ctx, image);
+    ps_set_path(ctx, path);
+    ps_fill(ctx);
+
+    ps_translate(ctx, 150, 0);
+
+    old_filter = ps_set_filter(ctx, FILTER_QUADRIC);
+    EXPECT_NE(old_filter, FILTER_UNKNOWN);
+    ps_set_source_image(ctx, image);
+    ps_set_path(ctx, path);
+    ps_fill(ctx);
+
+    EXPECT_SNAPSHOT_EQ(filter_draw_images);
 }
-#endif
 
 TEST_F(PaintTest, BadCaseFilterNullContext)
 {
@@ -736,4 +780,62 @@ TEST_F(PaintTest, BadCaseInvalidFilter)
     ps_filter result = ps_set_filter(ctx, static_cast<ps_filter>(999));
     EXPECT_EQ(result, FILTER_UNKNOWN);
     EXPECT_EQ(ps_last_status(), STATUS_INVALID_ARGUMENT);
+}
+
+// Clear Tests
+TEST_F(PaintTest, ClearOperation)
+{
+    // First draw something
+    createTestPath();
+    ps_color color = {1.0f, 0.0f, 0.0f, 1.0f};
+    ps_set_source_color(ctx, &color);
+    ps_set_path(ctx, path);
+    ps_fill(ctx);
+
+    // Then clear
+    ps_clear(ctx);
+    EXPECT_SNAPSHOT_EQ(clear_draw_canvas);
+}
+
+TEST_F(PaintTest, BadCaseClearNullContext)
+{
+    ps_clear(nullptr);
+    EXPECT_EQ(ps_last_status(), STATUS_INVALID_ARGUMENT);
+}
+
+// Complex Combined Tests
+TEST_F(PaintTest, ComplexPaintWithAllEffects)
+{
+    createStarPath();
+
+    // Set up all effects
+    ps_set_shadow(ctx, 3.0f, 3.0f, 1.0f);
+    ps_color shadow_color = {0.0f, 0.0f, 0.0f, 0.3f};
+    ps_set_shadow_color(ctx, &shadow_color);
+
+    ps_set_alpha(ctx, 0.8f);
+    ps_set_blur(ctx, 0.2f);
+    ps_set_gamma(ctx, 1.2f);
+    ps_set_antialias(ctx, True);
+
+    ps_set_composite_operator(ctx, COMPOSITE_SRC_OVER);
+    ps_set_filter(ctx, FILTER_BILINEAR);
+
+    // Set colors
+    ps_color fill_color = {1.0f, 0.8f, 0.2f, 1.0f};
+    ps_set_source_color(ctx, &fill_color);
+    ps_color stroke_color = {0.2f, 0.4f, 1.0f, 1.0f};
+    ps_set_stroke_color(ctx, &stroke_color);
+
+    ps_set_line_width(ctx, 3.0f);
+    ps_set_line_join(ctx, LINE_JOIN_ROUND);
+
+    // Apply clipping
+    ps_rect clip_rect = {150, 150, 100, 100};
+    ps_clip_rect(ctx, &clip_rect);
+
+    // Paint
+    ps_set_path(ctx, path);
+    ps_paint(ctx);
+    EXPECT_SNAPSHOT_EQ(complex_paint_all_effects);
 }

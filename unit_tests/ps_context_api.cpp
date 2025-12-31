@@ -711,3 +711,4 @@ TEST_F(ContextTest, BlurWithAntialias)
 
     EXPECT_SNAPSHOT_EQ(context_blur_antialias);
 }
+
