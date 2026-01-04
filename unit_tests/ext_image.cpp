@@ -29,7 +29,7 @@
 #include "images/psx_image.h"
 #include "images/psx_image_plugin.h"
 
-class PsxImagTest : public ::testing::Test
+class PsxImageTest : public ::testing::Test
 {
 protected:
     static psx_image_operator test_operator;
@@ -71,31 +71,57 @@ protected:
     }
 };
 
-psx_image_operator PsxImagTest::test_operator = {
+psx_image_operator PsxImageTest::test_operator = {
     test_read_header,
     test_decode_data,
     test_release_header,
     nullptr, nullptr, nullptr
 };
 
-TEST_F(PsxImagTest, LoadFromMemoryNoData)
+TEST_F(PsxImageTest, LoadFromMemoryNoData)
 {
     const ps_byte png_data[] = "\x89\x50\x4E\x47\x0D\x0A\x1A\x0A";
     psx_image* img = psx_image_load_from_memory(png_data, sizeof(png_data), NULL);
     EXPECT_EQ(nullptr, img);
 }
 
-TEST_F(PsxImagTest, LoadFromMemoryInvalid)
+TEST_F(PsxImageTest, LoadFromMemoryBoundary)
 {
+    psx_result err;
+
+    const ps_byte png_header[] = "\x89\x50\x4E\x47\x0D\x0A\x1A\x0A";
+    psx_image* img = psx_image_load_from_memory(png_header, sizeof(png_header), &err);
+    EXPECT_EQ(img, nullptr);
+    EXPECT_EQ(err, S_NOT_SUPPORT);
+
+    std::vector<ps_byte> large_data(1000000);
+    img = psx_image_load_from_memory(large_data.data(), large_data.size(), &err);
+    EXPECT_EQ(img, nullptr);
+    EXPECT_EQ(err, S_NOT_SUPPORT);
+}
+
+TEST_F(PsxImageTest, LoadFromMemoryInvalid)
+{
+    psx_result err;
+
     psx_image* img = psx_image_load_from_memory(NULL, 0, NULL);
     EXPECT_EQ(nullptr, img);
 
     ps_byte invalid_data[] = {0x00, 0x01, 0x02};
     img = psx_image_load_from_memory(invalid_data, sizeof(invalid_data), NULL);
     EXPECT_EQ(nullptr, img);
+
+    ps_byte data[400] = {0};
+    img = psx_image_create_from_data(data, COLOR_FORMAT_RGBA, 0, 0, 0, &err);
+    EXPECT_EQ(img, nullptr);
+    EXPECT_EQ(err, S_BAD_PARAMS);
+
+    img = psx_image_create_from_data(data, COLOR_FORMAT_RGBA, -100, -100, -400, &err);
+    EXPECT_EQ(img, nullptr);
+    EXPECT_EQ(err, S_BAD_PARAMS);
 }
 
-TEST_F(PsxImagTest, LoadFromFile)
+TEST_F(PsxImageTest, LoadFromFile)
 {
     psx_image* img = psx_image_load("test.png", NULL);
     EXPECT_NE(nullptr, img);
@@ -104,7 +130,7 @@ TEST_F(PsxImagTest, LoadFromFile)
     psx_image_destroy(img);
 }
 
-TEST_F(PsxImagTest, SaveToFile)
+TEST_F(PsxImageTest, SaveToFile)
 {
     psx_image* img = psx_image_load("test.png", NULL);
     ASSERT_NE(nullptr, img);
@@ -115,7 +141,31 @@ TEST_F(PsxImagTest, SaveToFile)
     psx_image_destroy(img);
 }
 
-TEST_F(PsxImagTest, ImageFrameAccess)
+TEST_F(PsxImageTest, SaveBadCase)
+{
+    psx_result err;
+
+    psx_result result = psx_image_save(nullptr, nullptr, nullptr, "png", 1.0f);
+    EXPECT_EQ(result, S_BAD_PARAMS);
+
+    ps_byte data[400] = {0};
+    psx_image* img = psx_image_create_from_data(data, COLOR_FORMAT_RGBA, 10, 10, 40, &err);
+    ASSERT_NE(img, nullptr);
+    ASSERT_EQ(err, S_OK);
+
+    result = psx_image_save(img, nullptr, nullptr, "invalid_format", 1.0f);
+    EXPECT_EQ(result, S_BAD_PARAMS);
+
+    result = psx_image_save(img, nullptr, nullptr, "png", -1.0f);
+    EXPECT_EQ(result, S_BAD_PARAMS);
+
+    result = psx_image_save(img, nullptr, nullptr, "png", 101.0f);
+    EXPECT_EQ(result, S_BAD_PARAMS);
+
+    psx_image_destroy(img);
+}
+
+TEST_F(PsxImageTest, ImageFrameAccess)
 {
     psx_image* img = psx_image_load("test.png", NULL);
     ASSERT_NE(nullptr, img);
@@ -130,7 +180,7 @@ TEST_F(PsxImagTest, ImageFrameAccess)
 }
 
 // Module Management Tests
-TEST_F(PsxImagTest, RegisterUnregisterOperator)
+TEST_F(PsxImageTest, RegisterUnregisterOperator)
 {
     psx_result result = psx_image_register_operator(
                             "test", (ps_byte*)"TEST", 0, 4, PRIORITY_DEFAULT, &test_operator);
@@ -140,7 +190,7 @@ TEST_F(PsxImagTest, RegisterUnregisterOperator)
     EXPECT_EQ(0, result);
 }
 
-TEST_F(PsxImagTest, RegisterInvalidParams)
+TEST_F(PsxImageTest, RegisterInvalidParams)
 {
     psx_result result = psx_image_register_operator(
                             "test", (ps_byte*)"TEST", 0, 4, PRIORITY_DEFAULT, nullptr);
@@ -151,7 +201,7 @@ TEST_F(PsxImagTest, RegisterInvalidParams)
     EXPECT_NE(0, result);
 }
 
-TEST_F(PsxImagTest, PriorityLevels)
+TEST_F(PsxImageTest, PriorityLevels)
 {
     psx_image_operator op1 = test_operator;
     psx_image_operator op2 = test_operator;

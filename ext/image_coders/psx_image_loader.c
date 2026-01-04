@@ -105,7 +105,7 @@ void PICAPI psx_image_shutdown(void)
 }
 
 psx_image* PICAPI psx_image_create_from_data(ps_byte* data, ps_color_format fmt,
-                                             int32_t width, int32_t height, int32_t pitch, int32_t* err_code)
+                                             int32_t width, int32_t height, int32_t pitch, psx_result* err_code)
 {
     int32_t i;
     size_t size;
@@ -190,7 +190,7 @@ psx_image* PICAPI psx_image_create_from_data(ps_byte* data, ps_color_format fmt,
     return image;
 }
 
-psx_image* PICAPI psx_image_load(const char* name, int32_t* err_code)
+psx_image* PICAPI psx_image_load(const char* name, psx_result* err_code)
 {
     size_t size;
     ps_byte* file_data;
@@ -361,7 +361,7 @@ static int32_t save_psx_image(psx_image_operator* op, const psx_image* image,
     return ret;
 }
 
-psx_image* PICAPI psx_image_load_from_memory(const ps_byte* data, size_t length, int32_t* err_code)
+psx_image* PICAPI psx_image_load_from_memory(const ps_byte* data, size_t length, psx_result* err_code)
 {
     struct image_coder_node* node = NULL;
     psx_image* image = NULL;

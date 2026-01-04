@@ -1772,7 +1772,7 @@ public:
                     if (m_image) {
                         psx_image_destroy(m_image);
                     }
-                    int32_t err = 0;
+                    psx_result err = S_OK;
                     m_image = psx_image_load(xlink, &err);
                     if (err != S_OK) {
                         LOG_ERROR("Image load failed!\n");

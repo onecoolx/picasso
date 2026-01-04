@@ -148,7 +148,7 @@ PEXPORT void PICAPI psx_image_shutdown(void);
 
 /**
  * \fn psx_image* psx_image_create_from_data(ps_byte* data, ps_color_format fmt,
- *                                                   int32_t width, int32_t height, int32_t pitch, int32_t* err_code)
+ *                                                   int32_t width, int32_t height, int32_t pitch, psx_result* err_code)
  * \brief Create a new psx_image using a copy of given address in memory.
  *
  * \param data      A pointer to the destination in memory where the drawing is to be rendered.
@@ -165,10 +165,10 @@ PEXPORT void PICAPI psx_image_shutdown(void);
  * \sa psx_image_load psx_image_load_from_memory psx_image_destroy
  */
 PEXPORT psx_image* PICAPI psx_image_create_from_data(ps_byte* data, ps_color_format fmt,
-                                                     int32_t width, int32_t height, int32_t pitch, int32_t* err_code);
+                                                     int32_t width, int32_t height, int32_t pitch, psx_result* err_code);
 
 /**
- * \fn psx_image* psx_image_load(const char* file_name, int32_t* err_code)
+ * \fn psx_image* psx_image_load(const char* file_name, psx_result* err_code)
  * \brief Create a new psx_image object and load from file.
  *
  * \param file_name  The image file path which will be loaded, which is encoded by utf8.
@@ -179,10 +179,10 @@ PEXPORT psx_image* PICAPI psx_image_create_from_data(ps_byte* data, ps_color_for
  *
  * \sa psx_image_destroy psx_image_load_from_memory psx_image_create_from_data
  */
-PEXPORT psx_image* PICAPI psx_image_load(const char* file_name, int32_t* err_code);
+PEXPORT psx_image* PICAPI psx_image_load(const char* file_name, psx_result* err_code);
 
 /**
- * \fn psx_image* psx_image_load_from_memory(const ps_byte* data, size_t length, int32_t* err_code)
+ * \fn psx_image* psx_image_load_from_memory(const ps_byte* data, size_t length, psx_result* err_code)
  * \brief Create a new psx_image object and load data from memory.
  *
  * \param data       Pointer to data buffer in memeory.
@@ -194,7 +194,7 @@ PEXPORT psx_image* PICAPI psx_image_load(const char* file_name, int32_t* err_cod
  *
  * \sa psx_image_destroy psx_image_load
  */
-PEXPORT psx_image* PICAPI psx_image_load_from_memory(const ps_byte* data, size_t length, int32_t* err_code);
+PEXPORT psx_image* PICAPI psx_image_load_from_memory(const ps_byte* data, size_t length, psx_result* err_code);
 
 /**
  * \brief Callback function for saving image data.
