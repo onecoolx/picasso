@@ -36,16 +36,118 @@ PERF_TEST(Matrix, MatrixCreateDestroy)
     }
 }
 
+PERF_TEST(Matrix, MatrixCreateInit)
+{
+    for (int i = 0; i < 10000; i++) {
+        ps_matrix* matrix = ps_matrix_create_init(1.0f, 0.0f, 0.0f, 1.0f, 10.0f, 20.0f);
+        ps_matrix_unref(matrix);
+    }
+}
+
+PERF_TEST_RUN(Matrix, MatrixCreateCopy)
+{
+    ps_matrix* src = ps_matrix_create_init(2.0f, 0.5f, 0.3f, 1.5f, 100.0f, 200.0f);
+
+    auto result = RunBenchmark(Matrix_MatrixCreateCopy, [&]() {
+        for (int i = 0; i < 10000; i++) {
+            ps_matrix* copy = ps_matrix_create_copy(src);
+            ps_matrix_unref(copy);
+        }
+    });
+
+    CompareToBenchmark(Matrix_MatrixCreateCopy, result);
+    ps_matrix_unref(src);
+}
+
 PERF_TEST_RUN(Matrix, MatrixTranslate)
 {
     ps_matrix* m = ps_matrix_create();
 
     auto result = RunBenchmark(Matrix_MatrixTranslate, [&]() {
-        for (int i = 0; i < 10000; i++) {
-            ps_matrix_translate(m, i, i);
+        for (int i = 0; i < 100000; i++) {
+            ps_matrix_translate(m, 10.0f, 20.0f);
+            ps_matrix_translate(m, -20.0f, -10.0f);
         }
     });
 
     CompareToBenchmark(Matrix_MatrixTranslate, result);
     ps_matrix_unref(m);
+}
+
+PERF_TEST_RUN(Matrix, MatrixScale)
+{
+    ps_matrix* matrix = ps_matrix_create();
+
+    auto result = RunBenchmark(Matrix_MatrixScale, [&]() {
+        for (int i = 0; i < 100000; i++) {
+            ps_matrix_scale(matrix, 2.0f, 1.5f);
+            ps_matrix_scale(matrix, 0.5f, 0.6667f);
+        }
+    });
+
+    CompareToBenchmark(Matrix_MatrixScale, result);
+    ps_matrix_unref(matrix);
+}
+
+PERF_TEST_RUN(Matrix, MatrixRotate)
+{
+    ps_matrix* matrix = ps_matrix_create();
+    const float angle = 3.14159f / 180.0f; // 1 degree in radians
+
+    auto result = RunBenchmark(Matrix_MatrixRotate, [&]() {
+        for (int i = 0; i < 100000; i++) {
+            ps_matrix_rotate(matrix, angle);
+            ps_matrix_rotate(matrix, -angle);
+        }
+    });
+
+    CompareToBenchmark(Matrix_MatrixRotate, result);
+    ps_matrix_unref(matrix);
+}
+
+PERF_TEST_RUN(Matrix, MatrixShear)
+{
+    ps_matrix* matrix = ps_matrix_create();
+
+    auto result = RunBenchmark(Matrix_MatrixShear, [&]() {
+        for (int i = 0; i < 100000; i++) {
+            ps_matrix_shear(matrix, 0.1f, 0.2f);
+            ps_matrix_shear(matrix, -0.1f, -0.2f);
+        }
+    });
+
+    CompareToBenchmark(Matrix_MatrixShear, result);
+    ps_matrix_unref(matrix);
+}
+
+PERF_TEST_RUN(Matrix, MatrixInvert)
+{
+    ps_matrix* matrix = ps_matrix_create_init(2.0f, 0.5f, 0.3f, 1.5f, 100.0f, 200.0f);
+
+    auto result = RunBenchmark(Matrix_MatrixInvert, [&]() {
+        for (int i = 0; i < 100000; i++) {
+            ps_matrix_invert(matrix);
+            ps_matrix_invert(matrix);
+        }
+    });
+
+    CompareToBenchmark(Matrix_MatrixInvert, result);
+    ps_matrix_unref(matrix);
+}
+
+PERF_TEST_RUN(Matrix, MatrixFlip)
+{
+    ps_matrix* matrix = ps_matrix_create();
+
+    auto result = RunBenchmark(Matrix_MatrixFlip, [&]() {
+        for (int i = 0; i < 100000; i++) {
+            ps_matrix_flip_x(matrix);
+            ps_matrix_flip_y(matrix);
+            ps_matrix_flip_x(matrix);
+            ps_matrix_flip_y(matrix);
+        }
+    });
+
+    CompareToBenchmark(Matrix_MatrixFlip, result);
+    ps_matrix_unref(matrix);
 }

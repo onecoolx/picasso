@@ -37,22 +37,61 @@
     #include "images/psx_image_plugin.h"
 #endif
 
-volatile int tmp;
-static int dummy[4096000];
+#ifdef WIN32
+    #include <windows.h>
+    #include <process.h>
+#else
+    #include <sched.h>
+    #include <sys/resource.h>
+    #include <unistd.h>
+#endif
+
+static void set_process_priority(void);  
+static void set_cpu_affinity(void);
+
+volatile int64_t tmp = 0;
+#define DATA_CACHE_MAX 4194304 // 16MB
+static int32_t dummy[DATA_CACHE_MAX];
 void clear_dcache(void)
 {
-    int sum = 0;
-    for (int i = 0; i < 4096000; i++) {
-        dummy[i] = 2;
+    int64_t sum = 0;
+    for (int32_t i = 0; i < DATA_CACHE_MAX; i++) {
+        dummy[i] = 0x02;
     }
-    for (int i = 0; i < 4096000; i++) {
+    for (int32_t i = 0; i < DATA_CACHE_MAX; i++) {
         sum += dummy[i];
     }
 
     tmp = sum;
+#if __GNUC__
+    asm volatile("" : : "r"(dummy) : "memory");
+#endif
 }
 
-const uint8_t tolerance = 5;
+static void set_process_priority(void)
+{
+#ifdef WIN32
+    SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS);
+    SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST);
+#else
+    setpriority(PRIO_PROCESS, 0, -20);
+#endif
+}
+
+static void set_cpu_affinity(void)  
+{  
+#ifdef WIN32  
+    DWORD_PTR mask = 1;  
+    SetProcessAffinityMask(GetCurrentProcess(), mask);  
+    SetThreadAffinityMask(GetCurrentThread(), mask);  
+#else  
+    cpu_set_t cpuset;  
+    CPU_ZERO(&cpuset);  
+    CPU_SET(0, &cpuset);  
+    sched_setaffinity(0, sizeof(cpuset), &cpuset);  
+#endif  
+}
+
 static uint8_t* test_buffer = NULL;
 static ps_canvas* test_canvas = NULL;
 
@@ -66,6 +105,9 @@ void PS_Init()
     int v = ps_version();
     fprintf(stderr, "picasso version %d \n", v);
     ASSERT_EQ(STATUS_SUCCEED, ps_last_status());
+
+    set_process_priority();  
+    set_cpu_affinity(); 
 
     if (!test_buffer) {
         test_buffer = (uint8_t*)calloc(TEST_WIDTH * 4, TEST_HEIGHT);
@@ -154,6 +196,15 @@ void PerformanceTest::LoadBaseline()
         BenchmarkResult result;
         bool valid = true;
 
+        cJSON* mid_obj = cJSON_GetObjectItemCaseSensitive(current, "mid_ms");
+        if (cJSON_IsNumber(mid_obj)) {
+            result.mid_ms = mid_obj->valuedouble;
+        } else {
+            std::cerr << "Warning: Missing or invalid 'mid_ms' for key '" << key << "', skipping" << std::endl;
+            valid = false;
+        }
+
+
         cJSON* avg_obj = cJSON_GetObjectItemCaseSensitive(current, "avg_ms");
         if (cJSON_IsNumber(avg_obj)) {
             result.avg_ms = avg_obj->valuedouble;
@@ -184,7 +235,6 @@ void PerformanceTest::LoadBaseline()
     }
 
     cJSON_Delete(root);
-    std::cout << "Successfully read benchmark data from " << baseline_file << std::endl;
 }
 
 void PerformanceTest::SaveBaseline()
@@ -206,6 +256,7 @@ void PerformanceTest::SaveBaseline()
             return;
         }
 
+        cJSON_AddNumberToObject(result_obj, "mid_ms", result.mid_ms);
         cJSON_AddNumberToObject(result_obj, "avg_ms", result.avg_ms);
         cJSON_AddNumberToObject(result_obj, "min_ms", result.min_ms);
         cJSON_AddNumberToObject(result_obj, "max_ms", result.max_ms);
@@ -233,6 +284,4 @@ void PerformanceTest::SaveBaseline()
 
     free(json_str);
     cJSON_Delete(root);
-
-    std::cout << "Successfully wrote benchmark data to " << baseline_file << std::endl;
 }

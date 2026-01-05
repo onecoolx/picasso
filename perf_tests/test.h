@@ -67,6 +67,8 @@ void clear_test_canvas(void);
     || defined(ARM) \
     || defined(_ARM_)
     #define ARCH "arm"
+#elif defined(__aarch64__)
+    #define ARCH "arm64"
 #else
     #define ARCH "unknown"
 #endif
@@ -74,12 +76,13 @@ void clear_test_canvas(void);
 class PerformanceTest : public ::testing::Test
 {
 protected:
-    static constexpr int WARMUP_ITERATIONS = 10;
-    static constexpr int TEST_ITERATIONS = 100;
+    static constexpr int WARMUP_ITERATIONS = 20;
+    static constexpr int TEST_ITERATIONS = 200;
     static constexpr double TOLERANCE_PERCENT = 10.0; // 10% tolerance
 
     struct BenchmarkResult {
         double avg_ms;
+        double mid_ms;
         double min_ms;
         double max_ms;
     };
@@ -107,6 +110,8 @@ protected:
     {
         need_write_baseline = false;
         LoadBaseline();
+
+        clear_dcache();
     }
 
     void TearDown() override
@@ -140,10 +145,27 @@ protected:
             times.push_back(get_clock_used_ms(start, end));
         }
 
+        // sort times
+        std::sort(times.begin(), times.end());
+
+        // discard 10% data
+        int discard_count = static_cast<int>(times.size() * 0.1);
+        std::vector<double> filtered_times(
+                times.begin() + discard_count,
+                times.end() - discard_count
+        );
+
         BenchmarkResult result;
         result.avg_ms = std::accumulate(times.begin(), times.end(), 0.0) / times.size();
-        result.min_ms = *std::min_element(times.begin(), times.end());
-        result.max_ms = *std::max_element(times.begin(), times.end());
+        result.min_ms = filtered_times.front();
+        result.max_ms = filtered_times.back();
+
+        size_t n = filtered_times.size();
+        if (n % 2 == 0) {
+            result.mid_ms = (filtered_times[n/2 - 1] + filtered_times[n/2]) / 2.0;
+        } else {
+            result.mid_ms = filtered_times[n/2];
+        }
 
         return result;
     }
@@ -155,25 +177,28 @@ protected:
         if (baseline_data.find(key) == baseline_data.end()) {
             baseline_data[key] = result;
             std::cout << "[New Baseline] " << test_name << ": "
-                      << std::setprecision(8)
-                      << result.avg_ms << " ms (min: " << result.min_ms
+                      << std::setprecision(6)
+                      << "median: " << result.mid_ms << " ms (avg: "
+                      << result.avg_ms << ", min: " << result.min_ms
                       << ", max: " << result.max_ms << ")" << std::endl;
+            need_write_baseline = true;
         } else {
             const auto& baseline = baseline_data[key];
-            double diff_percent = ((result.avg_ms - baseline.avg_ms) / baseline.avg_ms) * 100.0;
-            if (result.avg_ms <= baseline.avg_ms) {
+            double diff_percent = ((result.mid_ms - baseline.mid_ms) / baseline.mid_ms) * 100.0;
+            if (result.mid_ms <= baseline.mid_ms) {
                 if (std::abs(diff_percent) > TOLERANCE_PERCENT) {
                     std::cout << "[Performance Improve " << std::abs(diff_percent) << "%] " << test_name << ": "
-                              << std::setprecision(8) << result.avg_ms << " ms (min: " << result.min_ms
+                              << std::setprecision(6) << "median: " << result.mid_ms << " ms (avg: " << result.avg_ms
+                              <<", min: " << result.min_ms
                               << ", max: " << result.max_ms << ")" << std::endl;
                     baseline_data[key] = result;
                 }
             } else {
                 EXPECT_LE(std::abs(diff_percent), TOLERANCE_PERCENT)
                         << "Performance regression detected for " << test_name
-                        << std::setprecision(8) << std::endl
-                        << "Baseline: " << baseline.avg_ms << " ms" << std::endl
-                        << "Current: " << result.avg_ms << " ms" << std::endl
+                        << std::setprecision(6) << std::endl
+                        << "Baseline: " << baseline.mid_ms << " ms" << std::endl
+                        << "Current: " << result.mid_ms << " ms" << std::endl
                         << "Difference: " << diff_percent << "%" << std::endl;
             }
         }

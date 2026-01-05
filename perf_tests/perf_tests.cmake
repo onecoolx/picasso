@@ -55,6 +55,7 @@ endif()
 
 file(COPY ${PROJECT_ROOT}/perf_tests/benchmark DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
+
 if (WIN32)
     add_custom_command(
         TARGET ${PERF_TESTS} POST_BUILD
