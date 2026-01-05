@@ -151,8 +151,8 @@ protected:
         // discard 10% data
         int discard_count = static_cast<int>(times.size() * 0.1);
         std::vector<double> filtered_times(
-                times.begin() + discard_count,
-                times.end() - discard_count
+            times.begin() + discard_count,
+            times.end() - discard_count
         );
 
         BenchmarkResult result;
@@ -162,9 +162,9 @@ protected:
 
         size_t n = filtered_times.size();
         if (n % 2 == 0) {
-            result.mid_ms = (filtered_times[n/2 - 1] + filtered_times[n/2]) / 2.0;
+            result.mid_ms = (filtered_times[n / 2 - 1] + filtered_times[n / 2]) / 2.0;
         } else {
-            result.mid_ms = filtered_times[n/2];
+            result.mid_ms = filtered_times[n / 2];
         }
 
         return result;
@@ -189,7 +189,7 @@ protected:
                 if (std::abs(diff_percent) > TOLERANCE_PERCENT) {
                     std::cout << "[Performance Improve " << std::abs(diff_percent) << "%] " << test_name << ": "
                               << std::setprecision(6) << "median: " << result.mid_ms << " ms (avg: " << result.avg_ms
-                              <<", min: " << result.min_ms
+                              << ", min: " << result.min_ms
                               << ", max: " << result.max_ms << ")" << std::endl;
                     baseline_data[key] = result;
                 }

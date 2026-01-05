@@ -46,7 +46,7 @@
     #include <unistd.h>
 #endif
 
-static void set_process_priority(void);  
+static void set_process_priority(void);
 static void set_cpu_affinity(void);
 
 volatile int64_t tmp = 0;
@@ -78,18 +78,18 @@ static void set_process_priority(void)
 #endif
 }
 
-static void set_cpu_affinity(void)  
-{  
-#ifdef WIN32  
-    DWORD_PTR mask = 1;  
-    SetProcessAffinityMask(GetCurrentProcess(), mask);  
-    SetThreadAffinityMask(GetCurrentThread(), mask);  
-#else  
-    cpu_set_t cpuset;  
-    CPU_ZERO(&cpuset);  
-    CPU_SET(0, &cpuset);  
-    sched_setaffinity(0, sizeof(cpuset), &cpuset);  
-#endif  
+static void set_cpu_affinity(void)
+{
+#ifdef WIN32
+    DWORD_PTR mask = 1;
+    SetProcessAffinityMask(GetCurrentProcess(), mask);
+    SetThreadAffinityMask(GetCurrentThread(), mask);
+#else
+    cpu_set_t cpuset;
+    CPU_ZERO(&cpuset);
+    CPU_SET(0, &cpuset);
+    sched_setaffinity(0, sizeof(cpuset), &cpuset);
+#endif
 }
 
 static uint8_t* test_buffer = NULL;
@@ -106,8 +106,8 @@ void PS_Init()
     fprintf(stderr, "picasso version %d \n", v);
     ASSERT_EQ(STATUS_SUCCEED, ps_last_status());
 
-    set_process_priority();  
-    set_cpu_affinity(); 
+    set_process_priority();
+    set_cpu_affinity();
 
     if (!test_buffer) {
         test_buffer = (uint8_t*)calloc(TEST_WIDTH * 4, TEST_HEIGHT);
@@ -203,7 +203,6 @@ void PerformanceTest::LoadBaseline()
             std::cerr << "Warning: Missing or invalid 'mid_ms' for key '" << key << "', skipping" << std::endl;
             valid = false;
         }
-
 
         cJSON* avg_obj = cJSON_GetObjectItemCaseSensitive(current, "avg_ms");
         if (cJSON_IsNumber(avg_obj)) {
