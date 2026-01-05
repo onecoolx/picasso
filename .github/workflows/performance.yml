@@ -13,6 +13,7 @@ jobs:
     - uses: actions/checkout@v4
     - name: Setup Environment
       run: |
+        sudo modprobe cpufreq_performance
         sudo cpupower frequency-set -g performance  || \
         echo 'performance' | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor || \
         echo "CPU frequency control not available, running with default settings"
