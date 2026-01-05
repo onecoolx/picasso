@@ -25,7 +25,9 @@ jobs:
     - name: Build
       run: cmake --build ${{ github.workspace }}/build --config Release 
     - name: Test
-      run: ${{ github.workspace }}/build/perf_tests
+      run: |
+        cd ${{ github.workspace }}/build/
+        ./perf_tests
     - name: Upload Test Reaults
       if: always()
       uses: actions/upload-artifact@v4.6.2
