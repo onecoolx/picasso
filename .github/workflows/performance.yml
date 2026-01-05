@@ -11,13 +11,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - name: Install CPU Frequency Tools  
-      run: |  
-        sudo apt-get update  
-        sudo apt-get install -y linux-cpupower 
     - name: Setup Environment
       run: |
-        sudo cpupower frequency-set -g performance  
+        sudo cpupower frequency-set -g performance  || \
+        echo 'performance' | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor || \
+        echo "CPU frequency control not available, running with default settings"
         sudo systemctl stop bluetooth cups avahi-daemon 
     - name: Verify CPU Settings  
       run: |  
