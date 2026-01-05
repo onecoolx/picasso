@@ -11,11 +11,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    
+    - name: Install CPU Frequency Tools  
+      run: |  
+        sudo apt-get update  
+        sudo apt-get install -y linux-cpupower 
     - name: Setup Environment
       run: |
         sudo cpupower frequency-set -g performance  
         sudo systemctl stop bluetooth cups avahi-daemon 
+    - name: Verify CPU Settings  
+      run: |  
+        if [ -f /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor ]; then  
+          echo "Current governor: $(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor)"  
+        fi  
+        cat /proc/cpuinfo | grep "processor" | head -5 
     - name: Configure CMake
       run: |
         cmake -B ${{ github.workspace }}/build
