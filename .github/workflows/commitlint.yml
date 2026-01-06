@@ -14,11 +14,12 @@ jobs:
       contents: read
       pull-requests: read
     steps:
-    - uses: actions/checkout@v4
-    - name: Check Commit Message
-    - uses: opensource-nepal/commitlint@v1.2.0
-      with:
-        verbose: true
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Check Commit Message
+        uses: opensource-nepal/commitlint@v1.2.0
+        with:
+            verbose: true
           
     
 
