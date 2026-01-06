@@ -4,9 +4,8 @@ on:
   push:
     branches: [ "master" ]
   pull_request:
-    types: [opened, synchronize, reopened, edited]
     branches: [ "master" ]
-
+  
 jobs:
   verify:
     runs-on: ubuntu-latest
