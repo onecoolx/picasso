@@ -6,8 +6,9 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, edited]
     branches: [ "master" ]
+
 jobs:
-  commitlint:
+  verify:
     runs-on: ubuntu-latest
     name: Conventional Commitlint
     permissions:
