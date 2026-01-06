@@ -11,6 +11,37 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
+    - name: Setup Environment
+      run: |
+        echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S bash -c '
+
+        echo "performance" | tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
+       
+        systemctl disable ondemand
+        systemctl stop ondemand
+        
+        echo "0" > /sys/devices/system/cpu/nohz_full
+        echo "never" > /sys/kernel/mm/transparent_hugepage/enabled
+        
+        swapoff -a
+        sysctl -w vm.swappiness=0
+        
+        for irq in $(grep "CPU0" /proc/interrupts | cut -d: -f1); do
+          echo 1 > /proc/irq/$irq/smp_affinity
+        done
+        
+        sysctl -w kernel.sched_rt_runtime_us=950000
+        
+        mkdir -p /sys/fs/cgroup/perf_test
+        echo "${{ env.CPU_AFFINITY }}" > /sys/fs/cgroup/cpuset/perf_test/cpuset.cpus
+        echo "0" > /sys/fs/cgroup/cpuset/perf_test/cpuset.mems
+
+        sysctl -w kernel.nmi_watchdog=0
+        sysctl -w kernel.watchdog=0
+
+        sysctl -w kernel.sched_latency_ns=10000000
+        sysctl -w kernel.sched_min_granularity_ns=10000000
+        '
     - name: Configure CMake
       run: >
         cmake -B ${{ github.workspace }}/build
