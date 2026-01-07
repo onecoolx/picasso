@@ -37,6 +37,11 @@ struct global_data {
     malloc_func _malloc;
     free_func _free;
     calloc_func _calloc;
+
+    global_data(malloc_func m_func, free_func f_func, calloc_func c_func)
+        : _malloc(m_func), _free(f_func), _calloc(c_func)
+    {
+    }
 };
 
 extern struct global_data _global;

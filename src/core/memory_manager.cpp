@@ -54,10 +54,6 @@ void* _internal_calloc(size_t num, size_t size)
 }
 #endif /* __cplusplus */
 
-struct global_data _global = {
-._malloc = _internal_malloc,
-._free = _internal_free,
-._calloc = _internal_calloc
-};
+struct global_data _global(_internal_malloc, _internal_free, _internal_calloc);
 
 } // namespace picasso
