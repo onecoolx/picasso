@@ -20,7 +20,7 @@
 #define _PICASSO_H_
 
 #ifdef DLL_EXPORT
-    #if defined(WIN32) || defined(WINCE)
+    #if defined(WIN32)
         #ifdef EXPORT
             #define PICAPI
             #define PEXPORT __declspec(dllexport)

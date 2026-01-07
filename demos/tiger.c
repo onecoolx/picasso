@@ -231,7 +231,7 @@ void on_init(ps_context* gc, int w, int h)
 void on_draw(ps_context* gc)
 {
     int i;
-#if defined(WIN32) || defined(WINCE)
+#if defined(WIN32)
     clocktime_t t1, t2;
 #else
     suseconds_t t1, t2;
@@ -243,7 +243,7 @@ void on_draw(ps_context* gc)
     if (!change)
         return;
 
-#if defined(WIN32) || defined(WINCE)
+#if defined(WIN32)
     t1 = get_clock();
 #else
     t1 = get_time();
@@ -286,14 +286,14 @@ void on_draw(ps_context* gc)
         else if (ps->m_paths[i].m_paintMode == 3)
             ps_paint(gc);
     }
-#if defined(WIN32) || defined(WINCE)
+#if defined(WIN32)
     t2 = get_clock();
 #else
     t2 = get_time();
 #endif
     change = 0;
 
-#if defined(WIN32) || defined(WINCE)
+#if defined(WIN32)
     fprintf (stderr, "%f fps\n", 1000.0/get_clock_used_ms(t1, t2));
 #else
     fprintf(stderr, "draw frame use %.4f ms --- %.4f fps\n", (t2-t1)/1000.0, 1000.0/((t2-t1)/1000.0));

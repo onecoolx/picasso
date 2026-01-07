@@ -64,30 +64,17 @@
     #define CPU_ARM 1
 #endif
 
+/* CPU(ARM64) - ARM 64bit version */
+#if defined(__aarch64__)
+    #define CPU_ARM64 1
+#endif
+
 #if defined(__ARM_NEON__)
     #define CPU_ARM_NEON 1
 #endif
 
 #if (defined(__VFP_FP__) && !defined(__SOFTFP__))
     #define CPU_ARM_VFP 1
-#endif
-
-#if defined(WINCE) || defined(__WATCOMC__)
-    /* math.h */
-    #define sinf(x) ((float)sin(x))
-    #define cosf(x) ((float)cos(x))
-    #define acosf(x) ((float)acos(x))
-    #define tanf(x) ((float)tan(x))
-    #define asinf(x) ((float)asin(x))
-    #define atan2f(x, y) ((float)atan2((x), (y)))
-    #define powf(x, y) ((float)pow((x), (y)))
-    #if defined(__WATCOMC__)
-        #define sqrtf(x) ((float)sqrt((x)))
-        #define fabsf(x) ((float)fabs((x)))
-        #define fmodf(x, y) ((float)fmod((x), (y)))
-        #define floorf(x) ((float)floor((x)))
-        #define ceilf(x) ((float)ceil((x)))
-    #endif
 #endif
 
 #if COMPILER(GCC)
