@@ -11,7 +11,6 @@
 #include "convert.h"
 
 #include "picasso.h"
-#include "picasso_global.h"
 #include "picasso_objects.h"
 #include "picasso_painter.h"
 #include "picasso_private.h"

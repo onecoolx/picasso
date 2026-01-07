@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng
+ * Copyright (c) 2026, Zhang Ji Peng
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,41 +24,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _PICASSO_PRIVATE_H_
-#define _PICASSO_PRIVATE_H_
-
-#include "common.h"
-#include "convert.h"
-#include "math_type.h"
-#include "data_vector.h"
-#include "fixedopt.h"
-#include "global.h"
-
-#include "picasso.h"
+#ifndef _GLOBAL_H_
+#define _GLOBAL_H_
 
 namespace picasso {
 
-class graphic_path;
+typedef void* (*malloc_func)(size_t size);
+typedef void (*free_func)(void* ptr);
+typedef void* (*calloc_func)(size_t num, size_t size);
 
-// Font
-bool _init_default_font(void);
-void _destory_default_font(void);
-ps_font* _default_font(void);
+struct global_data {
+    malloc_func _malloc;
+    free_func _free;
+    calloc_func _calloc;
+};
 
-// Path
-void _path_operation(conv_clipper::clip_op op, const graphic_path& a, const graphic_path& b, graphic_path& r);
-
-// Format
-int32_t _bytes_per_color(ps_color_format fmt);
+extern struct global_data _global;
 
 } // namespace picasso
 
-// global error code
-extern "C" ps_status global_status;
-
-// Font Load
-bool platform_font_init(void);
-
-void platform_font_shutdown(void);
-
-#endif/*_PICASSO_PRIVATE_H_*/
+#endif /*_GLOBAL_H_*/

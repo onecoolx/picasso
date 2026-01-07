@@ -11,7 +11,6 @@
 #include "geometry.h"
 #include "convert.h"
 
-#include "picasso_global.h"
 #include "picasso_private.h"
 #include "picasso_painter.h"
 #include "picasso_font.h"

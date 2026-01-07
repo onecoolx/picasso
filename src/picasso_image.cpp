@@ -8,7 +8,7 @@
 #include "device.h"
 
 #include "picasso.h"
-#include "picasso_global.h"
+#include "picasso_private.h"
 #include "picasso_objects.h"
 
 #ifdef __cplusplus

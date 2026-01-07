@@ -10,8 +10,8 @@
 #include "graphic_path.h"
 
 #include "picasso.h"
-#include "picasso_global.h"
 #include "picasso_rendering_buffer.h"
+#include "picasso_private.h"
 #include "picasso_objects.h"
 
 namespace picasso {

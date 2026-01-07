@@ -5,13 +5,13 @@
  */
 
 #include "common.h"
+#include "convert.h"
 #include "device.h"
 #include "graphic_path.h"
 #include "geometry.h"
-#include "convert.h"
+#include "global.h"
 
 #include "picasso.h"
-#include "picasso_global.h"
 #include "picasso_objects.h"
 #include "picasso_painter.h"
 #include "picasso_private.h"
@@ -363,10 +363,10 @@ ps_canvas* PICAPI ps_canvas_create_from_mask(ps_mask* m, const ps_rect* r)
             rc.y = r->y;
         }
         if (r->w > 0) {
-            rc.w = MIN(rc.w - rc.x, r->w);
+            rc.w = Min(rc.w - rc.x, r->w);
         }
         if (r->h > 0) {
-            rc.h = MIN(rc.h - rc.y, r->h);
+            rc.h = Min(rc.h - rc.y, r->h);
         }
     }
 

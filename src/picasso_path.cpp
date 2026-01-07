@@ -13,7 +13,7 @@
 #include "graphic_helper.h"
 
 #include "picasso.h"
-#include "picasso_global.h"
+#include "picasso_private.h"
 #include "picasso_objects.h"
 
 namespace picasso {

@@ -25,7 +25,7 @@
  */
 
 #include "common.h"
-#include "picasso_global.h"
+#include "picasso_private.h"
 
 #if ENABLE(FREE_TYPE2)
 #include <ft2build.h>

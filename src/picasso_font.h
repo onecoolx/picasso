@@ -15,7 +15,7 @@
 
 #include "graphic_path.h"
 #include "font_adapter.h"
-#include "picasso_global.h"
+#include "picasso_private.h"
 #include "picasso_font_cache.h"
 
 #if ENABLE(LOW_MEMORY)
@@ -42,7 +42,7 @@ public:
         : m_name(0), m_charset(charset_latin1)
         , m_height(0), m_weight(0), m_italic(false), m_hint(false), m_flip_y(false)
     {
-        size_t len = MIN(strlen(face_name) + 1, MAX_FONT_NAME_LENGTH);
+        size_t len = Min(strlen(face_name) + 1, MAX_FONT_NAME_LENGTH);
         m_name = (char*)mem_malloc(len);
         strncpy(m_name, face_name, len);
     }

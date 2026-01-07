@@ -10,7 +10,7 @@
 #include "graphic_path.h"
 
 #include "picasso.h"
-#include "picasso_global.h"
+#include "picasso_private.h"
 #include "picasso_objects.h"
 
 namespace picasso {
@@ -49,26 +49,26 @@ static void _matrix_transform_rect(const trans_affine& matrix, ps_rect* rect)
         x = FLT_TO_SCALAR(rect->x + rect->w + 1);
         y = FLT_TO_SCALAR(rect->y);
         matrix.transform(&x, &y);
-        xmin = MIN(xmin, x);
-        ymin = MIN(ymin, y);
-        xmax = MAX(xmax, x);
-        ymax = MAX(ymax, y);
+        xmin = Min(xmin, x);
+        ymin = Min(ymin, y);
+        xmax = Max(xmax, x);
+        ymax = Max(ymax, y);
 
         x = FLT_TO_SCALAR(rect->x + rect->w + 1);
         y = FLT_TO_SCALAR(rect->y + rect->h + 1);
         matrix.transform(&x, &y);
-        xmin = MIN(xmin, x);
-        ymin = MIN(ymin, y);
-        xmax = MAX(xmax, x);
-        ymax = MAX(ymax, y);
+        xmin = Min(xmin, x);
+        ymin = Min(ymin, y);
+        xmax = Max(xmax, x);
+        ymax = Max(ymax, y);
 
         x = FLT_TO_SCALAR(rect->x);
         y = FLT_TO_SCALAR(rect->y + rect->h + 1);
         matrix.transform(&x, &y);
-        xmin = MIN(xmin, x);
-        ymin = MIN(ymin, y);
-        xmax = MAX(xmax, x);
-        ymax = MAX(ymax, y);
+        xmin = Min(xmin, x);
+        ymin = Min(ymin, y);
+        xmax = Max(xmax, x);
+        ymax = Max(ymax, y);
 
         //rebuild rect
         w = xmax - xmin;

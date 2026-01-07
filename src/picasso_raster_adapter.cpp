@@ -10,8 +10,8 @@
 #include "interfaces.h"
 
 #include "picasso.h"
-#include "picasso_global.h"
 #include "picasso_raster_adapter.h"
+#include "picasso_private.h"
 #include "picasso_objects.h"
 
 namespace picasso {

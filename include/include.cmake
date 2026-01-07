@@ -3,7 +3,7 @@
 # Copyright (C) 2025 Zhang Ji Peng
 # Contact: onecoolx@gmail.com
 
-file(GLOB_RECURSE PICASSO_HEADERS ${PROJECT_ROOT}/include/picasso.h ${PROJECT_ROOT}/include/picasso_ext.h)
+file(GLOB_RECURSE PICASSO_HEADERS ${PROJECT_ROOT}/include/picasso.h ${PROJECT_ROOT}/include/picasso_backport.h ${PROJECT_ROOT}/include/picasso_ext.h)
 install(FILES ${PICASSO_HEADERS} DESTINATION include/picasso)
 
 file(GLOB_RECURSE PSX_IMAGES_HEADERS ${PROJECT_ROOT}/include/images/*.h)
