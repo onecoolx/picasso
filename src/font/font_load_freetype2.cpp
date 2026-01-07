@@ -145,7 +145,7 @@ static void text_callback(void* data, const char* s, int32_t len)
             case NAMESET_TAG: {
                     // add a new font item.
                     font_item* f = (font_item*)mem_calloc(1, sizeof(font_item));
-                    strncpy(f->font_name, s, MIN(len, MAX_FONT_NAME_LENGTH - 1));
+                    strncpy(f->font_name, s, Min(len, MAX_FONT_NAME_LENGTH - 1));
                     context->map->add(f);
                     context->remaining_names++;
                 }
@@ -154,7 +154,7 @@ static void text_callback(void* data, const char* s, int32_t len)
                     for (int32_t i = 0; i < context->remaining_names; i++) {
                         char* path = context->map->at(context->map->size() - i - 1)->font_path;
                         char buffer[MAX_FONT_PATH_LENGTH] = {0};
-                        strncpy(buffer, s, MIN(len, MAX_FONT_PATH_LENGTH - 1));
+                        strncpy(buffer, s, Min(len, MAX_FONT_PATH_LENGTH - 1));
                         snprintf(path, MAX_FONT_PATH_LENGTH - 1, "/system/fonts/%s", buffer);
                     }
                     context->remaining_names = 0;
