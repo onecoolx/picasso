@@ -87,8 +87,11 @@ protected:
         double max_ms;
     };
 
-    std::map<std::string, BenchmarkResult> baseline_data;
+    typedef std::map<std::string, BenchmarkResult> BenchmarkData;
+    BenchmarkData baseline_data;
+    BenchmarkData newbase_data;
     std::string baseline_file;
+    std::string newbase_file;
     bool need_write_baseline;
 
     static void SetUpTestSuite()
@@ -104,12 +107,16 @@ protected:
     void Init(const std::string& test_name)
     {
         baseline_file = "./benchmark/" + test_name + "_" + SYSTEM + "_" + ARCH + ".json";
+        newbase_file = "./benchmark/" + test_name + "_" + SYSTEM + "_" + ARCH + "_new.json";
     }
 
     void SetUp() override
     {
         need_write_baseline = false;
-        LoadBaseline();
+        if (!LoadBaseline(baseline_file, baseline_data)) {
+            need_write_baseline = true;
+        }
+        LoadBaseline(newbase_file, newbase_data);
 
         clear_dcache();
     }
@@ -117,12 +124,12 @@ protected:
     void TearDown() override
     {
         if (need_write_baseline) {
-            SaveBaseline();
+            SaveBaseline(newbase_file);
         }
     }
 
-    void LoadBaseline();
-    void SaveBaseline();
+    bool LoadBaseline(const std::string& file_name, BenchmarkData& data);
+    void SaveBaseline(const std::string& file_name);
 
     template<typename Func>
     BenchmarkResult RunBenchmark(const std::string& test_name, Func&& func)
@@ -175,7 +182,7 @@ protected:
         std::string key = test_name;
 
         if (baseline_data.find(key) == baseline_data.end()) {
-            baseline_data[key] = result;
+            newbase_data[key] = result;
             std::cout << "[New Baseline] " << test_name << ": "
                       << std::setprecision(6)
                       << "median: " << result.mid_ms << " ms (avg: "
@@ -191,8 +198,9 @@ protected:
                               << std::setprecision(6) << "median: " << result.mid_ms << " ms (avg: " << result.avg_ms
                               << ", min: " << result.min_ms
                               << ", max: " << result.max_ms << ")" << std::endl;
-                    baseline_data[key] = result;
+                    need_write_baseline = true;
                 }
+                newbase_data[key] = result;
             } else {
                 EXPECT_LE(std::abs(diff_percent), TOLERANCE_PERCENT)
                         << "Performance regression detected for " << test_name

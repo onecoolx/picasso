@@ -25,7 +25,7 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(cJSON)
 add_library(CJson::CJson INTERFACE IMPORTED)
-target_compile_definitions(CJson::CJson INTERFACE ENABLE_CJSON_TEST=OFF)
+target_compile_definitions(CJson::CJson INTERFACE -DENABLE_CJSON_TEST=OFF)
 target_link_libraries(CJson::CJson INTERFACE cjson)
 
 
@@ -63,7 +63,7 @@ if (WIN32)
         COMMAND_EXPAND_LISTS
     )
 else()
-    target_compile_definitions(${PERF_TESTS} PRIVATE LINUX=1)
+    target_compile_definitions(${PERF_TESTS} PRIVATE -DLINUX=1)
     target_compile_options(${PERF_TESTS} PRIVATE -std=gnu++17)
     configure_file(${PROJECT_ROOT}/cfg/ZCOOLXiaoWei-Regular.ttf ${CMAKE_CURRENT_BINARY_DIR}/ZCOOLXiaoWei-Regular.ttf COPYONLY)
 endif()

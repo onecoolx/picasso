@@ -62,7 +62,7 @@ if (WIN32)
         COMMAND_EXPAND_LISTS
     )
 else()
-    target_compile_definitions(${UNIT_TESTS} PRIVATE LINUX=1)
+    target_compile_definitions(${UNIT_TESTS} PRIVATE -DLINUX=1)
     target_compile_options(${UNIT_TESTS} PRIVATE -std=gnu++17)
     configure_file(${PROJECT_ROOT}/cfg/ZCOOLXiaoWei-Regular.ttf ${CMAKE_CURRENT_BINARY_DIR}/ZCOOLXiaoWei-Regular.ttf COPYONLY)
 endif()

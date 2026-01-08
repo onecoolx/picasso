@@ -142,14 +142,13 @@ void clear_test_canvas(void)
     memset(test_buffer, 0xFF, TEST_WIDTH * TEST_HEIGHT * 4);
 }
 
-void PerformanceTest::LoadBaseline()
+bool PerformanceTest::LoadBaseline(const std::string& file_name, BenchmarkData& data)
 {
-    baseline_data.clear();
+    data.clear();
 
-    std::ifstream file(baseline_file);
+    std::ifstream file(file_name);
     if (!file.is_open()) {
-        need_write_baseline = true;
-        return;
+        return false;
     }
 
     std::string json_str((std::istreambuf_iterator<char>(file)),
@@ -158,8 +157,7 @@ void PerformanceTest::LoadBaseline()
 
     if (json_str.empty()) {
         std::cerr << "Error: JSON file is empty" << std::endl;
-        need_write_baseline = true;
-        return;
+        return false;
     }
 
     cJSON* root = cJSON_Parse(json_str.c_str());
@@ -169,15 +167,13 @@ void PerformanceTest::LoadBaseline()
             std::cerr << "Error: JSON parse error before: " << error_ptr << std::endl;
         }
         std::cerr << "Error: Failed to parse JSON from file " << baseline_file << std::endl;
-        need_write_baseline = true;
-        return;
+        return false;
     }
 
     if (cJSON_IsObject(root) == 0) {
         std::cerr << "Error: Root JSON element is not an object" << std::endl;
         cJSON_Delete(root);
-        need_write_baseline = true;
-        return;
+        return false;
     }
 
     cJSON* current = NULL;
@@ -229,14 +225,15 @@ void PerformanceTest::LoadBaseline()
         }
 
         if (valid) {
-            baseline_data[key] = result;
+            data[key] = result;
         }
     }
 
     cJSON_Delete(root);
+    return true;
 }
 
-void PerformanceTest::SaveBaseline()
+void PerformanceTest::SaveBaseline(const std::string& file_name)
 {
     cJSON* root = cJSON_CreateObject();
     if (!root) {
@@ -244,7 +241,7 @@ void PerformanceTest::SaveBaseline()
         return;
     }
 
-    for (const auto& pair : baseline_data) {
+    for (const auto& pair : newbase_data) {
         const std::string& key = pair.first;
         const BenchmarkResult& result = pair.second;
 
@@ -270,9 +267,9 @@ void PerformanceTest::SaveBaseline()
         return;
     }
 
-    std::ofstream file(baseline_file);
+    std::ofstream file(file_name);
     if (!file.is_open()) {
-        std::cerr << "Error: Failed to open file " << baseline_file << " for writing" << std::endl;
+        std::cerr << "Error: Failed to open file " << file_name << " for writing" << std::endl;
         free(json_str);
         cJSON_Delete(root);
         return;
