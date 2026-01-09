@@ -29,23 +29,63 @@
 #include "global.h"
 #include "memory_manager.h"
 
-namespace picasso {
+void* operator new (size_t size)
+{
+    return mem_malloc(size);
+}
+
+void* operator new[] (size_t size)
+{
+    return mem_malloc(size);
+}
+
+void operator delete (void* p)
+{
+    mem_free(p);
+}
+
+void operator delete[] (void* p)
+{
+    mem_free(p);
+}
+
+void* operator new (size_t size, const std::nothrow_t&) noexcept
+{
+    return mem_malloc(size);
+}
+
+void* operator new[] (size_t size, const std::nothrow_t&) noexcept
+{
+    return mem_malloc(size);
+}
+
+void operator delete (void* p, const std::nothrow_t&) noexcept
+{
+    mem_free(p);
+}
+
+void operator delete[] (void* p, const std::nothrow_t&) noexcept
+{
+    mem_free(p);
+}
+
+#if !ENABLE(SYSTEM_MALLOC)
 
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 
-void* _internal_malloc(size_t size)
+static void* _internal_malloc(size_t size)
 {
     return malloc(size);
 }
 
-void _internal_free(void* ptr)
+static void _internal_free(void* ptr)
 {
     return free(ptr);
 }
 
-void* _internal_calloc(size_t num, size_t size)
+static void* _internal_calloc(size_t num, size_t size)
 {
     return calloc(num, size);
 }
@@ -54,6 +94,10 @@ void* _internal_calloc(size_t num, size_t size)
 }
 #endif /* __cplusplus */
 
+namespace picasso {
+
 struct global_data _global(_internal_malloc, _internal_free, _internal_calloc);
 
 } // namespace picasso
+
+#endif // ENABLE(SYSTEM_MALLOC)

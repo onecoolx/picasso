@@ -36,9 +36,19 @@
 
 // common memory managers
 
-#define mem_malloc(n)         (picasso::_global._malloc((n)))
-#define mem_calloc(n, s)      (picasso::_global._calloc((n), (s)))
-#define mem_free(p)           (picasso::_global._free((p)))
+#if !ENABLE(SYSTEM_MALLOC)
+
+    #define mem_malloc(n)         (picasso::_global._malloc((n)))
+    #define mem_calloc(n, s)      (picasso::_global._calloc((n), (s)))
+    #define mem_free(p)           (picasso::_global._free((p)))
+
+#else
+
+    #define mem_malloc(n)         malloc((n))
+    #define mem_calloc(n, s)      calloc((n), (s))
+    #define mem_free(p)           free((p))
+
+#endif
 
 #define mem_deep_copy(d, s, l)    memmove(d, s, l)
 #define mem_copy(d, s, l)         fastcopy(d, s, l)
@@ -49,14 +59,20 @@
 #define BufferFree(p)          mem_free(p)
 #define BufferCopy(d, s, n)    mem_copy(d, s, n)
 
-#if !ENABLE(SYSTEM_MALLOC) && !COMPILER(CLANG)
-#undef new
-#undef delete
+#if !ENABLE(SYSTEM_MALLOC)
 
-MAYBE_INLINE void* operator new (size_t size) { return mem_malloc(size); }
-MAYBE_INLINE void* operator new[] (size_t size) { return mem_malloc(size); }
-MAYBE_INLINE void operator delete (void* p) { mem_free(p); }
-MAYBE_INLINE void operator delete[] (void* p) { mem_free(p); }
+    #undef new
+    #undef delete
+
+    void* operator new (size_t size);
+    void* operator new[] (size_t size);
+    void operator delete (void* p);
+    void operator delete[] (void* p);
+
+    void* operator new (size_t size, const std::nothrow_t&) noexcept;
+    void* operator new[] (size_t size, const std::nothrow_t&) noexcept;
+    void operator delete (void* p, const std::nothrow_t&) noexcept;
+    void operator delete[] (void* p, const std::nothrow_t&) noexcept;
 
 #endif /*ENABLE(SYSTEM_MALLOC)*/
 

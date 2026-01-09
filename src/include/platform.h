@@ -108,12 +108,6 @@
     #endif
 #endif
 
-#if COMPILER(CLANG)
-    #define MAYBE_INLINE
-#else
-    #define MAYBE_INLINE  inline
-#endif
-
 #if __cplusplus >= 201103L
     #define _REGISTER_
 #else

@@ -89,6 +89,21 @@ PERF_TEST_RUN(Matrix, MatrixScale)
     ps_matrix_unref(matrix);
 }
 
+PERF_TEST_RUN(Matrix, MatrixShear)
+{
+    ps_matrix* matrix = ps_matrix_create();
+
+    auto result = RunBenchmark(Matrix_MatrixShear, [&]() {
+        for (int i = 0; i < 100000; i++) {
+            ps_matrix_shear(matrix, 0.1f, 0.2f);
+            ps_matrix_shear(matrix, -0.1f, -0.2f);
+        }
+    });
+
+    CompareToBenchmark(Matrix_MatrixShear, result);
+    ps_matrix_unref(matrix);
+}
+
 PERF_TEST_RUN(Matrix, MatrixRotate)
 {
     ps_matrix* matrix = ps_matrix_create();
@@ -105,20 +120,6 @@ PERF_TEST_RUN(Matrix, MatrixRotate)
     ps_matrix_unref(matrix);
 }
 
-PERF_TEST_RUN(Matrix, MatrixShear)
-{
-    ps_matrix* matrix = ps_matrix_create();
-
-    auto result = RunBenchmark(Matrix_MatrixShear, [&]() {
-        for (int i = 0; i < 100000; i++) {
-            ps_matrix_shear(matrix, 0.1f, 0.2f);
-            ps_matrix_shear(matrix, -0.1f, -0.2f);
-        }
-    });
-
-    CompareToBenchmark(Matrix_MatrixShear, result);
-    ps_matrix_unref(matrix);
-}
 
 PERF_TEST_RUN(Matrix, MatrixInvert)
 {
