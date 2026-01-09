@@ -120,7 +120,6 @@ PERF_TEST_RUN(Matrix, MatrixRotate)
     ps_matrix_unref(matrix);
 }
 
-
 PERF_TEST_RUN(Matrix, MatrixInvert)
 {
     ps_matrix* matrix = ps_matrix_create_init(2.0f, 0.5f, 0.3f, 1.5f, 100.0f, 200.0f);
