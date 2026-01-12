@@ -15,9 +15,7 @@
 #include "picasso_painter.h"
 #include "picasso_private.h"
 
-#if !ENABLE(SYSTEM_MALLOC)
-    #include "picasso_backport.h"
-#endif
+#include "picasso_backport.h"
 
 namespace picasso {
 
