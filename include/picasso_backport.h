@@ -19,6 +19,7 @@
 #ifndef _PICASSO_BACKPORT_H_
 #define _PICASSO_BACKPORT_H_
 
+#include <stdlib.h>
 #include "picasso.h"
 
 #ifdef __cplusplus
@@ -64,6 +65,23 @@ typedef struct _ps_memory_funcs {
     ps_free_func mem_free; /** Memory free function */
     ps_calloc_func mem_calloc; /** Memory calloc function */
 } ps_memory_funcs;
+
+/**
+ * \fn ps_bool ps_set_memory_functions(const ps_memory_funcs* funcs)
+ * \brief Set global memory allocation functions
+ *
+ * This function allows you to override the default memory allocation
+ * functions used throughout the Picasso library. All memory allocations
+ * will be redirected to the provided functions.
+ *
+ * \param funcs Pointer to structure containing memory function pointers.
+ * \return True on success, False on failure
+ *
+ * \note This function must be called before ps_initialize() and cannot
+ *       be called after the library has been initialized.
+ * \note All function pointers must be valid; NULL pointers are not allowed.
+ */
+PEXPORT ps_bool PICAPI ps_set_memory_functions(const ps_memory_funcs* funcs);
 
 /** @} end of memory */
 

@@ -196,4 +196,5 @@ EXPORTS
     ps_path_add_rounded_rect
     ps_path_add_sub_path
     ps_path_clipping
+    ps_set_memory_functions
 

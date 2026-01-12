@@ -15,6 +15,10 @@
 #include "picasso_painter.h"
 #include "picasso_private.h"
 
+#if !ENABLE(SYSTEM_MALLOC)
+    #include "picasso_backport.h"
+#endif
+
 namespace picasso {
 
 static inline void _clip_path(context_state* state, const graphic_path& p, filling_rule r)
@@ -59,6 +63,36 @@ void PICAPI ps_shutdown(void)
 ps_status PICAPI ps_last_status(void)
 {
     return global_status;
+}
+
+ps_bool PICAPI ps_set_memory_functions(const ps_memory_funcs* funcs)
+{
+#if !ENABLE(SYSTEM_MALLOC)
+    if (picasso::is_valid_system_device()) { // memory functions must be set before call ps_initialize
+        global_status = STATUS_NOT_SUPPORT;
+        return False;
+    }
+
+    if (!funcs) {
+        global_status = STATUS_INVALID_ARGUMENT;
+        return False;
+    }
+
+    if (!funcs->mem_malloc || !funcs->mem_free || !funcs->mem_calloc) {
+        global_status = STATUS_INVALID_ARGUMENT;
+        return False;
+    }
+
+    _global._malloc = funcs->mem_malloc;
+    _global._free = funcs->mem_free;
+    _global._calloc = funcs->mem_calloc;
+
+    global_status = STATUS_SUCCEED;
+    return True;
+#else
+    global_status = STATUS_NOT_SUPPORT;
+    return False;
+#endif
 }
 
 ps_context* PICAPI ps_context_create(ps_canvas* canvas, ps_context* ctx)

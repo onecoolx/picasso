@@ -28,7 +28,7 @@
 #define _PICASSO_PERF_TEST_H_
 
 #include "picasso.h"
-#include "images/psx_image.h"
+#include "picasso_backport.h"
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 
@@ -43,8 +43,6 @@
 void PS_Init();
 void PS_Shutdown();
 void clear_dcache(void);
-ps_canvas* get_test_canvas(void);
-void clear_test_canvas(void);
 
 #if defined(WIN32)
     #define SYSTEM "win32"

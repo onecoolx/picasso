@@ -33,10 +33,6 @@
 
 #include "cJSON.h"
 
-#if ENABLE_EXTENSIONS
-    #include "images/psx_image_plugin.h"
-#endif
-
 #ifdef WIN32
     #include <windows.h>
     #include <process.h>
@@ -92,54 +88,42 @@ static void set_cpu_affinity(void)
 #endif
 }
 
-static uint8_t* test_buffer = NULL;
-static ps_canvas* test_canvas = NULL;
+static void* _tracker_malloc(size_t size)
+{
+    return malloc(size);
+}
+
+static void _tracker_free(void* ptr)
+{
+    free(ptr);
+}
+
+static void* _tracker_calloc(size_t num, size_t size)
+{
+    return _tracker_malloc(num * size);
+}
 
 void PS_Init()
 {
+    ps_memory_funcs funcs;
+    funcs.mem_malloc = _tracker_malloc;
+    funcs.mem_calloc = _tracker_calloc;
+    funcs.mem_free = _tracker_free;
+
+    ASSERT_NE(False, ps_set_memory_functions(&funcs));
+
     printf("picasso initialize\n");
     ASSERT_NE(False, ps_initialize());
-#if ENABLE_EXTENSIONS
-    ASSERT_NE(0, psx_image_init());
-#endif
-    int v = ps_version();
-    fprintf(stderr, "picasso version %d \n", v);
-    ASSERT_EQ(STATUS_SUCCEED, ps_last_status());
 
     set_process_priority();
     set_cpu_affinity();
-
-    if (!test_buffer) {
-        test_buffer = (uint8_t*)calloc(TEST_WIDTH * 4, TEST_HEIGHT);
-        test_canvas = ps_canvas_create_with_data(test_buffer, COLOR_FORMAT_RGBA, TEST_WIDTH, TEST_HEIGHT, TEST_WIDTH * 4);
-    }
 }
 
 void PS_Shutdown()
 {
-    if (test_buffer) {
-        ps_canvas_unref(test_canvas);
-        test_canvas = NULL;
-        free(test_buffer);
-        test_buffer = NULL;
-    }
-
     printf("picasso shutdown\n");
-#if ENABLE_EXTENSIONS
-    psx_image_shutdown();
-#endif
     ps_shutdown();
     ASSERT_EQ(STATUS_SUCCEED, ps_last_status());
-}
-
-ps_canvas* get_test_canvas(void)
-{
-    return test_canvas;
-}
-
-void clear_test_canvas(void)
-{
-    memset(test_buffer, 0xFF, TEST_WIDTH * TEST_HEIGHT * 4);
 }
 
 bool PerformanceTest::LoadBaseline(const std::string& file_name, BenchmarkData& data)

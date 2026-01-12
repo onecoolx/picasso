@@ -82,7 +82,7 @@ static void* _internal_malloc(size_t size)
 
 static void _internal_free(void* ptr)
 {
-    return free(ptr);
+    free(ptr);
 }
 
 static void* _internal_calloc(size_t num, size_t size)
