@@ -25,7 +25,7 @@ jobs:
       run: >
         cmake -B ${{ github.workspace }}/build
         -DCMAKE_BUILD_TYPE=Release
-        -DOPT_SYSTEM_MALLOC=OFF
+        -DOPT_SYSTEM_MALLOC=ON
         -DOPT_PERFTEST=ON
         -DOPT_FAST_COPY=OFF
         -DOPT_INTERNAL_FREETYPE=ON

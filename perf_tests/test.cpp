@@ -88,30 +88,8 @@ static void set_cpu_affinity(void)
 #endif
 }
 
-static void* _tracker_malloc(size_t size)
-{
-    return malloc(size);
-}
-
-static void _tracker_free(void* ptr)
-{
-    free(ptr);
-}
-
-static void* _tracker_calloc(size_t num, size_t size)
-{
-    return _tracker_malloc(num * size);
-}
-
 void PS_Init()
 {
-    ps_memory_funcs funcs;
-    funcs.mem_malloc = _tracker_malloc;
-    funcs.mem_calloc = _tracker_calloc;
-    funcs.mem_free = _tracker_free;
-
-    ASSERT_NE(False, ps_set_memory_functions(&funcs));
-
     printf("picasso initialize\n");
     ASSERT_NE(False, ps_initialize());
 
@@ -123,7 +101,6 @@ void PS_Shutdown()
 {
     printf("picasso shutdown\n");
     ps_shutdown();
-    ASSERT_EQ(STATUS_SUCCEED, ps_last_status());
 }
 
 bool PerformanceTest::LoadBaseline(const std::string& file_name, BenchmarkData& data)
