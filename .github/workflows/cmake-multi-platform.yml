@@ -95,13 +95,13 @@ jobs:
         ctest --build-config ${{ matrix.build_type }} --output-on-failure
         
     - name: Generate Coverage
-      if: ${{matrix.os == 'ubuntu-latest' && matrix.c_compiler == 'gcc'}}
+      if: ${{matrix.os == 'ubuntu-latest' && matrix.c_compiler == 'gcc' && matrix.build_type == 'Debug'}}
       run: |
         cd ${{ steps.strings.outputs.build-output-dir }}
         ${{ github.workspace }}/tools/gen_covs.sh
 
     - name: Upload coverage reports to Codecov
-      if: ${{matrix.os == 'ubuntu-latest' && matrix.c_compiler == 'gcc'}}
+      if: ${{matrix.os == 'ubuntu-latest' && matrix.c_compiler == 'gcc' && matrix.build_type == 'Debug'}}
       uses: codecov/codecov-action@v5
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
