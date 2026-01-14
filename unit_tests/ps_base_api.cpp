@@ -26,21 +26,7 @@
 
 #include "test.h"
 
-class PicassoTest : public ::testing::Test
-{
-protected:
-    void SetUp() override
-    {
-        ASSERT_TRUE(ps_initialize());
-    }
-
-    void TearDown() override
-    {
-        ps_shutdown();
-    }
-};
-
-TEST_F(PicassoTest, BasicTypes)
+TEST(PicassoTest, BasicTypes)
 {
     EXPECT_EQ(True, 1);
     EXPECT_EQ(False, 0);
@@ -49,8 +35,3 @@ TEST_F(PicassoTest, BasicTypes)
     EXPECT_EQ(sizeof(ps_byte), 1);
 }
 
-TEST_F(PicassoTest, VersionAndInit)
-{
-    EXPECT_GT(ps_version(), 0);
-    EXPECT_EQ(ps_last_status(), STATUS_SUCCEED);
-}

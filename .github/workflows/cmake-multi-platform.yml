@@ -98,7 +98,10 @@ jobs:
       if: ${{matrix.os == 'ubuntu-latest' && matrix.c_compiler == 'gcc' && matrix.build_type == 'Debug'}}
       run: |
         cd ${{ steps.strings.outputs.build-output-dir }}
-        ${{ github.workspace }}/tools/gen_covs.sh
+        GCC_VERSION=`gcc --version | head -n1 | awk '{print $3}'`
+        GCC_MAJOR_VERSION=$(echo $GCC_VERSION | cut -d. -f1,1)
+        lcov --rc geninfo_unexecuted_blocks=1 --gcov-tool /usr/bin/gcov-${GCC_MAJOR_VERSION} -d . -c -o picasso.info
+        lcov --remove picasso.info -o picasso.info '/usr/*' '*/proj/*' '*/unit_tests/*' '*/third_party/*'
 
     - name: Upload coverage reports to Codecov
       if: ${{matrix.os == 'ubuntu-latest' && matrix.c_compiler == 'gcc' && matrix.build_type == 'Debug'}}
