@@ -42,6 +42,7 @@
 
 void PS_Init();
 void PS_Shutdown();
+ps_canvas* get_test_canvas(void);
 void clear_dcache(void);
 
 #if defined(WIN32)

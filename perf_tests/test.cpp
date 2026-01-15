@@ -42,6 +42,9 @@
     #include <unistd.h>
 #endif
 
+static uint8_t* test_buffer = NULL;
+static ps_canvas* test_canvas = NULL;
+
 static void set_process_priority(void);
 static void set_cpu_affinity(void);
 
@@ -88,6 +91,11 @@ static void set_cpu_affinity(void)
 #endif
 }
 
+ps_canvas* get_test_canvas(void)
+{
+    return test_canvas;
+}
+
 void PS_Init()
 {
     printf("picasso initialize\n");
@@ -95,10 +103,21 @@ void PS_Init()
 
     set_process_priority();
     set_cpu_affinity();
+
+    if (!test_buffer) {
+        test_buffer = (uint8_t*)calloc(TEST_WIDTH * 4, TEST_HEIGHT);
+        test_canvas = ps_canvas_create_with_data(test_buffer, COLOR_FORMAT_RGBA, 100, 100, 100 * 4);
+    }
 }
 
 void PS_Shutdown()
 {
+    if (test_buffer) {
+        ps_canvas_unref(test_canvas);
+        test_canvas = NULL;
+        free(test_buffer);
+        test_buffer = NULL;
+    }
     printf("picasso shutdown\n");
     ps_shutdown();
 }
