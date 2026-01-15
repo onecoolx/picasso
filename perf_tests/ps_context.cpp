@@ -60,21 +60,20 @@ PERF_TEST_RUN(Context, ContextStateOperations)
     ps_context_unref(ctx);
 }
 
-PERF_TEST_RUN(Context, ContextCreateWithShared)  
-{  
-    ps_context* shared_ctx = ps_context_create(get_test_canvas(), NULL);  
-      
-    auto result = RunBenchmark(Context_ContextCreateWithShared, [&]() {  
-        for (int i = 0; i < 10000; i++) {  
-            ps_context* ctx = ps_context_create(get_test_canvas(), shared_ctx);  
-            ps_context_unref(ctx);  
-        }  
-    });  
-      
-    CompareToBenchmark(Context_ContextCreateWithShared, result);  
-    ps_context_unref(shared_ctx);  
-} 
+PERF_TEST_RUN(Context, ContextCreateWithShared)
+{
+    ps_context* shared_ctx = ps_context_create(get_test_canvas(), NULL);
 
+    auto result = RunBenchmark(Context_ContextCreateWithShared, [&]() {
+        for (int i = 0; i < 10000; i++) {
+            ps_context* ctx = ps_context_create(get_test_canvas(), shared_ctx);
+            ps_context_unref(ctx);
+        }
+    });
+
+    CompareToBenchmark(Context_ContextCreateWithShared, result);
+    ps_context_unref(shared_ctx);
+}
 
 PERF_TEST_RUN(Context, ContextReferenceOperations)
 {
@@ -91,7 +90,6 @@ PERF_TEST_RUN(Context, ContextReferenceOperations)
     ps_context_unref(ctx);
 }
 
-
 PERF_TEST_RUN(Context, ContextMultipleReferences)
 {
     auto result = RunBenchmark(Context_ContextMultipleReferences, [&]() {
@@ -107,7 +105,6 @@ PERF_TEST_RUN(Context, ContextMultipleReferences)
 
     CompareToBenchmark(Context_ContextMultipleReferences, result);
 }
-
 
 PERF_TEST_RUN(Context, ContextCanvasOperations)
 {
@@ -130,7 +127,6 @@ PERF_TEST_RUN(Context, ContextCanvasOperations)
     ps_canvas_unref(canvas2);
     ps_canvas_unref(canvas3);
 }
-
 
 PERF_TEST_RUN(Context, ContextCanvasFormatOperations)
 {
@@ -164,7 +160,6 @@ PERF_TEST_RUN(Context, ContextCanvasFormatOperations)
     }
 }
 
-
 PERF_TEST_RUN(Context, ContextStressTest)
 {
     const int num_contexts = 1000;
@@ -194,8 +189,6 @@ PERF_TEST_RUN(Context, ContextStressTest)
 
     CompareToBenchmark(Context_ContextStressTest, result);
 }
-
-
 
 PERF_TEST_RUN(Context, ContextErrorHandling)
 {
@@ -231,7 +224,6 @@ PERF_TEST_RUN(Context, ContextWithDataCanvas)
     free(buffer);
 }
 
-
 PERF_TEST_RUN(Context, ContextSharedResourceChain)
 {
     ps_context* root = ps_context_create(get_test_canvas(), NULL);
@@ -265,5 +257,3 @@ PERF_TEST_RUN(Context, ContextSharedResourceChain)
     ps_context_unref(child1);
     ps_context_unref(root);
 }
-
-
