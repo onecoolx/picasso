@@ -40,6 +40,8 @@
 #define TEST_WIDTH 640
 #define TEST_HEIGHT 480
 
+#define UNUSED(x) ((void)(x))
+
 void PS_Init();
 void PS_Shutdown();
 ps_canvas* get_test_canvas(void);
