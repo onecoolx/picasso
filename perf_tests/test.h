@@ -93,7 +93,6 @@ protected:
     BenchmarkData newbase_data;
     std::string baseline_file;
     std::string newbase_file;
-    bool need_write_baseline;
 
     static void SetUpTestSuite()
     {
@@ -113,10 +112,7 @@ protected:
 
     void SetUp() override
     {
-        need_write_baseline = false;
-        if (!LoadBaseline(baseline_file, baseline_data)) {
-            need_write_baseline = true;
-        }
+        LoadBaseline(baseline_file, baseline_data);
         LoadBaseline(newbase_file, newbase_data);
 
         clear_dcache();
@@ -124,9 +120,7 @@ protected:
 
     void TearDown() override
     {
-        if (need_write_baseline) {
-            SaveBaseline(newbase_file);
-        }
+        SaveBaseline(newbase_file);
     }
 
     bool LoadBaseline(const std::string& file_name, BenchmarkData& data);
@@ -183,13 +177,11 @@ protected:
         std::string key = test_name;
 
         if (baseline_data.find(key) == baseline_data.end()) {
-            newbase_data[key] = result;
             std::cout << "[New Baseline] " << test_name << ": "
                       << std::setprecision(6)
                       << "median: " << result.mid_ms << " ms (avg: "
                       << result.avg_ms << ", min: " << result.min_ms
                       << ", max: " << result.max_ms << ")" << std::endl;
-            need_write_baseline = true;
         } else {
             const auto& baseline = baseline_data[key];
             double diff_percent = ((result.mid_ms - baseline.mid_ms) / baseline.mid_ms) * 100.0;
@@ -199,9 +191,7 @@ protected:
                               << std::setprecision(6) << "median: " << result.mid_ms << " ms (avg: " << result.avg_ms
                               << ", min: " << result.min_ms
                               << ", max: " << result.max_ms << ")" << std::endl;
-                    need_write_baseline = true;
                 }
-                newbase_data[key] = result;
             } else {
                 EXPECT_LE(std::abs(diff_percent), TOLERANCE_PERCENT)
                         << "Performance regression detected for " << test_name
@@ -211,6 +201,7 @@ protected:
                         << "Difference: " << diff_percent << "%" << std::endl;
             }
         }
+        newbase_data[key] = result;
     }
 };
 
