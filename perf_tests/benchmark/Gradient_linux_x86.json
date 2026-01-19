@@ -1,80 +1,80 @@
 {
-	"AllSpreadModes":	{
-		"mid_ms":	4.5270309999949632,
-		"avg_ms":	4.5336096899997358,
-		"min_ms":	4.5137959999976829,
-		"max_ms":	4.55248800000163
-	},
-	"ColorStopOperations":	{
-		"mid_ms":	0.7816290000164372,
-		"avg_ms":	0.78100475000070446,
-		"min_ms":	0.771890999999414,
-		"max_ms":	0.783613000010064
-	},
-	"ComplexColorStops":	{
-		"mid_ms":	1.8145425000000159,
-		"avg_ms":	1.8213084799995727,
-		"min_ms":	1.8069639999964693,
-		"max_ms":	1.8475089999867578
-	},
-	"ConicGradientCreateDestroy":	{
-		"mid_ms":	0.82405799999207829,
-		"avg_ms":	0.83084054999986279,
-		"min_ms":	0.81431000000975473,
-		"max_ms":	0.86284099998579222
-	},
-	"GradientErrorHandling":	{
-		"mid_ms":	0.38338550000105442,
-		"avg_ms":	0.387683574999187,
-		"min_ms":	0.38259400000129062,
-		"max_ms":	0.39284399997541186
-	},
-	"GradientExtremeValues":	{
-		"mid_ms":	1.7336310000075628,
-		"avg_ms":	1.7379241499995146,
-		"min_ms":	1.7251909999913551,
-		"max_ms":	1.7521609999846532
-	},
-	"GradientReferenceOperations":	{
-		"mid_ms":	0.84226250001506742,
-		"avg_ms":	0.84247240999928863,
-		"min_ms":	0.83316500001728855,
-		"max_ms":	0.844126000004053
-	},
-	"GradientReusePerformance":	{
-		"mid_ms":	0.29347800000323332,
-		"avg_ms":	0.296863974998871,
-		"min_ms":	0.29340700001512232,
-		"max_ms":	0.30352699999980359
-	},
-	"GradientStressTest":	{
-		"mid_ms":	1.2614399999932857,
-		"avg_ms":	1.2580112249993647,
-		"min_ms":	1.2306980000005296,
-		"max_ms":	1.2741879999964567
-	},
-	"GradientTransformOperations":	{
-		"mid_ms":	0.37647249999395171,
-		"avg_ms":	0.379006610000232,
-		"min_ms":	0.37398899999629975,
-		"max_ms":	0.38510799998903167
-	},
-	"GradientTypeComparison":	{
-		"mid_ms":	2.151821500007145,
-		"avg_ms":	2.15507697000092,
-		"min_ms":	2.1441330000016023,
-		"max_ms":	2.1663839999916945
-	},
-	"LinearGradientCreateDestroy":	{
-		"mid_ms":	1.25528849999057,
-		"avg_ms":	1.25733579499979,
-		"min_ms":	1.2520070000050509,
-		"max_ms":	1.2640699999906246
-	},
-	"RadialGradientCreateDestroy":	{
-		"mid_ms":	0.87217800000871648,
-		"avg_ms":	0.87669413500108817,
-		"min_ms":	0.866697999981625,
-		"max_ms":	0.89182499999651554
-	}
+    "AllSpreadModes": {
+        "mid_ms": 4.52703099,
+        "avg_ms": 4.53360968,
+        "min_ms": 4.51379599,
+        "max_ms": 4.552488
+    },
+    "ColorStopOperations": {
+        "mid_ms": 0.781629,
+        "avg_ms": 0.78100475,
+        "min_ms": 0.77189099,
+        "max_ms": 0.783613
+    },
+    "ComplexColorStops": {
+        "mid_ms": 1.81384249,
+        "avg_ms": 1.81451515,
+        "min_ms": 1.80699099,
+        "max_ms": 1.82081699
+    },
+    "ConicGradientCreateDestroy": {
+        "mid_ms": 0.82362349,
+        "avg_ms": 0.82747762,
+        "min_ms": 0.81394,
+        "max_ms": 0.843086
+    },
+    "GradientErrorHandling": {
+        "mid_ms": 0.382749,
+        "avg_ms": 0.38822014,
+        "min_ms": 0.38266399,
+        "max_ms": 0.393946
+    },
+    "GradientExtremeValues": {
+        "mid_ms": 1.733631,
+        "avg_ms": 1.73792414,
+        "min_ms": 1.72519099,
+        "max_ms": 1.75216099
+    },
+    "GradientReferenceOperations": {
+        "mid_ms": 0.842094,
+        "avg_ms": 0.843018,
+        "min_ms": 0.83247599,
+        "max_ms": 0.845099
+    },
+    "GradientReusePerformance": {
+        "mid_ms": 0.293478,
+        "avg_ms": 0.29686397,
+        "min_ms": 0.293407,
+        "max_ms": 0.30352699
+    },
+    "GradientStressTest": {
+        "mid_ms": 1.244343,
+        "avg_ms": 1.24782746,
+        "min_ms": 1.239207,
+        "max_ms": 1.258445
+    },
+    "GradientTransformOperations": {
+        "mid_ms": 0.37414799,
+        "avg_ms": 0.37883554,
+        "min_ms": 0.37406799,
+        "max_ms": 0.384108
+    },
+    "GradientTypeComparison": {
+        "mid_ms": 2.14749599,
+        "avg_ms": 2.16229689,
+        "min_ms": 2.143443,
+        "max_ms": 2.23621099
+    },
+    "LinearGradientCreateDestroy": {
+        "mid_ms": 1.25528849,
+        "avg_ms": 1.25733579,
+        "min_ms": 1.252007,
+        "max_ms": 1.26406999
+    },
+    "RadialGradientCreateDestroy": {
+        "mid_ms": 0.872178,
+        "avg_ms": 0.87669413,
+        "min_ms": 0.86669799,
+        "max_ms": 0.89182499
+    }
 }

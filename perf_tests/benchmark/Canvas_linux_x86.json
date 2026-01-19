@@ -1,80 +1,80 @@
 {
-	"CanvasBitbltOperations":	{
-		"mid_ms":	0.0794480000081421,
-		"avg_ms":	0.0802727449999452,
-		"min_ms":	0.078956999999491,
-		"max_ms":	0.08055000000695145
-	},
-	"CanvasCreateAllFormats":	{
-		"mid_ms":	2.9603010000158747,
-		"avg_ms":	2.9693099300006054,
-		"min_ms":	2.9089800000008381,
-		"max_ms":	3.0045780000023115
-	},
-	"CanvasCreateCompatible":	{
-		"mid_ms":	1.3887519999968845,
-		"avg_ms":	1.3901101600012566,
-		"min_ms":	1.3735839999924337,
-		"max_ms":	1.4083689999893068
-	},
-	"CanvasCreateDestroy":	{
-		"mid_ms":	0.26813000000913689,
-		"avg_ms":	0.2709620999999629,
-		"min_ms":	0.26662799999144227,
-		"max_ms":	0.27842999998028972
-	},
-	"CanvasCreateFromCanvas":	{
-		"mid_ms":	1.2410970000047428,
-		"avg_ms":	1.2415558950007721,
-		"min_ms":	1.2319300000172007,
-		"max_ms":	1.2513750000096024
-	},
-	"CanvasCreateFromMask":	{
-		"mid_ms":	0.23335599999541046,
-		"avg_ms":	0.23487791000064817,
-		"min_ms":	0.23086100000568877,
-		"max_ms":	0.2429729999846586
-	},
-	"CanvasCreateWithData":	{
-		"mid_ms":	2.4806910000023663,
-		"avg_ms":	2.48452803000049,
-		"min_ms":	2.4699109999914981,
-		"max_ms":	2.4973620000139363
-	},
-	"CanvasErrorHandling":	{
-		"mid_ms":	0.45415300000684056,
-		"avg_ms":	0.45837617999922031,
-		"min_ms":	0.45320600000309241,
-		"max_ms":	0.46381500001757558
-	},
-	"CanvasMaskOperations":	{
-		"mid_ms":	0.21902899999304282,
-		"avg_ms":	0.2199079499985146,
-		"min_ms":	0.21595200001911508,
-		"max_ms":	0.22862700001269332
-	},
-	"CanvasPropertyOperations":	{
-		"mid_ms":	1.1767719999937754,
-		"avg_ms":	1.1789872850000904,
-		"min_ms":	1.1754439999833721,
-		"max_ms":	1.1846710000043004
-	},
-	"CanvasReferenceOperations":	{
-		"mid_ms":	0.87299999999856936,
-		"avg_ms":	0.87287423499859074,
-		"min_ms":	0.863992999995844,
-		"max_ms":	0.875194000002466
-	},
-	"CanvasReplaceData":	{
-		"mid_ms":	0.026700000006485425,
-		"avg_ms":	0.027026444999762589,
-		"min_ms":	0.026679999990619763,
-		"max_ms":	0.026759999997238992
-	},
-	"CanvasStressTest":	{
-		"mid_ms":	2.1653464999928929,
-		"avg_ms":	2.1792426549993138,
-		"min_ms":	2.1337430000016866,
-		"max_ms":	2.237366000002794
-	}
+    "CanvasBitbltOperations": {
+        "mid_ms": 0.079448,
+        "avg_ms": 0.08027274,
+        "min_ms": 0.07895699,
+        "max_ms": 0.08055
+    },
+    "CanvasCreateAllFormats": {
+        "mid_ms": 2.960301,
+        "avg_ms": 2.96930993,
+        "min_ms": 2.90898,
+        "max_ms": 3.004578
+    },
+    "CanvasCreateCompatible": {
+        "mid_ms": 1.363089,
+        "avg_ms": 1.36603738,
+        "min_ms": 1.35205399,
+        "max_ms": 1.384396
+    },
+    "CanvasCreateDestroy": {
+        "mid_ms": 0.26813,
+        "avg_ms": 0.27096209,
+        "min_ms": 0.26662799,
+        "max_ms": 0.27842999
+    },
+    "CanvasCreateFromCanvas": {
+        "mid_ms": 1.2121,
+        "avg_ms": 1.21401845,
+        "min_ms": 1.208288,
+        "max_ms": 1.220661
+    },
+    "CanvasCreateFromMask": {
+        "mid_ms": 0.23325099,
+        "avg_ms": 0.23535486,
+        "min_ms": 0.23105699,
+        "max_ms": 0.24321099
+    },
+    "CanvasCreateWithData": {
+        "mid_ms": 2.43315099,
+        "avg_ms": 2.436446,
+        "min_ms": 2.40603299,
+        "max_ms": 2.447172
+    },
+    "CanvasErrorHandling": {
+        "mid_ms": 0.453397,
+        "avg_ms": 0.45814534,
+        "min_ms": 0.453227,
+        "max_ms": 0.46321599
+    },
+    "CanvasMaskOperations": {
+        "mid_ms": 0.21313799,
+        "avg_ms": 0.21666139,
+        "min_ms": 0.21288199,
+        "max_ms": 0.225326
+    },
+    "CanvasPropertyOperations": {
+        "mid_ms": 1.1485375,
+        "avg_ms": 1.15099011,
+        "min_ms": 1.14768,
+        "max_ms": 1.155726
+    },
+    "CanvasReferenceOperations": {
+        "mid_ms": 0.87299999,
+        "avg_ms": 0.87287423,
+        "min_ms": 0.86399299,
+        "max_ms": 0.875194
+    },
+    "CanvasReplaceData": {
+        "mid_ms": 0.02669049,
+        "avg_ms": 0.02693273,
+        "min_ms": 0.02664999,
+        "max_ms": 0.026851
+    },
+    "CanvasStressTest": {
+        "mid_ms": 2.13103549,
+        "avg_ms": 2.14168168,
+        "min_ms": 2.06660799,
+        "max_ms": 2.228063
+    }
 }

@@ -1,0 +1,86 @@
+{
+    "ImageCreateAllFormats": {
+        "mid_ms": 1.380517,
+        "avg_ms": 1.38659416,
+        "min_ms": 1.370358,
+        "max_ms": 1.401978
+    },
+    "ImageCreateCompatible": {
+        "mid_ms": 1.43017349,
+        "avg_ms": 1.43244171,
+        "min_ms": 1.42590499,
+        "max_ms": 1.43974099
+    },
+    "ImageCreateDestroy": {
+        "mid_ms": 2.865876,
+        "avg_ms": 2.87163362,
+        "min_ms": 2.851579,
+        "max_ms": 2.89390999
+    },
+    "ImageCreateFromCanvas": {
+        "mid_ms": 0.40812599,
+        "avg_ms": 0.41451859,
+        "min_ms": 0.40766499,
+        "max_ms": 0.42348499
+    },
+    "ImageCreateFromData": {
+        "mid_ms": 2.72884249,
+        "avg_ms": 2.73035194,
+        "min_ms": 2.72086699,
+        "max_ms": 2.73905299
+    },
+    "ImageCreateFromImage": {
+        "mid_ms": 0.44052799,
+        "avg_ms": 0.44626864,
+        "min_ms": 0.440157,
+        "max_ms": 0.454515
+    },
+    "ImageCreateWithData": {
+        "mid_ms": 0.58869299,
+        "avg_ms": 0.58656259,
+        "min_ms": 0.57894399,
+        "max_ms": 0.592009
+    },
+    "ImageDifferentDimensions": {
+        "mid_ms": 68.76892248,
+        "avg_ms": 68.79178842,
+        "min_ms": 68.50539399,
+        "max_ms": 69.07916599
+    },
+    "ImageErrorHandling": {
+        "mid_ms": 4.2299875,
+        "avg_ms": 4.23316224,
+        "min_ms": 4.17818299,
+        "max_ms": 4.274619
+    },
+    "ImagePropertyOperations": {
+        "mid_ms": 1.1484855,
+        "avg_ms": 1.15067403,
+        "min_ms": 1.14759899,
+        "max_ms": 1.156106
+    },
+    "ImageReferenceOperations": {
+        "mid_ms": 0.90379999,
+        "avg_ms": 0.90388706,
+        "min_ms": 0.902888,
+        "max_ms": 0.905944
+    },
+    "ImageReusePerformance": {
+        "mid_ms": 0.25009,
+        "avg_ms": 0.25307147,
+        "min_ms": 0.25006999,
+        "max_ms": 0.259969
+    },
+    "ImageStressTest": {
+        "mid_ms": 1.1061445,
+        "avg_ms": 1.11068955,
+        "min_ms": 1.102843,
+        "max_ms": 1.120657
+    },
+    "ImageTransparencyOperations": {
+        "mid_ms": 0.2654415,
+        "avg_ms": 0.26641209,
+        "min_ms": 0.262386,
+        "max_ms": 0.27470899
+    }
+}

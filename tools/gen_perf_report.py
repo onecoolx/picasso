@@ -77,10 +77,21 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         .performance-item { text-align: center; padding: 15px; background: rgba(255, 255, 255, 0.05); border-radius: 10px; }
         .performance-value { font-size: 1.5rem; font-weight: bold; margin: 5px 0; }
         .performance-label { font-size: 0.9rem; opacity: 0.8; }
-        .language-switcher { position: absolute; top: 20px; right: 20px; display: flex; gap: 10px; }
+        .language-switcher { position: absolute; top: 20px; right: 20px; display: flex; gap: 10px; z-index: 1000; background: rgba(26, 26, 46, 0.9); padding: 8px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1);}
         .lang-btn { padding: 8px 15px; border-radius: 5px; border: 1px solid rgba(255, 255, 255, 0.2); background: rgba(0, 0, 0, 0.3); color: white; cursor: pointer; }
         .lang-btn.active { background: #4361ee; border-color: #4361ee; }
         .benchmark-set { color: #fbbf24; font-weight: bold; }
+
+        @media (max-width: 768px) {
+        .language-switcher { position: relative; top: 0; right: 0; justify-content: center; margin-bottom: 15px; background: transparent; border: none; }
+        .header { padding-top: 60px; }
+        .controls { margin-top: 10px; }}
+
+        .search-box { flex: 1; min-width: 200px; max-width: 100%; position: relative; }
+        @media (max-width: 576px) {
+            .search-box { min-width: 100%; }
+            .filter-buttons { width: 100%; justify-content: center; }
+        }
 
         /* Pagination styles */
         .pagination-container { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; padding: 15px; background: rgba(255, 255, 255, 0.05); border-radius: 10px; }
@@ -281,6 +292,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
                 // Summary cards
                 'test-overview': 'Test Overview',
+                'tolerance': 'Tolerance:',
                 'total-benchmark-sets': 'Total Benchmark Sets:',
                 'total-test-items': 'Total Test Items:',
                 'improved': 'Improved',
@@ -366,6 +378,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
                 // Summary cards
                 'test-overview': '测试概况',
+                'tolerance': '容差:',
                 'total-benchmark-sets': '总测试集:',
                 'total-test-items': '总测试项:',
                 'improved': '性能提升',
@@ -1048,13 +1061,15 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 """
 
 class PerformanceAnalyzer:
-    def __init__(self, benchmark_dir="benchmark"):
+    def __init__(self, benchmark_dir="benchmark", tolerance=10): # tolerance 10%
         self.benchmark_dir = benchmark_dir
+        self.tolerance = tolerance
         self.baseline_files = []
         self.new_files = []
         self.benchmark_sets = {}  # {set_name: {baseline_data: {}, new_data: {}}}
         self.comparison_data = []  # List of comparison data
         self.summary_stats = {
+            'tolerance':tolerance,
             'total_tests': 0,
             'total_sets': 0,
             'improved': 0,
@@ -1159,7 +1174,7 @@ class PerformanceAnalyzer:
                         change_percent = 0
 
                     # Determine change type
-                    if abs(change_percent) < 0.1:  # Less than 0.1% change considered unchanged
+                    if abs(change_percent) < self.tolerance:  # Less than tolerance change considered unchanged
                         change_type = 'unchanged'
                         self.summary_stats['unchanged'] += 1
                     elif change_percent < 0:
@@ -1207,6 +1222,7 @@ class PerformanceAnalyzer:
             <div class="card">
                 <h3><i class="fas fa-clipboard-list"></i> <span data-translate="test-overview">Test Overview</span></h3>
                 <div class="card-content">
+                    <p><span data-translate="tolerance">Tolerance:</span> <strong>{self.summary_stats['tolerance']}%</strong></p>
                     <p><span data-translate="total-benchmark-sets">Total Benchmark Sets:</span> <strong>{self.summary_stats['total_sets']}</strong></p>
                     <p><span data-translate="total-test-items">Total Test Items:</span> <strong>{self.summary_stats['total_tests']}</strong></p>
                     <div class="performance-summary">
@@ -1283,8 +1299,8 @@ class PerformanceAnalyzer:
 
         rows = []
         for i, data in enumerate(sorted_data):
-            change_class = "positive" if data['change_percent'] < -0.1 else ("negative" if data['change_percent'] > 0.1 else "zero")
-            change_icon = "fa-arrow-up" if data['change_percent'] < -0.1 else ("fa-arrow-down" if data['change_percent'] > 0.1 else "")
+            change_class = "positive" if data['change_percent'] < -self.tolerance else ("negative" if data['change_percent'] > self.tolerance else "zero")
+            change_icon = "fa-arrow-up" if data['change_percent'] < -self.tolerance else ("fa-arrow-down" if data['change_percent'] > self.tolerance else "")
             change_sign = "+" if data['change_percent'] < 0 else ""
 
             row = f"""
@@ -1361,13 +1377,13 @@ class PerformanceAnalyzer:
         colors = []
 
         for improvement in improvements:
-            if improvement < -5:
+            if improvement < -self.tolerance*5:
                 colors.append('rgba(72, 187, 120, 0.8)')  # Dark green - big improvement
-            elif improvement < -0.1:
+            elif improvement < -self.tolerance:
                 colors.append('rgba(134, 239, 172, 0.8)')  # Light green - small improvement
-            elif improvement > 5:
+            elif improvement > self.tolerance*5:
                 colors.append('rgba(239, 68, 68, 0.8)')    # Dark red - big regression
-            elif improvement > 0.1:
+            elif improvement > self.tolerance:
                 colors.append('rgba(252, 165, 165, 0.8)')  # Light red - small regression
             else:
                 colors.append('rgba(148, 163, 184, 0.8)')  # Gray - unchanged
@@ -1463,6 +1479,7 @@ class PerformanceAnalyzer:
             f.write(html_content)
 
         print(f"Performance report generated: {output_file}")
+        print(f"Tolerance setting: {self.tolerance}%")
         print(f"Total benchmark sets: {self.summary_stats['total_sets']}")
         print(f"Total test items: {self.summary_stats['total_tests']}")
         print(f"Improved: {self.summary_stats['improved']}")
