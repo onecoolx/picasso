@@ -213,6 +213,12 @@ bool PerformanceTest::LoadBaseline(const std::string& file_name, BenchmarkData& 
     return true;
 }
 
+double truncat8(double value)
+{
+    double multiplier = 100000000.0; // 10^8
+    return trunc(value * multiplier) / multiplier;
+}
+
 void PerformanceTest::SaveBaseline(const std::string& file_name)
 {
     cJSON* root = cJSON_CreateObject();
@@ -232,10 +238,10 @@ void PerformanceTest::SaveBaseline(const std::string& file_name)
             return;
         }
 
-        cJSON_AddNumberToObject(result_obj, "mid_ms", result.mid_ms);
-        cJSON_AddNumberToObject(result_obj, "avg_ms", result.avg_ms);
-        cJSON_AddNumberToObject(result_obj, "min_ms", result.min_ms);
-        cJSON_AddNumberToObject(result_obj, "max_ms", result.max_ms);
+        cJSON_AddNumberToObject(result_obj, "mid_ms", truncat8(result.mid_ms));
+        cJSON_AddNumberToObject(result_obj, "avg_ms", truncat8(result.avg_ms));
+        cJSON_AddNumberToObject(result_obj, "min_ms", truncat8(result.min_ms));
+        cJSON_AddNumberToObject(result_obj, "max_ms", truncat8(result.max_ms));
 
         cJSON_AddItemToObject(root, key.c_str(), result_obj);
     }
