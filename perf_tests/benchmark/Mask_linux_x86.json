@@ -1,0 +1,80 @@
+{
+    "MaskCanvasIntegration": {
+        "mid_ms": 0.21900599,
+        "avg_ms": 0.21719139,
+        "min_ms": 0.209764,
+        "max_ms": 0.22564299
+    },
+    "MaskColorFilterOperations": {
+        "mid_ms": 0.8153245,
+        "avg_ms": 0.81935164,
+        "min_ms": 0.80461899,
+        "max_ms": 0.83604799
+    },
+    "MaskComplexColorFilters": {
+        "mid_ms": 8.90773699,
+        "avg_ms": 8.90946125,
+        "min_ms": 8.897563,
+        "max_ms": 8.923231
+    },
+    "MaskCreateDestroy": {
+        "mid_ms": 2.27646549,
+        "avg_ms": 2.28153081,
+        "min_ms": 2.26601199,
+        "max_ms": 2.296739
+    },
+    "MaskCreateDifferentDimensions": {
+        "mid_ms": 0.93904699,
+        "avg_ms": 0.94345885,
+        "min_ms": 0.933601,
+        "max_ms": 0.95221699
+    },
+    "MaskCreateWithData": {
+        "mid_ms": 0.312942,
+        "avg_ms": 0.31844657,
+        "min_ms": 0.312156,
+        "max_ms": 0.32596198
+    },
+    "MaskCreateWithMultipleData": {
+        "mid_ms": 0.81888649,
+        "avg_ms": 0.82086423,
+        "min_ms": 0.80922799,
+        "max_ms": 0.82765299
+    },
+    "MaskDataBufferOperations": {
+        "mid_ms": 0.53220349,
+        "avg_ms": 0.53284279,
+        "min_ms": 0.52239,
+        "max_ms": 0.540865
+    },
+    "MaskErrorHandling": {
+        "mid_ms": 0.407765,
+        "avg_ms": 0.41210685,
+        "min_ms": 0.40697399,
+        "max_ms": 0.41793399
+    },
+    "MaskMultipleReferences": {
+        "mid_ms": 0.14672049,
+        "avg_ms": 0.14738262,
+        "min_ms": 0.141736,
+        "max_ms": 0.15681398
+    },
+    "MaskReferenceOperations": {
+        "mid_ms": 0.904602,
+        "avg_ms": 0.90644311,
+        "min_ms": 0.90292499,
+        "max_ms": 0.910949
+    },
+    "MaskReusePerformance": {
+        "mid_ms": 0.250315,
+        "avg_ms": 0.25387353,
+        "min_ms": 0.25011899,
+        "max_ms": 0.26180199
+    },
+    "MaskStressTest": {
+        "mid_ms": 1.09274498,
+        "avg_ms": 1.09559605,
+        "min_ms": 1.087601,
+        "max_ms": 1.10708699
+    }
+}

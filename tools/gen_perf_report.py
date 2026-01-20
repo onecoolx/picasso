@@ -1294,8 +1294,8 @@ class PerformanceAnalyzer:
             return '<div class="no-data" data-translate="no-data">No data available for comparison</div>'
 
         # Sort by performance change magnitude
-        #sorted_data = sorted(self.comparison_data, key=lambda x: abs(x['change_percent']), reverse=True)
-        sorted_data = self.comparison_data # not sort
+        sorted_data = sorted(self.comparison_data, key=lambda x: abs(x['change_percent']), reverse=True)
+        #sorted_data = self.comparison_data # not sort
 
         rows = []
         for i, data in enumerate(sorted_data):

@@ -18,16 +18,16 @@
         "max_ms": 0.140183
     },
     "PatternDifferentImageFormats": {
-        "mid_ms": 2.149748,
-        "avg_ms": 2.15692176,
-        "min_ms": 2.14790399,
-        "max_ms": 2.166418
+        "mid_ms": 2.12636748,
+        "avg_ms": 2.13614726,
+        "min_ms": 2.12394899,
+        "max_ms": 2.14671099
     },
     "PatternDifferentImageSources": {
-        "mid_ms": 0.26393699,
-        "avg_ms": 0.26544435,
-        "min_ms": 0.260821,
-        "max_ms": 0.27373599
+        "mid_ms": 0.26125499,
+        "avg_ms": 0.26568707,
+        "min_ms": 0.26095997,
+        "max_ms": 0.27388399
     },
     "PatternErrorHandling": {
         "mid_ms": 0.19433599,
@@ -48,10 +48,10 @@
         "max_ms": 0.87506499
     },
     "PatternStressTest": {
-        "mid_ms": 0.96439,
-        "avg_ms": 0.95704061,
-        "min_ms": 0.933758,
-        "max_ms": 0.96665999
+        "mid_ms": 0.93686949,
+        "avg_ms": 0.9405551,
+        "min_ms": 0.93458499,
+        "max_ms": 0.94782799
     },
     "PatternTransformOperations": {
         "mid_ms": 0.75028099,

@@ -18,10 +18,10 @@
         "max_ms": 1.82081699
     },
     "ConicGradientCreateDestroy": {
-        "mid_ms": 0.82362349,
-        "avg_ms": 0.82747762,
-        "min_ms": 0.81394,
-        "max_ms": 0.843086
+        "mid_ms": 0.82331,
+        "avg_ms": 0.82802408,
+        "min_ms": 0.813026,
+        "max_ms": 0.858571
     },
     "GradientErrorHandling": {
         "mid_ms": 0.382749,
@@ -30,10 +30,10 @@
         "max_ms": 0.393946
     },
     "GradientExtremeValues": {
-        "mid_ms": 1.733631,
-        "avg_ms": 1.73792414,
-        "min_ms": 1.72519099,
-        "max_ms": 1.75216099
+        "mid_ms": 1.72906949,
+        "avg_ms": 1.7314001,
+        "min_ms": 1.72127899,
+        "max_ms": 1.738361
     },
     "GradientReferenceOperations": {
         "mid_ms": 0.842094,
@@ -66,10 +66,10 @@
         "max_ms": 2.23621099
     },
     "LinearGradientCreateDestroy": {
-        "mid_ms": 1.25528849,
-        "avg_ms": 1.25733579,
-        "min_ms": 1.252007,
-        "max_ms": 1.26406999
+        "mid_ms": 1.254544,
+        "avg_ms": 1.25920597,
+        "min_ms": 1.25180899,
+        "max_ms": 1.26701799
     },
     "RadialGradientCreateDestroy": {
         "mid_ms": 0.872178,

@@ -1,0 +1,122 @@
+{
+    "FontCharsetOperations": {
+        "mid_ms": 0.23135399,
+        "avg_ms": 0.23442382,
+        "min_ms": 0.23131399,
+        "max_ms": 0.243146
+    },
+    "FontComplexPropertyOperations": {
+        "mid_ms": 0.2717,
+        "avg_ms": 0.27537046,
+        "min_ms": 0.27152999,
+        "max_ms": 0.28280097
+    },
+    "FontContextOperations": {
+        "mid_ms": 20.88624198,
+        "avg_ms": 20.88575689,
+        "min_ms": 20.66994199,
+        "max_ms": 21.041249
+    },
+    "FontCreateAllCharsets": {
+        "mid_ms": 0.3045415,
+        "avg_ms": 0.30848261,
+        "min_ms": 0.30410099,
+        "max_ms": 0.315442
+    },
+    "FontCreateAllWeights": {
+        "mid_ms": 0.30646999,
+        "avg_ms": 0.31023247,
+        "min_ms": 0.30570299,
+        "max_ms": 0.31699498
+    },
+    "FontCreateCopy": {
+        "mid_ms": 0.1516095,
+        "avg_ms": 0.15394645,
+        "min_ms": 0.15142399,
+        "max_ms": 0.16338699
+    },
+    "FontCreateDestroy": {
+        "mid_ms": 0.30894898,
+        "avg_ms": 0.31204247,
+        "min_ms": 0.30572297,
+        "max_ms": 0.32059199
+    },
+    "FontCreateDifferentSizes": {
+        "mid_ms": 0.307597,
+        "avg_ms": 0.3125791,
+        "min_ms": 0.306835,
+        "max_ms": 0.319108
+    },
+    "FontCreateItalicVariants": {
+        "mid_ms": 0.3031585,
+        "avg_ms": 0.30684007,
+        "min_ms": 0.302728,
+        "max_ms": 0.31478099
+    },
+    "FontErrorHandling": {
+        "mid_ms": 0.497434,
+        "avg_ms": 0.4946551,
+        "min_ms": 0.48763499,
+        "max_ms": 0.50098
+    },
+    "FontFamilyVariations": {
+        "mid_ms": 0.310016,
+        "avg_ms": 0.31462999,
+        "min_ms": 0.309581,
+        "max_ms": 0.321814
+    },
+    "FontFlipOperations": {
+        "mid_ms": 0.231334,
+        "avg_ms": 0.23475858,
+        "min_ms": 0.231254,
+        "max_ms": 0.242775
+    },
+    "FontHintOperations": {
+        "mid_ms": 0.23134399,
+        "avg_ms": 0.23439041,
+        "min_ms": 0.23125299,
+        "max_ms": 0.24229499
+    },
+    "FontItalicOperations": {
+        "mid_ms": 0.231344,
+        "avg_ms": 0.23483892,
+        "min_ms": 0.231244,
+        "max_ms": 0.243366
+    },
+    "FontMultipleReferences": {
+        "mid_ms": 0.04825049,
+        "avg_ms": 0.04932032,
+        "min_ms": 0.04809999,
+        "max_ms": 0.048852
+    },
+    "FontReferenceOperations": {
+        "mid_ms": 0.90432199,
+        "avg_ms": 0.90615195,
+        "min_ms": 0.902363,
+        "max_ms": 0.90814399
+    },
+    "FontReusePerformance": {
+        "mid_ms": 0.27477499,
+        "avg_ms": 0.27824069,
+        "min_ms": 0.27468599,
+        "max_ms": 0.286537
+    },
+    "FontSizeOperations": {
+        "mid_ms": 0.262482,
+        "avg_ms": 0.26628494,
+        "min_ms": 0.262393,
+        "max_ms": 0.274515
+    },
+    "FontStressTest": {
+        "mid_ms": 0.980459,
+        "avg_ms": 0.98215112,
+        "min_ms": 0.97614099,
+        "max_ms": 0.990198
+    },
+    "FontWeightOperations": {
+        "mid_ms": 0.12355199,
+        "avg_ms": 0.12536629,
+        "min_ms": 0.123461,
+        "max_ms": 0.134132
+    }
+}

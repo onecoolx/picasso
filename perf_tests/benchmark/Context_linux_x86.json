@@ -24,10 +24,10 @@
         "max_ms": 0.25034699
     },
     "ContextMultipleCreate": {
-        "mid_ms": 3.13182099,
-        "avg_ms": 3.137047,
-        "min_ms": 3.120244,
-        "max_ms": 3.14787599
+        "mid_ms": 3.05776199,
+        "avg_ms": 3.0697155,
+        "min_ms": 3.04243799,
+        "max_ms": 3.09009699
     },
     "ContextMultipleReferences": {
         "mid_ms": 0.31839447,
@@ -60,9 +60,9 @@
         "max_ms": 1.508827
     },
     "ContextWithDataCanvas": {
-        "mid_ms": 1.56794999,
-        "avg_ms": 1.5694825,
-        "min_ms": 1.55682899,
-        "max_ms": 1.582638
+        "mid_ms": 1.4949295,
+        "avg_ms": 1.49838381,
+        "min_ms": 1.48744099,
+        "max_ms": 1.51083499
     }
 }

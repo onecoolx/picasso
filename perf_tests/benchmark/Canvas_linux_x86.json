@@ -42,16 +42,16 @@
         "max_ms": 2.447172
     },
     "CanvasErrorHandling": {
-        "mid_ms": 0.453397,
-        "avg_ms": 0.45814534,
-        "min_ms": 0.453227,
-        "max_ms": 0.46321599
+        "mid_ms": 0.451106,
+        "avg_ms": 0.45572455,
+        "min_ms": 0.450225,
+        "max_ms": 0.462217
     },
     "CanvasMaskOperations": {
-        "mid_ms": 0.21313799,
-        "avg_ms": 0.21666139,
-        "min_ms": 0.21288199,
-        "max_ms": 0.225326
+        "mid_ms": 0.2070085,
+        "avg_ms": 0.21000325,
+        "min_ms": 0.206748,
+        "max_ms": 0.218681
     },
     "CanvasPropertyOperations": {
         "mid_ms": 1.1485375,

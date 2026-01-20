@@ -36,10 +36,10 @@
         "max_ms": 0.454515
     },
     "ImageCreateWithData": {
-        "mid_ms": 0.58869299,
-        "avg_ms": 0.58656259,
-        "min_ms": 0.57894399,
-        "max_ms": 0.592009
+        "mid_ms": 0.560392,
+        "avg_ms": 0.55965975,
+        "min_ms": 0.550382,
+        "max_ms": 0.56331699
     },
     "ImageDifferentDimensions": {
         "mid_ms": 68.76892248,
@@ -48,10 +48,10 @@
         "max_ms": 69.07916599
     },
     "ImageErrorHandling": {
-        "mid_ms": 4.2299875,
-        "avg_ms": 4.23316224,
-        "min_ms": 4.17818299,
-        "max_ms": 4.274619
+        "mid_ms": 4.18836849,
+        "avg_ms": 4.19235841,
+        "min_ms": 4.14125899,
+        "max_ms": 4.24622699
     },
     "ImagePropertyOperations": {
         "mid_ms": 1.1484855,

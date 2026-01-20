@@ -12,10 +12,10 @@
         "max_ms": 0.200805
     },
     "MatrixCreateInit": {
-        "mid_ms": 0.191559,
-        "avg_ms": 0.19428414,
-        "min_ms": 0.19147899,
-        "max_ms": 0.201648
+        "mid_ms": 0.18884399,
+        "avg_ms": 0.19157735,
+        "min_ms": 0.188484,
+        "max_ms": 0.20208999
     },
     "MatrixFlip": {
         "mid_ms": 2.36683899,
