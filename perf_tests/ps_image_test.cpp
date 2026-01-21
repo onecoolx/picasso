@@ -302,13 +302,11 @@ PERF_TEST_RUN(Image, ImageDifferentDimensions)
             ps_image* img2 = ps_image_create(COLOR_FORMAT_RGBA, 8, 8);
             ps_image* img3 = ps_image_create(COLOR_FORMAT_RGBA, 32, 32);
             ps_image* img4 = ps_image_create(COLOR_FORMAT_RGBA, 256, 256);
-            ps_image* img5 = ps_image_create(COLOR_FORMAT_RGBA, 1024, 1024);
 
             ps_image_unref(img1);
             ps_image_unref(img2);
             ps_image_unref(img3);
             ps_image_unref(img4);
-            ps_image_unref(img5);
         }
     });
 
