@@ -127,7 +127,7 @@ protected:
     void SaveBaseline(const std::string& file_name);
 
     template<typename Func>
-    BenchmarkResult RunBenchmark(const std::string& test_name, Func&& func)
+    BenchmarkResult RunBenchmark(const std::string& test_name, Func&& func, size_t run_count = TEST_ITERATIONS)
     {
         // Warmup
         for (int i = 0; i < WARMUP_ITERATIONS; ++i) {
@@ -136,10 +136,10 @@ protected:
         }
 
         std::vector<double> times;
-        times.reserve(TEST_ITERATIONS);
+        times.reserve(run_count);
 
         // clean cache
-        for (int i = 0; i < TEST_ITERATIONS; ++i) {
+        for (size_t i = 0; i < run_count; ++i) {
             clear_dcache();
             clocktime_t start = get_clock();
             func();
