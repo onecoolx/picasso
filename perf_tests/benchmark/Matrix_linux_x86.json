@@ -42,10 +42,10 @@
         "max_ms": 1.28346
     },
     "MatrixShear": {
-        "mid_ms": 1.39883699,
-        "avg_ms": 1.38569193,
-        "min_ms": 1.337503,
-        "max_ms": 1.407649
+        "mid_ms": 1.3082115,
+        "avg_ms": 1.31341692,
+        "min_ms": 1.30637399,
+        "max_ms": 1.32443698
     },
     "MatrixTranslate": {
         "mid_ms": 1.30639699,

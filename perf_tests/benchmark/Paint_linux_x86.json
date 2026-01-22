@@ -1,0 +1,332 @@
+{
+    "Clear": {
+        "mid_ms": 8.85344599,
+        "avg_ms": 8.88276479,
+        "min_ms": 8.82060999,
+        "max_ms": 8.91742999
+    },
+    "Clip": {
+        "mid_ms": 0.03561599,
+        "avg_ms": 0.03613112,
+        "min_ms": 0.03560598,
+        "max_ms": 0.035697
+    },
+    "ClipPath": {
+        "mid_ms": 10.46519299,
+        "avg_ms": 10.4748167,
+        "min_ms": 10.448472,
+        "max_ms": 10.511419
+    },
+    "ClipRect": {
+        "mid_ms": 10.858536,
+        "avg_ms": 10.86816902,
+        "min_ms": 10.84217499,
+        "max_ms": 10.90117499
+    },
+    "ClipRects": {
+        "mid_ms": 16.08021749,
+        "avg_ms": 16.09528293,
+        "min_ms": 16.04520699,
+        "max_ms": 16.147778
+    },
+    "DrawText": {
+        "mid_ms": 132.436831,
+        "avg_ms": 132.8302991,
+        "min_ms": 132.23932199,
+        "max_ms": 132.904991
+    },
+    "Fill": {
+        "mid_ms": 0.37637599,
+        "avg_ms": 0.38046736,
+        "min_ms": 0.374607,
+        "max_ms": 0.388323
+    },
+    "GetFontInfo": {
+        "mid_ms": 0.128474,
+        "avg_ms": 0.13020055,
+        "min_ms": 0.126866,
+        "max_ms": 0.137857
+    },
+    "GetGlyph": {
+        "mid_ms": 0.090649,
+        "avg_ms": 0.0925154,
+        "min_ms": 0.090568,
+        "max_ms": 0.101098
+    },
+    "GetPathFromGlyph": {
+        "mid_ms": 3.9169155,
+        "avg_ms": 3.91767259,
+        "min_ms": 3.886128,
+        "max_ms": 3.946441
+    },
+    "GetTextExtent": {
+        "mid_ms": 0.489507,
+        "avg_ms": 0.48267676,
+        "min_ms": 0.449677,
+        "max_ms": 0.50994999
+    },
+    "GlyphGetExtent": {
+        "mid_ms": 0.023273,
+        "avg_ms": 0.02342937,
+        "min_ms": 0.02323299,
+        "max_ms": 0.02339399
+    },
+    "Paint": {
+        "mid_ms": 0.8562495,
+        "avg_ms": 0.85640038,
+        "min_ms": 0.849092,
+        "max_ms": 0.86076299
+    },
+    "ResetClip": {
+        "mid_ms": 0.05441649,
+        "avg_ms": 0.05508886,
+        "min_ms": 0.054331,
+        "max_ms": 0.055083
+    },
+    "ResetLineDash": {
+        "mid_ms": 0.04958199,
+        "avg_ms": 0.050371,
+        "min_ms": 0.04943199,
+        "max_ms": 0.050213
+    },
+    "ResetShadow": {
+        "mid_ms": 0.046487,
+        "avg_ms": 0.04728145,
+        "min_ms": 0.04642599,
+        "max_ms": 0.04711799
+    },
+    "SaveRestore": {
+        "mid_ms": 0.227514,
+        "avg_ms": 0.23109845,
+        "min_ms": 0.22726399,
+        "max_ms": 0.24003699
+    },
+    "Scale": {
+        "mid_ms": 0.126796,
+        "avg_ms": 0.12853196,
+        "min_ms": 0.126776,
+        "max_ms": 0.13750699
+    },
+    "ScissorRect": {
+        "mid_ms": 0.07302599,
+        "avg_ms": 0.07399585,
+        "min_ms": 0.07291599,
+        "max_ms": 0.07369699
+    },
+    "SetAlpha": {
+        "mid_ms": 0.13602299,
+        "avg_ms": 0.13848611,
+        "min_ms": 0.13593299,
+        "max_ms": 0.14694399
+    },
+    "SetAntialias": {
+        "mid_ms": 20.30548249,
+        "avg_ms": 20.3137486,
+        "min_ms": 20.26088899,
+        "max_ms": 20.36995299
+    },
+    "SetBlur": {
+        "mid_ms": 0.14524999,
+        "avg_ms": 0.14714385,
+        "min_ms": 0.14515,
+        "max_ms": 0.15524899
+    },
+    "SetCompositeOperator": {
+        "mid_ms": 0.135913,
+        "avg_ms": 0.13819678,
+        "min_ms": 0.13581299,
+        "max_ms": 0.14620199
+    },
+    "SetFillRule": {
+        "mid_ms": 0.09892399,
+        "avg_ms": 0.10074481,
+        "min_ms": 0.09883399,
+        "max_ms": 0.10444499
+    },
+    "SetFilter": {
+        "mid_ms": 0.12357999,
+        "avg_ms": 0.12485629,
+        "min_ms": 0.12349099,
+        "max_ms": 0.12698599
+    },
+    "SetFont": {
+        "mid_ms": 0.11439299,
+        "avg_ms": 0.1161262,
+        "min_ms": 0.114343,
+        "max_ms": 0.12586399
+    },
+    "SetGamma": {
+        "mid_ms": 58.87900499,
+        "avg_ms": 58.9561807,
+        "min_ms": 58.79641,
+        "max_ms": 59.06593499
+    },
+    "SetLineCap": {
+        "mid_ms": 0.14509999,
+        "avg_ms": 0.14690176,
+        "min_ms": 0.14499,
+        "max_ms": 0.15465799
+    },
+    "SetLineDash": {
+        "mid_ms": 0.19246349,
+        "avg_ms": 0.19633933,
+        "min_ms": 0.191556,
+        "max_ms": 0.20503199
+    },
+    "SetLineInnerJoin": {
+        "mid_ms": 0.098764,
+        "avg_ms": 0.10041348,
+        "min_ms": 0.09875399,
+        "max_ms": 0.10805099
+    },
+    "SetLineJoin": {
+        "mid_ms": 0.185074,
+        "avg_ms": 0.18712248,
+        "min_ms": 0.185055,
+        "max_ms": 0.19435199
+    },
+    "SetLineWidth": {
+        "mid_ms": 0.14214899,
+        "avg_ms": 0.14444602,
+        "min_ms": 0.142025,
+        "max_ms": 0.152734
+    },
+    "SetMiterLimit": {
+        "mid_ms": 0.09592799,
+        "avg_ms": 0.09770772,
+        "min_ms": 0.095779,
+        "max_ms": 0.106387
+    },
+    "SetPath": {
+        "mid_ms": 0.358373,
+        "avg_ms": 0.36235981,
+        "min_ms": 0.35817699,
+        "max_ms": 0.369398
+    },
+    "SetShadow": {
+        "mid_ms": 0.04958199,
+        "avg_ms": 0.05011938,
+        "min_ms": 0.04952199,
+        "max_ms": 0.049763
+    },
+    "SetShadowColor": {
+        "mid_ms": 0.046487,
+        "avg_ms": 0.04711545,
+        "min_ms": 0.04641699,
+        "max_ms": 0.04673699
+    },
+    "SetSourceCanvas": {
+        "mid_ms": 0.1236155,
+        "avg_ms": 0.12569336,
+        "min_ms": 0.123511,
+        "max_ms": 0.134881
+    },
+    "SetSourceColor": {
+        "mid_ms": 0.0495825,
+        "avg_ms": 0.05031224,
+        "min_ms": 0.049503,
+        "max_ms": 0.049864
+    },
+    "SetSourceGradient": {
+        "mid_ms": 0.120614,
+        "avg_ms": 0.12374615,
+        "min_ms": 0.120514,
+        "max_ms": 0.130714
+    },
+    "SetSourceImage": {
+        "mid_ms": 0.12361,
+        "avg_ms": 0.12577743,
+        "min_ms": 0.12347,
+        "max_ms": 0.13400899
+    },
+    "SetSourcePattern": {
+        "mid_ms": 0.123511,
+        "avg_ms": 0.12508114,
+        "min_ms": 0.12343899,
+        "max_ms": 0.13277799
+    },
+    "SetStrokeCanvas": {
+        "mid_ms": 0.12059499,
+        "avg_ms": 0.12170252,
+        "min_ms": 0.120434,
+        "max_ms": 0.124281
+    },
+    "SetStrokeColor": {
+        "mid_ms": 0.04651699,
+        "avg_ms": 0.0474232,
+        "min_ms": 0.046406,
+        "max_ms": 0.047218
+    },
+    "SetStrokeGradient": {
+        "mid_ms": 0.117439,
+        "avg_ms": 0.11898361,
+        "min_ms": 0.11732799,
+        "max_ms": 0.12778798
+    },
+    "SetStrokeImage": {
+        "mid_ms": 0.1267665,
+        "avg_ms": 0.1286276,
+        "min_ms": 0.12666499,
+        "max_ms": 0.13770599
+    },
+    "SetStrokePattern": {
+        "mid_ms": 0.1236305,
+        "avg_ms": 0.12575432,
+        "min_ms": 0.12348999,
+        "max_ms": 0.13431
+    },
+    "SetTextColor": {
+        "mid_ms": 0.089757,
+        "avg_ms": 0.0905707,
+        "min_ms": 0.089697,
+        "max_ms": 0.089997
+    },
+    "Shear": {
+        "mid_ms": 0.126937,
+        "avg_ms": 0.12840289,
+        "min_ms": 0.12691599,
+        "max_ms": 0.13688499
+    },
+    "ShowGlyphs": {
+        "mid_ms": 52.220329,
+        "avg_ms": 52.29347432,
+        "min_ms": 52.140931,
+        "max_ms": 52.35913699
+    },
+    "Stroke": {
+        "mid_ms": 0.6304745,
+        "avg_ms": 0.6306554,
+        "min_ms": 0.62103699,
+        "max_ms": 0.638749
+    },
+    "TextOutLength": {
+        "mid_ms": 115.518492,
+        "avg_ms": 115.71696959,
+        "min_ms": 115.26245999,
+        "max_ms": 115.87742199
+    },
+    "TextRenderingOptions": {
+        "mid_ms": 0.252991,
+        "avg_ms": 0.25635394,
+        "min_ms": 0.25291099,
+        "max_ms": 0.264633
+    },
+    "TextTransform": {
+        "mid_ms": 0.13284699,
+        "avg_ms": 0.13467594,
+        "min_ms": 0.13282699,
+        "max_ms": 0.14398799
+    },
+    "Translate": {
+        "mid_ms": 0.12371099,
+        "avg_ms": 0.12543141,
+        "min_ms": 0.12368999,
+        "max_ms": 0.13444
+    },
+    "WideTextOutLength": {
+        "mid_ms": 175.2116385,
+        "avg_ms": 175.33316077,
+        "min_ms": 174.98188199,
+        "max_ms": 175.577112
+    }
+}

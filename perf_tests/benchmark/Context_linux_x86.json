@@ -12,10 +12,10 @@
         "max_ms": 2.06278
     },
     "ContextCreateWithShared": {
-        "mid_ms": 2.340058,
-        "avg_ms": 2.34635134,
-        "min_ms": 2.329078,
-        "max_ms": 2.35795199
+        "mid_ms": 2.2588825,
+        "avg_ms": 2.26541571,
+        "min_ms": 2.253317,
+        "max_ms": 2.27719199
     },
     "ContextErrorHandling": {
         "mid_ms": 0.24050899,
@@ -24,16 +24,16 @@
         "max_ms": 0.25034699
     },
     "ContextMultipleCreate": {
-        "mid_ms": 3.05776199,
-        "avg_ms": 3.0697155,
-        "min_ms": 3.04243799,
-        "max_ms": 3.09009699
+        "mid_ms": 2.93629999,
+        "avg_ms": 2.94071989,
+        "min_ms": 2.919969,
+        "max_ms": 2.961797
     },
     "ContextMultipleReferences": {
-        "mid_ms": 0.31839447,
-        "avg_ms": 0.320324,
-        "min_ms": 0.31521299,
-        "max_ms": 0.328418
+        "mid_ms": 0.3114405,
+        "avg_ms": 0.31547742,
+        "min_ms": 0.31002797,
+        "max_ms": 0.323653
     },
     "ContextReferenceOperations": {
         "mid_ms": 0.9039145,
@@ -42,10 +42,10 @@
         "max_ms": 0.90700599
     },
     "ContextSharedResourceChain": {
-        "mid_ms": 0.52123799,
-        "avg_ms": 0.51777184,
-        "min_ms": 0.51178499,
-        "max_ms": 0.522506
+        "mid_ms": 0.51849599,
+        "avg_ms": 0.51729768,
+        "min_ms": 0.508778,
+        "max_ms": 0.52046899
     },
     "ContextStateOperations": {
         "mid_ms": 1.9916415,

@@ -18,16 +18,16 @@
         "max_ms": 8.923231
     },
     "MaskCreateDestroy": {
-        "mid_ms": 2.27646549,
-        "avg_ms": 2.28153081,
-        "min_ms": 2.26601199,
-        "max_ms": 2.296739
+        "mid_ms": 1.731069,
+        "avg_ms": 1.73606623,
+        "min_ms": 1.718511,
+        "max_ms": 1.75577
     },
     "MaskCreateDifferentDimensions": {
-        "mid_ms": 0.93904699,
-        "avg_ms": 0.94345885,
-        "min_ms": 0.933601,
-        "max_ms": 0.95221699
+        "mid_ms": 0.903388,
+        "avg_ms": 0.90545008,
+        "min_ms": 0.897362,
+        "max_ms": 0.91091599
     },
     "MaskCreateWithData": {
         "mid_ms": 0.312942,
@@ -36,10 +36,10 @@
         "max_ms": 0.32596198
     },
     "MaskCreateWithMultipleData": {
-        "mid_ms": 0.81888649,
-        "avg_ms": 0.82086423,
-        "min_ms": 0.80922799,
-        "max_ms": 0.82765299
+        "mid_ms": 0.7406345,
+        "avg_ms": 0.74306902,
+        "min_ms": 0.73109099,
+        "max_ms": 0.75133999
     },
     "MaskDataBufferOperations": {
         "mid_ms": 0.53220349,
@@ -48,22 +48,22 @@
         "max_ms": 0.540865
     },
     "MaskErrorHandling": {
-        "mid_ms": 0.407765,
-        "avg_ms": 0.41210685,
-        "min_ms": 0.40697399,
-        "max_ms": 0.41793399
+        "mid_ms": 0.40438799,
+        "avg_ms": 0.40921162,
+        "min_ms": 0.40403299,
+        "max_ms": 0.414964
     },
     "MaskMultipleReferences": {
-        "mid_ms": 0.14672049,
-        "avg_ms": 0.14738262,
-        "min_ms": 0.141736,
-        "max_ms": 0.15681398
+        "mid_ms": 0.12293349,
+        "avg_ms": 0.12496119,
+        "min_ms": 0.122368,
+        "max_ms": 0.133839
     },
     "MaskReferenceOperations": {
-        "mid_ms": 0.904602,
-        "avg_ms": 0.90644311,
-        "min_ms": 0.90292499,
-        "max_ms": 0.910949
+        "mid_ms": 0.90439,
+        "avg_ms": 0.90573343,
+        "min_ms": 0.902932,
+        "max_ms": 0.90774099
     },
     "MaskReusePerformance": {
         "mid_ms": 0.250315,

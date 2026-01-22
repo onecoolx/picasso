@@ -1,21 +1,21 @@
 {
     "PatternCreateAllWrapModes": {
-        "mid_ms": 0.53266698,
-        "avg_ms": 0.54127276,
-        "min_ms": 0.52298299,
-        "max_ms": 0.545375
+        "mid_ms": 0.53164999,
+        "avg_ms": 0.66723643,
+        "min_ms": 0.521402,
+        "max_ms": 0.95562
     },
     "PatternCreateDestroy": {
-        "mid_ms": 0.26664599,
-        "avg_ms": 0.26957819,
-        "min_ms": 0.263255,
-        "max_ms": 0.27727099
+        "mid_ms": 0.26413199,
+        "avg_ms": 0.27610617,
+        "min_ms": 0.26299,
+        "max_ms": 0.28049299
     },
     "PatternCreateWithTransform": {
-        "mid_ms": 0.12975399,
-        "avg_ms": 0.13167488,
-        "min_ms": 0.12971399,
-        "max_ms": 0.140183
+        "mid_ms": 0.128269,
+        "avg_ms": 0.13053424,
+        "min_ms": 0.128159,
+        "max_ms": 0.13822699
     },
     "PatternDifferentImageFormats": {
         "mid_ms": 2.12636748,
@@ -24,10 +24,10 @@
         "max_ms": 2.14671099
     },
     "PatternDifferentImageSources": {
-        "mid_ms": 0.26125499,
-        "avg_ms": 0.26568707,
-        "min_ms": 0.26095997,
-        "max_ms": 0.27388399
+        "mid_ms": 0.2609965,
+        "avg_ms": 0.26470591,
+        "min_ms": 0.260846,
+        "max_ms": 0.27265799
     },
     "PatternErrorHandling": {
         "mid_ms": 0.19433599,
@@ -54,9 +54,9 @@
         "max_ms": 0.94782799
     },
     "PatternTransformOperations": {
-        "mid_ms": 0.75028099,
-        "avg_ms": 0.74895771,
-        "min_ms": 0.74065199,
-        "max_ms": 0.752174
+        "mid_ms": 0.7201465,
+        "avg_ms": 0.71996001,
+        "min_ms": 0.70988199,
+        "max_ms": 0.722836
     }
 }

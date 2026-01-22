@@ -6,10 +6,10 @@
         "max_ms": 0.08055
     },
     "CanvasCreateAllFormats": {
-        "mid_ms": 2.960301,
-        "avg_ms": 2.96930993,
-        "min_ms": 2.90898,
-        "max_ms": 3.004578
+        "mid_ms": 2.86023249,
+        "avg_ms": 2.85482385,
+        "min_ms": 2.81421199,
+        "max_ms": 2.880125
     },
     "CanvasCreateCompatible": {
         "mid_ms": 1.363089,
@@ -18,10 +18,10 @@
         "max_ms": 1.384396
     },
     "CanvasCreateDestroy": {
-        "mid_ms": 0.26813,
-        "avg_ms": 0.27096209,
-        "min_ms": 0.26662799,
-        "max_ms": 0.27842999
+        "mid_ms": 0.26131148,
+        "avg_ms": 0.26331364,
+        "min_ms": 0.25751998,
+        "max_ms": 0.271376
     },
     "CanvasCreateFromCanvas": {
         "mid_ms": 1.2121,
@@ -30,16 +30,16 @@
         "max_ms": 1.220661
     },
     "CanvasCreateFromMask": {
-        "mid_ms": 0.23325099,
-        "avg_ms": 0.23535486,
-        "min_ms": 0.23105699,
-        "max_ms": 0.24321099
+        "mid_ms": 0.226908,
+        "avg_ms": 0.22978977,
+        "min_ms": 0.22465799,
+        "max_ms": 0.239045
     },
     "CanvasCreateWithData": {
-        "mid_ms": 2.43315099,
-        "avg_ms": 2.436446,
-        "min_ms": 2.40603299,
-        "max_ms": 2.447172
+        "mid_ms": 2.37849,
+        "avg_ms": 2.38384658,
+        "min_ms": 2.36562598,
+        "max_ms": 2.39492
     },
     "CanvasErrorHandling": {
         "mid_ms": 0.451106,
