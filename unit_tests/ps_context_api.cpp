@@ -239,7 +239,7 @@ TEST_F(ContextTest, PathOperations)
     ps_point c1 = {250.0f, 50.0f};
     ps_point c2 = {300.0f, 150.0f};
     ps_point p2 = {350.0f, 100.0f};
-    ps_bezier_curve_to(ctx, &c1, &c2, &p2);
+    ps_bezier_to(ctx, &c1, &c2, &p2);
 
     ps_stroke(ctx);
 
@@ -676,12 +676,12 @@ TEST_F(ContextTest, BlurWithComplexPaths)
     ps_point fcp1 = {150.0f, 20.0f};
     ps_point scp1 = {200.0f, 80.0f};
     ps_point ep1 = {250.0f, 50.0f};
-    ps_bezier_curve_to(ctx, &fcp1, &scp1, &ep1);
+    ps_bezier_to(ctx, &fcp1, &scp1, &ep1);
 
     ps_point fcp2 = {200.0f, 120.0f};
     ps_point scp2 = {150.0f, 80.0f};
     ps_point ep2 = {100.0f, 150.0f};
-    ps_bezier_curve_to(ctx, &fcp2, &scp2, &ep2);
+    ps_bezier_to(ctx, &fcp2, &scp2, &ep2);
 
     ps_close_path(ctx);
 
