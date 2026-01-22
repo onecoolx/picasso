@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04-large
 
     steps:
     - uses: actions/checkout@v4
@@ -38,7 +38,7 @@ jobs:
     - name: Test
       run: |
         cd ${{ github.workspace }}/build/
-        ./perf_tests
+        sudo nice -n -10 taskset -c 0-1 ./perf_tests
     - name: Upload Test Reaults
       if: always()
       uses: actions/upload-artifact@v4.6.2

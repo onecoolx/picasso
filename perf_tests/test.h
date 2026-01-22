@@ -78,7 +78,7 @@ class PerformanceTest : public ::testing::Test
 {
 protected:
     static constexpr int WARMUP_ITERATIONS = 20;
-    static constexpr int TEST_ITERATIONS = 200;
+    static constexpr int TEST_ITERATIONS = 500;
     static constexpr double TOLERANCE_PERCENT = 10.0; // 10% tolerance
 
     struct BenchmarkResult {
