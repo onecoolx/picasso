@@ -1030,8 +1030,8 @@ void PICAPI ps_line_to(ps_context* ctx, const ps_point* pt)
     global_status = STATUS_SUCCEED;
 }
 
-void PICAPI ps_bezier_curve_to(ps_context* ctx, const ps_point* fcp,
-                               const ps_point* scp, const ps_point* ep)
+void PICAPI ps_bezier_to(ps_context* ctx, const ps_point* fcp,
+                         const ps_point* scp, const ps_point* ep)
 {
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;
@@ -1055,7 +1055,7 @@ void PICAPI ps_bezier_curve_to(ps_context* ctx, const ps_point* fcp,
     global_status = STATUS_SUCCEED;
 }
 
-void PICAPI ps_quad_curve_to(ps_context* ctx, const ps_point* cp, const ps_point* ep)
+void PICAPI ps_quad_to(ps_context* ctx, const ps_point* cp, const ps_point* ep)
 {
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;

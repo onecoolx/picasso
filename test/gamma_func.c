@@ -49,14 +49,14 @@ void draw_test (int id, ps_context* gc)
     ps_tangent_arc(gc, &br, 0, 1.254f);
     ps_stroke(gc);
     ps_move_to(gc, &sc);
-    ps_bezier_curve_to(gc, &p[0], &p[1], &p[2]);
+    ps_bezier_to(gc, &p[0], &p[1], &p[2]);
 
     ps_arc (gc, &cp, 100 , 0.785f, 3.140f, False);
     
-    ps_bezier_curve_to(gc, &p[0], &p[1], &p[2]);
+    ps_bezier_to(gc, &p[0], &p[1], &p[2]);
     
 //    ps_set_line_dash(gc, dashs[2].s, dashs[2].d, 4);
-    ps_quad_curve_to(gc, &p[1], &p[2]);
+    ps_quad_to(gc, &p[1], &p[2]);
     ps_stroke(gc);
 
 //    ps_set_line_dash(gc, dashs[3].s, dashs[3].d, 4);

@@ -3002,7 +3002,7 @@ PEXPORT void PICAPI ps_close_path(ps_context* ctx);
  * \param ctx    Pointer to an existing context object.
  * \param point  The point which will be set.
  *
- * \sa ps_line_to, ps_bezier_curve_to, ps_quad_curve_to
+ * \sa ps_line_to, ps_bezier_to, ps_quad_to
  *     ps_arc, ps_tangent_arc, ps_rectangle, ps_rounded_rect, ps_ellipse
  */
 PEXPORT void PICAPI ps_move_to(ps_context* ctx, const ps_point* point);
@@ -3014,13 +3014,13 @@ PEXPORT void PICAPI ps_move_to(ps_context* ctx, const ps_point* point);
  * \param ctx    Pointer to an existing context object.
  * \param point  The point which will line to.
  *
- * \sa ps_move_to, ps_bezier_curve_to, ps_quad_curve_to
+ * \sa ps_move_to, ps_bezier_to, ps_quad_to
  *     ps_arc, ps_tangent_arc, ps_rectangle, ps_rounded_rect, ps_ellipse
  */
 PEXPORT void PICAPI ps_line_to(ps_context* ctx, const ps_point* point);
 
 /**
- * \fn void ps_bezier_curve_to(ps_context* ctx, const ps_point* fcp,
+ * \fn void ps_bezier_to(ps_context* ctx, const ps_point* fcp,
  *                                        const ps_point* scp, const ps_point* ep)
  * \brief Add a cubic bezier spline to the current path from current point to end point.
  *
@@ -3029,24 +3029,24 @@ PEXPORT void PICAPI ps_line_to(ps_context* ctx, const ps_point* point);
  * \param scp  The second control point of the curve.
  * \param ep   The end point of the curve.
  *
- * \sa ps_move_to, ps_line_to, ps_quad_curve_to, ps_arc,
+ * \sa ps_move_to, ps_line_to, ps_quad_to, ps_arc,
  *     ps_tangent_arc, ps_rectangle, ps_rounded_rect, ps_ellipse
  */
-PEXPORT void PICAPI ps_bezier_curve_to(ps_context* ctx, const ps_point* fcp,
-                                       const ps_point* scp, const ps_point* ep);
+PEXPORT void PICAPI ps_bezier_to(ps_context* ctx, const ps_point* fcp,
+                                 const ps_point* scp, const ps_point* ep);
 
 /**
- * \fn void ps_quad_curve_to(ps_context* ctx, const ps_point* cp, const ps_point* ep)
+ * \fn void ps_quad_to(ps_context* ctx, const ps_point* cp, const ps_point* ep)
  * \brief Add a quadratic bezier spline to the current path from current point to end point.
  *
  * \param ctx  Pointer to an existing context object.
  * \param cp   The control point of the curve.
  * \param ep   The end point of the curve.
  *
- * \sa ps_move_to, ps_line_to, ps_bezier_curve_to, ps_arc,
+ * \sa ps_move_to, ps_line_to, ps_bezier_to, ps_arc,
  *     ps_tangent_arc, ps_rectangle, ps_rounded_rect, ps_ellipse
  */
-PEXPORT void PICAPI ps_quad_curve_to(ps_context* ctx, const ps_point* cp, const ps_point* ep);
+PEXPORT void PICAPI ps_quad_to(ps_context* ctx, const ps_point* cp, const ps_point* ep);
 
 /**
  * \fn void ps_arc(ps_context* ctx, const ps_point* cp, float radius,
@@ -3060,7 +3060,7 @@ PEXPORT void PICAPI ps_quad_curve_to(ps_context* ctx, const ps_point* cp, const 
  * \param eangle     The end angle, in radians.
  * \param clockwise  True is clockwise, False is counter clockwise.
  *
- * \sa ps_move_to, ps_line_to, ps_bezier_curve_to, ps_quad_curve_to,
+ * \sa ps_move_to, ps_line_to, ps_bezier_to, ps_quad_to,
  *     ps_tangent_arc, ps_rectangle, ps_rounded_rect, ps_ellipse
  */
 PEXPORT void PICAPI ps_arc(ps_context* ctx, const ps_point* cp, float radius,
@@ -3075,7 +3075,7 @@ PEXPORT void PICAPI ps_arc(ps_context* ctx, const ps_point* cp, float radius,
  * \param sangle  The start angle, in radians.
  * \param sweep   The sweep angle, in radians.
  *
- * \sa ps_move_to, ps_line_to, ps_bezier_curve_to, ps_quad_curve_to,
+ * \sa ps_move_to, ps_line_to, ps_bezier_to, ps_quad_to,
  *     ps_arc, ps_rectangle, ps_rounded_rect, ps_ellipse
  */
 PEXPORT void PICAPI ps_tangent_arc(ps_context* ctx, const ps_rect* rect, float sangle, float sweep);
@@ -3087,7 +3087,7 @@ PEXPORT void PICAPI ps_tangent_arc(ps_context* ctx, const ps_rect* rect, float s
  * \param ctx   Pointer to an existing context object.
  * \param rect  The rectangle which will be added.
  *
- * \sa ps_move_to, ps_line_to, ps_bezier_curve_to, ps_quad_curve_to,
+ * \sa ps_move_to, ps_line_to, ps_bezier_to, ps_quad_to,
  *     ps_arc, ps_tangent_arc, ps_rounded_rect, ps_ellipse
  */
 PEXPORT void PICAPI ps_rectangle(ps_context* ctx, const ps_rect* rect);
@@ -3108,7 +3108,7 @@ PEXPORT void PICAPI ps_rectangle(ps_context* ctx, const ps_rect* rect);
  * \param rbx   The right bottom horizontal radius.
  * \param rby   The right bottom vertical radius.
  *
- * \sa ps_move_to, ps_line_to, ps_bezier_curve_to, ps_quad_curve_to,
+ * \sa ps_move_to, ps_line_to, ps_bezier_to, ps_quad_to,
  *     ps_arc, ps_tangent_arc, ps_rectangle, ps_ellipse
  */
 PEXPORT void PICAPI ps_rounded_rect(ps_context* ctx, const ps_rect* rect, float ltx,
@@ -3121,7 +3121,7 @@ PEXPORT void PICAPI ps_rounded_rect(ps_context* ctx, const ps_rect* rect, float 
  * \param ctx   Pointer to an existing context object.
  * \param rect  The rectangle which the ellipse to fit in.
  *
- * \sa ps_move_to, ps_line_to, ps_bezier_curve_to, ps_quad_curve_to,
+ * \sa ps_move_to, ps_line_to, ps_bezier_to, ps_quad_to,
  *     ps_arc, ps_tangent_arc, ps_rectangle, ps_rounded_rect
  */
 PEXPORT void PICAPI ps_ellipse(ps_context* ctx, const ps_rect* rect);

@@ -163,8 +163,8 @@ EXPORTS
     ps_close_path
     ps_move_to
     ps_line_to
-    ps_bezier_curve_to
-    ps_quad_curve_to
+    ps_bezier_to
+    ps_quad_to
     ps_arc
     ps_tangent_arc
     ps_rectangle
