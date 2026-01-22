@@ -1,9 +1,9 @@
 {
     "MaskCanvasIntegration": {
-        "mid_ms": 0.21900599,
-        "avg_ms": 0.21719139,
-        "min_ms": 0.209764,
-        "max_ms": 0.22564299
+        "mid_ms": 0.20978,
+        "avg_ms": 0.21343004,
+        "min_ms": 0.20974,
+        "max_ms": 0.219408
     },
     "MaskColorFilterOperations": {
         "mid_ms": 0.8153245,
@@ -24,10 +24,10 @@
         "max_ms": 1.75577
     },
     "MaskCreateDifferentDimensions": {
-        "mid_ms": 0.903388,
-        "avg_ms": 0.90545008,
-        "min_ms": 0.897362,
-        "max_ms": 0.91091599
+        "mid_ms": 0.87425099,
+        "avg_ms": 0.87625419,
+        "min_ms": 0.86859599,
+        "max_ms": 0.87882399
     },
     "MaskCreateWithData": {
         "mid_ms": 0.312942,
@@ -36,34 +36,34 @@
         "max_ms": 0.32596198
     },
     "MaskCreateWithMultipleData": {
-        "mid_ms": 0.7406345,
-        "avg_ms": 0.74306902,
-        "min_ms": 0.73109099,
-        "max_ms": 0.75133999
+        "mid_ms": 0.73889399,
+        "avg_ms": 0.73996517,
+        "min_ms": 0.722504,
+        "max_ms": 0.74902299
     },
     "MaskDataBufferOperations": {
-        "mid_ms": 0.53220349,
-        "avg_ms": 0.53284279,
-        "min_ms": 0.52239,
-        "max_ms": 0.540865
+        "mid_ms": 0.5314335,
+        "avg_ms": 0.52986293,
+        "min_ms": 0.52201099,
+        "max_ms": 0.536438
     },
     "MaskErrorHandling": {
-        "mid_ms": 0.40438799,
-        "avg_ms": 0.40921162,
-        "min_ms": 0.40403299,
-        "max_ms": 0.414964
+        "mid_ms": 0.404057,
+        "avg_ms": 0.40997018,
+        "min_ms": 0.403881,
+        "max_ms": 0.41412099
     },
     "MaskMultipleReferences": {
-        "mid_ms": 0.12293349,
-        "avg_ms": 0.12496119,
-        "min_ms": 0.122368,
-        "max_ms": 0.133839
+        "mid_ms": 0.1200235,
+        "avg_ms": 0.12215992,
+        "min_ms": 0.119012,
+        "max_ms": 0.12939099
     },
     "MaskReferenceOperations": {
-        "mid_ms": 0.90439,
-        "avg_ms": 0.90573343,
-        "min_ms": 0.902932,
-        "max_ms": 0.90774099
+        "mid_ms": 0.90349999,
+        "avg_ms": 0.90479083,
+        "min_ms": 0.902418,
+        "max_ms": 0.90710699
     },
     "MaskReusePerformance": {
         "mid_ms": 0.250315,

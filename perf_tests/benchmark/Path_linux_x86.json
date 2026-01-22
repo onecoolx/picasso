@@ -1,15 +1,15 @@
 {
     "PathAddArc": {
-        "mid_ms": 1.25026449,
-        "avg_ms": 1.25401772,
-        "min_ms": 1.246742,
-        "max_ms": 1.26063999
+        "mid_ms": 1.24891249,
+        "avg_ms": 1.25146662,
+        "min_ms": 1.24459399,
+        "max_ms": 1.25798899
     },
     "PathAddEllipse": {
-        "mid_ms": 2.42083799,
-        "avg_ms": 2.42446292,
-        "min_ms": 2.41484699,
-        "max_ms": 2.42776099
+        "mid_ms": 2.42029,
+        "avg_ms": 2.42627031,
+        "min_ms": 2.41424899,
+        "max_ms": 2.43972699
     },
     "PathAddLine": {
         "mid_ms": 0.175989,
@@ -18,10 +18,10 @@
         "max_ms": 0.18601799
     },
     "PathAddRect": {
-        "mid_ms": 0.277994,
-        "avg_ms": 0.27917602,
-        "min_ms": 0.271802,
-        "max_ms": 0.287752
+        "mid_ms": 0.27481098,
+        "avg_ms": 0.2737658,
+        "min_ms": 0.26549399,
+        "max_ms": 0.28550999
     },
     "PathAddRoundedRect": {
         "mid_ms": 1.25807899,
@@ -48,10 +48,10 @@
         "max_ms": 2.49572899
     },
     "PathBoundingRect": {
-        "mid_ms": 5.687017,
-        "avg_ms": 5.70253696,
-        "min_ms": 5.67824599,
-        "max_ms": 5.73987
+        "mid_ms": 5.685542,
+        "avg_ms": 5.71913727,
+        "min_ms": 5.67682499,
+        "max_ms": 5.73309999
     },
     "PathBuildingMoveLine": {
         "mid_ms": 0.2169145,
@@ -66,10 +66,10 @@
         "max_ms": 3.91149099
     },
     "PathClippingOperations": {
-        "mid_ms": 3.97814349,
-        "avg_ms": 3.98389796,
-        "min_ms": 3.96789199,
-        "max_ms": 3.99776399
+        "mid_ms": 3.96975649,
+        "avg_ms": 3.97799588,
+        "min_ms": 3.954654,
+        "max_ms": 4.009676
     },
     "PathComplexBuildingStress": {
         "mid_ms": 5.394572,
@@ -114,10 +114,10 @@
         "max_ms": 1.221495
     },
     "PathLengthCalculation": {
-        "mid_ms": 32.65560349,
-        "avg_ms": 32.20933294,
-        "min_ms": 30.944144,
-        "max_ms": 32.73360499
+        "mid_ms": 31.03102899,
+        "avg_ms": 31.71696911,
+        "min_ms": 30.933403,
+        "max_ms": 32.72087399
     },
     "PathMemoryStress": {
         "mid_ms": 0.671456,
@@ -126,10 +126,10 @@
         "max_ms": 0.67877399
     },
     "PathQuadOperations": {
-        "mid_ms": 1.57607199,
-        "avg_ms": 1.5791517,
-        "min_ms": 1.56826199,
-        "max_ms": 1.593309
+        "mid_ms": 1.57436249,
+        "avg_ms": 1.57661946,
+        "min_ms": 1.566623,
+        "max_ms": 1.58387499
     },
     "PathQueryOperations": {
         "mid_ms": 5.84879,
@@ -138,10 +138,10 @@
         "max_ms": 5.889307
     },
     "PathReferenceOperations": {
-        "mid_ms": 0.87288299,
-        "avg_ms": 0.87341465,
-        "min_ms": 0.86550899,
-        "max_ms": 0.87503699
+        "mid_ms": 0.872823,
+        "avg_ms": 0.87439161,
+        "min_ms": 0.86426799,
+        "max_ms": 0.875838
     },
     "PathStrokeContainsTest": {
         "mid_ms": 16.58541298,
@@ -162,10 +162,10 @@
         "max_ms": 1.28873599
     },
     "PathTransformStress": {
-        "mid_ms": 6.34692699,
-        "avg_ms": 6.36356808,
-        "min_ms": 6.337294,
-        "max_ms": 6.380665
+        "mid_ms": 6.339377,
+        "avg_ms": 6.34892058,
+        "min_ms": 6.33278499,
+        "max_ms": 6.36302099
     },
     "PathVertexEnumeration": {
         "mid_ms": 10.58825699,

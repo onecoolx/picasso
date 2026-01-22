@@ -12,10 +12,10 @@
         "max_ms": 2.880125
     },
     "CanvasCreateCompatible": {
-        "mid_ms": 1.363089,
-        "avg_ms": 1.36603738,
-        "min_ms": 1.35205399,
-        "max_ms": 1.384396
+        "mid_ms": 1.36183699,
+        "avg_ms": 1.36546233,
+        "min_ms": 1.34850699,
+        "max_ms": 1.38197999
     },
     "CanvasCreateDestroy": {
         "mid_ms": 0.26131148,
@@ -30,10 +30,10 @@
         "max_ms": 1.220661
     },
     "CanvasCreateFromMask": {
-        "mid_ms": 0.226908,
-        "avg_ms": 0.22978977,
-        "min_ms": 0.22465799,
-        "max_ms": 0.239045
+        "mid_ms": 0.2255445,
+        "avg_ms": 0.22802292,
+        "min_ms": 0.22330499,
+        "max_ms": 0.23546799
     },
     "CanvasCreateWithData": {
         "mid_ms": 2.37849,
@@ -42,10 +42,10 @@
         "max_ms": 2.39492
     },
     "CanvasErrorHandling": {
-        "mid_ms": 0.451106,
-        "avg_ms": 0.45572455,
-        "min_ms": 0.450225,
-        "max_ms": 0.462217
+        "mid_ms": 0.45091899,
+        "avg_ms": 0.45577023,
+        "min_ms": 0.45012699,
+        "max_ms": 0.46064699
     },
     "CanvasMaskOperations": {
         "mid_ms": 0.2070085,
@@ -60,10 +60,10 @@
         "max_ms": 1.155726
     },
     "CanvasReferenceOperations": {
-        "mid_ms": 0.87299999,
-        "avg_ms": 0.87287423,
-        "min_ms": 0.86399299,
-        "max_ms": 0.875194
+        "mid_ms": 0.87265199,
+        "avg_ms": 0.87320092,
+        "min_ms": 0.863996,
+        "max_ms": 0.87499599
     },
     "CanvasReplaceData": {
         "mid_ms": 0.02669049,

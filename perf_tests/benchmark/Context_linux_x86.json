@@ -18,10 +18,10 @@
         "max_ms": 2.27719199
     },
     "ContextErrorHandling": {
-        "mid_ms": 0.24050899,
-        "avg_ms": 0.24317934,
-        "min_ms": 0.240488,
-        "max_ms": 0.25034699
+        "mid_ms": 0.24049799,
+        "avg_ms": 0.24319406,
+        "min_ms": 0.240477,
+        "max_ms": 0.250215
     },
     "ContextMultipleCreate": {
         "mid_ms": 2.93629999,
@@ -36,22 +36,22 @@
         "max_ms": 0.323653
     },
     "ContextReferenceOperations": {
-        "mid_ms": 0.9039145,
-        "avg_ms": 0.90499285,
-        "min_ms": 0.90280799,
-        "max_ms": 0.90700599
+        "mid_ms": 0.903721,
+        "avg_ms": 0.90478638,
+        "min_ms": 0.902238,
+        "max_ms": 0.90750799
     },
     "ContextSharedResourceChain": {
-        "mid_ms": 0.51849599,
-        "avg_ms": 0.51729768,
-        "min_ms": 0.508778,
-        "max_ms": 0.52046899
+        "mid_ms": 0.517768,
+        "avg_ms": 0.51445911,
+        "min_ms": 0.50869599,
+        "max_ms": 0.51929599
     },
     "ContextStateOperations": {
-        "mid_ms": 1.9916415,
-        "avg_ms": 1.9967327,
-        "min_ms": 1.990319,
-        "max_ms": 2.00412499
+        "mid_ms": 1.99135249,
+        "avg_ms": 1.99431141,
+        "min_ms": 1.98996499,
+        "max_ms": 2.00452199
     },
     "ContextStressTest": {
         "mid_ms": 1.4699775,

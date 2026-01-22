@@ -1,15 +1,15 @@
 {
     "PatternCreateAllWrapModes": {
-        "mid_ms": 0.53164999,
-        "avg_ms": 0.66723643,
-        "min_ms": 0.521402,
-        "max_ms": 0.95562
+        "mid_ms": 0.53066249,
+        "avg_ms": 0.52801173,
+        "min_ms": 0.52139899,
+        "max_ms": 0.533122
     },
     "PatternCreateDestroy": {
-        "mid_ms": 0.26413199,
-        "avg_ms": 0.27610617,
-        "min_ms": 0.26299,
-        "max_ms": 0.28049299
+        "mid_ms": 0.26340999,
+        "avg_ms": 0.26728101,
+        "min_ms": 0.26297899,
+        "max_ms": 0.27435
     },
     "PatternCreateWithTransform": {
         "mid_ms": 0.128269,
@@ -18,10 +18,10 @@
         "max_ms": 0.13822699
     },
     "PatternDifferentImageFormats": {
-        "mid_ms": 2.12636748,
-        "avg_ms": 2.13614726,
-        "min_ms": 2.12394899,
-        "max_ms": 2.14671099
+        "mid_ms": 2.126224,
+        "avg_ms": 2.136616,
+        "min_ms": 2.12382999,
+        "max_ms": 2.15014797
     },
     "PatternDifferentImageSources": {
         "mid_ms": 0.2609965,

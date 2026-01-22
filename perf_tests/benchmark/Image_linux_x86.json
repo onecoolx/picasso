@@ -36,10 +36,10 @@
         "max_ms": 0.454515
     },
     "ImageCreateWithData": {
-        "mid_ms": 0.560392,
-        "avg_ms": 0.55965975,
-        "min_ms": 0.550382,
-        "max_ms": 0.56331699
+        "mid_ms": 0.55916999,
+        "avg_ms": 0.55698671,
+        "min_ms": 0.549652,
+        "max_ms": 0.561845
     },
     "ImageDifferentDimensions": {
         "mid_ms": 3.407437,
@@ -60,10 +60,10 @@
         "max_ms": 1.156106
     },
     "ImageReferenceOperations": {
-        "mid_ms": 0.90379999,
-        "avg_ms": 0.90388706,
-        "min_ms": 0.902888,
-        "max_ms": 0.905944
+        "mid_ms": 0.9036715,
+        "avg_ms": 0.90591318,
+        "min_ms": 0.90240899,
+        "max_ms": 0.908089
     },
     "ImageReusePerformance": {
         "mid_ms": 0.25009,
@@ -72,10 +72,10 @@
         "max_ms": 0.259969
     },
     "ImageStressTest": {
-        "mid_ms": 1.1061445,
-        "avg_ms": 1.11068955,
-        "min_ms": 1.102843,
-        "max_ms": 1.120657
+        "mid_ms": 1.09779199,
+        "avg_ms": 1.10054882,
+        "min_ms": 1.096259,
+        "max_ms": 1.10781
     },
     "ImageTransparencyOperations": {
         "mid_ms": 0.25998399,
