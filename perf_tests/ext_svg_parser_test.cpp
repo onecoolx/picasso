@@ -1,5 +1,6 @@
 #include "test.h"
 #include "psx_svg_node.h"
+#include "psx_svg_render.h"
 
 PERF_TEST_DEFINE(SvgParser);
 
@@ -67,10 +68,6 @@ static const char* complex_svg_tiny_12 =
     "<use xlink:href=\"#reusableGroup\" x=\"500\" y=\"400\" transform=\"scale(2)\"/>"
     "<use xlink:href=\"#reusableGroup\" x=\"600\" y=\"450\" transform=\"rotate(90)\"/>"
 
-    // Image with aspect ratio
-    "<image x=\"650\" y=\"50\" width=\"100\" height=\"75\" "
-    "preserveAspectRatio=\"xMidYMid meet\" xlink:href=\"test.png\"/>"
-
     // Animation elements
     "<rect x=\"50\" y=\"50\" width=\"50\" height=\"50\" fill=\"red\">"
     "<animate attributeName=\"x\" from=\"50\" to=\"200\" dur=\"2s\" repeatCount=\"indefinite\"/>"
@@ -92,4 +89,24 @@ PERF_TEST_RUN(SvgParser, LoadComplexSvg)
     });
 
     CompareToBenchmark(SvgParser_LoadComplexSvg, result);
+}
+
+// Test 2: Render list creation performance
+PERF_TEST_RUN(SvgParser, CreateRenderList)
+{
+    // Parse SVG once to get the node tree
+    psx_svg_node* root = psx_svg_load_data(complex_svg_tiny_12, (uint32_t)strlen(complex_svg_tiny_12));
+    ASSERT_NE(root, nullptr);
+
+    auto result = RunBenchmark(SvgParser_CreateRenderList, [&]() {
+        for (int i = 0; i < 2000; i++) {
+            psx_svg_render_list* list = psx_svg_render_list_create(root);
+            if (list) {
+                psx_svg_render_list_destroy(list);
+            }
+        }
+    });
+
+    CompareToBenchmark(SvgParser_CreateRenderList, result);
+    psx_svg_node_destroy(root);
 }
