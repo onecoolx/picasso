@@ -135,6 +135,12 @@ TEST_F(SVGRenderTest, ShapesTest)
     draw_svg(svg_shapes);
     EXPECT_SNAPSHOT_EQ(svg_shapes);
 
+    const char* svg_shapes_parent = "<svg fill=\"none\" width=\"100\" height=\"100\" viewBox=\"0 0 100 100\">"
+                                    "<circle stroke=\"red\" cx=\"100\" cy=\"100\" r=\"50\"/>"
+                                    "</svg>";
+    draw_svg(svg_shapes_parent);
+    EXPECT_SNAPSHOT_EQ(svg_shapes_parent);
+
     const char* svg_shapes_solid = "<svg width=\"480\" height=\"360\" viewBox=\"0 0 480 360\">"
                                    "<defs><solidColor xml:id=\"solidMaroon\" solid-color=\"maroon\" solid-opacity=\"0.7\"/>"
                                    "</defs><g><circle transform=\"translate(100, 150)\" fill=\"url(#solidMaroon)\" r=\"30\"/>"

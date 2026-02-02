@@ -707,6 +707,7 @@ public:
 
     void set_attr(const psx_svg_attr* attr, _svg_list_builder_state* state)
     {
+        set_draw_attr(state, attr->attr_id, attr);
         switch (attr->attr_id) {
             case SVG_ATTR_WIDTH:
                 m_width = attr->value.fval;
