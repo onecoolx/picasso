@@ -190,13 +190,13 @@ TEST_F(PathCurveTest, ComplexPath)
         float angle1 = i * 6.28318f / 5.0f;
         float angle2 = (i + 2) * 6.28318f / 5.0f;
 
-        ps_point p1 = {center.x + radius * cos(angle1), center.y + radius * sin(angle1)};
+        ps_point p1 = {center.x + radius* (float)cos(angle1), center.y + radius* (float)sin(angle1)};
 
         if (i == 0) {
             ps_move_to(ctx, &p1);
         }
 
-        ps_point p2 = {center.x + radius * cos(angle2), center.y + radius * sin(angle2)};
+        ps_point p2 = {center.x + radius* (float)cos(angle2), center.y + radius* (float)sin(angle2)};
         ps_line_to(ctx, &p2);
     }
 
