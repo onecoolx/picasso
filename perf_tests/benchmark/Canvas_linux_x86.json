@@ -1,0 +1,132 @@
+{
+    "CanvasBitbltOperations": {
+        "mid_ms": 0.095758,
+        "avg_ms": 0.09697463,
+        "min_ms": 0.09512799,
+        "max_ms": 0.10501599,
+        "std_dev": 0.00149887,
+        "cv": 0.01545631,
+        "iterations": 500,
+        "total_time_ms": 5346.81997899
+    },
+    "CanvasCreateAllFormats": {
+        "mid_ms": 2.850293,
+        "avg_ms": 2.87684074,
+        "min_ms": 2.82042699,
+        "max_ms": 2.97323199,
+        "std_dev": 0.03867061,
+        "cv": 0.01344204,
+        "iterations": 239,
+        "total_time_ms": 3311.15211299
+    },
+    "CanvasCreateCompatible": {
+        "mid_ms": 1.39866199,
+        "avg_ms": 1.41920383,
+        "min_ms": 1.37647999,
+        "max_ms": 1.50914799,
+        "std_dev": 0.03058136,
+        "cv": 0.02154825,
+        "iterations": 348,
+        "total_time_ms": 4208.81128899
+    },
+    "CanvasCreateDestroy": {
+        "mid_ms": 0.25231649,
+        "avg_ms": 0.26182102,
+        "min_ms": 0.248274,
+        "max_ms": 0.28566299,
+        "std_dev": 0.01179159,
+        "cv": 0.04503683,
+        "iterations": 500,
+        "total_time_ms": 5419.219736
+    },
+    "CanvasCreateFromCanvas": {
+        "mid_ms": 1.245776,
+        "avg_ms": 1.26616438,
+        "min_ms": 1.23132999,
+        "max_ms": 1.357324,
+        "std_dev": 0.02878903,
+        "cv": 0.0227372,
+        "iterations": 369,
+        "total_time_ms": 4465.85549099
+    },
+    "CanvasCreateFromMask": {
+        "mid_ms": 0.23114699,
+        "avg_ms": 0.23996234,
+        "min_ms": 0.22687399,
+        "max_ms": 0.262581,
+        "std_dev": 0.0120139,
+        "cv": 0.05006579,
+        "iterations": 500,
+        "total_time_ms": 5402.401903
+    },
+    "CanvasCreateWithData": {
+        "mid_ms": 2.46240299,
+        "avg_ms": 2.48166822,
+        "min_ms": 2.450637,
+        "max_ms": 2.53252899,
+        "std_dev": 0.02262102,
+        "cv": 0.00911524,
+        "iterations": 260,
+        "total_time_ms": 3468.87036199
+    },
+    "CanvasErrorHandling": {
+        "mid_ms": 0.50987249,
+        "avg_ms": 0.51245073,
+        "min_ms": 0.50594499,
+        "max_ms": 0.51820699,
+        "std_dev": 0.00512038,
+        "cv": 0.00999194,
+        "iterations": 500,
+        "total_time_ms": 5508.70436199
+    },
+    "CanvasMaskOperations": {
+        "mid_ms": 0.21072899,
+        "avg_ms": 0.21262492,
+        "min_ms": 0.20786799,
+        "max_ms": 0.220592,
+        "std_dev": 0.00314072,
+        "cv": 0.0147712,
+        "iterations": 500,
+        "total_time_ms": 5267.43475298
+    },
+    "CanvasPropertyOperations": {
+        "mid_ms": 1.15397599,
+        "avg_ms": 1.15847278,
+        "min_ms": 1.15261299,
+        "max_ms": 1.16319299,
+        "std_dev": 0.00428325,
+        "cv": 0.00369734,
+        "iterations": 377,
+        "total_time_ms": 4403.595528
+    },
+    "CanvasReferenceOperations": {
+        "mid_ms": 0.87395199,
+        "avg_ms": 0.87424877,
+        "min_ms": 0.864444,
+        "max_ms": 0.87812,
+        "std_dev": 0.00194556,
+        "cv": 0.00222541,
+        "iterations": 421,
+        "total_time_ms": 4825.60386799
+    },
+    "CanvasReplaceData": {
+        "mid_ms": 0.02779149,
+        "avg_ms": 0.02905924,
+        "min_ms": 0.027552,
+        "max_ms": 0.032541,
+        "std_dev": 0.00148484,
+        "cv": 0.05109717,
+        "iterations": 500,
+        "total_time_ms": 5183.52213599
+    },
+    "CanvasStressTest": {
+        "mid_ms": 2.66084899,
+        "avg_ms": 2.67038425,
+        "min_ms": 2.61557498,
+        "max_ms": 2.73798299,
+        "std_dev": 0.03313666,
+        "cv": 0.01240894,
+        "iterations": 237,
+        "total_time_ms": 3240.920188
+    }
+}

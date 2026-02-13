@@ -1,0 +1,552 @@
+{
+    "Clear": {
+        "mid_ms": 8.90666049,
+        "avg_ms": 9.08364083,
+        "min_ms": 8.83551499,
+        "max_ms": 9.54525999,
+        "std_dev": 0.2087004,
+        "cv": 0.02297541,
+        "iterations": 96,
+        "total_time_ms": 2031.11047799
+    },
+    "Clip": {
+        "mid_ms": 0.035797,
+        "avg_ms": 0.03638512,
+        "min_ms": 0.035786,
+        "max_ms": 0.03634798,
+        "std_dev": 0.0005372,
+        "cv": 0.01476452,
+        "iterations": 500,
+        "total_time_ms": 5227.70854799
+    },
+    "ClipPath": {
+        "mid_ms": 10.62732248,
+        "avg_ms": 10.8069441,
+        "min_ms": 10.57917699,
+        "max_ms": 11.23400099,
+        "std_dev": 0.22529008,
+        "cv": 0.02084677,
+        "iterations": 82,
+        "total_time_ms": 1940.39536299
+    },
+    "ClipRect": {
+        "mid_ms": 11.04795599,
+        "avg_ms": 11.25421792,
+        "min_ms": 10.994295,
+        "max_ms": 11.85918099,
+        "std_dev": 0.27484304,
+        "cv": 0.02442133,
+        "iterations": 79,
+        "total_time_ms": 1929.73012799
+    },
+    "ClipRects": {
+        "mid_ms": 16.29468,
+        "avg_ms": 16.56506833,
+        "min_ms": 16.217782,
+        "max_ms": 17.276339,
+        "std_dev": 0.35081265,
+        "cv": 0.02117785,
+        "iterations": 56,
+        "total_time_ms": 1771.17446
+    },
+    "DrawText": {
+        "mid_ms": 128.36419099,
+        "avg_ms": 128.69626783,
+        "min_ms": 127.83505699,
+        "max_ms": 129.75788999,
+        "std_dev": 0.5898157,
+        "cv": 0.004583,
+        "iterations": 20,
+        "total_time_ms": 4182.84679199
+    },
+    "Fill": {
+        "mid_ms": 0.37716499,
+        "avg_ms": 0.38101214,
+        "min_ms": 0.37410899,
+        "max_ms": 0.389718,
+        "std_dev": 0.00528443,
+        "cv": 0.01386946,
+        "iterations": 500,
+        "total_time_ms": 5352.86822799
+    },
+    "GetFontInfo": {
+        "mid_ms": 0.115525,
+        "avg_ms": 0.11766997,
+        "min_ms": 0.11527599,
+        "max_ms": 0.12542498,
+        "std_dev": 0.00284623,
+        "cv": 0.0241883,
+        "iterations": 500,
+        "total_time_ms": 5383.50403399
+    },
+    "GetGlyph": {
+        "mid_ms": 0.0881195,
+        "avg_ms": 0.09108251,
+        "min_ms": 0.08768399,
+        "max_ms": 0.09771199,
+        "std_dev": 0.0035988,
+        "cv": 0.03951144,
+        "iterations": 500,
+        "total_time_ms": 5291.13713
+    },
+    "GetPathFromGlyph": {
+        "mid_ms": 3.1796595,
+        "avg_ms": 3.24693764,
+        "min_ms": 3.167457,
+        "max_ms": 3.463891,
+        "std_dev": 0.0829583,
+        "cv": 0.0255497,
+        "iterations": 214,
+        "total_time_ms": 3054.32332899
+    },
+    "GetTextExtent": {
+        "mid_ms": 0.27001399,
+        "avg_ms": 0.28183934,
+        "min_ms": 0.266498,
+        "max_ms": 0.31637099,
+        "std_dev": 0.01536027,
+        "cv": 0.05450011,
+        "iterations": 500,
+        "total_time_ms": 5382.273923
+    },
+    "GlyphGetExtent": {
+        "mid_ms": 0.023604,
+        "avg_ms": 0.02386949,
+        "min_ms": 0.02355399,
+        "max_ms": 0.023945,
+        "std_dev": 0.00025266,
+        "cv": 0.01058563,
+        "iterations": 500,
+        "total_time_ms": 5159.999316
+    },
+    "Paint": {
+        "mid_ms": 0.854552,
+        "avg_ms": 0.86175821,
+        "min_ms": 0.847523,
+        "max_ms": 0.889763,
+        "std_dev": 0.00954386,
+        "cv": 0.01107487,
+        "iterations": 424,
+        "total_time_ms": 4924.872803
+    },
+    "ResetClip": {
+        "mid_ms": 0.05543299,
+        "avg_ms": 0.0566139,
+        "min_ms": 0.05517399,
+        "max_ms": 0.056496,
+        "std_dev": 0.00116711,
+        "cv": 0.02061533,
+        "iterations": 500,
+        "total_time_ms": 5320.78201698
+    },
+    "ResetLineDash": {
+        "mid_ms": 0.049933,
+        "avg_ms": 0.05078157,
+        "min_ms": 0.04987299,
+        "max_ms": 0.05056499,
+        "std_dev": 0.00079516,
+        "cv": 0.01565851,
+        "iterations": 500,
+        "total_time_ms": 5185.67300499
+    },
+    "ResetShadow": {
+        "mid_ms": 0.04687699,
+        "avg_ms": 0.04759249,
+        "min_ms": 0.046797,
+        "max_ms": 0.047578,
+        "std_dev": 0.00067181,
+        "cv": 0.01411592,
+        "iterations": 500,
+        "total_time_ms": 5240.46058199
+    },
+    "SaveRestore": {
+        "mid_ms": 0.230451,
+        "avg_ms": 0.23777527,
+        "min_ms": 0.22946899,
+        "max_ms": 0.25789199,
+        "std_dev": 0.00788671,
+        "cv": 0.03316876,
+        "iterations": 500,
+        "total_time_ms": 5271.872852
+    },
+    "Scale": {
+        "mid_ms": 0.1302235,
+        "avg_ms": 0.13199496,
+        "min_ms": 0.13015399,
+        "max_ms": 0.14003099,
+        "std_dev": 0.00244955,
+        "cv": 0.01855791,
+        "iterations": 500,
+        "total_time_ms": 5326.04976799
+    },
+    "ScissorRect": {
+        "mid_ms": 0.07413899,
+        "avg_ms": 0.07748916,
+        "min_ms": 0.07367799,
+        "max_ms": 0.08846599,
+        "std_dev": 0.00409478,
+        "cv": 0.05284328,
+        "iterations": 500,
+        "total_time_ms": 5257.47938499
+    },
+    "SetAlpha": {
+        "mid_ms": 0.13635499,
+        "avg_ms": 0.13801896,
+        "min_ms": 0.13629499,
+        "max_ms": 0.146423,
+        "std_dev": 0.00224636,
+        "cv": 0.0162758,
+        "iterations": 500,
+        "total_time_ms": 5347.92102198
+    },
+    "SetAntialias": {
+        "mid_ms": 20.305914,
+        "avg_ms": 20.32746982,
+        "min_ms": 20.282812,
+        "max_ms": 20.40183399,
+        "std_dev": 0.03252759,
+        "cv": 0.00160017,
+        "iterations": 45,
+        "total_time_ms": 1678.620299
+    },
+    "SetBlur": {
+        "mid_ms": 0.14257149,
+        "avg_ms": 0.14516515,
+        "min_ms": 0.14245599,
+        "max_ms": 0.15298598,
+        "std_dev": 0.00345495,
+        "cv": 0.02380017,
+        "iterations": 500,
+        "total_time_ms": 5193.770232
+    },
+    "SetCompositeOperator": {
+        "mid_ms": 0.133179,
+        "avg_ms": 0.13513697,
+        "min_ms": 0.13309899,
+        "max_ms": 0.14366899,
+        "std_dev": 0.00270333,
+        "cv": 0.02000441,
+        "iterations": 500,
+        "total_time_ms": 5312.19092599
+    },
+    "SetFillRule": {
+        "mid_ms": 0.09619,
+        "avg_ms": 0.09788309,
+        "min_ms": 0.09612999,
+        "max_ms": 0.097693,
+        "std_dev": 0.00157688,
+        "cv": 0.01610989,
+        "iterations": 500,
+        "total_time_ms": 5203.32112699
+    },
+    "SetFilter": {
+        "mid_ms": 0.1238365,
+        "avg_ms": 0.12560379,
+        "min_ms": 0.12377099,
+        "max_ms": 0.13405,
+        "std_dev": 0.00242394,
+        "cv": 0.01929834,
+        "iterations": 500,
+        "total_time_ms": 5246.23875299
+    },
+    "SetFont": {
+        "mid_ms": 0.114765,
+        "avg_ms": 0.11621406,
+        "min_ms": 0.11472499,
+        "max_ms": 0.12442299,
+        "std_dev": 0.00172085,
+        "cv": 0.01480763,
+        "iterations": 500,
+        "total_time_ms": 5215.98291997
+    },
+    "SetGamma": {
+        "mid_ms": 58.947947,
+        "avg_ms": 58.99763749,
+        "min_ms": 58.893721,
+        "max_ms": 59.04880999,
+        "std_dev": 0.06214154,
+        "cv": 0.00105328,
+        "iterations": 20,
+        "total_time_ms": 2099.987594
+    },
+    "SetLineCap": {
+        "mid_ms": 0.14545199,
+        "avg_ms": 0.14777033,
+        "min_ms": 0.14532099,
+        "max_ms": 0.15551,
+        "std_dev": 0.00301655,
+        "cv": 0.02041378,
+        "iterations": 500,
+        "total_time_ms": 5228.03472399
+    },
+    "SetLineDash": {
+        "mid_ms": 0.193216,
+        "avg_ms": 0.20068255,
+        "min_ms": 0.192039,
+        "max_ms": 0.21484199,
+        "std_dev": 0.00776102,
+        "cv": 0.03867312,
+        "iterations": 500,
+        "total_time_ms": 5306.42685599
+    },
+    "SetLineInnerJoin": {
+        "mid_ms": 0.099196,
+        "avg_ms": 0.10083066,
+        "min_ms": 0.09915599,
+        "max_ms": 0.100809,
+        "std_dev": 0.00155863,
+        "cv": 0.01545799,
+        "iterations": 500,
+        "total_time_ms": 5337.953439
+    },
+    "SetLineJoin": {
+        "mid_ms": 0.1855815,
+        "avg_ms": 0.18791209,
+        "min_ms": 0.185366,
+        "max_ms": 0.19545499,
+        "std_dev": 0.0033736,
+        "cv": 0.0179531,
+        "iterations": 500,
+        "total_time_ms": 5294.60209
+    },
+    "SetLineWidth": {
+        "mid_ms": 0.142576,
+        "avg_ms": 0.14473396,
+        "min_ms": 0.142487,
+        "max_ms": 0.15296599,
+        "std_dev": 0.00285889,
+        "cv": 0.01975272,
+        "iterations": 500,
+        "total_time_ms": 5290.599002
+    },
+    "SetMiterLimit": {
+        "mid_ms": 0.099355,
+        "avg_ms": 0.10086484,
+        "min_ms": 0.099276,
+        "max_ms": 0.10954399,
+        "std_dev": 0.0017255,
+        "cv": 0.01710706,
+        "iterations": 500,
+        "total_time_ms": 5301.47521399
+    },
+    "SetPath": {
+        "mid_ms": 0.35006849,
+        "avg_ms": 0.35532858,
+        "min_ms": 0.34925299,
+        "max_ms": 0.36061399,
+        "std_dev": 0.00514337,
+        "cv": 0.01447497,
+        "iterations": 500,
+        "total_time_ms": 5354.618656
+    },
+    "SetShadow": {
+        "mid_ms": 0.04987299,
+        "avg_ms": 0.05083454,
+        "min_ms": 0.049803,
+        "max_ms": 0.050544,
+        "std_dev": 0.00090782,
+        "cv": 0.01785846,
+        "iterations": 500,
+        "total_time_ms": 5285.15472599
+    },
+    "SetShadowColor": {
+        "mid_ms": 0.04683699,
+        "avg_ms": 0.04748281,
+        "min_ms": 0.046768,
+        "max_ms": 0.047219,
+        "std_dev": 0.00061948,
+        "cv": 0.01304641,
+        "iterations": 500,
+        "total_time_ms": 5202.288692
+    },
+    "SetSourceCanvas": {
+        "mid_ms": 0.123871,
+        "avg_ms": 0.12579114,
+        "min_ms": 0.12381199,
+        "max_ms": 0.13413099,
+        "std_dev": 0.00258045,
+        "cv": 0.02051379,
+        "iterations": 500,
+        "total_time_ms": 5314.894187
+    },
+    "SetSourceColor": {
+        "mid_ms": 0.049994,
+        "avg_ms": 0.05074675,
+        "min_ms": 0.049944,
+        "max_ms": 0.050504,
+        "std_dev": 0.00069567,
+        "cv": 0.01370879,
+        "iterations": 500,
+        "total_time_ms": 5179.46644399
+    },
+    "SetSourceGradient": {
+        "mid_ms": 0.12080049,
+        "avg_ms": 0.12284765,
+        "min_ms": 0.12070499,
+        "max_ms": 0.131054,
+        "std_dev": 0.00255385,
+        "cv": 0.02078889,
+        "iterations": 500,
+        "total_time_ms": 5227.50179297
+    },
+    "SetSourceImage": {
+        "mid_ms": 0.12397199,
+        "avg_ms": 0.1260635,
+        "min_ms": 0.123911,
+        "max_ms": 0.13432999,
+        "std_dev": 0.00274905,
+        "cv": 0.0218069,
+        "iterations": 500,
+        "total_time_ms": 5294.88224499
+    },
+    "SetSourcePattern": {
+        "mid_ms": 0.12088599,
+        "avg_ms": 0.12253017,
+        "min_ms": 0.12082499,
+        "max_ms": 0.13108499,
+        "std_dev": 0.00209525,
+        "cv": 0.01709994,
+        "iterations": 500,
+        "total_time_ms": 5280.149302
+    },
+    "SetStrokeCanvas": {
+        "mid_ms": 0.12087599,
+        "avg_ms": 0.12340267,
+        "min_ms": 0.120806,
+        "max_ms": 0.13120499,
+        "std_dev": 0.00270766,
+        "cv": 0.02194174,
+        "iterations": 500,
+        "total_time_ms": 5351.322455
+    },
+    "SetStrokeColor": {
+        "mid_ms": 0.04688749,
+        "avg_ms": 0.0472896,
+        "min_ms": 0.04678799,
+        "max_ms": 0.047208,
+        "std_dev": 0.00039237,
+        "cv": 0.00829727,
+        "iterations": 500,
+        "total_time_ms": 5223.641976
+    },
+    "SetStrokeGradient": {
+        "mid_ms": 0.117702,
+        "avg_ms": 0.11952981,
+        "min_ms": 0.11762999,
+        "max_ms": 0.127969,
+        "std_dev": 0.0025085,
+        "cv": 0.0209864,
+        "iterations": 500,
+        "total_time_ms": 5232.19636999
+    },
+    "SetStrokeImage": {
+        "mid_ms": 0.12705699,
+        "avg_ms": 0.12912784,
+        "min_ms": 0.12698599,
+        "max_ms": 0.13725599,
+        "std_dev": 0.00262396,
+        "cv": 0.02032067,
+        "iterations": 500,
+        "total_time_ms": 5342.303011
+    },
+    "SetStrokePattern": {
+        "mid_ms": 0.1239725,
+        "avg_ms": 0.12572381,
+        "min_ms": 0.123892,
+        "max_ms": 0.13412999,
+        "std_dev": 0.00229274,
+        "cv": 0.01823634,
+        "iterations": 500,
+        "total_time_ms": 5322.04727899
+    },
+    "SetTextColor": {
+        "mid_ms": 0.09003799,
+        "avg_ms": 0.09112025,
+        "min_ms": 0.089978,
+        "max_ms": 0.092913,
+        "std_dev": 0.0010171,
+        "cv": 0.01116227,
+        "iterations": 500,
+        "total_time_ms": 5319.15646597
+    },
+    "Shear": {
+        "mid_ms": 0.12420199,
+        "avg_ms": 0.12595971,
+        "min_ms": 0.124131,
+        "max_ms": 0.1339,
+        "std_dev": 0.00214413,
+        "cv": 0.01702242,
+        "iterations": 500,
+        "total_time_ms": 5264.799443
+    },
+    "ShowGlyphs": {
+        "mid_ms": 53.10608099,
+        "avg_ms": 53.1086825,
+        "min_ms": 52.360055,
+        "max_ms": 53.892192,
+        "std_dev": 0.44724705,
+        "cv": 0.00842133,
+        "iterations": 20,
+        "total_time_ms": 1918.54435699
+    },
+    "Stroke": {
+        "mid_ms": 0.60940899,
+        "avg_ms": 0.61190387,
+        "min_ms": 0.59923,
+        "max_ms": 0.62244299,
+        "std_dev": 0.00611075,
+        "cv": 0.00998646,
+        "iterations": 467,
+        "total_time_ms": 5099.75844599
+    },
+    "TextOutLength": {
+        "mid_ms": 116.949927,
+        "avg_ms": 116.99862789,
+        "min_ms": 116.46093299,
+        "max_ms": 117.563353,
+        "std_dev": 0.33385308,
+        "cv": 0.00285347,
+        "iterations": 20,
+        "total_time_ms": 3845.835626
+    },
+    "TextRenderingOptions": {
+        "mid_ms": 0.2531885,
+        "avg_ms": 0.25670941,
+        "min_ms": 0.25310299,
+        "max_ms": 0.263803,
+        "std_dev": 0.00416207,
+        "cv": 0.01621315,
+        "iterations": 500,
+        "total_time_ms": 5366.996814
+    },
+    "TextTransform": {
+        "mid_ms": 0.13309849,
+        "avg_ms": 0.13503979,
+        "min_ms": 0.133019,
+        "max_ms": 0.143038,
+        "std_dev": 0.0024704,
+        "cv": 0.01829393,
+        "iterations": 500,
+        "total_time_ms": 5227.54888999
+    },
+    "Translate": {
+        "mid_ms": 0.124012,
+        "avg_ms": 0.12522718,
+        "min_ms": 0.123981,
+        "max_ms": 0.125034,
+        "std_dev": 0.00113184,
+        "cv": 0.00903826,
+        "iterations": 500,
+        "total_time_ms": 5297.49376799
+    },
+    "WideTextOutLength": {
+        "mid_ms": 176.33289799,
+        "avg_ms": 176.67366595,
+        "min_ms": 175.76639,
+        "max_ms": 177.70950999,
+        "std_dev": 0.6241833,
+        "cv": 0.00353297,
+        "iterations": 20,
+        "total_time_ms": 5626.80688599
+    }
+}

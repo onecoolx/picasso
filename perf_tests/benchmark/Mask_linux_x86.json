@@ -1,0 +1,132 @@
+{
+    "MaskCanvasIntegration": {
+        "mid_ms": 0.21057399,
+        "avg_ms": 0.21237279,
+        "min_ms": 0.207487,
+        "max_ms": 0.22100299,
+        "std_dev": 0.00324659,
+        "cv": 0.01528724,
+        "iterations": 500,
+        "total_time_ms": 5355.40740699
+    },
+    "MaskColorFilterOperations": {
+        "mid_ms": 0.804743,
+        "avg_ms": 0.81074887,
+        "min_ms": 0.79515499,
+        "max_ms": 0.82900799,
+        "std_dev": 0.00811009,
+        "cv": 0.01000321,
+        "iterations": 429,
+        "total_time_ms": 4816.993923
+    },
+    "MaskComplexColorFilters": {
+        "mid_ms": 8.75939699,
+        "avg_ms": 8.78410886,
+        "min_ms": 8.73157599,
+        "max_ms": 8.874822,
+        "std_dev": 0.04382732,
+        "cv": 0.00498938,
+        "iterations": 97,
+        "total_time_ms": 2020.634211
+    },
+    "MaskCreateDestroy": {
+        "mid_ms": 1.838834,
+        "avg_ms": 1.83386381,
+        "min_ms": 1.80203499,
+        "max_ms": 1.851358,
+        "std_dev": 0.01279317,
+        "cv": 0.00697607,
+        "iterations": 299,
+        "total_time_ms": 3731.774767
+    },
+    "MaskCreateDifferentDimensions": {
+        "mid_ms": 0.876677,
+        "avg_ms": 0.88778878,
+        "min_ms": 0.869394,
+        "max_ms": 0.94013599,
+        "std_dev": 0.01381019,
+        "cv": 0.01555572,
+        "iterations": 419,
+        "total_time_ms": 4746.79801
+    },
+    "MaskCreateWithData": {
+        "mid_ms": 0.32622399,
+        "avg_ms": 0.34414274,
+        "min_ms": 0.31584999,
+        "max_ms": 0.400338,
+        "std_dev": 0.02771893,
+        "cv": 0.08054486,
+        "iterations": 500,
+        "total_time_ms": 5473.24504198
+    },
+    "MaskCreateWithMultipleData": {
+        "mid_ms": 0.7453015,
+        "avg_ms": 0.7827414,
+        "min_ms": 0.73136499,
+        "max_ms": 0.90249499,
+        "std_dev": 0.05185126,
+        "cv": 0.06624315,
+        "iterations": 446,
+        "total_time_ms": 5000.95035399
+    },
+    "MaskDataBufferOperations": {
+        "mid_ms": 0.615238,
+        "avg_ms": 0.61744999,
+        "min_ms": 0.56863199,
+        "max_ms": 0.67836699,
+        "std_dev": 0.02444394,
+        "cv": 0.03958854,
+        "iterations": 479,
+        "total_time_ms": 5312.433937
+    },
+    "MaskErrorHandling": {
+        "mid_ms": 0.40877299,
+        "avg_ms": 0.41326171,
+        "min_ms": 0.40731999,
+        "max_ms": 0.419944,
+        "std_dev": 0.00507422,
+        "cv": 0.01227848,
+        "iterations": 500,
+        "total_time_ms": 5388.43055
+    },
+    "MaskMultipleReferences": {
+        "mid_ms": 0.12865999,
+        "avg_ms": 0.13053813,
+        "min_ms": 0.127638,
+        "max_ms": 0.13834899,
+        "std_dev": 0.00273168,
+        "cv": 0.02092631,
+        "iterations": 500,
+        "total_time_ms": 5244.115168
+    },
+    "MaskReferenceOperations": {
+        "mid_ms": 0.90440899,
+        "avg_ms": 0.90598925,
+        "min_ms": 0.902745,
+        "max_ms": 0.909148,
+        "std_dev": 0.00181581,
+        "cv": 0.00200423,
+        "iterations": 415,
+        "total_time_ms": 4730.310421
+    },
+    "MaskReusePerformance": {
+        "mid_ms": 0.251545,
+        "avg_ms": 0.25539405,
+        "min_ms": 0.250958,
+        "max_ms": 0.26192898,
+        "std_dev": 0.00416905,
+        "cv": 0.01632404,
+        "iterations": 500,
+        "total_time_ms": 5428.226524
+    },
+    "MaskStressTest": {
+        "mid_ms": 1.181146,
+        "avg_ms": 1.18652162,
+        "min_ms": 1.16236099,
+        "max_ms": 1.212785,
+        "std_dev": 0.01377458,
+        "cv": 0.01160921,
+        "iterations": 377,
+        "total_time_ms": 4454.67371799
+    }
+}

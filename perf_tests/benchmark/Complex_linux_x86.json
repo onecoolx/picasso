@@ -1,0 +1,62 @@
+{
+    "CirclesDrawing": {
+        "mid_ms": 2.43927999,
+        "avg_ms": 2.49460229,
+        "min_ms": 2.409269,
+        "max_ms": 2.58097999,
+        "std_dev": 0.06982235,
+        "cv": 0.02798937,
+        "iterations": 10,
+        "total_time_ms": 189.707554
+    },
+    "GradientShapes": {
+        "mid_ms": 3.54208399,
+        "avg_ms": 3.56760809,
+        "min_ms": 3.52926099,
+        "max_ms": 3.642092,
+        "std_dev": 0.03845332,
+        "cv": 0.01077846,
+        "iterations": 10,
+        "total_time_ms": 204.11457699
+    },
+    "ImagesWithClipping": {
+        "mid_ms": 5.16470449,
+        "avg_ms": 5.19954739,
+        "min_ms": 5.14310399,
+        "max_ms": 5.322339,
+        "std_dev": 0.0554104,
+        "cv": 0.01065677,
+        "iterations": 10,
+        "total_time_ms": 230.74709999
+    },
+    "RectanglesDrawing": {
+        "mid_ms": 1.15074349,
+        "avg_ms": 1.15899309,
+        "min_ms": 1.13904699,
+        "max_ms": 1.20665399,
+        "std_dev": 0.0208237,
+        "cv": 0.01796707,
+        "iterations": 10,
+        "total_time_ms": 166.711612
+    },
+    "ShapesWithStateManagement": {
+        "mid_ms": 2.7895995,
+        "avg_ms": 2.78070569,
+        "min_ms": 2.71134299,
+        "max_ms": 2.84781799,
+        "std_dev": 0.05265033,
+        "cv": 0.01893416,
+        "iterations": 10,
+        "total_time_ms": 192.869268
+    },
+    "StarPathsImageFill": {
+        "mid_ms": 12.2275735,
+        "avg_ms": 12.3715313,
+        "min_ms": 12.19330899,
+        "max_ms": 12.90974699,
+        "std_dev": 0.23468698,
+        "cv": 0.01896992,
+        "iterations": 10,
+        "total_time_ms": 337.69140399
+    }
+}

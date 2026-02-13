@@ -1,0 +1,132 @@
+{
+    "AllSpreadModes": {
+        "mid_ms": 4.61228898,
+        "avg_ms": 4.6434214,
+        "min_ms": 4.582093,
+        "max_ms": 4.75669899,
+        "std_dev": 0.04308514,
+        "cv": 0.00927874,
+        "iterations": 161,
+        "total_time_ms": 2635.346837
+    },
+    "ColorStopOperations": {
+        "mid_ms": 0.78714999,
+        "avg_ms": 0.8085107,
+        "min_ms": 0.776681,
+        "max_ms": 0.882537,
+        "std_dev": 0.02998091,
+        "cv": 0.03708165,
+        "iterations": 437,
+        "total_time_ms": 4977.51375699
+    },
+    "ComplexColorStops": {
+        "mid_ms": 1.91220099,
+        "avg_ms": 1.91214573,
+        "min_ms": 1.89901599,
+        "max_ms": 1.92490399,
+        "std_dev": 0.00659485,
+        "cv": 0.00344892,
+        "iterations": 292,
+        "total_time_ms": 3692.807657
+    },
+    "ConicGradientCreateDestroy": {
+        "mid_ms": 0.82704399,
+        "avg_ms": 0.87129687,
+        "min_ms": 0.81634499,
+        "max_ms": 1.009615,
+        "std_dev": 0.05768747,
+        "cv": 0.06620874,
+        "iterations": 424,
+        "total_time_ms": 4767.677422
+    },
+    "GradientErrorHandling": {
+        "mid_ms": 0.424312,
+        "avg_ms": 0.42506846,
+        "min_ms": 0.414534,
+        "max_ms": 0.434701,
+        "std_dev": 0.00410302,
+        "cv": 0.00965262,
+        "iterations": 500,
+        "total_time_ms": 5428.17257499
+    },
+    "GradientExtremeValues": {
+        "mid_ms": 1.79591899,
+        "avg_ms": 1.8013864,
+        "min_ms": 1.78643599,
+        "max_ms": 1.81367699,
+        "std_dev": 0.00756889,
+        "cv": 0.0042017,
+        "iterations": 302,
+        "total_time_ms": 3835.142566
+    },
+    "GradientReferenceOperations": {
+        "mid_ms": 0.843124,
+        "avg_ms": 0.84290967,
+        "min_ms": 0.83343599,
+        "max_ms": 0.845849,
+        "std_dev": 0.00227285,
+        "cv": 0.00269645,
+        "iterations": 426,
+        "total_time_ms": 4884.293259
+    },
+    "GradientReusePerformance": {
+        "mid_ms": 0.296063,
+        "avg_ms": 0.30121545,
+        "min_ms": 0.295171,
+        "max_ms": 0.308786,
+        "std_dev": 0.00520721,
+        "cv": 0.01728733,
+        "iterations": 500,
+        "total_time_ms": 5393.56804099
+    },
+    "GradientStressTest": {
+        "mid_ms": 1.289137,
+        "avg_ms": 1.29463756,
+        "min_ms": 1.262867,
+        "max_ms": 1.327398,
+        "std_dev": 0.01745196,
+        "cv": 0.01348019,
+        "iterations": 358,
+        "total_time_ms": 4324.299776
+    },
+    "GradientTransformOperations": {
+        "mid_ms": 0.37584699,
+        "avg_ms": 0.38014122,
+        "min_ms": 0.37485999,
+        "max_ms": 0.38600999,
+        "std_dev": 0.00477607,
+        "cv": 0.01256394,
+        "iterations": 500,
+        "total_time_ms": 5383.056655
+    },
+    "GradientTypeComparison": {
+        "mid_ms": 2.2769815,
+        "avg_ms": 2.2996727,
+        "min_ms": 2.261744,
+        "max_ms": 2.385845,
+        "std_dev": 0.03251852,
+        "cv": 0.0141405,
+        "iterations": 264,
+        "total_time_ms": 3464.829268
+    },
+    "LinearGradientCreateDestroy": {
+        "mid_ms": 1.25713749,
+        "avg_ms": 1.26098456,
+        "min_ms": 1.25384099,
+        "max_ms": 1.26705599,
+        "std_dev": 0.00450603,
+        "cv": 0.00357342,
+        "iterations": 362,
+        "total_time_ms": 4308.30829397
+    },
+    "RadialGradientCreateDestroy": {
+        "mid_ms": 0.90488,
+        "avg_ms": 0.93594388,
+        "min_ms": 0.875755,
+        "max_ms": 1.052917,
+        "std_dev": 0.05500731,
+        "cv": 0.05877201,
+        "iterations": 419,
+        "total_time_ms": 4858.571497
+    }
+}

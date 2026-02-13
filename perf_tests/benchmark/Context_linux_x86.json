@@ -1,0 +1,192 @@
+{
+    "ContextCanvasFormatOperations": {
+        "mid_ms": 1.22412099,
+        "avg_ms": 1.22885278,
+        "min_ms": 1.222432,
+        "max_ms": 1.234776,
+        "std_dev": 0.00451686,
+        "cv": 0.00367568,
+        "iterations": 366,
+        "total_time_ms": 4290.97389399
+    },
+    "ContextCanvasOperations": {
+        "mid_ms": 2.069675,
+        "avg_ms": 2.1047771,
+        "min_ms": 2.067461,
+        "max_ms": 2.08754799,
+        "std_dev": 0.03361262,
+        "cv": 0.01596968,
+        "iterations": 281,
+        "total_time_ms": 3709.40440999
+    },
+    "ContextCreateWithShared": {
+        "mid_ms": 2.119598,
+        "avg_ms": 2.17495245,
+        "min_ms": 2.112054,
+        "max_ms": 2.36522599,
+        "std_dev": 0.06772791,
+        "cv": 0.03113995,
+        "iterations": 275,
+        "total_time_ms": 3566.43235
+    },
+    "ContextErrorHandling": {
+        "mid_ms": 0.24099,
+        "avg_ms": 0.24466382,
+        "min_ms": 0.24067899,
+        "max_ms": 0.25153999,
+        "std_dev": 0.00439742,
+        "cv": 0.01797333,
+        "iterations": 500,
+        "total_time_ms": 5460.688318
+    },
+    "ContextMultipleCreate": {
+        "mid_ms": 3.051357,
+        "avg_ms": 3.12140748,
+        "min_ms": 3.03617899,
+        "max_ms": 3.386424,
+        "std_dev": 0.0835515,
+        "cv": 0.02676725,
+        "iterations": 219,
+        "total_time_ms": 3104.458875
+    },
+    "ContextMultipleReferences": {
+        "mid_ms": 0.31310949,
+        "avg_ms": 0.32037936,
+        "min_ms": 0.30720299,
+        "max_ms": 0.349243,
+        "std_dev": 0.01105918,
+        "cv": 0.03451901,
+        "iterations": 500,
+        "total_time_ms": 5325.476567
+    },
+    "ContextReferenceOperations": {
+        "mid_ms": 0.90511,
+        "avg_ms": 0.91188488,
+        "min_ms": 0.903497,
+        "max_ms": 0.94364199,
+        "std_dev": 0.00704655,
+        "cv": 0.00772746,
+        "iterations": 415,
+        "total_time_ms": 4700.45416598
+    },
+    "ContextSharedResourceChain": {
+        "mid_ms": 0.51893899,
+        "avg_ms": 0.51623301,
+        "min_ms": 0.508991,
+        "max_ms": 0.52203499,
+        "std_dev": 0.00529159,
+        "cv": 0.01025039,
+        "iterations": 495,
+        "total_time_ms": 5446.899206
+    },
+    "ContextStateOperations": {
+        "mid_ms": 1.963767,
+        "avg_ms": 1.96796022,
+        "min_ms": 1.961633,
+        "max_ms": 1.97773299,
+        "std_dev": 0.00462205,
+        "cv": 0.00234865,
+        "iterations": 286,
+        "total_time_ms": 3685.39491499
+    },
+    "ContextStressTest": {
+        "mid_ms": 1.84094799,
+        "avg_ms": 1.84891456,
+        "min_ms": 1.791005,
+        "max_ms": 1.913814,
+        "std_dev": 0.0297073,
+        "cv": 0.01606743,
+        "iterations": 290,
+        "total_time_ms": 3642.56186699
+    },
+    "ContextWithDataCanvas": {
+        "mid_ms": 1.3655555,
+        "avg_ms": 1.39901426,
+        "min_ms": 1.351654,
+        "max_ms": 1.530788,
+        "std_dev": 0.04398986,
+        "cv": 0.03144346,
+        "iterations": 348,
+        "total_time_ms": 4143.158286
+    },
+    "CoordinateConversionRoundTrip": {
+        "mid_ms": 0.35732799,
+        "avg_ms": 0.36184931,
+        "min_ms": 0.354833,
+        "max_ms": 0.36780699,
+        "std_dev": 0.00519387,
+        "cv": 0.01435371,
+        "iterations": 500,
+        "total_time_ms": 5455.20961
+    },
+    "CoordinateConversionWithTransform": {
+        "mid_ms": 0.357758,
+        "avg_ms": 0.36272543,
+        "min_ms": 0.356466,
+        "max_ms": 0.37039099,
+        "std_dev": 0.0051305,
+        "cv": 0.0141443,
+        "iterations": 500,
+        "total_time_ms": 5358.11348699
+    },
+    "GetMatrix": {
+        "mid_ms": 0.627712,
+        "avg_ms": 0.62593905,
+        "min_ms": 0.61762299,
+        "max_ms": 0.63062799,
+        "std_dev": 0.0053805,
+        "cv": 0.00859588,
+        "iterations": 469,
+        "total_time_ms": 5170.612112
+    },
+    "GetPath": {
+        "mid_ms": 0.117991,
+        "avg_ms": 0.11979418,
+        "min_ms": 0.11792999,
+        "max_ms": 0.12825898,
+        "std_dev": 0.00251408,
+        "cv": 0.02098672,
+        "iterations": 500,
+        "total_time_ms": 5262.99218899
+    },
+    "MatrixGetSetOperations": {
+        "mid_ms": 0.9366645,
+        "avg_ms": 0.93763566,
+        "min_ms": 0.93547699,
+        "max_ms": 0.93947499,
+        "std_dev": 0.00118165,
+        "cv": 0.00126024,
+        "iterations": 410,
+        "total_time_ms": 4742.19429499
+    },
+    "SetMatrix": {
+        "mid_ms": 0.612494,
+        "avg_ms": 0.61342931,
+        "min_ms": 0.602175,
+        "max_ms": 0.63301199,
+        "std_dev": 0.00633109,
+        "cv": 0.01032083,
+        "iterations": 473,
+        "total_time_ms": 5214.85226999
+    },
+    "ViewportToWorld": {
+        "mid_ms": 0.37458949,
+        "avg_ms": 0.37992055,
+        "min_ms": 0.37091199,
+        "max_ms": 0.391892,
+        "std_dev": 0.00682674,
+        "cv": 0.01796887,
+        "iterations": 500,
+        "total_time_ms": 5442.860826
+    },
+    "WorldToViewport": {
+        "mid_ms": 0.3618755,
+        "avg_ms": 0.36314852,
+        "min_ms": 0.35559399,
+        "max_ms": 0.371925,
+        "std_dev": 0.00549737,
+        "cv": 0.01513809,
+        "iterations": 500,
+        "total_time_ms": 5351.795167
+    }
+}

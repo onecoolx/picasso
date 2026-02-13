@@ -1,0 +1,252 @@
+{
+    "MatrixComposition": {
+        "mid_ms": 0.6893725,
+        "avg_ms": 0.6875641,
+        "min_ms": 0.679068,
+        "max_ms": 0.692023,
+        "std_dev": 0.00458689,
+        "cv": 0.00667122,
+        "iterations": 458,
+        "total_time_ms": 5175.06931
+    },
+    "MatrixCreateCopy": {
+        "mid_ms": 0.19215849,
+        "avg_ms": 0.19494038,
+        "min_ms": 0.191888,
+        "max_ms": 0.202238,
+        "std_dev": 0.00347169,
+        "cv": 0.01780901,
+        "iterations": 500,
+        "total_time_ms": 5322.64435699
+    },
+    "MatrixCreateDestroy": {
+        "mid_ms": 0.1923895,
+        "avg_ms": 0.19536008,
+        "min_ms": 0.19197799,
+        "max_ms": 0.20227799,
+        "std_dev": 0.00352729,
+        "cv": 0.01805536,
+        "iterations": 500,
+        "total_time_ms": 5375.25981199
+    },
+    "MatrixCreateInit": {
+        "mid_ms": 0.1958555,
+        "avg_ms": 0.19947552,
+        "min_ms": 0.19506399,
+        "max_ms": 0.205935,
+        "std_dev": 0.00400677,
+        "cv": 0.02008654,
+        "iterations": 500,
+        "total_time_ms": 5287.38224397
+    },
+    "MatrixDecomposition": {
+        "mid_ms": 0.72025499,
+        "avg_ms": 0.71888467,
+        "min_ms": 0.710005,
+        "max_ms": 0.722569,
+        "std_dev": 0.00411623,
+        "cv": 0.00572585,
+        "iterations": 450,
+        "total_time_ms": 4975.67606099
+    },
+    "MatrixFlip": {
+        "mid_ms": 2.40174099,
+        "avg_ms": 2.41605249,
+        "min_ms": 2.39299899,
+        "max_ms": 2.46302,
+        "std_dev": 0.02377127,
+        "cv": 0.00983888,
+        "iterations": 248,
+        "total_time_ms": 3280.87917499
+    },
+    "MatrixGetDeterminant": {
+        "mid_ms": 0.53442799,
+        "avg_ms": 0.53173947,
+        "min_ms": 0.52487099,
+        "max_ms": 0.53701299,
+        "std_dev": 0.00497827,
+        "cv": 0.00936224,
+        "iterations": 484,
+        "total_time_ms": 5241.425827
+    },
+    "MatrixGetScaleFactor": {
+        "mid_ms": 0.50338998,
+        "avg_ms": 0.5009458,
+        "min_ms": 0.493982,
+        "max_ms": 0.505845,
+        "std_dev": 0.00501242,
+        "cv": 0.01000592,
+        "iterations": 499,
+        "total_time_ms": 5464.24395199
+    },
+    "MatrixGetShearFactor": {
+        "mid_ms": 0.497278,
+        "avg_ms": 0.50111945,
+        "min_ms": 0.493992,
+        "max_ms": 0.50609499,
+        "std_dev": 0.00535299,
+        "cv": 0.01068207,
+        "iterations": 498,
+        "total_time_ms": 5525.29468499
+    },
+    "MatrixGetTranslateFactor": {
+        "mid_ms": 0.464087,
+        "avg_ms": 0.46922743,
+        "min_ms": 0.463124,
+        "max_ms": 0.47472699,
+        "std_dev": 0.00515289,
+        "cv": 0.01098165,
+        "iterations": 500,
+        "total_time_ms": 5521.890751
+    },
+    "MatrixInit": {
+        "mid_ms": 1.65290699,
+        "avg_ms": 1.65526613,
+        "min_ms": 1.64483199,
+        "max_ms": 1.65931899,
+        "std_dev": 0.00515221,
+        "cv": 0.00311262,
+        "iterations": 320,
+        "total_time_ms": 3968.67585099
+    },
+    "MatrixInvert": {
+        "mid_ms": 2.16739799,
+        "avg_ms": 2.17072352,
+        "min_ms": 2.16490399,
+        "max_ms": 2.17709599,
+        "std_dev": 0.00399194,
+        "cv": 0.00183899,
+        "iterations": 272,
+        "total_time_ms": 3560.44109899
+    },
+    "MatrixIsEqual": {
+        "mid_ms": 1.436062,
+        "avg_ms": 1.43717742,
+        "min_ms": 1.428718,
+        "max_ms": 1.44539899,
+        "std_dev": 0.00510531,
+        "cv": 0.00355232,
+        "iterations": 344,
+        "total_time_ms": 4243.728121
+    },
+    "MatrixIsIdentity": {
+        "mid_ms": 1.33924149,
+        "avg_ms": 1.34529157,
+        "min_ms": 1.33617599,
+        "max_ms": 1.355471,
+        "std_dev": 0.00606874,
+        "cv": 0.00451109,
+        "iterations": 344,
+        "total_time_ms": 4225.42767897
+    },
+    "MatrixMultiply": {
+        "mid_ms": 2.71254099,
+        "avg_ms": 2.72571071,
+        "min_ms": 2.70294799,
+        "max_ms": 2.77098499,
+        "std_dev": 0.01624267,
+        "cv": 0.00595906,
+        "iterations": 234,
+        "total_time_ms": 3182.94229099
+    },
+    "MatrixReferenceOperations": {
+        "mid_ms": 0.87392199,
+        "avg_ms": 0.87391403,
+        "min_ms": 0.864715,
+        "max_ms": 0.876597,
+        "std_dev": 0.00129762,
+        "cv": 0.00148484,
+        "iterations": 421,
+        "total_time_ms": 4849.89846999
+    },
+    "MatrixRotate": {
+        "mid_ms": 1.77759499,
+        "avg_ms": 1.78075508,
+        "min_ms": 1.769415,
+        "max_ms": 1.79359,
+        "std_dev": 0.00490539,
+        "cv": 0.00275467,
+        "iterations": 302,
+        "total_time_ms": 3770.84308999
+    },
+    "MatrixScale": {
+        "mid_ms": 1.3077775,
+        "avg_ms": 1.31207729,
+        "min_ms": 1.305849,
+        "max_ms": 1.32236,
+        "std_dev": 0.00467699,
+        "cv": 0.00356457,
+        "iterations": 360,
+        "total_time_ms": 4266.21230199
+    },
+    "MatrixSetScaleFactor": {
+        "mid_ms": 0.93630599,
+        "avg_ms": 0.93756617,
+        "min_ms": 0.935084,
+        "max_ms": 0.939582,
+        "std_dev": 0.00147462,
+        "cv": 0.00157281,
+        "iterations": 415,
+        "total_time_ms": 4728.97508898
+    },
+    "MatrixSetShearFactor": {
+        "mid_ms": 0.936444,
+        "avg_ms": 0.93761373,
+        "min_ms": 0.93523599,
+        "max_ms": 0.93951199,
+        "std_dev": 0.00134551,
+        "cv": 0.00143504,
+        "iterations": 410,
+        "total_time_ms": 4743.129951
+    },
+    "MatrixSetTranslateFactor": {
+        "mid_ms": 0.93642399,
+        "avg_ms": 0.93883362,
+        "min_ms": 0.935227,
+        "max_ms": 0.941989,
+        "std_dev": 0.00236768,
+        "cv": 0.00252194,
+        "iterations": 410,
+        "total_time_ms": 4703.27086799
+    },
+    "MatrixShear": {
+        "mid_ms": 1.31020699,
+        "avg_ms": 1.32461864,
+        "min_ms": 1.30639999,
+        "max_ms": 1.37089099,
+        "std_dev": 0.02083531,
+        "cv": 0.01572929,
+        "iterations": 356,
+        "total_time_ms": 4222.63630299
+    },
+    "MatrixTransformPoint": {
+        "mid_ms": 0.7206705,
+        "avg_ms": 0.72364382,
+        "min_ms": 0.71018599,
+        "max_ms": 0.73721699,
+        "std_dev": 0.00665646,
+        "cv": 0.00919853,
+        "iterations": 450,
+        "total_time_ms": 5005.93532599
+    },
+    "MatrixTransformRect": {
+        "mid_ms": 2.820376,
+        "avg_ms": 2.82412851,
+        "min_ms": 2.813314,
+        "max_ms": 2.838471,
+        "std_dev": 0.00553291,
+        "cv": 0.00195915,
+        "iterations": 231,
+        "total_time_ms": 3271.76724799
+    },
+    "MatrixTranslate": {
+        "mid_ms": 1.27698549,
+        "avg_ms": 1.28486012,
+        "min_ms": 1.27434999,
+        "max_ms": 1.30675099,
+        "std_dev": 0.00783767,
+        "cv": 0.00610002,
+        "iterations": 356,
+        "total_time_ms": 4347.195757
+    }
+}
