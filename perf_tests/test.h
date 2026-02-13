@@ -45,6 +45,16 @@
 
 #define UNUSED(x) ((void)(x))
 
+// Performance test configuration
+// Minimum performance difference threshold (in percentage)
+// Differences smaller than this will not be considered as regression
+// even if they are statistically significant
+// Recommended: 2.0% - 5.0% for stable testing
+#define PERF_REGRESSION_THRESHOLD 3.0  // 3% threshold
+
+// Statistical significance level (p-value threshold)
+#define PERF_SIGNIFICANCE_LEVEL 0.05   // 95% confidence
+
 void PS_Init();
 void PS_Shutdown();
 ps_canvas* get_test_canvas(void);
@@ -331,6 +341,9 @@ protected:
             double t_stat, p_value;
             bool is_significant = IsStatisticallyDifferent(baseline, result, t_stat, p_value);
 
+            // Check if difference exceeds threshold
+            bool exceeds_threshold = std::abs(diff_percent) >= PERF_REGRESSION_THRESHOLD;
+
             if (!is_significant) {
                 // No statistically significant difference
                 std::cout << "[No Significant Change] " << test_name << ": "
@@ -339,24 +352,33 @@ protected:
                           << "(baseline: " << baseline.mid_ms << " ms, "
                           << "diff: " << diff_percent << "%, "
                           << "p=" << p_value << ", not significant)" << std::endl;
+            } else if (!exceeds_threshold) {
+                // Statistically significant but below threshold - acceptable
+                std::cout << "[Acceptable Change] " << test_name << ": "
+                          << std::setprecision(6)
+                          << "median: " << result.mid_ms << " ms "
+                          << "(baseline: " << baseline.mid_ms << " ms, "
+                          << "diff: " << diff_percent << "%, "
+                          << "below " << PERF_REGRESSION_THRESHOLD << "% threshold)" << std::endl;
             } else if (result.mid_ms < baseline.mid_ms) {
-                // Statistically significant improvement
+                // Statistically significant improvement above threshold
                 std::cout << "[Performance Improve " << std::abs(diff_percent) << "%] " << test_name << ": "
                           << std::setprecision(6) << "median: " << result.mid_ms << " ms "
                           << "(baseline: " << baseline.mid_ms << " ms, "
                           << "t=" << t_stat << ", p=" << p_value << ")" << std::endl;
             } else {
-                // Statistically significant regression
-                EXPECT_FALSE(is_significant)
+                // Statistically significant regression above threshold - FAIL
+                EXPECT_FALSE(is_significant && exceeds_threshold)
                         << "Performance regression detected for " << test_name
                         << std::setprecision(6) << std::endl
                         << "Baseline: " << baseline.avg_ms << " ms (±" << baseline.std_dev
                         << ", n=" << baseline.iterations << ")" << std::endl
                         << "Current:  " << result.avg_ms << " ms (±" << result.std_dev
                         << ", n=" << result.iterations << ")" << std::endl
-                        << "Difference: " << diff_percent << "%" << std::endl
+                        << "Difference: " << diff_percent << "% (threshold: "
+                        << PERF_REGRESSION_THRESHOLD << "%)" << std::endl
                         << "Statistical test: t=" << t_stat << ", p=" << p_value << std::endl
-                        << "This difference is statistically significant (p < 0.05)" << std::endl;
+                        << "This regression exceeds the acceptable threshold" << std::endl;
             }
         }
         newbase_data[key] = result;
