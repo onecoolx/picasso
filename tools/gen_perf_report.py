@@ -340,6 +340,11 @@ HTML_TEMPLATE = """<!DOCTYPE html>
                 'change': 'Change %',
                 'baseline-avg': 'Baseline Avg (ms)',
                 'new-avg': 'New Avg (ms)',
+                'baseline-std': 'Baseline Std Dev',
+                'new-std': 'New Std Dev',
+                'baseline-cv': 'Baseline CV',
+                'new-cv': 'New CV',
+                'iterations': 'Iterations',
                 'baseline-min': 'Baseline Min (ms)',
                 'new-min': 'New Min (ms)',
 
@@ -426,6 +431,11 @@ HTML_TEMPLATE = """<!DOCTYPE html>
                 'change': '变化 %',
                 'baseline-avg': '基准平均值 (ms)',
                 'new-avg': '新平均值 (ms)',
+                'baseline-std': '基准标准差',
+                'new-std': '新标准差',
+                'baseline-cv': '基准变异系数',
+                'new-cv': '新变异系数',
+                'iterations': '迭代次数',
                 'baseline-min': '基准最小值 (ms)',
                 'new-min': '新最小值 (ms)',
 
@@ -521,8 +531,11 @@ HTML_TEMPLATE = """<!DOCTYPE html>
                 'change',
                 'baseline-avg',
                 'new-avg',
-                'baseline-min',
-                'new-min'
+                'baseline-std',
+                'new-std',
+                'baseline-cv',
+                'new-cv',
+                'iterations'
             ];
 
             thElements.forEach((th, index) => {
@@ -1188,7 +1201,7 @@ class PerformanceAnalyzer:
 
                     self.summary_stats['total_tests'] += 1
 
-                    # Collect comparison data
+                    # Collect comparison data with new fields
                     comparison = {
                         'benchmark_set': set_name,
                         'test_item': test_item,
@@ -1201,7 +1214,16 @@ class PerformanceAnalyzer:
                         'baseline_min_ms': baseline_metrics.get('min_ms', 0),
                         'new_min_ms': new_metrics.get('min_ms', 0),
                         'baseline_max_ms': baseline_metrics.get('max_ms', 0),
-                        'new_max_ms': new_metrics.get('max_ms', 0)
+                        'new_max_ms': new_metrics.get('max_ms', 0),
+                        # New fields from improved benchmark format
+                        'baseline_std_dev': baseline_metrics.get('std_dev', 0),
+                        'new_std_dev': new_metrics.get('std_dev', 0),
+                        'baseline_cv': baseline_metrics.get('cv', 0),
+                        'new_cv': new_metrics.get('cv', 0),
+                        'baseline_iterations': baseline_metrics.get('iterations', 0),
+                        'new_iterations': new_metrics.get('iterations', 0),
+                        'baseline_total_time_ms': baseline_metrics.get('total_time_ms', 0),
+                        'new_total_time_ms': new_metrics.get('total_time_ms', 0)
                     }
 
                     self.comparison_data.append(comparison)
@@ -1303,6 +1325,15 @@ class PerformanceAnalyzer:
             change_icon = "fa-arrow-up" if data['change_percent'] < -self.tolerance else ("fa-arrow-down" if data['change_percent'] > self.tolerance else "")
             change_sign = "+" if data['change_percent'] < 0 else ""
 
+            # Format CV as percentage
+            baseline_cv_pct = data.get('baseline_cv', 0) * 100
+            new_cv_pct = data.get('new_cv', 0) * 100
+
+            # Format iterations
+            baseline_iter = data.get('baseline_iterations', 0)
+            new_iter = data.get('new_iterations', 0)
+            iter_display = f"{baseline_iter} → {new_iter}" if baseline_iter != new_iter else str(new_iter)
+
             row = f"""
             <tr>
                 <td class="benchmark-set">{data['benchmark_set']}</td>
@@ -1316,8 +1347,11 @@ class PerformanceAnalyzer:
                 </td>
                 <td class="metric-value">{data['baseline_avg_ms']:.6f}</td>
                 <td class="metric-value">{data['new_avg_ms']:.6f}</td>
-                <td class="metric-value">{data['new_max_ms']:.6f}</td>
-                <td class="metric-value">{data['new_min_ms']:.6f}</td>
+                <td class="metric-value">{data.get('baseline_std_dev', 0):.6f}</td>
+                <td class="metric-value">{data.get('new_std_dev', 0):.6f}</td>
+                <td class="metric-value">{baseline_cv_pct:.2f}%</td>
+                <td class="metric-value">{new_cv_pct:.2f}%</td>
+                <td class="metric-value">{iter_display}</td>
             </tr>
             """
             rows.append(row)
@@ -1335,8 +1369,11 @@ class PerformanceAnalyzer:
                             <th data-translate-key="change">Change %</th>
                             <th data-translate-key="baseline-avg">Baseline Avg (ms)</th>
                             <th data-translate-key="new-avg">New Avg (ms)</th>
-                            <th data-translate-key="new-max">New Max (ms)</th>
-                            <th data-translate-key="new-min">New Min (ms)</th>
+                            <th data-translate-key="baseline-std">Baseline Std Dev</th>
+                            <th data-translate-key="new-std">New Std Dev</th>
+                            <th data-translate-key="baseline-cv">Baseline CV</th>
+                            <th data-translate-key="new-cv">New CV</th>
+                            <th data-translate-key="iterations">Iterations</th>
                         </tr>
                     </thead>
                     <tbody>

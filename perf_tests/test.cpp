@@ -47,24 +47,142 @@ static ps_canvas* test_canvas = NULL;
 
 static void set_process_priority(void);
 static void set_cpu_affinity(void);
+static size_t get_cache_size(void);
 
-volatile int64_t tmp = 0;
-#define DATA_CACHE_MAX 4194304 // 16MB
-static int32_t dummy[DATA_CACHE_MAX];
+// Improved cache clearing mechanism
+static size_t cache_flush_size = 0;
+static volatile char* cache_flush_buffer = NULL;
+
+// Get L3 cache size (or total cache size)
+static size_t get_cache_size(void)
+{
+#ifdef WIN32
+    // Windows: use GetLogicalProcessorInformation
+    DWORD buffer_size = 0;
+    GetLogicalProcessorInformation(NULL, &buffer_size);
+
+    SYSTEM_LOGICAL_PROCESSOR_INFORMATION* buffer =
+        (SYSTEM_LOGICAL_PROCESSOR_INFORMATION*)malloc(buffer_size);
+
+    if (buffer && GetLogicalProcessorInformation(buffer, &buffer_size)) {
+        DWORD count = buffer_size / sizeof(SYSTEM_LOGICAL_PROCESSOR_INFORMATION);
+        size_t cache_size = 0;
+
+        for (DWORD i = 0; i < count; i++) {
+            if (buffer[i].Relationship == RelationCache) {
+                CACHE_DESCRIPTOR* cache = &buffer[i].Cache;
+                // Get L3 cache (or largest cache)
+                if (cache->Level == 3 || cache->Level == 2) {
+                    if (cache->Size > cache_size) {
+                        cache_size = cache->Size;
+                    }
+                }
+            }
+        }
+        free(buffer);
+
+        if (cache_size > 0) {
+            return cache_size;
+        }
+    }
+
+    // Fallback: assume 8MB cache
+    return 8 * 1024 * 1024;
+#else
+    // Linux: try to read from sysfs
+    FILE* fp = fopen("/sys/devices/system/cpu/cpu0/cache/index3/size", "r");
+    if (fp) {
+        char buffer[64];
+        if (fgets(buffer, sizeof(buffer), fp)) {
+            size_t size = 0;
+            char unit = 'K';
+            if (sscanf(buffer, "%zuK", &size) == 1 ||
+                sscanf(buffer, "%zu%c", &size, &unit) == 2) {
+                fclose(fp);
+                if (unit == 'M' || unit == 'm') {
+                    return size * 1024 * 1024;
+                } else if (unit == 'K' || unit == 'k') {
+                    return size * 1024;
+                }
+                return size * 1024; // Default to KB
+            }
+        }
+        fclose(fp);
+    }
+
+    // Try L2 cache if L3 not available
+    fp = fopen("/sys/devices/system/cpu/cpu0/cache/index2/size", "r");
+    if (fp) {
+        char buffer[64];
+        if (fgets(buffer, sizeof(buffer), fp)) {
+            size_t size = 0;
+            char unit = 'K';
+            if (sscanf(buffer, "%zuK", &size) == 1 ||
+                sscanf(buffer, "%zu%c", &size, &unit) == 2) {
+                fclose(fp);
+                if (unit == 'M' || unit == 'm') {
+                    return size * 1024 * 1024;
+                } else if (unit == 'K' || unit == 'k') {
+                    return size * 1024;
+                }
+                return size * 1024;
+            }
+        }
+        fclose(fp);
+    }
+
+    // Fallback: assume 8MB cache
+    return 8 * 1024 * 1024;
+#endif
+}
+
 void clear_dcache(void)
 {
-    int64_t sum = 0;
-    for (int32_t i = 0; i < DATA_CACHE_MAX; i++) {
-        dummy[i] = 0x02;
-    }
-    for (int32_t i = 0; i < DATA_CACHE_MAX; i++) {
-        sum += dummy[i];
+    // Initialize cache flush buffer on first call
+    if (cache_flush_buffer == NULL) {
+        size_t detected_cache_size = get_cache_size();
+        // Use 3x cache size to ensure complete flush
+        cache_flush_size = detected_cache_size * 3;
+
+        std::cout << "[Cache Info] Detected cache size: "
+                  << (detected_cache_size / 1024) << " KB, "
+                  << "using flush buffer: " << (cache_flush_size / 1024 / 1024) << " MB"
+                  << std::endl;
+
+        cache_flush_buffer = (volatile char*)malloc(cache_flush_size);
+        if (!cache_flush_buffer) {
+            std::cerr << "[Cache Warning] Failed to allocate cache flush buffer, "
+                      << "using smaller size" << std::endl;
+            cache_flush_size = 16 * 1024 * 1024; // Fallback to 16MB
+            cache_flush_buffer = (volatile char*)malloc(cache_flush_size);
+        }
     }
 
-    tmp = sum;
-#if __GNUC__
-    asm volatile("" : : "r"(dummy) : "memory");
+    if (cache_flush_buffer) {
+        // Write to buffer to flush cache
+        for (size_t i = 0; i < cache_flush_size; i += 64) {
+            cache_flush_buffer[i] = (char)(i & 0xFF);
+        }
+
+        // Read from buffer to ensure writes complete
+        volatile char sum = 0;
+        for (size_t i = 0; i < cache_flush_size; i += 64) {
+            sum += cache_flush_buffer[i];
+        }
+
+        // Memory barrier to prevent compiler optimization
+#if defined(__GNUC__) || defined(__clang__)
+        __asm__ __volatile__("" ::: "memory");
+#elif defined(_MSC_VER)
+        _ReadWriteBarrier();
 #endif
+
+        // Prevent optimization of sum
+        if (sum == 0) {
+            // This branch will never be taken, but prevents optimization
+            cache_flush_buffer[0] = 1;
+        }
+    }
 }
 
 static void set_process_priority(void)
@@ -118,6 +236,14 @@ void PS_Shutdown()
         free(test_buffer);
         test_buffer = NULL;
     }
+
+    // Free cache flush buffer
+    if (cache_flush_buffer) {
+        free((void*)cache_flush_buffer);
+        cache_flush_buffer = NULL;
+        cache_flush_size = 0;
+    }
+
     printf("picasso shutdown\n");
     ps_shutdown();
 }
@@ -204,6 +330,36 @@ bool PerformanceTest::LoadBaseline(const std::string& file_name, BenchmarkData& 
             valid = false;
         }
 
+        // Optional fields (for backward compatibility)
+        cJSON* iterations_obj = cJSON_GetObjectItemCaseSensitive(current, "iterations");
+        if (cJSON_IsNumber(iterations_obj)) {
+            result.iterations = iterations_obj->valueint;
+        } else {
+            result.iterations = 200; // Default value for old baseline data
+        }
+
+        cJSON* total_time_obj = cJSON_GetObjectItemCaseSensitive(current, "total_time_ms");
+        if (cJSON_IsNumber(total_time_obj)) {
+            result.total_time_ms = total_time_obj->valuedouble;
+        } else {
+            result.total_time_ms = 0.0; // Unknown for old data
+        }
+
+        cJSON* std_dev_obj = cJSON_GetObjectItemCaseSensitive(current, "std_dev");
+        if (cJSON_IsNumber(std_dev_obj)) {
+            result.std_dev = std_dev_obj->valuedouble;
+        } else {
+            // Estimate std_dev from range (assuming normal distribution)
+            result.std_dev = (result.max_ms - result.min_ms) / 6.0;
+        }
+
+        cJSON* cv_obj = cJSON_GetObjectItemCaseSensitive(current, "cv");
+        if (cJSON_IsNumber(cv_obj)) {
+            result.cv = cv_obj->valuedouble;
+        } else {
+            result.cv = result.std_dev / result.avg_ms;
+        }
+
         if (valid) {
             data[key] = result;
         }
@@ -242,6 +398,10 @@ void PerformanceTest::SaveBaseline(const std::string& file_name)
         cJSON_AddNumberToObject(result_obj, "avg_ms", truncat8(result.avg_ms));
         cJSON_AddNumberToObject(result_obj, "min_ms", truncat8(result.min_ms));
         cJSON_AddNumberToObject(result_obj, "max_ms", truncat8(result.max_ms));
+        cJSON_AddNumberToObject(result_obj, "std_dev", truncat8(result.std_dev));
+        cJSON_AddNumberToObject(result_obj, "cv", truncat8(result.cv));
+        cJSON_AddNumberToObject(result_obj, "iterations", result.iterations);
+        cJSON_AddNumberToObject(result_obj, "total_time_ms", truncat8(result.total_time_ms));
 
         cJSON_AddItemToObject(root, key.c_str(), result_obj);
     }
