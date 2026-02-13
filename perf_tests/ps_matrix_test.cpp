@@ -151,3 +151,272 @@ PERF_TEST_RUN(Matrix, MatrixFlip)
     CompareToBenchmark(Matrix_MatrixFlip, result);
     ps_matrix_unref(matrix);
 }
+
+// Test 10: Matrix initialization
+PERF_TEST_RUN(Matrix, MatrixInit)
+{
+    ps_matrix* matrix = ps_matrix_create();
+
+    auto result = RunBenchmark(Matrix_MatrixInit, [&]() {
+        for (int i = 0; i < 100000; i++) {
+            ps_matrix_init(matrix, 2.0f, 0.5f, 0.3f, 1.5f, 100.0f, 200.0f);
+            ps_matrix_init(matrix, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f);
+        }
+    });
+
+    CompareToBenchmark(Matrix_MatrixInit, result);
+    ps_matrix_unref(matrix);
+}
+
+// Test 11: Matrix multiplication
+PERF_TEST_RUN(Matrix, MatrixMultiply)
+{
+    ps_matrix* m1 = ps_matrix_create_init(2.0f, 0.5f, 0.3f, 1.5f, 100.0f, 200.0f);
+    ps_matrix* m2 = ps_matrix_create_init(1.5f, 0.2f, 0.4f, 2.0f, 50.0f, 100.0f);
+    ps_matrix* result = ps_matrix_create();
+
+    auto bench_result = RunBenchmark(Matrix_MatrixMultiply, [&]() {
+        for (int i = 0; i < 100000; i++) {
+            ps_matrix_multiply(result, m1, m2);
+            ps_matrix_multiply(result, m2, m1);
+        }
+    });
+
+    CompareToBenchmark(Matrix_MatrixMultiply, bench_result);
+    ps_matrix_unref(result);
+    ps_matrix_unref(m1);
+    ps_matrix_unref(m2);
+}
+
+// Test 12: Matrix identity check
+PERF_TEST_RUN(Matrix, MatrixIsIdentity)
+{
+    ps_matrix* identity = ps_matrix_create();
+    ps_matrix* non_identity = ps_matrix_create_init(2.0f, 0.5f, 0.3f, 1.5f, 100.0f, 200.0f);
+
+    auto result = RunBenchmark(Matrix_MatrixIsIdentity, [&]() {
+        for (int i = 0; i < 100000; i++) {
+            ps_matrix_is_identity(identity);
+            ps_matrix_is_identity(non_identity);
+        }
+    });
+
+    CompareToBenchmark(Matrix_MatrixIsIdentity, result);
+    ps_matrix_unref(identity);
+    ps_matrix_unref(non_identity);
+}
+
+// Test 13: Matrix equality check
+PERF_TEST_RUN(Matrix, MatrixIsEqual)
+{
+    ps_matrix* m1 = ps_matrix_create_init(2.0f, 0.5f, 0.3f, 1.5f, 100.0f, 200.0f);
+    ps_matrix* m2 = ps_matrix_create_copy(m1);
+    ps_matrix* m3 = ps_matrix_create_init(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f);
+
+    auto result = RunBenchmark(Matrix_MatrixIsEqual, [&]() {
+        for (int i = 0; i < 100000; i++) {
+            ps_matrix_is_equal(m1, m2);
+            ps_matrix_is_equal(m1, m3);
+        }
+    });
+
+    CompareToBenchmark(Matrix_MatrixIsEqual, result);
+    ps_matrix_unref(m1);
+    ps_matrix_unref(m2);
+    ps_matrix_unref(m3);
+}
+
+// Test 14: Get determinant
+PERF_TEST_RUN(Matrix, MatrixGetDeterminant)
+{
+    ps_matrix* matrix = ps_matrix_create_init(2.0f, 0.5f, 0.3f, 1.5f, 100.0f, 200.0f);
+
+    auto result = RunBenchmark(Matrix_MatrixGetDeterminant, [&]() {
+        for (int i = 0; i < 100000; i++) {
+            float det = ps_matrix_get_determinant(matrix);
+            UNUSED(det);
+        }
+    });
+
+    CompareToBenchmark(Matrix_MatrixGetDeterminant, result);
+    ps_matrix_unref(matrix);
+}
+
+// Test 15: Get scale factor
+PERF_TEST_RUN(Matrix, MatrixGetScaleFactor)
+{
+    ps_matrix* matrix = ps_matrix_create_init(2.0f, 0.5f, 0.3f, 1.5f, 100.0f, 200.0f);
+
+    auto result = RunBenchmark(Matrix_MatrixGetScaleFactor, [&]() {
+        for (int i = 0; i < 100000; i++) {
+            float sx, sy;
+            ps_matrix_get_scale_factor(matrix, &sx, &sy);
+        }
+    });
+
+    CompareToBenchmark(Matrix_MatrixGetScaleFactor, result);
+    ps_matrix_unref(matrix);
+}
+
+// Test 16: Set scale factor
+PERF_TEST_RUN(Matrix, MatrixSetScaleFactor)
+{
+    ps_matrix* matrix = ps_matrix_create();
+
+    auto result = RunBenchmark(Matrix_MatrixSetScaleFactor, [&]() {
+        for (int i = 0; i < 100000; i++) {
+            ps_matrix_set_scale_factor(matrix, 2.0f, 1.5f);
+            ps_matrix_set_scale_factor(matrix, 1.0f, 1.0f);
+        }
+    });
+
+    CompareToBenchmark(Matrix_MatrixSetScaleFactor, result);
+    ps_matrix_unref(matrix);
+}
+
+// Test 17: Get shear factor
+PERF_TEST_RUN(Matrix, MatrixGetShearFactor)
+{
+    ps_matrix* matrix = ps_matrix_create_init(2.0f, 0.5f, 0.3f, 1.5f, 100.0f, 200.0f);
+
+    auto result = RunBenchmark(Matrix_MatrixGetShearFactor, [&]() {
+        for (int i = 0; i < 100000; i++) {
+            float shx, shy;
+            ps_matrix_get_shear_factor(matrix, &shx, &shy);
+        }
+    });
+
+    CompareToBenchmark(Matrix_MatrixGetShearFactor, result);
+    ps_matrix_unref(matrix);
+}
+
+// Test 18: Set shear factor
+PERF_TEST_RUN(Matrix, MatrixSetShearFactor)
+{
+    ps_matrix* matrix = ps_matrix_create();
+
+    auto result = RunBenchmark(Matrix_MatrixSetShearFactor, [&]() {
+        for (int i = 0; i < 100000; i++) {
+            ps_matrix_set_shear_factor(matrix, 0.2f, 0.3f);
+            ps_matrix_set_shear_factor(matrix, 0.0f, 0.0f);
+        }
+    });
+
+    CompareToBenchmark(Matrix_MatrixSetShearFactor, result);
+    ps_matrix_unref(matrix);
+}
+
+// Test 19: Get translate factor
+PERF_TEST_RUN(Matrix, MatrixGetTranslateFactor)
+{
+    ps_matrix* matrix = ps_matrix_create_init(2.0f, 0.5f, 0.3f, 1.5f, 100.0f, 200.0f);
+
+    auto result = RunBenchmark(Matrix_MatrixGetTranslateFactor, [&]() {
+        for (int i = 0; i < 100000; i++) {
+            float tx, ty;
+            ps_matrix_get_translate_factor(matrix, &tx, &ty);
+        }
+    });
+
+    CompareToBenchmark(Matrix_MatrixGetTranslateFactor, result);
+    ps_matrix_unref(matrix);
+}
+
+// Test 20: Set translate factor
+PERF_TEST_RUN(Matrix, MatrixSetTranslateFactor)
+{
+    ps_matrix* matrix = ps_matrix_create();
+
+    auto result = RunBenchmark(Matrix_MatrixSetTranslateFactor, [&]() {
+        for (int i = 0; i < 100000; i++) {
+            ps_matrix_set_translate_factor(matrix, 100.0f, 200.0f);
+            ps_matrix_set_translate_factor(matrix, 0.0f, 0.0f);
+        }
+    });
+
+    CompareToBenchmark(Matrix_MatrixSetTranslateFactor, result);
+    ps_matrix_unref(matrix);
+}
+
+// Test 21: Transform point
+PERF_TEST_RUN(Matrix, MatrixTransformPoint)
+{
+    ps_matrix* matrix = ps_matrix_create_init(2.0f, 0.5f, 0.3f, 1.5f, 100.0f, 200.0f);
+
+    auto result = RunBenchmark(Matrix_MatrixTransformPoint, [&]() {
+        for (int i = 0; i < 100000; i++) {
+            ps_point pt = {i * 0.1f, i * 0.1f};
+            ps_matrix_transform_point(matrix, &pt);
+        }
+    });
+
+    CompareToBenchmark(Matrix_MatrixTransformPoint, result);
+    ps_matrix_unref(matrix);
+}
+
+// Test 22: Transform rectangle
+PERF_TEST_RUN(Matrix, MatrixTransformRect)
+{
+    ps_matrix* matrix = ps_matrix_create_init(2.0f, 0.5f, 0.3f, 1.5f, 100.0f, 200.0f);
+
+    auto result = RunBenchmark(Matrix_MatrixTransformRect, [&]() {
+        for (int i = 0; i < 100000; i++) {
+            ps_rect rect = {i * 0.1f, i * 0.1f, 100, 80};
+            ps_matrix_transform_rect(matrix, &rect);
+        }
+    });
+
+    CompareToBenchmark(Matrix_MatrixTransformRect, result);
+    ps_matrix_unref(matrix);
+}
+
+// Test 23: Matrix reference counting
+PERF_TEST_RUN(Matrix, MatrixReferenceOperations)
+{
+    ps_matrix* matrix = ps_matrix_create();
+
+    auto result = RunBenchmark(Matrix_MatrixReferenceOperations, [&]() {
+        for (int i = 0; i < 100000; i++) {
+            ps_matrix_ref(matrix);
+            ps_matrix_unref(matrix);
+        }
+    });
+
+    CompareToBenchmark(Matrix_MatrixReferenceOperations, result);
+    ps_matrix_unref(matrix);
+}
+
+// Test 24: Matrix decomposition (get all factors)
+PERF_TEST_RUN(Matrix, MatrixDecomposition)
+{
+    ps_matrix* matrix = ps_matrix_create_init(2.0f, 0.5f, 0.3f, 1.5f, 100.0f, 200.0f);
+
+    auto result = RunBenchmark(Matrix_MatrixDecomposition, [&]() {
+        for (int i = 0; i < 50000; i++) {
+            float sx, sy, shx, shy, tx, ty;
+            ps_matrix_get_scale_factor(matrix, &sx, &sy);
+            ps_matrix_get_shear_factor(matrix, &shx, &shy);
+            ps_matrix_get_translate_factor(matrix, &tx, &ty);
+        }
+    });
+
+    CompareToBenchmark(Matrix_MatrixDecomposition, result);
+    ps_matrix_unref(matrix);
+}
+
+// Test 25: Matrix composition (set all factors)
+PERF_TEST_RUN(Matrix, MatrixComposition)
+{
+    ps_matrix* matrix = ps_matrix_create();
+
+    auto result = RunBenchmark(Matrix_MatrixComposition, [&]() {
+        for (int i = 0; i < 50000; i++) {
+            ps_matrix_set_scale_factor(matrix, 2.0f, 1.5f);
+            ps_matrix_set_shear_factor(matrix, 0.2f, 0.3f);
+            ps_matrix_set_translate_factor(matrix, 100.0f, 200.0f);
+        }
+    });
+
+    CompareToBenchmark(Matrix_MatrixComposition, result);
+    ps_matrix_unref(matrix);
+}
