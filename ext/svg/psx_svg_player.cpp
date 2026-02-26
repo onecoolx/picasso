@@ -258,7 +258,7 @@ static INLINE ps_bool _anim_eval_simple(const psx_svg_anim_item* it, float doc_t
         local = _anim_fmod(local, it->dur_sec);
     } else {
         float total = it->dur_sec * (float)it->repeat_count;
-        if (local > total) {
+        if (local >= total) {
             if (it->fill_mode == SVG_ANIMATION_FREEZE) {
                 *out_hold = True;
                 local = it->dur_sec;
@@ -327,6 +327,17 @@ static INLINE ps_bool _anim_eval_set(const psx_svg_anim_item* it, float doc_t, f
     // Active during [0, dur].
     if (local > it->dur_sec) {
         return False;
+    }
+
+    // If fill=freeze, keep value visible at (and after) the end instant.
+    // This matters when local == dur (e.g. t == begin+dur).
+    if (local == it->dur_sec) {
+        if (it->fill_mode == SVG_ANIMATION_FREEZE) {
+            *out_hold = True;
+        } else if (it->fill_mode == SVG_ANIMATION_REMOVE) {
+            // end instant is not active for remove
+            return False;
+        }
     }
 
     const psx_svg_attr* ato = _find_attr(it->anim_node, SVG_ATTR_TO);
@@ -637,7 +648,7 @@ extern "C" {
             if (!(it->tag == SVG_TAG_ANIMATE || it->tag == SVG_TAG_SET)) {
                 continue;
             }
-            if (!(it->target_attr == SVG_ATTR_X || it->target_attr == SVG_ATTR_Y || it->target_attr == SVG_ATTR_WIDTH || it->target_attr == SVG_ATTR_HEIGHT || it->target_attr == SVG_ATTR_OPACITY)) {
+            if (!(it->target_attr == SVG_ATTR_X || it->target_attr == SVG_ATTR_Y || it->target_attr == SVG_ATTR_WIDTH || it->target_attr == SVG_ATTR_HEIGHT || it->target_attr == SVG_ATTR_OPACITY || it->target_attr == SVG_ATTR_RX || it->target_attr == SVG_ATTR_RY || it->target_attr == SVG_ATTR_STROKE_WIDTH || it->target_attr == SVG_ATTR_FILL_OPACITY || it->target_attr == SVG_ATTR_GRADIENT_STOP_OPACITY)) {
                 continue;
             }
 
@@ -693,7 +704,7 @@ extern "C" {
                 continue;
             }
             // start minimal: numeric attributes only
-            if (!(it->target_attr == SVG_ATTR_X || it->target_attr == SVG_ATTR_Y || it->target_attr == SVG_ATTR_WIDTH || it->target_attr == SVG_ATTR_HEIGHT || it->target_attr == SVG_ATTR_OPACITY)) {
+            if (!(it->target_attr == SVG_ATTR_X || it->target_attr == SVG_ATTR_Y || it->target_attr == SVG_ATTR_WIDTH || it->target_attr == SVG_ATTR_HEIGHT || it->target_attr == SVG_ATTR_OPACITY || it->target_attr == SVG_ATTR_RX || it->target_attr == SVG_ATTR_RY || it->target_attr == SVG_ATTR_STROKE_WIDTH || it->target_attr == SVG_ATTR_FILL_OPACITY || it->target_attr == SVG_ATTR_GRADIENT_STOP_OPACITY)) {
                 continue;
             }
 

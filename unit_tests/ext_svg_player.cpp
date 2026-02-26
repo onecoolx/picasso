@@ -153,8 +153,23 @@ TEST_F(SVGPlayerTest, AnimateRectX_FromTo)
         EXPECT_NEAR(v, 15.0f, 0.001f);
     }
 
-    // Note: current minimal eval only freezes after the computed total
-    // time (local > total), so we do not assert end-state here.
+    // t=2s end instant: freeze should hold end value
+    psx_svg_player_seek(p, 2.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float v = 0;
+        ASSERT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+        EXPECT_NEAR(v, 20.0f, 0.001f);
+    }
+
+    // after end instant: freeze should still hold end value
+    psx_svg_player_seek(p, 2.5f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float v = 0;
+        ASSERT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+        EXPECT_NEAR(v, 20.0f, 0.001f);
+    }
 
     psx_svg_player_destroy(p);
 }
@@ -189,6 +204,13 @@ TEST_F(SVGPlayerTest, SetRectX_To)
         float v = 0;
         ASSERT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
         EXPECT_NEAR(v, 30.0f, 0.001f);
+    }
+
+    // end instant for fill=remove: not active
+    psx_svg_player_seek(p, 2.0f);
+    {
+        float v = 0;
+        EXPECT_FALSE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
     }
 
     // after end with fill=remove
@@ -265,6 +287,131 @@ TEST_F(SVGPlayerTest, AnimateRectOpacity_FromTo)
     {
         float v = 0;
         ASSERT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_OPACITY, &v));
+        EXPECT_NEAR(v, 0.5f, 0.001f);
+    }
+
+    psx_svg_player_destroy(p);
+}
+
+TEST_F(SVGPlayerTest, SetRectRx_To)
+{
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" rx=\"1\" fill=\"#000\">"
+        "    <set attributeName=\"rx\" to=\"5\" begin=\"1s\" dur=\"1s\" fill=\"remove\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_player* p = psx_svg_player_create_from_data(svg, (uint32_t)strlen(svg), NULL, &r);
+    ASSERT_NE((psx_svg_player*)NULL, p);
+    EXPECT_EQ(S_OK, r);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    ASSERT_TRUE(n != NULL);
+
+    psx_svg_player_seek(p, 0.5f);
+    {
+        float v = 0;
+        EXPECT_FALSE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_RX, &v));
+    }
+
+    psx_svg_player_seek(p, 1.5f);
+    {
+        float v = 0;
+        ASSERT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_RX, &v));
+        EXPECT_NEAR(v, 5.0f, 0.001f);
+    }
+
+    psx_svg_player_seek(p, 2.5f);
+    {
+        float v = 0;
+        EXPECT_FALSE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_RX, &v));
+    }
+
+    psx_svg_player_destroy(p);
+}
+
+TEST_F(SVGPlayerTest, AnimateRectStrokeWidth_FromTo)
+{
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"none\" stroke=\"#000\" stroke-width=\"1\">"
+        "    <animate attributeName=\"stroke-width\" from=\"1\" to=\"3\" dur=\"2s\" fill=\"freeze\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_player* p = psx_svg_player_create_from_data(svg, (uint32_t)strlen(svg), NULL, &r);
+    ASSERT_NE((psx_svg_player*)NULL, p);
+    EXPECT_EQ(S_OK, r);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    ASSERT_TRUE(n != NULL);
+
+    psx_svg_player_seek(p, 1.0f);
+    {
+        float v = 0;
+        ASSERT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_STROKE_WIDTH, &v));
+        EXPECT_NEAR(v, 2.0f, 0.001f);
+    }
+
+    psx_svg_player_destroy(p);
+}
+
+TEST_F(SVGPlayerTest, AnimateRectFillOpacity_FromTo)
+{
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\" fill-opacity=\"0\">"
+        "    <animate attributeName=\"fill-opacity\" from=\"0\" to=\"1\" dur=\"2s\" fill=\"freeze\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_player* p = psx_svg_player_create_from_data(svg, (uint32_t)strlen(svg), NULL, &r);
+    ASSERT_NE((psx_svg_player*)NULL, p);
+    EXPECT_EQ(S_OK, r);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    ASSERT_TRUE(n != NULL);
+
+    psx_svg_player_seek(p, 1.0f);
+    {
+        float v = 0;
+        ASSERT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_FILL_OPACITY, &v));
+        EXPECT_NEAR(v, 0.5f, 0.001f);
+    }
+
+    psx_svg_player_destroy(p);
+}
+
+TEST_F(SVGPlayerTest, AnimateGradientStopOpacity_FromTo)
+{
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <defs>"
+        "    <linearGradient id=\"g\">"
+        "      <stop id=\"s\" offset=\"0\" stop-color=\"#000\" stop-opacity=\"0\">"
+        "        <animate attributeName=\"stop-opacity\" from=\"0\" to=\"1\" dur=\"2s\" fill=\"freeze\"/>"
+        "      </stop>"
+        "    </linearGradient>"
+        "  </defs>"
+        "  <rect x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"url(#g)\"/>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_player* p = psx_svg_player_create_from_data(svg, (uint32_t)strlen(svg), NULL, &r);
+    ASSERT_NE((psx_svg_player*)NULL, p);
+    EXPECT_EQ(S_OK, r);
+
+    const psx_svg_node* stop = psx_svg_player_get_node_by_id(p, "s");
+    ASSERT_TRUE(stop != NULL);
+
+    psx_svg_player_seek(p, 1.0f);
+    {
+        float v = 0;
+        ASSERT_TRUE(psx_svg_player_debug_get_float_override(p, stop, SVG_ATTR_GRADIENT_STOP_OPACITY, &v));
         EXPECT_NEAR(v, 0.5f, 0.001f);
     }
 
