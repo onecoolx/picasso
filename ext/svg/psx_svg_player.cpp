@@ -225,6 +225,31 @@ static INLINE float _attr_as_time_sec(const psx_svg_attr* a)
     return a->value.fval;
 }
 
+static INLINE float _attr_as_begin_time_sec(const psx_svg_attr* a)
+{
+    if (!a) {
+        return 0.0f;
+    }
+    // If begin is stored as a list (VALUE_PTR), prefer the earliest begin time.
+    // Note: for non-<set>, begin/end are parsed into a list of ms (see _animation_begin_end_cb).
+    if (a->val_type == SVG_ATTR_VALUE_PTR && a->value.val) {
+        const psx_svg_attr_values_list* list = (const psx_svg_attr_values_list*)a->value.val;
+        if (list->length > 0) {
+            const float* vals = (const float*)&list->data[0];
+            float minv = vals[0];
+            for (uint32_t i = 1; i < list->length; i++) {
+                if (vals[i] < minv) {
+                    minv = vals[i];
+                }
+            }
+            // values are ms
+            return (minv <= 0.0f) ? 0.0f : (minv * 0.001f);
+        }
+        return 0.0f;
+    }
+    return _attr_as_time_sec(a);
+}
+
 static INLINE float _attr_as_float(const psx_svg_attr* a)
 {
     return a ? a->value.fval : 0.0f;
@@ -415,7 +440,7 @@ static void _collect_anims(psx_svg_player* p, const psx_svg_node* node)
             item.target_node = target;
             item.target_attr = target_attr;
 
-            item.begin_sec = _attr_as_time_sec(_find_attr(node, SVG_ATTR_BEGIN));
+            item.begin_sec = _attr_as_begin_time_sec(_find_attr(node, SVG_ATTR_BEGIN));
             item.dur_sec = _attr_as_time_sec(_find_attr(node, SVG_ATTR_DUR));
             // parser uses 0 for indefinite
             item.repeat_count = _attr_as_u32(_find_attr(node, SVG_ATTR_REPEAT_COUNT), 1);

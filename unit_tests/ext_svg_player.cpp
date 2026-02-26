@@ -399,6 +399,42 @@ TEST_F(SVGPlayerTest, AnimateRepeatCountFractional_Ceil)
     psx_svg_player_destroy(p);
 }
 
+TEST_F(SVGPlayerTest, BeginList_EarliestBeginUsed)
+{
+    // Minimal support: if begin has multiple offset times, we select the earliest.
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
+        "    <set attributeName=\"x\" to=\"20\" begin=\"1s;0s\" dur=\"1s\" fill=\"remove\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_player* p = psx_svg_player_create_from_data(svg, (uint32_t)strlen(svg), NULL, &r);
+    ASSERT_NE((psx_svg_player*)NULL, p);
+    EXPECT_EQ(S_OK, r);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    ASSERT_TRUE(n != NULL);
+
+    // with earliest begin=0s, should be active at 0.5s
+    psx_svg_player_seek(p, 0.5f);
+    {
+        float v = 0;
+        ASSERT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+        EXPECT_NEAR(v, 20.0f, 0.001f);
+    }
+
+    // after 1s duration (t=1.1s), fill=remove: not active
+    psx_svg_player_seek(p, 1.1f);
+    {
+        float v = 0;
+        EXPECT_FALSE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+    }
+
+    psx_svg_player_destroy(p);
+}
+
 TEST_F(SVGPlayerTest, AnimateRectFillOpacity_FromTo)
 {
     const char* svg =
