@@ -30,6 +30,10 @@
 #include "psx_common.h"
 #include "psx_svg_node.h"
 
+// Optional animation override state (forward declared to avoid dependency).
+// When provided, the renderer may use it to override element attributes at draw time.
+struct psx_svg_anim_state;
+
 class psx_svg_render_obj
 {
 public:
@@ -56,6 +60,9 @@ psx_svg_render_list* psx_svg_render_list_create(const psx_svg_node* doc);
 void psx_svg_render_list_destroy(psx_svg_render_list* list);
 
 bool psx_svg_render_list_draw(ps_context* ctx, const psx_svg_render_list* render);
+
+// Draw with animation overrides (if anim_state is NULL, behaves like psx_svg_render_list_draw).
+bool psx_svg_render_list_draw_anim(ps_context* ctx, const psx_svg_render_list* render, const psx_svg_anim_state* anim_state);
 
 bool psx_svg_render_list_get_size(const psx_svg_render_list* render, ps_size* rsize);
 

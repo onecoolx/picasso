@@ -46,6 +46,9 @@
 #define DEF_SVG_WIDTH 640
 #define DEF_SVG_HEIGHT 640
 
+// Animation override state (defined by animation module). Renderer treats it as opaque.
+struct psx_svg_anim_state;
+
 class render_obj_base;
 
 class svg_render_list_impl : public psx_svg_render_list
@@ -2352,10 +2355,19 @@ bool psx_svg_render_list_get_size(const psx_svg_render_list* render, ps_size* rs
 
 bool psx_svg_render_list_draw(ps_context* ctx, const psx_svg_render_list* render)
 {
+    return psx_svg_render_list_draw_anim(ctx, render, NULL);
+}
+
+bool psx_svg_render_list_draw_anim(ps_context* ctx, const psx_svg_render_list* render, const psx_svg_anim_state* anim_state)
+{
     if (!ctx || !render) {
         LOG_ERROR("Invalid arguements for svg render!\n");
         return false;
     }
+
+    // NOTE: anim_state is currently opaque and may be ignored by renderer pieces
+    // that haven't been upgraded to query overrides.
+    (void)anim_state;
 
     svg_render_list_impl* list = (svg_render_list_impl*)render;
 
