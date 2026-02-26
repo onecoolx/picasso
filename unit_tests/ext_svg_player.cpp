@@ -359,6 +359,46 @@ TEST_F(SVGPlayerTest, AnimateRectStrokeWidth_FromTo)
     psx_svg_player_destroy(p);
 }
 
+TEST_F(SVGPlayerTest, AnimateRepeatCountFractional_Ceil)
+{
+    // repeatCount allows floating; we currently ceil to avoid truncation.
+    // repeatCount="1.2" => 2 repeats => total 2 * dur.
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
+        "    <animate attributeName=\"x\" from=\"0\" to=\"10\" dur=\"1s\" repeatCount=\"1.2\" fill=\"remove\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_player* p = psx_svg_player_create_from_data(svg, (uint32_t)strlen(svg), NULL, &r);
+    ASSERT_NE((psx_svg_player*)NULL, p);
+    EXPECT_EQ(S_OK, r);
+
+    // duration should be 2s (2 repeats)
+    EXPECT_NEAR(2.0f, psx_svg_player_get_duration(p), 0.0001f);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    ASSERT_TRUE(n != NULL);
+
+    // during 2nd repeat (t=1.5s): active
+    psx_svg_player_seek(p, 1.5f);
+    {
+        float v = 0;
+        ASSERT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+        EXPECT_NEAR(v, 5.0f, 0.001f);
+    }
+
+    // after total (t=2.1s) with fill=remove: not active
+    psx_svg_player_seek(p, 2.1f);
+    {
+        float v = 0;
+        EXPECT_FALSE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+    }
+
+    psx_svg_player_destroy(p);
+}
+
 TEST_F(SVGPlayerTest, AnimateRectFillOpacity_FromTo)
 {
     const char* svg =

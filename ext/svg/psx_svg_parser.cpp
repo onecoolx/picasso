@@ -1852,7 +1852,14 @@ static INLINE void _process_animation_attr_number(psx_svg_node* node, psx_svg_at
 
         float val = 0.0f;
         val_start = _parse_number(val_start, val_end, &val);
-        attr->value.uval = (uint32_t)val;
+        // SVG allows floating repeatCount; keep minimal behavior by rounding up
+        // so repeatCount="1.2" behaves as 2 repeats instead of truncating to 1.
+        if (val <= 0.0f) {
+            attr->value.uval = 0;
+        } else {
+            uint32_t ival = (uint32_t)val;
+            attr->value.uval = (ival < val) ? (ival + 1) : ival;
+        }
     } else { // SVG_ATTR_ROTATE
         uint32_t len = BUF_LEN(val_start, val_end);
         if (len == 4 && strncmp(val_start, "auto", 4) == 0) {
