@@ -153,6 +153,10 @@ static INLINE float _attr_as_number(const psx_svg_attr* a)
         return 0.0f;
     }
     if (a->val_type == SVG_ATTR_VALUE_DATA) {
+        // Parser stores different kinds of data in union:
+        // - clock times in value.fval (ms)
+        // - attributeName/fill/etc in value.ival
+        // For numeric animation values (from/to/by), prefer fval.
         return a->value.fval;
     }
     if (a->val_type == SVG_ATTR_VALUE_PTR && a->value.val) {
@@ -160,6 +164,12 @@ static INLINE float _attr_as_number(const psx_svg_attr* a)
         if (list->length > 0) {
             const float* vals = (const float*)&list->data[0];
             return vals[0];
+        }
+        // Fallback: some animation attributes may be stored as a string pointer.
+        const char* s = (const char*)a->value.val;
+        const char c0 = s[0];
+        if ((c0 >= '0' && c0 <= '9') || c0 == '-' || c0 == '+' || c0 == '.') {
+            return (float)atof(s);
         }
     }
     return a->value.fval;
@@ -205,6 +215,7 @@ static INLINE float _attr_as_time_sec(const psx_svg_attr* a)
 
     // Fallback for any legacy representation.
     if (a->val_type == SVG_ATTR_VALUE_PTR && a->value.val) {
+        // Legacy representation: list of clock values (seconds).
         const psx_svg_attr_values_list* list = (const psx_svg_attr_values_list*)a->value.val;
         if (list->length > 0) {
             const float* vals = (const float*)&list->data[0];
@@ -271,6 +282,58 @@ static INLINE ps_bool _anim_eval_simple(const psx_svg_anim_item* it, float doc_t
     float v0 = _attr_as_number(afrom);
     float v1 = _attr_as_number(ato);
     *out_v = _anim_lerp(v0, v1, t);
+    return True;
+}
+
+static INLINE ps_bool _anim_eval_set(const psx_svg_anim_item* it, float doc_t, float* out_v, ps_bool* out_hold)
+{
+    if (!it || !out_v || !out_hold) {
+        return False;
+    }
+    *out_hold = False;
+
+    if (doc_t < it->begin_sec) {
+        return False;
+    }
+
+    // If dur is missing/0, SVG <set> is treated as an instant change.
+    if (it->dur_sec <= 0.0f) {
+        const psx_svg_attr* ato = _find_attr(it->anim_node, SVG_ATTR_TO);
+        if (!ato) {
+            return False;
+        }
+        *out_v = _attr_as_number(ato);
+        return True;
+    }
+
+    float local = doc_t - it->begin_sec;
+
+    // For <set>, value is constant during the active interval.
+    // Do NOT wrap with fmod: repeats don't change the value and wrapping breaks
+    // fill=remove semantics at end-of-interval.
+    if (it->repeat_count != 0) {
+        float total = it->dur_sec * (float)it->repeat_count;
+        if (local > total) {
+            if (it->fill_mode == SVG_ANIMATION_FREEZE) {
+                *out_hold = True;
+                // Hold at end value.
+                local = it->dur_sec;
+            } else {
+                return False;
+            }
+        }
+    }
+
+    // Active during [0, dur].
+    if (local > it->dur_sec) {
+        return False;
+    }
+
+    const psx_svg_attr* ato = _find_attr(it->anim_node, SVG_ATTR_TO);
+    if (!ato) {
+        return False;
+    }
+    *out_v = _attr_as_number(ato);
     return True;
 }
 
@@ -357,6 +420,8 @@ static void _collect_anims(psx_svg_player* p, const psx_svg_node* node)
             psx_array_append(&p->anims, NULL);
             psx_svg_anim_item* dst = psx_array_get_last(&p->anims, psx_svg_anim_item);
             *dst = item;
+
+            // No extra normalization needed: parser stores <set> begin/dur as clock-time DATA(fval ms).
         }
     }
 
@@ -569,16 +634,22 @@ extern "C" {
         for (uint32_t i = 0; i < n; i++) {
             const psx_svg_anim_item* it = psx_array_get(&p->anims, i, psx_svg_anim_item);
 
-            if (it->tag != SVG_TAG_ANIMATE) {
+            if (!(it->tag == SVG_TAG_ANIMATE || it->tag == SVG_TAG_SET)) {
                 continue;
             }
-            if (!(it->target_attr == SVG_ATTR_X || it->target_attr == SVG_ATTR_Y)) {
+            if (!(it->target_attr == SVG_ATTR_X || it->target_attr == SVG_ATTR_Y || it->target_attr == SVG_ATTR_WIDTH || it->target_attr == SVG_ATTR_HEIGHT || it->target_attr == SVG_ATTR_OPACITY)) {
                 continue;
             }
 
             float v = 0.0f;
             ps_bool hold = False;
-            if (_anim_eval_simple(it, p->time_sec, &v, &hold)) {
+            ps_bool ok = False;
+            if (it->tag == SVG_TAG_ANIMATE) {
+                ok = _anim_eval_simple(it, p->time_sec, &v, &hold);
+            } else {
+                ok = _anim_eval_set(it, p->time_sec, &v, &hold);
+            }
+            if (ok) {
                 (void)hold;
                 _anim_state_set_float(&p->anim_state, it->target_node, it->target_attr, v);
             }
@@ -618,17 +689,23 @@ extern "C" {
         for (uint32_t i = 0; i < n; i++) {
             const psx_svg_anim_item* it = psx_array_get(&p->anims, i, psx_svg_anim_item);
 
-            if (it->tag != SVG_TAG_ANIMATE) {
+            if (!(it->tag == SVG_TAG_ANIMATE || it->tag == SVG_TAG_SET)) {
                 continue;
             }
             // start minimal: numeric attributes only
-            if (!(it->target_attr == SVG_ATTR_X || it->target_attr == SVG_ATTR_Y)) {
+            if (!(it->target_attr == SVG_ATTR_X || it->target_attr == SVG_ATTR_Y || it->target_attr == SVG_ATTR_WIDTH || it->target_attr == SVG_ATTR_HEIGHT || it->target_attr == SVG_ATTR_OPACITY)) {
                 continue;
             }
 
             float v = 0.0f;
             ps_bool hold = False;
-            if (_anim_eval_simple(it, p->time_sec, &v, &hold)) {
+            ps_bool ok = False;
+            if (it->tag == SVG_TAG_ANIMATE) {
+                ok = _anim_eval_simple(it, p->time_sec, &v, &hold);
+            } else {
+                ok = _anim_eval_set(it, p->time_sec, &v, &hold);
+            }
+            if (ok) {
                 (void)hold;
                 _anim_state_set_float(&p->anim_state, it->target_node, it->target_attr, v);
             }
