@@ -30,13 +30,13 @@
 #include "psx_svg_parser.h"
 
 #include <string.h>
+#include <math.h>
+#include <string.h>
 
 // Opaque animation override state passed to renderer.
 // Renderer queries it via svg_anim_get_attr_override (declared in psx_svg_render.cpp).
 struct psx_svg_anim_state {
-    // Placeholder for future override tables.
-    // For now, no overrides are applied.
-    uint32_t reserved;
+    psx_array overrides;
 };
 
 // NOTE: renderer currently does not query overrides. This will be wired when
@@ -59,7 +59,6 @@ struct psx_svg_player {
 
     psx_svg_anim_event_cb cb;
     void* cb_user;
-
     psx_array anims;
 };
 
@@ -73,6 +72,98 @@ typedef struct {
     uint32_t repeat_count; // 0 => indefinite
     uint32_t fill_mode; // SVG_ANIMATION_*
 } psx_svg_anim_item;
+
+typedef struct {
+    const psx_svg_node* target;
+    psx_svg_attr_type attr;
+    float fval;
+} psx_svg_anim_override_item;
+
+static INLINE void _anim_state_reset(psx_svg_anim_state* s)
+{
+    if (!s) {
+        return;
+    }
+    psx_array_clear(&s->overrides);
+}
+
+static INLINE void _anim_state_set_float(psx_svg_anim_state* s, const psx_svg_node* target, psx_svg_attr_type attr, float v)
+{
+    if (!s || !target || attr == SVG_ATTR_INVALID) {
+        return;
+    }
+    uint32_t n = psx_array_size(&s->overrides);
+    for (uint32_t i = 0; i < n; i++) {
+        psx_svg_anim_override_item* it = psx_array_get(&s->overrides, i, psx_svg_anim_override_item);
+        if (it->target == target && it->attr == attr) {
+            it->fval = v;
+            return;
+        }
+    }
+    psx_array_append(&s->overrides, NULL);
+    psx_svg_anim_override_item* dst = psx_array_get_last(&s->overrides, psx_svg_anim_override_item);
+    dst->target = target;
+    dst->attr = attr;
+    dst->fval = v;
+}
+
+static INLINE const psx_svg_anim_override_item* _anim_state_find(const psx_svg_anim_state* s, const psx_svg_node* target, psx_svg_attr_type attr)
+{
+    if (!s || !target || attr == SVG_ATTR_INVALID) {
+        return NULL;
+    }
+    uint32_t n = psx_array_size((psx_array*)&s->overrides);
+    for (uint32_t i = 0; i < n; i++) {
+        const psx_svg_anim_override_item* it = psx_array_get((psx_array*)&s->overrides, i, psx_svg_anim_override_item);
+        if (it->target == target && it->attr == attr) {
+            return it;
+        }
+    }
+    return NULL;
+}
+
+static INLINE float _anim_lerp(float a, float b, float t)
+{
+    return a + (b - a) * t;
+}
+
+static INLINE float _anim_clampf(float v, float lo, float hi)
+{
+    if (v < lo) {
+        return lo;
+    }
+    if (v > hi) {
+        return hi;
+    }
+    return v;
+}
+
+static INLINE float _anim_fmod(float x, float y)
+{
+    if (y <= 0.0f) {
+        return 0.0f;
+    }
+    // fmodf may not be available in all C++98 libm combinations.
+    return (float)fmod((double)x, (double)y);
+}
+
+static INLINE float _attr_as_number(const psx_svg_attr* a)
+{
+    if (!a) {
+        return 0.0f;
+    }
+    if (a->val_type == SVG_ATTR_VALUE_DATA) {
+        return a->value.fval;
+    }
+    if (a->val_type == SVG_ATTR_VALUE_PTR && a->value.val) {
+        const psx_svg_attr_values_list* list = (const psx_svg_attr_values_list*)a->value.val;
+        if (list->length > 0) {
+            const float* vals = (const float*)&list->data[0];
+            return vals[0];
+        }
+    }
+    return a->value.fval;
+}
 
 static psx_svg_player_options _default_options(void)
 {
@@ -133,6 +224,77 @@ static INLINE uint32_t _attr_as_u32(const psx_svg_attr* a, uint32_t defv)
     return a ? a->value.uval : defv;
 }
 
+static INLINE ps_bool _anim_eval_simple(const psx_svg_anim_item* it, float doc_t, float* out_v, ps_bool* out_hold)
+{
+    if (!it || !out_v || !out_hold) {
+        return False;
+    }
+
+    *out_hold = False;
+
+    if (it->dur_sec <= 0.0f) {
+        return False;
+    }
+
+    if (doc_t < it->begin_sec) {
+        return False;
+    }
+
+    float local = doc_t - it->begin_sec;
+
+    if (it->repeat_count == 0) {
+        // indefinite
+        local = _anim_fmod(local, it->dur_sec);
+    } else {
+        float total = it->dur_sec * (float)it->repeat_count;
+        if (local > total) {
+            if (it->fill_mode == SVG_ANIMATION_FREEZE) {
+                *out_hold = True;
+                local = it->dur_sec;
+            } else {
+                return False;
+            }
+        } else {
+            // within total repeats
+            local = _anim_fmod(local, it->dur_sec);
+        }
+    }
+
+    float t = _anim_clampf(local / it->dur_sec, 0.0f, 1.0f);
+
+    const psx_svg_attr* afrom = _find_attr(it->anim_node, SVG_ATTR_FROM);
+    const psx_svg_attr* ato = _find_attr(it->anim_node, SVG_ATTR_TO);
+    if (!afrom || !ato) {
+        return False;
+    }
+
+    float v0 = _attr_as_number(afrom);
+    float v1 = _attr_as_number(ato);
+    *out_v = _anim_lerp(v0, v1, t);
+    return True;
+}
+
+extern "C" {
+
+    bool psx_svg_anim_get_float(const psx_svg_anim_state* s,
+                                const psx_svg_node* target,
+                                psx_svg_attr_type attr,
+                                float* out_v)
+    {
+        if (!out_v) {
+            return false;
+        }
+        *out_v = 0.0f;
+        const psx_svg_anim_override_item* it = _anim_state_find(s, target, attr);
+        if (!it) {
+            return false;
+        }
+        *out_v = it->fval;
+        return true;
+    }
+
+} // extern "C"
+
 static const psx_svg_node* _find_child_mpath(const psx_svg_node* n)
 {
     if (!n) {
@@ -184,7 +346,13 @@ static void _collect_anims(psx_svg_player* p, const psx_svg_node* node)
             // parser uses 0 for indefinite
             item.repeat_count = _attr_as_u32(_find_attr(node, SVG_ATTR_REPEAT_COUNT), 1);
             item.fill_mode = SVG_ANIMATION_REMOVE;
-            // fill="freeze|remove" is not yet mapped by parser; default remove
+            // fill="freeze|remove" is parsed by paint parser for animation nodes.
+            const psx_svg_attr* fill = _find_attr(node, SVG_ATTR_FILL);
+            if (fill && fill->val_type == SVG_ATTR_VALUE_DATA) {
+                if (fill->value.ival == SVG_ANIMATION_FREEZE || fill->value.ival == SVG_ANIMATION_REMOVE) {
+                    item.fill_mode = (uint32_t)fill->value.ival;
+                }
+            }
 
             psx_array_append(&p->anims, NULL);
             psx_svg_anim_item* dst = psx_array_get_last(&p->anims, psx_svg_anim_item);
@@ -245,6 +413,8 @@ extern "C" {
         p->state = PSX_SVG_PLAYER_STOPPED;
         p->time_sec = 0.0f;
         p->duration_sec = -1.0f;
+
+        psx_array_init(&p->anim_state.overrides, sizeof(psx_svg_anim_override_item));
 
         psx_array_init(&p->anims, sizeof(psx_svg_anim_item));
         _collect_anims(p, p->root);
@@ -331,6 +501,8 @@ extern "C" {
             return;
         }
 
+        psx_array_destroy(&p->anim_state.overrides);
+
         psx_array_destroy(&p->anims);
 
         if (p->render_list) {
@@ -389,6 +561,28 @@ extern "C" {
         if (p->state == PSX_SVG_PLAYER_STOPPED) {
             p->state = PSX_SVG_PLAYER_PAUSED;
         }
+
+        // Rebuild overrides at the new time so callers can query immediately
+        // without needing a positive tick.
+        _anim_state_reset(&p->anim_state);
+        uint32_t n = psx_array_size(&p->anims);
+        for (uint32_t i = 0; i < n; i++) {
+            const psx_svg_anim_item* it = psx_array_get(&p->anims, i, psx_svg_anim_item);
+
+            if (it->tag != SVG_TAG_ANIMATE) {
+                continue;
+            }
+            if (!(it->target_attr == SVG_ATTR_X || it->target_attr == SVG_ATTR_Y)) {
+                continue;
+            }
+
+            float v = 0.0f;
+            ps_bool hold = False;
+            if (_anim_eval_simple(it, p->time_sec, &v, &hold)) {
+                (void)hold;
+                _anim_state_set_float(&p->anim_state, it->target_node, it->target_attr, v);
+            }
+        }
     }
 
     void psx_svg_player_tick(psx_svg_player* p, float delta_seconds)
@@ -396,15 +590,11 @@ extern "C" {
         if (!p) {
             return;
         }
-        if (p->state != PSX_SVG_PLAYER_PLAYING) {
-            return;
+        if (p->state == PSX_SVG_PLAYER_PLAYING) {
+            if (delta_seconds > 0.0f) {
+                p->time_sec += delta_seconds;
+            }
         }
-
-        if (delta_seconds <= 0.0f) {
-            return;
-        }
-
-        p->time_sec += delta_seconds;
 
         if (p->duration_sec >= 0.0f && p->time_sec > p->duration_sec) {
             if (p->loop) {
@@ -421,7 +611,28 @@ extern "C" {
             }
         }
 
-        // TODO: evaluate animations and update anim_state override tables.
+        // Evaluate animations and update anim_state override tables.
+        _anim_state_reset(&p->anim_state);
+
+        uint32_t n = psx_array_size(&p->anims);
+        for (uint32_t i = 0; i < n; i++) {
+            const psx_svg_anim_item* it = psx_array_get(&p->anims, i, psx_svg_anim_item);
+
+            if (it->tag != SVG_TAG_ANIMATE) {
+                continue;
+            }
+            // start minimal: numeric attributes only
+            if (!(it->target_attr == SVG_ATTR_X || it->target_attr == SVG_ATTR_Y)) {
+                continue;
+            }
+
+            float v = 0.0f;
+            ps_bool hold = False;
+            if (_anim_eval_simple(it, p->time_sec, &v, &hold)) {
+                (void)hold;
+                _anim_state_set_float(&p->anim_state, it->target_node, it->target_attr, v);
+            }
+        }
     }
 
     float psx_svg_player_get_time(const psx_svg_player* p)
@@ -484,6 +695,50 @@ extern "C" {
             return;
         }
         // TODO: implement event-based begin timing.
+    }
+
+    const psx_svg_node* psx_svg_player_get_node_by_id(const psx_svg_player* p, const char* id)
+    {
+        if (!p || !p->root || !id) {
+            return NULL;
+        }
+
+        // Parser stores element id into node->content(). We do a simple DFS.
+        psx_svg_node* stack[64];
+        uint32_t sp = 0;
+        stack[sp++] = p->root;
+
+        while (sp) {
+            psx_svg_node* n = stack[--sp];
+            const char* cid = n->content(NULL);
+            if (cid && strcmp(cid, id) == 0) {
+                return n;
+            }
+
+            uint32_t child_count = n->child_count();
+            for (uint32_t i = 0; i < child_count; i++) {
+                psx_svg_node* c = n->get_child(i);
+                if (c && sp < (sizeof(stack) / sizeof(stack[0]))) {
+                    stack[sp++] = c;
+                }
+            }
+        }
+
+        return NULL;
+    }
+
+    ps_bool psx_svg_player_debug_get_float_override(const psx_svg_player* p,
+                                                    const psx_svg_node* target,
+                                                    psx_svg_attr_type attr,
+                                                    float* out_v)
+    {
+        if (!p) {
+            return False;
+        }
+        if (psx_svg_anim_get_float(&p->anim_state, target, attr, out_v)) {
+            return True;
+        }
+        return False;
     }
 
 } // extern "C"

@@ -49,6 +49,12 @@
 // Animation override state (defined by animation module). Renderer treats it as opaque.
 struct psx_svg_anim_state;
 
+// Implemented by player (psx_svg_player.cpp). Returns True if override exists.
+extern "C" bool psx_svg_anim_get_float(const psx_svg_anim_state* s,
+                                       const psx_svg_node* target,
+                                       psx_svg_attr_type attr,
+                                       float* out_v);
+
 class render_obj_base;
 
 class svg_render_list_impl : public psx_svg_render_list
@@ -410,6 +416,7 @@ public:
         , m_draw_attrs(NULL)
         , m_global_matrix(NULL)
         , m_render_matrix(NULL)
+        , m_node(node)
     {
         m_tag = node->type();
         m_matrix = ps_matrix_create();
@@ -426,6 +433,7 @@ public:
     }
 
     virtual void set_attr(const psx_svg_attr* attr, _svg_list_builder_state* state);
+    virtual void set_anim_state(const psx_svg_anim_state* anim_state) { (void)anim_state; }
     virtual void render(ps_context* ctx, const ps_matrix* matrix) { }
     virtual void get_bounding_rect(ps_rect* rc) const { }
     virtual void update(const psx_svg_node* node) { }
@@ -584,6 +592,7 @@ protected:
     ps_draw_attrs* m_draw_attrs;
     ps_matrix* m_global_matrix;
     ps_matrix* m_render_matrix;
+    const psx_svg_node* m_node;
 };
 
 void render_obj_base::set_attr(const psx_svg_attr* attr, _svg_list_builder_state* state)
@@ -850,6 +859,21 @@ public:
             case SVG_ATTR_RY:
                 m_ry = attr->value.fval;
                 break;
+        }
+    }
+
+    void set_anim_state(const psx_svg_anim_state* anim_state)
+    {
+        if (!anim_state) {
+            return;
+        }
+
+        float v = 0.0f;
+        if (psx_svg_anim_get_float(anim_state, m_node, SVG_ATTR_X, &v)) {
+            m_rc.x = v;
+        }
+        if (psx_svg_anim_get_float(anim_state, m_node, SVG_ATTR_Y, &v)) {
+            m_rc.y = v;
         }
     }
 
@@ -2365,10 +2389,6 @@ bool psx_svg_render_list_draw_anim(ps_context* ctx, const psx_svg_render_list* r
         return false;
     }
 
-    // NOTE: anim_state is currently opaque and may be ignored by renderer pieces
-    // that haven't been upgraded to query overrides.
-    (void)anim_state;
-
     svg_render_list_impl* list = (svg_render_list_impl*)render;
 
     ps_save(ctx);
@@ -2379,6 +2399,7 @@ bool psx_svg_render_list_draw_anim(ps_context* ctx, const psx_svg_render_list* r
     while (head) {
         if (head->render_types() == RENDER_NORMAL) {
             ps_save(ctx);
+            head->set_anim_state(anim_state);
             head->prepare(ctx);
             head->render(ctx, NULL);
             ps_restore(ctx);

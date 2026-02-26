@@ -117,6 +117,16 @@ void psx_svg_player_set_event_callback(psx_svg_player* p, psx_svg_anim_event_cb 
 // Minimal implementation may treat this as a simple start trigger by target id.
 void psx_svg_player_trigger(psx_svg_player* p, const char* target_id, const char* event_name);
 
+// DOM helpers
+// Returns node by element id, or NULL if not found.
+const psx_svg_node* psx_svg_player_get_node_by_id(const psx_svg_player* p, const char* id);
+
+// Debug helpers (unit tests only; API may change)
+ps_bool psx_svg_player_debug_get_float_override(const psx_svg_player* p,
+                                                const psx_svg_node* target,
+                                                psx_svg_attr_type attr,
+                                                float* out_v);
+
 #ifdef __cplusplus
 }
 #endif
