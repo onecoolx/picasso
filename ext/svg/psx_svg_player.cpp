@@ -67,10 +67,15 @@ typedef struct {
     const psx_svg_node* anim_node;
     const psx_svg_node* target_node;
     psx_svg_attr_type target_attr;
-    float begin_sec;
+    float begin_sec; // kept for duration hint compatibility
     float dur_sec;
     uint32_t repeat_count; // 0 => indefinite
     uint32_t fill_mode; // SVG_ANIMATION_*
+
+    // Minimal begin list support: store up to N begin times (sec) and choose
+    // the latest begin <= doc_t (re-trigger).
+    uint32_t begin_count;
+    float begin_list_sec[4];
 } psx_svg_anim_item;
 
 typedef struct {
@@ -250,6 +255,107 @@ static INLINE float _attr_as_begin_time_sec(const psx_svg_attr* a)
     return _attr_as_time_sec(a);
 }
 
+static INLINE void _anim_item_begin_list_init(psx_svg_anim_item* it)
+{
+    if (!it) {
+        return;
+    }
+    it->begin_count = 0;
+    for (uint32_t i = 0; i < 4; i++) {
+        it->begin_list_sec[i] = 0.0f;
+    }
+}
+
+static INLINE float _anim_item_begin_for_time(const psx_svg_anim_item* it, float doc_t)
+{
+    if (!it) {
+        return 0.0f;
+    }
+    if (it->begin_count == 0) {
+        return it->begin_sec;
+    }
+    // choose latest begin <= doc_t
+    float best = -1.0f;
+    for (uint32_t i = 0; i < it->begin_count; i++) {
+        float b = it->begin_list_sec[i];
+        if (b <= doc_t && b > best) {
+            best = b;
+        }
+    }
+    if (best < 0.0f) {
+        // all begins are in the future: keep earliest (for consistency)
+        float earliest = it->begin_list_sec[0];
+        for (uint32_t i = 1; i < it->begin_count; i++) {
+            if (it->begin_list_sec[i] < earliest) {
+                earliest = it->begin_list_sec[i];
+            }
+        }
+        return earliest;
+    }
+    return best;
+}
+
+typedef struct {
+    float begin_sec;
+    ps_bool valid;
+} psx_svg_begin_list;
+
+static INLINE void _begin_list_init(psx_svg_begin_list* bl)
+{
+    if (!bl) {
+        return;
+    }
+    bl->begin_sec = 0.0f;
+    bl->valid = False;
+}
+
+static INLINE void _begin_list_from_attr(psx_svg_begin_list* bl, const psx_svg_attr* a)
+{
+    _begin_list_init(bl);
+    if (!bl) {
+        return;
+    }
+    if (!a) {
+        bl->valid = True;
+        bl->begin_sec = 0.0f;
+        return;
+    }
+
+    if (a->val_type == SVG_ATTR_VALUE_PTR && a->value.val) {
+        // For non-<set>, begin can be a value list of clock-time values (ms).
+        const psx_svg_attr_values_list* list = (const psx_svg_attr_values_list*)a->value.val;
+        if (list->length > 0) {
+            const float* vals = (const float*)&list->data[0];
+            // pick earliest
+            float minv = vals[0];
+            for (uint32_t i = 1; i < list->length; i++) {
+                if (vals[i] < minv) {
+                    minv = vals[i];
+                }
+            }
+            bl->begin_sec = (minv <= 0.0f) ? 0.0f : (minv * 0.001f);
+            bl->valid = True;
+            return;
+        }
+    }
+
+    bl->begin_sec = _attr_as_time_sec(a);
+    bl->valid = True;
+}
+
+static INLINE float _begin_list_current_begin(const psx_svg_begin_list* bl, float doc_t)
+{
+    if (!bl || !bl->valid) {
+        return 0.0f;
+    }
+    // Minimal semantics: if list exists, allow re-triggering by using the latest
+    // begin time that is <= doc_t.
+    // NOTE: we currently only keep the earliest begin in begin_sec; true list
+    // support will be added later.
+    (void)doc_t;
+    return bl->begin_sec;
+}
+
 static INLINE float _attr_as_float(const psx_svg_attr* a)
 {
     return a ? a->value.fval : 0.0f;
@@ -272,11 +378,12 @@ static INLINE ps_bool _anim_eval_simple(const psx_svg_anim_item* it, float doc_t
         return False;
     }
 
-    if (doc_t < it->begin_sec) {
+    float begin_sec = _anim_item_begin_for_time(it, doc_t);
+    if (doc_t < begin_sec) {
         return False;
     }
 
-    float local = doc_t - it->begin_sec;
+    float local = doc_t - begin_sec;
 
     if (it->repeat_count == 0) {
         // indefinite
@@ -317,7 +424,8 @@ static INLINE ps_bool _anim_eval_set(const psx_svg_anim_item* it, float doc_t, f
     }
     *out_hold = False;
 
-    if (doc_t < it->begin_sec) {
+    float begin_sec = _anim_item_begin_for_time(it, doc_t);
+    if (doc_t < begin_sec) {
         return False;
     }
 
@@ -331,7 +439,7 @@ static INLINE ps_bool _anim_eval_set(const psx_svg_anim_item* it, float doc_t, f
         return True;
     }
 
-    float local = doc_t - it->begin_sec;
+    float local = doc_t - begin_sec;
 
     // For <set>, value is constant during the active interval.
     // Do NOT wrap with fmod: repeats don't change the value and wrapping breaks
@@ -440,7 +548,33 @@ static void _collect_anims(psx_svg_player* p, const psx_svg_node* node)
             item.target_node = target;
             item.target_attr = target_attr;
 
-            item.begin_sec = _attr_as_begin_time_sec(_find_attr(node, SVG_ATTR_BEGIN));
+            _anim_item_begin_list_init(&item);
+
+            const psx_svg_attr* abegin = _find_attr(node, SVG_ATTR_BEGIN);
+            if (abegin && abegin->val_type == SVG_ATTR_VALUE_PTR && abegin->value.val) {
+                const psx_svg_attr_values_list* list = (const psx_svg_attr_values_list*)abegin->value.val;
+                const uint32_t cap = 4;
+                uint32_t n = list->length;
+                if (n > cap) {
+                    n = cap;
+                }
+                if (n > 0) {
+                    const float* vals = (const float*)&list->data[0];
+                    for (uint32_t i = 0; i < n; i++) {
+                        float ms = vals[i];
+                        float sec = (ms <= 0.0f) ? 0.0f : (ms * 0.001f);
+                        item.begin_list_sec[i] = sec;
+                    }
+                    item.begin_count = n;
+                    // begin_sec used for duration hint; keep earliest.
+                    item.begin_sec = _attr_as_begin_time_sec(abegin);
+                } else {
+                    item.begin_sec = 0.0f;
+                }
+            } else {
+                item.begin_sec = _attr_as_begin_time_sec(abegin);
+            }
+
             item.dur_sec = _attr_as_time_sec(_find_attr(node, SVG_ATTR_DUR));
             // parser uses 0 for indefinite
             item.repeat_count = _attr_as_u32(_find_attr(node, SVG_ATTR_REPEAT_COUNT), 1);
