@@ -93,5 +93,26 @@ TEST_F(SVGPlayerTest, BasicPlayPauseSeekTick)
     EXPECT_EQ(PSX_SVG_PLAYER_STOPPED, psx_svg_player_get_state(p));
     EXPECT_FLOAT_EQ(0.0f, psx_svg_player_get_time(p));
 
+    // duration hint (no animation => unknown)
+    EXPECT_NEAR(-1.0f, psx_svg_player_get_duration(p), 0.0001f);
+
+    psx_svg_player_destroy(p);
+}
+
+TEST_F(SVGPlayerTest, DurationFromAnimate)
+{
+    const char* svg = "<svg width=100 height=100>"
+                      "<rect x=10 y=10 width=80 height=80 fill=\"red\">"
+                      "<animate attributeName=\"x\" from=\"10\" to=\"20\" dur=\"2s\"/>"
+                      "</rect>"
+                      "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_player* p = psx_svg_player_create_from_data(svg, (uint32_t)strlen(svg), NULL, &r);
+    ASSERT_NE((psx_svg_player*)NULL, p);
+    EXPECT_EQ(S_OK, r);
+
+    EXPECT_NEAR(2.0f, psx_svg_player_get_duration(p), 0.0001f);
+
     psx_svg_player_destroy(p);
 }

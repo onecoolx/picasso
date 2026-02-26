@@ -59,7 +59,20 @@ struct psx_svg_player {
 
     psx_svg_anim_event_cb cb;
     void* cb_user;
+
+    psx_array anims;
 };
+
+typedef struct {
+    psx_svg_tag tag;
+    const psx_svg_node* anim_node;
+    const psx_svg_node* target_node;
+    psx_svg_attr_type target_attr;
+    float begin_sec;
+    float dur_sec;
+    uint32_t repeat_count; // 0 => indefinite
+    uint32_t fill_mode; // SVG_ANIMATION_*
+} psx_svg_anim_item;
 
 static psx_svg_player_options _default_options(void)
 {
@@ -68,6 +81,121 @@ static psx_svg_player_options _default_options(void)
     opt.loop = False;
     opt.dpi = 96;
     return opt;
+}
+
+static INLINE const psx_svg_attr* _find_attr(const psx_svg_node* node, psx_svg_attr_type type)
+{
+    if (!node) {
+        return NULL;
+    }
+    uint32_t n = node->attr_count();
+    for (uint32_t i = 0; i < n; i++) {
+        const psx_svg_attr* a = node->attr_at(i);
+        if (a && (psx_svg_attr_type)a->attr_id == type) {
+            return a;
+        }
+    }
+    return NULL;
+}
+
+static INLINE float _attr_as_time_sec(const psx_svg_attr* a)
+{
+    if (!a) {
+        return 0.0f;
+    }
+    // Clock time attributes (begin/dur/min/max/repeatDur) are stored as DATA fval (ms)
+    // in parser (_process_clock_time). Convert to seconds here.
+    if (a->val_type == SVG_ATTR_VALUE_DATA) {
+        if (a->value.fval <= 0.0f) {
+            return 0.0f;
+        }
+        return a->value.fval * 0.001f;
+    }
+
+    // Fallback for any legacy representation.
+    if (a->val_type == SVG_ATTR_VALUE_PTR && a->value.val) {
+        const psx_svg_attr_values_list* list = (const psx_svg_attr_values_list*)a->value.val;
+        if (list->length > 0) {
+            const float* vals = (const float*)&list->data[0];
+            return vals[0];
+        }
+    }
+    return a->value.fval;
+}
+
+static INLINE float _attr_as_float(const psx_svg_attr* a)
+{
+    return a ? a->value.fval : 0.0f;
+}
+
+static INLINE uint32_t _attr_as_u32(const psx_svg_attr* a, uint32_t defv)
+{
+    return a ? a->value.uval : defv;
+}
+
+static const psx_svg_node* _find_child_mpath(const psx_svg_node* n)
+{
+    if (!n) {
+        return NULL;
+    }
+    uint32_t c = n->child_count();
+    for (uint32_t i = 0; i < c; i++) {
+        const psx_svg_node* ch = n->get_child(i);
+        if (ch && ch->type() == SVG_TAG_MPATH) {
+            return ch;
+        }
+    }
+    return NULL;
+}
+
+static void _collect_anims(psx_svg_player* p, const psx_svg_node* node)
+{
+    if (!p || !node) {
+        return;
+    }
+
+    psx_svg_tag t = node->type();
+    if (t == SVG_TAG_ANIMATE || t == SVG_TAG_SET || t == SVG_TAG_ANIMATE_COLOR || t == SVG_TAG_ANIMATE_TRANSFORM || t == SVG_TAG_ANIMATE_MOTION) {
+        const psx_svg_attr* an = _find_attr(node, SVG_ATTR_ATTRIBUTE_NAME);
+        psx_svg_attr_type target_attr = SVG_ATTR_INVALID;
+        if (an) {
+            // attributeName is stored as DATA ival (enum psx_svg_attr_type) in parser.
+            if (an->val_type == SVG_ATTR_VALUE_DATA) {
+                target_attr = (psx_svg_attr_type)an->value.ival;
+            }
+        }
+
+        const psx_svg_node* target = node->parent();
+        if (t == SVG_TAG_ANIMATE_MOTION) {
+            // for animateMotion, allow mpath child; real resolve later
+            (void)_find_child_mpath(node);
+        }
+
+        if (target && target_attr != SVG_ATTR_INVALID) {
+            psx_svg_anim_item item;
+            memset(&item, 0, sizeof(item));
+            item.tag = t;
+            item.anim_node = node;
+            item.target_node = target;
+            item.target_attr = target_attr;
+
+            item.begin_sec = _attr_as_time_sec(_find_attr(node, SVG_ATTR_BEGIN));
+            item.dur_sec = _attr_as_time_sec(_find_attr(node, SVG_ATTR_DUR));
+            // parser uses 0 for indefinite
+            item.repeat_count = _attr_as_u32(_find_attr(node, SVG_ATTR_REPEAT_COUNT), 1);
+            item.fill_mode = SVG_ANIMATION_REMOVE;
+            // fill="freeze|remove" is not yet mapped by parser; default remove
+
+            psx_array_append(&p->anims, NULL);
+            psx_svg_anim_item* dst = psx_array_get_last(&p->anims, psx_svg_anim_item);
+            *dst = item;
+        }
+    }
+
+    uint32_t c = node->child_count();
+    for (uint32_t i = 0; i < c; i++) {
+        _collect_anims(p, node->get_child(i));
+    }
 }
 
 extern "C" {
@@ -117,6 +245,38 @@ extern "C" {
         p->state = PSX_SVG_PLAYER_STOPPED;
         p->time_sec = 0.0f;
         p->duration_sec = -1.0f;
+
+        psx_array_init(&p->anims, sizeof(psx_svg_anim_item));
+        _collect_anims(p, p->root);
+
+        // compute a simple duration hint
+        // If there is no animation, keep duration as unknown (-1). This avoids
+        // treating a static document as having duration 0 and immediately
+        // stopping on the first tick.
+        if (psx_array_size(&p->anims) == 0) {
+            p->duration_sec = -1.0f;
+        } else {
+            float end_max = 0.0f;
+            p->duration_sec = 0.0f;
+            uint32_t n = psx_array_size(&p->anims);
+            for (uint32_t i = 0; i < n; i++) {
+                psx_svg_anim_item* it = psx_array_get(&p->anims, i, psx_svg_anim_item);
+                float endt = it->begin_sec + it->dur_sec;
+                if (it->repeat_count > 1) {
+                    endt = it->begin_sec + it->dur_sec * (float)it->repeat_count;
+                } else if (it->repeat_count == 0) {
+                    p->duration_sec = -1.0f;
+                    end_max = 0.0f;
+                    break;
+                }
+                if (endt > end_max) {
+                    end_max = endt;
+                }
+            }
+            if (p->duration_sec != -1.0f) {
+                p->duration_sec = end_max;
+            }
+        }
 
         return p;
     }
@@ -171,6 +331,8 @@ extern "C" {
             return;
         }
 
+        psx_array_destroy(&p->anims);
+
         if (p->render_list) {
             psx_svg_render_list_destroy(p->render_list);
             p->render_list = NULL;
@@ -189,6 +351,9 @@ extern "C" {
         if (!p) {
             return;
         }
+        if (p->state == PSX_SVG_PLAYER_STOPPED) {
+            p->time_sec = 0.0f;
+        }
         p->state = PSX_SVG_PLAYER_PLAYING;
     }
 
@@ -197,7 +362,7 @@ extern "C" {
         if (!p) {
             return;
         }
-        if (p->state == PSX_SVG_PLAYER_PLAYING) {
+        if (p->state != PSX_SVG_PLAYER_STOPPED) {
             p->state = PSX_SVG_PLAYER_PAUSED;
         }
     }
@@ -220,6 +385,10 @@ extern "C" {
             seconds = 0.0f;
         }
         p->time_sec = seconds;
+
+        if (p->state == PSX_SVG_PLAYER_STOPPED) {
+            p->state = PSX_SVG_PLAYER_PAUSED;
+        }
     }
 
     void psx_svg_player_tick(psx_svg_player* p, float delta_seconds)
