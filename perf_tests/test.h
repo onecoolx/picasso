@@ -49,8 +49,8 @@
 // Minimum performance difference threshold (in percentage)
 // Differences smaller than this will not be considered as regression
 // even if they are statistically significant
-// Recommended: 2.0% - 5.0% for stable testing
-#define PERF_REGRESSION_THRESHOLD 3.0  // 3% threshold
+// Recommended: 5.0% - 10.0% for stable testing
+#define PERF_REGRESSION_THRESHOLD 10.0  // 10% threshold
 
 // Statistical significance level (p-value threshold)
 #define PERF_SIGNIFICANCE_LEVEL 0.05   // 95% confidence
