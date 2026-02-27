@@ -802,6 +802,87 @@ TEST_F(SVGPlayerTest, BeginList_RepeatDur_OverridesRepeatCount)
     psx_svg_player_destroy(p);
 }
 
+TEST_F(SVGPlayerTest, Set_BeginList_RepeatDur_RemoveCutsOff)
+{
+    // repeatDur should bound total active duration for <set> even if dur is longer.
+    // begin list triggers at 0s;1s, dur=2s, repeatDur=0.25s, fill=remove => active only for 0.25s after each begin.
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
+        "    <set attributeName=\"x\" to=\"10\" begin=\"0s;1s\" dur=\"2s\" repeatDur=\"0.25s\" fill=\"remove\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_player* p = psx_svg_player_create_from_data(svg, (uint32_t)strlen(svg), NULL, &r);
+    ASSERT_NE((psx_svg_player*)NULL, p);
+    EXPECT_EQ(S_OK, r);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    ASSERT_TRUE(n != NULL);
+
+    // within first repeatDur window
+    psx_svg_player_seek(p, 0.10f);
+    {
+        float v = 0;
+        ASSERT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+        EXPECT_NEAR(v, 10.0f, 0.01f);
+    }
+
+    // after first repeatDur cutoff
+    psx_svg_player_seek(p, 0.30f);
+    {
+        float v = 0;
+        EXPECT_FALSE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+    }
+
+    // within second window
+    psx_svg_player_seek(p, 1.10f);
+    {
+        float v = 0;
+        ASSERT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+        EXPECT_NEAR(v, 10.0f, 0.01f);
+    }
+
+    // after second cutoff
+    psx_svg_player_seek(p, 1.30f);
+    {
+        float v = 0;
+        EXPECT_FALSE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+    }
+
+    psx_svg_player_destroy(p);
+}
+
+TEST_F(SVGPlayerTest, Set_BeginList_RepeatDur_FreezeHolds)
+{
+    // With fill=freeze, value should hold after repeatDur cutoff.
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
+        "    <set attributeName=\"x\" to=\"10\" begin=\"0s\" dur=\"2s\" repeatDur=\"0.25s\" fill=\"freeze\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_player* p = psx_svg_player_create_from_data(svg, (uint32_t)strlen(svg), NULL, &r);
+    ASSERT_NE((psx_svg_player*)NULL, p);
+    EXPECT_EQ(S_OK, r);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    ASSERT_TRUE(n != NULL);
+
+    // after repeatDur end
+    psx_svg_player_seek(p, 0.30f);
+    {
+        float v = 0;
+        ASSERT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+        EXPECT_NEAR(v, 10.0f, 0.01f);
+    }
+
+    psx_svg_player_destroy(p);
+}
+
 TEST_F(SVGPlayerTest, AnimateRectFillOpacity_FromTo)
 {
     const char* svg =

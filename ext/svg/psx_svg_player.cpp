@@ -621,6 +621,21 @@ static INLINE ps_bool _anim_eval_set(const psx_svg_anim_item* it, float doc_t, f
 
     float local = doc_t - begin_sec;
 
+    // If repeatDur is specified, it bounds the active duration (unless explicit end is earlier).
+    float repeat_end_sec = 0.0f;
+    if (it->repeat_dur_sec > 0.0f) {
+        repeat_end_sec = begin_sec + it->repeat_dur_sec;
+        if (repeat_end_sec < begin_sec) {
+            repeat_end_sec = 0.0f;
+        }
+    }
+
+    if (repeat_end_sec > 0.0f) {
+        if (end_sec <= 0.0f || repeat_end_sec < end_sec) {
+            end_sec = repeat_end_sec;
+        }
+    }
+
     if (end_sec > 0.0f) {
         float active_dur = end_sec - begin_sec;
         // Per SMIL, if end <= begin then interval is empty. Treat as no-op.
