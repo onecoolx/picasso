@@ -28,6 +28,7 @@
 #include "psx_svg_parser.h"
 
 #include <math.h>
+#include <stdlib.h>
 
 static INLINE void _free_svg_attr_value(psx_svg_attr* attr)
 {
@@ -99,7 +100,12 @@ psx_svg_node* psx_svg_load_data(const char* svg_data, uint32_t len)
             parser.doc_root = NULL;
             psx_svg_parser_destroy(&parser);
 #ifdef _DEBUG
-            psx_svg_dump_tree(doc, 0);
+            // Gate verbose SVG dump in tests/CI.
+            // Set PSX_SVG_DUMP_TREE=1 to enable.
+            const char* dump = getenv("PSX_SVG_DUMP_TREE");
+            if (dump && dump[0] == '1') {
+                psx_svg_dump_tree(doc, 0);
+            }
 #endif
             return doc;
         } else {
