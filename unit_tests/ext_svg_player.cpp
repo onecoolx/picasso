@@ -667,6 +667,87 @@ TEST_F(SVGPlayerTest, Set_BeginList_FreezeHoldsAfterEachActivation)
     psx_svg_player_destroy(p);
 }
 
+TEST_F(SVGPlayerTest, Set_EndList_RemoveCutsOffEachBeginActivation)
+{
+    // end-list should shorten the active interval per begin trigger.
+    // begin: 0s;1s, end: 0.25s;1.25s, fill=remove => active only inside those windows.
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
+        "    <set attributeName=\"x\" to=\"10\" begin=\"0s;1s\" end=\"0.25s;1.25s\" fill=\"remove\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_player* p = psx_svg_player_create_from_data(svg, (uint32_t)strlen(svg), NULL, &r);
+    ASSERT_NE((psx_svg_player*)NULL, p);
+    EXPECT_EQ(S_OK, r);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    ASSERT_TRUE(n != NULL);
+
+    // During first activation.
+    psx_svg_player_seek(p, 0.10f);
+    {
+        float v = 0;
+        ASSERT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+        EXPECT_NEAR(v, 10.0f, 0.01f);
+    }
+
+    // After first end: removed.
+    psx_svg_player_seek(p, 0.30f);
+    {
+        float v = 0;
+        EXPECT_FALSE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+    }
+
+    // During second activation.
+    psx_svg_player_seek(p, 1.10f);
+    {
+        float v = 0;
+        ASSERT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+        EXPECT_NEAR(v, 10.0f, 0.01f);
+    }
+
+    // After second end: removed.
+    psx_svg_player_seek(p, 1.30f);
+    {
+        float v = 0;
+        EXPECT_FALSE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+    }
+
+    psx_svg_player_destroy(p);
+}
+
+TEST_F(SVGPlayerTest, Set_EndList_FreezeHoldsAfterEndInstant)
+{
+    // With fill=freeze, value should hold after end.
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
+        "    <set attributeName=\"x\" to=\"10\" begin=\"0s\" end=\"0.25s\" fill=\"freeze\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_player* p = psx_svg_player_create_from_data(svg, (uint32_t)strlen(svg), NULL, &r);
+    ASSERT_NE((psx_svg_player*)NULL, p);
+    EXPECT_EQ(S_OK, r);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    ASSERT_TRUE(n != NULL);
+
+    // After end.
+    psx_svg_player_seek(p, 0.30f);
+    {
+        float v = 0;
+        ASSERT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+        EXPECT_NEAR(v, 10.0f, 0.01f);
+    }
+
+    psx_svg_player_destroy(p);
+}
+
 TEST_F(SVGPlayerTest, AnimateRectFillOpacity_FromTo)
 {
     const char* svg =

@@ -69,6 +69,7 @@ typedef struct {
     psx_svg_attr_type target_attr;
     float begin_sec; // kept for duration hint compatibility
     float dur_sec;
+    float end_sec; // optional explicit end, 0 => unspecified
     uint32_t repeat_count; // 0 => indefinite
     uint32_t fill_mode; // SVG_ANIMATION_*
 
@@ -76,6 +77,11 @@ typedef struct {
     // begin <= doc_t (re-trigger).
     // NOTE: stored as psx_array of float.
     psx_array begins_sec;
+
+    // End list support: store end times (sec) and choose the earliest
+    // end >= begin (per trigger). If no such end exists, end is unspecified.
+    // NOTE: stored as psx_array of float.
+    psx_array ends_sec;
 } psx_svg_anim_item;
 
 typedef struct {
@@ -90,6 +96,81 @@ static INLINE void _anim_state_reset(psx_svg_anim_state* s)
         return;
     }
     psx_array_clear(&s->overrides);
+}
+
+static INLINE void _anim_item_end_list_init(psx_svg_anim_item* it)
+{
+    if (!it) {
+        return;
+    }
+    psx_array_init_type(&it->ends_sec, float);
+}
+
+static INLINE void _anim_item_end_list_destroy(psx_svg_anim_item* it)
+{
+    if (!it) {
+        return;
+    }
+    psx_array_destroy(&it->ends_sec);
+}
+
+static INLINE void _anim_item_end_list_normalize(psx_svg_anim_item* it)
+{
+    if (!it) {
+        return;
+    }
+    uint32_t n = psx_array_size(&it->ends_sec);
+    if (n <= 1) {
+        return;
+    }
+    // Sort ascending for stable selection logic.
+    // Comparator is defined later in this file; use a local one to avoid
+    // forward-decl complexity.
+    struct _cmp {
+        static int asc(const void* a, const void* b)
+        {
+            const float fa = *(const float*)a;
+            const float fb = *(const float*)b;
+            if (fa < fb) {
+                return -1;
+            }
+            if (fa > fb) {
+                return 1;
+            }
+            return 0;
+        }
+    };
+    qsort(it->ends_sec.data, n, sizeof(float), _cmp::asc);
+
+    // in-place dedupe exact duplicates
+    float* d = (float*)it->ends_sec.data;
+    uint32_t w = 1;
+    for (uint32_t r = 1; r < n; r++) {
+        if (d[r] != d[w - 1]) {
+            d[w++] = d[r];
+        }
+    }
+    it->ends_sec.size = w;
+}
+
+static INLINE float _anim_item_end_for_begin(const psx_svg_anim_item* it, float begin_sec)
+{
+    if (!it) {
+        return 0.0f;
+    }
+    uint32_t n = psx_array_size((psx_array*)&it->ends_sec);
+    if (n == 0) {
+        return 0.0f;
+    }
+    // ends_sec is sorted ascending
+    for (uint32_t i = 0; i < n; i++) {
+        const float* ep = psx_array_get((psx_array*)&it->ends_sec, i, float);
+        float e = ep ? *ep : 0.0f;
+        if (e >= begin_sec) {
+            return e;
+        }
+    }
+    return 0.0f;
 }
 
 static INLINE void _anim_state_set_float(psx_svg_anim_state* s, const psx_svg_node* target, psx_svg_attr_type attr, float v)
@@ -475,6 +556,35 @@ static INLINE ps_bool _anim_eval_set(const psx_svg_anim_item* it, float doc_t, f
         return False;
     }
 
+    // If an explicit end (or end-list) is present, it can shorten the active interval.
+    // Effective end is the earliest end time >= current begin.
+    float end_sec = 0.0f;
+    if (psx_array_size((psx_array*)&it->ends_sec) > 0) {
+        end_sec = _anim_item_end_for_begin(it, begin_sec);
+    } else if (it->end_sec > 0.0f) {
+        end_sec = it->end_sec;
+    }
+    if (end_sec > 0.0f && end_sec < begin_sec) {
+        // invalid; ignore
+        end_sec = 0.0f;
+    }
+
+    // If explicit end is present and we've passed it, the interval is inactive
+    // for fill=remove, or held for fill=freeze.
+    if (end_sec > 0.0f && doc_t > end_sec) {
+        if (it->fill_mode == SVG_ANIMATION_FREEZE) {
+            *out_hold = True;
+            // still return the frozen end value
+            const psx_svg_attr* ato = _find_attr(it->anim_node, SVG_ATTR_TO);
+            if (!ato) {
+                return False;
+            }
+            *out_v = _attr_as_number(ato);
+            return True;
+        }
+        return False;
+    }
+
     // If dur is missing/0, SVG <set> is treated as an instant change.
     if (it->dur_sec <= 0.0f) {
         const psx_svg_attr* ato = _find_attr(it->anim_node, SVG_ATTR_TO);
@@ -482,10 +592,55 @@ static INLINE ps_bool _anim_eval_set(const psx_svg_anim_item* it, float doc_t, f
             return False;
         }
         *out_v = _attr_as_number(ato);
+        // end instant handling
+        if (end_sec > 0.0f && doc_t == end_sec) {
+            if (it->fill_mode == SVG_ANIMATION_FREEZE) {
+                *out_hold = True;
+                return True;
+            }
+            if (it->fill_mode == SVG_ANIMATION_REMOVE) {
+                return False;
+            }
+        }
         return True;
     }
 
     float local = doc_t - begin_sec;
+
+    if (end_sec > 0.0f) {
+        float active_dur = end_sec - begin_sec;
+        // Per SMIL, if end <= begin then interval is empty. Treat as no-op.
+        if (active_dur <= 0.0f) {
+            return False;
+        }
+
+        // Outside active interval
+        if (doc_t > end_sec) {
+            if (it->fill_mode == SVG_ANIMATION_FREEZE) {
+                *out_hold = True;
+                // treat as at end
+                local = active_dur;
+            } else {
+                return False;
+            }
+        }
+
+        // end instant
+        if (doc_t == end_sec) {
+            if (it->fill_mode == SVG_ANIMATION_FREEZE) {
+                *out_hold = True;
+                local = active_dur;
+            } else if (it->fill_mode == SVG_ANIMATION_REMOVE) {
+                return False;
+            }
+        }
+
+        // When explicit end is present, it defines the end of the active
+        // interval (regardless of declared dur).
+        if (local > active_dur) {
+            return False;
+        }
+    }
 
     // For <set>, value is constant during the active interval.
     // Do NOT wrap with fmod: repeats don't change the value and wrapping breaks
@@ -503,19 +658,37 @@ static INLINE ps_bool _anim_eval_set(const psx_svg_anim_item* it, float doc_t, f
         }
     }
 
-    // Active during [0, dur].
-    if (local > it->dur_sec) {
-        return False;
+    // Active interval end:
+    // - If explicit end is present: [begin, end]
+    // - Else: [begin, begin+dur]
+    if (end_sec > 0.0f) {
+        if (doc_t > end_sec) {
+            return False;
+        }
+        if (doc_t == end_sec && it->fill_mode == SVG_ANIMATION_REMOVE) {
+            return False;
+        }
+    } else {
+        // Active during [0, dur].
+        if (local > it->dur_sec) {
+            return False;
+        }
     }
 
     // If fill=freeze, keep value visible at (and after) the end instant.
     // This matters when local == dur (e.g. t == begin+dur).
-    if (local == it->dur_sec) {
-        if (it->fill_mode == SVG_ANIMATION_FREEZE) {
+    if (end_sec > 0.0f) {
+        if (doc_t == end_sec && it->fill_mode == SVG_ANIMATION_FREEZE) {
             *out_hold = True;
-        } else if (it->fill_mode == SVG_ANIMATION_REMOVE) {
-            // end instant is not active for remove
-            return False;
+        }
+    } else {
+        if (local == it->dur_sec) {
+            if (it->fill_mode == SVG_ANIMATION_FREEZE) {
+                *out_hold = True;
+            } else if (it->fill_mode == SVG_ANIMATION_REMOVE) {
+                // end instant is not active for remove
+                return False;
+            }
         }
     }
 
@@ -595,6 +768,7 @@ static void _collect_anims(psx_svg_player* p, const psx_svg_node* node)
             item.target_attr = target_attr;
 
             _anim_item_begin_list_init(&item);
+            _anim_item_end_list_init(&item);
 
             const psx_svg_attr* abegin = _find_attr(node, SVG_ATTR_BEGIN);
             if (abegin && abegin->val_type == SVG_ATTR_VALUE_PTR && abegin->value.val) {
@@ -616,6 +790,25 @@ static void _collect_anims(psx_svg_player* p, const psx_svg_node* node)
                 }
             } else {
                 item.begin_sec = _attr_as_begin_time_sec(abegin);
+            }
+
+            const psx_svg_attr* aend = _find_attr(node, SVG_ATTR_END);
+            if (aend && aend->val_type == SVG_ATTR_VALUE_PTR && aend->value.val) {
+                const psx_svg_attr_values_list* list = (const psx_svg_attr_values_list*)aend->value.val;
+                if (list->length > 0) {
+                    const float* vals = (const float*)&list->data[0];
+                    for (uint32_t i = 0; i < list->length; i++) {
+                        float ms = vals[i];
+                        float sec = (ms <= 0.0f) ? 0.0f : (ms * 0.001f);
+                        psx_array_append(&item.ends_sec, &sec);
+                    }
+                    _anim_item_end_list_normalize(&item);
+                    item.end_sec = _attr_as_time_sec(aend);
+                } else {
+                    item.end_sec = 0.0f;
+                }
+            } else {
+                item.end_sec = _attr_as_time_sec(aend);
             }
 
             item.dur_sec = _attr_as_time_sec(_find_attr(node, SVG_ATTR_DUR));
@@ -785,6 +978,7 @@ extern "C" {
             for (uint32_t i = 0; i < n; i++) {
                 psx_svg_anim_item* it = psx_array_get(&p->anims, i, psx_svg_anim_item);
                 _anim_item_begin_list_destroy(it);
+                _anim_item_end_list_destroy(it);
             }
         }
 
