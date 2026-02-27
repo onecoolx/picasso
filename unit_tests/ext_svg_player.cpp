@@ -1464,3 +1464,60 @@ TEST_F(SVGPlayerTest, AnimateValues_CalcModePaced_KeyTimesTakesPrecedence)
 
     psx_svg_player_destroy(p);
 }
+
+TEST_F(SVGPlayerTest, AnimateValues_CalcModePaced_Boundaries)
+{
+    static const char* svg =
+        "<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='100' height='100'>"
+        "  <rect id='r' x='0' y='0' width='10' height='10'>"
+        "    <animate attributeName='x' dur='1s' values='0;1;11' calcMode='paced' fill='freeze'/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_player* p = psx_svg_player_create_from_data(svg, (uint32_t)strlen(svg), NULL, &r);
+    EXPECT_TRUE(p != NULL);
+    if (!p) {
+        return;
+    }
+    EXPECT_EQ(S_OK, r);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    EXPECT_TRUE(n != NULL);
+    if (!n) {
+        psx_svg_player_destroy(p);
+        return;
+    }
+
+    psx_svg_player_play(p);
+    psx_svg_player_tick(p, 0.0f);
+
+    // boundary at end of first segment: total distances 1 and 10 => boundary time = 1/11
+    psx_svg_player_seek(p, 1.0f / 11.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float v = 0.0f;
+        if (!psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v)) {
+            EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+            psx_svg_player_destroy(p);
+            return;
+        }
+        // deterministic choice: boundary maps to start of second segment, value should be 1
+        EXPECT_NEAR(v, 1.0f, 0.10f);
+    }
+
+    // t=1 should be last value
+    psx_svg_player_seek(p, 1.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float v = 0.0f;
+        if (!psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v)) {
+            EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+            psx_svg_player_destroy(p);
+            return;
+        }
+        EXPECT_NEAR(v, 11.0f, 0.01f);
+    }
+
+    psx_svg_player_destroy(p);
+}
