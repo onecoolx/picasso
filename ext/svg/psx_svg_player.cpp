@@ -72,10 +72,10 @@ typedef struct {
     uint32_t repeat_count; // 0 => indefinite
     uint32_t fill_mode; // SVG_ANIMATION_*
 
-    // Minimal begin list support: store up to N begin times (sec) and choose
-    // the latest begin <= doc_t (re-trigger).
-    uint32_t begin_count;
-    float begin_list_sec[4];
+    // Begin list support: store begin times (sec) and choose the latest
+    // begin <= doc_t (re-trigger).
+    // NOTE: stored as psx_array of float.
+    psx_array begins_sec;
 } psx_svg_anim_item;
 
 typedef struct {
@@ -260,10 +260,15 @@ static INLINE void _anim_item_begin_list_init(psx_svg_anim_item* it)
     if (!it) {
         return;
     }
-    it->begin_count = 0;
-    for (uint32_t i = 0; i < 4; i++) {
-        it->begin_list_sec[i] = 0.0f;
+    psx_array_init_type(&it->begins_sec, float);
+}
+
+static INLINE void _anim_item_begin_list_destroy(psx_svg_anim_item* it)
+{
+    if (!it) {
+        return;
     }
+    psx_array_destroy(&it->begins_sec);
 }
 
 static INLINE float _anim_item_begin_for_time(const psx_svg_anim_item* it, float doc_t)
@@ -271,28 +276,70 @@ static INLINE float _anim_item_begin_for_time(const psx_svg_anim_item* it, float
     if (!it) {
         return 0.0f;
     }
-    if (it->begin_count == 0) {
+    if (psx_array_empty((psx_array*)&it->begins_sec)) {
         return it->begin_sec;
     }
     // choose latest begin <= doc_t
     float best = -1.0f;
-    for (uint32_t i = 0; i < it->begin_count; i++) {
-        float b = it->begin_list_sec[i];
+    const uint32_t n = psx_array_size((psx_array*)&it->begins_sec);
+    for (uint32_t i = 0; i < n; i++) {
+        const float* bp = psx_array_get((psx_array*)&it->begins_sec, i, float);
+        float b = bp ? *bp : 0.0f;
         if (b <= doc_t && b > best) {
             best = b;
         }
     }
     if (best < 0.0f) {
         // all begins are in the future: keep earliest (for consistency)
-        float earliest = it->begin_list_sec[0];
-        for (uint32_t i = 1; i < it->begin_count; i++) {
-            if (it->begin_list_sec[i] < earliest) {
-                earliest = it->begin_list_sec[i];
+        const float* ep0 = psx_array_get((psx_array*)&it->begins_sec, 0, float);
+        float earliest = ep0 ? *ep0 : 0.0f;
+        for (uint32_t i = 1; i < n; i++) {
+            const float* ep = psx_array_get((psx_array*)&it->begins_sec, i, float);
+            float e = ep ? *ep : 0.0f;
+            if (e < earliest) {
+                earliest = e;
             }
         }
         return earliest;
     }
     return best;
+}
+
+static INLINE int _float_cmp_asc(const void* a, const void* b)
+{
+    const float fa = *(const float*)a;
+    const float fb = *(const float*)b;
+    if (fa < fb) {
+        return -1;
+    }
+    if (fa > fb) {
+        return 1;
+    }
+    return 0;
+}
+
+static INLINE void _anim_item_begin_list_normalize(psx_svg_anim_item* it)
+{
+    if (!it) {
+        return;
+    }
+    uint32_t n = psx_array_size(&it->begins_sec);
+    if (n <= 1) {
+        return;
+    }
+
+    // Sort ascending for stable selection logic and future extensions.
+    qsort(it->begins_sec.data, n, sizeof(float), _float_cmp_asc);
+
+    // Dedupe exact-equal values in-place.
+    float* v = (float*)it->begins_sec.data;
+    uint32_t w = 1;
+    for (uint32_t i = 1; i < n; i++) {
+        if (v[i] != v[w - 1]) {
+            v[w++] = v[i];
+        }
+    }
+    it->begins_sec.size = w;
 }
 
 typedef struct {
@@ -345,14 +392,13 @@ static INLINE void _begin_list_from_attr(psx_svg_begin_list* bl, const psx_svg_a
 
 static INLINE float _begin_list_current_begin(const psx_svg_begin_list* bl, float doc_t)
 {
+    // Legacy helper retained for older code paths.
+    // Current begin-list semantics are implemented in psx_svg_anim_item
+    // via _anim_item_begin_for_time().
+    (void)doc_t;
     if (!bl || !bl->valid) {
         return 0.0f;
     }
-    // Minimal semantics: if list exists, allow re-triggering by using the latest
-    // begin time that is <= doc_t.
-    // NOTE: we currently only keep the earliest begin in begin_sec; true list
-    // support will be added later.
-    (void)doc_t;
     return bl->begin_sec;
 }
 
@@ -553,19 +599,16 @@ static void _collect_anims(psx_svg_player* p, const psx_svg_node* node)
             const psx_svg_attr* abegin = _find_attr(node, SVG_ATTR_BEGIN);
             if (abegin && abegin->val_type == SVG_ATTR_VALUE_PTR && abegin->value.val) {
                 const psx_svg_attr_values_list* list = (const psx_svg_attr_values_list*)abegin->value.val;
-                const uint32_t cap = 4;
-                uint32_t n = list->length;
-                if (n > cap) {
-                    n = cap;
-                }
-                if (n > 0) {
+                if (list->length > 0) {
                     const float* vals = (const float*)&list->data[0];
-                    for (uint32_t i = 0; i < n; i++) {
+                    for (uint32_t i = 0; i < list->length; i++) {
                         float ms = vals[i];
                         float sec = (ms <= 0.0f) ? 0.0f : (ms * 0.001f);
-                        item.begin_list_sec[i] = sec;
+                        psx_array_append(&item.begins_sec, &sec);
                     }
-                    item.begin_count = n;
+
+                    _anim_item_begin_list_normalize(&item);
+
                     // begin_sec used for duration hint; keep earliest.
                     item.begin_sec = _attr_as_begin_time_sec(abegin);
                 } else {
@@ -734,6 +777,15 @@ extern "C" {
     {
         if (!p) {
             return;
+        }
+
+        // Per-item dynamic memory
+        {
+            uint32_t n = psx_array_size(&p->anims);
+            for (uint32_t i = 0; i < n; i++) {
+                psx_svg_anim_item* it = psx_array_get(&p->anims, i, psx_svg_anim_item);
+                _anim_item_begin_list_destroy(it);
+            }
         }
 
         psx_array_destroy(&p->anim_state.overrides);

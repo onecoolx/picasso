@@ -482,6 +482,95 @@ TEST_F(SVGPlayerTest, BeginList_MultiTrigger)
     psx_svg_player_destroy(p);
 }
 
+TEST_F(SVGPlayerTest, BeginList_MoreThanFourEntries)
+{
+    // Begin list is dynamic; ensure a late begin triggers correctly.
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
+        "    <animate attributeName=\"x\" from=\"0\" to=\"10\" begin=\"0s;1s;2s;3s;4s\" dur=\"1s\" fill=\"remove\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_player* p = psx_svg_player_create_from_data(svg, (uint32_t)strlen(svg), NULL, &r);
+    ASSERT_NE((psx_svg_player*)NULL, p);
+    EXPECT_EQ(S_OK, r);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    ASSERT_TRUE(n != NULL);
+
+    // At t=4.1s, latest begin<=t is 4.0s => local=0.1s => x ~ 1.0
+    psx_svg_player_seek(p, 4.1f);
+    {
+        float v = 0;
+        ASSERT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+        EXPECT_NEAR(v, 1.0f, 0.05f);
+    }
+
+    psx_svg_player_destroy(p);
+}
+
+TEST_F(SVGPlayerTest, BeginList_UnorderedAndDuplicate_Normalized)
+{
+    // Unordered + duplicates: player should sort/dedupe so later triggers work.
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
+        "    <animate attributeName=\"x\" from=\"0\" to=\"10\" begin=\"2s;0s;1s;1s\" dur=\"1s\" fill=\"remove\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_player* p = psx_svg_player_create_from_data(svg, (uint32_t)strlen(svg), NULL, &r);
+    ASSERT_NE((psx_svg_player*)NULL, p);
+    EXPECT_EQ(S_OK, r);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    ASSERT_TRUE(n != NULL);
+
+    // t=1.1s should pick begin=1.0s (even though list is unordered/has dup)
+    psx_svg_player_seek(p, 1.1f);
+    {
+        float v = 0;
+        ASSERT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+        EXPECT_NEAR(v, 1.0f, 0.05f);
+    }
+
+    // t=2.1s should pick begin=2.0s
+    psx_svg_player_seek(p, 2.1f);
+    {
+        float v = 0;
+        ASSERT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+        EXPECT_NEAR(v, 1.0f, 0.05f);
+    }
+
+    psx_svg_player_destroy(p);
+}
+
+TEST_F(SVGPlayerTest, BeginList_SetElementLeakRepro)
+{
+    // Historically, <set begin="...;..."> triggered a leak under LSan.
+    // This test is intended to keep that scenario covered.
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
+        "    <set attributeName=\"x\" to=\"10\" begin=\"1s;0s\" dur=\"1s\" fill=\"remove\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_player* p = psx_svg_player_create_from_data(svg, (uint32_t)strlen(svg), NULL, &r);
+    ASSERT_NE((psx_svg_player*)NULL, p);
+    EXPECT_EQ(S_OK, r);
+
+    // Force a couple seeks to exercise player evaluation.
+    psx_svg_player_seek(p, 0.5f);
+    psx_svg_player_seek(p, 1.1f);
+
+    psx_svg_player_destroy(p);
+}
+
 TEST_F(SVGPlayerTest, AnimateRectFillOpacity_FromTo)
 {
     const char* svg =
