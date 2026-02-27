@@ -743,6 +743,8 @@ static INLINE ps_bool _anim_eval_simple(const psx_svg_anim_item* it, float doc_t
                     seg_t0 = 0.0f;
                     seg_t1 = 1.0f;
                 } else {
+                    // Clamp t to avoid float error causing "no segment selected" at the end.
+                    float tt = _anim_clampf(t, 0.0f, 1.0f);
                     float acc = 0.0f;
                     for (uint32_t i = 0; i + 1 < vlist->length; i++) {
                         float d = vals[i + 1] - vals[i];
@@ -752,7 +754,8 @@ static INLINE ps_bool _anim_eval_simple(const psx_svg_anim_item* it, float doc_t
                         float w = d / total_len;
                         float a = acc;
                         float b = acc + w;
-                        if (t >= a && (t <= b || i + 2 == vlist->length)) {
+                        // Use half-open intervals [a,b) except for the last segment [a,1].
+                        if ((tt >= a && tt < b) || (i + 2 == vlist->length && tt >= a && tt <= 1.0f)) {
                             seg = i;
                             seg_t0 = a;
                             seg_t1 = b;

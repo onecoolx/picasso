@@ -27,6 +27,7 @@
 #include "test.h"
 
 #include "psx_svg_node.h"
+#include "ext/svg/psx_svg_parser.h"
 
 class SVGParserTest : public ::testing::Test
 {
@@ -849,11 +850,15 @@ TEST_F(SVGParserTest, AnimateMotionTest)
 
     EXPECT_EQ(SVG_TAG_ANIMATE_MOTION, anim_node->type());
 
-    psx_svg_attr_values_list* lb = (psx_svg_attr_values_list*)anim_node->attr_at(0)->value.val;
-    EXPECT_EQ(lb->length, 1);
-
-    float* fb = (float*)(&lb->data);
-    EXPECT_FLOAT_EQ(*fb, 500.0f);
+    // begin is now parsed as a timing list (not a float values list)
+    const psx_svg_timing_list* tl = (const psx_svg_timing_list*)anim_node->attr_at(0)->value.val;
+    EXPECT_TRUE(tl != NULL);
+    if (tl) {
+        EXPECT_EQ(tl->offsets_len, (uint32_t)1);
+        if (tl->offsets_len >= 1) {
+            EXPECT_FLOAT_EQ(tl->offsets_ms[0], 500.0f);
+        }
+    }
 
     float dr = anim_node->attr_at(1)->value.fval;
     EXPECT_FLOAT_EQ(dr, 3100.0f);
@@ -864,7 +869,7 @@ TEST_F(SVGParserTest, AnimateMotionTest)
     psx_svg_attr_values_list* l = (psx_svg_attr_values_list*)anim_node->attr_at(3)->value.val;
     EXPECT_EQ(l->length, 3);
 
-    float* pt = (float*)(&l->data);
+    float* pt = (float*)(&l->data[0]);
     EXPECT_FLOAT_EQ(pt[0], 0.5f);
     EXPECT_FLOAT_EQ(pt[1], 0.8f);
     EXPECT_FLOAT_EQ(pt[2], 1.0f);
@@ -885,21 +890,31 @@ TEST_F(SVGParserTest, AnimateMotionTest)
 
     EXPECT_EQ(SVG_TAG_ANIMATE_MOTION, anim_node->type());
 
-    lb = (psx_svg_attr_values_list*)anim_node->attr_at(0)->value.val;
-    EXPECT_EQ(lb->length, 2);
-    fb = (float*)(&lb->data);
-    EXPECT_FLOAT_EQ(fb[0], 5000.0f);
-    EXPECT_FLOAT_EQ(fb[1], 2000.0f);
+    // begin list
+    tl = (const psx_svg_timing_list*)anim_node->attr_at(0)->value.val;
+    EXPECT_TRUE(tl != NULL);
+    if (tl) {
+        EXPECT_EQ(tl->offsets_len, (uint32_t)2);
+        if (tl->offsets_len >= 2) {
+            EXPECT_FLOAT_EQ(tl->offsets_ms[0], 5000.0f);
+            EXPECT_FLOAT_EQ(tl->offsets_ms[1], 2000.0f);
+        }
+    }
 
-    lb = (psx_svg_attr_values_list*)anim_node->attr_at(1)->value.val;
-    EXPECT_EQ(lb->length, 2);
-    fb = (float*)(&lb->data);
-    EXPECT_FLOAT_EQ(fb[0], 8000.0f);
-    EXPECT_FLOAT_EQ(fb[1], 10000.0f);
+    // end list
+    tl = (const psx_svg_timing_list*)anim_node->attr_at(1)->value.val;
+    EXPECT_TRUE(tl != NULL);
+    if (tl) {
+        EXPECT_EQ(tl->offsets_len, (uint32_t)2);
+        if (tl->offsets_len >= 2) {
+            EXPECT_FLOAT_EQ(tl->offsets_ms[0], 8000.0f);
+            EXPECT_FLOAT_EQ(tl->offsets_ms[1], 10000.0f);
+        }
+    }
 
-    lb = (psx_svg_attr_values_list*)anim_node->attr_at(2)->value.val;
+    psx_svg_attr_values_list* lb = (psx_svg_attr_values_list*)anim_node->attr_at(2)->value.val;
     EXPECT_EQ(lb->length, 2);
-    psx_svg_point* ps = (psx_svg_point*)(&lb->data);
+    psx_svg_point* ps = (psx_svg_point*)(&lb->data[0]);
     EXPECT_FLOAT_EQ(ps[0].x, 100.0f);
     EXPECT_FLOAT_EQ(ps[0].y, 50.0f);
     EXPECT_FLOAT_EQ(ps[1].x, 200.0f);
@@ -907,14 +922,14 @@ TEST_F(SVGParserTest, AnimateMotionTest)
 
     lb = (psx_svg_attr_values_list*)anim_node->attr_at(3)->value.val;
     EXPECT_EQ(lb->length, 2);
-    fb = (float*)(&lb->data);
+    float* fb = (float*)(&lb->data[0]);
     EXPECT_FLOAT_EQ(fb[0], 100.0f);
     EXPECT_FLOAT_EQ(fb[1], 200.0f);
 
     l = (psx_svg_attr_values_list*)anim_node->attr_at(4)->value.val;
     EXPECT_EQ(l->length, 4);
 
-    ps = (psx_svg_point*)(&l->data);
+    ps = (psx_svg_point*)(&l->data[0]);
     EXPECT_FLOAT_EQ(ps[0].x, 0.0f);
     EXPECT_FLOAT_EQ(ps[0].y, 0.0f);
     EXPECT_FLOAT_EQ(ps[1].x, 1.5f);
