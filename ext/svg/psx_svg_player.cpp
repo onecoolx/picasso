@@ -37,6 +37,7 @@
 // Renderer queries it via svg_anim_get_attr_override (declared in psx_svg_render.cpp).
 struct psx_svg_anim_state {
     psx_array overrides;
+    psx_array transforms;
 };
 
 // NOTE: renderer currently does not query overrides. This will be wired when
@@ -97,12 +98,70 @@ typedef struct {
     float fval;
 } psx_svg_anim_override_item;
 
+typedef struct {
+    const psx_svg_node* target;
+    float a;
+    float b;
+    float c;
+    float d;
+    float e;
+    float f;
+} psx_svg_anim_transform_item;
+
 static INLINE void _anim_state_reset(psx_svg_anim_state* s)
 {
     if (!s) {
         return;
     }
     psx_array_clear(&s->overrides);
+    psx_array_clear(&s->transforms);
+}
+
+static INLINE void _anim_state_set_transform(psx_svg_anim_state* s, const psx_svg_node* target,
+                                             float a, float b, float c, float d, float e, float f)
+{
+    if (!s || !target) {
+        return;
+    }
+
+    uint32_t n = psx_array_size(&s->transforms);
+    for (uint32_t i = 0; i < n; i++) {
+        psx_svg_anim_transform_item* it = psx_array_get(&s->transforms, i, psx_svg_anim_transform_item);
+        if (it && it->target == target) {
+            it->a = a;
+            it->b = b;
+            it->c = c;
+            it->d = d;
+            it->e = e;
+            it->f = f;
+            return;
+        }
+    }
+
+    psx_array_append(&s->transforms, NULL);
+    psx_svg_anim_transform_item* dst = psx_array_get_last(&s->transforms, psx_svg_anim_transform_item);
+    dst->target = target;
+    dst->a = a;
+    dst->b = b;
+    dst->c = c;
+    dst->d = d;
+    dst->e = e;
+    dst->f = f;
+}
+
+static INLINE const psx_svg_anim_transform_item* _anim_state_find_transform(const psx_svg_anim_state* s, const psx_svg_node* target)
+{
+    if (!s || !target) {
+        return NULL;
+    }
+    uint32_t n = psx_array_size((psx_array*)&s->transforms);
+    for (uint32_t i = 0; i < n; i++) {
+        const psx_svg_anim_transform_item* it = psx_array_get((psx_array*)&s->transforms, i, psx_svg_anim_transform_item);
+        if (it && it->target == target) {
+            return it;
+        }
+    }
+    return NULL;
 }
 
 static INLINE void _anim_item_end_list_init(psx_svg_anim_item* it)
@@ -218,6 +277,33 @@ static INLINE const psx_svg_anim_override_item* _anim_state_find(const psx_svg_a
 static INLINE float _anim_lerp(float a, float b, float t)
 {
     return a + (b - a) * t;
+}
+
+static INLINE ps_bool _anim_values_list_get_transform(const psx_svg_attr_values_list* list, uint32_t idx,
+                                                      const float** out_vals, uint32_t* out_len)
+{
+    if (!out_vals || !out_len) {
+        return False;
+    }
+    *out_vals = NULL;
+    *out_len = 0;
+
+    if (!list || idx >= list->length) {
+        return False;
+    }
+
+    // Must match psx_svg_parser.cpp::_transform_values_list
+    struct _anim_transform_values_list {
+        uint32_t length;
+        float data[4];
+    };
+
+    const struct _anim_transform_values_list* base =
+        (const struct _anim_transform_values_list*)(&list->data[0]);
+    const struct _anim_transform_values_list* it = base + idx;
+    *out_vals = &it->data[0];
+    *out_len = it->length;
+    return True;
 }
 
 static INLINE float _anim_clampf(float v, float lo, float hi)
@@ -903,6 +989,82 @@ static INLINE ps_bool _anim_eval_simple(const psx_svg_anim_item* it, float doc_t
     return True;
 }
 
+static INLINE ps_bool _anim_eval_transform_translate_discrete(const psx_svg_anim_item* it, float doc_t,
+                                                              float* out_a, float* out_b, float* out_c,
+                                                              float* out_d, float* out_e, float* out_f)
+{
+    if (!it || !out_a || !out_b || !out_c || !out_d || !out_e || !out_f) {
+        return False;
+    }
+
+    *out_a = 1.0f;
+    *out_b = 0.0f;
+    *out_c = 0.0f;
+    *out_d = 1.0f;
+    *out_e = 0.0f;
+    *out_f = 0.0f;
+
+    if (it->dur_sec <= 0.0f) {
+        return False;
+    }
+
+    float begin_sec = _anim_item_begin_for_time(it, doc_t);
+    if (doc_t < begin_sec) {
+        return False;
+    }
+
+    float local = doc_t - begin_sec;
+    // No repeat support for animateTransform in this minimal step.
+    if (local < 0.0f) {
+        return False;
+    }
+    if (local >= it->dur_sec) {
+        // fill handling is done by caller for now; keep inactive beyond dur.
+        return False;
+    }
+
+    float t = _anim_clampf(local / it->dur_sec, 0.0f, 1.0f);
+
+    const psx_svg_attr* avals = _find_attr(it->anim_node, SVG_ATTR_VALUES);
+    if (!avals || avals->val_type != SVG_ATTR_VALUE_PTR || !avals->value.val) {
+        return False;
+    }
+
+    const psx_svg_attr_values_list* vlist = (const psx_svg_attr_values_list*)avals->value.val;
+    if (vlist->length < 1) {
+        return False;
+    }
+
+    // Parser stores animateTransform values as `_transform_values_list` entries.
+    // See psx_svg_parser.cpp::_transform_values_list.
+    uint32_t idx = 0;
+    if (vlist->length >= 2 && t >= 0.5f) {
+        idx = 1;
+    }
+
+    const float* base = NULL;
+    uint32_t vlen = 0;
+    if (!_anim_values_list_get_transform(vlist, idx, &base, &vlen) || !base) {
+        return False;
+    }
+
+    float tx = 0.0f;
+    float ty = 0.0f;
+    if (vlen >= 1) {
+        tx = base[0];
+    }
+    if (vlen >= 2) {
+        ty = base[1];
+    }
+
+    *out_e = tx;
+    *out_f = ty;
+    return True;
+}
+
+// Note: psx_svg_attr_values_list is a variable-sized blob (length + data[]).
+// The element layout depends on which attribute it represents.
+
 static INLINE ps_bool _anim_eval_set(const psx_svg_anim_item* it, float doc_t, float* out_v, ps_bool* out_hold)
 {
     if (!it || !out_v || !out_hold) {
@@ -1289,6 +1451,7 @@ extern "C" {
         p->duration_sec = -1.0f;
 
         psx_array_init(&p->anim_state.overrides, sizeof(psx_svg_anim_override_item));
+        psx_array_init(&p->anim_state.transforms, sizeof(psx_svg_anim_transform_item));
 
         psx_array_init(&p->anims, sizeof(psx_svg_anim_item));
         _collect_anims(p, p->root);
@@ -1387,6 +1550,7 @@ extern "C" {
         }
 
         psx_array_destroy(&p->anim_state.overrides);
+        psx_array_destroy(&p->anim_state.transforms);
 
         psx_array_destroy(&p->anims);
 
@@ -1454,10 +1618,18 @@ extern "C" {
         for (uint32_t i = 0; i < n; i++) {
             const psx_svg_anim_item* it = psx_array_get(&p->anims, i, psx_svg_anim_item);
 
-            if (!(it->tag == SVG_TAG_ANIMATE || it->tag == SVG_TAG_SET || it->tag == SVG_TAG_ANIMATE_COLOR)) {
+            if (!(it->tag == SVG_TAG_ANIMATE || it->tag == SVG_TAG_SET || it->tag == SVG_TAG_ANIMATE_COLOR || it->tag == SVG_TAG_ANIMATE_TRANSFORM)) {
                 continue;
             }
-            if (!(it->target_attr == SVG_ATTR_X || it->target_attr == SVG_ATTR_Y || it->target_attr == SVG_ATTR_WIDTH || it->target_attr == SVG_ATTR_HEIGHT || it->target_attr == SVG_ATTR_OPACITY || it->target_attr == SVG_ATTR_RX || it->target_attr == SVG_ATTR_RY || it->target_attr == SVG_ATTR_STROKE_WIDTH || it->target_attr == SVG_ATTR_FILL_OPACITY || it->target_attr == SVG_ATTR_GRADIENT_STOP_OPACITY || it->target_attr == SVG_ATTR_FILL)) {
+            if (!(it->target_attr == SVG_ATTR_X || it->target_attr == SVG_ATTR_Y || it->target_attr == SVG_ATTR_WIDTH || it->target_attr == SVG_ATTR_HEIGHT || it->target_attr == SVG_ATTR_OPACITY || it->target_attr == SVG_ATTR_RX || it->target_attr == SVG_ATTR_RY || it->target_attr == SVG_ATTR_STROKE_WIDTH || it->target_attr == SVG_ATTR_FILL_OPACITY || it->target_attr == SVG_ATTR_GRADIENT_STOP_OPACITY || it->target_attr == SVG_ATTR_FILL || it->target_attr == SVG_ATTR_TRANSFORM)) {
+                continue;
+            }
+
+            if (it->tag == SVG_TAG_ANIMATE_TRANSFORM && it->target_attr == SVG_ATTR_TRANSFORM) {
+                float a = 1, b = 0, c = 0, d = 1, e = 0, f = 0;
+                if (_anim_eval_transform_translate_discrete(it, p->time_sec, &a, &b, &c, &d, &e, &f)) {
+                    _anim_state_set_transform(&p->anim_state, it->target_node, a, b, c, d, e, f);
+                }
                 continue;
             }
 
@@ -1510,11 +1682,19 @@ extern "C" {
         for (uint32_t i = 0; i < n; i++) {
             const psx_svg_anim_item* it = psx_array_get(&p->anims, i, psx_svg_anim_item);
 
-            if (!(it->tag == SVG_TAG_ANIMATE || it->tag == SVG_TAG_SET || it->tag == SVG_TAG_ANIMATE_COLOR)) {
+            if (!(it->tag == SVG_TAG_ANIMATE || it->tag == SVG_TAG_SET || it->tag == SVG_TAG_ANIMATE_COLOR || it->tag == SVG_TAG_ANIMATE_TRANSFORM)) {
                 continue;
             }
             // Tiny 1.2 minimal player: numeric attributes + animateColor(fill).
-            if (!(it->target_attr == SVG_ATTR_X || it->target_attr == SVG_ATTR_Y || it->target_attr == SVG_ATTR_WIDTH || it->target_attr == SVG_ATTR_HEIGHT || it->target_attr == SVG_ATTR_OPACITY || it->target_attr == SVG_ATTR_RX || it->target_attr == SVG_ATTR_RY || it->target_attr == SVG_ATTR_STROKE_WIDTH || it->target_attr == SVG_ATTR_FILL_OPACITY || it->target_attr == SVG_ATTR_GRADIENT_STOP_OPACITY || it->target_attr == SVG_ATTR_FILL)) {
+            if (!(it->target_attr == SVG_ATTR_X || it->target_attr == SVG_ATTR_Y || it->target_attr == SVG_ATTR_WIDTH || it->target_attr == SVG_ATTR_HEIGHT || it->target_attr == SVG_ATTR_OPACITY || it->target_attr == SVG_ATTR_RX || it->target_attr == SVG_ATTR_RY || it->target_attr == SVG_ATTR_STROKE_WIDTH || it->target_attr == SVG_ATTR_FILL_OPACITY || it->target_attr == SVG_ATTR_GRADIENT_STOP_OPACITY || it->target_attr == SVG_ATTR_FILL || it->target_attr == SVG_ATTR_TRANSFORM)) {
+                continue;
+            }
+
+            if (it->tag == SVG_TAG_ANIMATE_TRANSFORM && it->target_attr == SVG_ATTR_TRANSFORM) {
+                float a = 1, b = 0, c = 0, d = 1, e = 0, f = 0;
+                if (_anim_eval_transform_translate_discrete(it, p->time_sec, &a, &b, &c, &d, &e, &f)) {
+                    _anim_state_set_transform(&p->anim_state, it->target_node, a, b, c, d, e, f);
+                }
                 continue;
             }
 
@@ -1695,6 +1875,42 @@ extern "C" {
             return True;
         }
         return False;
+    }
+
+    // Debug API for transform overrides.
+    // Tiny 1.2 step-3: animateTransform will drive this.
+    ps_bool psx_svg_player_debug_get_transform_override(const psx_svg_player* p,
+                                                        const psx_svg_node* target,
+                                                        float* a, float* b, float* c, float* d, float* e, float* f)
+    {
+        if (!p || !target) {
+            if (a) { *a = 1.0f; }
+            if (b) { *b = 0.0f; }
+            if (c) { *c = 0.0f; }
+            if (d) { *d = 1.0f; }
+            if (e) { *e = 0.0f; }
+            if (f) { *f = 0.0f; }
+            return False;
+        }
+
+        const psx_svg_anim_transform_item* it = _anim_state_find_transform(&p->anim_state, target);
+        if (!it) {
+            if (a) { *a = 1.0f; }
+            if (b) { *b = 0.0f; }
+            if (c) { *c = 0.0f; }
+            if (d) { *d = 1.0f; }
+            if (e) { *e = 0.0f; }
+            if (f) { *f = 0.0f; }
+            return False;
+        }
+
+        if (a) { *a = it->a; }
+        if (b) { *b = it->b; }
+        if (c) { *c = it->c; }
+        if (d) { *d = it->d; }
+        if (e) { *e = it->e; }
+        if (f) { *f = it->f; }
+        return True;
     }
 
 } // extern "C"
