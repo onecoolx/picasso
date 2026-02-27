@@ -1813,7 +1813,7 @@ static INLINE void _process_animation_attr_values(psx_svg_node* node, psx_svg_at
         ctx.list = NULL;
         _parse_animation_value_list(node, attr, val_start, val_end, dpi, _animation_key_splines_cb, &ctx);
         attr->value.val = ctx.list;
-    } else if ((type == SVG_ATTR_BEGIN || type == SVG_ATTR_END) && node->type() != SVG_TAG_SET) {
+    } else if ((type == SVG_ATTR_BEGIN || type == SVG_ATTR_END)) {
         attr->val_type = SVG_ATTR_VALUE_PTR;
         struct _parse_value_list_context ctx;
         ctx.mem_size = 0;
@@ -1821,14 +1821,6 @@ static INLINE void _process_animation_attr_values(psx_svg_node* node, psx_svg_at
         ctx.list = NULL;
         _parse_animation_value_list(node, attr, val_start, val_end, dpi, _animation_begin_end_cb, &ctx);
         attr->value.val = ctx.list;
-    } else if (node->type() == SVG_TAG_SET && (type == SVG_ATTR_BEGIN || type == SVG_ATTR_END)) {
-        // For <set>, we only support simple offset clock values (e.g. "1s").
-        // Store it as DATA(fval ms) so runtime can treat it like other clock-time attrs.
-        // NOTE: begin/end value lists are only supported for non-<set> elements.
-        attr->val_type = SVG_ATTR_VALUE_DATA;
-        float ms = 0.0f;
-        val_start = _parse_clock_time(val_start, val_end, &ms);
-        attr->value.fval = ms;
     } else {
         _parse_animation_value(node, attr, val_start, val_end, dpi);
     }
