@@ -74,6 +74,12 @@ typedef struct {
     float repeat_dur_sec; // optional explicit repeat duration, 0 => unspecified
     uint32_t fill_mode; // SVG_ANIMATION_*
 
+    // Minimal Tiny 1.2 external event trigger support.
+    // If begin is specified as a non-numeric token (e.g. begin="click"), we
+    // store the trigger name and allow external callers to start the animation
+    // via psx_svg_player_trigger(). Owned by the player.
+    const char* begin_event;
+
     // Begin list support: store begin times (sec) and choose the latest
     // begin <= doc_t (re-trigger).
     // NOTE: stored as psx_array of float.
@@ -351,12 +357,72 @@ static INLINE void _anim_item_begin_list_destroy(psx_svg_anim_item* it)
         return;
     }
     psx_array_destroy(&it->begins_sec);
+
+    if (it->begin_event) {
+        mem_free((void*)it->begin_event);
+        it->begin_event = NULL;
+    }
+}
+
+static INLINE const char* _dup_cstr(const char* s)
+{
+    if (!s) {
+        return NULL;
+    }
+    size_t n = strlen(s);
+    char* d = (char*)mem_malloc((uint32_t)n + 1);
+    if (!d) {
+        return NULL;
+    }
+    mem_copy(d, s, (uint32_t)n);
+    d[n] = '\0';
+    return d;
+}
+
+static INLINE ps_bool _is_clock_value_token(const char* s)
+{
+    if (!s) {
+        return False;
+    }
+    while (*s && isspace(*s)) {
+        s++;
+    }
+    if (!*s) {
+        return False;
+    }
+    // Clock-values start with digit, sign or '.'
+    return (strchr("0123456789+-.", *s) != NULL) ? True : False;
+}
+
+static INLINE const char* _find_attr_string_raw(const psx_svg_node* node, psx_svg_attr_type type)
+{
+    if (!node) {
+        return NULL;
+    }
+    uint32_t n = node->attr_count();
+    for (uint32_t i = 0; i < n; i++) {
+        const psx_svg_attr* a = node->attr_at(i);
+        if (!a) {
+            continue;
+        }
+        if ((psx_svg_attr_type)a->attr_id != type) {
+            continue;
+        }
+        // begin/end are stored as timing list; no raw string is available here.
+        return NULL;
+    }
+    return NULL;
 }
 
 static INLINE float _anim_item_begin_for_time(const psx_svg_anim_item* it, float doc_t)
 {
     if (!it) {
         return 0.0f;
+    }
+    // Event-triggered animations: no instance times => not active.
+    if (it->begin_event && psx_array_empty((psx_array*)&it->begins_sec)) {
+        (void)doc_t;
+        return 1e30f;
     }
     if (psx_array_empty((psx_array*)&it->begins_sec)) {
         return it->begin_sec;
@@ -789,42 +855,81 @@ static void _collect_anims(psx_svg_player* p, const psx_svg_node* node)
             _anim_item_end_list_init(&item);
 
             const psx_svg_attr* abegin = _find_attr(node, SVG_ATTR_BEGIN);
-            if (abegin && abegin->val_type == SVG_ATTR_VALUE_PTR && abegin->value.val) {
-                const psx_svg_attr_values_list* list = (const psx_svg_attr_values_list*)abegin->value.val;
-                if (list->length > 0) {
-                    const float* vals = (const float*)&list->data[0];
-                    for (uint32_t i = 0; i < list->length; i++) {
-                        float ms = vals[i];
-                        float sec = (ms <= 0.0f) ? 0.0f : (ms * 0.001f);
-                        psx_array_append(&item.begins_sec, &sec);
+            if (abegin && abegin->val_type == SVG_ATTR_VALUE_TIMING_LIST_PTR && abegin->value.val
+                && (node->type() == SVG_TAG_SET || node->type() == SVG_TAG_ANIMATE || node->type() == SVG_TAG_ANIMATE_COLOR
+                    || node->type() == SVG_TAG_ANIMATE_TRANSFORM || node->type() == SVG_TAG_ANIMATE_MOTION)
+                && (abegin->attr_id == SVG_ATTR_BEGIN)) {
+                const psx_svg_timing_list* tl = (const psx_svg_timing_list*)abegin->value.val;
+                if (t == SVG_TAG_SET && tl->event_token) {
+                    item.begin_event = _dup_cstr(tl->event_token);
+                    psx_array_clear(&item.begins_sec);
+                    item.begin_sec = 1e30f; // don't auto-activate until triggered
+                }
+                for (uint32_t i = 0; i < tl->offsets_len; i++) {
+                    float ms = tl->offsets_ms ? tl->offsets_ms[i] : 0.0f;
+                    float sec = (ms <= 0.0f) ? 0.0f : (ms * 0.001f);
+                    psx_array_append(&item.begins_sec, &sec);
+                }
+                _anim_item_begin_list_normalize(&item);
+                if (psx_array_size(&item.begins_sec) > 0) {
+                    item.begin_sec = *(psx_array_get(&item.begins_sec, 0, float));
+                }
+            } else if (abegin && abegin->val_type == SVG_ATTR_VALUE_PTR && abegin->value.val) {
+                if (t == SVG_TAG_SET) {
+                    // Parser currently parses begin/end lists as clock offsets only.
+                    const psx_svg_attr_values_list* list = (const psx_svg_attr_values_list*)abegin->value.val;
+                    // Detect event tokens by looking at the original string.
+                    // Current parser callback parses only clock offsets; a non-numeric token
+                    // gets converted to 0ms ("indefinite" is also 0ms). We disambiguate by
+                    // checking the raw string: if it's non-numeric, treat it as event.
+                    const char* raw = _find_attr_string_raw(node, SVG_ATTR_BEGIN);
+                    if (raw && !_is_clock_value_token(raw)) {
+                        item.begin_event = _dup_cstr(raw);
+                        psx_array_clear(&item.begins_sec);
+                        item.begin_sec = 1e30f;
+                    } else {
+                        // Treat as a clock-value list (ms) parsed by parser.
+                        const float* vals = (list->length > 0) ? (const float*)&list->data[0] : NULL;
+                        for (uint32_t i = 0; i < list->length; i++) {
+                            float ms = vals[i];
+                            float sec = (ms <= 0.0f) ? 0.0f : (ms * 0.001f);
+                            psx_array_append(&item.begins_sec, &sec);
+                        }
+                        _anim_item_begin_list_normalize(&item);
+                        item.begin_sec = _attr_as_begin_time_sec(abegin);
                     }
-
-                    _anim_item_begin_list_normalize(&item);
-
-                    // begin_sec used for duration hint; keep earliest.
-                    item.begin_sec = _attr_as_begin_time_sec(abegin);
                 } else {
-                    item.begin_sec = 0.0f;
+                    const psx_svg_attr_values_list* list = (const psx_svg_attr_values_list*)abegin->value.val;
+                    if (list->length > 0) {
+                        const float* vals = (const float*)&list->data[0];
+                        for (uint32_t i = 0; i < list->length; i++) {
+                            float ms = vals[i];
+                            float sec = (ms <= 0.0f) ? 0.0f : (ms * 0.001f);
+                            psx_array_append(&item.begins_sec, &sec);
+                        }
+
+                        _anim_item_begin_list_normalize(&item);
+
+                        // begin_sec used for duration hint; keep earliest.
+                        item.begin_sec = _attr_as_begin_time_sec(abegin);
+                    } else {
+                        item.begin_sec = 0.0f;
+                    }
                 }
             } else {
                 item.begin_sec = _attr_as_begin_time_sec(abegin);
             }
 
             const psx_svg_attr* aend = _find_attr(node, SVG_ATTR_END);
-            if (aend && aend->val_type == SVG_ATTR_VALUE_PTR && aend->value.val) {
-                const psx_svg_attr_values_list* list = (const psx_svg_attr_values_list*)aend->value.val;
-                if (list->length > 0) {
-                    const float* vals = (const float*)&list->data[0];
-                    for (uint32_t i = 0; i < list->length; i++) {
-                        float ms = vals[i];
-                        float sec = (ms <= 0.0f) ? 0.0f : (ms * 0.001f);
-                        psx_array_append(&item.ends_sec, &sec);
-                    }
-                    _anim_item_end_list_normalize(&item);
-                    item.end_sec = _attr_as_time_sec(aend);
-                } else {
-                    item.end_sec = 0.0f;
+            if (aend && aend->val_type == SVG_ATTR_VALUE_TIMING_LIST_PTR && aend->value.val && aend->attr_id == SVG_ATTR_END) {
+                const psx_svg_timing_list* tl = (const psx_svg_timing_list*)aend->value.val;
+                for (uint32_t i = 0; i < tl->offsets_len; i++) {
+                    float ms = tl->offsets_ms ? tl->offsets_ms[i] : 0.0f;
+                    float sec = (ms <= 0.0f) ? 0.0f : (ms * 0.001f);
+                    psx_array_append(&item.ends_sec, &sec);
                 }
+                _anim_item_end_list_normalize(&item);
+                item.end_sec = (psx_array_size(&item.ends_sec) > 0) ? *(psx_array_get(&item.ends_sec, 0, float)) : 0.0f;
             } else {
                 item.end_sec = _attr_as_time_sec(aend);
             }
@@ -1202,12 +1307,70 @@ extern "C" {
 
     void psx_svg_player_trigger(psx_svg_player* p, const char* target_id, const char* event_name)
     {
-        (void)target_id;
-        (void)event_name;
         if (!p) {
             return;
         }
-        // TODO: implement event-based begin timing.
+        if (!event_name || !*event_name) {
+            return;
+        }
+
+        const char* filter_id = (target_id && *target_id) ? target_id : NULL;
+
+        uint32_t n = psx_array_size(&p->anims);
+        ps_bool any = False;
+        for (uint32_t i = 0; i < n; i++) {
+            psx_svg_anim_item* it = psx_array_get(&p->anims, i, psx_svg_anim_item);
+            if (!it || !it->begin_event) {
+                continue;
+            }
+            if (strcmp(it->begin_event, event_name) != 0) {
+                continue;
+            }
+            if (filter_id) {
+                const char* tid = it->target_node ? it->target_node->content(NULL) : NULL;
+                const char* aid = it->anim_node ? it->anim_node->content(NULL) : NULL;
+                if ((!tid || strcmp(tid, filter_id) != 0) && (!aid || strcmp(aid, filter_id) != 0)) {
+                    continue;
+                }
+            }
+
+            float sec = p->time_sec;
+            psx_array_append(&it->begins_sec, &sec);
+            _anim_item_begin_list_normalize(it);
+            any = True;
+        }
+
+        if (!any) {
+            return;
+        }
+
+        // Rebuild overrides at the current time so callers can query immediately.
+        _anim_state_reset(&p->anim_state);
+        n = psx_array_size(&p->anims);
+        for (uint32_t i = 0; i < n; i++) {
+            const psx_svg_anim_item* it = psx_array_get(&p->anims, i, psx_svg_anim_item);
+            if (!it) {
+                continue;
+            }
+            if (!(it->tag == SVG_TAG_ANIMATE || it->tag == SVG_TAG_SET)) {
+                continue;
+            }
+            if (!(it->target_attr == SVG_ATTR_X || it->target_attr == SVG_ATTR_Y || it->target_attr == SVG_ATTR_WIDTH || it->target_attr == SVG_ATTR_HEIGHT || it->target_attr == SVG_ATTR_OPACITY || it->target_attr == SVG_ATTR_RX || it->target_attr == SVG_ATTR_RY || it->target_attr == SVG_ATTR_STROKE_WIDTH || it->target_attr == SVG_ATTR_FILL_OPACITY || it->target_attr == SVG_ATTR_GRADIENT_STOP_OPACITY)) {
+                continue;
+            }
+
+            float v = 0.0f;
+            ps_bool hold = False;
+            if (it->tag == SVG_TAG_SET) {
+                if (_anim_eval_set(it, p->time_sec, &v, &hold)) {
+                    _anim_state_set_float(&p->anim_state, it->target_node, it->target_attr, v);
+                }
+            } else {
+                if (_anim_eval_simple(it, p->time_sec, &v, &hold)) {
+                    _anim_state_set_float(&p->anim_state, it->target_node, it->target_attr, v);
+                }
+            }
+        }
     }
 
     const psx_svg_node* psx_svg_player_get_node_by_id(const psx_svg_player* p, const char* id)

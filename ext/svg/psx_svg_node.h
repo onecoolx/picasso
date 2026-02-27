@@ -222,6 +222,8 @@ typedef struct {
 enum {
     SVG_ATTR_VALUE_DATA = 0,
     SVG_ATTR_VALUE_PTR,
+    // Pointer to psx_svg_timing_list (begin/end timing expressions).
+    SVG_ATTR_VALUE_TIMING_LIST_PTR,
     SVG_ATTR_VALUE_PATH_PTR,
 };
 

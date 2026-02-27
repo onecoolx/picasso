@@ -35,6 +35,20 @@
 extern "C" {
 #endif
 
+// Timing list used by SVG animation begin/end attributes.
+// Supports the common Tiny 1.2 subset:
+// - semicolon-separated clock-value offsets (stored as milliseconds)
+// - at most one non-clock token preserved as an event name (e.g. "click")
+// Ownership: allocated by parser, freed by node attr cleanup.
+typedef struct psx_svg_timing_list {
+    uint32_t offsets_len;
+    float* offsets_ms; // length offsets_len, may be NULL if 0
+    char* event_token; // optional, NULL if none
+} psx_svg_timing_list;
+
+// Helper for freeing a timing list allocated by the parser.
+void psx_svg_timing_list_destroy(psx_svg_timing_list* tl);
+
 enum {
     SVG_PARSER_PROCESS = 0,
     SVG_PARSER_IGNORE,

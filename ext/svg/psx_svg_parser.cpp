@@ -42,6 +42,65 @@ extern "C" {
 
 #define DEG_TO_RAD(d) ((float)((d) * M_PI / 180.0f))
 
+static INLINE void _skip_ws(const char** p, const char* end)
+{
+    while (*p < end) {
+        char c = **p;
+        if (c != ' ' && c != '\t' && c != '\r' && c != '\n') {
+            break;
+        }
+        (*p)++;
+    }
+}
+
+static INLINE void _trim_ws(const char** start, const char** end)
+{
+    while (*start < *end) {
+        char c = **start;
+        if (c != ' ' && c != '\t' && c != '\r' && c != '\n') {
+            break;
+        }
+        (*start)++;
+    }
+    while (*end > *start) {
+        char c = *(*end - 1);
+        if (c != ' ' && c != '\t' && c != '\r' && c != '\n') {
+            break;
+        }
+        (*end)--;
+    }
+}
+
+static INLINE ps_bool _token_is_clock(const char* s, const char* e)
+{
+    if (!s || !e || s >= e) {
+        return False;
+    }
+    const char* p = s;
+    _skip_ws(&p, e);
+    if (p >= e) {
+        return False;
+    }
+    char c = *p;
+    return (ps_bool)((c >= '0' && c <= '9') || c == '+' || c == '-' || c == '.');
+}
+
+void psx_svg_timing_list_destroy(psx_svg_timing_list* tl)
+{
+    if (!tl) {
+        return;
+    }
+    if (tl->offsets_ms) {
+        mem_free(tl->offsets_ms);
+        tl->offsets_ms = NULL;
+    }
+    if (tl->event_token) {
+        mem_free(tl->event_token);
+        tl->event_token = NULL;
+    }
+    mem_free(tl);
+}
+
 static const struct {
     const char* name;
     uint32_t name_len;
@@ -1765,21 +1824,56 @@ static void _animation_key_splines_cb(psx_svg_node* node, psx_svg_attr* attr, co
 static void _animation_begin_end_cb(psx_svg_node* node, psx_svg_attr* attr, const char* val_start,
                                     const char* val_end, int32_t dpi, void* data)
 {
+    (void)node;
+    (void)attr;
+    (void)dpi;
+
+    // NOTE: _parse_animation_value_list already splits by ';' and calls this
+    // callback for each token. We accumulate into a single timing list stored
+    // in ctx->list.
     struct _parse_value_list_context* ctx = (struct _parse_value_list_context*)data;
+    psx_svg_timing_list* tl = (psx_svg_timing_list*)ctx->list;
+    if (!tl) {
+        tl = (psx_svg_timing_list*)mem_malloc(sizeof(psx_svg_timing_list));
+        if (!tl) {
+            return;
+        }
+        memset(tl, 0, sizeof(*tl));
+        ctx->list = (psx_svg_attr_values_list*)tl; // stored opaquely
+        ctx->mem_size = 0;
+        ctx->list_count = 0;
+    }
 
-    // offset-value
-    float* val = NULL;
-    GET_NEXT_VALUE_PTR(val, ctx, float);
-    val_start = _parse_clock_time(val_start, val_end, val);
+    const char* ts = val_start;
+    const char* te = val_end;
+    _trim_ws(&ts, &te);
+    if (ts >= te) {
+        return;
+    }
 
-    //FIXME: not support begin-end type
-    // syncbase-value
-    // event-value
-    // repeat-value
-    // accessKey-value
-    // indefinite
-
-    ctx->list->length = ctx->list_count;
+    if (_token_is_clock(ts, te)) {
+        float ms = 0.0f;
+        const char* r = _parse_clock_time(ts, te, &ms);
+        if (!r) {
+            return;
+        }
+        uint32_t new_len = tl->offsets_len + 1;
+        float* nbuf = (float*)mem_realloc(tl->offsets_ms, sizeof(float) * new_len);
+        if (!nbuf) {
+            return;
+        }
+        tl->offsets_ms = nbuf;
+        tl->offsets_ms[tl->offsets_len++] = ms;
+    } else if (!tl->event_token) {
+        uint32_t len = BUF_LEN(ts, te);
+        char* s = (char*)mem_malloc(len + 1);
+        if (!s) {
+            return;
+        }
+        mem_copy(s, ts, len);
+        s[len] = 0;
+        tl->event_token = s;
+    }
 }
 
 static INLINE void _process_animation_attr_values(psx_svg_node* node, psx_svg_attr_type type, const char* val_start,
@@ -1817,7 +1911,7 @@ static INLINE void _process_animation_attr_values(psx_svg_node* node, psx_svg_at
         _parse_animation_value_list(node, attr, val_start, val_end, dpi, _animation_key_splines_cb, &ctx);
         attr->value.val = ctx.list;
     } else if ((type == SVG_ATTR_BEGIN || type == SVG_ATTR_END)) {
-        attr->val_type = SVG_ATTR_VALUE_PTR;
+        attr->val_type = SVG_ATTR_VALUE_TIMING_LIST_PTR;
         struct _parse_value_list_context ctx;
         ctx.mem_size = 0;
         ctx.list_count = 0;
