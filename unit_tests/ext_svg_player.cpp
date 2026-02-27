@@ -1521,3 +1521,65 @@ TEST_F(SVGPlayerTest, AnimateValues_CalcModePaced_Boundaries)
 
     psx_svg_player_destroy(p);
 }
+
+TEST_F(SVGPlayerTest, AnimateColorFill_FromTo_Discrete)
+{
+    // Minimal animateColor support in player: fill attribute, discrete mode.
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"10\" height=\"10\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000000\">"
+        "    <animateColor attributeName=\"fill\" from=\"#ff0000\" to=\"#0000ff\" dur=\"1s\" calcMode=\"discrete\" fill=\"remove\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_player* p = psx_svg_player_create_from_data(svg, (uint32_t)strlen(svg), NULL, &r);
+    if (!p) {
+        EXPECT_NE((psx_svg_player*)NULL, p);
+        return;
+    }
+    EXPECT_EQ(S_OK, r);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    if (!n) {
+        EXPECT_TRUE(n != NULL);
+        psx_svg_player_destroy(p);
+        return;
+    }
+
+    psx_svg_player_seek(p, 0.25f);
+    {
+        float v = 0;
+        if (!psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_FILL, &v)) {
+            EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_FILL, &v));
+            psx_svg_player_destroy(p);
+            return;
+        }
+        union {
+            uint32_t u;
+            float f;
+        } bits;
+        bits.f = v;
+        // internal packed format is RGB (no alpha)
+        EXPECT_EQ((uint32_t)0x00FF0000u, bits.u);
+    }
+
+    psx_svg_player_seek(p, 0.75f);
+    {
+        float v = 0;
+        if (!psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_FILL, &v)) {
+            EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_FILL, &v));
+            psx_svg_player_destroy(p);
+            return;
+        }
+        union {
+            uint32_t u;
+            float f;
+        } bits;
+        bits.f = v;
+        // internal packed format is RGB (no alpha)
+        EXPECT_EQ((uint32_t)0x000000FFu, bits.u);
+    }
+
+    psx_svg_player_destroy(p);
+}

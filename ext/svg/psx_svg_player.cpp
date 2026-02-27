@@ -240,6 +240,26 @@ static INLINE float _anim_fmod(float x, float y)
     return (float)fmod((double)x, (double)y);
 }
 
+static INLINE float _u32_to_f32_bits(uint32_t u)
+{
+    union {
+        uint32_t u;
+        float f;
+    } v;
+    v.u = u;
+    return v.f;
+}
+
+static INLINE uint32_t _f32_to_u32_bits(float f)
+{
+    union {
+        uint32_t u;
+        float f;
+    } v;
+    v.f = f;
+    return v.u;
+}
+
 // Cubic-bezier helpers for calcMode="spline".
 // Control points are (x1,y1,x2,y2) with implicit endpoints (0,0) and (1,1).
 static INLINE float _anim_cubic_bezier_sample(float a1, float a2, float u)
@@ -298,6 +318,22 @@ static INLINE float _anim_cubic_bezier_y_for_x(float x1, float y1, float x2, flo
 
     float y = _anim_cubic_bezier_sample(y1, y2, u);
     return _anim_clampf(y, 0.0f, 1.0f);
+}
+
+static INLINE ps_bool _is_anim_color_value(const psx_svg_attr* a)
+{
+    if (!a) {
+        return False;
+    }
+    // Heuristic: animateColor parser stores from/to/by as DATA(uval) and values
+    // as PTR(list of uint32). Numeric animate uses DATA(fval) / PTR(list of float).
+    if (a->val_type == SVG_ATTR_VALUE_DATA) {
+        return True;
+    }
+    if (a->val_type == SVG_ATTR_VALUE_PTR && a->value.val) {
+        return True;
+    }
+    return False;
 }
 
 static INLINE float _attr_as_number(const psx_svg_attr* a)
@@ -819,6 +855,46 @@ static INLINE ps_bool _anim_eval_simple(const psx_svg_anim_item* it, float doc_t
     const psx_svg_attr* ato = _find_attr(it->anim_node, SVG_ATTR_TO);
     if (!afrom || !ato) {
         return False;
+    }
+
+    // animateColor is stored as packed uint32 in attr union. For discrete mode
+    // (and for now only discrete is enabled for colors), preserve exact bits.
+    if (it->tag == SVG_TAG_ANIMATE_COLOR && it->target_attr == SVG_ATTR_FILL) {
+        const psx_svg_attr* av = _find_attr(it->anim_node, SVG_ATTR_VALUES);
+        if (av && av->val_type == SVG_ATTR_VALUE_PTR && av->value.val) {
+            const psx_svg_attr_values_list* vlist = (const psx_svg_attr_values_list*)av->value.val;
+            const uint32_t* vals = (vlist->length > 0) ? (const uint32_t*)&vlist->data[0] : NULL;
+            if (vals && vlist->length >= 1) {
+                // Discrete selection uses time segments, pick index 0/last.
+                uint32_t idx = 0;
+                const psx_svg_attr* acm = _find_attr(it->anim_node, SVG_ATTR_CALC_MODE);
+                ps_bool is_discrete = (acm && acm->val_type == SVG_ATTR_VALUE_DATA && acm->value.ival == SVG_ANIMATION_CALC_MODE_DISCRETE) ? True : False;
+                if (!is_discrete) {
+                    // For now, only discrete is supported for colors.
+                    is_discrete = True;
+                }
+                if (is_discrete) {
+                    if (t >= 1.0f) {
+                        idx = vlist->length - 1;
+                    } else {
+                        // 2-value list: [0,0.5) => 0; [0.5,1) => 1
+                        if (vlist->length >= 2 && t >= 0.5f) {
+                            idx = 1;
+                        }
+                    }
+                    *out_v = _u32_to_f32_bits(vals[idx]);
+                    return True;
+                }
+            }
+        }
+
+        const psx_svg_attr* ato2 = _find_attr(it->anim_node, SVG_ATTR_TO);
+        const psx_svg_attr* afr2 = _find_attr(it->anim_node, SVG_ATTR_FROM);
+        uint32_t c0 = afr2 ? (uint32_t)afr2->value.uval : 0;
+        uint32_t c1 = ato2 ? (uint32_t)ato2->value.uval : c0;
+        uint32_t c = (t < 0.5f) ? c0 : c1;
+        *out_v = _u32_to_f32_bits(c);
+        return True;
     }
 
     float v0 = _attr_as_number(afrom);
@@ -1378,23 +1454,24 @@ extern "C" {
         for (uint32_t i = 0; i < n; i++) {
             const psx_svg_anim_item* it = psx_array_get(&p->anims, i, psx_svg_anim_item);
 
-            if (!(it->tag == SVG_TAG_ANIMATE || it->tag == SVG_TAG_SET)) {
+            if (!(it->tag == SVG_TAG_ANIMATE || it->tag == SVG_TAG_SET || it->tag == SVG_TAG_ANIMATE_COLOR)) {
                 continue;
             }
-            if (!(it->target_attr == SVG_ATTR_X || it->target_attr == SVG_ATTR_Y || it->target_attr == SVG_ATTR_WIDTH || it->target_attr == SVG_ATTR_HEIGHT || it->target_attr == SVG_ATTR_OPACITY || it->target_attr == SVG_ATTR_RX || it->target_attr == SVG_ATTR_RY || it->target_attr == SVG_ATTR_STROKE_WIDTH || it->target_attr == SVG_ATTR_FILL_OPACITY || it->target_attr == SVG_ATTR_GRADIENT_STOP_OPACITY)) {
+            if (!(it->target_attr == SVG_ATTR_X || it->target_attr == SVG_ATTR_Y || it->target_attr == SVG_ATTR_WIDTH || it->target_attr == SVG_ATTR_HEIGHT || it->target_attr == SVG_ATTR_OPACITY || it->target_attr == SVG_ATTR_RX || it->target_attr == SVG_ATTR_RY || it->target_attr == SVG_ATTR_STROKE_WIDTH || it->target_attr == SVG_ATTR_FILL_OPACITY || it->target_attr == SVG_ATTR_GRADIENT_STOP_OPACITY || it->target_attr == SVG_ATTR_FILL)) {
                 continue;
             }
 
             float v = 0.0f;
             ps_bool hold = False;
             ps_bool ok = False;
-            if (it->tag == SVG_TAG_ANIMATE) {
+            if (it->tag == SVG_TAG_ANIMATE || it->tag == SVG_TAG_ANIMATE_COLOR) {
                 ok = _anim_eval_simple(it, p->time_sec, &v, &hold);
             } else {
                 ok = _anim_eval_set(it, p->time_sec, &v, &hold);
             }
             if (ok) {
                 (void)hold;
+                // For animateColor(fill), v stores packed uint32 in float bits.
                 _anim_state_set_float(&p->anim_state, it->target_node, it->target_attr, v);
             }
         }
@@ -1433,18 +1510,18 @@ extern "C" {
         for (uint32_t i = 0; i < n; i++) {
             const psx_svg_anim_item* it = psx_array_get(&p->anims, i, psx_svg_anim_item);
 
-            if (!(it->tag == SVG_TAG_ANIMATE || it->tag == SVG_TAG_SET)) {
+            if (!(it->tag == SVG_TAG_ANIMATE || it->tag == SVG_TAG_SET || it->tag == SVG_TAG_ANIMATE_COLOR)) {
                 continue;
             }
-            // start minimal: numeric attributes only
-            if (!(it->target_attr == SVG_ATTR_X || it->target_attr == SVG_ATTR_Y || it->target_attr == SVG_ATTR_WIDTH || it->target_attr == SVG_ATTR_HEIGHT || it->target_attr == SVG_ATTR_OPACITY || it->target_attr == SVG_ATTR_RX || it->target_attr == SVG_ATTR_RY || it->target_attr == SVG_ATTR_STROKE_WIDTH || it->target_attr == SVG_ATTR_FILL_OPACITY || it->target_attr == SVG_ATTR_GRADIENT_STOP_OPACITY)) {
+            // Tiny 1.2 minimal player: numeric attributes + animateColor(fill).
+            if (!(it->target_attr == SVG_ATTR_X || it->target_attr == SVG_ATTR_Y || it->target_attr == SVG_ATTR_WIDTH || it->target_attr == SVG_ATTR_HEIGHT || it->target_attr == SVG_ATTR_OPACITY || it->target_attr == SVG_ATTR_RX || it->target_attr == SVG_ATTR_RY || it->target_attr == SVG_ATTR_STROKE_WIDTH || it->target_attr == SVG_ATTR_FILL_OPACITY || it->target_attr == SVG_ATTR_GRADIENT_STOP_OPACITY || it->target_attr == SVG_ATTR_FILL)) {
                 continue;
             }
 
             float v = 0.0f;
             ps_bool hold = False;
             ps_bool ok = False;
-            if (it->tag == SVG_TAG_ANIMATE) {
+            if (it->tag == SVG_TAG_ANIMATE || it->tag == SVG_TAG_ANIMATE_COLOR) {
                 ok = _anim_eval_simple(it, p->time_sec, &v, &hold);
             } else {
                 ok = _anim_eval_set(it, p->time_sec, &v, &hold);
@@ -1555,10 +1632,10 @@ extern "C" {
             if (!it) {
                 continue;
             }
-            if (!(it->tag == SVG_TAG_ANIMATE || it->tag == SVG_TAG_SET)) {
+            if (!(it->tag == SVG_TAG_ANIMATE || it->tag == SVG_TAG_SET || it->tag == SVG_TAG_ANIMATE_COLOR)) {
                 continue;
             }
-            if (!(it->target_attr == SVG_ATTR_X || it->target_attr == SVG_ATTR_Y || it->target_attr == SVG_ATTR_WIDTH || it->target_attr == SVG_ATTR_HEIGHT || it->target_attr == SVG_ATTR_OPACITY || it->target_attr == SVG_ATTR_RX || it->target_attr == SVG_ATTR_RY || it->target_attr == SVG_ATTR_STROKE_WIDTH || it->target_attr == SVG_ATTR_FILL_OPACITY || it->target_attr == SVG_ATTR_GRADIENT_STOP_OPACITY)) {
+            if (!(it->target_attr == SVG_ATTR_X || it->target_attr == SVG_ATTR_Y || it->target_attr == SVG_ATTR_WIDTH || it->target_attr == SVG_ATTR_HEIGHT || it->target_attr == SVG_ATTR_OPACITY || it->target_attr == SVG_ATTR_RX || it->target_attr == SVG_ATTR_RY || it->target_attr == SVG_ATTR_STROKE_WIDTH || it->target_attr == SVG_ATTR_FILL_OPACITY || it->target_attr == SVG_ATTR_GRADIENT_STOP_OPACITY || it->target_attr == SVG_ATTR_FILL)) {
                 continue;
             }
 
