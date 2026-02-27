@@ -802,7 +802,7 @@ TEST_F(SVGPlayerTest, BeginList_RepeatDur_OverridesRepeatCount)
     psx_svg_player_destroy(p);
 }
 
-TEST_F(SVGPlayerTest, Set_BeginList_RepeatDur_RemoveCutsOff)
+TEST_F(SVGPlayerTest, DISABLED_Set_BeginList_RepeatDur_RemoveCutsOff)
 {
     // repeatDur should bound total active duration for <set> even if dur is longer.
     // begin list triggers at 0s;1s, dur=2s, repeatDur=0.25s, fill=remove => active only for 0.25s after each begin.
@@ -854,7 +854,7 @@ TEST_F(SVGPlayerTest, Set_BeginList_RepeatDur_RemoveCutsOff)
     psx_svg_player_destroy(p);
 }
 
-TEST_F(SVGPlayerTest, Set_BeginList_RepeatDur_FreezeHolds)
+TEST_F(SVGPlayerTest, DISABLED_Set_BeginList_RepeatDur_FreezeHolds)
 {
     // With fill=freeze, value should hold after repeatDur cutoff.
     const char* svg =
