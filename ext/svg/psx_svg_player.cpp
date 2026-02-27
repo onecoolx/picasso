@@ -612,6 +612,83 @@ static INLINE ps_bool _anim_eval_simple(const psx_svg_anim_item* it, float doc_t
 
     float t = _anim_clampf(local / it->dur_sec, 0.0f, 1.0f);
 
+    // Step-2 (Tiny 1.2 subset): values + optional keyTimes (linear).
+    // If values is present, it overrides from/to interpolation.
+    const psx_svg_attr* avals = _find_attr(it->anim_node, SVG_ATTR_VALUES);
+    if (avals && avals->val_type == SVG_ATTR_VALUE_PTR && avals->value.val) {
+        const psx_svg_attr_values_list* vlist = (const psx_svg_attr_values_list*)avals->value.val;
+        if (vlist->length >= 1) {
+            const float* vals = (const float*)&vlist->data[0];
+            if (vlist->length == 1) {
+                *out_v = vals[0];
+                return True;
+            }
+
+            // calcMode handling (Tiny 1.2 subset): linear(default) / discrete.
+            uint32_t calc_mode = SVG_ANIMATION_CALC_MODE_LINEAR;
+            const psx_svg_attr* acm = _find_attr(it->anim_node, SVG_ATTR_CALC_MODE);
+            if (acm && acm->val_type == SVG_ATTR_VALUE_DATA) {
+                calc_mode = (uint32_t)acm->value.ival;
+            }
+
+            // Determine segment via keyTimes if provided.
+            const psx_svg_attr* akt = _find_attr(it->anim_node, SVG_ATTR_KEY_TIMES);
+            const float* kts = NULL;
+            uint32_t kt_len = 0;
+            if (akt && akt->val_type == SVG_ATTR_VALUE_PTR && akt->value.val) {
+                const psx_svg_attr_values_list* ktlist = (const psx_svg_attr_values_list*)akt->value.val;
+                kt_len = ktlist->length;
+                if (kt_len >= 2) {
+                    kts = (const float*)&ktlist->data[0];
+                }
+            }
+
+            uint32_t seg = 0;
+            float seg_t0 = 0.0f;
+            float seg_t1 = 1.0f;
+            if (kts && kt_len == vlist->length) {
+                // Find i s.t. t in [kts[i], kts[i+1]]. Clamp to last segment.
+                for (uint32_t i = 0; i + 1 < kt_len; i++) {
+                    float a = _anim_clampf(kts[i], 0.0f, 1.0f);
+                    float b = _anim_clampf(kts[i + 1], 0.0f, 1.0f);
+                    if (t >= a && (t <= b || i + 2 == kt_len)) {
+                        seg = i;
+                        seg_t0 = a;
+                        seg_t1 = b;
+                        break;
+                    }
+                }
+                if (seg_t1 <= seg_t0) {
+                    seg_t0 = 0.0f;
+                    seg_t1 = 1.0f;
+                }
+            } else {
+                // Evenly spaced segments.
+                float step = 1.0f / (float)(vlist->length - 1);
+                seg = (uint32_t)(t / step);
+                if (seg >= vlist->length - 1) {
+                    seg = vlist->length - 2;
+                }
+                seg_t0 = step * (float)seg;
+                seg_t1 = step * (float)(seg + 1);
+            }
+
+            float u = 0.0f;
+            if (seg_t1 > seg_t0) {
+                u = (t - seg_t0) / (seg_t1 - seg_t0);
+            }
+            u = _anim_clampf(u, 0.0f, 1.0f);
+
+            if (calc_mode == SVG_ANIMATION_CALC_MODE_DISCRETE) {
+                // Discrete: hold the segment's start value.
+                *out_v = vals[seg];
+            } else {
+                *out_v = _anim_lerp(vals[seg], vals[seg + 1], u);
+            }
+            return True;
+        }
+    }
+
     const psx_svg_attr* afrom = _find_attr(it->anim_node, SVG_ATTR_FROM);
     const psx_svg_attr* ato = _find_attr(it->anim_node, SVG_ATTR_TO);
     if (!afrom || !ato) {

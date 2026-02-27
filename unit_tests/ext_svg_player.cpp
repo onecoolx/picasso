@@ -1009,3 +1009,162 @@ TEST_F(SVGPlayerTest, AnimateGradientStopOpacity_FromTo)
 
     psx_svg_player_destroy(p);
 }
+
+TEST_F(SVGPlayerTest, AnimateValues_KeyTimes_Linear)
+{
+    // Tiny 1.2 common case: values + keyTimes, linear interpolation.
+    // values="0;10;20" keyTimes="0;0.5;1" dur="1s"
+    // t=0.25 => between 0 and 10 at local=0.25/0.5 => 5
+    // t=0.75 => between 10 and 20 at local=(0.75-0.5)/0.5 => 15
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
+        "    <animate attributeName=\"x\" values=\"0;10;20\" keyTimes=\"0;0.5;1\" dur=\"1s\" fill=\"remove\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_player* p = psx_svg_player_create_from_data(svg, (uint32_t)strlen(svg), NULL, &r);
+    if (!p) {
+        EXPECT_NE((psx_svg_player*)NULL, p);
+        return;
+    }
+    EXPECT_EQ(S_OK, r);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    if (!n) {
+        EXPECT_TRUE(n != NULL);
+        psx_svg_player_destroy(p);
+        return;
+    }
+
+    psx_svg_player_seek(p, 0.25f);
+    {
+        float v = 0;
+        if (!psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v)) {
+            EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+            psx_svg_player_destroy(p);
+            return;
+        }
+        EXPECT_NEAR(v, 5.0f, 0.05f);
+    }
+
+    psx_svg_player_seek(p, 0.75f);
+    {
+        float v = 0;
+        if (!psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v)) {
+            EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+            psx_svg_player_destroy(p);
+            return;
+        }
+        EXPECT_NEAR(v, 15.0f, 0.05f);
+    }
+
+    psx_svg_player_destroy(p);
+}
+
+TEST_F(SVGPlayerTest, AnimateValues_NoKeyTimes_LinearEvenSegments)
+{
+    // Tiny 1.2: values without keyTimes => evenly spaced segments.
+    // values="0;10;20" dur="1s"
+    // t=0.25 => between 0 and 10 at u=0.5 => 5
+    // t=0.75 => between 10 and 20 at u=0.5 => 15
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
+        "    <animate attributeName=\"x\" values=\"0;10;20\" dur=\"1s\" fill=\"remove\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_player* p = psx_svg_player_create_from_data(svg, (uint32_t)strlen(svg), NULL, &r);
+    if (!p) {
+        EXPECT_NE((psx_svg_player*)NULL, p);
+        return;
+    }
+    EXPECT_EQ(S_OK, r);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    if (!n) {
+        EXPECT_TRUE(n != NULL);
+        psx_svg_player_destroy(p);
+        return;
+    }
+
+    psx_svg_player_seek(p, 0.25f);
+    {
+        float v = 0;
+        if (!psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v)) {
+            EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+            psx_svg_player_destroy(p);
+            return;
+        }
+        EXPECT_NEAR(v, 5.0f, 0.05f);
+    }
+
+    psx_svg_player_seek(p, 0.75f);
+    {
+        float v = 0;
+        if (!psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v)) {
+            EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+            psx_svg_player_destroy(p);
+            return;
+        }
+        EXPECT_NEAR(v, 15.0f, 0.05f);
+    }
+
+    psx_svg_player_destroy(p);
+}
+
+TEST_F(SVGPlayerTest, AnimateValues_CalcModeDiscrete)
+{
+    // Tiny 1.2: calcMode="discrete" => no interpolation.
+    // values="0;10;20" keyTimes="0;0.5;1" dur="1s"
+    // t=0.25 => still first segment => 0
+    // t=0.75 => second segment => 10
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
+        "    <animate attributeName=\"x\" values=\"0;10;20\" keyTimes=\"0;0.5;1\" calcMode=\"discrete\" dur=\"1s\" fill=\"remove\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_player* p = psx_svg_player_create_from_data(svg, (uint32_t)strlen(svg), NULL, &r);
+    if (!p) {
+        EXPECT_NE((psx_svg_player*)NULL, p);
+        return;
+    }
+    EXPECT_EQ(S_OK, r);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    if (!n) {
+        EXPECT_TRUE(n != NULL);
+        psx_svg_player_destroy(p);
+        return;
+    }
+
+    psx_svg_player_seek(p, 0.25f);
+    {
+        float v = 0;
+        if (!psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v)) {
+            EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+            psx_svg_player_destroy(p);
+            return;
+        }
+        EXPECT_NEAR(v, 0.0f, 0.01f);
+    }
+
+    psx_svg_player_seek(p, 0.75f);
+    {
+        float v = 0;
+        if (!psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v)) {
+            EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+            psx_svg_player_destroy(p);
+            return;
+        }
+        EXPECT_NEAR(v, 10.0f, 0.01f);
+    }
+
+    psx_svg_player_destroy(p);
+}
