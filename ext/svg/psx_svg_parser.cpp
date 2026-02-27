@@ -917,7 +917,7 @@ static INLINE void _process_points_value(psx_svg_node* node, psx_svg_attr_type t
             list_cap = list_cap << 1;
             list = (psx_svg_attr_values_list*)mem_realloc(list, sizeof(psx_svg_point) * list_cap + sizeof(uint32_t));
         }
-        psx_svg_point* pt = (psx_svg_point*)(&list->data) + point_cnt;
+        psx_svg_point* pt = (psx_svg_point*)(&list->data[0]) + point_cnt;
         val = 0.0f;
         ptr = _parse_number(ptr, val_end, &val);
         pt->x = val;
@@ -1148,7 +1148,7 @@ static INLINE void _process_paint_dasharray(psx_svg_node* node, psx_svg_attr_typ
                 list_cap = list_cap << 1;
                 list = (psx_svg_attr_values_list*)mem_realloc(list, sizeof(float) * list_cap + sizeof(uint32_t));
             }
-            float* val = (float*)(&list->data) + count;
+            float* val = (float*)(&list->data[0]) + count;
             ptr = _parse_number(ptr, val_end, val);
             if (!ptr) {
                 break;
@@ -1661,7 +1661,7 @@ static INLINE void _parse_animation_value(psx_svg_node* node, psx_svg_attr* attr
         const char* ptr = val_start;
 
         while ((ptr < val_end) && (cnt < 3)) {
-            float* val = (float*)(&list->data) + cnt;
+            float* val = (float*)(&list->data[0]) + cnt;
 
             val_number = 0.0f;
             ptr = _parse_number(ptr, val_end, &val_number);
@@ -1678,7 +1678,7 @@ static INLINE void _parse_animation_value(psx_svg_node* node, psx_svg_attr* attr
     } else if (node->type() == SVG_TAG_ANIMATE_MOTION) {
         attr->val_type = SVG_ATTR_VALUE_PTR;
         psx_svg_attr_values_list* list = (psx_svg_attr_values_list*)mem_malloc(sizeof(psx_svg_point) + sizeof(uint32_t));
-        psx_svg_point* pt = (psx_svg_point*)(&list->data);
+        psx_svg_point* pt = (psx_svg_point*)(&list->data[0]);
 
         float val = 0.0f;
         val_start = _parse_number(val_start, val_end, &val);
