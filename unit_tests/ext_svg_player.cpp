@@ -748,6 +748,60 @@ TEST_F(SVGPlayerTest, Set_EndList_FreezeHoldsAfterEndInstant)
     psx_svg_player_destroy(p);
 }
 
+TEST_F(SVGPlayerTest, BeginList_RepeatDur_OverridesRepeatCount)
+{
+    // repeatDur should bound total active duration even if repeatCount is indefinite.
+    // begin list triggers at 0s;1s, dur=0.5s, repeatDur=0.75s => total spans [begin, begin+0.75].
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
+        "    <animate attributeName=\"x\" from=\"0\" to=\"10\" begin=\"0s;1s\" dur=\"0.5s\" repeatCount=\"indefinite\" repeatDur=\"0.75s\" fill=\"remove\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_player* p = psx_svg_player_create_from_data(svg, (uint32_t)strlen(svg), NULL, &r);
+    ASSERT_NE((psx_svg_player*)NULL, p);
+    EXPECT_EQ(S_OK, r);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    ASSERT_TRUE(n != NULL);
+
+    // Trigger 0s: within repeatDur -> active
+    psx_svg_player_seek(p, 0.60f);
+    {
+        float v = 0;
+        ASSERT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+        EXPECT_GT(v, 0.0f);
+        EXPECT_LT(v, 10.0f);
+    }
+
+    // After repeatDur end for first trigger (0.75s): remove => inactive
+    psx_svg_player_seek(p, 0.80f);
+    {
+        float v = 0;
+        EXPECT_FALSE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+    }
+
+    // Trigger 1s: within its repeatDur window -> active
+    psx_svg_player_seek(p, 1.60f);
+    {
+        float v = 0;
+        ASSERT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+        EXPECT_GT(v, 0.0f);
+        EXPECT_LT(v, 10.0f);
+    }
+
+    // After repeatDur end for second trigger (1.75s): inactive
+    psx_svg_player_seek(p, 1.80f);
+    {
+        float v = 0;
+        EXPECT_FALSE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+    }
+
+    psx_svg_player_destroy(p);
+}
+
 TEST_F(SVGPlayerTest, AnimateRectFillOpacity_FromTo)
 {
     const char* svg =

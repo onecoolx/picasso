@@ -71,6 +71,7 @@ typedef struct {
     float dur_sec;
     float end_sec; // optional explicit end, 0 => unspecified
     uint32_t repeat_count; // 0 => indefinite
+    float repeat_dur_sec; // optional explicit repeat duration, 0 => unspecified
     uint32_t fill_mode; // SVG_ANIMATION_*
 
     // Begin list support: store begin times (sec) and choose the latest
@@ -512,11 +513,24 @@ static INLINE ps_bool _anim_eval_simple(const psx_svg_anim_item* it, float doc_t
 
     float local = doc_t - begin_sec;
 
-    if (it->repeat_count == 0) {
+    // Compute total active duration from repeatCount/repeatDur.
+    float total = 0.0f;
+    ps_bool has_total = False;
+    if (it->repeat_dur_sec > 0.0f) {
+        total = it->repeat_dur_sec;
+        has_total = True;
+    } else if (it->repeat_count == 0) {
+        // indefinite
+        has_total = False;
+    } else {
+        total = it->dur_sec * (float)it->repeat_count;
+        has_total = True;
+    }
+
+    if (!has_total) {
         // indefinite
         local = _anim_fmod(local, it->dur_sec);
     } else {
-        float total = it->dur_sec * (float)it->repeat_count;
         if (local >= total) {
             if (it->fill_mode == SVG_ANIMATION_FREEZE) {
                 *out_hold = True;
@@ -814,6 +828,7 @@ static void _collect_anims(psx_svg_player* p, const psx_svg_node* node)
             item.dur_sec = _attr_as_time_sec(_find_attr(node, SVG_ATTR_DUR));
             // parser uses 0 for indefinite
             item.repeat_count = _attr_as_u32(_find_attr(node, SVG_ATTR_REPEAT_COUNT), 1);
+            item.repeat_dur_sec = _attr_as_time_sec(_find_attr(node, SVG_ATTR_REPEAT_DUR));
             item.fill_mode = SVG_ANIMATION_REMOVE;
             // fill="freeze|remove" is parsed by paint parser for animation nodes.
             const psx_svg_attr* fill = _find_attr(node, SVG_ATTR_FILL);
