@@ -1168,3 +1168,101 @@ TEST_F(SVGPlayerTest, AnimateValues_CalcModeDiscrete)
 
     psx_svg_player_destroy(p);
 }
+
+TEST_F(SVGPlayerTest, AnimateValues_CalcModeSpline_LinearEquivalent)
+{
+    // keySplines "0 0 1 1" is effectively linear; should match calcMode=linear.
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\">"
+        "    <animate attributeName=\"x\" dur=\"1s\" "
+        "      values=\"0;10;20\" keyTimes=\"0;0.5;1\" "
+        "      calcMode=\"spline\" keySplines=\"0 0 1 1; 0 0 1 1\" fill=\"remove\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_player* p = psx_svg_player_create_from_data(svg, (uint32_t)strlen(svg), NULL, &r);
+    if (p == NULL || r != S_OK) {
+        EXPECT_NE(p, (psx_svg_player*)NULL);
+        EXPECT_EQ(r, S_OK);
+        if (p) {
+            psx_svg_player_destroy(p);
+        }
+        return;
+    }
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    if (n == NULL) {
+        EXPECT_TRUE(n != NULL);
+        psx_svg_player_destroy(p);
+        return;
+    }
+
+    // First segment (0..0.5): linear would yield 5 at t=0.25
+    psx_svg_player_seek(p, 0.25f);
+    float v = 0.0f;
+    if (!psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v)) {
+        EXPECT_TRUE(false);
+        psx_svg_player_destroy(p);
+        return;
+    }
+    EXPECT_NEAR(v, 5.0f, 1e-3f);
+
+    // Second segment (0.5..1): linear would yield 15 at t=0.75
+    psx_svg_player_seek(p, 0.75f);
+    if (!psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v)) {
+        EXPECT_TRUE(false);
+        psx_svg_player_destroy(p);
+        return;
+    }
+    EXPECT_NEAR(v, 15.0f, 1e-3f);
+
+    psx_svg_player_destroy(p);
+}
+
+TEST_F(SVGPlayerTest, AnimateValues_CalcModeSpline_NonlinearEases)
+{
+    // Use an extreme cubic-bezier that should deviate from linear.
+    // keySplines "0 0 1 0" biases y low, so early progress should be smaller than linear.
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\">"
+        "    <animate attributeName=\"x\" dur=\"1s\" "
+        "      values=\"0;10\" keyTimes=\"0;1\" "
+        "      calcMode=\"spline\" keySplines=\"0 0 1 0\" fill=\"remove\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_player* p = psx_svg_player_create_from_data(svg, (uint32_t)strlen(svg), NULL, &r);
+    if (p == NULL || r != S_OK) {
+        EXPECT_NE(p, (psx_svg_player*)NULL);
+        EXPECT_EQ(r, S_OK);
+        if (p) {
+            psx_svg_player_destroy(p);
+        }
+        return;
+    }
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    if (n == NULL) {
+        EXPECT_TRUE(n != NULL);
+        psx_svg_player_destroy(p);
+        return;
+    }
+
+    // At t=0.25, linear would yield 2.5. With this spline it should be noticeably smaller.
+    psx_svg_player_seek(p, 0.25f);
+    float v = 0.0f;
+    if (!psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v)) {
+        EXPECT_TRUE(false);
+        psx_svg_player_destroy(p);
+        return;
+    }
+
+    EXPECT_LT(v, 2.5f - 0.5f);
+    EXPECT_GE(v, 0.0f);
+
+    psx_svg_player_destroy(p);
+}

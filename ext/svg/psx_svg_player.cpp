@@ -240,6 +240,66 @@ static INLINE float _anim_fmod(float x, float y)
     return (float)fmod((double)x, (double)y);
 }
 
+// Cubic-bezier helpers for calcMode="spline".
+// Control points are (x1,y1,x2,y2) with implicit endpoints (0,0) and (1,1).
+static INLINE float _anim_cubic_bezier_sample(float a1, float a2, float u)
+{
+    float inv = 1.0f - u;
+    return 3.0f * inv * inv * u * a1 + 3.0f * inv * u * u * a2 + u * u * u;
+}
+
+static INLINE float _anim_cubic_bezier_sample_derivative(float a1, float a2, float u)
+{
+    float inv = 1.0f - u;
+    return 3.0f * inv * inv * a1 + 6.0f * inv * u * (a2 - a1) + 3.0f * u * u * (1.0f - a2);
+}
+
+static INLINE float _anim_cubic_bezier_y_for_x(float x1, float y1, float x2, float y2, float x)
+{
+    x = _anim_clampf(x, 0.0f, 1.0f);
+
+    // Solve _anim_cubic_bezier_sample(x1,x2,u) == x for u.
+    float u = x;
+    float lo = 0.0f;
+    float hi = 1.0f;
+    for (int i = 0; i < 8; i++) {
+        float xu = _anim_cubic_bezier_sample(x1, x2, u);
+        float dx = xu - x;
+        if (dx < 0.0f) {
+            dx = -dx;
+        }
+        if (dx < 1e-6f) {
+            break;
+        }
+
+        float d = _anim_cubic_bezier_sample_derivative(x1, x2, u);
+        if (d > 1e-6f) {
+            // Use signed delta for Newton step.
+            float nu = u - (xu - x) / d;
+            if (nu >= lo && nu <= hi) {
+                u = nu;
+            } else {
+                if (xu > x) {
+                    hi = u;
+                } else {
+                    lo = u;
+                }
+                u = 0.5f * (lo + hi);
+            }
+        } else {
+            if (xu > x) {
+                hi = u;
+            } else {
+                lo = u;
+            }
+            u = 0.5f * (lo + hi);
+        }
+    }
+
+    float y = _anim_cubic_bezier_sample(y1, y2, u);
+    return _anim_clampf(y, 0.0f, 1.0f);
+}
+
 static INLINE float _attr_as_number(const psx_svg_attr* a)
 {
     if (!a) {
@@ -612,6 +672,9 @@ static INLINE ps_bool _anim_eval_simple(const psx_svg_anim_item* it, float doc_t
 
     float t = _anim_clampf(local / it->dur_sec, 0.0f, 1.0f);
 
+    // (calcMode="spline") cubic-bezier helper: map x in [0,1] to y.
+    // Defined as static functions (no C++ lambda) for broader compiler compatibility.
+
     // Step-2 (Tiny 1.2 subset): values + optional keyTimes (linear).
     // If values is present, it overrides from/to interpolation.
     const psx_svg_attr* avals = _find_attr(it->anim_node, SVG_ATTR_VALUES);
@@ -683,7 +746,26 @@ static INLINE ps_bool _anim_eval_simple(const psx_svg_anim_item* it, float doc_t
                 // Discrete: hold the segment's start value.
                 *out_v = vals[seg];
             } else {
-                *out_v = _anim_lerp(vals[seg], vals[seg + 1], u);
+                float eased_u = u;
+                if (calc_mode == SVG_ANIMATION_CALC_MODE_SPLINE) {
+                    // keySplines provides one cubic-bezier per segment.
+                    const psx_svg_attr* aks = _find_attr(it->anim_node, SVG_ATTR_KEY_SPLINES);
+                    if (aks && aks->val_type == SVG_ATTR_VALUE_PTR && aks->value.val) {
+                        const psx_svg_attr_values_list* kslist = (const psx_svg_attr_values_list*)aks->value.val;
+                        // Parser stores keySplines as a list of psx_svg_point, 2 points per segment.
+                        uint32_t need = (vlist->length - 1) * 2;
+                        if (kslist->length == need && seg < (vlist->length - 1)) {
+                            const psx_svg_point* pts = (const psx_svg_point*)&kslist->data[0];
+                            uint32_t base = seg * 2;
+                            float x1 = _anim_clampf(pts[base + 0].x, 0.0f, 1.0f);
+                            float y1 = _anim_clampf(pts[base + 0].y, 0.0f, 1.0f);
+                            float x2 = _anim_clampf(pts[base + 1].x, 0.0f, 1.0f);
+                            float y2 = _anim_clampf(pts[base + 1].y, 0.0f, 1.0f);
+                            eased_u = _anim_cubic_bezier_y_for_x(x1, y1, x2, y2, u);
+                        }
+                    }
+                }
+                *out_v = _anim_lerp(vals[seg], vals[seg + 1], eased_u);
             }
             return True;
         }
