@@ -725,6 +725,47 @@ static INLINE ps_bool _anim_eval_simple(const psx_svg_anim_item* it, float doc_t
                     seg_t0 = 0.0f;
                     seg_t1 = 1.0f;
                 }
+            } else if (calc_mode == SVG_ANIMATION_CALC_MODE_PACED) {
+                // Paced: allocate time proportionally to segment length in value space.
+                // Only for numeric values. If all deltas are zero, fall back to equal spacing.
+                float total_len = 0.0f;
+                for (uint32_t i = 0; i + 1 < vlist->length; i++) {
+                    float d = vals[i + 1] - vals[i];
+                    if (d < 0.0f) {
+                        d = -d;
+                    }
+                    total_len += d;
+                }
+
+                if (total_len <= 0.0f) {
+                    // Degenerate: all values equal.
+                    seg = 0;
+                    seg_t0 = 0.0f;
+                    seg_t1 = 1.0f;
+                } else {
+                    float acc = 0.0f;
+                    for (uint32_t i = 0; i + 1 < vlist->length; i++) {
+                        float d = vals[i + 1] - vals[i];
+                        if (d < 0.0f) {
+                            d = -d;
+                        }
+                        float w = d / total_len;
+                        float a = acc;
+                        float b = acc + w;
+                        if (t >= a && (t <= b || i + 2 == vlist->length)) {
+                            seg = i;
+                            seg_t0 = a;
+                            seg_t1 = b;
+                            break;
+                        }
+                        acc = b;
+                    }
+                    if (seg_t1 <= seg_t0) {
+                        seg = vlist->length - 2;
+                        seg_t0 = 0.0f;
+                        seg_t1 = 1.0f;
+                    }
+                }
             } else {
                 // Evenly spaced segments.
                 float step = 1.0f / (float)(vlist->length - 1);

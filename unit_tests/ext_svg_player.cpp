@@ -1266,3 +1266,201 @@ TEST_F(SVGPlayerTest, AnimateValues_CalcModeSpline_NonlinearEases)
 
     psx_svg_player_destroy(p);
 }
+
+TEST_F(SVGPlayerTest, AnimateValues_CalcModePaced_UniformMatchesLinear)
+{
+    // For uniformly spaced values, paced should match linear interpolation.
+    // values="0;10;20" => equal segment lengths.
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
+        "    <animate attributeName=\"x\" values=\"0;10;20\" calcMode=\"paced\" dur=\"1s\" fill=\"remove\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_player* p = psx_svg_player_create_from_data(svg, (uint32_t)strlen(svg), NULL, &r);
+    if (!p) {
+        EXPECT_NE((psx_svg_player*)NULL, p);
+        return;
+    }
+    EXPECT_EQ(S_OK, r);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    if (!n) {
+        EXPECT_TRUE(n != NULL);
+        psx_svg_player_destroy(p);
+        return;
+    }
+
+    // At t=0.25: in first half of animation; linear would be 5.
+    psx_svg_player_seek(p, 0.25f);
+    {
+        float v = 0.0f;
+        if (!psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v)) {
+            EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+            psx_svg_player_destroy(p);
+            return;
+        }
+        EXPECT_NEAR(v, 5.0f, 0.05f);
+    }
+
+    // At t=0.75: linear would be 15.
+    psx_svg_player_seek(p, 0.75f);
+    {
+        float v = 0.0f;
+        if (!psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v)) {
+            EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+            psx_svg_player_destroy(p);
+            return;
+        }
+        EXPECT_NEAR(v, 15.0f, 0.05f);
+    }
+
+    psx_svg_player_destroy(p);
+}
+
+TEST_F(SVGPlayerTest, AnimateValues_CalcModePaced_NonUniformAllocatesTime)
+{
+    // Non-uniform spacing: values="0;1;11" => segment lengths: 1 and 10.
+    // Paced should spend ~1/11 of the time on the first segment.
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
+        "    <animate attributeName=\"x\" values=\"0;1;11\" calcMode=\"paced\" dur=\"1s\" fill=\"remove\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_player* p = psx_svg_player_create_from_data(svg, (uint32_t)strlen(svg), NULL, &r);
+    if (!p) {
+        EXPECT_NE((psx_svg_player*)NULL, p);
+        return;
+    }
+    EXPECT_EQ(S_OK, r);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    if (!n) {
+        EXPECT_TRUE(n != NULL);
+        psx_svg_player_destroy(p);
+        return;
+    }
+
+    // At t=0.5, we should be well into the long second segment.
+    // Expected: after consuming first segment's 1/11 time, remaining progress is (0.5-1/11)/(10/11)=0.45
+    // Value ~= 1 + 10*0.45 = 5.5
+    psx_svg_player_seek(p, 0.5f);
+    {
+        float v = 0.0f;
+        if (!psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v)) {
+            EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+            psx_svg_player_destroy(p);
+            return;
+        }
+        EXPECT_NEAR(v, 5.5f, 0.10f);
+    }
+
+    psx_svg_player_destroy(p);
+}
+
+TEST_F(SVGPlayerTest, AnimateValues_CalcModePaced_AllEqualDegenerates)
+{
+    static const char* svg =
+        "<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='100' height='100'>"
+        "  <rect id='r' x='0' y='0' width='10' height='10'>"
+        "    <animate attributeName='x' dur='1s' values='5;5;5' calcMode='paced' fill='freeze'/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_player* p = psx_svg_player_create_from_data(svg, (uint32_t)strlen(svg), NULL, &r);
+    EXPECT_TRUE(p != NULL);
+    if (!p) {
+        return;
+    }
+    EXPECT_EQ(S_OK, r);
+
+    psx_svg_player_play(p);
+    psx_svg_player_tick(p, 0.0f);
+    psx_svg_player_seek(p, 0.5f);
+    psx_svg_player_tick(p, 0.0f);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    EXPECT_TRUE(n != NULL);
+    if (n) {
+        float v = -1.0f;
+        EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+        EXPECT_NEAR(v, 5.0f, 0.01f);
+    }
+
+    psx_svg_player_destroy(p);
+}
+
+TEST_F(SVGPlayerTest, AnimateValues_CalcModePaced_NegativeDeltas)
+{
+    static const char* svg =
+        "<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='100' height='100'>"
+        "  <rect id='r' x='0' y='0' width='10' height='10'>"
+        "    <animate attributeName='x' dur='1s' values='10;0;-10' calcMode='paced' fill='freeze'/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_player* p = psx_svg_player_create_from_data(svg, (uint32_t)strlen(svg), NULL, &r);
+    EXPECT_TRUE(p != NULL);
+    if (!p) {
+        return;
+    }
+    EXPECT_EQ(S_OK, r);
+
+    // Distances: 10 and 10, so mid time should land mid of overall path.
+    psx_svg_player_play(p);
+    psx_svg_player_tick(p, 0.0f);
+    psx_svg_player_seek(p, 0.5f);
+    psx_svg_player_tick(p, 0.0f);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    EXPECT_TRUE(n != NULL);
+    if (n) {
+        float v = 999.0f;
+        EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+        EXPECT_NEAR(v, 0.0f, 0.15f);
+    }
+
+    psx_svg_player_destroy(p);
+}
+
+TEST_F(SVGPlayerTest, AnimateValues_CalcModePaced_KeyTimesTakesPrecedence)
+{
+    static const char* svg =
+        "<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='100' height='100'>"
+        "  <rect id='r' x='0' y='0' width='10' height='10'>"
+        "    <animate attributeName='x' dur='1s' values='0;1;11' keyTimes='0;0.1;1' calcMode='paced' fill='freeze'/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_player* p = psx_svg_player_create_from_data(svg, (uint32_t)strlen(svg), NULL, &r);
+    EXPECT_TRUE(p != NULL);
+    if (!p) {
+        return;
+    }
+    EXPECT_EQ(S_OK, r);
+
+    // With keyTimes, at t=0.5 we are in segment [0.1,1] with local u ~= 0.444...
+    // so v ~= 1 + (11-1)*0.444... ~= 5.44, not the paced mapping.
+    psx_svg_player_play(p);
+    psx_svg_player_tick(p, 0.0f);
+    psx_svg_player_seek(p, 0.5f);
+    psx_svg_player_tick(p, 0.0f);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    EXPECT_TRUE(n != NULL);
+    if (n) {
+        float v = -1.0f;
+        EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+        EXPECT_NEAR(v, 5.44f, 0.20f);
+    }
+
+    psx_svg_player_destroy(p);
+}
