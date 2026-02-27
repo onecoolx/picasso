@@ -690,27 +690,16 @@ static INLINE ps_bool _anim_eval_set(const psx_svg_anim_item* it, float doc_t, f
     // Active interval end:
     // - If explicit end is present: [begin, end]
     // - Else: [begin, begin+dur]
-    if (end_sec > 0.0f) {
-        if (doc_t > end_sec) {
-            return False;
-        }
-        if (doc_t == end_sec && it->fill_mode == SVG_ANIMATION_REMOVE) {
-            return False;
-        }
-    } else {
+    // NOTE: the end_sec path (explicit end or repeatDur mapped to end) already
+    // handles doc_t > end_sec and doc_t == end_sec above. Do not reject again
+    // here, otherwise fill=freeze at end instant/after end can be lost.
+    if (end_sec <= 0.0f) {
         // Active during [0, dur].
         if (local > it->dur_sec) {
             return False;
         }
-    }
 
-    // If fill=freeze, keep value visible at (and after) the end instant.
-    // This matters when local == dur (e.g. t == begin+dur).
-    if (end_sec > 0.0f) {
-        if (doc_t == end_sec && it->fill_mode == SVG_ANIMATION_FREEZE) {
-            *out_hold = True;
-        }
-    } else {
+        // If fill=freeze, keep value visible at the end instant.
         if (local == it->dur_sec) {
             if (it->fill_mode == SVG_ANIMATION_FREEZE) {
                 *out_hold = True;
@@ -993,6 +982,7 @@ extern "C" {
             psx_svg_node_destroy(root);
             return NULL;
         }
+
         return p;
     }
 

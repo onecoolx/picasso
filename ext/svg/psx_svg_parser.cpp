@@ -1675,15 +1675,18 @@ struct _transform_values_list {
     do { \
         psx_svg_attr_values_list * list = ctx->list; \
         if(!list) { \
-            ctx->mem_size = sizeof(type) * 4 + sizeof(uint32_t);\
+            ctx->mem_size = (uint32_t)(sizeof(type) * 4 + sizeof(uint32_t));\
             ctx->list = (psx_svg_attr_values_list *)mem_malloc(ctx->mem_size); \
             memset(ctx->list, 0, ctx->mem_size); \
             ptr = (type *)(&(ctx->list->data)); \
             ctx->list_count = 1; \
         } else { \
-            uint32_t mem = sizeof(type) * (ctx->list_count + 1) + sizeof(uint32_t); \
+            uint32_t mem = (uint32_t)(sizeof(type) * (ctx->list_count + 1) + sizeof(uint32_t)); \
             if(ctx->mem_size < mem) { \
-                ctx->mem_size = (ctx->list_count << 1) * sizeof(type) + sizeof(uint32_t); \
+                /* grow by doubling element capacity (at least 4). */ \
+                uint32_t new_count = (ctx->list_count << 1); \
+                if (new_count < 4) new_count = 4; \
+                ctx->mem_size = (uint32_t)(new_count * sizeof(type) + sizeof(uint32_t)); \
                 ctx->list = (psx_svg_attr_values_list *)mem_realloc(ctx->list, ctx->mem_size); \
             } \
             ptr = (type *)(&(ctx->list->data)) + ctx->list_count; \

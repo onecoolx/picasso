@@ -802,7 +802,7 @@ TEST_F(SVGPlayerTest, BeginList_RepeatDur_OverridesRepeatCount)
     psx_svg_player_destroy(p);
 }
 
-TEST_F(SVGPlayerTest, DISABLED_Set_BeginList_RepeatDur_RemoveCutsOff)
+TEST_F(SVGPlayerTest, Set_BeginList_RepeatDur_RemoveCutsOff)
 {
     // repeatDur should bound total active duration for <set> even if dur is longer.
     // begin list triggers at 0s;1s, dur=2s, repeatDur=0.25s, fill=remove => active only for 0.25s after each begin.
@@ -854,7 +854,7 @@ TEST_F(SVGPlayerTest, DISABLED_Set_BeginList_RepeatDur_RemoveCutsOff)
     psx_svg_player_destroy(p);
 }
 
-TEST_F(SVGPlayerTest, DISABLED_Set_BeginList_RepeatDur_FreezeHolds)
+TEST_F(SVGPlayerTest, Set_BeginList_RepeatDur_FreezeHolds)
 {
     // With fill=freeze, value should hold after repeatDur cutoff.
     const char* svg =
@@ -866,17 +866,28 @@ TEST_F(SVGPlayerTest, DISABLED_Set_BeginList_RepeatDur_FreezeHolds)
 
     psx_result r = S_OK;
     psx_svg_player* p = psx_svg_player_create_from_data(svg, (uint32_t)strlen(svg), NULL, &r);
-    ASSERT_NE((psx_svg_player*)NULL, p);
+    if (!p) {
+        EXPECT_NE((psx_svg_player*)NULL, p);
+        return;
+    }
     EXPECT_EQ(S_OK, r);
 
     const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
-    ASSERT_TRUE(n != NULL);
+    if (!n) {
+        EXPECT_TRUE(n != NULL);
+        psx_svg_player_destroy(p);
+        return;
+    }
 
     // after repeatDur end
     psx_svg_player_seek(p, 0.30f);
     {
         float v = 0;
-        ASSERT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+        if (!psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v)) {
+            EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+            psx_svg_player_destroy(p);
+            return;
+        }
         EXPECT_NEAR(v, 10.0f, 0.01f);
     }
 
