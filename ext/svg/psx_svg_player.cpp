@@ -1364,6 +1364,98 @@ static INLINE ps_bool _anim_eval_transform_scale_discrete(const psx_svg_anim_ite
     return True;
 }
 
+static INLINE ps_bool _anim_eval_transform_rotate_discrete(const psx_svg_anim_item* it, float doc_t,
+                                                           float* out_a, float* out_b, float* out_c,
+                                                           float* out_d, float* out_e, float* out_f)
+{
+    if (!it || !out_a || !out_b || !out_c || !out_d || !out_e || !out_f) {
+        return False;
+    }
+
+    *out_a = 1.0f;
+    *out_b = 0.0f;
+    *out_c = 0.0f;
+    *out_d = 1.0f;
+    *out_e = 0.0f;
+    *out_f = 0.0f;
+
+    if (it->dur_sec <= 0.0f) {
+        return False;
+    }
+
+    float begin_sec = _anim_item_begin_for_time(it, doc_t);
+    if (doc_t < begin_sec) {
+        return False;
+    }
+
+    float local = doc_t - begin_sec;
+
+    // repeatCount/repeatDur + fill time handling (mirrors _anim_eval_simple).
+    float total = 0.0f;
+    ps_bool has_total = False;
+    if (it->repeat_dur_sec > 0.0f) {
+        total = it->repeat_dur_sec;
+        has_total = True;
+    } else if (it->repeat_count == 0) {
+        has_total = False;
+    } else {
+        total = it->dur_sec * (float)it->repeat_count;
+        has_total = True;
+    }
+
+    if (!has_total) {
+        local = _anim_fmod(local, it->dur_sec);
+    } else {
+        if (local >= total) {
+            if (it->fill_mode == SVG_ANIMATION_FREEZE) {
+                local = it->dur_sec;
+            } else {
+                return False;
+            }
+        } else {
+            local = _anim_fmod(local, it->dur_sec);
+        }
+    }
+
+    float t = _anim_clampf(local / it->dur_sec, 0.0f, 1.0f);
+
+    const psx_svg_attr* avals = _find_attr(it->anim_node, SVG_ATTR_VALUES);
+    if (!avals || avals->val_type != SVG_ATTR_VALUE_PTR || !avals->value.val) {
+        return False;
+    }
+    const psx_svg_attr_values_list* vlist = (const psx_svg_attr_values_list*)avals->value.val;
+    if (vlist->length < 1) {
+        return False;
+    }
+
+    uint32_t idx = 0;
+    if (t >= 1.0f) {
+        idx = vlist->length - 1;
+    } else if (vlist->length >= 2 && t >= 0.5f) {
+        idx = 1;
+    }
+
+    const float* base = NULL;
+    uint32_t vlen = 0;
+    if (!_anim_values_list_get_transform(vlist, idx, &base, &vlen) || !base) {
+        return False;
+    }
+
+    // Rotate values are stored in the transform-values blob; first number is angle in degrees.
+    float angle_deg = (vlen >= 1) ? base[0] : 0.0f;
+    const float pi = 3.14159265358979323846f;
+    float angle_rad = angle_deg * (pi / 180.0f);
+    float cs = (float)cos(angle_rad);
+    float sn = (float)sin(angle_rad);
+
+    // Matrix for rotation about origin.
+    *out_a = cs;
+    *out_b = sn;
+    *out_c = -sn;
+    *out_d = cs;
+    return True;
+}
+
 // Note: psx_svg_attr_values_list is a variable-sized blob (length + data[]).
 // The element layout depends on which attribute it represents.
 
@@ -1937,6 +2029,8 @@ extern "C" {
                 if (is_discrete) {
                     if (ttype == SVG_TRANSFORM_TYPE_SCALE) {
                         ok2 = _anim_eval_transform_scale_discrete(it, p->time_sec, &a, &b, &c, &d, &e, &f);
+                    } else if (ttype == SVG_TRANSFORM_TYPE_ROTATE) {
+                        ok2 = _anim_eval_transform_rotate_discrete(it, p->time_sec, &a, &b, &c, &d, &e, &f);
                     } else {
                         // Default/legacy: translate.
                         ok2 = _anim_eval_transform_translate_discrete(it, p->time_sec, &a, &b, &c, &d, &e, &f);
@@ -2018,6 +2112,8 @@ extern "C" {
                 if (is_discrete) {
                     if (ttype == SVG_TRANSFORM_TYPE_SCALE) {
                         ok2 = _anim_eval_transform_scale_discrete(it, p->time_sec, &a, &b, &c, &d, &e, &f);
+                    } else if (ttype == SVG_TRANSFORM_TYPE_ROTATE) {
+                        ok2 = _anim_eval_transform_rotate_discrete(it, p->time_sec, &a, &b, &c, &d, &e, &f);
                     } else {
                         ok2 = _anim_eval_transform_translate_discrete(it, p->time_sec, &a, &b, &c, &d, &e, &f);
                     }
@@ -2161,6 +2257,8 @@ extern "C" {
                 if (is_discrete) {
                     if (ttype == SVG_TRANSFORM_TYPE_SCALE) {
                         ok2 = _anim_eval_transform_scale_discrete(it, p->time_sec, &a, &b, &c, &d, &e, &f);
+                    } else if (ttype == SVG_TRANSFORM_TYPE_ROTATE) {
+                        ok2 = _anim_eval_transform_rotate_discrete(it, p->time_sec, &a, &b, &c, &d, &e, &f);
                     } else {
                         ok2 = _anim_eval_transform_translate_discrete(it, p->time_sec, &a, &b, &c, &d, &e, &f);
                     }
