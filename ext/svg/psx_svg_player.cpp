@@ -1062,6 +1062,75 @@ static INLINE ps_bool _anim_eval_transform_translate_discrete(const psx_svg_anim
     return True;
 }
 
+static INLINE ps_bool _anim_eval_transform_translate_linear(const psx_svg_anim_item* it, float doc_t,
+                                                            float* out_a, float* out_b, float* out_c,
+                                                            float* out_d, float* out_e, float* out_f)
+{
+    if (!it || !out_a || !out_b || !out_c || !out_d || !out_e || !out_f) {
+        return False;
+    }
+
+    *out_a = 1.0f;
+    *out_b = 0.0f;
+    *out_c = 0.0f;
+    *out_d = 1.0f;
+    *out_e = 0.0f;
+    *out_f = 0.0f;
+
+    if (it->dur_sec <= 0.0f) {
+        return False;
+    }
+
+    float begin_sec = _anim_item_begin_for_time(it, doc_t);
+    if (doc_t < begin_sec) {
+        return False;
+    }
+
+    float local = doc_t - begin_sec;
+    // No repeat support for animateTransform in this minimal step.
+    if (local < 0.0f) {
+        return False;
+    }
+    if (local >= it->dur_sec) {
+        // fill handling is done by caller for now; keep inactive beyond dur.
+        return False;
+    }
+
+    float t = _anim_clampf(local / it->dur_sec, 0.0f, 1.0f);
+
+    const psx_svg_attr* avals = _find_attr(it->anim_node, SVG_ATTR_VALUES);
+    if (!avals || avals->val_type != SVG_ATTR_VALUE_PTR || !avals->value.val) {
+        return False;
+    }
+
+    const psx_svg_attr_values_list* vlist = (const psx_svg_attr_values_list*)avals->value.val;
+    if (vlist->length < 2) {
+        // For linear interpolation, need at least 2 key values.
+        return False;
+    }
+
+    // Minimal linear support: interpolate between first two translate values.
+    const float* base0 = NULL;
+    const float* base1 = NULL;
+    uint32_t vlen0 = 0;
+    uint32_t vlen1 = 0;
+    if (!_anim_values_list_get_transform(vlist, 0, &base0, &vlen0) || !base0) {
+        return False;
+    }
+    if (!_anim_values_list_get_transform(vlist, 1, &base1, &vlen1) || !base1) {
+        return False;
+    }
+
+    float tx0 = (vlen0 >= 1) ? base0[0] : 0.0f;
+    float ty0 = (vlen0 >= 2) ? base0[1] : 0.0f;
+    float tx1 = (vlen1 >= 1) ? base1[0] : tx0;
+    float ty1 = (vlen1 >= 2) ? base1[1] : ty0;
+
+    *out_e = _anim_lerp(tx0, tx1, t);
+    *out_f = _anim_lerp(ty0, ty1, t);
+    return True;
+}
+
 // Note: psx_svg_attr_values_list is a variable-sized blob (length + data[]).
 // The element layout depends on which attribute it represents.
 
@@ -1627,7 +1696,15 @@ extern "C" {
 
             if (it->tag == SVG_TAG_ANIMATE_TRANSFORM && it->target_attr == SVG_ATTR_TRANSFORM) {
                 float a = 1, b = 0, c = 0, d = 1, e = 0, f = 0;
-                if (_anim_eval_transform_translate_discrete(it, p->time_sec, &a, &b, &c, &d, &e, &f)) {
+                const psx_svg_attr* acm = _find_attr(it->anim_node, SVG_ATTR_CALC_MODE);
+                ps_bool is_discrete = (acm && acm->val_type == SVG_ATTR_VALUE_DATA && acm->value.ival == SVG_ANIMATION_CALC_MODE_DISCRETE) ? True : False;
+                ps_bool ok2 = False;
+                if (is_discrete) {
+                    ok2 = _anim_eval_transform_translate_discrete(it, p->time_sec, &a, &b, &c, &d, &e, &f);
+                } else {
+                    ok2 = _anim_eval_transform_translate_linear(it, p->time_sec, &a, &b, &c, &d, &e, &f);
+                }
+                if (ok2) {
                     _anim_state_set_transform(&p->anim_state, it->target_node, a, b, c, d, e, f);
                 }
                 continue;
@@ -1692,7 +1769,15 @@ extern "C" {
 
             if (it->tag == SVG_TAG_ANIMATE_TRANSFORM && it->target_attr == SVG_ATTR_TRANSFORM) {
                 float a = 1, b = 0, c = 0, d = 1, e = 0, f = 0;
-                if (_anim_eval_transform_translate_discrete(it, p->time_sec, &a, &b, &c, &d, &e, &f)) {
+                const psx_svg_attr* acm = _find_attr(it->anim_node, SVG_ATTR_CALC_MODE);
+                ps_bool is_discrete = (acm && acm->val_type == SVG_ATTR_VALUE_DATA && acm->value.ival == SVG_ANIMATION_CALC_MODE_DISCRETE) ? True : False;
+                ps_bool ok2 = False;
+                if (is_discrete) {
+                    ok2 = _anim_eval_transform_translate_discrete(it, p->time_sec, &a, &b, &c, &d, &e, &f);
+                } else {
+                    ok2 = _anim_eval_transform_translate_linear(it, p->time_sec, &a, &b, &c, &d, &e, &f);
+                }
+                if (ok2) {
                     _anim_state_set_transform(&p->anim_state, it->target_node, a, b, c, d, e, f);
                 }
                 continue;
@@ -1821,7 +1906,15 @@ extern "C" {
 
             if (it->tag == SVG_TAG_ANIMATE_TRANSFORM && it->target_attr == SVG_ATTR_TRANSFORM) {
                 float a = 1, b = 0, c = 0, d = 1, e = 0, f = 0;
-                if (_anim_eval_transform_translate_discrete(it, p->time_sec, &a, &b, &c, &d, &e, &f)) {
+                const psx_svg_attr* acm = _find_attr(it->anim_node, SVG_ATTR_CALC_MODE);
+                ps_bool is_discrete = (acm && acm->val_type == SVG_ATTR_VALUE_DATA && acm->value.ival == SVG_ANIMATION_CALC_MODE_DISCRETE) ? True : False;
+                ps_bool ok2 = False;
+                if (is_discrete) {
+                    ok2 = _anim_eval_transform_translate_discrete(it, p->time_sec, &a, &b, &c, &d, &e, &f);
+                } else {
+                    ok2 = _anim_eval_transform_translate_linear(it, p->time_sec, &a, &b, &c, &d, &e, &f);
+                }
+                if (ok2) {
                     _anim_state_set_transform(&p->anim_state, it->target_node, a, b, c, d, e, f);
                 }
                 continue;
