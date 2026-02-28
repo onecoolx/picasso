@@ -1715,6 +1715,8 @@ static INLINE ps_bool _anim_eval_transform_rotate_linear(const psx_svg_anim_item
             return False;
         }
         float angle_deg = (vlen0 >= 1) ? base0[0] : 0.0f;
+        float cx = (vlen0 >= 2) ? base0[1] : 0.0f;
+        float cy = (vlen0 >= 3) ? base0[2] : 0.0f;
         const float pi = 3.14159265358979323846f;
         float angle_rad = angle_deg * (pi / 180.0f);
         float cs = (float)cos(angle_rad);
@@ -1723,6 +1725,9 @@ static INLINE ps_bool _anim_eval_transform_rotate_linear(const psx_svg_anim_item
         *out_b = sn;
         *out_c = -sn;
         *out_d = cs;
+        // rotate about (cx,cy): T(cx,cy)*R*T(-cx,-cy)
+        *out_e = cx - cx * cs + cy * sn;
+        *out_f = cy - cx * sn - cy * cs;
         return True;
     }
 
@@ -1788,7 +1793,24 @@ static INLINE ps_bool _anim_eval_transform_rotate_linear(const psx_svg_anim_item
 
     float ang0 = (vlen0 >= 1) ? base0[0] : 0.0f;
     float ang1 = (vlen1 >= 1) ? base1[0] : ang0;
+
+    // rotate values can be: angle [cx cy]
+    float cx0 = (vlen0 >= 2) ? base0[1] : 0.0f;
+    float cy0 = (vlen0 >= 3) ? base0[2] : 0.0f;
+    float cx1 = (vlen1 >= 2) ? base1[1] : cx0;
+    float cy1 = (vlen1 >= 3) ? base1[2] : cy0;
+
+    // If a rotate entry provides cx but not cy, treat cy as 0.
+    if (vlen0 == 2) {
+        cy0 = 0.0f;
+    }
+    if (vlen1 == 2) {
+        cy1 = 0.0f;
+    }
+
     float angle_deg = _anim_lerp(ang0, ang1, u);
+    float cx = _anim_lerp(cx0, cx1, u);
+    float cy = _anim_lerp(cy0, cy1, u);
 
     const float pi = 3.14159265358979323846f;
     float angle_rad = angle_deg * (pi / 180.0f);
@@ -1798,6 +1820,8 @@ static INLINE ps_bool _anim_eval_transform_rotate_linear(const psx_svg_anim_item
     *out_b = sn;
     *out_c = -sn;
     *out_d = cs;
+    *out_e = cx - cx * cs + cy * sn;
+    *out_f = cy - cx * sn - cy * cs;
     return True;
 }
 
