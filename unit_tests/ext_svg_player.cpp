@@ -1767,3 +1767,60 @@ TEST_F(SVGPlayerTest, AnimateTransform_Translate_KeyTimes)
 
     psx_svg_player_destroy(p);
 }
+
+TEST_F(SVGPlayerTest, AnimateTransform_Translate_FromTo)
+{
+    // Step-3 continuation (Tiny 1.2): translate with from/to.
+    // from="0 0" to="10 20" dur="1s" => at t=0.25 => (2.5,5), t=0.75 => (7.5,15)
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"10\" height=\"10\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
+        "    <animateTransform attributeName=\"transform\" type=\"translate\" from=\"0 0\" to=\"10 20\" dur=\"1s\" fill=\"remove\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_player* p = psx_svg_player_create_from_data(svg, (uint32_t)strlen(svg), NULL, &r);
+    if (!p) {
+        EXPECT_NE((psx_svg_player*)NULL, p);
+        return;
+    }
+    EXPECT_EQ(S_OK, r);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    if (!n) {
+        EXPECT_TRUE(n != NULL);
+        psx_svg_player_destroy(p);
+        return;
+    }
+
+    psx_svg_player_seek(p, 0.25f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        if (psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f)) {
+            EXPECT_NEAR(1.0f, a, 0.0001f);
+            EXPECT_NEAR(0.0f, b, 0.0001f);
+            EXPECT_NEAR(0.0f, c, 0.0001f);
+            EXPECT_NEAR(1.0f, d, 0.0001f);
+            EXPECT_NEAR(2.5f, e, 0.0001f);
+            EXPECT_NEAR(5.0f, f, 0.0001f);
+        }
+    }
+
+    psx_svg_player_seek(p, 0.75f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        if (psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f)) {
+            EXPECT_NEAR(1.0f, a, 0.0001f);
+            EXPECT_NEAR(0.0f, b, 0.0001f);
+            EXPECT_NEAR(0.0f, c, 0.0001f);
+            EXPECT_NEAR(1.0f, d, 0.0001f);
+            EXPECT_NEAR(7.5f, e, 0.0001f);
+            EXPECT_NEAR(15.0f, f, 0.0001f);
+        }
+    }
+
+    psx_svg_player_destroy(p);
+}
