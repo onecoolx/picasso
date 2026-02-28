@@ -1014,13 +1014,35 @@ static INLINE ps_bool _anim_eval_transform_translate_discrete(const psx_svg_anim
     }
 
     float local = doc_t - begin_sec;
-    // No repeat support for animateTransform in this minimal step.
-    if (local < 0.0f) {
-        return False;
+
+    // Compute total active duration from repeatCount/repeatDur.
+    float total = 0.0f;
+    ps_bool has_total = False;
+    if (it->repeat_dur_sec > 0.0f) {
+        total = it->repeat_dur_sec;
+        has_total = True;
+    } else if (it->repeat_count == 0) {
+        // indefinite
+        has_total = False;
+    } else {
+        total = it->dur_sec * (float)it->repeat_count;
+        has_total = True;
     }
-    if (local >= it->dur_sec) {
-        // fill handling is done by caller for now; keep inactive beyond dur.
-        return False;
+
+    if (!has_total) {
+        // indefinite
+        local = _anim_fmod(local, it->dur_sec);
+    } else {
+        if (local >= total) {
+            if (it->fill_mode == SVG_ANIMATION_FREEZE) {
+                // Freeze at end of simple duration.
+                local = it->dur_sec;
+            } else {
+                return False;
+            }
+        } else {
+            local = _anim_fmod(local, it->dur_sec);
+        }
     }
 
     float t = _anim_clampf(local / it->dur_sec, 0.0f, 1.0f);
@@ -1037,8 +1059,11 @@ static INLINE ps_bool _anim_eval_transform_translate_discrete(const psx_svg_anim
 
     // Parser stores animateTransform values as `_transform_values_list` entries.
     // See psx_svg_parser.cpp::_transform_values_list.
+    // For freeze beyond dur, clamp to last value.
     uint32_t idx = 0;
-    if (vlist->length >= 2 && t >= 0.5f) {
+    if (t >= 1.0f) {
+        idx = vlist->length - 1;
+    } else if (vlist->length >= 2 && t >= 0.5f) {
         idx = 1;
     }
 
@@ -1087,13 +1112,33 @@ static INLINE ps_bool _anim_eval_transform_translate_linear(const psx_svg_anim_i
     }
 
     float local = doc_t - begin_sec;
-    // No repeat support for animateTransform in this minimal step.
-    if (local < 0.0f) {
-        return False;
+
+    // Compute total active duration from repeatCount/repeatDur.
+    float total = 0.0f;
+    ps_bool has_total = False;
+    if (it->repeat_dur_sec > 0.0f) {
+        total = it->repeat_dur_sec;
+        has_total = True;
+    } else if (it->repeat_count == 0) {
+        // indefinite
+        has_total = False;
+    } else {
+        total = it->dur_sec * (float)it->repeat_count;
+        has_total = True;
     }
-    if (local >= it->dur_sec) {
-        // fill handling is done by caller for now; keep inactive beyond dur.
-        return False;
+
+    if (!has_total) {
+        local = _anim_fmod(local, it->dur_sec);
+    } else {
+        if (local >= total) {
+            if (it->fill_mode == SVG_ANIMATION_FREEZE) {
+                local = it->dur_sec;
+            } else {
+                return False;
+            }
+        } else {
+            local = _anim_fmod(local, it->dur_sec);
+        }
     }
 
     float t = _anim_clampf(local / it->dur_sec, 0.0f, 1.0f);
