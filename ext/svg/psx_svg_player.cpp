@@ -1365,8 +1365,8 @@ static INLINE ps_bool _anim_eval_transform_scale_discrete(const psx_svg_anim_ite
 }
 
 static INLINE ps_bool _anim_eval_transform_scale_linear(const psx_svg_anim_item* it, float doc_t,
-                                                         float* out_a, float* out_b, float* out_c,
-                                                         float* out_d, float* out_e, float* out_f)
+                                                        float* out_a, float* out_b, float* out_c,
+                                                        float* out_d, float* out_e, float* out_f)
 {
     if (!it || !out_a || !out_b || !out_c || !out_d || !out_e || !out_f) {
         return False;
