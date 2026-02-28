@@ -22,6 +22,7 @@ We implement a staged subset of SVG Tiny 1.2 animation:
   - Numeric: `x`, `y`, `width`, `height`, `opacity`, `rx`, `ry`, `stroke-width`, `fill-opacity`, `stop-opacity`.
   - Color: minimal `animateColor` for `fill` (discrete).
    - Transform: minimal `animateTransform` for `translate` (linear default + discrete), tracked as matrix `a,b,c,d,e,f`.
+   - Transform: minimal `animateTransform` for `translate` (linear default + discrete), plus `scale` and `rotate` (discrete), tracked as matrix `a,b,c,d,e,f`.
 
 Non-goals for now (explicitly deferred)
 - Full SMIL timing model (syncbase, indefinite end, restart modes, etc.).
@@ -141,15 +142,22 @@ We deliberately progress in small, test-driven increments:
 - `keyTimes` is supported for `values` segmentation (non-uniform timing).
 - `from`/`to` fallback is supported when `values` is absent.
 - `repeatCount` / `repeatDur` and `fill=freeze|remove` are supported for `translate` (time clamping/looping aligned with `_anim_eval_simple()`).
+- `repeatCount` / `repeatDur` and `fill=freeze|remove` are supported for `translate` (time clamping/looping aligned with `_anim_eval_simple()`).
+
+#### animateTransform (scale/rotate, discrete) minimal playback
+- `type="scale"` in `calcMode="discrete"` (matrix: `a=sx`, `d=sy`, `e=f=0`).
+- `type="rotate"` in `calcMode="discrete"` (currently only rotate around origin; no `cx/cy`).
 
 ### 3.2 Test coverage status
-- Full test suite passes: **665/665**.
+- Full test suite passes: **667/667**.
 
 Key unit tests:
 - `SVGPlayerTest.AnimateColorFill_FromTo_Discrete`
 - `SVGPlayerTest.AnimateTransform_Translate_Discrete`
 - `SVGPlayerTest.AnimateTransform_Translate_FreezeHoldsAfterDur`
 - `SVGPlayerTest.AnimateTransform_Translate_RepeatCount`
+- `SVGPlayerTest.AnimateTransform_Scale_Discrete`
+- `SVGPlayerTest.AnimateTransform_Rotate_Discrete`
 
 Notes:
 - Some existing tests print sanitizer warnings (signed overflow in rasterizer) but tests still pass; not part of animation work.
@@ -180,8 +188,9 @@ Stored per animation element:
 
 ## 5. Known Limitations / Technical Debt
 
-1. **animateTransform only covers translate (linear/discrete)**
-   - No `rotate`, `scale`, `skewX/Y`, no matrix composition.
+1. **animateTransform coverage is still partial**
+   - Supported: `translate` (linear/discrete), `scale` (discrete), `rotate` (discrete).
+   - Missing: `skewX`, `skewY`, `matrix`, and transform composition rules.
    - No `additive` / `accumulate`.
 
 2. **animateTransform only covers translate for repeat/fill**
