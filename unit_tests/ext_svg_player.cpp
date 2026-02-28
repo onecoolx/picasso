@@ -2083,3 +2083,44 @@ TEST_F(SVGPlayerTest, AnimateTransform_Rotate_Linear)
 
     psx_svg_player_destroy(p);
 }
+
+TEST_F(SVGPlayerTest, AnimateTransform_Scale_Linear)
+{
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
+        "    <animateTransform attributeName=\"transform\" type=\"scale\" values=\"1; 3\" dur=\"1s\" fill=\"remove\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_player* p = psx_svg_player_create_from_data(svg, (uint32_t)strlen(svg), NULL, &r);
+    if (!p) {
+        EXPECT_NE((psx_svg_player*)NULL, p);
+        return;
+    }
+    EXPECT_EQ(S_OK, r);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    if (!n) {
+        EXPECT_TRUE(n != NULL);
+        psx_svg_player_destroy(p);
+        return;
+    }
+
+    psx_svg_player_seek(p, 0.5f);
+
+    float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+    ps_bool ok = psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f);
+    EXPECT_TRUE(ok);
+
+    // At t=0.5, scale from 1 -> 3 should be 2.
+    EXPECT_NEAR(a, 2.0f, 0.0002f);
+    EXPECT_NEAR(b, 0.0f, 0.0002f);
+    EXPECT_NEAR(c, 0.0f, 0.0002f);
+    EXPECT_NEAR(d, 2.0f, 0.0002f);
+    EXPECT_NEAR(e, 0.0f, 0.0002f);
+    EXPECT_NEAR(f, 0.0f, 0.0002f);
+
+    psx_svg_player_destroy(p);
+}

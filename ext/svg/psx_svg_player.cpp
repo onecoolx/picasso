@@ -1364,6 +1364,193 @@ static INLINE ps_bool _anim_eval_transform_scale_discrete(const psx_svg_anim_ite
     return True;
 }
 
+static INLINE ps_bool _anim_eval_transform_scale_linear(const psx_svg_anim_item* it, float doc_t,
+                                                         float* out_a, float* out_b, float* out_c,
+                                                         float* out_d, float* out_e, float* out_f)
+{
+    if (!it || !out_a || !out_b || !out_c || !out_d || !out_e || !out_f) {
+        return False;
+    }
+
+    *out_a = 1.0f;
+    *out_b = 0.0f;
+    *out_c = 0.0f;
+    *out_d = 1.0f;
+    *out_e = 0.0f;
+    *out_f = 0.0f;
+
+    if (it->dur_sec <= 0.0f) {
+        return False;
+    }
+
+    float begin_sec = _anim_item_begin_for_time(it, doc_t);
+    if (doc_t < begin_sec) {
+        return False;
+    }
+
+    float local = doc_t - begin_sec;
+
+    // Compute total active duration from repeatCount/repeatDur.
+    float total = 0.0f;
+    ps_bool has_total = False;
+    if (it->repeat_dur_sec > 0.0f) {
+        total = it->repeat_dur_sec;
+        has_total = True;
+    } else if (it->repeat_count == 0) {
+        // indefinite
+        has_total = False;
+    } else {
+        total = it->dur_sec * (float)it->repeat_count;
+        has_total = True;
+    }
+
+    if (!has_total) {
+        local = _anim_fmod(local, it->dur_sec);
+    } else {
+        if (local >= total) {
+            if (it->fill_mode == SVG_ANIMATION_FREEZE) {
+                local = it->dur_sec;
+            } else {
+                return False;
+            }
+        } else {
+            local = _anim_fmod(local, it->dur_sec);
+        }
+    }
+
+    float t = _anim_clampf(local / it->dur_sec, 0.0f, 1.0f);
+
+    const psx_svg_attr* avals = _find_attr(it->anim_node, SVG_ATTR_VALUES);
+    if (avals && avals->val_type == SVG_ATTR_VALUE_PTR && avals->value.val) {
+        const psx_svg_attr_values_list* vlist = (const psx_svg_attr_values_list*)avals->value.val;
+        if (vlist->length < 1) {
+            return False;
+        }
+        if (vlist->length == 1) {
+            const float* base0 = NULL;
+            uint32_t vlen0 = 0;
+            if (!_anim_values_list_get_transform(vlist, 0, &base0, &vlen0) || !base0) {
+                return False;
+            }
+            float sx = (vlen0 >= 1) ? base0[0] : 1.0f;
+            float sy = (vlen0 >= 2) ? base0[1] : sx;
+            *out_a = sx;
+            *out_d = sy;
+            return True;
+        }
+
+        const psx_svg_attr* akt = _find_attr(it->anim_node, SVG_ATTR_KEY_TIMES);
+        const float* kts = NULL;
+        uint32_t kt_len = 0;
+        if (akt && akt->val_type == SVG_ATTR_VALUE_PTR && akt->value.val) {
+            const psx_svg_attr_values_list* ktlist = (const psx_svg_attr_values_list*)akt->value.val;
+            kt_len = ktlist->length;
+            if (kt_len >= 2) {
+                kts = (const float*)&ktlist->data[0];
+            }
+        }
+
+        uint32_t seg = 0;
+        float seg_t0 = 0.0f;
+        float seg_t1 = 1.0f;
+        if (kts && kt_len == vlist->length) {
+            for (uint32_t i = 0; i + 1 < kt_len; i++) {
+                float a = _anim_clampf(kts[i], 0.0f, 1.0f);
+                float b = _anim_clampf(kts[i + 1], 0.0f, 1.0f);
+                if (t >= a && (t <= b || i + 2 == kt_len)) {
+                    seg = i;
+                    seg_t0 = a;
+                    seg_t1 = b;
+                    break;
+                }
+            }
+            if (seg_t1 <= seg_t0) {
+                seg_t0 = 0.0f;
+                seg_t1 = 1.0f;
+            }
+        } else {
+            float step = 1.0f / (float)(vlist->length - 1);
+            seg = (uint32_t)(t / step);
+            if (seg >= vlist->length - 1) {
+                seg = vlist->length - 2;
+            }
+            seg_t0 = step * (float)seg;
+            seg_t1 = step * (float)(seg + 1);
+        }
+
+        float u = 0.0f;
+        if (seg_t1 > seg_t0) {
+            u = (t - seg_t0) / (seg_t1 - seg_t0);
+        }
+        u = _anim_clampf(u, 0.0f, 1.0f);
+
+        if (seg >= vlist->length - 1) {
+            seg = vlist->length - 2;
+        }
+
+        const float* base0 = NULL;
+        const float* base1 = NULL;
+        uint32_t vlen0 = 0;
+        uint32_t vlen1 = 0;
+        if (!_anim_values_list_get_transform(vlist, seg, &base0, &vlen0) || !base0) {
+            return False;
+        }
+        if (!_anim_values_list_get_transform(vlist, seg + 1, &base1, &vlen1) || !base1) {
+            return False;
+        }
+
+        float sx0 = (vlen0 >= 1) ? base0[0] : 1.0f;
+        float sy0 = (vlen0 >= 2) ? base0[1] : sx0;
+        float sx1 = (vlen1 >= 1) ? base1[0] : sx0;
+        float sy1 = (vlen1 >= 2) ? base1[1] : sy0;
+
+        // If a scale entry only provides one number, it implies uniform scale.
+        if (vlen0 < 2) {
+            sy0 = sx0;
+        }
+        if (vlen1 < 2) {
+            sy1 = sx1;
+        }
+
+        *out_a = _anim_lerp(sx0, sx1, u);
+        *out_d = _anim_lerp(sy0, sy1, u);
+        return True;
+    }
+
+    // Fallback: from/to interpolation if values is absent.
+    const psx_svg_attr* afrom = _find_attr(it->anim_node, SVG_ATTR_FROM);
+    const psx_svg_attr* ato = _find_attr(it->anim_node, SVG_ATTR_TO);
+    if (!afrom || !ato) {
+        return False;
+    }
+    if (afrom->val_type != SVG_ATTR_VALUE_PTR || !afrom->value.val) {
+        return False;
+    }
+    if (ato->val_type != SVG_ATTR_VALUE_PTR || !ato->value.val) {
+        return False;
+    }
+
+    struct _anim_transform_values_single {
+        uint32_t length;
+        float data[4];
+    };
+
+    const struct _anim_transform_values_single* fromv = (const struct _anim_transform_values_single*)afrom->value.val;
+    const struct _anim_transform_values_single* tov = (const struct _anim_transform_values_single*)ato->value.val;
+    if (!fromv || !tov) {
+        return False;
+    }
+
+    float sx0 = (fromv->length >= 1) ? fromv->data[0] : 1.0f;
+    float sy0 = (fromv->length >= 2) ? fromv->data[1] : sx0;
+    float sx1 = (tov->length >= 1) ? tov->data[0] : sx0;
+    float sy1 = (tov->length >= 2) ? tov->data[1] : sy0;
+
+    *out_a = _anim_lerp(sx0, sx1, t);
+    *out_d = _anim_lerp(sy0, sy1, t);
+    return True;
+}
+
 static INLINE ps_bool _anim_eval_transform_rotate_discrete(const psx_svg_anim_item* it, float doc_t,
                                                            float* out_a, float* out_b, float* out_c,
                                                            float* out_d, float* out_e, float* out_f)
@@ -2196,6 +2383,8 @@ extern "C" {
                 } else {
                     if (ttype == SVG_TRANSFORM_TYPE_ROTATE) {
                         ok2 = _anim_eval_transform_rotate_linear(it, p->time_sec, &a, &b, &c, &d, &e, &f);
+                    } else if (ttype == SVG_TRANSFORM_TYPE_SCALE) {
+                        ok2 = _anim_eval_transform_scale_linear(it, p->time_sec, &a, &b, &c, &d, &e, &f);
                     } else {
                         // For now, only translate supports non-discrete modes.
                         ok2 = _anim_eval_transform_translate_linear(it, p->time_sec, &a, &b, &c, &d, &e, &f);
@@ -2282,6 +2471,8 @@ extern "C" {
                 } else {
                     if (ttype == SVG_TRANSFORM_TYPE_ROTATE) {
                         ok2 = _anim_eval_transform_rotate_linear(it, p->time_sec, &a, &b, &c, &d, &e, &f);
+                    } else if (ttype == SVG_TRANSFORM_TYPE_SCALE) {
+                        ok2 = _anim_eval_transform_scale_linear(it, p->time_sec, &a, &b, &c, &d, &e, &f);
                     } else {
                         ok2 = _anim_eval_transform_translate_linear(it, p->time_sec, &a, &b, &c, &d, &e, &f);
                     }
@@ -2431,6 +2622,8 @@ extern "C" {
                 } else {
                     if (ttype == SVG_TRANSFORM_TYPE_ROTATE) {
                         ok2 = _anim_eval_transform_rotate_linear(it, p->time_sec, &a, &b, &c, &d, &e, &f);
+                    } else if (ttype == SVG_TRANSFORM_TYPE_SCALE) {
+                        ok2 = _anim_eval_transform_scale_linear(it, p->time_sec, &a, &b, &c, &d, &e, &f);
                     } else {
                         ok2 = _anim_eval_transform_translate_linear(it, p->time_sec, &a, &b, &c, &d, &e, &f);
                     }
