@@ -1812,10 +1812,18 @@ extern "C" {
             if (!it) {
                 continue;
             }
-            if (!(it->tag == SVG_TAG_ANIMATE || it->tag == SVG_TAG_SET || it->tag == SVG_TAG_ANIMATE_COLOR)) {
+            if (!(it->tag == SVG_TAG_ANIMATE || it->tag == SVG_TAG_SET || it->tag == SVG_TAG_ANIMATE_COLOR || it->tag == SVG_TAG_ANIMATE_TRANSFORM)) {
                 continue;
             }
-            if (!(it->target_attr == SVG_ATTR_X || it->target_attr == SVG_ATTR_Y || it->target_attr == SVG_ATTR_WIDTH || it->target_attr == SVG_ATTR_HEIGHT || it->target_attr == SVG_ATTR_OPACITY || it->target_attr == SVG_ATTR_RX || it->target_attr == SVG_ATTR_RY || it->target_attr == SVG_ATTR_STROKE_WIDTH || it->target_attr == SVG_ATTR_FILL_OPACITY || it->target_attr == SVG_ATTR_GRADIENT_STOP_OPACITY || it->target_attr == SVG_ATTR_FILL)) {
+            if (!(it->target_attr == SVG_ATTR_X || it->target_attr == SVG_ATTR_Y || it->target_attr == SVG_ATTR_WIDTH || it->target_attr == SVG_ATTR_HEIGHT || it->target_attr == SVG_ATTR_OPACITY || it->target_attr == SVG_ATTR_RX || it->target_attr == SVG_ATTR_RY || it->target_attr == SVG_ATTR_STROKE_WIDTH || it->target_attr == SVG_ATTR_FILL_OPACITY || it->target_attr == SVG_ATTR_GRADIENT_STOP_OPACITY || it->target_attr == SVG_ATTR_FILL || it->target_attr == SVG_ATTR_TRANSFORM)) {
+                continue;
+            }
+
+            if (it->tag == SVG_TAG_ANIMATE_TRANSFORM && it->target_attr == SVG_ATTR_TRANSFORM) {
+                float a = 1, b = 0, c = 0, d = 1, e = 0, f = 0;
+                if (_anim_eval_transform_translate_discrete(it, p->time_sec, &a, &b, &c, &d, &e, &f)) {
+                    _anim_state_set_transform(&p->anim_state, it->target_node, a, b, c, d, e, f);
+                }
                 continue;
             }
 
