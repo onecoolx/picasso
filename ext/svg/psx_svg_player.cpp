@@ -1104,20 +1104,78 @@ static INLINE ps_bool _anim_eval_transform_translate_linear(const psx_svg_anim_i
     }
 
     const psx_svg_attr_values_list* vlist = (const psx_svg_attr_values_list*)avals->value.val;
-    if (vlist->length < 2) {
-        // For linear interpolation, need at least 2 key values.
+    if (vlist->length < 1) {
         return False;
     }
+    if (vlist->length == 1) {
+        const float* base0 = NULL;
+        uint32_t vlen0 = 0;
+        if (!_anim_values_list_get_transform(vlist, 0, &base0, &vlen0) || !base0) {
+            return False;
+        }
+        *out_e = (vlen0 >= 1) ? base0[0] : 0.0f;
+        *out_f = (vlen0 >= 2) ? base0[1] : 0.0f;
+        return True;
+    }
 
-    // Minimal linear support: interpolate between first two translate values.
+    // Segment mapping mirrors numeric values+keyTimes logic in _anim_eval_simple.
+    const psx_svg_attr* akt = _find_attr(it->anim_node, SVG_ATTR_KEY_TIMES);
+    const float* kts = NULL;
+    uint32_t kt_len = 0;
+    if (akt && akt->val_type == SVG_ATTR_VALUE_PTR && akt->value.val) {
+        const psx_svg_attr_values_list* ktlist = (const psx_svg_attr_values_list*)akt->value.val;
+        kt_len = ktlist->length;
+        if (kt_len >= 2) {
+            kts = (const float*)&ktlist->data[0];
+        }
+    }
+
+    uint32_t seg = 0;
+    float seg_t0 = 0.0f;
+    float seg_t1 = 1.0f;
+    if (kts && kt_len == vlist->length) {
+        for (uint32_t i = 0; i + 1 < kt_len; i++) {
+            float a = _anim_clampf(kts[i], 0.0f, 1.0f);
+            float b = _anim_clampf(kts[i + 1], 0.0f, 1.0f);
+            if (t >= a && (t <= b || i + 2 == kt_len)) {
+                seg = i;
+                seg_t0 = a;
+                seg_t1 = b;
+                break;
+            }
+        }
+        if (seg_t1 <= seg_t0) {
+            seg_t0 = 0.0f;
+            seg_t1 = 1.0f;
+        }
+    } else {
+        float step = 1.0f / (float)(vlist->length - 1);
+        seg = (uint32_t)(t / step);
+        if (seg >= vlist->length - 1) {
+            seg = vlist->length - 2;
+        }
+        seg_t0 = step * (float)seg;
+        seg_t1 = step * (float)(seg + 1);
+    }
+
+    float u = 0.0f;
+    if (seg_t1 > seg_t0) {
+        u = (t - seg_t0) / (seg_t1 - seg_t0);
+    }
+    u = _anim_clampf(u, 0.0f, 1.0f);
+
+    if (seg >= vlist->length - 1) {
+        seg = vlist->length - 2;
+    }
+
     const float* base0 = NULL;
     const float* base1 = NULL;
     uint32_t vlen0 = 0;
     uint32_t vlen1 = 0;
-    if (!_anim_values_list_get_transform(vlist, 0, &base0, &vlen0) || !base0) {
+    if (!_anim_values_list_get_transform(vlist, seg, &base0, &vlen0) || !base0) {
         return False;
     }
-    if (!_anim_values_list_get_transform(vlist, 1, &base1, &vlen1) || !base1) {
+    if (!_anim_values_list_get_transform(vlist, seg + 1, &base1, &vlen1) || !base1) {
         return False;
     }
 
@@ -1126,8 +1184,8 @@ static INLINE ps_bool _anim_eval_transform_translate_linear(const psx_svg_anim_i
     float tx1 = (vlen1 >= 1) ? base1[0] : tx0;
     float ty1 = (vlen1 >= 2) ? base1[1] : ty0;
 
-    *out_e = _anim_lerp(tx0, tx1, t);
-    *out_f = _anim_lerp(ty0, ty1, t);
+    *out_e = _anim_lerp(tx0, tx1, u);
+    *out_f = _anim_lerp(ty0, ty1, u);
     return True;
 }
 
