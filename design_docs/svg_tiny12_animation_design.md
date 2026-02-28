@@ -158,10 +158,11 @@ We deliberately progress in small, test-driven increments:
 - `type="rotate"` supports default `linear` interpolation of the angle in degrees.
 - `values` + optional `keyTimes` segment mapping is supported.
 - Time handling matches numeric/translate behavior: `repeatCount` / `repeatDur` and `fill=freeze|remove`.
-- Current limitation: rotation is about origin only (no `cx/cy`).
+- `rotate(angle cx cy)` is supported; when `cx/cy` are provided, rotation is about that point.
+- Current limitation: only `values`/single-entry parsing has been validated for `cx/cy` by tests; broader SMIL details remain out of scope.
 
 ### 3.2 Test coverage status
-- Full test suite passes: **669/669**.
+- Full test suite passes: **670/670**.
 
 Key unit tests:
 - `SVGPlayerTest.AnimateColorFill_FromTo_Discrete`
@@ -172,6 +173,7 @@ Key unit tests:
 - `SVGPlayerTest.AnimateTransform_Rotate_Discrete`
 - `SVGPlayerTest.AnimateTransform_Rotate_Linear`
 - `SVGPlayerTest.AnimateTransform_Scale_Linear`
+- `SVGPlayerTest.AnimateTransform_Rotate_Linear_WithCenter`
 
 Notes:
 - Some existing tests print sanitizer warnings (signed overflow in rasterizer) but tests still pass; not part of animation work.
