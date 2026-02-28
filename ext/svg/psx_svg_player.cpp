@@ -1231,6 +1231,8 @@ static INLINE ps_bool _anim_eval_transform_translate_linear(const psx_svg_anim_i
         return True;
     }
 
+    // (moved) _anim_eval_transform_scale_discrete
+
     // Fallback: from/to interpolation if values is absent.
     const psx_svg_attr* afrom = _find_attr(it->anim_node, SVG_ATTR_FROM);
     const psx_svg_attr* ato = _find_attr(it->anim_node, SVG_ATTR_TO);
@@ -1265,6 +1267,100 @@ static INLINE ps_bool _anim_eval_transform_translate_linear(const psx_svg_anim_i
 
     *out_e = _anim_lerp(tx0, tx1, t);
     *out_f = _anim_lerp(ty0, ty1, t);
+    return True;
+}
+
+static INLINE ps_bool _anim_eval_transform_scale_discrete(const psx_svg_anim_item* it, float doc_t,
+                                                          float* out_a, float* out_b, float* out_c,
+                                                          float* out_d, float* out_e, float* out_f)
+{
+    if (!it || !out_a || !out_b || !out_c || !out_d || !out_e || !out_f) {
+        return False;
+    }
+
+    *out_a = 1.0f;
+    *out_b = 0.0f;
+    *out_c = 0.0f;
+    *out_d = 1.0f;
+    *out_e = 0.0f;
+    *out_f = 0.0f;
+
+    if (it->dur_sec <= 0.0f) {
+        return False;
+    }
+
+    float begin_sec = _anim_item_begin_for_time(it, doc_t);
+    if (doc_t < begin_sec) {
+        return False;
+    }
+
+    float local = doc_t - begin_sec;
+
+    // repeatCount/repeatDur + fill time handling (mirrors _anim_eval_simple).
+    float total = 0.0f;
+    ps_bool has_total = False;
+    if (it->repeat_dur_sec > 0.0f) {
+        total = it->repeat_dur_sec;
+        has_total = True;
+    } else if (it->repeat_count == 0) {
+        has_total = False;
+    } else {
+        total = it->dur_sec * (float)it->repeat_count;
+        has_total = True;
+    }
+
+    if (!has_total) {
+        local = _anim_fmod(local, it->dur_sec);
+    } else {
+        if (local >= total) {
+            if (it->fill_mode == SVG_ANIMATION_FREEZE) {
+                local = it->dur_sec;
+            } else {
+                return False;
+            }
+        } else {
+            local = _anim_fmod(local, it->dur_sec);
+        }
+    }
+
+    float t = _anim_clampf(local / it->dur_sec, 0.0f, 1.0f);
+
+    const psx_svg_attr* avals = _find_attr(it->anim_node, SVG_ATTR_VALUES);
+    if (!avals || avals->val_type != SVG_ATTR_VALUE_PTR || !avals->value.val) {
+        return False;
+    }
+
+    const psx_svg_attr_values_list* vlist = (const psx_svg_attr_values_list*)avals->value.val;
+    if (vlist->length < 1) {
+        return False;
+    }
+
+    uint32_t idx = 0;
+    if (t >= 1.0f) {
+        idx = vlist->length - 1;
+    } else if (vlist->length >= 2 && t >= 0.5f) {
+        idx = 1;
+    }
+
+    const float* base = NULL;
+    uint32_t vlen = 0;
+    if (!_anim_values_list_get_transform(vlist, idx, &base, &vlen) || !base) {
+        return False;
+    }
+
+    float sx = 1.0f;
+    float sy = 1.0f;
+    if (vlen >= 1) {
+        sx = base[0];
+    }
+    if (vlen >= 2) {
+        sy = base[1];
+    } else {
+        sy = sx;
+    }
+
+    *out_a = sx;
+    *out_d = sy;
     return True;
 }
 
@@ -1835,10 +1931,18 @@ extern "C" {
                 float a = 1, b = 0, c = 0, d = 1, e = 0, f = 0;
                 const psx_svg_attr* acm = _find_attr(it->anim_node, SVG_ATTR_CALC_MODE);
                 ps_bool is_discrete = (acm && acm->val_type == SVG_ATTR_VALUE_DATA && acm->value.ival == SVG_ANIMATION_CALC_MODE_DISCRETE) ? True : False;
+                const psx_svg_attr* att = _find_attr(it->anim_node, SVG_ATTR_TRANSFORM_TYPE);
+                int32_t ttype = (att && att->val_type == SVG_ATTR_VALUE_DATA) ? att->value.ival : 0;
                 ps_bool ok2 = False;
                 if (is_discrete) {
-                    ok2 = _anim_eval_transform_translate_discrete(it, p->time_sec, &a, &b, &c, &d, &e, &f);
+                    if (ttype == SVG_TRANSFORM_TYPE_SCALE) {
+                        ok2 = _anim_eval_transform_scale_discrete(it, p->time_sec, &a, &b, &c, &d, &e, &f);
+                    } else {
+                        // Default/legacy: translate.
+                        ok2 = _anim_eval_transform_translate_discrete(it, p->time_sec, &a, &b, &c, &d, &e, &f);
+                    }
                 } else {
+                    // For now, only translate supports non-discrete modes.
                     ok2 = _anim_eval_transform_translate_linear(it, p->time_sec, &a, &b, &c, &d, &e, &f);
                 }
                 if (ok2) {
@@ -1908,9 +2012,15 @@ extern "C" {
                 float a = 1, b = 0, c = 0, d = 1, e = 0, f = 0;
                 const psx_svg_attr* acm = _find_attr(it->anim_node, SVG_ATTR_CALC_MODE);
                 ps_bool is_discrete = (acm && acm->val_type == SVG_ATTR_VALUE_DATA && acm->value.ival == SVG_ANIMATION_CALC_MODE_DISCRETE) ? True : False;
+                const psx_svg_attr* att = _find_attr(it->anim_node, SVG_ATTR_TRANSFORM_TYPE);
+                int32_t ttype = (att && att->val_type == SVG_ATTR_VALUE_DATA) ? att->value.ival : 0;
                 ps_bool ok2 = False;
                 if (is_discrete) {
-                    ok2 = _anim_eval_transform_translate_discrete(it, p->time_sec, &a, &b, &c, &d, &e, &f);
+                    if (ttype == SVG_TRANSFORM_TYPE_SCALE) {
+                        ok2 = _anim_eval_transform_scale_discrete(it, p->time_sec, &a, &b, &c, &d, &e, &f);
+                    } else {
+                        ok2 = _anim_eval_transform_translate_discrete(it, p->time_sec, &a, &b, &c, &d, &e, &f);
+                    }
                 } else {
                     ok2 = _anim_eval_transform_translate_linear(it, p->time_sec, &a, &b, &c, &d, &e, &f);
                 }
@@ -2045,9 +2155,15 @@ extern "C" {
                 float a = 1, b = 0, c = 0, d = 1, e = 0, f = 0;
                 const psx_svg_attr* acm = _find_attr(it->anim_node, SVG_ATTR_CALC_MODE);
                 ps_bool is_discrete = (acm && acm->val_type == SVG_ATTR_VALUE_DATA && acm->value.ival == SVG_ANIMATION_CALC_MODE_DISCRETE) ? True : False;
+                const psx_svg_attr* att = _find_attr(it->anim_node, SVG_ATTR_TRANSFORM_TYPE);
+                int32_t ttype = (att && att->val_type == SVG_ATTR_VALUE_DATA) ? att->value.ival : 0;
                 ps_bool ok2 = False;
                 if (is_discrete) {
-                    ok2 = _anim_eval_transform_translate_discrete(it, p->time_sec, &a, &b, &c, &d, &e, &f);
+                    if (ttype == SVG_TRANSFORM_TYPE_SCALE) {
+                        ok2 = _anim_eval_transform_scale_discrete(it, p->time_sec, &a, &b, &c, &d, &e, &f);
+                    } else {
+                        ok2 = _anim_eval_transform_translate_discrete(it, p->time_sec, &a, &b, &c, &d, &e, &f);
+                    }
                 } else {
                     ok2 = _anim_eval_transform_translate_linear(it, p->time_sec, &a, &b, &c, &d, &e, &f);
                 }
