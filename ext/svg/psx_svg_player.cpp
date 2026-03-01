@@ -1345,6 +1345,81 @@ static INLINE ps_bool _anim_eval_transform_skewx_linear(const psx_svg_anim_item*
     return True;
 }
 
+static INLINE ps_bool _anim_eval_transform_skewy_linear(const psx_svg_anim_item* it, float doc_t,
+                                                        float* out_a, float* out_b, float* out_c,
+                                                        float* out_d, float* out_e, float* out_f)
+{
+    if (!it || !out_a || !out_b || !out_c || !out_d || !out_e || !out_f) {
+        return False;
+    }
+
+    *out_a = 1.0f;
+    *out_b = 0.0f;
+    *out_c = 0.0f;
+    *out_d = 1.0f;
+    *out_e = 0.0f;
+    *out_f = 0.0f;
+
+    if (it->dur_sec <= 0.0f) {
+        return False;
+    }
+
+    float begin_sec = _anim_item_begin_for_time(it, doc_t);
+    if (doc_t < begin_sec) {
+        return False;
+    }
+
+    float local = doc_t - begin_sec;
+
+    // Compute total active duration from repeatCount/repeatDur.
+    float total = 0.0f;
+    ps_bool has_total = False;
+    if (it->repeat_dur_sec > 0.0f) {
+        total = it->repeat_dur_sec;
+        has_total = True;
+    } else if (it->repeat_count == 0) {
+        // indefinite
+        has_total = False;
+    } else {
+        total = it->dur_sec * (float)it->repeat_count;
+        has_total = True;
+    }
+
+    if (!has_total) {
+        local = _anim_fmod(local, it->dur_sec);
+    } else {
+        if (local >= total) {
+            if (it->fill_mode == SVG_ANIMATION_FREEZE) {
+                local = it->dur_sec;
+            } else {
+                return False;
+            }
+        } else {
+            local = _anim_fmod(local, it->dur_sec);
+        }
+    }
+
+    float t01 = _anim_clampf(local / it->dur_sec, 0.0f, 1.0f);
+
+    // Minimal: from/to only.
+    const psx_svg_attr* afrom = _find_attr(it->anim_node, SVG_ATTR_FROM);
+    const psx_svg_attr* ato = _find_attr(it->anim_node, SVG_ATTR_TO);
+    if (!afrom || !ato) {
+        return False;
+    }
+
+    float from_a = _attr_as_number(afrom);
+    float to_a = _attr_as_number(ato);
+
+    const float ang = _anim_lerp(from_a, to_a, t01);
+    const float rad = ang * 0.01745329252f;
+    const float tan_a = (float)tan(rad);
+
+    // skewY(a): [ 1 0 0; tan(a) 1 0; 0 0 1 ]
+    *out_b = tan_a;
+    return True;
+}
+
 static INLINE ps_bool _anim_eval_transform_scale_discrete(const psx_svg_anim_item* it, float doc_t,
                                                           float* out_a, float* out_b, float* out_c,
                                                           float* out_d, float* out_e, float* out_f)
@@ -2486,6 +2561,8 @@ extern "C" {
                         ok2 = _anim_eval_transform_scale_linear(it, p->time_sec, &a, &b, &c, &d, &e, &f);
                     } else if (ttype == SVG_TRANSFORM_TYPE_SKEW_X) {
                         ok2 = _anim_eval_transform_skewx_linear(it, p->time_sec, &a, &b, &c, &d, &e, &f);
+                    } else if (ttype == SVG_TRANSFORM_TYPE_SKEW_Y) {
+                        ok2 = _anim_eval_transform_skewy_linear(it, p->time_sec, &a, &b, &c, &d, &e, &f);
                     } else {
                         // For now, only translate supports non-discrete modes.
                         ok2 = _anim_eval_transform_translate_linear(it, p->time_sec, &a, &b, &c, &d, &e, &f);
@@ -2576,6 +2653,8 @@ extern "C" {
                         ok2 = _anim_eval_transform_scale_linear(it, p->time_sec, &a, &b, &c, &d, &e, &f);
                     } else if (ttype == SVG_TRANSFORM_TYPE_SKEW_X) {
                         ok2 = _anim_eval_transform_skewx_linear(it, p->time_sec, &a, &b, &c, &d, &e, &f);
+                    } else if (ttype == SVG_TRANSFORM_TYPE_SKEW_Y) {
+                        ok2 = _anim_eval_transform_skewy_linear(it, p->time_sec, &a, &b, &c, &d, &e, &f);
                     } else {
                         ok2 = _anim_eval_transform_translate_linear(it, p->time_sec, &a, &b, &c, &d, &e, &f);
                     }
@@ -2729,6 +2808,8 @@ extern "C" {
                         ok2 = _anim_eval_transform_scale_linear(it, p->time_sec, &a, &b, &c, &d, &e, &f);
                     } else if (ttype == SVG_TRANSFORM_TYPE_SKEW_X) {
                         ok2 = _anim_eval_transform_skewx_linear(it, p->time_sec, &a, &b, &c, &d, &e, &f);
+                    } else if (ttype == SVG_TRANSFORM_TYPE_SKEW_Y) {
+                        ok2 = _anim_eval_transform_skewy_linear(it, p->time_sec, &a, &b, &c, &d, &e, &f);
                     } else {
                         ok2 = _anim_eval_transform_translate_linear(it, p->time_sec, &a, &b, &c, &d, &e, &f);
                     }

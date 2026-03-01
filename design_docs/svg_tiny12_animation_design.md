@@ -161,8 +161,12 @@ We deliberately progress in small, test-driven increments:
 - `rotate(angle cx cy)` is supported; when `cx/cy` are provided, rotation is about that point.
 - Current limitation: only `values`/single-entry parsing has been validated for `cx/cy` by tests; broader SMIL details remain out of scope.
 
+#### animateTransform (skewX, linear) minimal playback
+- `type="skewX"` supports default `linear` interpolation of the angle in degrees.
+- Minimal support: `from`/`to` only (no `values`/`keyTimes` yet).
+
 ### 3.2 Test coverage status
-- Full test suite passes: **670/670**.
+- Full test suite passes: **671/671**.
 
 Key unit tests:
 - `SVGPlayerTest.AnimateColorFill_FromTo_Discrete`
@@ -174,6 +178,7 @@ Key unit tests:
 - `SVGPlayerTest.AnimateTransform_Rotate_Linear`
 - `SVGPlayerTest.AnimateTransform_Scale_Linear`
 - `SVGPlayerTest.AnimateTransform_Rotate_Linear_WithCenter`
+- `SVGPlayerTest.AnimateTransform_SkewX_Linear_FromTo`
 
 Notes:
 - Some existing tests print sanitizer warnings (signed overflow in rasterizer) but tests still pass; not part of animation work.
