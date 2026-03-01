@@ -108,6 +108,45 @@ We deliberately progress in small, test-driven increments:
 
 ## 3. Current Progress (as of 2026-03-01)
 
+### 3.0 Completion checklist (project-defined subset)
+
+This checklist defines what we consider the "SVG Tiny 1.2 animation playback" milestone for this project.
+
+#### Completed (done; backed by unit tests)
+- [x] Timing core: `dur`, `begin` / `end` lists (multi-entry), `repeatCount`, `repeatDur`, `fill=freeze|remove`
+- [x] External trigger: minimal event token support (e.g. `begin="click"`) via `psx_svg_player_trigger()`
+- [x] Sampling: `values`, optional `keyTimes`
+- [x] `calcMode`: `linear` (default), `discrete`, `spline` (cubic-bezier), `paced`
+- [x] `<animate>` numeric playback: `x`, `y`, `width`, `height`, `opacity`, `rx`, `ry`, `stroke-width`, `fill-opacity`, `stop-opacity`
+- [x] `<animateColor>`: `attributeName="fill"` (minimal discrete)
+- [x] `<animateTransform>`: `translate` (linear+discrete; values+keyTimes; from/to fallback; repeat/fill)
+- [x] `<animateTransform>`: `scale` (linear+discrete; values+keyTimes; from/to fallback; uniform scale)
+- [x] `<animateTransform>`: `rotate` (linear+discrete; values+keyTimes; supports `rotate(angle cx cy)`)
+- [x] `<animateTransform>`: `skewX` / `skewY` (linear: values+keyTimes + from/to fallback; discrete: from/to)
+
+#### Remaining (to reach milestone)
+1) `animateTransform type="matrix"`
+    - [ ] Parser->player decode: accept matrix entries as 6 floats per value item
+    - [ ] Playback: `calcMode=linear` for matrix entries (6-channel interpolation)
+    - [ ] Playback: `calcMode=discrete` for matrix entries
+    - [ ] `values` + optional `keyTimes` support (segment mapping)
+    - [ ] `from`/`to` fallback when `values` is absent
+    - [ ] Time handling: `repeatCount`/`repeatDur` + `fill=freeze|remove` (same clamp/loop rules as numeric)
+    - [ ] Unit tests:
+       - [ ] `SVGPlayerTest.AnimateTransform_Matrix_Discrete_FromTo`
+       - [ ] `SVGPlayerTest.AnimateTransform_Matrix_Linear_FromTo`
+       - [ ] `SVGPlayerTest.AnimateTransform_Matrix_Values_KeyTimes_Linear`
+
+2) Transform composition rules (player override composition)
+    - [ ] Define rule: how animated transform combines with element's static `transform`
+    - [ ] Define rule: how multiple `animateTransform` on the same target are composed (order + conflict policy)
+    - [ ] Implement composition accordingly in player/render path
+    - [ ] Unit tests (minimum):
+       - [ ] Static transform + animated transform combine as specified
+       - [ ] Two animateTransform entries compose in a deterministic order
+
+Milestone completion heuristic (for planning only): with 2 major blocks remaining, current completion is ~90%.
+
 ### 3.1 Completed
 
 #### Timing / begin-end / repeat / fill
