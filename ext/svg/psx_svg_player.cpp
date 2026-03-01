@@ -31,17 +31,12 @@
 
 #include <string.h>
 #include <math.h>
-#include <string.h>
 
 // Opaque animation override state passed to renderer.
-// Renderer queries it via svg_anim_get_attr_override (declared in psx_svg_render.cpp).
 struct psx_svg_anim_state {
     psx_array overrides;
     psx_array transforms;
 };
-
-// NOTE: renderer currently does not query overrides. This will be wired when
-// the animation override table is implemented and the renderer is updated.
 
 struct psx_svg_player {
     psx_svg_node* root;
@@ -81,14 +76,10 @@ typedef struct {
     // via psx_svg_player_trigger(). Owned by the player.
     const char* begin_event;
 
-    // Begin list support: store begin times (sec) and choose the latest
-    // begin <= doc_t (re-trigger).
-    // NOTE: stored as psx_array of float.
+    // Begin list support: store begin times (sec) and choose the latest begin <= doc_t.
     psx_array begins_sec;
 
-    // End list support: store end times (sec) and choose the earliest
-    // end >= begin (per trigger). If no such end exists, end is unspecified.
-    // NOTE: stored as psx_array of float.
+    // End list support: store end times (sec) and choose the earliest end >= begin (per trigger).
     psx_array ends_sec;
 } psx_svg_anim_item;
 
