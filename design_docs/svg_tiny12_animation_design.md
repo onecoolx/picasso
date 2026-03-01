@@ -23,7 +23,7 @@ We implement a staged subset of SVG Tiny 1.2 animation:
 - Property animation currently covered by tests:
   - Numeric: `x`, `y`, `width`, `height`, `opacity`, `rx`, `ry`, `stroke-width`, `fill-opacity`, `stop-opacity`.
   - Color: minimal `animateColor` for `fill` (discrete).
-   - Transform: minimal `animateTransform` for `translate` (linear default + discrete), `scale` (discrete + linear), `rotate` (discrete + linear), and `skewX`/`skewY` (linear from/to), tracked as matrix `a,b,c,d,e,f`.
+   - Transform: minimal `animateTransform` for `translate` (linear default + discrete), `scale` (discrete + linear), `rotate` (discrete + linear), and `skewX`/`skewY` (linear + discrete from/to; linear also supports `values` + optional `keyTimes`), tracked as matrix `a,b,c,d,e,f`.
 
 Non-goals for now (explicitly deferred)
 - Full SMIL timing model (syncbase, indefinite end, restart modes, etc.).
@@ -165,14 +165,14 @@ We deliberately progress in small, test-driven increments:
 
 #### animateTransform (skewX, linear) minimal playback
 - `type="skewX"` supports default `linear` interpolation of the angle in degrees.
-- Minimal support: `from`/`to` only (no `values`/`keyTimes` yet).
+- Supports `values` + optional `keyTimes` segment mapping (linear) and `from`/`to` fallback when `values` is absent.
 
 #### animateTransform (skewY, linear) minimal playback
 - `type="skewY"` supports default `linear` interpolation of the angle in degrees.
-- Minimal support: `from`/`to` only (no `values`/`keyTimes` yet).
+- Supports `values` + optional `keyTimes` segment mapping (linear) and `from`/`to` fallback when `values` is absent.
 
 ### 3.2 Test coverage status
-- Full test suite passes: **672/672**.
+- Full test suite passes: **676/676**.
 
 Key unit tests:
 - `SVGPlayerTest.AnimateColorFill_FromTo_Discrete`
@@ -185,7 +185,11 @@ Key unit tests:
 - `SVGPlayerTest.AnimateTransform_Scale_Linear`
 - `SVGPlayerTest.AnimateTransform_Rotate_Linear_WithCenter`
 - `SVGPlayerTest.AnimateTransform_SkewX_Linear_FromTo`
+- `SVGPlayerTest.AnimateTransform_SkewX_Discrete_FromTo`
+- `SVGPlayerTest.AnimateTransform_SkewX_Values_KeyTimes_Linear`
 - `SVGPlayerTest.AnimateTransform_SkewY_Linear_FromTo`
+- `SVGPlayerTest.AnimateTransform_SkewY_Discrete_FromTo`
+- `SVGPlayerTest.AnimateTransform_SkewY_Values_KeyTimes_Linear`
 
 Notes:
 - Some existing tests print sanitizer warnings (signed overflow in rasterizer) but tests still pass; not part of animation work.
@@ -217,8 +221,8 @@ Stored per animation element:
 ## 5. Known Limitations / Technical Debt
 
 1. **animateTransform coverage is still partial**
-   - Supported: `translate` (linear/discrete), `scale` (discrete + linear), `rotate` (discrete + linear), `skewX` (linear from/to), `skewY` (linear from/to).
-   - Missing: `skewX`/`skewY` discrete, `matrix`, and transform composition rules.
+   - Supported: `translate` (linear/discrete), `scale` (discrete + linear), `rotate` (discrete + linear), `skewX` (linear + discrete from/to), `skewY` (linear + discrete from/to).
+   - Missing: `matrix`, and transform composition rules.
    - No `additive` / `accumulate`.
 
 2. **animateTransform repeat/fill coverage is still partial**

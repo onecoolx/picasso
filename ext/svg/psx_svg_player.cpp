@@ -1316,8 +1316,8 @@ static INLINE ps_bool _anim_eval_transform_skewx_linear(const psx_svg_anim_item*
     }
 
     float t01 = _anim_clampf(local / it->dur_sec, 0.0f, 1.0f);
-
     float ang = 0.0f;
+    ps_bool ok_ang = False;
 
     const psx_svg_attr* avals = _find_attr(it->anim_node, SVG_ATTR_VALUES);
     if (avals && avals->val_type == SVG_ATTR_VALUE_PTR && avals->value.val) {
@@ -1333,6 +1333,7 @@ static INLINE ps_bool _anim_eval_transform_skewx_linear(const psx_svg_anim_item*
                 return False;
             }
             ang = (vlen0 >= 1) ? base0[0] : 0.0f;
+            ok_ang = True;
         } else {
             const psx_svg_attr* akt = _find_attr(it->anim_node, SVG_ATTR_KEY_TIMES);
             const float* kts = NULL;
@@ -1397,15 +1398,16 @@ static INLINE ps_bool _anim_eval_transform_skewx_linear(const psx_svg_anim_item*
             float a0 = (vlen0 >= 1) ? base0[0] : 0.0f;
             float a1 = (vlen1 >= 1) ? base1[0] : a0;
             ang = _anim_lerp(a0, a1, u);
+            ok_ang = True;
         }
-    } else {
-        // Fallback: from/to only.
+    }
+
+    if (!ok_ang) {
         const psx_svg_attr* afrom = _find_attr(it->anim_node, SVG_ATTR_FROM);
         const psx_svg_attr* ato = _find_attr(it->anim_node, SVG_ATTR_TO);
         if (!afrom || !ato) {
             return False;
         }
-
         float from_a = _attr_as_number(afrom);
         float to_a = _attr_as_number(ato);
         ang = _anim_lerp(from_a, to_a, t01);
@@ -1474,8 +1476,8 @@ static INLINE ps_bool _anim_eval_transform_skewy_linear(const psx_svg_anim_item*
     }
 
     float t01 = _anim_clampf(local / it->dur_sec, 0.0f, 1.0f);
-
     float ang = 0.0f;
+    ps_bool ok_ang = False;
 
     const psx_svg_attr* avals = _find_attr(it->anim_node, SVG_ATTR_VALUES);
     if (avals && avals->val_type == SVG_ATTR_VALUE_PTR && avals->value.val) {
@@ -1491,6 +1493,7 @@ static INLINE ps_bool _anim_eval_transform_skewy_linear(const psx_svg_anim_item*
                 return False;
             }
             ang = (vlen0 >= 1) ? base0[0] : 0.0f;
+            ok_ang = True;
         } else {
             const psx_svg_attr* akt = _find_attr(it->anim_node, SVG_ATTR_KEY_TIMES);
             const float* kts = NULL;
@@ -1555,9 +1558,11 @@ static INLINE ps_bool _anim_eval_transform_skewy_linear(const psx_svg_anim_item*
             float a0 = (vlen0 >= 1) ? base0[0] : 0.0f;
             float a1 = (vlen1 >= 1) ? base1[0] : a0;
             ang = _anim_lerp(a0, a1, u);
+            ok_ang = True;
         }
-    } else {
-        // Fallback: from/to only.
+    }
+
+    if (!ok_ang) {
         const psx_svg_attr* afrom = _find_attr(it->anim_node, SVG_ATTR_FROM);
         const psx_svg_attr* ato = _find_attr(it->anim_node, SVG_ATTR_TO);
         if (!afrom || !ato) {
