@@ -1317,17 +1317,100 @@ static INLINE ps_bool _anim_eval_transform_skewx_linear(const psx_svg_anim_item*
 
     float t01 = _anim_clampf(local / it->dur_sec, 0.0f, 1.0f);
 
-    // Minimal: from/to only.
-    const psx_svg_attr* afrom = _find_attr(it->anim_node, SVG_ATTR_FROM);
-    const psx_svg_attr* ato = _find_attr(it->anim_node, SVG_ATTR_TO);
-    if (!afrom || !ato) {
-        return False;
+    float ang = 0.0f;
+
+    const psx_svg_attr* avals = _find_attr(it->anim_node, SVG_ATTR_VALUES);
+    if (avals && avals->val_type == SVG_ATTR_VALUE_PTR && avals->value.val) {
+        const psx_svg_attr_values_list* vlist = (const psx_svg_attr_values_list*)avals->value.val;
+        if (vlist->length < 1) {
+            return False;
+        }
+
+        if (vlist->length == 1) {
+            const float* base0 = NULL;
+            uint32_t vlen0 = 0;
+            if (!_anim_values_list_get_transform(vlist, 0, &base0, &vlen0) || !base0) {
+                return False;
+            }
+            ang = (vlen0 >= 1) ? base0[0] : 0.0f;
+        } else {
+            const psx_svg_attr* akt = _find_attr(it->anim_node, SVG_ATTR_KEY_TIMES);
+            const float* kts = NULL;
+            uint32_t kt_len = 0;
+            if (akt && akt->val_type == SVG_ATTR_VALUE_PTR && akt->value.val) {
+                const psx_svg_attr_values_list* ktlist = (const psx_svg_attr_values_list*)akt->value.val;
+                kt_len = ktlist->length;
+                if (kt_len >= 2) {
+                    kts = (const float*)&ktlist->data[0];
+                }
+            }
+
+            uint32_t seg = 0;
+            float seg_t0 = 0.0f;
+            float seg_t1 = 1.0f;
+            if (kts && kt_len == vlist->length) {
+                for (uint32_t i = 0; i + 1 < kt_len; i++) {
+                    float a = _anim_clampf(kts[i], 0.0f, 1.0f);
+                    float b = _anim_clampf(kts[i + 1], 0.0f, 1.0f);
+                    if (t01 >= a && (t01 <= b || i + 2 == kt_len)) {
+                        seg = i;
+                        seg_t0 = a;
+                        seg_t1 = b;
+                        break;
+                    }
+                }
+                if (seg_t1 <= seg_t0) {
+                    seg_t0 = 0.0f;
+                    seg_t1 = 1.0f;
+                }
+            } else {
+                float step = 1.0f / (float)(vlist->length - 1);
+                seg = (uint32_t)(t01 / step);
+                if (seg >= vlist->length - 1) {
+                    seg = vlist->length - 2;
+                }
+                seg_t0 = step * (float)seg;
+                seg_t1 = step * (float)(seg + 1);
+            }
+
+            float u = 0.0f;
+            if (seg_t1 > seg_t0) {
+                u = (t01 - seg_t0) / (seg_t1 - seg_t0);
+            }
+            u = _anim_clampf(u, 0.0f, 1.0f);
+
+            if (seg >= vlist->length - 1) {
+                seg = vlist->length - 2;
+            }
+
+            const float* base0 = NULL;
+            const float* base1 = NULL;
+            uint32_t vlen0 = 0;
+            uint32_t vlen1 = 0;
+            if (!_anim_values_list_get_transform(vlist, seg, &base0, &vlen0) || !base0) {
+                return False;
+            }
+            if (!_anim_values_list_get_transform(vlist, seg + 1, &base1, &vlen1) || !base1) {
+                return False;
+            }
+
+            float a0 = (vlen0 >= 1) ? base0[0] : 0.0f;
+            float a1 = (vlen1 >= 1) ? base1[0] : a0;
+            ang = _anim_lerp(a0, a1, u);
+        }
+    } else {
+        // Fallback: from/to only.
+        const psx_svg_attr* afrom = _find_attr(it->anim_node, SVG_ATTR_FROM);
+        const psx_svg_attr* ato = _find_attr(it->anim_node, SVG_ATTR_TO);
+        if (!afrom || !ato) {
+            return False;
+        }
+
+        float from_a = _attr_as_number(afrom);
+        float to_a = _attr_as_number(ato);
+        ang = _anim_lerp(from_a, to_a, t01);
     }
 
-    float from_a = _attr_as_number(afrom);
-    float to_a = _attr_as_number(ato);
-
-    const float ang = _anim_lerp(from_a, to_a, t01);
     const float rad = ang * 0.01745329252f;
     const float tan_a = (float)tan(rad);
 
@@ -1392,17 +1475,100 @@ static INLINE ps_bool _anim_eval_transform_skewy_linear(const psx_svg_anim_item*
 
     float t01 = _anim_clampf(local / it->dur_sec, 0.0f, 1.0f);
 
-    // Minimal: from/to only.
-    const psx_svg_attr* afrom = _find_attr(it->anim_node, SVG_ATTR_FROM);
-    const psx_svg_attr* ato = _find_attr(it->anim_node, SVG_ATTR_TO);
-    if (!afrom || !ato) {
-        return False;
+    float ang = 0.0f;
+
+    const psx_svg_attr* avals = _find_attr(it->anim_node, SVG_ATTR_VALUES);
+    if (avals && avals->val_type == SVG_ATTR_VALUE_PTR && avals->value.val) {
+        const psx_svg_attr_values_list* vlist = (const psx_svg_attr_values_list*)avals->value.val;
+        if (vlist->length < 1) {
+            return False;
+        }
+
+        if (vlist->length == 1) {
+            const float* base0 = NULL;
+            uint32_t vlen0 = 0;
+            if (!_anim_values_list_get_transform(vlist, 0, &base0, &vlen0) || !base0) {
+                return False;
+            }
+            ang = (vlen0 >= 1) ? base0[0] : 0.0f;
+        } else {
+            const psx_svg_attr* akt = _find_attr(it->anim_node, SVG_ATTR_KEY_TIMES);
+            const float* kts = NULL;
+            uint32_t kt_len = 0;
+            if (akt && akt->val_type == SVG_ATTR_VALUE_PTR && akt->value.val) {
+                const psx_svg_attr_values_list* ktlist = (const psx_svg_attr_values_list*)akt->value.val;
+                kt_len = ktlist->length;
+                if (kt_len >= 2) {
+                    kts = (const float*)&ktlist->data[0];
+                }
+            }
+
+            uint32_t seg = 0;
+            float seg_t0 = 0.0f;
+            float seg_t1 = 1.0f;
+            if (kts && kt_len == vlist->length) {
+                for (uint32_t i = 0; i + 1 < kt_len; i++) {
+                    float a = _anim_clampf(kts[i], 0.0f, 1.0f);
+                    float b = _anim_clampf(kts[i + 1], 0.0f, 1.0f);
+                    if (t01 >= a && (t01 <= b || i + 2 == kt_len)) {
+                        seg = i;
+                        seg_t0 = a;
+                        seg_t1 = b;
+                        break;
+                    }
+                }
+                if (seg_t1 <= seg_t0) {
+                    seg_t0 = 0.0f;
+                    seg_t1 = 1.0f;
+                }
+            } else {
+                float step = 1.0f / (float)(vlist->length - 1);
+                seg = (uint32_t)(t01 / step);
+                if (seg >= vlist->length - 1) {
+                    seg = vlist->length - 2;
+                }
+                seg_t0 = step * (float)seg;
+                seg_t1 = step * (float)(seg + 1);
+            }
+
+            float u = 0.0f;
+            if (seg_t1 > seg_t0) {
+                u = (t01 - seg_t0) / (seg_t1 - seg_t0);
+            }
+            u = _anim_clampf(u, 0.0f, 1.0f);
+
+            if (seg >= vlist->length - 1) {
+                seg = vlist->length - 2;
+            }
+
+            const float* base0 = NULL;
+            const float* base1 = NULL;
+            uint32_t vlen0 = 0;
+            uint32_t vlen1 = 0;
+            if (!_anim_values_list_get_transform(vlist, seg, &base0, &vlen0) || !base0) {
+                return False;
+            }
+            if (!_anim_values_list_get_transform(vlist, seg + 1, &base1, &vlen1) || !base1) {
+                return False;
+            }
+
+            float a0 = (vlen0 >= 1) ? base0[0] : 0.0f;
+            float a1 = (vlen1 >= 1) ? base1[0] : a0;
+            ang = _anim_lerp(a0, a1, u);
+        }
+    } else {
+        // Fallback: from/to only.
+        const psx_svg_attr* afrom = _find_attr(it->anim_node, SVG_ATTR_FROM);
+        const psx_svg_attr* ato = _find_attr(it->anim_node, SVG_ATTR_TO);
+        if (!afrom || !ato) {
+            return False;
+        }
+
+        float from_a = _attr_as_number(afrom);
+        float to_a = _attr_as_number(ato);
+        ang = _anim_lerp(from_a, to_a, t01);
     }
 
-    float from_a = _attr_as_number(afrom);
-    float to_a = _attr_as_number(ato);
-
-    const float ang = _anim_lerp(from_a, to_a, t01);
     const float rad = ang * 0.01745329252f;
     const float tan_a = (float)tan(rad);
 
