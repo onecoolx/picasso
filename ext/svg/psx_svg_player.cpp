@@ -37,6 +37,7 @@
 struct psx_svg_anim_state {
     psx_array overrides;
     psx_array transforms;
+    ps_matrix* scratch_matrix; // reused each frame; owned by this struct
 };
 
 struct psx_svg_player {
@@ -1970,24 +1971,19 @@ extern "C" {
         return true;
     }
 
-    // Returns true if a transform override exists for target.
-    // Outputs the 2D matrix components a,b,c,d,e,f (SVG convention).
-    bool psx_svg_anim_get_transform(const psx_svg_anim_state* s,
-                                    const psx_svg_node* target,
-                                    float* a, float* b, float* c,
-                                    float* d, float* e, float* f)
+    // Returns a pointer to the internal scratch ps_matrix if a transform override
+    // exists for target, NULL otherwise. The caller must NOT unref the returned pointer.
+    const ps_matrix* psx_svg_anim_get_transform(const psx_svg_anim_state* s,
+                                                const psx_svg_node* target)
     {
         const psx_svg_anim_transform_item* it = _anim_state_find_transform(s, target);
         if (!it) {
-            return false;
+            return NULL;
         }
-        if (a) { *a = it->a; }
-        if (b) { *b = it->b; }
-        if (c) { *c = it->c; }
-        if (d) { *d = it->d; }
-        if (e) { *e = it->e; }
-        if (f) { *f = it->f; }
-        return true;
+        // Reuse the scratch matrix: init in-place with the stored SVG matrix components.
+        // ps_matrix_init(sx, shy, shx, sy, tx, ty) maps to SVG matrix(a,b,c,d,e,f).
+        ps_matrix_init(s->scratch_matrix, it->a, it->b, it->c, it->d, it->e, it->f);
+        return s->scratch_matrix;
     }
 
 } // extern "C"
@@ -2185,6 +2181,7 @@ extern "C" {
 
         psx_array_init(&p->anim_state.overrides, sizeof(psx_svg_anim_override_item));
         psx_array_init(&p->anim_state.transforms, sizeof(psx_svg_anim_transform_item));
+        p->anim_state.scratch_matrix = ps_matrix_create();
 
         psx_array_init(&p->anims, sizeof(psx_svg_anim_item));
         _collect_anims(p, p->root);
@@ -2284,6 +2281,11 @@ extern "C" {
 
         psx_array_destroy(&p->anim_state.overrides);
         psx_array_destroy(&p->anim_state.transforms);
+
+        if (p->anim_state.scratch_matrix) {
+            ps_matrix_unref(p->anim_state.scratch_matrix);
+            p->anim_state.scratch_matrix = NULL;
+        }
 
         psx_array_destroy(&p->anims);
 

@@ -2398,19 +2398,12 @@ bool psx_svg_render_list_draw_anim(ps_context* ctx, const psx_svg_render_list* r
             // Apply animated transform override if present for this node.
             // The override matrix is passed as the extra `matrix` argument to render(),
             // which each render obj applies after its own static transform.
-            ps_matrix* anim_mtx = NULL;
-            float ta = 1.0f, tb = 0.0f, tc = 0.0f, td = 1.0f, te = 0.0f, tf = 0.0f;
-            if (anim_state && head->node() &&
-                psx_svg_anim_get_transform(anim_state, head->node(), &ta, &tb, &tc, &td, &te, &tf)) {
-                // SVG matrix(a,b,c,d,e,f): ps_matrix_init uses column-major (a,b,c,d,e,f).
-                anim_mtx = ps_matrix_create_init(ta, tb, tc, td, te, tf);
+            const ps_matrix* anim_mtx = NULL;
+            if (anim_state && head->node()) {
+                anim_mtx = psx_svg_anim_get_transform(anim_state, head->node());
             }
 
             head->render(ctx, anim_mtx);
-
-            if (anim_mtx) {
-                ps_matrix_unref(anim_mtx);
-            }
 
             ps_restore(ctx);
         }

@@ -72,7 +72,6 @@ typedef struct psx_svg_timing_list {
 // Helper for freeing a timing list allocated by the parser.
 void psx_svg_timing_list_destroy(psx_svg_timing_list* tl);
 
-
 #ifdef __cplusplus
 }
 #endif

@@ -29,6 +29,7 @@
 
 #include "psx_svg_node.h"
 #include "psx_svg_parser.h"
+#include "picasso.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -41,11 +42,12 @@ typedef struct psx_svg_anim_state psx_svg_anim_state;
 bool psx_svg_anim_get_float(const psx_svg_anim_state* s, const psx_svg_node* target,
                             psx_svg_attr_type attr, float* out_v);
 
-/* Returns true if a transform override exists for target.
- * Writes the 2D matrix components a,b,c,d,e,f (SVG convention) into the
- * provided pointers (any may be NULL). */
-bool psx_svg_anim_get_transform(const psx_svg_anim_state* s, const psx_svg_node* target,
-                                float* a, float* b, float* c, float* d, float* e, float* f);
+/* Returns a pointer to an internal scratch ps_matrix if a transform override
+ * exists for target, NULL otherwise.
+ * The returned pointer is valid until the next call to psx_svg_anim_get_transform
+ * or until the player is destroyed. Do NOT unref it. */
+const ps_matrix* psx_svg_anim_get_transform(const psx_svg_anim_state* s,
+                                            const psx_svg_node* target);
 
 #ifdef __cplusplus
 }
