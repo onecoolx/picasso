@@ -982,7 +982,7 @@ TEST_F(SVGParserTest, AnimateTransformTest)
     pt = (float*)(&ll->data);
     EXPECT_FLOAT_EQ(pt[0], 0.5f);
 
-    ll = (psx_svg_attr_values_list*)((uint8_t*)(&l->data) + sizeof(uint32_t) + sizeof(float) * 4);
+    ll = (psx_svg_attr_values_list*)((uint8_t*)(&l->data) + sizeof(uint32_t) + sizeof(float) * 6);
     EXPECT_EQ(ll->length, 2);
     pt = (float*)(&ll->data);
     EXPECT_FLOAT_EQ(pt[0], 0.2f);

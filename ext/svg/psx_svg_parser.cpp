@@ -1631,6 +1631,9 @@ static INLINE void _process_animation_attr_options(psx_svg_node* node, psx_svg_a
                 } else if (len == 5 && strncmp(val_start, "skewY", 5) == 0) {
                     attr->value.ival = SVG_TRANSFORM_TYPE_SKEW_Y;
                     return;
+                } else if (len == 6 && strncmp(val_start, "matrix", 6) == 0) {
+                    attr->value.ival = SVG_TRANSFORM_TYPE_MATRIX;
+                    return;
                 }
             }
             break;
@@ -1654,13 +1657,28 @@ static INLINE void _parse_animation_value(psx_svg_node* node, psx_svg_attr* attr
         attr->value.uval = color;
     } else if (node->type() == SVG_TAG_ANIMATE_TRANSFORM) {
         attr->val_type = SVG_ATTR_VALUE_PTR;
-        psx_svg_attr_values_list* list = (psx_svg_attr_values_list*)mem_malloc(sizeof(float) * 4 + sizeof(uint32_t));
+        psx_svg_attr_values_list* list = (psx_svg_attr_values_list*)mem_malloc(sizeof(float) * 6 + sizeof(uint32_t));
 
         float val_number = 0.0f;
         uint32_t cnt = 0;
         const char* ptr = val_start;
 
-        while ((ptr < val_end) && (cnt < 3)) {
+        // Determine max components: matrix needs 6, others need at most 3.
+        // We peek at the transform type attr on the node to decide.
+        uint32_t max_cnt = 3;
+        {
+            uint32_t na = node->attr_count();
+            for (uint32_t i = 0; i < na; i++) {
+                const psx_svg_attr* ta = node->attr_at(i);
+                if (ta && (psx_svg_attr_type)ta->attr_id == SVG_ATTR_TRANSFORM_TYPE
+                    && ta->value.ival == SVG_TRANSFORM_TYPE_MATRIX) {
+                    max_cnt = 6;
+                    break;
+                }
+            }
+        }
+
+        while ((ptr < val_end) && (cnt < max_cnt)) {
             float* val = (float*)(&list->data[0]) + cnt;
 
             val_number = 0.0f;
@@ -1727,7 +1745,7 @@ struct _parse_value_list_context {
 
 struct _transform_values_list {
     uint32_t length;
-    float data[4];
+    float data[6];
 };
 
 #define GET_NEXT_VALUE_PTR(ptr, ctx, type) \
@@ -1770,10 +1788,24 @@ static void _animation_values_cb(psx_svg_node* node, psx_svg_attr* attr, const c
         struct _transform_values_list* trans_vals = NULL;
         GET_NEXT_VALUE_PTR(trans_vals, ctx, struct _transform_values_list);
 
+        // Determine max components: matrix needs 6, others need at most 3.
+        uint32_t max_cnt = 3;
+        {
+            uint32_t na = node->attr_count();
+            for (uint32_t i = 0; i < na; i++) {
+                const psx_svg_attr* ta = node->attr_at(i);
+                if (ta && (psx_svg_attr_type)ta->attr_id == SVG_ATTR_TRANSFORM_TYPE
+                    && ta->value.ival == SVG_TRANSFORM_TYPE_MATRIX) {
+                    max_cnt = 6;
+                    break;
+                }
+            }
+        }
+
         uint32_t cnt = 0;
         const char* ptr = val_start;
 
-        while ((ptr < val_end) && (cnt < 3)) {
+        while ((ptr < val_end) && (cnt < max_cnt)) {
             float* val = &(trans_vals->data[cnt]);
             ptr = _parse_number(ptr, val_end, val);
             if (!ptr) {

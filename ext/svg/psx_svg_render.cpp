@@ -55,6 +55,13 @@ extern "C" bool psx_svg_anim_get_float(const psx_svg_anim_state* s,
                                        psx_svg_attr_type attr,
                                        float* out_v);
 
+// Implemented by player (psx_svg_player.cpp). Returns true if a transform override exists.
+// Outputs the 2D matrix components a,b,c,d,e,f (SVG convention).
+extern "C" bool psx_svg_anim_get_transform(const psx_svg_anim_state* s,
+                                           const psx_svg_node* target,
+                                           float* a, float* b, float* c,
+                                           float* d, float* e, float* f);
+
 class render_obj_base;
 
 class svg_render_list_impl : public psx_svg_render_list
@@ -582,6 +589,7 @@ public:
     const char* id(void) const { return m_id; }
 
     void set_head(render_obj_base* head) { m_head = head; }
+    const psx_svg_node* node(void) const { return m_node; }
 protected:
     render_obj_base* m_next;
     psx_svg_tag m_tag;
@@ -2401,7 +2409,24 @@ bool psx_svg_render_list_draw_anim(ps_context* ctx, const psx_svg_render_list* r
             ps_save(ctx);
             head->set_anim_state(anim_state);
             head->prepare(ctx);
-            head->render(ctx, NULL);
+
+            // Apply animated transform override if present for this node.
+            // The override matrix is passed as the extra `matrix` argument to render(),
+            // which each render obj applies after its own static transform.
+            ps_matrix* anim_mtx = NULL;
+            float ta = 1.0f, tb = 0.0f, tc = 0.0f, td = 1.0f, te = 0.0f, tf = 0.0f;
+            if (anim_state && head->node() &&
+                psx_svg_anim_get_transform(anim_state, head->node(), &ta, &tb, &tc, &td, &te, &tf)) {
+                // SVG matrix(a,b,c,d,e,f): ps_matrix_init uses column-major (a,b,c,d,e,f).
+                anim_mtx = ps_matrix_create_init(ta, tb, tc, td, te, tf);
+            }
+
+            head->render(ctx, anim_mtx);
+
+            if (anim_mtx) {
+                ps_matrix_unref(anim_mtx);
+            }
+
             ps_restore(ctx);
         }
         head = head->next();

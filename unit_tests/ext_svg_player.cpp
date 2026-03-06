@@ -2500,3 +2500,250 @@ TEST_F(SVGPlayerTest, AnimateTransform_SkewY_Values_KeyTimes_Linear)
 
     psx_svg_player_destroy(p);
 }
+
+// ============================================================
+// Priority 1: Render layer transform override integration tests
+// ============================================================
+
+TEST_F(SVGPlayerTest, AnimateTransform_Translate_TransformOverride_Exists)
+{
+    // Verify that after seek, the transform override is stored and retrievable
+    // (i.e. the player correctly populates the anim_state.transforms array).
+    // This is the prerequisite for the render layer to consume it.
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
+        "    <animateTransform attributeName=\"transform\" type=\"translate\" from=\"0 0\" to=\"20 40\" dur=\"1s\" fill=\"freeze\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_player* p = psx_svg_player_create_from_data(svg, (uint32_t)strlen(svg), NULL, &r);
+    ASSERT_NE((psx_svg_player*)NULL, p);
+    EXPECT_EQ(S_OK, r);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    ASSERT_TRUE(n != NULL);
+
+    // At t=0.5s: translate(10, 20) => matrix(1,0,0,1,10,20)
+    psx_svg_player_seek(p, 0.5f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        ASSERT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        EXPECT_NEAR(1.0f, a, 0.001f);
+        EXPECT_NEAR(0.0f, b, 0.001f);
+        EXPECT_NEAR(0.0f, c, 0.001f);
+        EXPECT_NEAR(1.0f, d, 0.001f);
+        EXPECT_NEAR(10.0f, e, 0.05f);
+        EXPECT_NEAR(20.0f, f, 0.05f);
+    }
+
+    // At t=1s (freeze): translate(20, 40) => matrix(1,0,0,1,20,40)
+    psx_svg_player_seek(p, 1.0f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        ASSERT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        EXPECT_NEAR(1.0f, a, 0.001f);
+        EXPECT_NEAR(0.0f, b, 0.001f);
+        EXPECT_NEAR(0.0f, c, 0.001f);
+        EXPECT_NEAR(1.0f, d, 0.001f);
+        EXPECT_NEAR(20.0f, e, 0.05f);
+        EXPECT_NEAR(40.0f, f, 0.05f);
+    }
+
+    psx_svg_player_destroy(p);
+}
+
+TEST_F(SVGPlayerTest, AnimateTransform_Remove_TransformOverride_Cleared)
+{
+    // After animation ends with fill=remove, the transform override must be absent.
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
+        "    <animateTransform attributeName=\"transform\" type=\"translate\" from=\"0 0\" to=\"20 40\" dur=\"1s\" fill=\"remove\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_player* p = psx_svg_player_create_from_data(svg, (uint32_t)strlen(svg), NULL, &r);
+    ASSERT_NE((psx_svg_player*)NULL, p);
+    EXPECT_EQ(S_OK, r);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    ASSERT_TRUE(n != NULL);
+
+    // During animation: override present
+    psx_svg_player_seek(p, 0.5f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+    }
+
+    // After animation ends (fill=remove): override absent
+    psx_svg_player_seek(p, 1.5f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_FALSE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+    }
+
+    psx_svg_player_destroy(p);
+}
+
+// ============================================================
+// Priority 3: animateTransform type="matrix"
+// ============================================================
+
+TEST_F(SVGPlayerTest, AnimateTransform_Matrix_Discrete_FromTo)
+{
+    // type="matrix" with from/to and calcMode="discrete":
+    // from="1 0 0 1 0 0" to="2 0 0 2 10 20"
+    // At t=0.25 (< 0.5): use from => identity
+    // At t=0.75 (>= 0.5): use to => scale(2)+translate(10,20)
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
+        "    <animateTransform attributeName=\"transform\" type=\"matrix\""
+        "      from=\"1 0 0 1 0 0\" to=\"2 0 0 2 10 20\""
+        "      dur=\"1s\" calcMode=\"discrete\" fill=\"remove\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_player* p = psx_svg_player_create_from_data(svg, (uint32_t)strlen(svg), NULL, &r);
+    ASSERT_NE((psx_svg_player*)NULL, p);
+    EXPECT_EQ(S_OK, r);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    ASSERT_TRUE(n != NULL);
+
+    // t=0.25: discrete => from value (identity)
+    psx_svg_player_seek(p, 0.25f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        ASSERT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        EXPECT_NEAR(1.0f, a, 0.001f);
+        EXPECT_NEAR(0.0f, b, 0.001f);
+        EXPECT_NEAR(0.0f, c, 0.001f);
+        EXPECT_NEAR(1.0f, d, 0.001f);
+        EXPECT_NEAR(0.0f, e, 0.001f);
+        EXPECT_NEAR(0.0f, f, 0.001f);
+    }
+
+    // t=0.75: discrete => to value
+    psx_svg_player_seek(p, 0.75f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        ASSERT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        EXPECT_NEAR(2.0f, a, 0.001f);
+        EXPECT_NEAR(0.0f, b, 0.001f);
+        EXPECT_NEAR(0.0f, c, 0.001f);
+        EXPECT_NEAR(2.0f, d, 0.001f);
+        EXPECT_NEAR(10.0f, e, 0.001f);
+        EXPECT_NEAR(20.0f, f, 0.001f);
+    }
+
+    psx_svg_player_destroy(p);
+}
+
+TEST_F(SVGPlayerTest, AnimateTransform_Matrix_Linear_FromTo)
+{
+    // type="matrix" with from/to and linear interpolation (default):
+    // from="1 0 0 1 0 0" to="1 0 0 1 10 0"
+    // At t=0.5: lerp => matrix(1,0,0,1,5,0)
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
+        "    <animateTransform attributeName=\"transform\" type=\"matrix\""
+        "      from=\"1 0 0 1 0 0\" to=\"1 0 0 1 10 0\""
+        "      dur=\"1s\" fill=\"remove\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_player* p = psx_svg_player_create_from_data(svg, (uint32_t)strlen(svg), NULL, &r);
+    ASSERT_NE((psx_svg_player*)NULL, p);
+    EXPECT_EQ(S_OK, r);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    ASSERT_TRUE(n != NULL);
+
+    // t=0.5: lerp => matrix(1,0,0,1,5,0)
+    psx_svg_player_seek(p, 0.5f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        ASSERT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        EXPECT_NEAR(1.0f, a, 0.001f);
+        EXPECT_NEAR(0.0f, b, 0.001f);
+        EXPECT_NEAR(0.0f, c, 0.001f);
+        EXPECT_NEAR(1.0f, d, 0.001f);
+        EXPECT_NEAR(5.0f, e, 0.05f);
+        EXPECT_NEAR(0.0f, f, 0.001f);
+    }
+
+    // t=1.0: at end => matrix(1,0,0,1,10,0)
+    psx_svg_player_seek(p, 1.0f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        // fill=remove at exact end instant: may or may not be active depending on impl
+        // Just check if active, the value should be near to
+        if (psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f)) {
+            EXPECT_NEAR(1.0f, a, 0.001f);
+            EXPECT_NEAR(10.0f, e, 0.05f);
+        }
+    }
+
+    psx_svg_player_destroy(p);
+}
+
+TEST_F(SVGPlayerTest, AnimateTransform_Matrix_Values_KeyTimes_Linear)
+{
+    // type="matrix" with values + keyTimes (linear):
+    // values="1 0 0 1 0 0; 1 0 0 1 10 0; 1 0 0 1 10 20"
+    // keyTimes="0; 0.5; 1" dur="1s"
+    // At t=0.25 (in seg 0, u=0.5): lerp(0,10)*0.5 => e=5, f=0
+    // At t=0.75 (in seg 1, u=0.5): lerp(10,10)*0.5=10, lerp(0,20)*0.5=10 => e=10, f=10
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
+        "    <animateTransform attributeName=\"transform\" type=\"matrix\""
+        "      values=\"1 0 0 1 0 0; 1 0 0 1 10 0; 1 0 0 1 10 20\""
+        "      keyTimes=\"0; 0.5; 1\" dur=\"1s\" fill=\"remove\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_player* p = psx_svg_player_create_from_data(svg, (uint32_t)strlen(svg), NULL, &r);
+    ASSERT_NE((psx_svg_player*)NULL, p);
+    EXPECT_EQ(S_OK, r);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    ASSERT_TRUE(n != NULL);
+
+    // t=0.25: seg 0, u=0.5 => e=5, f=0
+    psx_svg_player_seek(p, 0.25f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        ASSERT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        EXPECT_NEAR(1.0f, a, 0.001f);
+        EXPECT_NEAR(0.0f, b, 0.001f);
+        EXPECT_NEAR(0.0f, c, 0.001f);
+        EXPECT_NEAR(1.0f, d, 0.001f);
+        EXPECT_NEAR(5.0f, e, 0.1f);
+        EXPECT_NEAR(0.0f, f, 0.1f);
+    }
+
+    // t=0.75: seg 1, u=0.5 => e=10, f=10
+    psx_svg_player_seek(p, 0.75f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        ASSERT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        EXPECT_NEAR(1.0f, a, 0.001f);
+        EXPECT_NEAR(0.0f, b, 0.001f);
+        EXPECT_NEAR(0.0f, c, 0.001f);
+        EXPECT_NEAR(1.0f, d, 0.001f);
+        EXPECT_NEAR(10.0f, e, 0.1f);
+        EXPECT_NEAR(10.0f, f, 0.1f);
+    }
+
+    psx_svg_player_destroy(p);
+}
