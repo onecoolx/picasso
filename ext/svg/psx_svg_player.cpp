@@ -3458,8 +3458,6 @@ extern "C" {
         return False;
     }
 
-    // Debug API for transform overrides.
-    // Tiny 1.2 step-3: animateTransform will drive this.
     ps_bool psx_svg_player_debug_get_transform_override(const psx_svg_player* p,
                                                         const psx_svg_node* target,
                                                         float* a, float* b, float* c, float* d, float* e, float* f)
