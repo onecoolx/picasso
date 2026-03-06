@@ -221,10 +221,9 @@ typedef struct {
 
 enum {
     SVG_ATTR_VALUE_DATA = 0,
-    SVG_ATTR_VALUE_PTR,
-    // Pointer to psx_svg_timing_list (begin/end timing expressions).
-    SVG_ATTR_VALUE_TIMING_LIST_PTR,
-    SVG_ATTR_VALUE_PATH_PTR,
+    SVG_ATTR_VALUE_PTR, // pointer to data alloced with mem_malloc.
+    SVG_ATTR_VALUE_PATH_PTR, // pointer to ps_path object.
+    SVG_ATTR_VALUE_TIMING_LIST_PTR, // pointer to psx_svg_timing_list (begin/end timing expressions).
 };
 
 enum {

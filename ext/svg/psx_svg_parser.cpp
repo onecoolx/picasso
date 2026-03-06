@@ -1856,10 +1856,6 @@ static void _animation_key_splines_cb(psx_svg_node* node, psx_svg_attr* attr, co
 static void _animation_begin_end_cb(psx_svg_node* node, psx_svg_attr* attr, const char* val_start,
                                     const char* val_end, int32_t dpi, void* data)
 {
-    (void)node;
-    (void)attr;
-    (void)dpi;
-
     // NOTE: _parse_animation_value_list already splits by ';' and calls this
     // callback for each token. We accumulate into a single timing list stored
     // in ctx->list.

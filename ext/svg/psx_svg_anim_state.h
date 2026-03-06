@@ -27,14 +27,6 @@
 #ifndef _PSX_SVG_ANIM_STATE_H_
 #define _PSX_SVG_ANIM_STATE_H_
 
-/*
- * Internal interface between psx_svg_player and psx_svg_render.
- * NOT part of the public API — do not include from outside ext/svg/.
- *
- * psx_svg_anim_state is an opaque type; callers only hold a pointer to it.
- * The concrete definition lives in psx_svg_player.cpp.
- */
-
 #include "psx_svg_node.h"
 #include "psx_svg_parser.h"
 
@@ -46,18 +38,14 @@ typedef struct psx_svg_anim_state psx_svg_anim_state;
 
 /* Returns true if a numeric (float) override exists for (target, attr).
  * Writes the value into *out_v. */
-bool psx_svg_anim_get_float(const psx_svg_anim_state* s,
-                            const psx_svg_node* target,
-                            psx_svg_attr_type attr,
-                            float* out_v);
+bool psx_svg_anim_get_float(const psx_svg_anim_state* s, const psx_svg_node* target,
+                            psx_svg_attr_type attr, float* out_v);
 
 /* Returns true if a transform override exists for target.
  * Writes the 2D matrix components a,b,c,d,e,f (SVG convention) into the
  * provided pointers (any may be NULL). */
-bool psx_svg_anim_get_transform(const psx_svg_anim_state* s,
-                                const psx_svg_node* target,
-                                float* a, float* b, float* c,
-                                float* d, float* e, float* f);
+bool psx_svg_anim_get_transform(const psx_svg_anim_state* s, const psx_svg_node* target,
+                                float* a, float* b, float* c, float* d, float* e, float* f);
 
 #ifdef __cplusplus
 }

@@ -28,16 +28,15 @@
 #include "psx_svg_parser.h"
 
 #include <math.h>
-#include <stdlib.h>
 
 static INLINE void _free_svg_attr_value(psx_svg_attr* attr)
 {
-    if (attr->val_type == SVG_ATTR_VALUE_TIMING_LIST_PTR) {
-        psx_svg_timing_list_destroy((psx_svg_timing_list*)attr->value.val);
-    } else if (attr->val_type == SVG_ATTR_VALUE_PTR) {
+    if (attr->val_type == SVG_ATTR_VALUE_PTR) {
         mem_free(attr->value.val);
     } else if (attr->val_type == SVG_ATTR_VALUE_PATH_PTR) {
         ps_path_unref((ps_path*)attr->value.val);
+    } else if (attr->val_type == SVG_ATTR_VALUE_TIMING_LIST_PTR) {
+        psx_svg_timing_list_destroy((psx_svg_timing_list*)attr->value.val);
     }
 }
 
@@ -102,12 +101,7 @@ psx_svg_node* psx_svg_load_data(const char* svg_data, uint32_t len)
             parser.doc_root = NULL;
             psx_svg_parser_destroy(&parser);
 #ifdef _DEBUG
-            // Gate verbose SVG dump in tests/CI.
-            // Set PSX_SVG_DUMP_TREE=1 to enable.
-            const char* dump = getenv("PSX_SVG_DUMP_TREE");
-            if (dump && dump[0] == '1') {
-                psx_svg_dump_tree(doc, 0);
-            }
+            psx_svg_dump_tree(doc, 0);
 #endif
             return doc;
         } else {

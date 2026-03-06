@@ -425,7 +425,7 @@ public:
     }
 
     virtual void set_attr(const psx_svg_attr* attr, _svg_list_builder_state* state);
-    virtual void set_anim_state(const psx_svg_anim_state* anim_state) { (void)anim_state; }
+    virtual void set_anim_state(const psx_svg_anim_state* anim_state) { }
     virtual void render(ps_context* ctx, const ps_matrix* matrix) { }
     virtual void get_bounding_rect(ps_rect* rc) const { }
     virtual void update(const psx_svg_node* node) { }

@@ -30,8 +30,6 @@
 #include "psx_common.h"
 #include "psx_svg_node.h"
 
-// Optional animation override state (forward declared to avoid dependency).
-// When provided, the renderer may use it to override element attributes at draw time.
 struct psx_svg_anim_state;
 
 class psx_svg_render_obj
