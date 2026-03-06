@@ -25,6 +25,7 @@
  */
 
 #include "psx_svg_render.h"
+#include "psx_svg_anim_state.h"
 #include "psx_linear_allocator.h"
 #include "images/psx_image.h"
 
@@ -45,22 +46,6 @@
 
 #define DEF_SVG_WIDTH 640
 #define DEF_SVG_HEIGHT 640
-
-// Animation override state (defined by animation module). Renderer treats it as opaque.
-struct psx_svg_anim_state;
-
-// Implemented by player (psx_svg_player.cpp). Returns True if override exists.
-extern "C" bool psx_svg_anim_get_float(const psx_svg_anim_state* s,
-                                       const psx_svg_node* target,
-                                       psx_svg_attr_type attr,
-                                       float* out_v);
-
-// Implemented by player (psx_svg_player.cpp). Returns true if a transform override exists.
-// Outputs the 2D matrix components a,b,c,d,e,f (SVG convention).
-extern "C" bool psx_svg_anim_get_transform(const psx_svg_anim_state* s,
-                                           const psx_svg_node* target,
-                                           float* a, float* b, float* c,
-                                           float* d, float* e, float* f);
 
 class render_obj_base;
 

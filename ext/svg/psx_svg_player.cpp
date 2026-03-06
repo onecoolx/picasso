@@ -25,6 +25,7 @@
  */
 
 #include "psx_svg_player.h"
+#include "psx_svg_anim_state.h"
 
 #include "psx_svg.h"
 #include "psx_svg_parser.h"
