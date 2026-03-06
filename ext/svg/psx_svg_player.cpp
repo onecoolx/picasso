@@ -398,22 +398,6 @@ static INLINE float _anim_cubic_bezier_y_for_x(float x1, float y1, float x2, flo
     return _anim_clampf(y, 0.0f, 1.0f);
 }
 
-static INLINE ps_bool _is_anim_color_value(const psx_svg_attr* a)
-{
-    if (!a) {
-        return False;
-    }
-    // Heuristic: animateColor parser stores from/to/by as DATA(uval) and values
-    // as PTR(list of uint32). Numeric animate uses DATA(fval) / PTR(list of float).
-    if (a->val_type == SVG_ATTR_VALUE_DATA) {
-        return True;
-    }
-    if (a->val_type == SVG_ATTR_VALUE_PTR && a->value.val) {
-        return True;
-    }
-    return False;
-}
-
 static INLINE float _attr_as_number(const psx_svg_attr* a)
 {
     if (!a) {
@@ -553,41 +537,6 @@ static INLINE const char* _dup_cstr(const char* s)
     return d;
 }
 
-static INLINE ps_bool _is_clock_value_token(const char* s)
-{
-    if (!s) {
-        return False;
-    }
-    while (*s && isspace(*s)) {
-        s++;
-    }
-    if (!*s) {
-        return False;
-    }
-    // Clock-values start with digit, sign or '.'
-    return (strchr("0123456789+-.", *s) != NULL) ? True : False;
-}
-
-static INLINE const char* _find_attr_string_raw(const psx_svg_node* node, psx_svg_attr_type type)
-{
-    if (!node) {
-        return NULL;
-    }
-    uint32_t n = node->attr_count();
-    for (uint32_t i = 0; i < n; i++) {
-        const psx_svg_attr* a = node->attr_at(i);
-        if (!a) {
-            continue;
-        }
-        if ((psx_svg_attr_type)a->attr_id != type) {
-            continue;
-        }
-        // begin/end are stored as timing list; no raw string is available here.
-        return NULL;
-    }
-    return NULL;
-}
-
 static INLINE float _anim_item_begin_for_time(const psx_svg_anim_item* it, float doc_t)
 {
     if (!it) {
@@ -664,66 +613,6 @@ static INLINE void _anim_item_begin_list_normalize(psx_svg_anim_item* it)
     it->begins_sec.size = w;
 }
 
-typedef struct {
-    float begin_sec;
-    ps_bool valid;
-} psx_svg_begin_list;
-
-static INLINE void _begin_list_init(psx_svg_begin_list* bl)
-{
-    if (!bl) {
-        return;
-    }
-    bl->begin_sec = 0.0f;
-    bl->valid = False;
-}
-
-static INLINE void _begin_list_from_attr(psx_svg_begin_list* bl, const psx_svg_attr* a)
-{
-    _begin_list_init(bl);
-    if (!bl) {
-        return;
-    }
-    if (!a) {
-        bl->valid = True;
-        bl->begin_sec = 0.0f;
-        return;
-    }
-
-    if (a->val_type == SVG_ATTR_VALUE_PTR && a->value.val) {
-        // For non-<set>, begin can be a value list of clock-time values (ms).
-        const psx_svg_attr_values_list* list = (const psx_svg_attr_values_list*)a->value.val;
-        if (list->length > 0) {
-            const float* vals = (const float*)&list->data[0];
-            // pick earliest
-            float minv = vals[0];
-            for (uint32_t i = 1; i < list->length; i++) {
-                if (vals[i] < minv) {
-                    minv = vals[i];
-                }
-            }
-            bl->begin_sec = (minv <= 0.0f) ? 0.0f : (minv * 0.001f);
-            bl->valid = True;
-            return;
-        }
-    }
-
-    bl->begin_sec = _attr_as_time_sec(a);
-    bl->valid = True;
-}
-
-static INLINE float _begin_list_current_begin(const psx_svg_begin_list* bl, float doc_t)
-{
-    // Legacy helper retained for older code paths.
-    // Current begin-list semantics are implemented in psx_svg_anim_item
-    // via _anim_item_begin_for_time().
-    (void)doc_t;
-    if (!bl || !bl->valid) {
-        return 0.0f;
-    }
-    return bl->begin_sec;
-}
-
 static INLINE float _attr_as_float(const psx_svg_attr* a)
 {
     return a ? a->value.fval : 0.0f;
@@ -734,15 +623,15 @@ static INLINE uint32_t _attr_as_u32(const psx_svg_attr* a, uint32_t defv)
     return a ? a->value.uval : defv;
 }
 
-static INLINE ps_bool _anim_eval_simple(const psx_svg_anim_item* it, float doc_t, float* out_v, ps_bool* out_hold)
+/*
+ * Resolve the local animation time for an item at document time doc_t.
+ * Returns False if the animation is not active (before begin, or past end with fill=remove).
+ * On True, writes the normalized [0,1] progress into *out_t.
+ * If fill=freeze applies, *out_t is clamped to 1.0.
+ */
+static INLINE ps_bool _anim_resolve_local_t(const psx_svg_anim_item* it, float doc_t, float* out_t)
 {
-    if (!it || !out_v || !out_hold) {
-        return False;
-    }
-
-    *out_hold = False;
-
-    if (it->dur_sec <= 0.0f) {
+    if (!it || !out_t || it->dur_sec <= 0.0f) {
         return False;
     }
 
@@ -753,14 +642,12 @@ static INLINE ps_bool _anim_eval_simple(const psx_svg_anim_item* it, float doc_t
 
     float local = doc_t - begin_sec;
 
-    // Compute total active duration from repeatCount/repeatDur.
     float total = 0.0f;
     ps_bool has_total = False;
     if (it->repeat_dur_sec > 0.0f) {
         total = it->repeat_dur_sec;
         has_total = True;
     } else if (it->repeat_count == 0) {
-        // indefinite
         has_total = False;
     } else {
         total = it->dur_sec * (float)it->repeat_count;
@@ -768,29 +655,84 @@ static INLINE ps_bool _anim_eval_simple(const psx_svg_anim_item* it, float doc_t
     }
 
     if (!has_total) {
-        // indefinite
         local = _anim_fmod(local, it->dur_sec);
     } else {
         if (local >= total) {
             if (it->fill_mode == SVG_ANIMATION_FREEZE) {
-                *out_hold = True;
                 local = it->dur_sec;
             } else {
                 return False;
             }
         } else {
-            // within total repeats
             local = _anim_fmod(local, it->dur_sec);
         }
     }
 
-    float t = _anim_clampf(local / it->dur_sec, 0.0f, 1.0f);
+    *out_t = _anim_clampf(local / it->dur_sec, 0.0f, 1.0f);
+    return True;
+}
 
-    // (calcMode="spline") cubic-bezier helper: map x in [0,1] to y.
-    // Defined as static functions (no C++ lambda) for broader compiler compatibility.
+/*
+ * Find the interpolation segment for normalized time t in [0,1].
+ * Uses keyTimes list (kts/kt_len) if provided and matching vlist->length,
+ * otherwise falls back to evenly-spaced segments.
+ * Writes segment index into *out_seg, and segment bounds into *out_t0 / *out_t1.
+ */
+static INLINE void _anim_find_segment(const psx_svg_attr_values_list* vlist,
+                                      const float* kts, uint32_t kt_len,
+                                      float t,
+                                      uint32_t* out_seg, float* out_t0, float* out_t1)
+{
+    uint32_t seg = 0;
+    float seg_t0 = 0.0f;
+    float seg_t1 = 1.0f;
 
-    // Step-2 (Tiny 1.2 subset): values + optional keyTimes (linear).
-    // If values is present, it overrides from/to interpolation.
+    if (kts && kt_len == vlist->length) {
+        for (uint32_t i = 0; i + 1 < kt_len; i++) {
+            float a = _anim_clampf(kts[i], 0.0f, 1.0f);
+            float b = _anim_clampf(kts[i + 1], 0.0f, 1.0f);
+            if (t >= a && (t <= b || i + 2 == kt_len)) {
+                seg = i;
+                seg_t0 = a;
+                seg_t1 = b;
+                break;
+            }
+        }
+        if (seg_t1 <= seg_t0) {
+            seg_t0 = 0.0f;
+            seg_t1 = 1.0f;
+        }
+    } else {
+        float step = 1.0f / (float)(vlist->length - 1);
+        seg = (uint32_t)(t / step);
+        if (seg >= vlist->length - 1) {
+            seg = vlist->length - 2;
+        }
+        seg_t0 = step * (float)seg;
+        seg_t1 = step * (float)(seg + 1);
+    }
+
+    *out_seg = seg;
+    *out_t0 = seg_t0;
+    *out_t1 = seg_t1;
+}
+
+static INLINE ps_bool _anim_eval_simple(const psx_svg_anim_item* it, float doc_t, float* out_v, ps_bool* out_hold)
+{
+    if (!it || !out_v || !out_hold) {
+        return False;
+    }
+
+    *out_hold = False;
+
+    float t = 0.0f;
+    if (!_anim_resolve_local_t(it, doc_t, &t)) {
+        return False;
+    }
+    if (t >= 1.0f && it->fill_mode == SVG_ANIMATION_FREEZE) {
+        *out_hold = True;
+    }
+
     const psx_svg_attr* avals = _find_attr(it->anim_node, SVG_ATTR_VALUES);
     if (avals && avals->val_type == SVG_ATTR_VALUE_PTR && avals->value.val) {
         const psx_svg_attr_values_list* vlist = (const psx_svg_attr_values_list*)avals->value.val;
@@ -801,14 +743,12 @@ static INLINE ps_bool _anim_eval_simple(const psx_svg_anim_item* it, float doc_t
                 return True;
             }
 
-            // calcMode handling (Tiny 1.2 subset): linear(default) / discrete.
             uint32_t calc_mode = SVG_ANIMATION_CALC_MODE_LINEAR;
             const psx_svg_attr* acm = _find_attr(it->anim_node, SVG_ATTR_CALC_MODE);
             if (acm && acm->val_type == SVG_ATTR_VALUE_DATA) {
                 calc_mode = (uint32_t)acm->value.ival;
             }
 
-            // Determine segment via keyTimes if provided.
             const psx_svg_attr* akt = _find_attr(it->anim_node, SVG_ATTR_KEY_TIMES);
             const float* kts = NULL;
             uint32_t kt_len = 0;
@@ -823,52 +763,29 @@ static INLINE ps_bool _anim_eval_simple(const psx_svg_anim_item* it, float doc_t
             uint32_t seg = 0;
             float seg_t0 = 0.0f;
             float seg_t1 = 1.0f;
-            if (kts && kt_len == vlist->length) {
-                // Find i s.t. t in [kts[i], kts[i+1]]. Clamp to last segment.
-                for (uint32_t i = 0; i + 1 < kt_len; i++) {
-                    float a = _anim_clampf(kts[i], 0.0f, 1.0f);
-                    float b = _anim_clampf(kts[i + 1], 0.0f, 1.0f);
-                    if (t >= a && (t <= b || i + 2 == kt_len)) {
-                        seg = i;
-                        seg_t0 = a;
-                        seg_t1 = b;
-                        break;
-                    }
-                }
-                if (seg_t1 <= seg_t0) {
-                    seg_t0 = 0.0f;
-                    seg_t1 = 1.0f;
-                }
-            } else if (calc_mode == SVG_ANIMATION_CALC_MODE_PACED) {
+
+            if (calc_mode == SVG_ANIMATION_CALC_MODE_PACED) {
                 // Paced: allocate time proportionally to segment length in value space.
-                // Only for numeric values. If all deltas are zero, fall back to equal spacing.
                 float total_len = 0.0f;
                 for (uint32_t i = 0; i + 1 < vlist->length; i++) {
                     float d = vals[i + 1] - vals[i];
-                    if (d < 0.0f) {
-                        d = -d;
-                    }
+                    if (d < 0.0f) { d = -d; }
                     total_len += d;
                 }
 
                 if (total_len <= 0.0f) {
-                    // Degenerate: all values equal.
                     seg = 0;
                     seg_t0 = 0.0f;
                     seg_t1 = 1.0f;
                 } else {
-                    // Clamp t to avoid float error causing "no segment selected" at the end.
                     float tt = _anim_clampf(t, 0.0f, 1.0f);
                     float acc = 0.0f;
                     for (uint32_t i = 0; i + 1 < vlist->length; i++) {
                         float d = vals[i + 1] - vals[i];
-                        if (d < 0.0f) {
-                            d = -d;
-                        }
+                        if (d < 0.0f) { d = -d; }
                         float w = d / total_len;
                         float a = acc;
                         float b = acc + w;
-                        // Use half-open intervals [a,b) except for the last segment [a,1].
                         if ((tt >= a && tt < b) || (i + 2 == vlist->length && tt >= a && tt <= 1.0f)) {
                             seg = i;
                             seg_t0 = a;
@@ -884,14 +801,7 @@ static INLINE ps_bool _anim_eval_simple(const psx_svg_anim_item* it, float doc_t
                     }
                 }
             } else {
-                // Evenly spaced segments.
-                float step = 1.0f / (float)(vlist->length - 1);
-                seg = (uint32_t)(t / step);
-                if (seg >= vlist->length - 1) {
-                    seg = vlist->length - 2;
-                }
-                seg_t0 = step * (float)seg;
-                seg_t1 = step * (float)(seg + 1);
+                _anim_find_segment(vlist, kts, kt_len, t, &seg, &seg_t0, &seg_t1);
             }
 
             float u = 0.0f;
@@ -901,16 +811,13 @@ static INLINE ps_bool _anim_eval_simple(const psx_svg_anim_item* it, float doc_t
             u = _anim_clampf(u, 0.0f, 1.0f);
 
             if (calc_mode == SVG_ANIMATION_CALC_MODE_DISCRETE) {
-                // Discrete: hold the segment's start value.
                 *out_v = vals[seg];
             } else {
                 float eased_u = u;
                 if (calc_mode == SVG_ANIMATION_CALC_MODE_SPLINE) {
-                    // keySplines provides one cubic-bezier per segment.
                     const psx_svg_attr* aks = _find_attr(it->anim_node, SVG_ATTR_KEY_SPLINES);
                     if (aks && aks->val_type == SVG_ATTR_VALUE_PTR && aks->value.val) {
                         const psx_svg_attr_values_list* kslist = (const psx_svg_attr_values_list*)aks->value.val;
-                        // Parser stores keySplines as a list of psx_svg_point, 2 points per segment.
                         uint32_t need = (vlist->length - 1) * 2;
                         if (kslist->length == need && seg < (vlist->length - 1)) {
                             const psx_svg_point* pts = (const psx_svg_point*)&kslist->data[0];
@@ -935,43 +842,27 @@ static INLINE ps_bool _anim_eval_simple(const psx_svg_anim_item* it, float doc_t
         return False;
     }
 
-    // animateColor is stored as packed uint32 in attr union. For discrete mode
-    // (and for now only discrete is enabled for colors), preserve exact bits.
+    // animateColor: packed uint32 in float bits, discrete only.
     if (it->tag == SVG_TAG_ANIMATE_COLOR && it->target_attr == SVG_ATTR_FILL) {
         const psx_svg_attr* av = _find_attr(it->anim_node, SVG_ATTR_VALUES);
         if (av && av->val_type == SVG_ATTR_VALUE_PTR && av->value.val) {
             const psx_svg_attr_values_list* vlist = (const psx_svg_attr_values_list*)av->value.val;
             const uint32_t* vals = (vlist->length > 0) ? (const uint32_t*)&vlist->data[0] : NULL;
             if (vals && vlist->length >= 1) {
-                // Discrete selection uses time segments, pick index 0/last.
                 uint32_t idx = 0;
-                const psx_svg_attr* acm = _find_attr(it->anim_node, SVG_ATTR_CALC_MODE);
-                ps_bool is_discrete = (acm && acm->val_type == SVG_ATTR_VALUE_DATA && acm->value.ival == SVG_ANIMATION_CALC_MODE_DISCRETE) ? True : False;
-                if (!is_discrete) {
-                    // For now, only discrete is supported for colors.
-                    is_discrete = True;
+                if (t >= 1.0f) {
+                    idx = vlist->length - 1;
+                } else if (vlist->length >= 2 && t >= 0.5f) {
+                    idx = 1;
                 }
-                if (is_discrete) {
-                    if (t >= 1.0f) {
-                        idx = vlist->length - 1;
-                    } else {
-                        // 2-value list: [0,0.5) => 0; [0.5,1) => 1
-                        if (vlist->length >= 2 && t >= 0.5f) {
-                            idx = 1;
-                        }
-                    }
-                    *out_v = _u32_to_f32_bits(vals[idx]);
-                    return True;
-                }
+                *out_v = _u32_to_f32_bits(vals[idx]);
+                return True;
             }
         }
 
-        const psx_svg_attr* ato2 = _find_attr(it->anim_node, SVG_ATTR_TO);
-        const psx_svg_attr* afr2 = _find_attr(it->anim_node, SVG_ATTR_FROM);
-        uint32_t c0 = afr2 ? (uint32_t)afr2->value.uval : 0;
-        uint32_t c1 = ato2 ? (uint32_t)ato2->value.uval : c0;
-        uint32_t c = (t < 0.5f) ? c0 : c1;
-        *out_v = _u32_to_f32_bits(c);
+        uint32_t c0 = (uint32_t)afrom->value.uval;
+        uint32_t c1 = (uint32_t)ato->value.uval;
+        *out_v = _u32_to_f32_bits((t < 0.5f) ? c0 : c1);
         return True;
     }
 
@@ -996,48 +887,10 @@ static INLINE ps_bool _anim_eval_transform_translate_discrete(const psx_svg_anim
     *out_e = 0.0f;
     *out_f = 0.0f;
 
-    if (it->dur_sec <= 0.0f) {
+    float t = 0.0f;
+    if (!_anim_resolve_local_t(it, doc_t, &t)) {
         return False;
     }
-
-    float begin_sec = _anim_item_begin_for_time(it, doc_t);
-    if (doc_t < begin_sec) {
-        return False;
-    }
-
-    float local = doc_t - begin_sec;
-
-    // Compute total active duration from repeatCount/repeatDur.
-    float total = 0.0f;
-    ps_bool has_total = False;
-    if (it->repeat_dur_sec > 0.0f) {
-        total = it->repeat_dur_sec;
-        has_total = True;
-    } else if (it->repeat_count == 0) {
-        // indefinite
-        has_total = False;
-    } else {
-        total = it->dur_sec * (float)it->repeat_count;
-        has_total = True;
-    }
-
-    if (!has_total) {
-        // indefinite
-        local = _anim_fmod(local, it->dur_sec);
-    } else {
-        if (local >= total) {
-            if (it->fill_mode == SVG_ANIMATION_FREEZE) {
-                // Freeze at end of simple duration.
-                local = it->dur_sec;
-            } else {
-                return False;
-            }
-        } else {
-            local = _anim_fmod(local, it->dur_sec);
-        }
-    }
-
-    float t = _anim_clampf(local / it->dur_sec, 0.0f, 1.0f);
 
     const psx_svg_attr* avals = _find_attr(it->anim_node, SVG_ATTR_VALUES);
     if (!avals || avals->val_type != SVG_ATTR_VALUE_PTR || !avals->value.val) {
@@ -1049,9 +902,6 @@ static INLINE ps_bool _anim_eval_transform_translate_discrete(const psx_svg_anim
         return False;
     }
 
-    // Parser stores animateTransform values as `_transform_values_list` entries.
-    // See psx_svg_parser.cpp::_transform_values_list.
-    // For freeze beyond dur, clamp to last value.
     uint32_t idx = 0;
     if (t >= 1.0f) {
         idx = vlist->length - 1;
@@ -1065,17 +915,8 @@ static INLINE ps_bool _anim_eval_transform_translate_discrete(const psx_svg_anim
         return False;
     }
 
-    float tx = 0.0f;
-    float ty = 0.0f;
-    if (vlen >= 1) {
-        tx = base[0];
-    }
-    if (vlen >= 2) {
-        ty = base[1];
-    }
-
-    *out_e = tx;
-    *out_f = ty;
+    *out_e = (vlen >= 1) ? base[0] : 0.0f;
+    *out_f = (vlen >= 2) ? base[1] : 0.0f;
     return True;
 }
 
@@ -1094,46 +935,10 @@ static INLINE ps_bool _anim_eval_transform_translate_linear(const psx_svg_anim_i
     *out_e = 0.0f;
     *out_f = 0.0f;
 
-    if (it->dur_sec <= 0.0f) {
+    float t = 0.0f;
+    if (!_anim_resolve_local_t(it, doc_t, &t)) {
         return False;
     }
-
-    float begin_sec = _anim_item_begin_for_time(it, doc_t);
-    if (doc_t < begin_sec) {
-        return False;
-    }
-
-    float local = doc_t - begin_sec;
-
-    // Compute total active duration from repeatCount/repeatDur.
-    float total = 0.0f;
-    ps_bool has_total = False;
-    if (it->repeat_dur_sec > 0.0f) {
-        total = it->repeat_dur_sec;
-        has_total = True;
-    } else if (it->repeat_count == 0) {
-        // indefinite
-        has_total = False;
-    } else {
-        total = it->dur_sec * (float)it->repeat_count;
-        has_total = True;
-    }
-
-    if (!has_total) {
-        local = _anim_fmod(local, it->dur_sec);
-    } else {
-        if (local >= total) {
-            if (it->fill_mode == SVG_ANIMATION_FREEZE) {
-                local = it->dur_sec;
-            } else {
-                return False;
-            }
-        } else {
-            local = _anim_fmod(local, it->dur_sec);
-        }
-    }
-
-    float t = _anim_clampf(local / it->dur_sec, 0.0f, 1.0f);
 
     const psx_svg_attr* avals = _find_attr(it->anim_node, SVG_ATTR_VALUES);
     if (avals && avals->val_type == SVG_ATTR_VALUE_PTR && avals->value.val) {
@@ -1152,7 +957,7 @@ static INLINE ps_bool _anim_eval_transform_translate_linear(const psx_svg_anim_i
             return True;
         }
 
-        // Segment mapping mirrors numeric values+keyTimes logic in _anim_eval_simple.
+        // Segment mapping via keyTimes or evenly-spaced.
         const psx_svg_attr* akt = _find_attr(it->anim_node, SVG_ATTR_KEY_TIMES);
         const float* kts = NULL;
         uint32_t kt_len = 0;
@@ -1167,30 +972,7 @@ static INLINE ps_bool _anim_eval_transform_translate_linear(const psx_svg_anim_i
         uint32_t seg = 0;
         float seg_t0 = 0.0f;
         float seg_t1 = 1.0f;
-        if (kts && kt_len == vlist->length) {
-            for (uint32_t i = 0; i + 1 < kt_len; i++) {
-                float a = _anim_clampf(kts[i], 0.0f, 1.0f);
-                float b = _anim_clampf(kts[i + 1], 0.0f, 1.0f);
-                if (t >= a && (t <= b || i + 2 == kt_len)) {
-                    seg = i;
-                    seg_t0 = a;
-                    seg_t1 = b;
-                    break;
-                }
-            }
-            if (seg_t1 <= seg_t0) {
-                seg_t0 = 0.0f;
-                seg_t1 = 1.0f;
-            }
-        } else {
-            float step = 1.0f / (float)(vlist->length - 1);
-            seg = (uint32_t)(t / step);
-            if (seg >= vlist->length - 1) {
-                seg = vlist->length - 2;
-            }
-            seg_t0 = step * (float)seg;
-            seg_t1 = step * (float)(seg + 1);
-        }
+        _anim_find_segment(vlist, kts, kt_len, t, &seg, &seg_t0, &seg_t1);
 
         float u = 0.0f;
         if (seg_t1 > seg_t0) {
@@ -1223,17 +1005,12 @@ static INLINE ps_bool _anim_eval_transform_translate_linear(const psx_svg_anim_i
         return True;
     }
 
-    // (moved) _anim_eval_transform_scale_discrete
-
-    // Fallback: from/to interpolation if values is absent.
+    // Fallback: from/to interpolation.
     const psx_svg_attr* afrom = _find_attr(it->anim_node, SVG_ATTR_FROM);
     const psx_svg_attr* ato = _find_attr(it->anim_node, SVG_ATTR_TO);
     if (!afrom || !ato) {
         return False;
     }
-
-    // Parser stores animateTransform from/to in the attr union (not as values-list blob).
-    // It is a single `_transform_values_list { length; float data[4]; }`.
     if (afrom->val_type != SVG_ATTR_VALUE_PTR || !afrom->value.val) {
         return False;
     }
@@ -1241,6 +1018,7 @@ static INLINE ps_bool _anim_eval_transform_translate_linear(const psx_svg_anim_i
         return False;
     }
 
+    // animateTransform from/to: single _transform_values_list { length; float data[4]; }
     struct _anim_transform_values_single {
         uint32_t length;
         float data[4];
@@ -1262,6 +1040,80 @@ static INLINE ps_bool _anim_eval_transform_translate_linear(const psx_svg_anim_i
     return True;
 }
 
+/*
+ * Interpolate a single angle (degrees) from a values list or from/to pair.
+ * Used by skewX and skewY linear eval.
+ */
+static INLINE ps_bool _anim_eval_angle_linear(const psx_svg_anim_item* it, float t, float* out_ang)
+{
+    if (!it || !out_ang) {
+        return False;
+    }
+
+    const psx_svg_attr* avals = _find_attr(it->anim_node, SVG_ATTR_VALUES);
+    if (avals && avals->val_type == SVG_ATTR_VALUE_PTR && avals->value.val) {
+        const psx_svg_attr_values_list* vlist = (const psx_svg_attr_values_list*)avals->value.val;
+        if (vlist->length >= 2) {
+            const psx_svg_attr* akt = _find_attr(it->anim_node, SVG_ATTR_KEY_TIMES);
+            const float* kts = NULL;
+            uint32_t kt_len = 0;
+            if (akt && akt->val_type == SVG_ATTR_VALUE_PTR && akt->value.val) {
+                const psx_svg_attr_values_list* ktlist = (const psx_svg_attr_values_list*)akt->value.val;
+                kt_len = ktlist->length;
+                if (kt_len >= 2) {
+                    kts = (const float*)&ktlist->data[0];
+                }
+            }
+
+            uint32_t seg = 0;
+            float seg_t0 = 0.0f;
+            float seg_t1 = 1.0f;
+            _anim_find_segment(vlist, kts, kt_len, t, &seg, &seg_t0, &seg_t1);
+
+            float u = 0.0f;
+            if (seg_t1 > seg_t0) {
+                u = (t - seg_t0) / (seg_t1 - seg_t0);
+            }
+            u = _anim_clampf(u, 0.0f, 1.0f);
+
+            if (seg >= vlist->length - 1) {
+                seg = vlist->length - 2;
+            }
+
+            const float* base0 = NULL;
+            const float* base1 = NULL;
+            uint32_t vlen0 = 0, vlen1 = 0;
+            if (!_anim_values_list_get_transform(vlist, seg, &base0, &vlen0) || !base0) {
+                return False;
+            }
+            if (!_anim_values_list_get_transform(vlist, seg + 1, &base1, &vlen1) || !base1) {
+                return False;
+            }
+            float a0 = (vlen0 >= 1) ? base0[0] : 0.0f;
+            float a1 = (vlen1 >= 1) ? base1[0] : a0;
+            *out_ang = _anim_lerp(a0, a1, u);
+            return True;
+        }
+        if (vlist->length == 1) {
+            const float* base0 = NULL;
+            uint32_t vlen0 = 0;
+            if (!_anim_values_list_get_transform(vlist, 0, &base0, &vlen0) || !base0) {
+                return False;
+            }
+            *out_ang = (vlen0 >= 1) ? base0[0] : 0.0f;
+            return True;
+        }
+    }
+
+    const psx_svg_attr* afrom = _find_attr(it->anim_node, SVG_ATTR_FROM);
+    const psx_svg_attr* ato = _find_attr(it->anim_node, SVG_ATTR_TO);
+    if (!afrom || !ato) {
+        return False;
+    }
+    *out_ang = _anim_lerp(_attr_as_number(afrom), _attr_as_number(ato), t);
+    return True;
+}
+
 static INLINE ps_bool _anim_eval_transform_skewx_linear(const psx_svg_anim_item* it, float doc_t,
                                                         float* out_a, float* out_b, float* out_c,
                                                         float* out_d, float* out_e, float* out_f)
@@ -1277,148 +1129,18 @@ static INLINE ps_bool _anim_eval_transform_skewx_linear(const psx_svg_anim_item*
     *out_e = 0.0f;
     *out_f = 0.0f;
 
-    if (it->dur_sec <= 0.0f) {
+    float t = 0.0f;
+    if (!_anim_resolve_local_t(it, doc_t, &t)) {
         return False;
     }
 
-    float begin_sec = _anim_item_begin_for_time(it, doc_t);
-    if (doc_t < begin_sec) {
-        return False;
-    }
-
-    float local = doc_t - begin_sec;
-
-    // Compute total active duration from repeatCount/repeatDur.
-    float total = 0.0f;
-    ps_bool has_total = False;
-    if (it->repeat_dur_sec > 0.0f) {
-        total = it->repeat_dur_sec;
-        has_total = True;
-    } else if (it->repeat_count == 0) {
-        // indefinite
-        has_total = False;
-    } else {
-        total = it->dur_sec * (float)it->repeat_count;
-        has_total = True;
-    }
-
-    if (!has_total) {
-        local = _anim_fmod(local, it->dur_sec);
-    } else {
-        if (local >= total) {
-            if (it->fill_mode == SVG_ANIMATION_FREEZE) {
-                local = it->dur_sec;
-            } else {
-                return False;
-            }
-        } else {
-            local = _anim_fmod(local, it->dur_sec);
-        }
-    }
-
-    float t01 = _anim_clampf(local / it->dur_sec, 0.0f, 1.0f);
     float ang = 0.0f;
-    ps_bool ok_ang = False;
-
-    const psx_svg_attr* avals = _find_attr(it->anim_node, SVG_ATTR_VALUES);
-    if (avals && avals->val_type == SVG_ATTR_VALUE_PTR && avals->value.val) {
-        const psx_svg_attr_values_list* vlist = (const psx_svg_attr_values_list*)avals->value.val;
-        if (vlist->length < 1) {
-            return False;
-        }
-
-        if (vlist->length == 1) {
-            const float* base0 = NULL;
-            uint32_t vlen0 = 0;
-            if (!_anim_values_list_get_transform(vlist, 0, &base0, &vlen0) || !base0) {
-                return False;
-            }
-            ang = (vlen0 >= 1) ? base0[0] : 0.0f;
-            ok_ang = True;
-        } else {
-            const psx_svg_attr* akt = _find_attr(it->anim_node, SVG_ATTR_KEY_TIMES);
-            const float* kts = NULL;
-            uint32_t kt_len = 0;
-            if (akt && akt->val_type == SVG_ATTR_VALUE_PTR && akt->value.val) {
-                const psx_svg_attr_values_list* ktlist = (const psx_svg_attr_values_list*)akt->value.val;
-                kt_len = ktlist->length;
-                if (kt_len >= 2) {
-                    kts = (const float*)&ktlist->data[0];
-                }
-            }
-
-            uint32_t seg = 0;
-            float seg_t0 = 0.0f;
-            float seg_t1 = 1.0f;
-            if (kts && kt_len == vlist->length) {
-                for (uint32_t i = 0; i + 1 < kt_len; i++) {
-                    float a = _anim_clampf(kts[i], 0.0f, 1.0f);
-                    float b = _anim_clampf(kts[i + 1], 0.0f, 1.0f);
-                    if (t01 >= a && (t01 <= b || i + 2 == kt_len)) {
-                        seg = i;
-                        seg_t0 = a;
-                        seg_t1 = b;
-                        break;
-                    }
-                }
-                if (seg_t1 <= seg_t0) {
-                    seg_t0 = 0.0f;
-                    seg_t1 = 1.0f;
-                }
-            } else {
-                float step = 1.0f / (float)(vlist->length - 1);
-                seg = (uint32_t)(t01 / step);
-                if (seg >= vlist->length - 1) {
-                    seg = vlist->length - 2;
-                }
-                seg_t0 = step * (float)seg;
-                seg_t1 = step * (float)(seg + 1);
-            }
-
-            float u = 0.0f;
-            if (seg_t1 > seg_t0) {
-                u = (t01 - seg_t0) / (seg_t1 - seg_t0);
-            }
-            u = _anim_clampf(u, 0.0f, 1.0f);
-
-            if (seg >= vlist->length - 1) {
-                seg = vlist->length - 2;
-            }
-
-            const float* base0 = NULL;
-            const float* base1 = NULL;
-            uint32_t vlen0 = 0;
-            uint32_t vlen1 = 0;
-            if (!_anim_values_list_get_transform(vlist, seg, &base0, &vlen0) || !base0) {
-                return False;
-            }
-            if (!_anim_values_list_get_transform(vlist, seg + 1, &base1, &vlen1) || !base1) {
-                return False;
-            }
-
-            float a0 = (vlen0 >= 1) ? base0[0] : 0.0f;
-            float a1 = (vlen1 >= 1) ? base1[0] : a0;
-            ang = _anim_lerp(a0, a1, u);
-            ok_ang = True;
-        }
+    if (!_anim_eval_angle_linear(it, t, &ang)) {
+        return False;
     }
-
-    if (!ok_ang) {
-        const psx_svg_attr* afrom = _find_attr(it->anim_node, SVG_ATTR_FROM);
-        const psx_svg_attr* ato = _find_attr(it->anim_node, SVG_ATTR_TO);
-        if (!afrom || !ato) {
-            return False;
-        }
-        float from_a = _attr_as_number(afrom);
-        float to_a = _attr_as_number(ato);
-        ang = _anim_lerp(from_a, to_a, t01);
-    }
-
-    const float rad = ang * 0.01745329252f;
-    const float tan_a = (float)tan(rad);
 
     // skewX(a): [ 1 tan(a) 0; 0 1 0; 0 0 1 ]
-    *out_c = tan_a;
+    *out_c = (float)tan(ang * 0.01745329252f);
     return True;
 }
 
@@ -1437,149 +1159,18 @@ static INLINE ps_bool _anim_eval_transform_skewy_linear(const psx_svg_anim_item*
     *out_e = 0.0f;
     *out_f = 0.0f;
 
-    if (it->dur_sec <= 0.0f) {
+    float t = 0.0f;
+    if (!_anim_resolve_local_t(it, doc_t, &t)) {
         return False;
     }
 
-    float begin_sec = _anim_item_begin_for_time(it, doc_t);
-    if (doc_t < begin_sec) {
-        return False;
-    }
-
-    float local = doc_t - begin_sec;
-
-    // Compute total active duration from repeatCount/repeatDur.
-    float total = 0.0f;
-    ps_bool has_total = False;
-    if (it->repeat_dur_sec > 0.0f) {
-        total = it->repeat_dur_sec;
-        has_total = True;
-    } else if (it->repeat_count == 0) {
-        // indefinite
-        has_total = False;
-    } else {
-        total = it->dur_sec * (float)it->repeat_count;
-        has_total = True;
-    }
-
-    if (!has_total) {
-        local = _anim_fmod(local, it->dur_sec);
-    } else {
-        if (local >= total) {
-            if (it->fill_mode == SVG_ANIMATION_FREEZE) {
-                local = it->dur_sec;
-            } else {
-                return False;
-            }
-        } else {
-            local = _anim_fmod(local, it->dur_sec);
-        }
-    }
-
-    float t01 = _anim_clampf(local / it->dur_sec, 0.0f, 1.0f);
     float ang = 0.0f;
-    ps_bool ok_ang = False;
-
-    const psx_svg_attr* avals = _find_attr(it->anim_node, SVG_ATTR_VALUES);
-    if (avals && avals->val_type == SVG_ATTR_VALUE_PTR && avals->value.val) {
-        const psx_svg_attr_values_list* vlist = (const psx_svg_attr_values_list*)avals->value.val;
-        if (vlist->length < 1) {
-            return False;
-        }
-
-        if (vlist->length == 1) {
-            const float* base0 = NULL;
-            uint32_t vlen0 = 0;
-            if (!_anim_values_list_get_transform(vlist, 0, &base0, &vlen0) || !base0) {
-                return False;
-            }
-            ang = (vlen0 >= 1) ? base0[0] : 0.0f;
-            ok_ang = True;
-        } else {
-            const psx_svg_attr* akt = _find_attr(it->anim_node, SVG_ATTR_KEY_TIMES);
-            const float* kts = NULL;
-            uint32_t kt_len = 0;
-            if (akt && akt->val_type == SVG_ATTR_VALUE_PTR && akt->value.val) {
-                const psx_svg_attr_values_list* ktlist = (const psx_svg_attr_values_list*)akt->value.val;
-                kt_len = ktlist->length;
-                if (kt_len >= 2) {
-                    kts = (const float*)&ktlist->data[0];
-                }
-            }
-
-            uint32_t seg = 0;
-            float seg_t0 = 0.0f;
-            float seg_t1 = 1.0f;
-            if (kts && kt_len == vlist->length) {
-                for (uint32_t i = 0; i + 1 < kt_len; i++) {
-                    float a = _anim_clampf(kts[i], 0.0f, 1.0f);
-                    float b = _anim_clampf(kts[i + 1], 0.0f, 1.0f);
-                    if (t01 >= a && (t01 <= b || i + 2 == kt_len)) {
-                        seg = i;
-                        seg_t0 = a;
-                        seg_t1 = b;
-                        break;
-                    }
-                }
-                if (seg_t1 <= seg_t0) {
-                    seg_t0 = 0.0f;
-                    seg_t1 = 1.0f;
-                }
-            } else {
-                float step = 1.0f / (float)(vlist->length - 1);
-                seg = (uint32_t)(t01 / step);
-                if (seg >= vlist->length - 1) {
-                    seg = vlist->length - 2;
-                }
-                seg_t0 = step * (float)seg;
-                seg_t1 = step * (float)(seg + 1);
-            }
-
-            float u = 0.0f;
-            if (seg_t1 > seg_t0) {
-                u = (t01 - seg_t0) / (seg_t1 - seg_t0);
-            }
-            u = _anim_clampf(u, 0.0f, 1.0f);
-
-            if (seg >= vlist->length - 1) {
-                seg = vlist->length - 2;
-            }
-
-            const float* base0 = NULL;
-            const float* base1 = NULL;
-            uint32_t vlen0 = 0;
-            uint32_t vlen1 = 0;
-            if (!_anim_values_list_get_transform(vlist, seg, &base0, &vlen0) || !base0) {
-                return False;
-            }
-            if (!_anim_values_list_get_transform(vlist, seg + 1, &base1, &vlen1) || !base1) {
-                return False;
-            }
-
-            float a0 = (vlen0 >= 1) ? base0[0] : 0.0f;
-            float a1 = (vlen1 >= 1) ? base1[0] : a0;
-            ang = _anim_lerp(a0, a1, u);
-            ok_ang = True;
-        }
+    if (!_anim_eval_angle_linear(it, t, &ang)) {
+        return False;
     }
-
-    if (!ok_ang) {
-        const psx_svg_attr* afrom = _find_attr(it->anim_node, SVG_ATTR_FROM);
-        const psx_svg_attr* ato = _find_attr(it->anim_node, SVG_ATTR_TO);
-        if (!afrom || !ato) {
-            return False;
-        }
-
-        float from_a = _attr_as_number(afrom);
-        float to_a = _attr_as_number(ato);
-        ang = _anim_lerp(from_a, to_a, t01);
-    }
-
-    const float rad = ang * 0.01745329252f;
-    const float tan_a = (float)tan(rad);
 
     // skewY(a): [ 1 0 0; tan(a) 1 0; 0 0 1 ]
-    *out_b = tan_a;
+    *out_b = (float)tan(ang * 0.01745329252f);
     return True;
 }
 
@@ -1598,44 +1189,10 @@ static INLINE ps_bool _anim_eval_transform_skewx_discrete(const psx_svg_anim_ite
     *out_e = 0.0f;
     *out_f = 0.0f;
 
-    if (it->dur_sec <= 0.0f) {
+    float t = 0.0f;
+    if (!_anim_resolve_local_t(it, doc_t, &t)) {
         return False;
     }
-
-    float begin_sec = _anim_item_begin_for_time(it, doc_t);
-    if (doc_t < begin_sec) {
-        return False;
-    }
-
-    float local = doc_t - begin_sec;
-
-    float total = 0.0f;
-    ps_bool has_total = False;
-    if (it->repeat_dur_sec > 0.0f) {
-        total = it->repeat_dur_sec;
-        has_total = True;
-    } else if (it->repeat_count == 0) {
-        has_total = False;
-    } else {
-        total = it->dur_sec * (float)it->repeat_count;
-        has_total = True;
-    }
-
-    if (!has_total) {
-        local = _anim_fmod(local, it->dur_sec);
-    } else {
-        if (local >= total) {
-            if (it->fill_mode == SVG_ANIMATION_FREEZE) {
-                local = it->dur_sec;
-            } else {
-                return False;
-            }
-        } else {
-            local = _anim_fmod(local, it->dur_sec);
-        }
-    }
-
-    float t = _anim_clampf(local / it->dur_sec, 0.0f, 1.0f);
 
     const psx_svg_attr* afrom = _find_attr(it->anim_node, SVG_ATTR_FROM);
     const psx_svg_attr* ato = _find_attr(it->anim_node, SVG_ATTR_TO);
@@ -1644,8 +1201,7 @@ static INLINE ps_bool _anim_eval_transform_skewx_discrete(const psx_svg_anim_ite
     }
 
     float ang = (t < 0.5f) ? _attr_as_number(afrom) : _attr_as_number(ato);
-    float rad = ang * 3.14159265f / 180.0f;
-    *out_c = (float)tan(rad);
+    *out_c = (float)tan(ang * 0.01745329252f);
     return True;
 }
 
@@ -1664,44 +1220,10 @@ static INLINE ps_bool _anim_eval_transform_skewy_discrete(const psx_svg_anim_ite
     *out_e = 0.0f;
     *out_f = 0.0f;
 
-    if (it->dur_sec <= 0.0f) {
+    float t = 0.0f;
+    if (!_anim_resolve_local_t(it, doc_t, &t)) {
         return False;
     }
-
-    float begin_sec = _anim_item_begin_for_time(it, doc_t);
-    if (doc_t < begin_sec) {
-        return False;
-    }
-
-    float local = doc_t - begin_sec;
-
-    float total = 0.0f;
-    ps_bool has_total = False;
-    if (it->repeat_dur_sec > 0.0f) {
-        total = it->repeat_dur_sec;
-        has_total = True;
-    } else if (it->repeat_count == 0) {
-        has_total = False;
-    } else {
-        total = it->dur_sec * (float)it->repeat_count;
-        has_total = True;
-    }
-
-    if (!has_total) {
-        local = _anim_fmod(local, it->dur_sec);
-    } else {
-        if (local >= total) {
-            if (it->fill_mode == SVG_ANIMATION_FREEZE) {
-                local = it->dur_sec;
-            } else {
-                return False;
-            }
-        } else {
-            local = _anim_fmod(local, it->dur_sec);
-        }
-    }
-
-    float t = _anim_clampf(local / it->dur_sec, 0.0f, 1.0f);
 
     const psx_svg_attr* afrom = _find_attr(it->anim_node, SVG_ATTR_FROM);
     const psx_svg_attr* ato = _find_attr(it->anim_node, SVG_ATTR_TO);
@@ -1710,8 +1232,7 @@ static INLINE ps_bool _anim_eval_transform_skewy_discrete(const psx_svg_anim_ite
     }
 
     float ang = (t < 0.5f) ? _attr_as_number(afrom) : _attr_as_number(ato);
-    float rad = ang * 3.14159265f / 180.0f;
-    *out_b = (float)tan(rad);
+    *out_b = (float)tan(ang * 0.01745329252f);
     return True;
 }
 
@@ -1724,7 +1245,6 @@ static INLINE ps_bool _anim_eval_transform_matrix_linear(const psx_svg_anim_item
         return False;
     }
 
-    // identity defaults
     *out_a = 1.0f;
     *out_b = 0.0f;
     *out_c = 0.0f;
@@ -1732,54 +1252,16 @@ static INLINE ps_bool _anim_eval_transform_matrix_linear(const psx_svg_anim_item
     *out_e = 0.0f;
     *out_f = 0.0f;
 
-    if (it->dur_sec <= 0.0f) {
+    float t = 0.0f;
+    if (!_anim_resolve_local_t(it, doc_t, &t)) {
         return False;
     }
-
-    float begin_sec = _anim_item_begin_for_time(it, doc_t);
-    if (doc_t < begin_sec) {
-        return False;
-    }
-
-    float local = doc_t - begin_sec;
-
-    float total = 0.0f;
-    ps_bool has_total = False;
-    if (it->repeat_dur_sec > 0.0f) {
-        total = it->repeat_dur_sec;
-        has_total = True;
-    } else if (it->repeat_count == 0) {
-        has_total = False;
-    } else {
-        total = it->dur_sec * (float)it->repeat_count;
-        has_total = True;
-    }
-
-    ps_bool hold = False;
-    (void)hold;
-    if (!has_total) {
-        local = _anim_fmod(local, it->dur_sec);
-    } else {
-        if (local >= total) {
-            if (it->fill_mode == SVG_ANIMATION_FREEZE) {
-                hold = True;
-                local = it->dur_sec;
-            } else {
-                return False;
-            }
-        } else {
-            local = _anim_fmod(local, it->dur_sec);
-        }
-    }
-
-    float t = _anim_clampf(local / it->dur_sec, 0.0f, 1.0f);
 
     // values list takes priority over from/to
     const psx_svg_attr* avals = _find_attr(it->anim_node, SVG_ATTR_VALUES);
     if (avals && avals->val_type == SVG_ATTR_VALUE_PTR && avals->value.val) {
         const psx_svg_attr_values_list* vlist = (const psx_svg_attr_values_list*)avals->value.val;
         if (vlist->length >= 2) {
-            // Determine segment via keyTimes if provided.
             const psx_svg_attr* akt = _find_attr(it->anim_node, SVG_ATTR_KEY_TIMES);
             const float* kts = NULL;
             uint32_t kt_len = 0;
@@ -1794,26 +1276,7 @@ static INLINE ps_bool _anim_eval_transform_matrix_linear(const psx_svg_anim_item
             uint32_t seg = 0;
             float seg_t0 = 0.0f;
             float seg_t1 = 1.0f;
-            if (kts && kt_len == vlist->length) {
-                for (uint32_t i = 0; i + 1 < kt_len; i++) {
-                    float ka = _anim_clampf(kts[i], 0.0f, 1.0f);
-                    float kb = _anim_clampf(kts[i + 1], 0.0f, 1.0f);
-                    if (t >= ka && (t <= kb || i + 2 == kt_len)) {
-                        seg = i;
-                        seg_t0 = ka;
-                        seg_t1 = kb;
-                        break;
-                    }
-                }
-            } else {
-                float step = 1.0f / (float)(vlist->length - 1);
-                seg = (uint32_t)(t / step);
-                if (seg >= vlist->length - 1) {
-                    seg = vlist->length - 2;
-                }
-                seg_t0 = step * (float)seg;
-                seg_t1 = step * (float)(seg + 1);
-            }
+            _anim_find_segment(vlist, kts, kt_len, t, &seg, &seg_t0, &seg_t1);
 
             float u = 0.0f;
             if (seg_t1 > seg_t0) {
@@ -1889,44 +1352,10 @@ static INLINE ps_bool _anim_eval_transform_matrix_discrete(const psx_svg_anim_it
     *out_e = 0.0f;
     *out_f = 0.0f;
 
-    if (it->dur_sec <= 0.0f) {
+    float t = 0.0f;
+    if (!_anim_resolve_local_t(it, doc_t, &t)) {
         return False;
     }
-
-    float begin_sec = _anim_item_begin_for_time(it, doc_t);
-    if (doc_t < begin_sec) {
-        return False;
-    }
-
-    float local = doc_t - begin_sec;
-
-    float total = 0.0f;
-    ps_bool has_total = False;
-    if (it->repeat_dur_sec > 0.0f) {
-        total = it->repeat_dur_sec;
-        has_total = True;
-    } else if (it->repeat_count == 0) {
-        has_total = False;
-    } else {
-        total = it->dur_sec * (float)it->repeat_count;
-        has_total = True;
-    }
-
-    if (!has_total) {
-        local = _anim_fmod(local, it->dur_sec);
-    } else {
-        if (local >= total) {
-            if (it->fill_mode == SVG_ANIMATION_FREEZE) {
-                local = it->dur_sec;
-            } else {
-                return False;
-            }
-        } else {
-            local = _anim_fmod(local, it->dur_sec);
-        }
-    }
-
-    float t = _anim_clampf(local / it->dur_sec, 0.0f, 1.0f);
 
     const psx_svg_attr* afrom = _find_attr(it->anim_node, SVG_ATTR_FROM);
     const psx_svg_attr* ato = _find_attr(it->anim_node, SVG_ATTR_TO);
@@ -1972,45 +1401,10 @@ static INLINE ps_bool _anim_eval_transform_scale_discrete(const psx_svg_anim_ite
     *out_e = 0.0f;
     *out_f = 0.0f;
 
-    if (it->dur_sec <= 0.0f) {
+    float t = 0.0f;
+    if (!_anim_resolve_local_t(it, doc_t, &t)) {
         return False;
     }
-
-    float begin_sec = _anim_item_begin_for_time(it, doc_t);
-    if (doc_t < begin_sec) {
-        return False;
-    }
-
-    float local = doc_t - begin_sec;
-
-    // repeatCount/repeatDur + fill time handling (mirrors _anim_eval_simple).
-    float total = 0.0f;
-    ps_bool has_total = False;
-    if (it->repeat_dur_sec > 0.0f) {
-        total = it->repeat_dur_sec;
-        has_total = True;
-    } else if (it->repeat_count == 0) {
-        has_total = False;
-    } else {
-        total = it->dur_sec * (float)it->repeat_count;
-        has_total = True;
-    }
-
-    if (!has_total) {
-        local = _anim_fmod(local, it->dur_sec);
-    } else {
-        if (local >= total) {
-            if (it->fill_mode == SVG_ANIMATION_FREEZE) {
-                local = it->dur_sec;
-            } else {
-                return False;
-            }
-        } else {
-            local = _anim_fmod(local, it->dur_sec);
-        }
-    }
-
-    float t = _anim_clampf(local / it->dur_sec, 0.0f, 1.0f);
 
     const psx_svg_attr* avals = _find_attr(it->anim_node, SVG_ATTR_VALUES);
     if (!avals || avals->val_type != SVG_ATTR_VALUE_PTR || !avals->value.val) {
@@ -2035,17 +1429,8 @@ static INLINE ps_bool _anim_eval_transform_scale_discrete(const psx_svg_anim_ite
         return False;
     }
 
-    float sx = 1.0f;
-    float sy = 1.0f;
-    if (vlen >= 1) {
-        sx = base[0];
-    }
-    if (vlen >= 2) {
-        sy = base[1];
-    } else {
-        sy = sx;
-    }
-
+    float sx = (vlen >= 1) ? base[0] : 1.0f;
+    float sy = (vlen >= 2) ? base[1] : sx;
     *out_a = sx;
     *out_d = sy;
     return True;
@@ -2066,46 +1451,10 @@ static INLINE ps_bool _anim_eval_transform_scale_linear(const psx_svg_anim_item*
     *out_e = 0.0f;
     *out_f = 0.0f;
 
-    if (it->dur_sec <= 0.0f) {
+    float t = 0.0f;
+    if (!_anim_resolve_local_t(it, doc_t, &t)) {
         return False;
     }
-
-    float begin_sec = _anim_item_begin_for_time(it, doc_t);
-    if (doc_t < begin_sec) {
-        return False;
-    }
-
-    float local = doc_t - begin_sec;
-
-    // Compute total active duration from repeatCount/repeatDur.
-    float total = 0.0f;
-    ps_bool has_total = False;
-    if (it->repeat_dur_sec > 0.0f) {
-        total = it->repeat_dur_sec;
-        has_total = True;
-    } else if (it->repeat_count == 0) {
-        // indefinite
-        has_total = False;
-    } else {
-        total = it->dur_sec * (float)it->repeat_count;
-        has_total = True;
-    }
-
-    if (!has_total) {
-        local = _anim_fmod(local, it->dur_sec);
-    } else {
-        if (local >= total) {
-            if (it->fill_mode == SVG_ANIMATION_FREEZE) {
-                local = it->dur_sec;
-            } else {
-                return False;
-            }
-        } else {
-            local = _anim_fmod(local, it->dur_sec);
-        }
-    }
-
-    float t = _anim_clampf(local / it->dur_sec, 0.0f, 1.0f);
 
     const psx_svg_attr* avals = _find_attr(it->anim_node, SVG_ATTR_VALUES);
     if (avals && avals->val_type == SVG_ATTR_VALUE_PTR && avals->value.val) {
@@ -2140,30 +1489,7 @@ static INLINE ps_bool _anim_eval_transform_scale_linear(const psx_svg_anim_item*
         uint32_t seg = 0;
         float seg_t0 = 0.0f;
         float seg_t1 = 1.0f;
-        if (kts && kt_len == vlist->length) {
-            for (uint32_t i = 0; i + 1 < kt_len; i++) {
-                float a = _anim_clampf(kts[i], 0.0f, 1.0f);
-                float b = _anim_clampf(kts[i + 1], 0.0f, 1.0f);
-                if (t >= a && (t <= b || i + 2 == kt_len)) {
-                    seg = i;
-                    seg_t0 = a;
-                    seg_t1 = b;
-                    break;
-                }
-            }
-            if (seg_t1 <= seg_t0) {
-                seg_t0 = 0.0f;
-                seg_t1 = 1.0f;
-            }
-        } else {
-            float step = 1.0f / (float)(vlist->length - 1);
-            seg = (uint32_t)(t / step);
-            if (seg >= vlist->length - 1) {
-                seg = vlist->length - 2;
-            }
-            seg_t0 = step * (float)seg;
-            seg_t1 = step * (float)(seg + 1);
-        }
+        _anim_find_segment(vlist, kts, kt_len, t, &seg, &seg_t0, &seg_t1);
 
         float u = 0.0f;
         if (seg_t1 > seg_t0) {
@@ -2253,45 +1579,10 @@ static INLINE ps_bool _anim_eval_transform_rotate_discrete(const psx_svg_anim_it
     *out_e = 0.0f;
     *out_f = 0.0f;
 
-    if (it->dur_sec <= 0.0f) {
+    float t = 0.0f;
+    if (!_anim_resolve_local_t(it, doc_t, &t)) {
         return False;
     }
-
-    float begin_sec = _anim_item_begin_for_time(it, doc_t);
-    if (doc_t < begin_sec) {
-        return False;
-    }
-
-    float local = doc_t - begin_sec;
-
-    // repeatCount/repeatDur + fill time handling (mirrors _anim_eval_simple).
-    float total = 0.0f;
-    ps_bool has_total = False;
-    if (it->repeat_dur_sec > 0.0f) {
-        total = it->repeat_dur_sec;
-        has_total = True;
-    } else if (it->repeat_count == 0) {
-        has_total = False;
-    } else {
-        total = it->dur_sec * (float)it->repeat_count;
-        has_total = True;
-    }
-
-    if (!has_total) {
-        local = _anim_fmod(local, it->dur_sec);
-    } else {
-        if (local >= total) {
-            if (it->fill_mode == SVG_ANIMATION_FREEZE) {
-                local = it->dur_sec;
-            } else {
-                return False;
-            }
-        } else {
-            local = _anim_fmod(local, it->dur_sec);
-        }
-    }
-
-    float t = _anim_clampf(local / it->dur_sec, 0.0f, 1.0f);
 
     const psx_svg_attr* avals = _find_attr(it->anim_node, SVG_ATTR_VALUES);
     if (!avals || avals->val_type != SVG_ATTR_VALUE_PTR || !avals->value.val) {
@@ -2345,46 +1636,10 @@ static INLINE ps_bool _anim_eval_transform_rotate_linear(const psx_svg_anim_item
     *out_e = 0.0f;
     *out_f = 0.0f;
 
-    if (it->dur_sec <= 0.0f) {
+    float t = 0.0f;
+    if (!_anim_resolve_local_t(it, doc_t, &t)) {
         return False;
     }
-
-    float begin_sec = _anim_item_begin_for_time(it, doc_t);
-    if (doc_t < begin_sec) {
-        return False;
-    }
-
-    float local = doc_t - begin_sec;
-
-    // Compute total active duration from repeatCount/repeatDur.
-    float total = 0.0f;
-    ps_bool has_total = False;
-    if (it->repeat_dur_sec > 0.0f) {
-        total = it->repeat_dur_sec;
-        has_total = True;
-    } else if (it->repeat_count == 0) {
-        // indefinite
-        has_total = False;
-    } else {
-        total = it->dur_sec * (float)it->repeat_count;
-        has_total = True;
-    }
-
-    if (!has_total) {
-        local = _anim_fmod(local, it->dur_sec);
-    } else {
-        if (local >= total) {
-            if (it->fill_mode == SVG_ANIMATION_FREEZE) {
-                local = it->dur_sec;
-            } else {
-                return False;
-            }
-        } else {
-            local = _anim_fmod(local, it->dur_sec);
-        }
-    }
-
-    float t = _anim_clampf(local / it->dur_sec, 0.0f, 1.0f);
 
     const psx_svg_attr* avals = _find_attr(it->anim_node, SVG_ATTR_VALUES);
     if (!avals || avals->val_type != SVG_ATTR_VALUE_PTR || !avals->value.val) {
@@ -2432,30 +1687,7 @@ static INLINE ps_bool _anim_eval_transform_rotate_linear(const psx_svg_anim_item
     uint32_t seg = 0;
     float seg_t0 = 0.0f;
     float seg_t1 = 1.0f;
-    if (kts && kt_len == vlist->length) {
-        for (uint32_t i = 0; i + 1 < kt_len; i++) {
-            float a = _anim_clampf(kts[i], 0.0f, 1.0f);
-            float b = _anim_clampf(kts[i + 1], 0.0f, 1.0f);
-            if (t >= a && (t <= b || i + 2 == kt_len)) {
-                seg = i;
-                seg_t0 = a;
-                seg_t1 = b;
-                break;
-            }
-        }
-        if (seg_t1 <= seg_t0) {
-            seg_t0 = 0.0f;
-            seg_t1 = 1.0f;
-        }
-    } else {
-        float step = 1.0f / (float)(vlist->length - 1);
-        seg = (uint32_t)(t / step);
-        if (seg >= vlist->length - 1) {
-            seg = vlist->length - 2;
-        }
-        seg_t0 = step * (float)seg;
-        seg_t1 = step * (float)(seg + 1);
-    }
+    _anim_find_segment(vlist, kts, kt_len, t, &seg, &seg_t0, &seg_t1);
 
     float u = 0.0f;
     if (seg_t1 > seg_t0) {
@@ -2510,6 +1742,50 @@ static INLINE ps_bool _anim_eval_transform_rotate_linear(const psx_svg_anim_item
     *out_e = cx - cx * cs + cy * sn;
     *out_f = cy - cx * sn - cy * cs;
     return True;
+}
+
+/*
+ * Dispatch animateTransform evaluation based on transform type and calcMode.
+ * Returns True and writes the matrix components if the animation is active.
+ */
+static INLINE ps_bool _anim_eval_transform_dispatch(const psx_svg_anim_item* it, float time_sec,
+                                                    float* a, float* b, float* c,
+                                                    float* d, float* e, float* f)
+{
+    const psx_svg_attr* acm = _find_attr(it->anim_node, SVG_ATTR_CALC_MODE);
+    ps_bool is_discrete = (acm && acm->val_type == SVG_ATTR_VALUE_DATA && acm->value.ival == SVG_ANIMATION_CALC_MODE_DISCRETE) ? True : False;
+    const psx_svg_attr* att = _find_attr(it->anim_node, SVG_ATTR_TRANSFORM_TYPE);
+    int32_t ttype = (att && att->val_type == SVG_ATTR_VALUE_DATA) ? att->value.ival : 0;
+
+    if (is_discrete) {
+        if (ttype == SVG_TRANSFORM_TYPE_SCALE) {
+            return _anim_eval_transform_scale_discrete(it, time_sec, a, b, c, d, e, f);
+        } else if (ttype == SVG_TRANSFORM_TYPE_ROTATE) {
+            return _anim_eval_transform_rotate_discrete(it, time_sec, a, b, c, d, e, f);
+        } else if (ttype == SVG_TRANSFORM_TYPE_SKEW_X) {
+            return _anim_eval_transform_skewx_discrete(it, time_sec, a, b, c, d, e, f);
+        } else if (ttype == SVG_TRANSFORM_TYPE_SKEW_Y) {
+            return _anim_eval_transform_skewy_discrete(it, time_sec, a, b, c, d, e, f);
+        } else if (ttype == SVG_TRANSFORM_TYPE_MATRIX) {
+            return _anim_eval_transform_matrix_discrete(it, time_sec, a, b, c, d, e, f);
+        } else {
+            return _anim_eval_transform_translate_discrete(it, time_sec, a, b, c, d, e, f);
+        }
+    } else {
+        if (ttype == SVG_TRANSFORM_TYPE_ROTATE) {
+            return _anim_eval_transform_rotate_linear(it, time_sec, a, b, c, d, e, f);
+        } else if (ttype == SVG_TRANSFORM_TYPE_SCALE) {
+            return _anim_eval_transform_scale_linear(it, time_sec, a, b, c, d, e, f);
+        } else if (ttype == SVG_TRANSFORM_TYPE_SKEW_X) {
+            return _anim_eval_transform_skewx_linear(it, time_sec, a, b, c, d, e, f);
+        } else if (ttype == SVG_TRANSFORM_TYPE_SKEW_Y) {
+            return _anim_eval_transform_skewy_linear(it, time_sec, a, b, c, d, e, f);
+        } else if (ttype == SVG_TRANSFORM_TYPE_MATRIX) {
+            return _anim_eval_transform_matrix_linear(it, time_sec, a, b, c, d, e, f);
+        } else {
+            return _anim_eval_transform_translate_linear(it, time_sec, a, b, c, d, e, f);
+        }
+    }
 }
 
 // Note: psx_svg_attr_values_list is a variable-sized blob (length + data[]).
@@ -2787,28 +2063,15 @@ static void _collect_anims(psx_svg_player* p, const psx_svg_node* node)
                 }
             } else if (abegin && abegin->val_type == SVG_ATTR_VALUE_PTR && abegin->value.val) {
                 if (t == SVG_TAG_SET) {
-                    // Parser currently parses begin/end lists as clock offsets only.
                     const psx_svg_attr_values_list* list = (const psx_svg_attr_values_list*)abegin->value.val;
-                    // Detect event tokens by looking at the original string.
-                    // Current parser callback parses only clock offsets; a non-numeric token
-                    // gets converted to 0ms ("indefinite" is also 0ms). We disambiguate by
-                    // checking the raw string: if it's non-numeric, treat it as event.
-                    const char* raw = _find_attr_string_raw(node, SVG_ATTR_BEGIN);
-                    if (raw && !_is_clock_value_token(raw)) {
-                        item.begin_event = _dup_cstr(raw);
-                        psx_array_clear(&item.begins_sec);
-                        item.begin_sec = 1e30f;
-                    } else {
-                        // Treat as a clock-value list (ms) parsed by parser.
-                        const float* vals = (list->length > 0) ? (const float*)&list->data[0] : NULL;
-                        for (uint32_t i = 0; i < list->length; i++) {
-                            float ms = vals[i];
-                            float sec = (ms <= 0.0f) ? 0.0f : (ms * 0.001f);
-                            psx_array_append(&item.begins_sec, &sec);
-                        }
-                        _anim_item_begin_list_normalize(&item);
-                        item.begin_sec = _attr_as_begin_time_sec(abegin);
+                    const float* vals = (list->length > 0) ? (const float*)&list->data[0] : NULL;
+                    for (uint32_t i = 0; i < list->length; i++) {
+                        float ms = vals[i];
+                        float sec = (ms <= 0.0f) ? 0.0f : (ms * 0.001f);
+                        psx_array_append(&item.begins_sec, &sec);
                     }
+                    _anim_item_begin_list_normalize(&item);
+                    item.begin_sec = _attr_as_begin_time_sec(abegin);
                 } else {
                     const psx_svg_attr_values_list* list = (const psx_svg_attr_values_list*)abegin->value.val;
                     if (list->length > 0) {
@@ -3097,43 +2360,7 @@ extern "C" {
 
             if (it->tag == SVG_TAG_ANIMATE_TRANSFORM && it->target_attr == SVG_ATTR_TRANSFORM) {
                 float a = 1, b = 0, c = 0, d = 1, e = 0, f = 0;
-                const psx_svg_attr* acm = _find_attr(it->anim_node, SVG_ATTR_CALC_MODE);
-                ps_bool is_discrete = (acm && acm->val_type == SVG_ATTR_VALUE_DATA && acm->value.ival == SVG_ANIMATION_CALC_MODE_DISCRETE) ? True : False;
-                const psx_svg_attr* att = _find_attr(it->anim_node, SVG_ATTR_TRANSFORM_TYPE);
-                int32_t ttype = (att && att->val_type == SVG_ATTR_VALUE_DATA) ? att->value.ival : 0;
-                ps_bool ok2 = False;
-                if (is_discrete) {
-                    if (ttype == SVG_TRANSFORM_TYPE_SCALE) {
-                        ok2 = _anim_eval_transform_scale_discrete(it, p->time_sec, &a, &b, &c, &d, &e, &f);
-                    } else if (ttype == SVG_TRANSFORM_TYPE_ROTATE) {
-                        ok2 = _anim_eval_transform_rotate_discrete(it, p->time_sec, &a, &b, &c, &d, &e, &f);
-                    } else if (ttype == SVG_TRANSFORM_TYPE_SKEW_X) {
-                        ok2 = _anim_eval_transform_skewx_discrete(it, p->time_sec, &a, &b, &c, &d, &e, &f);
-                    } else if (ttype == SVG_TRANSFORM_TYPE_SKEW_Y) {
-                        ok2 = _anim_eval_transform_skewy_discrete(it, p->time_sec, &a, &b, &c, &d, &e, &f);
-                    } else if (ttype == SVG_TRANSFORM_TYPE_MATRIX) {
-                        ok2 = _anim_eval_transform_matrix_discrete(it, p->time_sec, &a, &b, &c, &d, &e, &f);
-                    } else {
-                        // Default/legacy: translate.
-                        ok2 = _anim_eval_transform_translate_discrete(it, p->time_sec, &a, &b, &c, &d, &e, &f);
-                    }
-                } else {
-                    if (ttype == SVG_TRANSFORM_TYPE_ROTATE) {
-                        ok2 = _anim_eval_transform_rotate_linear(it, p->time_sec, &a, &b, &c, &d, &e, &f);
-                    } else if (ttype == SVG_TRANSFORM_TYPE_SCALE) {
-                        ok2 = _anim_eval_transform_scale_linear(it, p->time_sec, &a, &b, &c, &d, &e, &f);
-                    } else if (ttype == SVG_TRANSFORM_TYPE_SKEW_X) {
-                        ok2 = _anim_eval_transform_skewx_linear(it, p->time_sec, &a, &b, &c, &d, &e, &f);
-                    } else if (ttype == SVG_TRANSFORM_TYPE_SKEW_Y) {
-                        ok2 = _anim_eval_transform_skewy_linear(it, p->time_sec, &a, &b, &c, &d, &e, &f);
-                    } else if (ttype == SVG_TRANSFORM_TYPE_MATRIX) {
-                        ok2 = _anim_eval_transform_matrix_linear(it, p->time_sec, &a, &b, &c, &d, &e, &f);
-                    } else {
-                        // For now, only translate supports non-discrete modes.
-                        ok2 = _anim_eval_transform_translate_linear(it, p->time_sec, &a, &b, &c, &d, &e, &f);
-                    }
-                }
-                if (ok2) {
+                if (_anim_eval_transform_dispatch(it, p->time_sec, &a, &b, &c, &d, &e, &f)) {
                     _anim_state_set_transform(&p->anim_state, it->target_node, a, b, c, d, e, f);
                 }
                 continue;
@@ -3191,48 +2418,13 @@ extern "C" {
             if (!(it->tag == SVG_TAG_ANIMATE || it->tag == SVG_TAG_SET || it->tag == SVG_TAG_ANIMATE_COLOR || it->tag == SVG_TAG_ANIMATE_TRANSFORM)) {
                 continue;
             }
-            // Tiny 1.2 minimal player: numeric attributes + animateColor(fill).
             if (!(it->target_attr == SVG_ATTR_X || it->target_attr == SVG_ATTR_Y || it->target_attr == SVG_ATTR_WIDTH || it->target_attr == SVG_ATTR_HEIGHT || it->target_attr == SVG_ATTR_OPACITY || it->target_attr == SVG_ATTR_RX || it->target_attr == SVG_ATTR_RY || it->target_attr == SVG_ATTR_STROKE_WIDTH || it->target_attr == SVG_ATTR_FILL_OPACITY || it->target_attr == SVG_ATTR_GRADIENT_STOP_OPACITY || it->target_attr == SVG_ATTR_FILL || it->target_attr == SVG_ATTR_TRANSFORM)) {
                 continue;
             }
 
             if (it->tag == SVG_TAG_ANIMATE_TRANSFORM && it->target_attr == SVG_ATTR_TRANSFORM) {
                 float a = 1, b = 0, c = 0, d = 1, e = 0, f = 0;
-                const psx_svg_attr* acm = _find_attr(it->anim_node, SVG_ATTR_CALC_MODE);
-                ps_bool is_discrete = (acm && acm->val_type == SVG_ATTR_VALUE_DATA && acm->value.ival == SVG_ANIMATION_CALC_MODE_DISCRETE) ? True : False;
-                const psx_svg_attr* att = _find_attr(it->anim_node, SVG_ATTR_TRANSFORM_TYPE);
-                int32_t ttype = (att && att->val_type == SVG_ATTR_VALUE_DATA) ? att->value.ival : 0;
-                ps_bool ok2 = False;
-                if (is_discrete) {
-                    if (ttype == SVG_TRANSFORM_TYPE_SCALE) {
-                        ok2 = _anim_eval_transform_scale_discrete(it, p->time_sec, &a, &b, &c, &d, &e, &f);
-                    } else if (ttype == SVG_TRANSFORM_TYPE_ROTATE) {
-                        ok2 = _anim_eval_transform_rotate_discrete(it, p->time_sec, &a, &b, &c, &d, &e, &f);
-                    } else if (ttype == SVG_TRANSFORM_TYPE_SKEW_X) {
-                        ok2 = _anim_eval_transform_skewx_discrete(it, p->time_sec, &a, &b, &c, &d, &e, &f);
-                    } else if (ttype == SVG_TRANSFORM_TYPE_SKEW_Y) {
-                        ok2 = _anim_eval_transform_skewy_discrete(it, p->time_sec, &a, &b, &c, &d, &e, &f);
-                    } else if (ttype == SVG_TRANSFORM_TYPE_MATRIX) {
-                        ok2 = _anim_eval_transform_matrix_discrete(it, p->time_sec, &a, &b, &c, &d, &e, &f);
-                    } else {
-                        ok2 = _anim_eval_transform_translate_discrete(it, p->time_sec, &a, &b, &c, &d, &e, &f);
-                    }
-                } else {
-                    if (ttype == SVG_TRANSFORM_TYPE_ROTATE) {
-                        ok2 = _anim_eval_transform_rotate_linear(it, p->time_sec, &a, &b, &c, &d, &e, &f);
-                    } else if (ttype == SVG_TRANSFORM_TYPE_SCALE) {
-                        ok2 = _anim_eval_transform_scale_linear(it, p->time_sec, &a, &b, &c, &d, &e, &f);
-                    } else if (ttype == SVG_TRANSFORM_TYPE_SKEW_X) {
-                        ok2 = _anim_eval_transform_skewx_linear(it, p->time_sec, &a, &b, &c, &d, &e, &f);
-                    } else if (ttype == SVG_TRANSFORM_TYPE_SKEW_Y) {
-                        ok2 = _anim_eval_transform_skewy_linear(it, p->time_sec, &a, &b, &c, &d, &e, &f);
-                    } else if (ttype == SVG_TRANSFORM_TYPE_MATRIX) {
-                        ok2 = _anim_eval_transform_matrix_linear(it, p->time_sec, &a, &b, &c, &d, &e, &f);
-                    } else {
-                        ok2 = _anim_eval_transform_translate_linear(it, p->time_sec, &a, &b, &c, &d, &e, &f);
-                    }
-                }
-                if (ok2) {
+                if (_anim_eval_transform_dispatch(it, p->time_sec, &a, &b, &c, &d, &e, &f)) {
                     _anim_state_set_transform(&p->anim_state, it->target_node, a, b, c, d, e, f);
                 }
                 continue;
@@ -3361,41 +2553,7 @@ extern "C" {
 
             if (it->tag == SVG_TAG_ANIMATE_TRANSFORM && it->target_attr == SVG_ATTR_TRANSFORM) {
                 float a = 1, b = 0, c = 0, d = 1, e = 0, f = 0;
-                const psx_svg_attr* acm = _find_attr(it->anim_node, SVG_ATTR_CALC_MODE);
-                ps_bool is_discrete = (acm && acm->val_type == SVG_ATTR_VALUE_DATA && acm->value.ival == SVG_ANIMATION_CALC_MODE_DISCRETE) ? True : False;
-                const psx_svg_attr* att = _find_attr(it->anim_node, SVG_ATTR_TRANSFORM_TYPE);
-                int32_t ttype = (att && att->val_type == SVG_ATTR_VALUE_DATA) ? att->value.ival : 0;
-                ps_bool ok2 = False;
-                if (is_discrete) {
-                    if (ttype == SVG_TRANSFORM_TYPE_SCALE) {
-                        ok2 = _anim_eval_transform_scale_discrete(it, p->time_sec, &a, &b, &c, &d, &e, &f);
-                    } else if (ttype == SVG_TRANSFORM_TYPE_ROTATE) {
-                        ok2 = _anim_eval_transform_rotate_discrete(it, p->time_sec, &a, &b, &c, &d, &e, &f);
-                    } else if (ttype == SVG_TRANSFORM_TYPE_SKEW_X) {
-                        ok2 = _anim_eval_transform_skewx_discrete(it, p->time_sec, &a, &b, &c, &d, &e, &f);
-                    } else if (ttype == SVG_TRANSFORM_TYPE_SKEW_Y) {
-                        ok2 = _anim_eval_transform_skewy_discrete(it, p->time_sec, &a, &b, &c, &d, &e, &f);
-                    } else if (ttype == SVG_TRANSFORM_TYPE_MATRIX) {
-                        ok2 = _anim_eval_transform_matrix_discrete(it, p->time_sec, &a, &b, &c, &d, &e, &f);
-                    } else {
-                        ok2 = _anim_eval_transform_translate_discrete(it, p->time_sec, &a, &b, &c, &d, &e, &f);
-                    }
-                } else {
-                    if (ttype == SVG_TRANSFORM_TYPE_ROTATE) {
-                        ok2 = _anim_eval_transform_rotate_linear(it, p->time_sec, &a, &b, &c, &d, &e, &f);
-                    } else if (ttype == SVG_TRANSFORM_TYPE_SCALE) {
-                        ok2 = _anim_eval_transform_scale_linear(it, p->time_sec, &a, &b, &c, &d, &e, &f);
-                    } else if (ttype == SVG_TRANSFORM_TYPE_SKEW_X) {
-                        ok2 = _anim_eval_transform_skewx_linear(it, p->time_sec, &a, &b, &c, &d, &e, &f);
-                    } else if (ttype == SVG_TRANSFORM_TYPE_SKEW_Y) {
-                        ok2 = _anim_eval_transform_skewy_linear(it, p->time_sec, &a, &b, &c, &d, &e, &f);
-                    } else if (ttype == SVG_TRANSFORM_TYPE_MATRIX) {
-                        ok2 = _anim_eval_transform_matrix_linear(it, p->time_sec, &a, &b, &c, &d, &e, &f);
-                    } else {
-                        ok2 = _anim_eval_transform_translate_linear(it, p->time_sec, &a, &b, &c, &d, &e, &f);
-                    }
-                }
-                if (ok2) {
+                if (_anim_eval_transform_dispatch(it, p->time_sec, &a, &b, &c, &d, &e, &f)) {
                     _anim_state_set_transform(&p->anim_state, it->target_node, a, b, c, d, e, f);
                 }
                 continue;
