@@ -128,7 +128,7 @@ The pixel buffer `buf` now contains the rendered RGBA image and can be passed to
 | Alpha Blending & Compositing | SVG Rendering |
 |:---:|:---:|
 | ![Alpha blending with multiple layers](http://onecoolx.github.io/picasso/res/flowers.png) | ![SVG tiger — complex path and gradient rendering](http://onecoolx.github.io/picasso/res/tiger.png) |
-| Multi-layer alpha compositing with per-pixel opacity control | Full SVG path, gradient, and stroke rendering (Tiger benchmark) |
+| Alpha blending across multiple overlapping geometry shapes | Full SVG path, gradient, and stroke rendering (Tiger benchmark) |
 
 | GIS / Map Rendering | Realtime Instrumentation |
 |:---:|:---:|
