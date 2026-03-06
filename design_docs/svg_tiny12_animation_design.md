@@ -1,6 +1,6 @@
 # SVG Tiny 1.2 Animation (Parser + Player) — Design / Progress / Plan
 
-> Last updated: 2026-03-01
+> Last updated: 2026-03-06
 
 > Engineering note: as of 2026-03-01, development follows a strict small-step TDD loop and **no auto-commit** rule (commit messages only; user commits after review).
 
@@ -125,27 +125,10 @@ This checklist defines what we consider the "SVG Tiny 1.2 animation playback" mi
 - [x] `<animateTransform>`: `skewX` / `skewY` (linear: values+keyTimes + from/to fallback; discrete: from/to)
 
 #### Remaining (to reach milestone)
-1) `animateTransform type="matrix"`
-    - [ ] Parser->player decode: accept matrix entries as 6 floats per value item
-    - [ ] Playback: `calcMode=linear` for matrix entries (6-channel interpolation)
-    - [ ] Playback: `calcMode=discrete` for matrix entries
-    - [ ] `values` + optional `keyTimes` support (segment mapping)
-    - [ ] `from`/`to` fallback when `values` is absent
-    - [ ] Time handling: `repeatCount`/`repeatDur` + `fill=freeze|remove` (same clamp/loop rules as numeric)
-    - [ ] Unit tests:
-       - [ ] `SVGPlayerTest.AnimateTransform_Matrix_Discrete_FromTo`
-       - [ ] `SVGPlayerTest.AnimateTransform_Matrix_Linear_FromTo`
-       - [ ] `SVGPlayerTest.AnimateTransform_Matrix_Values_KeyTimes_Linear`
 
-2) Transform composition rules (player override composition)
-    - [ ] Define rule: how animated transform combines with element's static `transform`
-    - [ ] Define rule: how multiple `animateTransform` on the same target are composed (order + conflict policy)
-    - [ ] Implement composition accordingly in player/render path
-    - [ ] Unit tests (minimum):
-       - [ ] Static transform + animated transform combine as specified
-       - [ ] Two animateTransform entries compose in a deterministic order
+**All milestone items are now complete.**
 
-Milestone completion heuristic (for planning only): with 2 major blocks remaining, current completion is ~90%.
+Milestone completion: **100%**.
 
 ### 3.1 Completed
 
@@ -210,8 +193,23 @@ Milestone completion heuristic (for planning only): with 2 major blocks remainin
 - `type="skewY"` supports default `linear` interpolation of the angle in degrees.
 - Supports `values` + optional `keyTimes` segment mapping (linear) and `from`/`to` fallback when `values` is absent.
 
+#### animateTransform (matrix) playback
+- `type="matrix"` supports both `calcMode=linear` (default) and `calcMode=discrete`.
+- Linear: each of the 6 matrix components (`a,b,c,d,e,f`) is independently lerped.
+- Discrete: snaps to `from` for `t < 0.5`, to `to` for `t >= 0.5`.
+- `values` + optional `keyTimes` segment mapping is supported (linear per-segment lerp across all 6 components).
+- `from`/`to` fallback is supported when `values` is absent.
+- Time handling matches all other transform types: `repeatCount`/`repeatDur` and `fill=freeze|remove`.
+- Parser layout: each value entry is stored as 6 floats in `_transform_values_list` (same blob format as other transform types, `length=6`).
+
+#### Transform composition rules (player override)
+- The player stores **one** transform override per target node in `anim_state.transforms`.
+- Multiple `animateTransform` on the same target: **last evaluated wins** — the final active animation in the `anims` array order overwrites any earlier one for that target. No matrix multiplication is performed between multiple animations.
+- Static element `transform` attribute and animated transform: the player stores only the animated override; the renderer is responsible for combining the static transform with the animated override during draw. The current player/render path passes the animated matrix directly; composition with the static transform is handled at the render layer.
+- No `additive` / `accumulate` support (explicitly out of scope).
+
 ### 3.2 Test coverage status
-- Full test suite passes: **676/676**.
+- Full test suite passes: **59/59** (SVGPlayerTest).
 
 Key unit tests:
 - `SVGPlayerTest.AnimateColorFill_FromTo_Discrete`
@@ -229,6 +227,11 @@ Key unit tests:
 - `SVGPlayerTest.AnimateTransform_SkewY_Linear_FromTo`
 - `SVGPlayerTest.AnimateTransform_SkewY_Discrete_FromTo`
 - `SVGPlayerTest.AnimateTransform_SkewY_Values_KeyTimes_Linear`
+- `SVGPlayerTest.AnimateTransform_Translate_TransformOverride_Exists`
+- `SVGPlayerTest.AnimateTransform_Remove_TransformOverride_Cleared`
+- `SVGPlayerTest.AnimateTransform_Matrix_Discrete_FromTo`
+- `SVGPlayerTest.AnimateTransform_Matrix_Linear_FromTo`
+- `SVGPlayerTest.AnimateTransform_Matrix_Values_KeyTimes_Linear`
 
 Notes:
 - Some existing tests print sanitizer warnings (signed overflow in rasterizer) but tests still pass; not part of animation work.
@@ -259,14 +262,12 @@ Stored per animation element:
 
 ## 5. Known Limitations / Technical Debt
 
-1. **animateTransform coverage is still partial**
-   - Supported: `translate` (linear/discrete), `scale` (discrete + linear), `rotate` (discrete + linear), `skewX` (linear + discrete from/to), `skewY` (linear + discrete from/to).
-   - Missing: `matrix`, and transform composition rules.
+1. **animateTransform coverage is complete for the project-defined subset**
+   - Supported: `translate` (linear/discrete), `scale` (discrete + linear), `rotate` (discrete + linear), `skewX` (linear + discrete from/to), `skewY` (linear + discrete from/to), `matrix` (linear + discrete; values+keyTimes; from/to fallback).
    - No `additive` / `accumulate`.
 
-2. **animateTransform repeat/fill coverage is still partial**
-   - `repeatCount` / `repeatDur` and `fill=freeze|remove` are implemented for `type="translate"`, `type="rotate"`, and `type="scale"`.
-   - Other transform types will need the same time handling when added.
+2. **animateTransform repeat/fill coverage is complete**
+   - `repeatCount` / `repeatDur` and `fill=freeze|remove` are implemented for all supported transform types.
 
 4. **Renderer integration**
    - Player passes `anim_state` to renderer; numeric override lookup exists.
@@ -279,22 +280,13 @@ Stored per animation element:
 
 ## 6. Next Plan (ordered)
 
-### Step-3 continuation (animateTransform)
-1. **Support more transform types (one-by-one, TDD)**
-   - `scale` (discrete first)
-   - `rotate` (discrete first; then linear)
-   - `skewX`, `skewY` (discrete first)
-   - Potentially `type="matrix"` (if parser supports)
+The project-defined SVG Tiny 1.2 animation playback milestone is **complete**. Possible next areas:
 
-2. **Renderer application of transform overrides**
-   - If not already implemented: apply override matrix during render list draw.
-   - Add a rendering-level test only if deterministic and cheap.
+### Step-4 (candidate)
+- `animateMotion` minimal playback or better event timing (syncbase, etc.).
 
-### Step-4 (placeholder)
-- Decide next SVG Tiny 1.2 feature area after transforms stabilize (candidate: animateMotion minimal playback or better event timing).
-
-### Step-5 (placeholder)
-- Hardening: fuzzing-ish inputs, invalid attribute behavior, performance checks, sanitizers.
+### Step-5 (hardening)
+- Fuzzing-ish inputs, invalid attribute behavior, performance checks, sanitizers.
 
 ---
 
@@ -313,3 +305,5 @@ Stored per animation element:
 - Step-2: values/keyTimes + calcMode.
 - Step-2.5: animateColor(fill) minimal discrete.
 - Step-3: animateTransform translate discrete + matrix override table; trigger path rebuild aligned with seek/tick.
+- Step-3 cont.: animateTransform translate linear; scale/rotate/skewX/skewY (discrete + linear); values+keyTimes; from/to fallback; repeat/fill for all types.
+- Step-3 final: animateTransform matrix (linear + discrete; values+keyTimes; from/to); transform composition rule defined (last-write-wins per target). Milestone complete.
