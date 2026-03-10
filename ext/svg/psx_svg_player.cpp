@@ -423,14 +423,6 @@ static INLINE float _attr_as_number(const psx_svg_attr* a)
     return a->value.fval;
 }
 
-static psx_svg_player_options _default_options(void)
-{
-    psx_svg_player_options opt;
-    opt.loop = false;
-    opt.dpi = 96;
-    return opt;
-}
-
 static INLINE const psx_svg_attr* _find_attr(const psx_svg_node* node, psx_svg_attr_type type)
 {
     if (!node) {
@@ -2130,9 +2122,7 @@ static void _collect_anims(psx_svg_player* p, const psx_svg_node* node)
 extern "C" {
 #endif
 
-static psx_svg_player* _psx_svg_player_create_impl(const psx_svg_node* root,
-                                                   const psx_svg_player_options* opt_in,
-                                                   psx_result* out)
+psx_svg_player* psx_svg_player_create(const psx_svg_node* root, psx_result* out)
 {
     if (out) {
         *out = S_OK;
@@ -2144,8 +2134,6 @@ static psx_svg_player* _psx_svg_player_create_impl(const psx_svg_node* root,
         return NULL;
     }
 
-    psx_svg_player_options opt = opt_in ? *opt_in : _default_options();
-
     psx_svg_player* p = (psx_svg_player*)mem_malloc(sizeof(psx_svg_player));
     if (!p) {
         if (out) {
@@ -2156,8 +2144,8 @@ static psx_svg_player* _psx_svg_player_create_impl(const psx_svg_node* root,
     memset(p, 0, sizeof(psx_svg_player));
 
     p->root = root;
-    p->loop = opt.loop;
-    p->dpi = (opt.dpi > 0) ? opt.dpi : 96;
+    p->loop = false;
+    p->dpi = 96; // default dpi
 
     p->render_list = psx_svg_render_list_create(root);
     if (!p->render_list) {
@@ -2210,16 +2198,6 @@ static psx_svg_player* _psx_svg_player_create_impl(const psx_svg_node* root,
 
     return p;
 }
-
-psx_svg_player* psx_svg_player_create(const psx_svg_node* root,
-                                      const psx_svg_player_options* opt_in,
-                                      psx_result* out)
-{
-    // We may need non-const access internally for indices/caches, but we do not
-    // mutate the DOM in this minimal implementation.
-    return _psx_svg_player_create_impl((psx_svg_node*)root, opt_in, out);
-}
-
 
 void psx_svg_player_destroy(psx_svg_player* p)
 {
@@ -2428,6 +2406,19 @@ bool psx_svg_player_get_loop(const psx_svg_player* p)
     return p ? p->loop : false;
 }
 
+void psx_svg_player_set_dpi(psx_svg_player* p, int32_t dpi)
+{
+    if (!p) {
+        return;
+    }
+    p->dpi = dpi;
+}
+
+int32_t psx_svg_player_get_dpi(const psx_svg_player* p)
+{
+    return p ? p->dpi : 0;
+}
+
 void psx_svg_player_draw(psx_svg_player* p, ps_context* ctx)
 {
     if (!p || !ctx || !p->render_list) {
@@ -2530,7 +2521,6 @@ const psx_svg_node* psx_svg_player_get_node_by_id(const psx_svg_player* p, const
     }
 
     // FIXME: change to tree travls
-
 
     // Parser stores element id into node->content(). We do a simple DFS.
     const psx_svg_node* stack[64];

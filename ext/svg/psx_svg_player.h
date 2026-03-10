@@ -38,16 +38,6 @@ extern "C" {
 
 typedef struct psx_svg_player psx_svg_player;
 
-// Player create options
-typedef struct {
-    // If true, player will loop when reaching end time.
-    // Default: false.
-    bool loop;
-
-    // Document dpi for unit conversion (px/in/cm/mm/pt/pc). Default: 96.
-    int32_t dpi;
-} psx_svg_player_options;
-
 // Player status
 typedef enum {
     PSX_SVG_PLAYER_STOPPED = 0,
@@ -62,17 +52,20 @@ typedef enum {
     PSX_SVG_ANIM_EVENT_REPEAT,
 } psx_svg_anim_event_type;
 
-typedef void (*psx_svg_anim_event_cb)(psx_svg_anim_event_type type,
-                                      const char* anim_id,
-                                      void* user);
+typedef void (*psx_svg_anim_event_cb)(psx_svg_anim_event_type type, const char* anim_id, void* user_data);
 
 // Create a player from an already-parsed SVG DOM root.
 // The player internally builds a render list once and reuses it each frame.
-psx_svg_player* psx_svg_player_create(const psx_svg_node* root,
-                                      const psx_svg_player_options* opt,
-                                      psx_result* err);
-
+psx_svg_player* psx_svg_player_create(const psx_svg_node* root, psx_result* err);
 void psx_svg_player_destroy(psx_svg_player* p);
+
+// Loop
+void psx_svg_player_set_loop(psx_svg_player* p, bool loop);
+bool psx_svg_player_get_loop(const psx_svg_player* p);
+
+// Dpi
+void psx_svg_player_set_dpi(psx_svg_player* p, int32_t dpi);
+int32_t psx_svg_player_get_dpi(const psx_svg_player* p);
 
 // Playback control
 void psx_svg_player_play(psx_svg_player* p);
@@ -85,10 +78,6 @@ void psx_svg_player_tick(psx_svg_player* p, float delta_seconds);
 float psx_svg_player_get_time(const psx_svg_player* p);
 float psx_svg_player_get_duration(const psx_svg_player* p); // -1 for indefinite/unknown
 psx_svg_player_state psx_svg_player_get_state(const psx_svg_player* p);
-
-// Loop
-void psx_svg_player_set_loop(psx_svg_player* p, bool loop);
-bool psx_svg_player_get_loop(const psx_svg_player* p);
 
 // Rendering
 // Draws current frame into the provided Picasso context.

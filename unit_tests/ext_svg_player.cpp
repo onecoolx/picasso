@@ -53,7 +53,6 @@ protected:
     // Helper: parse SVG data and create a player.
     // Caller must destroy both player and root (via destroy_player).
     static psx_svg_player* create_player(const char* svg,
-                                         const psx_svg_player_options* opt,
                                          psx_result* r,
                                          psx_svg_node** out_root)
     {
@@ -63,7 +62,7 @@ protected:
             if (out_root) { *out_root = NULL; }
             return NULL;
         }
-        psx_svg_player* p = psx_svg_player_create(root, opt, r);
+        psx_svg_player* p = psx_svg_player_create(root, r);
         if (!p) {
             psx_svg_node_destroy(root);
             if (out_root) { *out_root = NULL; }
@@ -87,12 +86,8 @@ TEST_F(SVGPlayerTest, CreateFromData)
                       "</svg>";
 
     psx_result r = S_OK;
-    psx_svg_player_options opt;
-    opt.loop = False;
-    opt.dpi = 96;
-
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, &opt, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     EXPECT_NE((psx_svg_player*)NULL, p);
     EXPECT_EQ(S_OK, r);
 
@@ -110,7 +105,7 @@ TEST_F(SVGPlayerTest, BasicPlayPauseSeekTick)
 
     psx_result r = S_OK;
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, NULL, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     ASSERT_NE((psx_svg_player*)NULL, p);
 
     psx_svg_player_play(p);
@@ -148,7 +143,7 @@ TEST_F(SVGPlayerTest, DurationFromAnimate)
 
     psx_result r = S_OK;
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, NULL, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     ASSERT_NE((psx_svg_player*)NULL, p);
     EXPECT_EQ(S_OK, r);
 
@@ -168,7 +163,7 @@ TEST_F(SVGPlayerTest, AnimateRectX_FromTo)
 
     psx_result r = S_OK;
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, NULL, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     ASSERT_NE((psx_svg_player*)NULL, p);
     EXPECT_EQ(S_OK, r);
 
@@ -226,7 +221,7 @@ TEST_F(SVGPlayerTest, SetRectX_To)
 
     psx_result r = S_OK;
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, NULL, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     ASSERT_NE((psx_svg_player*)NULL, p);
     EXPECT_EQ(S_OK, r);
 
@@ -276,7 +271,7 @@ TEST_F(SVGPlayerTest, SetRectWidth_To)
 
     psx_result r = S_OK;
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, NULL, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     ASSERT_NE((psx_svg_player*)NULL, p);
     EXPECT_EQ(S_OK, r);
 
@@ -319,7 +314,7 @@ TEST_F(SVGPlayerTest, AnimateRectOpacity_FromTo)
 
     psx_result r = S_OK;
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, NULL, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     ASSERT_NE((psx_svg_player*)NULL, p);
     EXPECT_EQ(S_OK, r);
 
@@ -348,7 +343,7 @@ TEST_F(SVGPlayerTest, SetRectRx_To)
 
     psx_result r = S_OK;
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, NULL, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     ASSERT_NE((psx_svg_player*)NULL, p);
     EXPECT_EQ(S_OK, r);
 
@@ -388,7 +383,7 @@ TEST_F(SVGPlayerTest, AnimateRectStrokeWidth_FromTo)
 
     psx_result r = S_OK;
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, NULL, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     ASSERT_NE((psx_svg_player*)NULL, p);
     EXPECT_EQ(S_OK, r);
 
@@ -418,7 +413,7 @@ TEST_F(SVGPlayerTest, AnimateRepeatCountFractional_Ceil)
 
     psx_result r = S_OK;
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, NULL, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     ASSERT_NE((psx_svg_player*)NULL, p);
     EXPECT_EQ(S_OK, r);
 
@@ -459,7 +454,7 @@ TEST_F(SVGPlayerTest, BeginList_EarliestBeginUsed)
 
     psx_result r = S_OK;
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, NULL, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     ASSERT_NE((psx_svg_player*)NULL, p);
     EXPECT_EQ(S_OK, r);
 
@@ -498,7 +493,7 @@ TEST_F(SVGPlayerTest, BeginList_MultiTrigger)
 
     psx_result r = S_OK;
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, NULL, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     ASSERT_NE((psx_svg_player*)NULL, p);
     EXPECT_EQ(S_OK, r);
 
@@ -543,7 +538,7 @@ TEST_F(SVGPlayerTest, BeginList_MoreThanFourEntries)
 
     psx_result r = S_OK;
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, NULL, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     ASSERT_NE((psx_svg_player*)NULL, p);
     EXPECT_EQ(S_OK, r);
 
@@ -573,7 +568,7 @@ TEST_F(SVGPlayerTest, BeginList_UnorderedAndDuplicate_Normalized)
 
     psx_result r = S_OK;
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, NULL, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     ASSERT_NE((psx_svg_player*)NULL, p);
     EXPECT_EQ(S_OK, r);
 
@@ -612,7 +607,7 @@ TEST_F(SVGPlayerTest, BeginList_SetElementLeakRepro)
 
     psx_result r = S_OK;
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, NULL, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     ASSERT_NE((psx_svg_player*)NULL, p);
     EXPECT_EQ(S_OK, r);
 
@@ -635,7 +630,7 @@ TEST_F(SVGPlayerTest, Set_BeginList_MultiTrigger)
 
     psx_result r = S_OK;
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, NULL, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     ASSERT_NE((psx_svg_player*)NULL, p);
     EXPECT_EQ(S_OK, r);
 
@@ -687,7 +682,7 @@ TEST_F(SVGPlayerTest, Set_BeginList_FreezeHoldsAfterEachActivation)
 
     psx_result r = S_OK;
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, NULL, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     ASSERT_NE((psx_svg_player*)NULL, p);
     EXPECT_EQ(S_OK, r);
 
@@ -734,7 +729,7 @@ TEST_F(SVGPlayerTest, Set_EndList_RemoveCutsOffEachBeginActivation)
 
     psx_result r = S_OK;
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, NULL, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     ASSERT_NE((psx_svg_player*)NULL, p);
     EXPECT_EQ(S_OK, r);
 
@@ -786,7 +781,7 @@ TEST_F(SVGPlayerTest, Set_EndList_FreezeHoldsAfterEndInstant)
 
     psx_result r = S_OK;
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, NULL, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     ASSERT_NE((psx_svg_player*)NULL, p);
     EXPECT_EQ(S_OK, r);
 
@@ -816,7 +811,7 @@ TEST_F(SVGPlayerTest, Set_BeginEvent_ExternalTriggerStarts)
 
     psx_result r = S_OK;
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, NULL, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     if (!p) {
         EXPECT_NE((psx_svg_player*)NULL, p);
         return;
@@ -875,7 +870,7 @@ TEST_F(SVGPlayerTest, BeginList_RepeatDur_OverridesRepeatCount)
 
     psx_result r = S_OK;
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, NULL, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     ASSERT_NE((psx_svg_player*)NULL, p);
     EXPECT_EQ(S_OK, r);
 
@@ -930,7 +925,7 @@ TEST_F(SVGPlayerTest, Set_BeginList_RepeatDur_RemoveCutsOff)
 
     psx_result r = S_OK;
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, NULL, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     ASSERT_NE((psx_svg_player*)NULL, p);
     EXPECT_EQ(S_OK, r);
 
@@ -982,7 +977,7 @@ TEST_F(SVGPlayerTest, Set_BeginList_RepeatDur_FreezeHolds)
 
     psx_result r = S_OK;
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, NULL, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     if (!p) {
         EXPECT_NE((psx_svg_player*)NULL, p);
         return;
@@ -1022,7 +1017,7 @@ TEST_F(SVGPlayerTest, AnimateRectFillOpacity_FromTo)
 
     psx_result r = S_OK;
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, NULL, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     ASSERT_NE((psx_svg_player*)NULL, p);
     EXPECT_EQ(S_OK, r);
 
@@ -1055,7 +1050,7 @@ TEST_F(SVGPlayerTest, AnimateGradientStopOpacity_FromTo)
 
     psx_result r = S_OK;
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, NULL, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     ASSERT_NE((psx_svg_player*)NULL, p);
     EXPECT_EQ(S_OK, r);
 
@@ -1087,7 +1082,7 @@ TEST_F(SVGPlayerTest, AnimateValues_KeyTimes_Linear)
 
     psx_result r = S_OK;
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, NULL, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     if (!p) {
         EXPECT_NE((psx_svg_player*)NULL, p);
         return;
@@ -1141,7 +1136,7 @@ TEST_F(SVGPlayerTest, AnimateValues_NoKeyTimes_LinearEvenSegments)
 
     psx_result r = S_OK;
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, NULL, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     if (!p) {
         EXPECT_NE((psx_svg_player*)NULL, p);
         return;
@@ -1195,7 +1190,7 @@ TEST_F(SVGPlayerTest, AnimateValues_CalcModeDiscrete)
 
     psx_result r = S_OK;
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, NULL, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     if (!p) {
         EXPECT_NE((psx_svg_player*)NULL, p);
         return;
@@ -1248,7 +1243,7 @@ TEST_F(SVGPlayerTest, AnimateValues_CalcModeSpline_LinearEquivalent)
 
     psx_result r = S_OK;
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, NULL, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     if (p == NULL || r != S_OK) {
         EXPECT_NE(p, (psx_svg_player*)NULL);
         EXPECT_EQ(r, S_OK);
@@ -1302,7 +1297,7 @@ TEST_F(SVGPlayerTest, AnimateValues_CalcModeSpline_NonlinearEases)
 
     psx_result r = S_OK;
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, NULL, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     if (p == NULL || r != S_OK) {
         EXPECT_NE(p, (psx_svg_player*)NULL);
         EXPECT_EQ(r, S_OK);
@@ -1347,7 +1342,7 @@ TEST_F(SVGPlayerTest, AnimateValues_CalcModePaced_UniformMatchesLinear)
 
     psx_result r = S_OK;
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, NULL, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     if (!p) {
         EXPECT_NE((psx_svg_player*)NULL, p);
         return;
@@ -1401,7 +1396,7 @@ TEST_F(SVGPlayerTest, AnimateValues_CalcModePaced_NonUniformAllocatesTime)
 
     psx_result r = S_OK;
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, NULL, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     if (!p) {
         EXPECT_NE((psx_svg_player*)NULL, p);
         return;
@@ -1443,7 +1438,7 @@ TEST_F(SVGPlayerTest, AnimateValues_CalcModePaced_AllEqualDegenerates)
 
     psx_result r = S_OK;
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, NULL, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     EXPECT_TRUE(p != NULL);
     if (!p) {
         return;
@@ -1477,7 +1472,7 @@ TEST_F(SVGPlayerTest, AnimateValues_CalcModePaced_NegativeDeltas)
 
     psx_result r = S_OK;
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, NULL, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     EXPECT_TRUE(p != NULL);
     if (!p) {
         return;
@@ -1512,7 +1507,7 @@ TEST_F(SVGPlayerTest, AnimateValues_CalcModePaced_KeyTimesTakesPrecedence)
 
     psx_result r = S_OK;
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, NULL, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     EXPECT_TRUE(p != NULL);
     if (!p) {
         return;
@@ -1548,7 +1543,7 @@ TEST_F(SVGPlayerTest, AnimateValues_CalcModePaced_Boundaries)
 
     psx_result r = S_OK;
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, NULL, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     EXPECT_TRUE(p != NULL);
     if (!p) {
         return;
@@ -1607,7 +1602,7 @@ TEST_F(SVGPlayerTest, AnimateColorFill_FromTo_Discrete)
 
     psx_result r = S_OK;
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, NULL, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     if (!p) {
         EXPECT_NE((psx_svg_player*)NULL, p);
         return;
@@ -1673,7 +1668,7 @@ TEST_F(SVGPlayerTest, AnimateTransform_Translate_Discrete)
 
     psx_result r = S_OK;
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, NULL, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     if (!p) {
         EXPECT_NE((psx_svg_player*)NULL, p);
         return;
@@ -1733,7 +1728,7 @@ TEST_F(SVGPlayerTest, AnimateTransform_Translate_Linear)
 
     psx_result r = S_OK;
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, NULL, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     if (!p) {
         EXPECT_NE((psx_svg_player*)NULL, p);
         return;
@@ -1796,7 +1791,7 @@ TEST_F(SVGPlayerTest, AnimateTransform_Translate_KeyTimes)
 
     psx_result r = S_OK;
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, NULL, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     if (!p) {
         EXPECT_NE((psx_svg_player*)NULL, p);
         return;
@@ -1854,7 +1849,7 @@ TEST_F(SVGPlayerTest, AnimateTransform_Translate_FromTo)
 
     psx_result r = S_OK;
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, NULL, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     if (!p) {
         EXPECT_NE((psx_svg_player*)NULL, p);
         return;
@@ -1912,7 +1907,7 @@ TEST_F(SVGPlayerTest, AnimateTransform_Translate_FreezeHoldsAfterDur)
 
     psx_result r = S_OK;
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, NULL, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     if (!p) {
         EXPECT_NE((psx_svg_player*)NULL, p);
         return;
@@ -1959,7 +1954,7 @@ TEST_F(SVGPlayerTest, AnimateTransform_Translate_RepeatCount)
 
     psx_result r = S_OK;
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, NULL, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     if (!p) {
         EXPECT_NE((psx_svg_player*)NULL, p);
         return;
@@ -2010,7 +2005,7 @@ TEST_F(SVGPlayerTest, AnimateTransform_Scale_Discrete)
 
     psx_result r = S_OK;
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, NULL, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     if (!p) {
         EXPECT_NE((psx_svg_player*)NULL, p);
         return;
@@ -2071,7 +2066,7 @@ TEST_F(SVGPlayerTest, AnimateTransform_Rotate_Discrete)
 
     psx_result r = S_OK;
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, NULL, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     if (!p) {
         EXPECT_NE((psx_svg_player*)NULL, p);
         return;
@@ -2130,7 +2125,7 @@ TEST_F(SVGPlayerTest, AnimateTransform_Rotate_Linear)
 
     psx_result r = S_OK;
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, NULL, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     if (!p) {
         EXPECT_NE((psx_svg_player*)NULL, p);
         return;
@@ -2176,7 +2171,7 @@ TEST_F(SVGPlayerTest, AnimateTransform_Rotate_Linear_WithCenter)
 
     psx_result r = S_OK;
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, NULL, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     if (!p) {
         EXPECT_NE((psx_svg_player*)NULL, p);
         return;
@@ -2223,7 +2218,7 @@ TEST_F(SVGPlayerTest, AnimateTransform_Scale_Linear)
 
     psx_result r = S_OK;
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, NULL, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     if (!p) {
         EXPECT_NE((psx_svg_player*)NULL, p);
         return;
@@ -2267,7 +2262,7 @@ TEST_F(SVGPlayerTest, AnimateTransform_SkewX_Linear_FromTo)
 
     psx_result r = S_OK;
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, NULL, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     if (!p) {
         EXPECT_NE((psx_svg_player*)NULL, p);
         return;
@@ -2312,7 +2307,7 @@ TEST_F(SVGPlayerTest, AnimateTransform_SkewX_Discrete_FromTo)
 
     psx_result r = S_OK;
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, NULL, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     if (!p) {
         EXPECT_NE((psx_svg_player*)NULL, p);
         return;
@@ -2374,7 +2369,7 @@ TEST_F(SVGPlayerTest, AnimateTransform_SkewX_Values_KeyTimes_Linear)
 
     psx_result r = S_OK;
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, NULL, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     if (!p) {
         EXPECT_NE((psx_svg_player*)NULL, p);
         return;
@@ -2434,7 +2429,7 @@ TEST_F(SVGPlayerTest, AnimateTransform_SkewY_Linear_FromTo)
 
     psx_result r = S_OK;
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, NULL, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     if (!p) {
         EXPECT_NE((psx_svg_player*)NULL, p);
         return;
@@ -2479,7 +2474,7 @@ TEST_F(SVGPlayerTest, AnimateTransform_SkewY_Discrete_FromTo)
 
     psx_result r = S_OK;
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, NULL, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     if (!p) {
         EXPECT_NE((psx_svg_player*)NULL, p);
         return;
@@ -2541,7 +2536,7 @@ TEST_F(SVGPlayerTest, AnimateTransform_SkewY_Values_KeyTimes_Linear)
 
     psx_result r = S_OK;
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, NULL, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     if (!p) {
         EXPECT_NE((psx_svg_player*)NULL, p);
         return;
@@ -2606,7 +2601,7 @@ TEST_F(SVGPlayerTest, AnimateTransform_Translate_TransformOverride_Exists)
 
     psx_result r = S_OK;
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, NULL, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     ASSERT_NE((psx_svg_player*)NULL, p);
     EXPECT_EQ(S_OK, r);
 
@@ -2654,7 +2649,7 @@ TEST_F(SVGPlayerTest, AnimateTransform_Remove_TransformOverride_Cleared)
 
     psx_result r = S_OK;
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, NULL, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     ASSERT_NE((psx_svg_player*)NULL, p);
     EXPECT_EQ(S_OK, r);
 
@@ -2699,7 +2694,7 @@ TEST_F(SVGPlayerTest, AnimateTransform_Matrix_Discrete_FromTo)
 
     psx_result r = S_OK;
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, NULL, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     ASSERT_NE((psx_svg_player*)NULL, p);
     EXPECT_EQ(S_OK, r);
 
@@ -2751,7 +2746,7 @@ TEST_F(SVGPlayerTest, AnimateTransform_Matrix_Linear_FromTo)
 
     psx_result r = S_OK;
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, NULL, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     ASSERT_NE((psx_svg_player*)NULL, p);
     EXPECT_EQ(S_OK, r);
 
@@ -2804,7 +2799,7 @@ TEST_F(SVGPlayerTest, AnimateTransform_Matrix_Values_KeyTimes_Linear)
 
     psx_result r = S_OK;
     psx_svg_node* root = NULL;
-    psx_svg_player* p = create_player(svg, NULL, &r, &root);
+    psx_svg_player* p = create_player(svg, &r, &root);
     ASSERT_NE((psx_svg_player*)NULL, p);
     EXPECT_EQ(S_OK, r);
 
