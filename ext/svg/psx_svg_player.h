@@ -38,17 +38,11 @@ extern "C" {
 
 typedef struct psx_svg_player psx_svg_player;
 
-// psx_result is defined in include/picasso_ext.h.
-
 // Player create options
 typedef struct {
-    // If true, player owns (and will destroy) the svg root node.
-    // Default: false.
-    ps_bool take_ownership_of_root;
-
     // If true, player will loop when reaching end time.
     // Default: false.
-    ps_bool loop;
+    bool loop;
 
     // Document dpi for unit conversion (px/in/cm/mm/pt/pc). Default: 96.
     int32_t dpi;
@@ -76,13 +70,7 @@ typedef void (*psx_svg_anim_event_cb)(psx_svg_anim_event_type type,
 // The player internally builds a render list once and reuses it each frame.
 psx_svg_player* psx_svg_player_create(const psx_svg_node* root,
                                       const psx_svg_player_options* opt,
-                                      psx_result* out);
-
-// Convenience: create player from svg xml data.
-psx_svg_player* psx_svg_player_create_from_data(const char* svg_data,
-                                                uint32_t len,
-                                                const psx_svg_player_options* opt,
-                                                psx_result* out);
+                                      psx_result* err);
 
 void psx_svg_player_destroy(psx_svg_player* p);
 
@@ -99,16 +87,12 @@ float psx_svg_player_get_duration(const psx_svg_player* p); // -1 for indefinite
 psx_svg_player_state psx_svg_player_get_state(const psx_svg_player* p);
 
 // Loop
-void psx_svg_player_set_loop(psx_svg_player* p, ps_bool loop);
-ps_bool psx_svg_player_get_loop(const psx_svg_player* p);
+void psx_svg_player_set_loop(psx_svg_player* p, bool loop);
+bool psx_svg_player_get_loop(const psx_svg_player* p);
 
 // Rendering
 // Draws current frame into the provided Picasso context.
 void psx_svg_player_draw(psx_svg_player* p, ps_context* ctx);
-
-// Optional: retrieve underlying render list for advanced users.
-// Note: still needs psx_svg_player_draw for animation.
-const psx_svg_render_list* psx_svg_player_get_render_list(const psx_svg_player* p);
 
 // Events (optional)
 void psx_svg_player_set_event_callback(psx_svg_player* p, psx_svg_anim_event_cb cb, void* user);
