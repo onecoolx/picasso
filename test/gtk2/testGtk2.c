@@ -110,7 +110,7 @@ int main(int argc, char* argv[])
 
     g_signal_connect (G_OBJECT(drawarea), "expose_event", G_CALLBACK (expose), NULL);
 
-    g_timeout_add(100, time_func, GTK_WIDGET(drawarea));
+    g_timeout_add(10, time_func, GTK_WIDGET(drawarea));
 
     gtk_container_add (GTK_CONTAINER (window), drawarea);
 

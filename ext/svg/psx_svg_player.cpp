@@ -45,15 +45,15 @@ static INLINE void _anim_state_reset(psx_svg_anim_state* s)
 static INLINE bool _is_supported_anim_attr(psx_svg_attr_type a)
 {
     return a == SVG_ATTR_X || a == SVG_ATTR_Y
-        || a == SVG_ATTR_WIDTH || a == SVG_ATTR_HEIGHT
-        || a == SVG_ATTR_OPACITY
-        || a == SVG_ATTR_RX || a == SVG_ATTR_RY
-        || a == SVG_ATTR_CX || a == SVG_ATTR_CY || a == SVG_ATTR_R
-        || a == SVG_ATTR_STROKE_WIDTH
-        || a == SVG_ATTR_FILL_OPACITY
-        || a == SVG_ATTR_GRADIENT_STOP_OPACITY
-        || a == SVG_ATTR_FILL
-        || a == SVG_ATTR_TRANSFORM;
+           || a == SVG_ATTR_WIDTH || a == SVG_ATTR_HEIGHT
+           || a == SVG_ATTR_OPACITY
+           || a == SVG_ATTR_RX || a == SVG_ATTR_RY
+           || a == SVG_ATTR_CX || a == SVG_ATTR_CY || a == SVG_ATTR_R
+           || a == SVG_ATTR_STROKE_WIDTH
+           || a == SVG_ATTR_FILL_OPACITY
+           || a == SVG_ATTR_GRADIENT_STOP_OPACITY
+           || a == SVG_ATTR_FILL
+           || a == SVG_ATTR_TRANSFORM;
 }
 
 static INLINE void _anim_state_set_transform(psx_svg_anim_state* s, const psx_svg_node* target,
