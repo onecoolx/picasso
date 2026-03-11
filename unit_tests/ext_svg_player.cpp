@@ -27,15 +27,7 @@
 #include "test.h"
 
 #include "psx_svg_player.h"
-
-extern "C" bool psx_svg_player_debug_get_float_override(const psx_svg_player* p,
-                                                        const psx_svg_node* target,
-                                                        psx_svg_attr_type attr,
-                                                        float* out_v);
-
-extern "C" bool psx_svg_player_debug_get_transform_override(const psx_svg_player* p,
-                                                            const psx_svg_node* target,
-                                                            float* a, float* b, float* c, float* d, float* e, float* f);
+#include "psx_svg_anim_state.h"
 
 class SVGPlayerTest : public ::testing::Test
 {
@@ -78,6 +70,48 @@ protected:
         if (root) { psx_svg_node_destroy(root); }
     }
 };
+
+static inline bool psx_svg_player_debug_get_float_override(const psx_svg_player* p,
+                                                           const psx_svg_node* target,
+                                                           psx_svg_attr_type attr,
+                                                           float* out_v)
+{
+    return psx_svg_anim_get_float(&p->anim_state, target, attr, out_v);
+}
+
+static bool psx_svg_player_debug_get_transform_override(const psx_svg_player* p,
+                                                        const psx_svg_node* target,
+                                                        float* a, float* b, float* c, float* d, float* e, float* f)
+{
+    if (!p || !target) {
+        if (a) { *a = 1.0f; }
+        if (b) { *b = 0.0f; }
+        if (c) { *c = 0.0f; }
+        if (d) { *d = 1.0f; }
+        if (e) { *e = 0.0f; }
+        if (f) { *f = 0.0f; }
+        return false;
+    }
+
+    const psx_svg_anim_transform_item* it = psx_svg_anim_state_find_transform(&p->anim_state, target);
+    if (!it) {
+        if (a) { *a = 1.0f; }
+        if (b) { *b = 0.0f; }
+        if (c) { *c = 0.0f; }
+        if (d) { *d = 1.0f; }
+        if (e) { *e = 0.0f; }
+        if (f) { *f = 0.0f; }
+        return false;
+    }
+
+    if (a) { *a = it->a; }
+    if (b) { *b = it->b; }
+    if (c) { *c = it->c; }
+    if (d) { *d = it->d; }
+    if (e) { *e = it->e; }
+    if (f) { *f = it->f; }
+    return true;
+}
 
 TEST_F(SVGPlayerTest, CreateFromData)
 {

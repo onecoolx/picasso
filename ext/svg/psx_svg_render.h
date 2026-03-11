@@ -30,8 +30,6 @@
 #include "psx_common.h"
 #include "psx_svg_node.h"
 
-struct psx_svg_anim_state;
-
 class psx_svg_render_obj
 {
 public:
@@ -52,6 +50,8 @@ public:
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+typedef struct psx_svg_anim_state psx_svg_anim_state;
 
 psx_svg_render_list* psx_svg_render_list_create(const psx_svg_node* doc);
 

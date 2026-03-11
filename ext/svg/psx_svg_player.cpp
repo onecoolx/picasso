@@ -33,70 +33,6 @@
 #include <string.h>
 #include <math.h>
 
-// Opaque animation override state passed to renderer.
-struct psx_svg_anim_state {
-    psx_array overrides;
-    psx_array transforms;
-    ps_matrix* scratch_matrix; // reused each frame; owned by this struct
-};
-
-struct psx_svg_player {
-    const psx_svg_node* root;
-    psx_svg_render_list* render_list;
-
-    psx_svg_anim_state anim_state;
-
-    psx_svg_player_state state;
-    bool loop;
-
-    float time_sec;
-    float duration_sec; // -1 for indefinite/unknown
-
-    int32_t dpi;
-
-    psx_svg_anim_event_cb cb;
-    void* cb_user;
-    psx_array anims;
-};
-
-typedef struct {
-    psx_svg_tag tag;
-    const psx_svg_node* anim_node;
-    const psx_svg_node* target_node;
-    psx_svg_attr_type target_attr;
-    float begin_sec; // kept for duration hint compatibility
-    float dur_sec;
-    float end_sec; // optional explicit end, 0 => unspecified
-    uint32_t repeat_count; // 0 => indefinite
-    float repeat_dur_sec; // optional explicit repeat duration, 0 => unspecified
-    uint32_t fill_mode; // SVG_ANIMATION_*
-
-    // Minimal Tiny 1.2 external event trigger support.
-    // If begin is specified as a non-numeric token (e.g. begin="click"), we
-    // store the trigger name and allow external callers to start the animation
-    // via psx_svg_player_trigger(). Owned by the player.
-    const char* begin_event;
-
-    // Begin list support: store begin times (sec) and choose the latest begin <= doc_t.
-    psx_array begins_sec;
-
-    // End list support: store end times (sec) and choose the earliest end >= begin (per trigger).
-    psx_array ends_sec;
-} psx_svg_anim_item;
-
-typedef struct {
-    const psx_svg_node* target;
-    psx_svg_attr_type attr;
-    float fval;
-} psx_svg_anim_override_item;
-
-typedef struct {
-    const psx_svg_node* target;
-    float a, b;
-    float c, d;
-    float e, f;
-} psx_svg_anim_transform_item;
-
 static INLINE void _anim_state_reset(psx_svg_anim_state* s)
 {
     if (!s) {
@@ -311,8 +247,7 @@ static INLINE float _anim_fmod(float x, float y)
     if (y <= 0.0f) {
         return 0.0f;
     }
-    // fmodf may not be available in all C++98 libm combinations.
-    return (float)fmod((double)x, (double)y);
+    return fmodf(x, y);
 }
 
 static INLINE float _u32_to_f32_bits(uint32_t u)
@@ -1939,42 +1874,6 @@ static INLINE bool _anim_eval_set(const psx_svg_anim_item* it, float doc_t, floa
     return true;
 }
 
-extern "C" {
-
-    bool psx_svg_anim_get_float(const psx_svg_anim_state* s,
-                                const psx_svg_node* target,
-                                psx_svg_attr_type attr,
-                                float* out_v)
-    {
-        if (!out_v) {
-            return false;
-        }
-        *out_v = 0.0f;
-        const psx_svg_anim_override_item* it = _anim_state_find(s, target, attr);
-        if (!it) {
-            return false;
-        }
-        *out_v = it->fval;
-        return true;
-    }
-
-    // Returns a pointer to the internal scratch ps_matrix if a transform override
-    // exists for target, NULL otherwise. The caller must NOT unref the returned pointer.
-    const ps_matrix* psx_svg_anim_get_transform(const psx_svg_anim_state* s,
-                                                const psx_svg_node* target)
-    {
-        const psx_svg_anim_transform_item* it = _anim_state_find_transform(s, target);
-        if (!it) {
-            return NULL;
-        }
-        // Reuse the scratch matrix: init in-place with the stored SVG matrix components.
-        // ps_matrix_init(sx, shy, shx, sy, tx, ty) maps to SVG matrix(a,b,c,d,e,f).
-        ps_matrix_init(s->scratch_matrix, it->a, it->b, it->c, it->d, it->e, it->f);
-        return s->scratch_matrix;
-    }
-
-} // extern "C"
-
 static const psx_svg_node* _find_child_mpath(const psx_svg_node* n)
 {
     if (!n) {
@@ -2121,6 +2020,43 @@ static void _collect_anims(psx_svg_player* p, const psx_svg_node* node)
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+bool psx_svg_anim_get_float(const psx_svg_anim_state* s,
+                            const psx_svg_node* target,
+                            psx_svg_attr_type attr,
+                            float* out_v)
+{
+    if (!out_v) {
+        return false;
+    }
+    *out_v = 0.0f;
+    const psx_svg_anim_override_item* it = _anim_state_find(s, target, attr);
+    if (!it) {
+        return false;
+    }
+    *out_v = it->fval;
+    return true;
+}
+
+// Returns a pointer to the internal scratch ps_matrix if a transform override
+// exists for target, NULL otherwise. The caller must NOT unref the returned pointer.
+const ps_matrix* psx_svg_anim_get_transform(const psx_svg_anim_state* s,
+                                            const psx_svg_node* target)
+{
+    const psx_svg_anim_transform_item* it = _anim_state_find_transform(s, target);
+    if (!it) {
+        return NULL;
+    }
+    // Reuse the scratch matrix: init in-place with the stored SVG matrix components.
+    // ps_matrix_init(sx, shy, shx, sy, tx, ty) maps to SVG matrix(a,b,c,d,e,f).
+    ps_matrix_init(s->scratch_matrix, it->a, it->b, it->c, it->d, it->e, it->f);
+    return s->scratch_matrix;
+}
+
+const psx_svg_anim_transform_item* psx_svg_anim_state_find_transform(const psx_svg_anim_state* s, const psx_svg_node* target)
+{
+    return _anim_state_find_transform(s, target);
+}
 
 psx_svg_player* psx_svg_player_create(const psx_svg_node* root, psx_result* out)
 {
@@ -2544,54 +2480,6 @@ const psx_svg_node* psx_svg_player_get_node_by_id(const psx_svg_player* p, const
     }
 
     return NULL;
-}
-
-bool psx_svg_player_debug_get_float_override(const psx_svg_player* p,
-                                             const psx_svg_node* target,
-                                             psx_svg_attr_type attr,
-                                             float* out_v)
-{
-    if (!p) {
-        return false;
-    }
-    if (psx_svg_anim_get_float(&p->anim_state, target, attr, out_v)) {
-        return true;
-    }
-    return false;
-}
-
-bool psx_svg_player_debug_get_transform_override(const psx_svg_player* p,
-                                                 const psx_svg_node* target,
-                                                 float* a, float* b, float* c, float* d, float* e, float* f)
-{
-    if (!p || !target) {
-        if (a) { *a = 1.0f; }
-        if (b) { *b = 0.0f; }
-        if (c) { *c = 0.0f; }
-        if (d) { *d = 1.0f; }
-        if (e) { *e = 0.0f; }
-        if (f) { *f = 0.0f; }
-        return false;
-    }
-
-    const psx_svg_anim_transform_item* it = _anim_state_find_transform(&p->anim_state, target);
-    if (!it) {
-        if (a) { *a = 1.0f; }
-        if (b) { *b = 0.0f; }
-        if (c) { *c = 0.0f; }
-        if (d) { *d = 1.0f; }
-        if (e) { *e = 0.0f; }
-        if (f) { *f = 0.0f; }
-        return false;
-    }
-
-    if (a) { *a = it->a; }
-    if (b) { *b = it->b; }
-    if (c) { *c = it->c; }
-    if (d) { *d = it->d; }
-    if (e) { *e = it->e; }
-    if (f) { *f = it->f; }
-    return true;
 }
 
 #ifdef __cplusplus
