@@ -2450,36 +2450,34 @@ void psx_svg_player_trigger(psx_svg_player* p, const char* target_id, const char
     }
 }
 
+struct _find_by_id_ctx {
+    const char* id;
+    const psx_svg_node* result;
+};
+
+static bool _find_by_id_cb(const psx_tree_node* node, void* ctx)
+{
+    _find_by_id_ctx* c = (_find_by_id_ctx*)ctx;
+    const psx_svg_node* sn = (const psx_svg_node*)node;
+    const char* cid = sn->content(NULL);
+    if (cid && strcmp(cid, c->id) == 0) {
+        c->result = sn;
+        return false;
+    }
+    return true;
+}
+
 const psx_svg_node* psx_svg_player_get_node_by_id(const psx_svg_player* p, const char* id)
 {
     if (!p || !p->root || !id) {
         return NULL;
     }
 
-    // FIXME: change to tree travls
-
-    // Parser stores element id into node->content(). We do a simple DFS.
-    const psx_svg_node* stack[64];
-    uint32_t sp = 0;
-    stack[sp++] = p->root;
-
-    while (sp) {
-        const psx_svg_node* n = stack[--sp];
-        const char* cid = n->content(NULL);
-        if (cid && strcmp(cid, id) == 0) {
-            return n;
-        }
-
-        uint32_t child_count = n->child_count();
-        for (uint32_t i = 0; i < child_count; i++) {
-            psx_svg_node* c = n->get_child(i);
-            if (c && sp < (sizeof(stack) / sizeof(stack[0]))) {
-                stack[sp++] = c;
-            }
-        }
-    }
-
-    return NULL;
+    _find_by_id_ctx ctx;
+    ctx.id = id;
+    ctx.result = NULL;
+    psx_tree_traversal<PSX_TREE_WALK_PRE_ORDER>(p->root, &ctx, _find_by_id_cb);
+    return ctx.result;
 }
 
 #ifdef __cplusplus
