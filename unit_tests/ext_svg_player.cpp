@@ -28,12 +28,12 @@
 
 #include "psx_svg_player.h"
 
-extern "C" ps_bool psx_svg_player_debug_get_float_override(const psx_svg_player* p,
+extern "C" bool psx_svg_player_debug_get_float_override(const psx_svg_player* p,
                                                            const psx_svg_node* target,
                                                            psx_svg_attr_type attr,
                                                            float* out_v);
 
-extern "C" ps_bool psx_svg_player_debug_get_transform_override(const psx_svg_player* p,
+extern "C" bool psx_svg_player_debug_get_transform_override(const psx_svg_player* p,
                                                                const psx_svg_node* target,
                                                                float* a, float* b, float* c, float* d, float* e, float* f);
 
