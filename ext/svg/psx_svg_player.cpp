@@ -42,6 +42,20 @@ static INLINE void _anim_state_reset(psx_svg_anim_state* s)
     psx_array_clear(&s->transforms);
 }
 
+static INLINE bool _is_supported_anim_attr(psx_svg_attr_type a)
+{
+    return a == SVG_ATTR_X || a == SVG_ATTR_Y
+        || a == SVG_ATTR_WIDTH || a == SVG_ATTR_HEIGHT
+        || a == SVG_ATTR_OPACITY
+        || a == SVG_ATTR_RX || a == SVG_ATTR_RY
+        || a == SVG_ATTR_CX || a == SVG_ATTR_CY || a == SVG_ATTR_R
+        || a == SVG_ATTR_STROKE_WIDTH
+        || a == SVG_ATTR_FILL_OPACITY
+        || a == SVG_ATTR_GRADIENT_STOP_OPACITY
+        || a == SVG_ATTR_FILL
+        || a == SVG_ATTR_TRANSFORM;
+}
+
 static INLINE void _anim_state_set_transform(psx_svg_anim_state* s, const psx_svg_node* target,
                                              float a, float b, float c, float d, float e, float f)
 {
@@ -2223,7 +2237,7 @@ void psx_svg_player_seek(psx_svg_player* p, float seconds)
         if (!(it->tag == SVG_TAG_ANIMATE || it->tag == SVG_TAG_SET || it->tag == SVG_TAG_ANIMATE_COLOR || it->tag == SVG_TAG_ANIMATE_TRANSFORM)) {
             continue;
         }
-        if (!(it->target_attr == SVG_ATTR_X || it->target_attr == SVG_ATTR_Y || it->target_attr == SVG_ATTR_WIDTH || it->target_attr == SVG_ATTR_HEIGHT || it->target_attr == SVG_ATTR_OPACITY || it->target_attr == SVG_ATTR_RX || it->target_attr == SVG_ATTR_RY || it->target_attr == SVG_ATTR_STROKE_WIDTH || it->target_attr == SVG_ATTR_FILL_OPACITY || it->target_attr == SVG_ATTR_GRADIENT_STOP_OPACITY || it->target_attr == SVG_ATTR_FILL || it->target_attr == SVG_ATTR_TRANSFORM)) {
+        if (!_is_supported_anim_attr(it->target_attr)) {
             continue;
         }
 
@@ -2287,7 +2301,7 @@ void psx_svg_player_tick(psx_svg_player* p, float delta_seconds)
         if (!(it->tag == SVG_TAG_ANIMATE || it->tag == SVG_TAG_SET || it->tag == SVG_TAG_ANIMATE_COLOR || it->tag == SVG_TAG_ANIMATE_TRANSFORM)) {
             continue;
         }
-        if (!(it->target_attr == SVG_ATTR_X || it->target_attr == SVG_ATTR_Y || it->target_attr == SVG_ATTR_WIDTH || it->target_attr == SVG_ATTR_HEIGHT || it->target_attr == SVG_ATTR_OPACITY || it->target_attr == SVG_ATTR_RX || it->target_attr == SVG_ATTR_RY || it->target_attr == SVG_ATTR_STROKE_WIDTH || it->target_attr == SVG_ATTR_FILL_OPACITY || it->target_attr == SVG_ATTR_GRADIENT_STOP_OPACITY || it->target_attr == SVG_ATTR_FILL || it->target_attr == SVG_ATTR_TRANSFORM)) {
+        if (!_is_supported_anim_attr(it->target_attr)) {
             continue;
         }
 
@@ -2424,7 +2438,7 @@ void psx_svg_player_trigger(psx_svg_player* p, const char* target_id, const char
         if (!(it->tag == SVG_TAG_ANIMATE || it->tag == SVG_TAG_SET || it->tag == SVG_TAG_ANIMATE_COLOR || it->tag == SVG_TAG_ANIMATE_TRANSFORM)) {
             continue;
         }
-        if (!(it->target_attr == SVG_ATTR_X || it->target_attr == SVG_ATTR_Y || it->target_attr == SVG_ATTR_WIDTH || it->target_attr == SVG_ATTR_HEIGHT || it->target_attr == SVG_ATTR_OPACITY || it->target_attr == SVG_ATTR_RX || it->target_attr == SVG_ATTR_RY || it->target_attr == SVG_ATTR_STROKE_WIDTH || it->target_attr == SVG_ATTR_FILL_OPACITY || it->target_attr == SVG_ATTR_GRADIENT_STOP_OPACITY || it->target_attr == SVG_ATTR_FILL || it->target_attr == SVG_ATTR_TRANSFORM)) {
+        if (!_is_supported_anim_attr(it->target_attr)) {
             continue;
         }
 

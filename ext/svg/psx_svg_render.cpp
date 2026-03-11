@@ -932,6 +932,23 @@ public:
         rc->h = rc->w;
     }
 
+    void set_anim_state(const psx_svg_anim_state* anim_state)
+    {
+        if (!anim_state) {
+            return;
+        }
+        float v = 0.0f;
+        if (psx_svg_anim_get_float(anim_state, m_node, SVG_ATTR_CX, &v)) {
+            m_cx = v;
+        }
+        if (psx_svg_anim_get_float(anim_state, m_node, SVG_ATTR_CY, &v)) {
+            m_cy = v;
+        }
+        if (psx_svg_anim_get_float(anim_state, m_node, SVG_ATTR_R, &v)) {
+            m_r = v;
+        }
+    }
+
 private:
     float m_cx;
     float m_cy;
@@ -989,6 +1006,26 @@ public:
         rc->y = m_cy - m_ry;
         rc->w = m_rx + m_rx;
         rc->h = m_ry + m_ry;
+    }
+
+    void set_anim_state(const psx_svg_anim_state* anim_state)
+    {
+        if (!anim_state) {
+            return;
+        }
+        float v = 0.0f;
+        if (psx_svg_anim_get_float(anim_state, m_node, SVG_ATTR_CX, &v)) {
+            m_cx = v;
+        }
+        if (psx_svg_anim_get_float(anim_state, m_node, SVG_ATTR_CY, &v)) {
+            m_cy = v;
+        }
+        if (psx_svg_anim_get_float(anim_state, m_node, SVG_ATTR_RX, &v)) {
+            m_rx = v;
+        }
+        if (psx_svg_anim_get_float(anim_state, m_node, SVG_ATTR_RY, &v)) {
+            m_ry = v;
+        }
     }
 
 private:

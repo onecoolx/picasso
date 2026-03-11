@@ -2868,3 +2868,115 @@ TEST_F(SVGPlayerTest, AnimateTransform_Matrix_Values_KeyTimes_Linear)
 
     destroy_player(p, root);
 }
+
+TEST_F(SVGPlayerTest, AnimateCircleCx_FromTo)
+{
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"300\" height=\"100\">"
+        "  <circle id=\"r\" cx=\"0\" cy=\"50\" r=\"15\" fill=\"blue\">"
+        "    <animate attributeName=\"cx\" from=\"0\" to=\"300\" dur=\"5s\" fill=\"freeze\"/>"
+        "  </circle>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_NE((psx_svg_player*)NULL, p);
+    EXPECT_EQ(S_OK, r);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    ASSERT_TRUE(n != NULL);
+
+    psx_svg_player_play(p);
+
+    // t=0: cx should be 0
+    psx_svg_player_seek(p, 0.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float v = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_CX, &v));
+        EXPECT_NEAR(0.0f, v, 0.001f);
+    }
+
+    // t=2.5s midpoint: cx should be 150
+    psx_svg_player_seek(p, 2.5f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float v = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_CX, &v));
+        EXPECT_NEAR(150.0f, v, 0.1f);
+    }
+
+    // t=5s end: cx should be 300 (freeze)
+    psx_svg_player_seek(p, 5.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float v = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_CX, &v));
+        EXPECT_NEAR(300.0f, v, 0.001f);
+    }
+
+    destroy_player(p, root);
+}
+
+TEST_F(SVGPlayerTest, AnimateCircleCy_FromTo)
+{
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"300\">"
+        "  <circle id=\"r\" cx=\"50\" cy=\"0\" r=\"10\" fill=\"red\">"
+        "    <animate attributeName=\"cy\" from=\"0\" to=\"200\" dur=\"4s\" fill=\"freeze\"/>"
+        "  </circle>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_NE((psx_svg_player*)NULL, p);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    ASSERT_TRUE(n != NULL);
+
+    psx_svg_player_play(p);
+
+    // t=2s midpoint: cy should be 100
+    psx_svg_player_seek(p, 2.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float v = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_CY, &v));
+        EXPECT_NEAR(100.0f, v, 0.1f);
+    }
+
+    destroy_player(p, root);
+}
+
+TEST_F(SVGPlayerTest, AnimateCircleR_FromTo)
+{
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"200\" height=\"200\">"
+        "  <circle id=\"r\" cx=\"100\" cy=\"100\" r=\"10\" fill=\"green\">"
+        "    <animate attributeName=\"r\" from=\"10\" to=\"50\" dur=\"2s\" fill=\"freeze\"/>"
+        "  </circle>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_NE((psx_svg_player*)NULL, p);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    ASSERT_TRUE(n != NULL);
+
+    psx_svg_player_play(p);
+
+    // t=1s midpoint: r should be 30
+    psx_svg_player_seek(p, 1.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float v = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_R, &v));
+        EXPECT_NEAR(30.0f, v, 0.1f);
+    }
+
+    destroy_player(p, root);
+}
