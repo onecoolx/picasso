@@ -94,7 +94,6 @@ void psx_svg_player_trigger(psx_svg_player* p, const char* target_id, const char
 // Returns node by element id, or NULL if not found.
 const psx_svg_node* psx_svg_player_get_node_by_id(const psx_svg_player* p, const char* id);
 
-
 #ifdef __cplusplus
 }
 #endif

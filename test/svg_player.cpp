@@ -97,7 +97,7 @@ void init_context(ps_context* gc, ps_canvas* cs, unsigned char* buf)
     fprintf(stderr, "loading SVG: %s\n", full_path);
 
     {
-        psx_result err = S_OK;
+        psx_result err;
         svg_doc = psx_svg_load(full_path, &err);
         if (!svg_doc) {
             fprintf(stderr, "failed to load SVG file: %s (error=%d)\n", full_path, (int)err);
@@ -107,7 +107,7 @@ void init_context(ps_context* gc, ps_canvas* cs, unsigned char* buf)
 
     /* create player from the SVG DOM root */
     {
-        psx_result err = S_OK;
+        psx_result err;
         player = psx_svg_player_create((const psx_svg_node*)svg_doc, &err);
         if (!player) {
             fprintf(stderr, "failed to create SVG player (error=%d)\n", (int)err);

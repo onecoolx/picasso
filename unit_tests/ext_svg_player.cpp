@@ -130,8 +130,10 @@ struct test_path_points {
 static void test_path_destroy(test_path_points* pts)
 {
     if (!pts) { return; }
-    free(pts->xs); pts->xs = NULL;
-    free(pts->ys); pts->ys = NULL;
+    free(pts->xs);
+    pts->xs = NULL;
+    free(pts->ys);
+    pts->ys = NULL;
     pts->count = 0;
     pts->cap = 0;
 }
@@ -215,7 +217,10 @@ static bool test_path_parse(const char* path_str, uint32_t len,
                             float** out_xs, float** out_ys, uint32_t* out_count)
 {
     test_path_points pts;
-    pts.xs = NULL; pts.ys = NULL; pts.count = 0; pts.cap = 0;
+    pts.xs = NULL;
+    pts.ys = NULL;
+    pts.count = 0;
+    pts.cap = 0;
     if (!path_str || len == 0) { *out_xs = NULL; *out_ys = NULL; *out_count = 0; return false; }
 
     float cur_x = 0, cur_y = 0, start_x = 0, start_y = 0;
@@ -229,16 +234,21 @@ static bool test_path_parse(const char* path_str, uint32_t len,
 
         if (ch == 'M' || ch == 'm' || ch == 'L' || ch == 'l'
             || ch == 'H' || ch == 'h' || ch == 'V' || ch == 'v') {
-            cmd = ch; pos++;
+            cmd = ch;
+            pos++;
         } else if (ch == 'Z' || ch == 'z') {
             pos++;
             if (cur_x != start_x || cur_y != start_y) {
                 if (!test_path_push(&pts, start_x, start_y)) { test_path_destroy(&pts); *out_xs = NULL; *out_ys = NULL; *out_count = 0; return false; }
-                cur_x = start_x; cur_y = start_y;
+                cur_x = start_x;
+                cur_y = start_y;
             }
-            cmd = 0; continue;
+            cmd = 0;
+            continue;
         } else if ((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z')) {
-            cmd = 0; pos++; continue;
+            cmd = 0;
+            pos++;
+            continue;
         }
 
         if (cmd == 0) {
@@ -257,7 +267,8 @@ static bool test_path_parse(const char* path_str, uint32_t len,
             pos = np;
             if (cmd == 'h') { x += cur_x; }
             if (!test_path_push(&pts, x, cur_y)) { test_path_destroy(&pts); *out_xs = NULL; *out_ys = NULL; *out_count = 0; return false; }
-            cur_x = x; continue;
+            cur_x = x;
+            continue;
         }
 
         if (cmd == 'V' || cmd == 'v') {
@@ -268,7 +279,8 @@ static bool test_path_parse(const char* path_str, uint32_t len,
             pos = np;
             if (cmd == 'v') { y += cur_y; }
             if (!test_path_push(&pts, cur_x, y)) { test_path_destroy(&pts); *out_xs = NULL; *out_ys = NULL; *out_count = 0; return false; }
-            cur_y = y; continue;
+            cur_y = y;
+            continue;
         }
 
         pos = test_path_skip_ws(path_str, pos, len);
@@ -283,17 +295,23 @@ static bool test_path_parse(const char* path_str, uint32_t len,
 
         if (cmd == 'm' || cmd == 'l') { x += cur_x; y += cur_y; }
         if (!test_path_push(&pts, x, y)) { test_path_destroy(&pts); *out_xs = NULL; *out_ys = NULL; *out_count = 0; return false; }
-        cur_x = x; cur_y = y;
+        cur_x = x;
+        cur_y = y;
         if (cmd == 'M' || cmd == 'm') { start_x = cur_x; start_y = cur_y; }
-        if (cmd == 'M') { cmd = 'L'; } else if (cmd == 'm') { cmd = 'l'; }
+        if (cmd == 'M') { cmd = 'L'; }
+        else if (cmd == 'm') { cmd = 'l'; }
     }
 
     if (pts.count > 0) {
-        *out_xs = pts.xs; *out_ys = pts.ys; *out_count = pts.count;
+        *out_xs = pts.xs;
+        *out_ys = pts.ys;
+        *out_count = pts.count;
         return true;
     }
     test_path_destroy(&pts);
-    *out_xs = NULL; *out_ys = NULL; *out_count = 0;
+    *out_xs = NULL;
+    *out_ys = NULL;
+    *out_count = 0;
     return false;
 }
 
@@ -320,7 +338,8 @@ static bool test_arc_length_position(const float* xs, const float* ys, uint32_t 
     uint32_t lo = 0, hi = count - 1;
     while (lo + 1 < hi) {
         uint32_t mid = (lo + hi) / 2;
-        if (cum[mid] <= target) { lo = mid; } else { hi = mid; }
+        if (cum[mid] <= target) { lo = mid; }
+        else { hi = mid; }
     }
     float seg_len = cum[hi] - cum[lo];
     float frac = (seg_len > 0) ? (target - cum[lo]) / seg_len : 0;
@@ -3428,7 +3447,7 @@ TEST_F(SVGPlayerTest, AnimateMotion_Path_HVZ_Commands)
 {
     // Path: M 0 0 H 100 V 50 Z
     // Segments: (0,0)->(100,0) H len=100, (100,0)->(100,50) V len=50,
-    //           (100,50)->(0,0) Z len=sqrt(100^2+50^2)=~111.803
+    // (100,50)->(0,0) Z len=sqrt(100^2+50^2)=~111.803
     // Total arc length ~261.803
     // dur=3s, fill=freeze
     // t=0s   => normalized 0.0 => pos (0,0)
@@ -3477,8 +3496,8 @@ TEST_F(SVGPlayerTest, AnimateMotion_Path_HVZ_Commands)
         EXPECT_NEAR(0.0f, c, 0.001f);
         EXPECT_NEAR(1.0f, d, 0.001f);
         // x should be ~87.27 (within first segment), y should be 0
-        EXPECT_GT(e, 50.0f);   // well into the first segment
-        EXPECT_LT(e, 100.0f);  // but not past it
+        EXPECT_GT(e, 50.0f); // well into the first segment
+        EXPECT_LT(e, 100.0f); // but not past it
         EXPECT_NEAR(0.0f, f, 0.5f);
     }
 
@@ -3492,8 +3511,8 @@ TEST_F(SVGPlayerTest, AnimateMotion_Path_HVZ_Commands)
         EXPECT_NEAR(0.0f, b, 0.001f);
         EXPECT_NEAR(0.0f, c, 0.001f);
         EXPECT_NEAR(1.0f, d, 0.001f);
-        EXPECT_NEAR(0.0f, e, 0.1f);  // back to origin x
-        EXPECT_NEAR(0.0f, f, 0.1f);  // back to origin y
+        EXPECT_NEAR(0.0f, e, 0.1f); // back to origin x
+        EXPECT_NEAR(0.0f, f, 0.1f); // back to origin y
     }
 
     destroy_player(p, root);
@@ -3537,8 +3556,8 @@ TEST_F(SVGPlayerTest, AnimateMotion_ArcLength_Boundaries)
         EXPECT_NEAR(0.0f, b, 0.001f);
         EXPECT_NEAR(0.0f, c, 0.001f);
         EXPECT_NEAR(1.0f, d, 0.001f);
-        EXPECT_NEAR(0.0f, e, 0.05f);   // x = 0
-        EXPECT_NEAR(0.0f, f, 0.05f);   // y = 0
+        EXPECT_NEAR(0.0f, e, 0.05f); // x = 0
+        EXPECT_NEAR(0.0f, f, 0.05f); // y = 0
     }
 
     // t=7s: normalized 1.0 => last point (300, 400)
@@ -3551,8 +3570,8 @@ TEST_F(SVGPlayerTest, AnimateMotion_ArcLength_Boundaries)
         EXPECT_NEAR(0.0f, b, 0.001f);
         EXPECT_NEAR(0.0f, c, 0.001f);
         EXPECT_NEAR(1.0f, d, 0.001f);
-        EXPECT_NEAR(300.0f, e, 0.1f);  // x = 300
-        EXPECT_NEAR(400.0f, f, 0.1f);  // y = 400
+        EXPECT_NEAR(300.0f, e, 0.1f); // x = 300
+        EXPECT_NEAR(400.0f, f, 0.1f); // y = 400
     }
 
     // t=3.5s: normalized 0.5 => distance 350 along path
@@ -3567,8 +3586,8 @@ TEST_F(SVGPlayerTest, AnimateMotion_ArcLength_Boundaries)
         EXPECT_NEAR(0.0f, b, 0.001f);
         EXPECT_NEAR(0.0f, c, 0.001f);
         EXPECT_NEAR(1.0f, d, 0.001f);
-        EXPECT_NEAR(300.0f, e, 0.1f);  // x = 300
-        EXPECT_NEAR(50.0f, f, 0.1f);   // y = 50
+        EXPECT_NEAR(300.0f, e, 0.1f); // x = 300
+        EXPECT_NEAR(50.0f, f, 0.1f); // y = 50
     }
 
     destroy_player(p, root);
@@ -3606,12 +3625,12 @@ TEST_F(SVGPlayerTest, AnimateMotion_Path_Linear_TranslateOverride)
     {
         float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
         EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
-        EXPECT_NEAR(1.0f, a, 0.001f);   // identity
-        EXPECT_NEAR(0.0f, b, 0.001f);   // identity
-        EXPECT_NEAR(0.0f, c, 0.001f);   // identity
-        EXPECT_NEAR(1.0f, d, 0.001f);   // identity
-        EXPECT_NEAR(150.0f, e, 0.05f);  // x = 150
-        EXPECT_NEAR(0.0f, f, 0.05f);    // y = 0
+        EXPECT_NEAR(1.0f, a, 0.001f); // identity
+        EXPECT_NEAR(0.0f, b, 0.001f); // identity
+        EXPECT_NEAR(0.0f, c, 0.001f); // identity
+        EXPECT_NEAR(1.0f, d, 0.001f); // identity
+        EXPECT_NEAR(150.0f, e, 0.05f); // x = 150
+        EXPECT_NEAR(0.0f, f, 0.05f); // y = 0
     }
 
     destroy_player(p, root);
@@ -3653,8 +3672,8 @@ TEST_F(SVGPlayerTest, AnimateMotion_FreezeHoldsAfterDur)
         EXPECT_NEAR(0.0f, b, 0.001f);
         EXPECT_NEAR(0.0f, c, 0.001f);
         EXPECT_NEAR(1.0f, d, 0.001f);
-        EXPECT_NEAR(200.0f, e, 0.05f);  // x = 200 (final position held)
-        EXPECT_NEAR(0.0f, f, 0.05f);    // y = 0
+        EXPECT_NEAR(200.0f, e, 0.05f); // x = 200 (final position held)
+        EXPECT_NEAR(0.0f, f, 0.05f); // y = 0
     }
 
     destroy_player(p, root);
@@ -3704,14 +3723,14 @@ TEST_F(SVGPlayerTest, AnimateMotion_RotateAuto_TangentAngle)
     // Total length = 200, dur=2s, rotate="auto", fill="freeze"
     //
     // At t=0.5s (normalized 0.25): distance=50, on horizontal segment
-    //   tangent angle = atan2(0, 100) = 0 degrees
-    //   position = (50, 0)
-    //   matrix = [cos(0), sin(0), -sin(0), cos(0), 50, 0] = [1, 0, 0, 1, 50, 0]
+    // tangent angle = atan2(0, 100) = 0 degrees
+    // position = (50, 0)
+    // matrix = [cos(0), sin(0), -sin(0), cos(0), 50, 0] = [1, 0, 0, 1, 50, 0]
     //
     // At t=1.5s (normalized 0.75): distance=150, on vertical segment
-    //   tangent angle = atan2(100, 0) = 90 degrees = pi/2
-    //   position = (100, 50)
-    //   matrix = [cos(90), sin(90), -sin(90), cos(90), 100, 50] = [0, 1, -1, 0, 100, 50]
+    // tangent angle = atan2(100, 0) = 90 degrees = pi/2
+    // position = (100, 50)
+    // matrix = [cos(90), sin(90), -sin(90), cos(90), 100, 50] = [0, 1, -1, 0, 100, 50]
     const char* svg =
         "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"200\" height=\"200\">"
         "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
@@ -3736,12 +3755,12 @@ TEST_F(SVGPlayerTest, AnimateMotion_RotateAuto_TangentAngle)
     {
         float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
         EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
-        EXPECT_NEAR(1.0f, a, 0.05f);   // cos(0)
-        EXPECT_NEAR(0.0f, b, 0.05f);   // sin(0)
-        EXPECT_NEAR(0.0f, c, 0.05f);   // -sin(0)
-        EXPECT_NEAR(1.0f, d, 0.05f);   // cos(0)
-        EXPECT_NEAR(50.0f, e, 0.05f);  // x position
-        EXPECT_NEAR(0.0f, f, 0.05f);   // y position
+        EXPECT_NEAR(1.0f, a, 0.05f); // cos(0)
+        EXPECT_NEAR(0.0f, b, 0.05f); // sin(0)
+        EXPECT_NEAR(0.0f, c, 0.05f); // -sin(0)
+        EXPECT_NEAR(1.0f, d, 0.05f); // cos(0)
+        EXPECT_NEAR(50.0f, e, 0.05f); // x position
+        EXPECT_NEAR(0.0f, f, 0.05f); // y position
     }
 
     // t=1.5s: on vertical segment, tangent=90 deg
@@ -3751,12 +3770,12 @@ TEST_F(SVGPlayerTest, AnimateMotion_RotateAuto_TangentAngle)
     {
         float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
         EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
-        EXPECT_NEAR(0.0f, a, 0.05f);    // cos(90)
-        EXPECT_NEAR(1.0f, b, 0.05f);    // sin(90)
-        EXPECT_NEAR(-1.0f, c, 0.05f);   // -sin(90)
-        EXPECT_NEAR(0.0f, d, 0.05f);    // cos(90)
-        EXPECT_NEAR(100.0f, e, 0.05f);  // x position
-        EXPECT_NEAR(50.0f, f, 0.05f);   // y position
+        EXPECT_NEAR(0.0f, a, 0.05f); // cos(90)
+        EXPECT_NEAR(1.0f, b, 0.05f); // sin(90)
+        EXPECT_NEAR(-1.0f, c, 0.05f); // -sin(90)
+        EXPECT_NEAR(0.0f, d, 0.05f); // cos(90)
+        EXPECT_NEAR(100.0f, e, 0.05f); // x position
+        EXPECT_NEAR(50.0f, f, 0.05f); // y position
     }
 
     destroy_player(p, root);
@@ -3769,12 +3788,12 @@ TEST_F(SVGPlayerTest, AnimateMotion_RotateAutoReverse)
     // dur=2s, fill="freeze"
     //
     // At t=0.5s: tangent=0 deg, auto-reverse => 0+180=180 deg
-    //   position = (50, 0)
-    //   matrix = [cos(180), sin(180), -sin(180), cos(180), 50, 0] = [-1, 0, 0, -1, 50, 0]
+    // position = (50, 0)
+    // matrix = [cos(180), sin(180), -sin(180), cos(180), 50, 0] = [-1, 0, 0, -1, 50, 0]
     //
     // At t=1.5s: tangent=90 deg, auto-reverse => 90+180=270 deg
-    //   position = (100, 50)
-    //   matrix = [cos(270), sin(270), -sin(270), cos(270), 100, 50] = [0, -1, 1, 0, 100, 50]
+    // position = (100, 50)
+    // matrix = [cos(270), sin(270), -sin(270), cos(270), 100, 50] = [0, -1, 1, 0, 100, 50]
     const char* svg =
         "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"200\" height=\"200\">"
         "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
@@ -3799,12 +3818,12 @@ TEST_F(SVGPlayerTest, AnimateMotion_RotateAutoReverse)
     {
         float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
         EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
-        EXPECT_NEAR(-1.0f, a, 0.05f);  // cos(180)
-        EXPECT_NEAR(0.0f, b, 0.05f);   // sin(180)
-        EXPECT_NEAR(0.0f, c, 0.05f);   // -sin(180)
-        EXPECT_NEAR(-1.0f, d, 0.05f);  // cos(180)
-        EXPECT_NEAR(50.0f, e, 0.05f);  // x position
-        EXPECT_NEAR(0.0f, f, 0.05f);   // y position
+        EXPECT_NEAR(-1.0f, a, 0.05f); // cos(180)
+        EXPECT_NEAR(0.0f, b, 0.05f); // sin(180)
+        EXPECT_NEAR(0.0f, c, 0.05f); // -sin(180)
+        EXPECT_NEAR(-1.0f, d, 0.05f); // cos(180)
+        EXPECT_NEAR(50.0f, e, 0.05f); // x position
+        EXPECT_NEAR(0.0f, f, 0.05f); // y position
     }
 
     // t=1.5s: tangent=90 deg + 180 = 270 deg
@@ -3814,12 +3833,12 @@ TEST_F(SVGPlayerTest, AnimateMotion_RotateAutoReverse)
     {
         float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
         EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
-        EXPECT_NEAR(0.0f, a, 0.05f);    // cos(270)
-        EXPECT_NEAR(-1.0f, b, 0.05f);   // sin(270)
-        EXPECT_NEAR(1.0f, c, 0.05f);    // -sin(270)
-        EXPECT_NEAR(0.0f, d, 0.05f);    // cos(270)
-        EXPECT_NEAR(100.0f, e, 0.05f);  // x position
-        EXPECT_NEAR(50.0f, f, 0.05f);   // y position
+        EXPECT_NEAR(0.0f, a, 0.05f); // cos(270)
+        EXPECT_NEAR(-1.0f, b, 0.05f); // sin(270)
+        EXPECT_NEAR(1.0f, c, 0.05f); // -sin(270)
+        EXPECT_NEAR(0.0f, d, 0.05f); // cos(270)
+        EXPECT_NEAR(100.0f, e, 0.05f); // x position
+        EXPECT_NEAR(50.0f, f, 0.05f); // y position
     }
 
     destroy_player(p, root);
@@ -3832,9 +3851,9 @@ TEST_F(SVGPlayerTest, AnimateMotion_RotateFixed_45Degrees)
     // dur=2s, rotate="45", fill="freeze"
     //
     // At t=1.0s (normalized 0.5): distance=100, position=(100, 0)
-    //   Fixed 45 degree rotation:
-    //   a=cos(45)~0.707, b=sin(45)~0.707, c=-sin(45)~-0.707, d=cos(45)~0.707
-    //   e=100, f=0
+    // Fixed 45 degree rotation:
+    // a=cos(45)~0.707, b=sin(45)~0.707, c=-sin(45)~-0.707, d=cos(45)~0.707
+    // e=100, f=0
     const char* svg =
         "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"300\" height=\"100\">"
         "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
@@ -3859,12 +3878,12 @@ TEST_F(SVGPlayerTest, AnimateMotion_RotateFixed_45Degrees)
     {
         float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
         EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
-        EXPECT_NEAR(0.707f, a, 0.05f);   // cos(45)
-        EXPECT_NEAR(0.707f, b, 0.05f);   // sin(45)
-        EXPECT_NEAR(-0.707f, c, 0.05f);  // -sin(45)
-        EXPECT_NEAR(0.707f, d, 0.05f);   // cos(45)
-        EXPECT_NEAR(100.0f, e, 0.05f);   // x position
-        EXPECT_NEAR(0.0f, f, 0.05f);     // y position
+        EXPECT_NEAR(0.707f, a, 0.05f); // cos(45)
+        EXPECT_NEAR(0.707f, b, 0.05f); // sin(45)
+        EXPECT_NEAR(-0.707f, c, 0.05f); // -sin(45)
+        EXPECT_NEAR(0.707f, d, 0.05f); // cos(45)
+        EXPECT_NEAR(100.0f, e, 0.05f); // x position
+        EXPECT_NEAR(0.0f, f, 0.05f); // y position
     }
 
     destroy_player(p, root);
@@ -3876,8 +3895,8 @@ TEST_F(SVGPlayerTest, AnimateMotion_FromTo_NoPath)
     // from="0,0" to="200,100", dur=2s, fill=freeze
     //
     // At t=1.0s (midpoint, normalized 0.5):
-    //   position = (0,0) + 0.5 * ((200,100) - (0,0)) = (100, 50)
-    //   Expected transform override: (1, 0, 0, 1, 100, 50)
+    // position = (0,0) + 0.5 * ((200,100) - (0,0)) = (100, 50)
+    // Expected transform override: (1, 0, 0, 1, 100, 50)
     const char* svg =
         "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"300\" height=\"200\">"
         "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
@@ -3905,8 +3924,8 @@ TEST_F(SVGPlayerTest, AnimateMotion_FromTo_NoPath)
         EXPECT_NEAR(0.0f, b, 0.001f);
         EXPECT_NEAR(0.0f, c, 0.001f);
         EXPECT_NEAR(1.0f, d, 0.001f);
-        EXPECT_NEAR(100.0f, e, 0.05f);  // x = 100 (midpoint)
-        EXPECT_NEAR(50.0f, f, 0.05f);   // y = 50 (midpoint)
+        EXPECT_NEAR(100.0f, e, 0.05f); // x = 100 (midpoint)
+        EXPECT_NEAR(50.0f, f, 0.05f); // y = 50 (midpoint)
     }
 
     destroy_player(p, root);
@@ -3982,8 +4001,8 @@ TEST_F(SVGPlayerTest, MotionPath_RoundTrip_Property)
         float* parsed_ys = NULL;
         uint32_t parsed_count = 0;
         bool ok = test_path_parse(
-            path_str, (uint32_t)strlen(path_str),
-            &parsed_xs, &parsed_ys, &parsed_count);
+                      path_str, (uint32_t)strlen(path_str),
+                      &parsed_xs, &parsed_ys, &parsed_count);
         EXPECT_TRUE(ok) << "iter=" << iter << " parse failed for: " << path_str;
 
         if (ok) {
@@ -3991,9 +4010,9 @@ TEST_F(SVGPlayerTest, MotionPath_RoundTrip_Property)
             uint32_t check_n = npts < parsed_count ? npts : parsed_count;
             for (uint32_t i = 0; i < check_n; i++) {
                 EXPECT_NEAR(orig_xs[i], parsed_xs[i], 0.01f)
-                    << "iter=" << iter << " x[" << i << "] mismatch";
+                        << "iter=" << iter << " x[" << i << "] mismatch";
                 EXPECT_NEAR(orig_ys[i], parsed_ys[i], 0.01f)
-                    << "iter=" << iter << " y[" << i << "] mismatch";
+                        << "iter=" << iter << " y[" << i << "] mismatch";
             }
         }
 
@@ -4010,9 +4029,9 @@ TEST_F(SVGPlayerTest, MotionPath_RoundTrip_Property)
 //
 // For any motion path with 2–10 distinct points and total arc length > 0,
 // and for any t in [0,1]:
-//   (a) t=0 → first point
-//   (b) t=1 → last point
-//   (c) position lies on the correct segment at proportional distance
+// (a) t=0 → first point
+// (b) t=1 → last point
+// (c) position lies on the correct segment at proportional distance
 // ---------------------------------------------------------------------------
 TEST_F(SVGPlayerTest, MotionArcLength_Position_Property)
 {
@@ -4163,11 +4182,11 @@ TEST_F(SVGPlayerTest, AnimateMotion_EndToEnd_Position_Property)
         // Build SVG document with dur=10s, fill=freeze
         char svg_buf[1024];
         sprintf(svg_buf,
-            "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"600\" height=\"600\">"
-            "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"5\" height=\"5\" fill=\"#000\">"
-            "    <animateMotion path=\"%s\" dur=\"10s\" fill=\"freeze\"/>"
-            "  </rect>"
-            "</svg>", path_buf);
+                "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"600\" height=\"600\">"
+                "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"5\" height=\"5\" fill=\"#000\">"
+                "    <animateMotion path=\"%s\" dur=\"10s\" fill=\"freeze\"/>"
+                "  </rect>"
+                "</svg>", path_buf);
 
         // Create player
         psx_result r = S_OK;
@@ -4193,7 +4212,7 @@ TEST_F(SVGPlayerTest, AnimateMotion_EndToEnd_Position_Property)
         if (norm_t > 1.0f) { norm_t = 1.0f; }
 
         // Independently compute expected position via arc-length
-        float target_dist = norm_t * total_len;
+        float target_dist = norm_t* total_len;
         float expect_x = xs[npts - 1];
         float expect_y = ys[npts - 1];
         float cum = 0.0f;

@@ -1777,10 +1777,10 @@ static INLINE bool _anim_eval_transform_dispatch(const psx_svg_anim_item* it, fl
 /* ── Motion path mini-parser (M/m, L/l) ────────────────────────────── */
 
 typedef struct {
-    float* xs;       /* mem_malloc allocated x coordinate array */
-    float* ys;       /* mem_malloc allocated y coordinate array */
-    uint32_t count;  /* current point count */
-    uint32_t cap;    /* array capacity */
+    float* xs; /* mem_malloc allocated x coordinate array */
+    float* ys; /* mem_malloc allocated y coordinate array */
+    uint32_t count; /* current point count */
+    uint32_t cap; /* array capacity */
 } _motion_path_points;
 
 static void _motion_path_destroy(_motion_path_points* pts)
@@ -1799,7 +1799,6 @@ static void _motion_path_destroy(_motion_path_points* pts)
     pts->count = 0;
     pts->cap = 0;
 }
-
 
 static bool _motion_path_push(_motion_path_points* pts, float x, float y)
 {
@@ -2089,8 +2088,8 @@ static bool _motion_path_parse(const char* path_str, uint32_t len,
 /* ── Arc-length parameterization ───────────────────────────────────── */
 
 typedef struct {
-    float* cum_lengths;  /* mem_malloc allocated cumulative arc length array */
-    float total_length;  /* total arc length */
+    float* cum_lengths; /* mem_malloc allocated cumulative arc length array */
+    float total_length; /* total arc length */
 } _motion_arc_table;
 
 static void _motion_arc_build(const _motion_path_points* pts, _motion_arc_table* out)
@@ -3122,7 +3121,6 @@ const psx_svg_node* psx_svg_player_get_node_by_id(const psx_svg_player* p, const
     psx_tree_traversal<PSX_TREE_WALK_PRE_ORDER>(p->root, &ctx, _find_by_id_cb);
     return ctx.result;
 }
-
 
 #ifdef __cplusplus
 }
