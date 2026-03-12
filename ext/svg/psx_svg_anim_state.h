@@ -32,6 +32,12 @@
 #include "psx_svg_parser.h"
 #include "picasso.h"
 
+#include <math.h>
+
+#ifndef M_PI
+    #define M_PI 3.1415926f
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif

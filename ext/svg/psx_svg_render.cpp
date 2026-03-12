@@ -30,11 +30,6 @@
 #include "images/psx_image.h"
 
 #include <new>
-#include <math.h>
-
-#ifndef M_PI
-    #define M_PI 3.1415926f
-#endif
 
 #define MIN(a,b) (((a)<(b))?(a):(b))
 #define MAX(a,b) (((a)>(b))?(a):(b))
@@ -867,6 +862,18 @@ public:
         }
         if (psx_svg_anim_get_float(anim_state, m_node, SVG_ATTR_Y, &v)) {
             m_rc.y = v;
+        }
+        if (psx_svg_anim_get_float(anim_state, m_node, SVG_ATTR_WIDTH, &v)) {
+            m_rc.w = v;
+        }
+        if (psx_svg_anim_get_float(anim_state, m_node, SVG_ATTR_HEIGHT, &v)) {
+            m_rc.h = v;
+        }
+        if (psx_svg_anim_get_float(anim_state, m_node, SVG_ATTR_RX, &v)) {
+            m_rx = v;
+        }
+        if (psx_svg_anim_get_float(anim_state, m_node, SVG_ATTR_RY, &v)) {
+            m_ry = v;
         }
     }
 

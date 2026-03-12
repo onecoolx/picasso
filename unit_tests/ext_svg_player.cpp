@@ -2241,6 +2241,62 @@ TEST_F(SVGPlayerTest, AnimateTransform_Rotate_Linear_WithCenter)
     destroy_player(p, root);
 }
 
+TEST_F(SVGPlayerTest, AnimateTransform_Rotate_Linear_FromTo_WithCenter)
+{
+    // animateTransform rotate using from/to (no values attr).
+    // from="0 60 60" to="360 100 60" dur="20s"
+    // At t=10s (midpoint): angle=180, cx=80, cy=60
+    // Matrix: T(cx,cy)*R(180)*T(-cx,-cy)
+    // cos(180)=-1, sin(180)=0 => a=-1, b=0, c=0, d=-1
+    // e = cx - cx*(-1) + cy*0 = 80+80 = 160
+    // f = cy - cx*0 - cy*(-1) = 60+60 = 120
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"300\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"50\" width=\"15\" height=\"34\" fill=\"blue\">"
+        "    <animateTransform attributeName=\"transform\" type=\"rotate\""
+        "      from=\"0 60 60\" to=\"360 100 60\" dur=\"20s\" repeatCount=\"indefinite\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    if (!p) {
+        EXPECT_NE((psx_svg_player*)NULL, p);
+        return;
+    }
+    EXPECT_EQ(S_OK, r);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    if (!n) {
+        EXPECT_TRUE(n != NULL);
+        destroy_player(p, root);
+        return;
+    }
+
+    // Seek to midpoint: t=10s => local t=0.5
+    // angle = lerp(0, 360, 0.5) = 180 deg
+    // cx = lerp(60, 100, 0.5) = 80
+    // cy = lerp(60, 60, 0.5) = 60
+    psx_svg_player_seek(p, 10.0f);
+
+    float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+    EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+    if (psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f)) {
+        // cos(180)=-1, sin(180)~=0
+        EXPECT_NEAR(-1.0f, a, 0.001f);
+        EXPECT_NEAR(0.0f, b, 0.001f);
+        EXPECT_NEAR(0.0f, c, 0.001f);
+        EXPECT_NEAR(-1.0f, d, 0.001f);
+        // e = cx - cx*cos + cy*sin = 80 - 80*(-1) + 60*0 = 160
+        // f = cy - cx*sin - cy*cos = 60 - 80*0 - 60*(-1) = 120
+        EXPECT_NEAR(160.0f, e, 0.1f);
+        EXPECT_NEAR(120.0f, f, 0.1f);
+    }
+
+    destroy_player(p, root);
+}
+
 TEST_F(SVGPlayerTest, AnimateTransform_Scale_Linear)
 {
     const char* svg =

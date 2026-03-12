@@ -31,7 +31,6 @@
 #include "psx_svg_parser.h"
 
 #include <string.h>
-#include <math.h>
 
 static INLINE void _anim_state_reset(psx_svg_anim_state* s)
 {
@@ -1545,10 +1544,9 @@ static INLINE bool _anim_eval_transform_rotate_discrete(const psx_svg_anim_item*
 
     // Rotate values are stored in the transform-values blob; first number is angle in degrees.
     float angle_deg = (vlen >= 1) ? base[0] : 0.0f;
-    const float pi = 3.14159265358979323846f;
-    float angle_rad = angle_deg * (pi / 180.0f);
-    float cs = (float)cos(angle_rad);
-    float sn = (float)sin(angle_rad);
+    float angle_rad = angle_deg * (M_PI / 180.0f);
+    float cs = (float)cosf(angle_rad);
+    float sn = (float)sinf(angle_rad);
 
     // Matrix for rotation about origin.
     *out_a = cs;
@@ -1579,23 +1577,92 @@ static INLINE bool _anim_eval_transform_rotate_linear(const psx_svg_anim_item* i
     }
 
     const psx_svg_attr* avals = _find_attr(it->anim_node, SVG_ATTR_VALUES);
-    if (!avals || avals->val_type != SVG_ATTR_VALUE_PTR || !avals->value.val) {
-        return false;
-    }
-
-    const psx_svg_attr_values_list* vlist = (const psx_svg_attr_values_list*)avals->value.val;
-    if (vlist->length < 1) {
-        return false;
-    }
-    if (vlist->length == 1) {
-        const float* base0 = NULL;
-        uint32_t vlen0 = 0;
-        if (!_anim_values_list_get_transform(vlist, 0, &base0, &vlen0) || !base0) {
+    if (avals && avals->val_type == SVG_ATTR_VALUE_PTR && avals->value.val) {
+        const psx_svg_attr_values_list* vlist = (const psx_svg_attr_values_list*)avals->value.val;
+        if (vlist->length < 1) {
             return false;
         }
-        float angle_deg = (vlen0 >= 1) ? base0[0] : 0.0f;
-        float cx = (vlen0 >= 2) ? base0[1] : 0.0f;
-        float cy = (vlen0 >= 3) ? base0[2] : 0.0f;
+        if (vlist->length == 1) {
+            const float* base0 = NULL;
+            uint32_t vlen0 = 0;
+            if (!_anim_values_list_get_transform(vlist, 0, &base0, &vlen0) || !base0) {
+                return false;
+            }
+            float angle_deg = (vlen0 >= 1) ? base0[0] : 0.0f;
+            float cx = (vlen0 >= 2) ? base0[1] : 0.0f;
+            float cy = (vlen0 >= 3) ? base0[2] : 0.0f;
+            const float pi = 3.14159265358979323846f;
+            float angle_rad = angle_deg * (pi / 180.0f);
+            float cs = (float)cos(angle_rad);
+            float sn = (float)sin(angle_rad);
+            *out_a = cs;
+            *out_b = sn;
+            *out_c = -sn;
+            *out_d = cs;
+            // rotate about (cx,cy): T(cx,cy)*R*T(-cx,-cy)
+            *out_e = cx - cx * cs + cy * sn;
+            *out_f = cy - cx * sn - cy * cs;
+            return true;
+        }
+
+        const psx_svg_attr* akt = _find_attr(it->anim_node, SVG_ATTR_KEY_TIMES);
+        const float* kts = NULL;
+        uint32_t kt_len = 0;
+        if (akt && akt->val_type == SVG_ATTR_VALUE_PTR && akt->value.val) {
+            const psx_svg_attr_values_list* ktlist = (const psx_svg_attr_values_list*)akt->value.val;
+            kt_len = ktlist->length;
+            if (kt_len >= 2) {
+                kts = (const float*)&ktlist->data[0];
+            }
+        }
+
+        uint32_t seg = 0;
+        float seg_t0 = 0.0f;
+        float seg_t1 = 1.0f;
+        _anim_find_segment(vlist, kts, kt_len, t, &seg, &seg_t0, &seg_t1);
+
+        float u = 0.0f;
+        if (seg_t1 > seg_t0) {
+            u = (t - seg_t0) / (seg_t1 - seg_t0);
+        }
+        u = _anim_clampf(u, 0.0f, 1.0f);
+
+        if (seg >= vlist->length - 1) {
+            seg = vlist->length - 2;
+        }
+
+        const float* base0 = NULL;
+        const float* base1 = NULL;
+        uint32_t vlen0 = 0;
+        uint32_t vlen1 = 0;
+        if (!_anim_values_list_get_transform(vlist, seg, &base0, &vlen0) || !base0) {
+            return false;
+        }
+        if (!_anim_values_list_get_transform(vlist, seg + 1, &base1, &vlen1) || !base1) {
+            return false;
+        }
+
+        float ang0 = (vlen0 >= 1) ? base0[0] : 0.0f;
+        float ang1 = (vlen1 >= 1) ? base1[0] : ang0;
+
+        // rotate values can be: angle [cx cy]
+        float cx0 = (vlen0 >= 2) ? base0[1] : 0.0f;
+        float cy0 = (vlen0 >= 3) ? base0[2] : 0.0f;
+        float cx1 = (vlen1 >= 2) ? base1[1] : cx0;
+        float cy1 = (vlen1 >= 3) ? base1[2] : cy0;
+
+        // If a rotate entry provides cx but not cy, treat cy as 0.
+        if (vlen0 == 2) {
+            cy0 = 0.0f;
+        }
+        if (vlen1 == 2) {
+            cy1 = 0.0f;
+        }
+
+        float angle_deg = _anim_lerp(ang0, ang1, u);
+        float cx = _anim_lerp(cx0, cx1, u);
+        float cy = _anim_lerp(cy0, cy1, u);
+
         const float pi = 3.14159265358979323846f;
         float angle_rad = angle_deg * (pi / 180.0f);
         float cs = (float)cos(angle_rad);
@@ -1604,81 +1671,59 @@ static INLINE bool _anim_eval_transform_rotate_linear(const psx_svg_anim_item* i
         *out_b = sn;
         *out_c = -sn;
         *out_d = cs;
-        // rotate about (cx,cy): T(cx,cy)*R*T(-cx,-cy)
         *out_e = cx - cx * cs + cy * sn;
         *out_f = cy - cx * sn - cy * cs;
         return true;
     }
 
-    const psx_svg_attr* akt = _find_attr(it->anim_node, SVG_ATTR_KEY_TIMES);
-    const float* kts = NULL;
-    uint32_t kt_len = 0;
-    if (akt && akt->val_type == SVG_ATTR_VALUE_PTR && akt->value.val) {
-        const psx_svg_attr_values_list* ktlist = (const psx_svg_attr_values_list*)akt->value.val;
-        kt_len = ktlist->length;
-        if (kt_len >= 2) {
-            kts = (const float*)&ktlist->data[0];
+    // Fallback: from/to interpolation if values is absent.
+    {
+        const psx_svg_attr* afrom = _find_attr(it->anim_node, SVG_ATTR_FROM);
+        const psx_svg_attr* ato = _find_attr(it->anim_node, SVG_ATTR_TO);
+        if (!afrom || !ato) {
+            return false;
         }
+        if (afrom->val_type != SVG_ATTR_VALUE_PTR || !afrom->value.val) {
+            return false;
+        }
+        if (ato->val_type != SVG_ATTR_VALUE_PTR || !ato->value.val) {
+            return false;
+        }
+
+        struct _anim_transform_values_single {
+            uint32_t length;
+            float data[6];
+        };
+
+        const struct _anim_transform_values_single* fromv = (const struct _anim_transform_values_single*)afrom->value.val;
+        const struct _anim_transform_values_single* tov = (const struct _anim_transform_values_single*)ato->value.val;
+        if (!fromv || !tov) {
+            return false;
+        }
+
+        float ang0 = (fromv->length >= 1) ? fromv->data[0] : 0.0f;
+        float ang1 = (tov->length >= 1) ? tov->data[0] : ang0;
+        float cx0 = (fromv->length >= 2) ? fromv->data[1] : 0.0f;
+        float cy0 = (fromv->length >= 3) ? fromv->data[2] : 0.0f;
+        float cx1 = (tov->length >= 2) ? tov->data[1] : cx0;
+        float cy1 = (tov->length >= 3) ? tov->data[2] : cy0;
+
+        float angle_deg = _anim_lerp(ang0, ang1, t);
+        float cx = _anim_lerp(cx0, cx1, t);
+        float cy = _anim_lerp(cy0, cy1, t);
+
+        const float pi = 3.14159265358979323846f;
+        float angle_rad = angle_deg * (pi / 180.0f);
+        float cs = (float)cos(angle_rad);
+        float sn = (float)sin(angle_rad);
+        *out_a = cs;
+        *out_b = sn;
+        *out_c = -sn;
+        *out_d = cs;
+        *out_e = cx - cx * cs + cy * sn;
+        *out_f = cy - cx * sn - cy * cs;
+        return true;
     }
-
-    uint32_t seg = 0;
-    float seg_t0 = 0.0f;
-    float seg_t1 = 1.0f;
-    _anim_find_segment(vlist, kts, kt_len, t, &seg, &seg_t0, &seg_t1);
-
-    float u = 0.0f;
-    if (seg_t1 > seg_t0) {
-        u = (t - seg_t0) / (seg_t1 - seg_t0);
-    }
-    u = _anim_clampf(u, 0.0f, 1.0f);
-
-    if (seg >= vlist->length - 1) {
-        seg = vlist->length - 2;
-    }
-
-    const float* base0 = NULL;
-    const float* base1 = NULL;
-    uint32_t vlen0 = 0;
-    uint32_t vlen1 = 0;
-    if (!_anim_values_list_get_transform(vlist, seg, &base0, &vlen0) || !base0) {
-        return false;
-    }
-    if (!_anim_values_list_get_transform(vlist, seg + 1, &base1, &vlen1) || !base1) {
-        return false;
-    }
-
-    float ang0 = (vlen0 >= 1) ? base0[0] : 0.0f;
-    float ang1 = (vlen1 >= 1) ? base1[0] : ang0;
-
-    // rotate values can be: angle [cx cy]
-    float cx0 = (vlen0 >= 2) ? base0[1] : 0.0f;
-    float cy0 = (vlen0 >= 3) ? base0[2] : 0.0f;
-    float cx1 = (vlen1 >= 2) ? base1[1] : cx0;
-    float cy1 = (vlen1 >= 3) ? base1[2] : cy0;
-
-    // If a rotate entry provides cx but not cy, treat cy as 0.
-    if (vlen0 == 2) {
-        cy0 = 0.0f;
-    }
-    if (vlen1 == 2) {
-        cy1 = 0.0f;
-    }
-
-    float angle_deg = _anim_lerp(ang0, ang1, u);
-    float cx = _anim_lerp(cx0, cx1, u);
-    float cy = _anim_lerp(cy0, cy1, u);
-
-    const float pi = 3.14159265358979323846f;
-    float angle_rad = angle_deg * (pi / 180.0f);
-    float cs = (float)cos(angle_rad);
-    float sn = (float)sin(angle_rad);
-    *out_a = cs;
-    *out_b = sn;
-    *out_c = -sn;
-    *out_d = cs;
-    *out_e = cx - cx * cs + cy * sn;
-    *out_f = cy - cx * sn - cy * cs;
-    return true;
 }
 
 /*
