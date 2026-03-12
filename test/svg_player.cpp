@@ -14,6 +14,7 @@
 #include <stdlib.h>
 
 #include "picasso.h"
+#include "picasso_ext.h"
 #include "psx_svg.h"
 #include "psx_svg_player.h"
 #include "drawFunc.h"

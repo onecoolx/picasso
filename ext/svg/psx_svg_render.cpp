@@ -164,7 +164,7 @@ static INLINE void init_draw_attrs(ps_draw_attrs* attrs)
 {
     ps_color c = { 0.0f, 0.0f, 0.0f, 1.0f };
     attrs->ref_count = 0;
-    attrs->flags = RENDER_FILL;
+    attrs->flags = RENDER_FILL | RENDER_ATTR_FILL;
     attrs->fill_color = c;
     attrs->fill_opacity = 1.0f;
     attrs->fill_rule = FILL_RULE_WINDING;
@@ -2426,6 +2426,12 @@ bool psx_svg_render_list_draw_anim(ps_context* ctx, const psx_svg_render_list* r
     ps_identity(ctx);
 
     render_obj_base* head = list->head();
+    if (head->type() == SVG_TAG_SVG) { // viewport node
+        ps_rect clip_rect = {0};
+        head->get_bounding_rect(&clip_rect);
+        ps_clip_rect(ctx, &clip_rect);
+    }
+
     while (head) {
         if (head->render_types() == RENDER_NORMAL) {
             ps_save(ctx);
