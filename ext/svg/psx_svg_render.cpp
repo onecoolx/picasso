@@ -420,7 +420,23 @@ public:
     }
 
     virtual void set_attr(const psx_svg_attr* attr, _svg_list_builder_state* state);
-    virtual void set_anim_state(const psx_svg_anim_state* anim_state) { }
+    virtual void set_anim_state(const psx_svg_anim_state* anim_state)
+    {
+        if (!anim_state || !m_draw_attrs) { return; }
+        float v = 0.0f;
+        if (psx_svg_anim_get_float(anim_state, m_node, SVG_ATTR_STROKE_OPACITY, &v)) {
+            m_draw_attrs->stroke_opacity = v;
+            m_draw_attrs->flags |= RENDER_ATTR_STROKE_OPACITY;
+        }
+        if (psx_svg_anim_get_float(anim_state, m_node, SVG_ATTR_FILL_OPACITY, &v)) {
+            m_draw_attrs->fill_opacity = v;
+            m_draw_attrs->flags |= RENDER_ATTR_FILL_OPACITY;
+        }
+        if (psx_svg_anim_get_float(anim_state, m_node, SVG_ATTR_STROKE_WIDTH, &v)) {
+            m_draw_attrs->stroke_line_width = v;
+            m_draw_attrs->flags |= RENDER_ATTR_STROKE_WIDTH;
+        }
+    }
     virtual void render(ps_context* ctx, const ps_matrix* matrix) { }
     virtual void get_bounding_rect(ps_rect* rc) const { }
     virtual void update(const psx_svg_node* node) { }
@@ -855,6 +871,7 @@ public:
         if (!anim_state) {
             return;
         }
+        render_obj_base::set_anim_state(anim_state);
 
         float v = 0.0f;
         if (psx_svg_anim_get_float(anim_state, m_node, SVG_ATTR_X, &v)) {
@@ -944,6 +961,7 @@ public:
         if (!anim_state) {
             return;
         }
+        render_obj_base::set_anim_state(anim_state);
         float v = 0.0f;
         if (psx_svg_anim_get_float(anim_state, m_node, SVG_ATTR_CX, &v)) {
             m_cx = v;
@@ -1020,6 +1038,7 @@ public:
         if (!anim_state) {
             return;
         }
+        render_obj_base::set_anim_state(anim_state);
         float v = 0.0f;
         if (psx_svg_anim_get_float(anim_state, m_node, SVG_ATTR_CX, &v)) {
             m_cx = v;
@@ -1095,6 +1114,27 @@ public:
         rc->y = MIN(m_y1, m_y2);
         rc->w = ABS(m_x2 - m_x1);
         rc->h = ABS(m_y2 - m_y1);
+    }
+
+    void set_anim_state(const psx_svg_anim_state* anim_state)
+    {
+        if (!anim_state) {
+            return;
+        }
+        render_obj_base::set_anim_state(anim_state);
+        float v = 0.0f;
+        if (psx_svg_anim_get_float(anim_state, m_node, SVG_ATTR_X1, &v)) {
+            m_x1 = v;
+        }
+        if (psx_svg_anim_get_float(anim_state, m_node, SVG_ATTR_Y1, &v)) {
+            m_y1 = v;
+        }
+        if (psx_svg_anim_get_float(anim_state, m_node, SVG_ATTR_X2, &v)) {
+            m_x2 = v;
+        }
+        if (psx_svg_anim_get_float(anim_state, m_node, SVG_ATTR_Y2, &v)) {
+            m_y2 = v;
+        }
     }
 
 private:

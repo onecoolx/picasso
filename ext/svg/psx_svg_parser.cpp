@@ -2060,7 +2060,11 @@ static INLINE void _process_attrs_tag(psx_svg_parser* parser, psx_svg_node* node
                 break;
             case SVG_ATTR_D:
             case SVG_ATTR_PATH:
-                _process_path_value(node, type, tok_attr->value_start, tok_attr->value_end);
+                if (type == SVG_ATTR_PATH && node->type() == SVG_TAG_ANIMATE_MOTION) {
+                    _process_string(node, type, tok_attr->value_start, tok_attr->value_end);
+                } else {
+                    _process_path_value(node, type, tok_attr->value_start, tok_attr->value_end);
+                }
                 break;
             case SVG_ATTR_TRANSFORM:
                 _process_transform(node, type, tok_attr->value_start, tok_attr->value_end);

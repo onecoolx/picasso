@@ -3036,3 +3036,693 @@ TEST_F(SVGPlayerTest, AnimateCircleR_FromTo)
 
     destroy_player(p, root);
 }
+
+TEST_F(SVGPlayerTest, AnimateLine_X1Y1X2Y2_FromTo)
+{
+    // Animate all four line endpoint attributes simultaneously.
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"200\" height=\"200\">"
+        "  <line id=\"ln\" x1=\"0\" y1=\"0\" x2=\"10\" y2=\"10\" stroke=\"#000\" stroke-width=\"1\">"
+        "    <animate attributeName=\"x1\" from=\"0\" to=\"100\" dur=\"2s\" fill=\"freeze\"/>"
+        "    <animate attributeName=\"y1\" from=\"0\" to=\"50\" dur=\"2s\" fill=\"freeze\"/>"
+        "    <animate attributeName=\"x2\" from=\"10\" to=\"200\" dur=\"2s\" fill=\"freeze\"/>"
+        "    <animate attributeName=\"y2\" from=\"10\" to=\"150\" dur=\"2s\" fill=\"freeze\"/>"
+        "  </line>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_NE((psx_svg_player*)NULL, p);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "ln");
+    ASSERT_TRUE(n != NULL);
+
+    psx_svg_player_play(p);
+
+    // t=1s midpoint of 2s animation: each attribute should be at 50% interpolation
+    psx_svg_player_seek(p, 1.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float v = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X1, &v));
+        EXPECT_NEAR(50.0f, v, 0.05f);
+    }
+    {
+        float v = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_Y1, &v));
+        EXPECT_NEAR(25.0f, v, 0.05f);
+    }
+    {
+        float v = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X2, &v));
+        EXPECT_NEAR(105.0f, v, 0.05f);
+    }
+    {
+        float v = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_Y2, &v));
+        EXPECT_NEAR(80.0f, v, 0.05f);
+    }
+
+    destroy_player(p, root);
+}
+
+TEST_F(SVGPlayerTest, AnimateStrokeOpacity_FromTo)
+{
+    // Animate stroke-opacity from 1 to 0 over 2s; at midpoint expect 0.5.
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"50\" height=\"50\" fill=\"none\" stroke=\"#000\" stroke-width=\"2\" stroke-opacity=\"1\">"
+        "    <animate attributeName=\"stroke-opacity\" from=\"1\" to=\"0\" dur=\"2s\" fill=\"freeze\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_NE((psx_svg_player*)NULL, p);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    ASSERT_TRUE(n != NULL);
+
+    psx_svg_player_play(p);
+
+    // t=1s midpoint of 2s animation: stroke-opacity should be 0.5
+    psx_svg_player_seek(p, 1.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float v = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_STROKE_OPACITY, &v));
+        EXPECT_NEAR(0.5f, v, 0.05f);
+    }
+
+    destroy_player(p, root);
+}
+
+TEST_F(SVGPlayerTest, AnimateMotion_Collection_NoAttributeName)
+{
+    // animateMotion has no attributeName attribute; the player must still
+    // collect it and implicitly target SVG_ATTR_TRANSFORM.
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"200\" height=\"200\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"20\" height=\"20\" fill=\"#000\">"
+        "    <animateMotion path=\"M 0 0 L 100 0\" dur=\"2s\" fill=\"freeze\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_NE((psx_svg_player*)NULL, p);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    ASSERT_TRUE(n != NULL);
+
+    psx_svg_player_play(p);
+
+    // Seek to midpoint (1.0s of 2s duration).
+    // If animateMotion was collected, a transform override should exist.
+    psx_svg_player_seek(p, 1.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+    }
+
+    destroy_player(p, root);
+}
+
+TEST_F(SVGPlayerTest, AnimateMotion_Path_ML_LinearInterp)
+{
+    // Path: M 0 0 L 100 0 L 100 100
+    // Two segments: (0,0)->(100,0) len=100, (100,0)->(100,100) len=100, total=200
+    // dur=3s, fill=freeze
+    // t=0s   => normalized 0.0 => pos (0,0)     => transform (1,0,0,1,0,0)
+    // t=1.5s => normalized 0.5 => dist=100 => end of seg1 => pos (100,0)
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"200\" height=\"200\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"20\" height=\"20\" fill=\"#000\">"
+        "    <animateMotion path=\"M 0 0 L 100 0 L 100 100\" dur=\"3s\" fill=\"freeze\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_NE((psx_svg_player*)NULL, p);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    ASSERT_TRUE(n != NULL);
+
+    psx_svg_player_play(p);
+
+    // Seek to t=0s: position should be start of path (0,0)
+    psx_svg_player_seek(p, 0.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        EXPECT_NEAR(1.0f, a, 0.001f);
+        EXPECT_NEAR(0.0f, b, 0.001f);
+        EXPECT_NEAR(0.0f, c, 0.001f);
+        EXPECT_NEAR(1.0f, d, 0.001f);
+        EXPECT_NEAR(0.0f, e, 0.05f);
+        EXPECT_NEAR(0.0f, f, 0.05f);
+    }
+
+    // Seek to t=1.5s (midpoint): distance=100 => end of first segment => (100,0)
+    psx_svg_player_seek(p, 1.5f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        EXPECT_NEAR(1.0f, a, 0.001f);
+        EXPECT_NEAR(0.0f, b, 0.001f);
+        EXPECT_NEAR(0.0f, c, 0.001f);
+        EXPECT_NEAR(1.0f, d, 0.001f);
+        EXPECT_NEAR(100.0f, e, 0.1f);
+        EXPECT_NEAR(0.0f, f, 0.1f);
+    }
+
+    destroy_player(p, root);
+}
+
+TEST_F(SVGPlayerTest, AnimateMotion_Path_HVZ_Commands)
+{
+    // Path: M 0 0 H 100 V 50 Z
+    // Segments: (0,0)->(100,0) H len=100, (100,0)->(100,50) V len=50,
+    //           (100,50)->(0,0) Z len=sqrt(100^2+50^2)=~111.803
+    // Total arc length ~261.803
+    // dur=3s, fill=freeze
+    // t=0s   => normalized 0.0 => pos (0,0)
+    // t=1.0s => normalized 1/3 => dist ~87.27 => within seg1 => x ~87.27, y=0
+    // t=3.0s => normalized 1.0 => last point (0,0) via Z close
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"200\" height=\"200\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"20\" height=\"20\" fill=\"#000\">"
+        "    <animateMotion path=\"M 0 0 H 100 V 50 Z\" dur=\"3s\" fill=\"freeze\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_NE((psx_svg_player*)NULL, p);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    ASSERT_TRUE(n != NULL);
+
+    psx_svg_player_play(p);
+
+    // Seek to t=0s: position should be start of path (0,0)
+    psx_svg_player_seek(p, 0.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        EXPECT_NEAR(1.0f, a, 0.001f);
+        EXPECT_NEAR(0.0f, b, 0.001f);
+        EXPECT_NEAR(0.0f, c, 0.001f);
+        EXPECT_NEAR(1.0f, d, 0.001f);
+        EXPECT_NEAR(0.0f, e, 0.05f);
+        EXPECT_NEAR(0.0f, f, 0.05f);
+    }
+
+    // Seek to t=1.0s: normalized=1/3, dist=~87.27, within first segment (H 100)
+    // Position should be (~87.27, 0) — x between 0 and 100, y=0
+    psx_svg_player_seek(p, 1.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        EXPECT_NEAR(1.0f, a, 0.001f);
+        EXPECT_NEAR(0.0f, b, 0.001f);
+        EXPECT_NEAR(0.0f, c, 0.001f);
+        EXPECT_NEAR(1.0f, d, 0.001f);
+        // x should be ~87.27 (within first segment), y should be 0
+        EXPECT_GT(e, 50.0f);   // well into the first segment
+        EXPECT_LT(e, 100.0f);  // but not past it
+        EXPECT_NEAR(0.0f, f, 0.5f);
+    }
+
+    // Seek to t=3.0s (end): Z closes back to (0,0), fill=freeze holds last point
+    psx_svg_player_seek(p, 3.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        EXPECT_NEAR(1.0f, a, 0.001f);
+        EXPECT_NEAR(0.0f, b, 0.001f);
+        EXPECT_NEAR(0.0f, c, 0.001f);
+        EXPECT_NEAR(1.0f, d, 0.001f);
+        EXPECT_NEAR(0.0f, e, 0.1f);  // back to origin x
+        EXPECT_NEAR(0.0f, f, 0.1f);  // back to origin y
+    }
+
+    destroy_player(p, root);
+}
+
+TEST_F(SVGPlayerTest, AnimateMotion_ArcLength_Boundaries)
+{
+    // Path: M 0 0 L 300 0 L 300 400
+    // Segment 1: (0,0)->(300,0) len=300
+    // Segment 2: (300,0)->(300,400) len=400
+    // Total arc length = 700
+    // dur=7s, fill=freeze
+    //
+    // t=0s   => normalized 0.0 => distance 0   => (0, 0)
+    // t=7s   => normalized 1.0 => distance 700 => (300, 400)
+    // t=3.5s => normalized 0.5 => distance 350 => within seg2 at 50 units past (300,0) => (300, 50)
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"400\" height=\"500\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"20\" height=\"20\" fill=\"#000\">"
+        "    <animateMotion path=\"M 0 0 L 300 0 L 300 400\" dur=\"7s\" fill=\"freeze\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_NE((psx_svg_player*)NULL, p);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    ASSERT_TRUE(n != NULL);
+
+    psx_svg_player_play(p);
+
+    // t=0s: normalized 0.0 => first point (0, 0)
+    psx_svg_player_seek(p, 0.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        EXPECT_NEAR(1.0f, a, 0.001f);
+        EXPECT_NEAR(0.0f, b, 0.001f);
+        EXPECT_NEAR(0.0f, c, 0.001f);
+        EXPECT_NEAR(1.0f, d, 0.001f);
+        EXPECT_NEAR(0.0f, e, 0.05f);   // x = 0
+        EXPECT_NEAR(0.0f, f, 0.05f);   // y = 0
+    }
+
+    // t=7s: normalized 1.0 => last point (300, 400)
+    psx_svg_player_seek(p, 7.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        EXPECT_NEAR(1.0f, a, 0.001f);
+        EXPECT_NEAR(0.0f, b, 0.001f);
+        EXPECT_NEAR(0.0f, c, 0.001f);
+        EXPECT_NEAR(1.0f, d, 0.001f);
+        EXPECT_NEAR(300.0f, e, 0.1f);  // x = 300
+        EXPECT_NEAR(400.0f, f, 0.1f);  // y = 400
+    }
+
+    // t=3.5s: normalized 0.5 => distance 350 along path
+    // Seg1 covers distance [0, 300], seg2 covers [300, 700]
+    // distance 350 is 50 units into seg2 => (300, 0 + 50) = (300, 50)
+    psx_svg_player_seek(p, 3.5f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        EXPECT_NEAR(1.0f, a, 0.001f);
+        EXPECT_NEAR(0.0f, b, 0.001f);
+        EXPECT_NEAR(0.0f, c, 0.001f);
+        EXPECT_NEAR(1.0f, d, 0.001f);
+        EXPECT_NEAR(300.0f, e, 0.1f);  // x = 300
+        EXPECT_NEAR(50.0f, f, 0.1f);   // y = 50
+    }
+
+    destroy_player(p, root);
+}
+
+TEST_F(SVGPlayerTest, AnimateMotion_Path_Linear_TranslateOverride)
+{
+    // Path: M 0 0 L 300 0
+    // Single segment: (0,0)->(300,0), length=300
+    // dur=3s, fill=freeze
+    //
+    // t=1.5s => normalized 0.5 => distance 150 => (150, 0)
+    // Expected transform override: translate matrix (1,0,0,1,150,0)
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"400\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"20\" height=\"20\" fill=\"#000\">"
+        "    <animateMotion path=\"M 0 0 L 300 0\" dur=\"3s\" fill=\"freeze\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_NE((psx_svg_player*)NULL, p);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    ASSERT_TRUE(n != NULL);
+
+    psx_svg_player_play(p);
+
+    // Seek to midpoint: t=1.5s of 3s duration => normalized 0.5
+    // distance = 0.5 * 300 = 150 => position (150, 0)
+    psx_svg_player_seek(p, 1.5f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        EXPECT_NEAR(1.0f, a, 0.001f);   // identity
+        EXPECT_NEAR(0.0f, b, 0.001f);   // identity
+        EXPECT_NEAR(0.0f, c, 0.001f);   // identity
+        EXPECT_NEAR(1.0f, d, 0.001f);   // identity
+        EXPECT_NEAR(150.0f, e, 0.05f);  // x = 150
+        EXPECT_NEAR(0.0f, f, 0.05f);    // y = 0
+    }
+
+    destroy_player(p, root);
+}
+
+TEST_F(SVGPlayerTest, AnimateMotion_FreezeHoldsAfterDur)
+{
+    // Path: M 0 0 L 200 0
+    // Single segment: (0,0)->(200,0), length=200
+    // dur=2s, fill=freeze
+    //
+    // Seek to 3s (past the 2s duration).
+    // With fill=freeze, the final position should be held:
+    // transform override = (1, 0, 0, 1, 200, 0)
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"300\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"20\" height=\"20\" fill=\"#000\">"
+        "    <animateMotion path=\"M 0 0 L 200 0\" dur=\"2s\" fill=\"freeze\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_NE((psx_svg_player*)NULL, p);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    ASSERT_TRUE(n != NULL);
+
+    psx_svg_player_play(p);
+
+    // Seek past duration: t=3s > dur=2s, fill=freeze => hold final position (200, 0)
+    psx_svg_player_seek(p, 3.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        EXPECT_NEAR(1.0f, a, 0.001f);
+        EXPECT_NEAR(0.0f, b, 0.001f);
+        EXPECT_NEAR(0.0f, c, 0.001f);
+        EXPECT_NEAR(1.0f, d, 0.001f);
+        EXPECT_NEAR(200.0f, e, 0.05f);  // x = 200 (final position held)
+        EXPECT_NEAR(0.0f, f, 0.05f);    // y = 0
+    }
+
+    destroy_player(p, root);
+}
+
+TEST_F(SVGPlayerTest, AnimateMotion_RemoveClearsAfterDur)
+{
+    // Path: M 0 0 L 200 0
+    // Single segment: (0,0)->(200,0), length=200
+    // dur=2s, fill=remove
+    //
+    // Seek to 3s (past the 2s duration).
+    // With fill=remove, the override should be removed:
+    // debug function returns false (no transform override).
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"300\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"20\" height=\"20\" fill=\"#000\">"
+        "    <animateMotion path=\"M 0 0 L 200 0\" dur=\"2s\" fill=\"remove\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_NE((psx_svg_player*)NULL, p);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    ASSERT_TRUE(n != NULL);
+
+    psx_svg_player_play(p);
+
+    // Seek past duration: t=3s > dur=2s, fill=remove => no transform override
+    psx_svg_player_seek(p, 3.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_FALSE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+    }
+
+    destroy_player(p, root);
+}
+
+TEST_F(SVGPlayerTest, AnimateMotion_RotateAuto_TangentAngle)
+{
+    // Path: M 0 0 L 100 0 L 100 100
+    // Two segments: (0,0)->(100,0) length=100, (100,0)->(100,100) length=100
+    // Total length = 200, dur=2s, rotate="auto", fill="freeze"
+    //
+    // At t=0.5s (normalized 0.25): distance=50, on horizontal segment
+    //   tangent angle = atan2(0, 100) = 0 degrees
+    //   position = (50, 0)
+    //   matrix = [cos(0), sin(0), -sin(0), cos(0), 50, 0] = [1, 0, 0, 1, 50, 0]
+    //
+    // At t=1.5s (normalized 0.75): distance=150, on vertical segment
+    //   tangent angle = atan2(100, 0) = 90 degrees = pi/2
+    //   position = (100, 50)
+    //   matrix = [cos(90), sin(90), -sin(90), cos(90), 100, 50] = [0, 1, -1, 0, 100, 50]
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"200\" height=\"200\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
+        "    <animateMotion path=\"M 0 0 L 100 0 L 100 100\" dur=\"2s\" rotate=\"auto\" fill=\"freeze\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_NE((psx_svg_player*)NULL, p);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    ASSERT_TRUE(n != NULL);
+
+    psx_svg_player_play(p);
+
+    // t=0.5s: on horizontal segment, tangent=0 deg
+    // Expected: a=cos(0)=1, b=sin(0)=0, c=-sin(0)=0, d=cos(0)=1, e=50, f=0
+    psx_svg_player_seek(p, 0.5f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        EXPECT_NEAR(1.0f, a, 0.05f);   // cos(0)
+        EXPECT_NEAR(0.0f, b, 0.05f);   // sin(0)
+        EXPECT_NEAR(0.0f, c, 0.05f);   // -sin(0)
+        EXPECT_NEAR(1.0f, d, 0.05f);   // cos(0)
+        EXPECT_NEAR(50.0f, e, 0.05f);  // x position
+        EXPECT_NEAR(0.0f, f, 0.05f);   // y position
+    }
+
+    // t=1.5s: on vertical segment, tangent=90 deg
+    // Expected: a=cos(90)~0, b=sin(90)~1, c=-sin(90)~-1, d=cos(90)~0, e=100, f=50
+    psx_svg_player_seek(p, 1.5f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        EXPECT_NEAR(0.0f, a, 0.05f);    // cos(90)
+        EXPECT_NEAR(1.0f, b, 0.05f);    // sin(90)
+        EXPECT_NEAR(-1.0f, c, 0.05f);   // -sin(90)
+        EXPECT_NEAR(0.0f, d, 0.05f);    // cos(90)
+        EXPECT_NEAR(100.0f, e, 0.05f);  // x position
+        EXPECT_NEAR(50.0f, f, 0.05f);   // y position
+    }
+
+    destroy_player(p, root);
+}
+
+TEST_F(SVGPlayerTest, AnimateMotion_RotateAutoReverse)
+{
+    // Path: M 0 0 L 100 0 L 100 100
+    // Same path as above, rotate="auto-reverse" => angle = tangent + 180 degrees
+    // dur=2s, fill="freeze"
+    //
+    // At t=0.5s: tangent=0 deg, auto-reverse => 0+180=180 deg
+    //   position = (50, 0)
+    //   matrix = [cos(180), sin(180), -sin(180), cos(180), 50, 0] = [-1, 0, 0, -1, 50, 0]
+    //
+    // At t=1.5s: tangent=90 deg, auto-reverse => 90+180=270 deg
+    //   position = (100, 50)
+    //   matrix = [cos(270), sin(270), -sin(270), cos(270), 100, 50] = [0, -1, 1, 0, 100, 50]
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"200\" height=\"200\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
+        "    <animateMotion path=\"M 0 0 L 100 0 L 100 100\" dur=\"2s\" rotate=\"auto-reverse\" fill=\"freeze\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_NE((psx_svg_player*)NULL, p);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    ASSERT_TRUE(n != NULL);
+
+    psx_svg_player_play(p);
+
+    // t=0.5s: tangent=0 deg + 180 = 180 deg
+    // Expected: a=cos(180)=-1, b=sin(180)~0, c=-sin(180)~0, d=cos(180)=-1, e=50, f=0
+    psx_svg_player_seek(p, 0.5f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        EXPECT_NEAR(-1.0f, a, 0.05f);  // cos(180)
+        EXPECT_NEAR(0.0f, b, 0.05f);   // sin(180)
+        EXPECT_NEAR(0.0f, c, 0.05f);   // -sin(180)
+        EXPECT_NEAR(-1.0f, d, 0.05f);  // cos(180)
+        EXPECT_NEAR(50.0f, e, 0.05f);  // x position
+        EXPECT_NEAR(0.0f, f, 0.05f);   // y position
+    }
+
+    // t=1.5s: tangent=90 deg + 180 = 270 deg
+    // Expected: a=cos(270)~0, b=sin(270)~-1, c=-sin(270)~1, d=cos(270)~0, e=100, f=50
+    psx_svg_player_seek(p, 1.5f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        EXPECT_NEAR(0.0f, a, 0.05f);    // cos(270)
+        EXPECT_NEAR(-1.0f, b, 0.05f);   // sin(270)
+        EXPECT_NEAR(1.0f, c, 0.05f);    // -sin(270)
+        EXPECT_NEAR(0.0f, d, 0.05f);    // cos(270)
+        EXPECT_NEAR(100.0f, e, 0.05f);  // x position
+        EXPECT_NEAR(50.0f, f, 0.05f);   // y position
+    }
+
+    destroy_player(p, root);
+}
+
+TEST_F(SVGPlayerTest, AnimateMotion_RotateFixed_45Degrees)
+{
+    // Path: M 0 0 L 200 0
+    // Single segment: (0,0)->(200,0), length=200
+    // dur=2s, rotate="45", fill="freeze"
+    //
+    // At t=1.0s (normalized 0.5): distance=100, position=(100, 0)
+    //   Fixed 45 degree rotation:
+    //   a=cos(45)~0.707, b=sin(45)~0.707, c=-sin(45)~-0.707, d=cos(45)~0.707
+    //   e=100, f=0
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"300\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
+        "    <animateMotion path=\"M 0 0 L 200 0\" dur=\"2s\" rotate=\"45\" fill=\"freeze\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_NE((psx_svg_player*)NULL, p);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    ASSERT_TRUE(n != NULL);
+
+    psx_svg_player_play(p);
+
+    // t=1.0s: position (100, 0), fixed 45 deg rotation
+    // Expected: a~0.707, b~0.707, c~-0.707, d~0.707, e=100, f=0
+    psx_svg_player_seek(p, 1.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        EXPECT_NEAR(0.707f, a, 0.05f);   // cos(45)
+        EXPECT_NEAR(0.707f, b, 0.05f);   // sin(45)
+        EXPECT_NEAR(-0.707f, c, 0.05f);  // -sin(45)
+        EXPECT_NEAR(0.707f, d, 0.05f);   // cos(45)
+        EXPECT_NEAR(100.0f, e, 0.05f);   // x position
+        EXPECT_NEAR(0.0f, f, 0.05f);     // y position
+    }
+
+    destroy_player(p, root);
+}
+
+TEST_F(SVGPlayerTest, AnimateMotion_FromTo_NoPath)
+{
+    // No path attribute — uses from/to fallback.
+    // from="0,0" to="200,100", dur=2s, fill=freeze
+    //
+    // At t=1.0s (midpoint, normalized 0.5):
+    //   position = (0,0) + 0.5 * ((200,100) - (0,0)) = (100, 50)
+    //   Expected transform override: (1, 0, 0, 1, 100, 50)
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"300\" height=\"200\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
+        "    <animateMotion from=\"0,0\" to=\"200,100\" dur=\"2s\" fill=\"freeze\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_NE((psx_svg_player*)NULL, p);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    ASSERT_TRUE(n != NULL);
+
+    psx_svg_player_play(p);
+
+    // t=1.0s: midpoint of 2s duration => position (100, 50)
+    psx_svg_player_seek(p, 1.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        EXPECT_NEAR(1.0f, a, 0.001f);
+        EXPECT_NEAR(0.0f, b, 0.001f);
+        EXPECT_NEAR(0.0f, c, 0.001f);
+        EXPECT_NEAR(1.0f, d, 0.001f);
+        EXPECT_NEAR(100.0f, e, 0.05f);  // x = 100 (midpoint)
+        EXPECT_NEAR(50.0f, f, 0.05f);   // y = 50 (midpoint)
+    }
+
+    destroy_player(p, root);
+}
+
+TEST_F(SVGPlayerTest, AnimateMotion_NoPathNoFromTo_NoOverride)
+{
+    // No path, no from, no to — should produce no transform override.
+    // dur=2s, fill=freeze
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
+        "    <animateMotion dur=\"2s\" fill=\"freeze\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_NE((psx_svg_player*)NULL, p);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    ASSERT_TRUE(n != NULL);
+
+    psx_svg_player_play(p);
+
+    // t=1.0s: no path, no from/to => no transform override
+    psx_svg_player_seek(p, 1.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_FALSE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+    }
+
+    destroy_player(p, root);
+}

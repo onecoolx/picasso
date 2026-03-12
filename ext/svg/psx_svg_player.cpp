@@ -31,6 +31,7 @@
 #include "psx_svg_parser.h"
 
 #include <string.h>
+#include <math.h>
 
 static INLINE void _anim_state_reset(psx_svg_anim_state* s)
 {
@@ -48,8 +49,11 @@ static INLINE bool _is_supported_anim_attr(psx_svg_attr_type a)
            || a == SVG_ATTR_OPACITY
            || a == SVG_ATTR_RX || a == SVG_ATTR_RY
            || a == SVG_ATTR_CX || a == SVG_ATTR_CY || a == SVG_ATTR_R
+           || a == SVG_ATTR_X1 || a == SVG_ATTR_Y1
+           || a == SVG_ATTR_X2 || a == SVG_ATTR_Y2
            || a == SVG_ATTR_STROKE_WIDTH
            || a == SVG_ATTR_FILL_OPACITY
+           || a == SVG_ATTR_STROKE_OPACITY
            || a == SVG_ATTR_GRADIENT_STOP_OPACITY
            || a == SVG_ATTR_FILL
            || a == SVG_ATTR_TRANSFORM;
@@ -1544,7 +1548,7 @@ static INLINE bool _anim_eval_transform_rotate_discrete(const psx_svg_anim_item*
 
     // Rotate values are stored in the transform-values blob; first number is angle in degrees.
     float angle_deg = (vlen >= 1) ? base[0] : 0.0f;
-    float angle_rad = angle_deg * (M_PI / 180.0f);
+    float angle_rad = (float)(angle_deg * (M_PI / 180.0f));
     float cs = (float)cosf(angle_rad);
     float sn = (float)sinf(angle_rad);
 
@@ -1770,8 +1774,561 @@ static INLINE bool _anim_eval_transform_dispatch(const psx_svg_anim_item* it, fl
     }
 }
 
+/* ── Motion path mini-parser (M/m, L/l) ────────────────────────────── */
+
+typedef struct {
+    float* xs;       /* mem_malloc allocated x coordinate array */
+    float* ys;       /* mem_malloc allocated y coordinate array */
+    uint32_t count;  /* current point count */
+    uint32_t cap;    /* array capacity */
+} _motion_path_points;
+
+static void _motion_path_destroy(_motion_path_points* pts)
+{
+    if (!pts) {
+        return;
+    }
+    if (pts->xs) {
+        mem_free(pts->xs);
+        pts->xs = NULL;
+    }
+    if (pts->ys) {
+        mem_free(pts->ys);
+        pts->ys = NULL;
+    }
+    pts->count = 0;
+    pts->cap = 0;
+}
+
+static bool _motion_path_push(_motion_path_points* pts, float x, float y)
+{
+    if (!pts) {
+        return false;
+    }
+    if (pts->count >= pts->cap) {
+        uint32_t new_cap = pts->cap ? pts->cap * 2 : 8;
+        float* nxs = (float*)mem_realloc(pts->xs, new_cap * sizeof(float));
+        float* nys = (float*)mem_realloc(pts->ys, new_cap * sizeof(float));
+        if (!nxs || !nys) {
+            /* On partial realloc failure, keep old pointers valid for cleanup */
+            if (nxs && nxs != pts->xs) {
+                mem_free(nxs);
+            }
+            if (nys && nys != pts->ys) {
+                mem_free(nys);
+            }
+            return false;
+        }
+        pts->xs = nxs;
+        pts->ys = nys;
+        pts->cap = new_cap;
+    }
+    pts->xs[pts->count] = x;
+    pts->ys[pts->count] = y;
+    pts->count++;
+    return true;
+}
+
+/* Skip whitespace and commas in path string. Returns new position. */
+static uint32_t _motion_path_skip_ws(const char* s, uint32_t pos, uint32_t len)
+{
+    while (pos < len && (s[pos] == ' ' || s[pos] == '\t' || s[pos] == '\r'
+                         || s[pos] == '\n' || s[pos] == ',')) {
+        pos++;
+    }
+    return pos;
+}
+
+/* Parse a float number from path string starting at pos.
+ * Returns the position after the number, or the same pos if no number found.
+ * Writes the parsed value into *out. */
+static uint32_t _motion_path_parse_float(const char* s, uint32_t pos, uint32_t len, float* out)
+{
+    uint32_t start = pos;
+    if (pos >= len) {
+        return pos;
+    }
+
+    /* optional sign */
+    if (s[pos] == '+' || s[pos] == '-') {
+        pos++;
+    }
+
+    bool has_digits = false;
+
+    /* integer part */
+    while (pos < len && s[pos] >= '0' && s[pos] <= '9') {
+        pos++;
+        has_digits = true;
+    }
+
+    /* fractional part */
+    if (pos < len && s[pos] == '.') {
+        pos++;
+        while (pos < len && s[pos] >= '0' && s[pos] <= '9') {
+            pos++;
+            has_digits = true;
+        }
+    }
+
+    if (!has_digits) {
+        return start;
+    }
+
+    /* optional exponent */
+    if (pos < len && (s[pos] == 'e' || s[pos] == 'E')) {
+        uint32_t epos = pos + 1;
+        if (epos < len && (s[epos] == '+' || s[epos] == '-')) {
+            epos++;
+        }
+        bool has_exp_digits = false;
+        while (epos < len && s[epos] >= '0' && s[epos] <= '9') {
+            epos++;
+            has_exp_digits = true;
+        }
+        if (has_exp_digits) {
+            pos = epos;
+        }
+    }
+
+    /* Convert the substring to float. We need a null-terminated copy. */
+    {
+        char buf[64];
+        uint32_t slen = pos - start;
+        if (slen >= sizeof(buf)) {
+            slen = sizeof(buf) - 1;
+        }
+        memcpy(buf, s + start, slen);
+        buf[slen] = '\0';
+        *out = (float)atof(buf);
+    }
+    return pos;
+}
+
+/*
+ * Parse SVG path string into line segment point array.
+ * Supports: M/m (moveTo), L/l (lineTo), H/h (horizontal lineTo),
+ *           V/v (vertical lineTo), Z/z (closePath).
+ * Skips unsupported commands (C/S/Q/T/A) and continues parsing.
+ * Returns true if at least 1 point was parsed.
+ */
+static bool _motion_path_parse(const char* path_str, uint32_t len,
+                               _motion_path_points* out)
+{
+    if (!out) {
+        return false;
+    }
+    out->xs = NULL;
+    out->ys = NULL;
+    out->count = 0;
+    out->cap = 0;
+
+    if (!path_str || len == 0) {
+        return false;
+    }
+
+    float cur_x = 0.0f;
+    float cur_y = 0.0f;
+    float start_x = 0.0f;
+    float start_y = 0.0f;
+    char cmd = 0;
+    uint32_t pos = 0;
+
+    while (pos < len) {
+        pos = _motion_path_skip_ws(path_str, pos, len);
+        if (pos >= len) {
+            break;
+        }
+
+        char ch = path_str[pos];
+
+        /* Check if this is a command letter */
+        if (ch == 'M' || ch == 'm' || ch == 'L' || ch == 'l'
+            || ch == 'H' || ch == 'h' || ch == 'V' || ch == 'v') {
+            cmd = ch;
+            pos++;
+        } else if (ch == 'Z' || ch == 'z') {
+            /* closePath — add line segment back to most recent M point */
+            pos++;
+            if (cur_x != start_x || cur_y != start_y) {
+                if (!_motion_path_push(out, start_x, start_y)) {
+                    _motion_path_destroy(out);
+                    return false;
+                }
+                cur_x = start_x;
+                cur_y = start_y;
+            }
+            cmd = 0;
+            continue;
+        } else if ((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z')) {
+            /* Unrecognized command — skip it and continue */
+            cmd = 0;
+            pos++;
+            continue;
+        }
+        /* else: implicit repeat of previous command (number follows directly) */
+
+        if (cmd == 0) {
+            /* No active command and not a number start — skip */
+            if (!((ch >= '0' && ch <= '9') || ch == '-' || ch == '+' || ch == '.')) {
+                pos++;
+                continue;
+            }
+            /* Stray number with no command context — skip it */
+            {
+                float dummy = 0.0f;
+                uint32_t npos = _motion_path_parse_float(path_str, pos, len, &dummy);
+                if (npos == pos) {
+                    pos++;
+                } else {
+                    pos = npos;
+                }
+            }
+            continue;
+        }
+
+        /* H/h: horizontal lineTo — parse one float (x), keep current y */
+        if (cmd == 'H' || cmd == 'h') {
+            pos = _motion_path_skip_ws(path_str, pos, len);
+            float x = 0.0f;
+            uint32_t npos = _motion_path_parse_float(path_str, pos, len, &x);
+            if (npos == pos) {
+                cmd = 0;
+                continue;
+            }
+            pos = npos;
+
+            if (cmd == 'h') {
+                x += cur_x;
+            }
+
+            if (!_motion_path_push(out, x, cur_y)) {
+                _motion_path_destroy(out);
+                return false;
+            }
+            cur_x = x;
+            continue;
+        }
+
+        /* V/v: vertical lineTo — parse one float (y), keep current x */
+        if (cmd == 'V' || cmd == 'v') {
+            pos = _motion_path_skip_ws(path_str, pos, len);
+            float y = 0.0f;
+            uint32_t npos = _motion_path_parse_float(path_str, pos, len, &y);
+            if (npos == pos) {
+                cmd = 0;
+                continue;
+            }
+            pos = npos;
+
+            if (cmd == 'v') {
+                y += cur_y;
+            }
+
+            if (!_motion_path_push(out, cur_x, y)) {
+                _motion_path_destroy(out);
+                return false;
+            }
+            cur_y = y;
+            continue;
+        }
+
+        /* Parse coordinate pair for M/m/L/l */
+        pos = _motion_path_skip_ws(path_str, pos, len);
+        float x = 0.0f;
+        float y = 0.0f;
+        uint32_t npos = _motion_path_parse_float(path_str, pos, len, &x);
+        if (npos == pos) {
+            /* No number found — command has no more coordinates */
+            cmd = 0;
+            continue;
+        }
+        pos = npos;
+
+        pos = _motion_path_skip_ws(path_str, pos, len);
+        npos = _motion_path_parse_float(path_str, pos, len, &y);
+        if (npos == pos) {
+            /* Only one number — malformed, skip */
+            cmd = 0;
+            continue;
+        }
+        pos = npos;
+
+        bool is_relative = (cmd == 'm' || cmd == 'l');
+        if (is_relative) {
+            x += cur_x;
+            y += cur_y;
+        }
+
+        if (!_motion_path_push(out, x, y)) {
+            _motion_path_destroy(out);
+            return false;
+        }
+
+        cur_x = x;
+        cur_y = y;
+
+        /* After M/m, record the start point for Z/z closePath */
+        if (cmd == 'M' || cmd == 'm') {
+            start_x = cur_x;
+            start_y = cur_y;
+        }
+
+        /* After M/m, implicit subsequent coordinates are treated as L/l */
+        if (cmd == 'M') {
+            cmd = 'L';
+        } else if (cmd == 'm') {
+            cmd = 'l';
+        }
+    }
+
+    return out->count > 0;
+}
+
+/* ── Arc-length parameterization ───────────────────────────────────── */
+
+typedef struct {
+    float* cum_lengths;  /* mem_malloc allocated cumulative arc length array */
+    float total_length;  /* total arc length */
+} _motion_arc_table;
+
+static void _motion_arc_build(const _motion_path_points* pts, _motion_arc_table* out)
+{
+    out->cum_lengths = NULL;
+    out->total_length = 0.0f;
+
+    if (!pts || pts->count == 0) {
+        return;
+    }
+
+    out->cum_lengths = (float*)mem_malloc(pts->count * sizeof(float));
+    if (!out->cum_lengths) {
+        return;
+    }
+
+    out->cum_lengths[0] = 0.0f;
+
+    uint32_t i;
+    for (i = 1; i < pts->count; i++) {
+        float dx = pts->xs[i] - pts->xs[i - 1];
+        float dy = pts->ys[i] - pts->ys[i - 1];
+        float seg_len = sqrtf(dx * dx + dy * dy);
+        out->cum_lengths[i] = out->cum_lengths[i - 1] + seg_len;
+    }
+
+    out->total_length = out->cum_lengths[pts->count - 1];
+}
+
+static void _motion_arc_destroy(_motion_arc_table* tbl)
+{
+    if (!tbl) {
+        return;
+    }
+    if (tbl->cum_lengths) {
+        mem_free(tbl->cum_lengths);
+        tbl->cum_lengths = NULL;
+    }
+    tbl->total_length = 0.0f;
+}
+
+static void _motion_arc_position(const _motion_path_points* pts,
+                                 const _motion_arc_table* tbl,
+                                 float t, float* out_x, float* out_y)
+{
+    if (!pts || pts->count == 0 || !tbl || !tbl->cum_lengths) {
+        *out_x = 0.0f;
+        *out_y = 0.0f;
+        return;
+    }
+
+    /* Single point or zero total length → return first point */
+    if (pts->count == 1 || tbl->total_length <= 0.0f) {
+        *out_x = pts->xs[0];
+        *out_y = pts->ys[0];
+        return;
+    }
+
+    /* Clamp boundaries */
+    if (t <= 0.0f) {
+        *out_x = pts->xs[0];
+        *out_y = pts->ys[0];
+        return;
+    }
+    if (t >= 1.0f) {
+        *out_x = pts->xs[pts->count - 1];
+        *out_y = pts->ys[pts->count - 1];
+        return;
+    }
+
+    float target_dist = t * tbl->total_length;
+
+    /* Binary search for the segment containing target_dist */
+    uint32_t lo = 0;
+    uint32_t hi = pts->count - 1;
+    while (lo + 1 < hi) {
+        uint32_t mid = (lo + hi) / 2;
+        if (tbl->cum_lengths[mid] <= target_dist) {
+            lo = mid;
+        } else {
+            hi = mid;
+        }
+    }
+
+    /* lo is the start index of the segment, hi = lo + 1 */
+    float seg_start = tbl->cum_lengths[lo];
+    float seg_end = tbl->cum_lengths[hi];
+    float seg_len = seg_end - seg_start;
+
+    float frac = 0.0f;
+    if (seg_len > 0.0f) {
+        frac = (target_dist - seg_start) / seg_len;
+    }
+
+    *out_x = pts->xs[lo] + frac * (pts->xs[hi] - pts->xs[lo]);
+    *out_y = pts->ys[lo] + frac * (pts->ys[hi] - pts->ys[lo]);
+}
+
+/*
+ * Compute the tangent angle (radians) of the motion path at normalized time t.
+ * Returns atan2(dy, dx) of the segment containing the position at time t.
+ * For single-point paths or zero-length paths, returns 0.
+ */
+static float _motion_arc_tangent_angle(const _motion_path_points* pts,
+                                       const _motion_arc_table* tbl,
+                                       float t)
+{
+    if (!pts || pts->count < 2 || !tbl || !tbl->cum_lengths || tbl->total_length <= 0.0f) {
+        return 0.0f;
+    }
+
+    float ct = _anim_clampf(t, 0.0f, 1.0f);
+    float target_dist = ct * tbl->total_length;
+
+    /* Binary search for the segment containing target_dist */
+    uint32_t lo = 0;
+    uint32_t hi = pts->count - 1;
+    while (lo + 1 < hi) {
+        uint32_t mid = (lo + hi) / 2;
+        if (tbl->cum_lengths[mid] <= target_dist) {
+            lo = mid;
+        } else {
+            hi = mid;
+        }
+    }
+
+    /* Compute direction of segment lo -> hi */
+    float dx = pts->xs[hi] - pts->xs[lo];
+    float dy = pts->ys[hi] - pts->ys[lo];
+
+    return atan2f(dy, dx);
+}
+
 // Note: psx_svg_attr_values_list is a variable-sized blob (length + data[]).
 // The element layout depends on which attribute it represents.
+
+#define _MOTION_PI 3.14159265358979f
+
+/*
+ * Evaluate an <animateMotion> item at document time doc_t.
+ * On success, writes a transform matrix into out_a..out_f.
+ * Without rotate: pure translate (1,0,0,1,x,y).
+ * With rotate: combined translate+rotate [cos(a),sin(a),-sin(a),cos(a),x,y].
+ * Returns false if the animation is not active or has no valid path.
+ */
+static bool _anim_eval_motion(const psx_svg_anim_item* it, float doc_t,
+                              float* out_a, float* out_b, float* out_c,
+                              float* out_d, float* out_e, float* out_f)
+{
+    if (!it || !out_a || !out_b || !out_c || !out_d || !out_e || !out_f) {
+        return false;
+    }
+
+    /* Defaults: identity */
+    *out_a = 1.0f;
+    *out_b = 0.0f;
+    *out_c = 0.0f;
+    *out_d = 1.0f;
+    *out_e = 0.0f;
+    *out_f = 0.0f;
+
+    /* 1. Resolve local time */
+    float t = 0.0f;
+    if (!_anim_resolve_local_t(it, doc_t, &t)) {
+        return false;
+    }
+
+    /* 2. Get path string from anim_node's SVG_ATTR_PATH attribute */
+    const psx_svg_attr* apath = _find_attr(it->anim_node, SVG_ATTR_PATH);
+    if (!apath || apath->val_type != SVG_ATTR_VALUE_PTR || !apath->value.sval) {
+        /* No path attribute — try from/to fallback */
+        const psx_svg_attr* afrom = _find_attr(it->anim_node, SVG_ATTR_FROM);
+        const psx_svg_attr* ato = _find_attr(it->anim_node, SVG_ATTR_TO);
+        if (!afrom || !ato
+            || afrom->val_type != SVG_ATTR_VALUE_PTR || !afrom->value.val
+            || ato->val_type != SVG_ATTR_VALUE_PTR || !ato->value.val) {
+            return false;
+        }
+        const psx_svg_attr_values_list* flist = (const psx_svg_attr_values_list*)afrom->value.val;
+        const psx_svg_attr_values_list* tlist = (const psx_svg_attr_values_list*)ato->value.val;
+        if (flist->length < 1 || tlist->length < 1) {
+            return false;
+        }
+        const psx_svg_point* fp = (const psx_svg_point*)(&flist->data[0]);
+        const psx_svg_point* tp = (const psx_svg_point*)(&tlist->data[0]);
+        *out_e = fp->x + t * (tp->x - fp->x);
+        *out_f = fp->y + t * (tp->y - fp->y);
+        return true;
+    }
+
+    const char* path_str = apath->value.sval;
+    uint32_t path_len = (uint32_t)strlen(path_str);
+
+    /* 3. Parse path string */
+    _motion_path_points pts;
+    if (!_motion_path_parse(path_str, path_len, &pts)) {
+        return false;
+    }
+
+    /* 4. Build arc-length table */
+    _motion_arc_table arc;
+    _motion_arc_build(&pts, &arc);
+
+    /* 5. Interpolate position */
+    float x = 0.0f;
+    float y = 0.0f;
+    _motion_arc_position(&pts, &arc, t, &x, &y);
+
+    /* 6. Handle rotate attribute */
+    const psx_svg_attr* arot = _find_attr(it->anim_node, SVG_ATTR_ROTATE);
+    if (arot) {
+        float angle_rad = 0.0f;
+        if (arot->class_type == SVG_ATTR_VALUE_INHERIT) {
+            /* rotate="auto" (fval=0) or rotate="auto-reverse" (fval=180) */
+            float tangent = _motion_arc_tangent_angle(&pts, &arc, t);
+            float extra_deg = arot->value.fval; /* 0 for auto, 180 for auto-reverse */
+            angle_rad = tangent + extra_deg * _MOTION_PI / 180.0f;
+        } else {
+            /* Numeric rotate value in degrees */
+            angle_rad = arot->value.fval * _MOTION_PI / 180.0f;
+        }
+        float ca = cosf(angle_rad);
+        float sa = sinf(angle_rad);
+        *out_a = ca;
+        *out_b = sa;
+        *out_c = -sa;
+        *out_d = ca;
+    }
+    /* else: no rotate → pure translate (a=1,b=0,c=0,d=1 already set) */
+
+    *out_e = x;
+    *out_f = y;
+
+    /* 7. Cleanup */
+    _motion_arc_destroy(&arc);
+    _motion_path_destroy(&pts);
+
+    return true;
+}
 
 static INLINE bool _anim_eval_set(const psx_svg_anim_item* it, float doc_t, float* out_v, bool* out_hold)
 {
@@ -1967,6 +2524,8 @@ static void _collect_anims(psx_svg_player* p, const psx_svg_node* node)
 
         const psx_svg_node* target = node->parent();
         if (t == SVG_TAG_ANIMATE_MOTION) {
+            // animateMotion implicitly targets transform (no attributeName needed)
+            target_attr = SVG_ATTR_TRANSFORM;
             // for animateMotion, allow mpath child; real resolve later
             (void)_find_child_mpath(node);
         }
@@ -2279,10 +2838,18 @@ void psx_svg_player_seek(psx_svg_player* p, float seconds)
     for (uint32_t i = 0; i < n; i++) {
         const psx_svg_anim_item* it = psx_array_get(&p->anims, i, psx_svg_anim_item);
 
-        if (!(it->tag == SVG_TAG_ANIMATE || it->tag == SVG_TAG_SET || it->tag == SVG_TAG_ANIMATE_COLOR || it->tag == SVG_TAG_ANIMATE_TRANSFORM)) {
+        if (!(it->tag == SVG_TAG_ANIMATE || it->tag == SVG_TAG_SET || it->tag == SVG_TAG_ANIMATE_COLOR || it->tag == SVG_TAG_ANIMATE_TRANSFORM || it->tag == SVG_TAG_ANIMATE_MOTION)) {
             continue;
         }
         if (!_is_supported_anim_attr(it->target_attr)) {
+            continue;
+        }
+
+        if (it->tag == SVG_TAG_ANIMATE_MOTION) {
+            float a = 1, b = 0, c = 0, d = 1, e = 0, f = 0;
+            if (_anim_eval_motion(it, p->time_sec, &a, &b, &c, &d, &e, &f)) {
+                _anim_state_set_transform(&p->anim_state, it->target_node, a, b, c, d, e, f);
+            }
             continue;
         }
 
@@ -2343,10 +2910,18 @@ void psx_svg_player_tick(psx_svg_player* p, float delta_seconds)
     for (uint32_t i = 0; i < n; i++) {
         const psx_svg_anim_item* it = psx_array_get(&p->anims, i, psx_svg_anim_item);
 
-        if (!(it->tag == SVG_TAG_ANIMATE || it->tag == SVG_TAG_SET || it->tag == SVG_TAG_ANIMATE_COLOR || it->tag == SVG_TAG_ANIMATE_TRANSFORM)) {
+        if (!(it->tag == SVG_TAG_ANIMATE || it->tag == SVG_TAG_SET || it->tag == SVG_TAG_ANIMATE_COLOR || it->tag == SVG_TAG_ANIMATE_TRANSFORM || it->tag == SVG_TAG_ANIMATE_MOTION)) {
             continue;
         }
         if (!_is_supported_anim_attr(it->target_attr)) {
+            continue;
+        }
+
+        if (it->tag == SVG_TAG_ANIMATE_MOTION) {
+            float a = 1, b = 0, c = 0, d = 1, e = 0, f = 0;
+            if (_anim_eval_motion(it, p->time_sec, &a, &b, &c, &d, &e, &f)) {
+                _anim_state_set_transform(&p->anim_state, it->target_node, a, b, c, d, e, f);
+            }
             continue;
         }
 
@@ -2480,10 +3055,18 @@ void psx_svg_player_trigger(psx_svg_player* p, const char* target_id, const char
         if (!it) {
             continue;
         }
-        if (!(it->tag == SVG_TAG_ANIMATE || it->tag == SVG_TAG_SET || it->tag == SVG_TAG_ANIMATE_COLOR || it->tag == SVG_TAG_ANIMATE_TRANSFORM)) {
+        if (!(it->tag == SVG_TAG_ANIMATE || it->tag == SVG_TAG_SET || it->tag == SVG_TAG_ANIMATE_COLOR || it->tag == SVG_TAG_ANIMATE_TRANSFORM || it->tag == SVG_TAG_ANIMATE_MOTION)) {
             continue;
         }
         if (!_is_supported_anim_attr(it->target_attr)) {
+            continue;
+        }
+
+        if (it->tag == SVG_TAG_ANIMATE_MOTION) {
+            float a = 1, b = 0, c = 0, d = 1, e = 0, f = 0;
+            if (_anim_eval_motion(it, p->time_sec, &a, &b, &c, &d, &e, &f)) {
+                _anim_state_set_transform(&p->anim_state, it->target_node, a, b, c, d, e, f);
+            }
             continue;
         }
 
