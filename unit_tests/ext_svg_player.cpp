@@ -3726,3 +3726,292 @@ TEST_F(SVGPlayerTest, AnimateMotion_NoPathNoFromTo_NoOverride)
 
     destroy_player(p, root);
 }
+
+// ---------------------------------------------------------------------------
+// Property 1: Motion path parse-format round trip
+// Feature: svg-shape-animation, Property 1: Motion path parse-format round trip
+// **Validates: Requirements 4.8, 4.9**
+//
+// For any valid sequence of 2–20 (x, y) points with coordinates in [-1000, 1000],
+// formatting as "M x0 y0 L x1 y1 ..." and re-parsing SHALL produce an equivalent
+// point sequence within tolerance 0.01f.
+// ---------------------------------------------------------------------------
+TEST_F(SVGPlayerTest, MotionPath_RoundTrip_Property)
+{
+    // Hand-written LCG random generator (C++98, no STL)
+    uint32_t seed = 12345u;
+    const uint32_t NUM_ITERS = 100;
+
+    for (uint32_t iter = 0; iter < NUM_ITERS; iter++) {
+        // LCG: seed = seed * 1103515245 + 12345
+        seed = seed * 1103515245u + 12345u;
+        uint32_t npts = 2 + (seed >> 16) % 19; // 2..20 points
+
+        // Generate random points
+        float orig_xs[20];
+        float orig_ys[20];
+        for (uint32_t i = 0; i < npts; i++) {
+            seed = seed * 1103515245u + 12345u;
+            orig_xs[i] = ((float)(int32_t)(seed >> 8) / (float)(1 << 23)) * 1000.0f;
+            seed = seed * 1103515245u + 12345u;
+            orig_ys[i] = ((float)(int32_t)(seed >> 8) / (float)(1 << 23)) * 1000.0f;
+        }
+
+        // Format points into path string
+        char* path_str = psx_svg_player_debug_motion_path_format(orig_xs, orig_ys, npts);
+        ASSERT_TRUE(path_str != NULL) << "iter=" << iter << " format returned NULL";
+
+        // Parse back
+        float* parsed_xs = NULL;
+        float* parsed_ys = NULL;
+        uint32_t parsed_count = 0;
+        bool ok = psx_svg_player_debug_motion_path_parse(
+            path_str, (uint32_t)strlen(path_str),
+            &parsed_xs, &parsed_ys, &parsed_count);
+        EXPECT_TRUE(ok) << "iter=" << iter << " parse failed for: " << path_str;
+
+        if (ok) {
+            EXPECT_EQ(npts, parsed_count) << "iter=" << iter << " count mismatch";
+            uint32_t check_n = npts < parsed_count ? npts : parsed_count;
+            for (uint32_t i = 0; i < check_n; i++) {
+                EXPECT_NEAR(orig_xs[i], parsed_xs[i], 0.01f)
+                    << "iter=" << iter << " x[" << i << "] mismatch";
+                EXPECT_NEAR(orig_ys[i], parsed_ys[i], 0.01f)
+                    << "iter=" << iter << " y[" << i << "] mismatch";
+            }
+        }
+
+        psx_svg_player_debug_motion_path_free(parsed_xs, parsed_ys);
+        psx_svg_player_debug_motion_path_free_str(path_str);
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Property 2: Arc-length interpolation position correctness
+// Feature: svg-shape-animation, Property 2: Arc-length interpolation position correctness
+// **Validates: Requirements 5.3, 5.4, 5.5**
+//
+// For any motion path with 2–10 distinct points and total arc length > 0,
+// and for any t in [0,1]:
+//   (a) t=0 → first point
+//   (b) t=1 → last point
+//   (c) position lies on the correct segment at proportional distance
+// ---------------------------------------------------------------------------
+TEST_F(SVGPlayerTest, MotionArcLength_Position_Property)
+{
+    uint32_t seed = 67890u;
+    const uint32_t NUM_ITERS = 100;
+
+    for (uint32_t iter = 0; iter < NUM_ITERS; iter++) {
+        // Generate 2–10 random points
+        seed = seed * 1103515245u + 12345u;
+        uint32_t npts = 2 + (seed >> 16) % 9; // 2..10
+
+        float xs[10];
+        float ys[10];
+        for (uint32_t i = 0; i < npts; i++) {
+            seed = seed * 1103515245u + 12345u;
+            xs[i] = ((float)(int32_t)(seed >> 8) / (float)(1 << 23)) * 500.0f;
+            seed = seed * 1103515245u + 12345u;
+            ys[i] = ((float)(int32_t)(seed >> 8) / (float)(1 << 23)) * 500.0f;
+        }
+
+        // Compute total arc length independently
+        float total_len = 0.0f;
+        float seg_lens[10];
+        seg_lens[0] = 0.0f;
+        for (uint32_t i = 1; i < npts; i++) {
+            float dx = xs[i] - xs[i - 1];
+            float dy = ys[i] - ys[i - 1];
+            seg_lens[i] = sqrtf(dx * dx + dy * dy);
+            total_len += seg_lens[i];
+        }
+
+        if (total_len < 0.001f) {
+            continue; // skip degenerate paths
+        }
+
+        // (a) t=0 → first point
+        {
+            float ox = 0, oy = 0;
+            bool ok = psx_svg_player_debug_arc_length_position(xs, ys, npts, 0.0f, &ox, &oy);
+            EXPECT_TRUE(ok) << "iter=" << iter;
+            if (ok) {
+                EXPECT_NEAR(xs[0], ox, 0.01f) << "iter=" << iter << " t=0 x";
+                EXPECT_NEAR(ys[0], oy, 0.01f) << "iter=" << iter << " t=0 y";
+            }
+        }
+
+        // (b) t=1 → last point
+        {
+            float ox = 0, oy = 0;
+            bool ok = psx_svg_player_debug_arc_length_position(xs, ys, npts, 1.0f, &ox, &oy);
+            EXPECT_TRUE(ok) << "iter=" << iter;
+            if (ok) {
+                EXPECT_NEAR(xs[npts - 1], ox, 0.01f) << "iter=" << iter << " t=1 x";
+                EXPECT_NEAR(ys[npts - 1], oy, 0.01f) << "iter=" << iter << " t=1 y";
+            }
+        }
+
+        // (c) random t in (0,1) — verify position lies on correct segment
+        seed = seed * 1103515245u + 12345u;
+        float t = (float)(seed >> 8) / (float)(1 << 24); // [0, 1)
+        if (t <= 0.0f) { t = 0.01f; }
+        if (t >= 1.0f) { t = 0.99f; }
+
+        float target_dist = t * total_len;
+
+        // Find which segment and interpolate independently
+        float cum = 0.0f;
+        float expect_x = xs[npts - 1];
+        float expect_y = ys[npts - 1];
+        for (uint32_t i = 1; i < npts; i++) {
+            float next_cum = cum + seg_lens[i];
+            if (target_dist <= next_cum || i == npts - 1) {
+                float seg_t = 0.0f;
+                if (seg_lens[i] > 0.001f) {
+                    seg_t = (target_dist - cum) / seg_lens[i];
+                }
+                if (seg_t < 0.0f) { seg_t = 0.0f; }
+                if (seg_t > 1.0f) { seg_t = 1.0f; }
+                expect_x = xs[i - 1] + seg_t * (xs[i] - xs[i - 1]);
+                expect_y = ys[i - 1] + seg_t * (ys[i] - ys[i - 1]);
+                break;
+            }
+            cum = next_cum;
+        }
+
+        {
+            float ox = 0, oy = 0;
+            bool ok = psx_svg_player_debug_arc_length_position(xs, ys, npts, t, &ox, &oy);
+            EXPECT_TRUE(ok) << "iter=" << iter;
+            if (ok) {
+                EXPECT_NEAR(expect_x, ox, 0.1f) << "iter=" << iter << " t=" << t << " x";
+                EXPECT_NEAR(expect_y, oy, 0.1f) << "iter=" << iter << " t=" << t << " y";
+            }
+        }
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Property 3: animateMotion produces correct translate override
+// Feature: svg-shape-animation, Property 3: animateMotion produces correct translate override
+// **Validates: Requirements 6.2, 6.3**
+//
+// For any SVG with <animateMotion> containing a linear path (M + L segments,
+// 2–8 points) and any seek time within active duration, the transform override
+// (e, f) SHALL match the independently computed arc-length interpolated position
+// within tolerance 0.1f.
+// ---------------------------------------------------------------------------
+TEST_F(SVGPlayerTest, AnimateMotion_EndToEnd_Position_Property)
+{
+    uint32_t seed = 54321u;
+    const uint32_t NUM_ITERS = 100;
+
+    for (uint32_t iter = 0; iter < NUM_ITERS; iter++) {
+        // Generate 2–8 random points in [0, 500]
+        seed = seed * 1103515245u + 12345u;
+        uint32_t npts = 2 + (seed >> 16) % 7; // 2..8
+
+        float xs[8];
+        float ys[8];
+        for (uint32_t i = 0; i < npts; i++) {
+            seed = seed * 1103515245u + 12345u;
+            xs[i] = (float)((seed >> 16) % 500);
+            seed = seed * 1103515245u + 12345u;
+            ys[i] = (float)((seed >> 16) % 500);
+        }
+
+        // Compute total arc length
+        float total_len = 0.0f;
+        float seg_lens[8];
+        seg_lens[0] = 0.0f;
+        for (uint32_t i = 1; i < npts; i++) {
+            float dx = xs[i] - xs[i - 1];
+            float dy = ys[i] - ys[i - 1];
+            seg_lens[i] = sqrtf(dx * dx + dy * dy);
+            total_len += seg_lens[i];
+        }
+        if (total_len < 1.0f) {
+            continue; // skip degenerate
+        }
+
+        // Build SVG path string: "M x0 y0 L x1 y1 ..."
+        char path_buf[512];
+        int pos = sprintf(path_buf, "M %g %g", xs[0], ys[0]);
+        for (uint32_t i = 1; i < npts; i++) {
+            pos += sprintf(path_buf + pos, " L %g %g", xs[i], ys[i]);
+        }
+
+        // Build SVG document with dur=10s, fill=freeze
+        char svg_buf[1024];
+        sprintf(svg_buf,
+            "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"600\" height=\"600\">"
+            "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"5\" height=\"5\" fill=\"#000\">"
+            "    <animateMotion path=\"%s\" dur=\"10s\" fill=\"freeze\"/>"
+            "  </rect>"
+            "</svg>", path_buf);
+
+        // Create player
+        psx_result r = S_OK;
+        psx_svg_node* root = NULL;
+        psx_svg_player* p = create_player(svg_buf, &r, &root);
+        if (!p) {
+            continue; // skip if parse fails
+        }
+
+        const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+        if (!n) {
+            destroy_player(p, root);
+            continue;
+        }
+
+        psx_svg_player_play(p);
+
+        // Random seek time in [0, 10]
+        seed = seed * 1103515245u + 12345u;
+        float seek_t = (float)(seed >> 8) / (float)(1 << 24) * 10.0f;
+        if (seek_t > 10.0f) { seek_t = 10.0f; }
+        float norm_t = seek_t / 10.0f;
+        if (norm_t > 1.0f) { norm_t = 1.0f; }
+
+        // Independently compute expected position via arc-length
+        float target_dist = norm_t * total_len;
+        float expect_x = xs[npts - 1];
+        float expect_y = ys[npts - 1];
+        float cum = 0.0f;
+        for (uint32_t i = 1; i < npts; i++) {
+            float next_cum = cum + seg_lens[i];
+            if (target_dist <= next_cum || i == npts - 1) {
+                float seg_t = 0.0f;
+                if (seg_lens[i] > 0.001f) {
+                    seg_t = (target_dist - cum) / seg_lens[i];
+                }
+                if (seg_t < 0.0f) { seg_t = 0.0f; }
+                if (seg_t > 1.0f) { seg_t = 1.0f; }
+                expect_x = xs[i - 1] + seg_t * (xs[i] - xs[i - 1]);
+                expect_y = ys[i - 1] + seg_t * (ys[i] - ys[i - 1]);
+                break;
+            }
+            cum = next_cum;
+        }
+
+        // Seek and verify
+        psx_svg_player_seek(p, seek_t);
+        psx_svg_player_tick(p, 0.0f);
+
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        bool got = psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f);
+        EXPECT_TRUE(got) << "iter=" << iter << " seek=" << seek_t;
+        if (got) {
+            EXPECT_NEAR(1.0f, a, 0.001f) << "iter=" << iter;
+            EXPECT_NEAR(0.0f, b, 0.001f) << "iter=" << iter;
+            EXPECT_NEAR(0.0f, c, 0.001f) << "iter=" << iter;
+            EXPECT_NEAR(1.0f, d, 0.001f) << "iter=" << iter;
+            EXPECT_NEAR(expect_x, e, 0.1f) << "iter=" << iter << " seek=" << seek_t << " x";
+            EXPECT_NEAR(expect_y, f, 0.1f) << "iter=" << iter << " seek=" << seek_t << " y";
+        }
+
+        destroy_player(p, root);
+    }
+}

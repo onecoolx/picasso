@@ -94,6 +94,16 @@ void psx_svg_player_trigger(psx_svg_player* p, const char* target_id, const char
 // Returns node by element id, or NULL if not found.
 const psx_svg_node* psx_svg_player_get_node_by_id(const psx_svg_player* p, const char* id);
 
+// Debug test hooks for property-based testing of motion path internals.
+// These are NOT part of the public API — used only by unit tests.
+bool psx_svg_player_debug_motion_path_parse(const char* path_str, uint32_t len,
+                                            float** out_xs, float** out_ys, uint32_t* out_count);
+char* psx_svg_player_debug_motion_path_format(const float* xs, const float* ys, uint32_t count);
+void psx_svg_player_debug_motion_path_free(float* xs, float* ys);
+void psx_svg_player_debug_motion_path_free_str(char* str);
+bool psx_svg_player_debug_arc_length_position(const float* xs, const float* ys, uint32_t count,
+                                              float t, float* out_x, float* out_y);
+
 #ifdef __cplusplus
 }
 #endif
