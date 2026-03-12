@@ -32,7 +32,6 @@
 
 #include <string.h>
 #include <math.h>
-#include <stdio.h>
 
 static INLINE void _anim_state_reset(psx_svg_anim_state* s)
 {
@@ -1801,37 +1800,6 @@ static void _motion_path_destroy(_motion_path_points* pts)
     pts->cap = 0;
 }
 
-/*
- * Format _motion_path_points back into SVG path string: "M x y L x y L x y ..."
- * Allocates output buffer via mem_malloc; caller must mem_free.
- * Returns NULL on empty input or allocation failure.
- */
-static char* _motion_path_format(const _motion_path_points* pts)
-{
-    if (!pts || pts->count == 0) {
-        return NULL;
-    }
-    /* Estimate buffer size: "M " + number + " " + number = ~30 chars per point max */
-    uint32_t buf_cap = pts->count * 40 + 4;
-    char* buf = (char*)mem_malloc(buf_cap);
-    if (!buf) {
-        return NULL;
-    }
-    uint32_t pos = 0;
-    for (uint32_t i = 0; i < pts->count; i++) {
-        int n = 0;
-        if (i == 0) {
-            n = sprintf(buf + pos, "M %.6g %.6g", pts->xs[i], pts->ys[i]);
-        } else {
-            n = sprintf(buf + pos, " L %.6g %.6g", pts->xs[i], pts->ys[i]);
-        }
-        if (n > 0) {
-            pos += (uint32_t)n;
-        }
-    }
-    buf[pos] = '\0';
-    return buf;
-}
 
 static bool _motion_path_push(_motion_path_points* pts, float x, float y)
 {
@@ -3155,68 +3123,6 @@ const psx_svg_node* psx_svg_player_get_node_by_id(const psx_svg_player* p, const
     return ctx.result;
 }
 
-/* Debug test hooks for property-based testing of motion path internals */
-bool psx_svg_player_debug_motion_path_parse(const char* path_str, uint32_t len,
-                                            float** out_xs, float** out_ys, uint32_t* out_count)
-{
-    if (!path_str || !out_xs || !out_ys || !out_count) {
-        return false;
-    }
-    _motion_path_points pts;
-    if (!_motion_path_parse(path_str, len, &pts)) {
-        *out_xs = NULL;
-        *out_ys = NULL;
-        *out_count = 0;
-        return false;
-    }
-    *out_xs = pts.xs;
-    *out_ys = pts.ys;
-    *out_count = pts.count;
-    /* Caller takes ownership of xs/ys arrays; must mem_free them */
-    return true;
-}
-
-char* psx_svg_player_debug_motion_path_format(const float* xs, const float* ys, uint32_t count)
-{
-    if (!xs || !ys || count == 0) {
-        return NULL;
-    }
-    _motion_path_points pts;
-    pts.xs = (float*)xs;
-    pts.ys = (float*)ys;
-    pts.count = count;
-    pts.cap = count;
-    return _motion_path_format(&pts);
-}
-
-void psx_svg_player_debug_motion_path_free(float* xs, float* ys)
-{
-    if (xs) { mem_free(xs); }
-    if (ys) { mem_free(ys); }
-}
-
-void psx_svg_player_debug_motion_path_free_str(char* str)
-{
-    if (str) { mem_free(str); }
-}
-
-bool psx_svg_player_debug_arc_length_position(const float* xs, const float* ys, uint32_t count,
-                                              float t, float* out_x, float* out_y)
-{
-    if (!xs || !ys || count < 2 || !out_x || !out_y) {
-        return false;
-    }
-    _motion_path_points pts;
-    pts.xs = (float*)xs;
-    pts.ys = (float*)ys;
-    pts.count = count;
-    pts.cap = count;
-    _motion_arc_table arc;
-    _motion_arc_build(&pts, &arc);
-    _motion_arc_position(&pts, &arc, t, out_x, out_y);
-    _motion_arc_destroy(&arc);
-    return true;
-}
 
 #ifdef __cplusplus
 }

@@ -29,6 +29,11 @@
 #include "psx_svg_player.h"
 #include "psx_svg_anim_state.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <math.h>
+
 class SVGPlayerTest : public ::testing::Test
 {
 protected:
@@ -110,6 +115,218 @@ static bool psx_svg_player_debug_get_transform_override(const psx_svg_player* p,
     if (d) { *d = it->d; }
     if (e) { *e = it->e; }
     if (f) { *f = it->f; }
+    return true;
+}
+
+/* ── Local motion path helpers for property tests (no dependency on player internals) ── */
+
+struct test_path_points {
+    float* xs;
+    float* ys;
+    uint32_t count;
+    uint32_t cap;
+};
+
+static void test_path_destroy(test_path_points* pts)
+{
+    if (!pts) { return; }
+    free(pts->xs); pts->xs = NULL;
+    free(pts->ys); pts->ys = NULL;
+    pts->count = 0;
+    pts->cap = 0;
+}
+
+static bool test_path_push(test_path_points* pts, float x, float y)
+{
+    if (!pts) { return false; }
+    if (pts->count >= pts->cap) {
+        uint32_t nc = pts->cap ? pts->cap * 2 : 8;
+        float* nxs = (float*)realloc(pts->xs, nc * sizeof(float));
+        float* nys = (float*)realloc(pts->ys, nc * sizeof(float));
+        if (!nxs || !nys) { return false; }
+        pts->xs = nxs;
+        pts->ys = nys;
+        pts->cap = nc;
+    }
+    pts->xs[pts->count] = x;
+    pts->ys[pts->count] = y;
+    pts->count++;
+    return true;
+}
+
+static char* test_path_format(const float* xs, const float* ys, uint32_t count)
+{
+    if (!xs || !ys || count == 0) { return NULL; }
+    uint32_t buf_cap = count * 40 + 4;
+    char* buf = (char*)malloc(buf_cap);
+    if (!buf) { return NULL; }
+    uint32_t pos = 0;
+    for (uint32_t i = 0; i < count; i++) {
+        int n = 0;
+        if (i == 0) {
+            n = sprintf(buf + pos, "M %.6g %.6g", xs[i], ys[i]);
+        } else {
+            n = sprintf(buf + pos, " L %.6g %.6g", xs[i], ys[i]);
+        }
+        if (n > 0) { pos += (uint32_t)n; }
+    }
+    buf[pos] = '\0';
+    return buf;
+}
+
+static uint32_t test_path_skip_ws(const char* s, uint32_t pos, uint32_t len)
+{
+    while (pos < len && (s[pos] == ' ' || s[pos] == '\t' || s[pos] == '\r'
+                         || s[pos] == '\n' || s[pos] == ',')) {
+        pos++;
+    }
+    return pos;
+}
+
+static uint32_t test_path_parse_float(const char* s, uint32_t pos, uint32_t len, float* out)
+{
+    uint32_t start = pos;
+    if (pos >= len) { return pos; }
+    if (s[pos] == '+' || s[pos] == '-') { pos++; }
+    bool has_digits = false;
+    while (pos < len && s[pos] >= '0' && s[pos] <= '9') { pos++; has_digits = true; }
+    if (pos < len && s[pos] == '.') {
+        pos++;
+        while (pos < len && s[pos] >= '0' && s[pos] <= '9') { pos++; has_digits = true; }
+    }
+    if (!has_digits) { return start; }
+    if (pos < len && (s[pos] == 'e' || s[pos] == 'E')) {
+        uint32_t ep = pos + 1;
+        if (ep < len && (s[ep] == '+' || s[ep] == '-')) { ep++; }
+        bool he = false;
+        while (ep < len && s[ep] >= '0' && s[ep] <= '9') { ep++; he = true; }
+        if (he) { pos = ep; }
+    }
+    char buf[64];
+    uint32_t slen = pos - start;
+    if (slen >= sizeof(buf)) { slen = sizeof(buf) - 1; }
+    memcpy(buf, s + start, slen);
+    buf[slen] = '\0';
+    *out = (float)atof(buf);
+    return pos;
+}
+
+static bool test_path_parse(const char* path_str, uint32_t len,
+                            float** out_xs, float** out_ys, uint32_t* out_count)
+{
+    test_path_points pts;
+    pts.xs = NULL; pts.ys = NULL; pts.count = 0; pts.cap = 0;
+    if (!path_str || len == 0) { *out_xs = NULL; *out_ys = NULL; *out_count = 0; return false; }
+
+    float cur_x = 0, cur_y = 0, start_x = 0, start_y = 0;
+    char cmd = 0;
+    uint32_t pos = 0;
+
+    while (pos < len) {
+        pos = test_path_skip_ws(path_str, pos, len);
+        if (pos >= len) { break; }
+        char ch = path_str[pos];
+
+        if (ch == 'M' || ch == 'm' || ch == 'L' || ch == 'l'
+            || ch == 'H' || ch == 'h' || ch == 'V' || ch == 'v') {
+            cmd = ch; pos++;
+        } else if (ch == 'Z' || ch == 'z') {
+            pos++;
+            if (cur_x != start_x || cur_y != start_y) {
+                if (!test_path_push(&pts, start_x, start_y)) { test_path_destroy(&pts); *out_xs = NULL; *out_ys = NULL; *out_count = 0; return false; }
+                cur_x = start_x; cur_y = start_y;
+            }
+            cmd = 0; continue;
+        } else if ((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z')) {
+            cmd = 0; pos++; continue;
+        }
+
+        if (cmd == 0) {
+            if (!((ch >= '0' && ch <= '9') || ch == '-' || ch == '+' || ch == '.')) { pos++; continue; }
+            float dummy = 0;
+            uint32_t np = test_path_parse_float(path_str, pos, len, &dummy);
+            pos = (np == pos) ? pos + 1 : np;
+            continue;
+        }
+
+        if (cmd == 'H' || cmd == 'h') {
+            pos = test_path_skip_ws(path_str, pos, len);
+            float x = 0;
+            uint32_t np = test_path_parse_float(path_str, pos, len, &x);
+            if (np == pos) { cmd = 0; continue; }
+            pos = np;
+            if (cmd == 'h') { x += cur_x; }
+            if (!test_path_push(&pts, x, cur_y)) { test_path_destroy(&pts); *out_xs = NULL; *out_ys = NULL; *out_count = 0; return false; }
+            cur_x = x; continue;
+        }
+
+        if (cmd == 'V' || cmd == 'v') {
+            pos = test_path_skip_ws(path_str, pos, len);
+            float y = 0;
+            uint32_t np = test_path_parse_float(path_str, pos, len, &y);
+            if (np == pos) { cmd = 0; continue; }
+            pos = np;
+            if (cmd == 'v') { y += cur_y; }
+            if (!test_path_push(&pts, cur_x, y)) { test_path_destroy(&pts); *out_xs = NULL; *out_ys = NULL; *out_count = 0; return false; }
+            cur_y = y; continue;
+        }
+
+        pos = test_path_skip_ws(path_str, pos, len);
+        float x = 0, y = 0;
+        uint32_t np = test_path_parse_float(path_str, pos, len, &x);
+        if (np == pos) { cmd = 0; continue; }
+        pos = np;
+        pos = test_path_skip_ws(path_str, pos, len);
+        np = test_path_parse_float(path_str, pos, len, &y);
+        if (np == pos) { cmd = 0; continue; }
+        pos = np;
+
+        if (cmd == 'm' || cmd == 'l') { x += cur_x; y += cur_y; }
+        if (!test_path_push(&pts, x, y)) { test_path_destroy(&pts); *out_xs = NULL; *out_ys = NULL; *out_count = 0; return false; }
+        cur_x = x; cur_y = y;
+        if (cmd == 'M' || cmd == 'm') { start_x = cur_x; start_y = cur_y; }
+        if (cmd == 'M') { cmd = 'L'; } else if (cmd == 'm') { cmd = 'l'; }
+    }
+
+    if (pts.count > 0) {
+        *out_xs = pts.xs; *out_ys = pts.ys; *out_count = pts.count;
+        return true;
+    }
+    test_path_destroy(&pts);
+    *out_xs = NULL; *out_ys = NULL; *out_count = 0;
+    return false;
+}
+
+static bool test_arc_length_position(const float* xs, const float* ys, uint32_t count,
+                                     float t, float* out_x, float* out_y)
+{
+    if (!xs || !ys || count < 2 || !out_x || !out_y) { return false; }
+
+    float* cum = (float*)malloc(count * sizeof(float));
+    if (!cum) { return false; }
+    cum[0] = 0;
+    for (uint32_t i = 1; i < count; i++) {
+        float dx = xs[i] - xs[i - 1];
+        float dy = ys[i] - ys[i - 1];
+        cum[i] = cum[i - 1] + sqrtf(dx * dx + dy * dy);
+    }
+    float total = cum[count - 1];
+
+    if (count == 1 || total <= 0) { *out_x = xs[0]; *out_y = ys[0]; free(cum); return true; }
+    if (t <= 0) { *out_x = xs[0]; *out_y = ys[0]; free(cum); return true; }
+    if (t >= 1) { *out_x = xs[count - 1]; *out_y = ys[count - 1]; free(cum); return true; }
+
+    float target = t * total;
+    uint32_t lo = 0, hi = count - 1;
+    while (lo + 1 < hi) {
+        uint32_t mid = (lo + hi) / 2;
+        if (cum[mid] <= target) { lo = mid; } else { hi = mid; }
+    }
+    float seg_len = cum[hi] - cum[lo];
+    float frac = (seg_len > 0) ? (target - cum[lo]) / seg_len : 0;
+    *out_x = xs[lo] + frac * (xs[hi] - xs[lo]);
+    *out_y = ys[lo] + frac * (ys[hi] - ys[lo]);
+    free(cum);
     return true;
 }
 
@@ -3758,14 +3975,13 @@ TEST_F(SVGPlayerTest, MotionPath_RoundTrip_Property)
         }
 
         // Format points into path string
-        char* path_str = psx_svg_player_debug_motion_path_format(orig_xs, orig_ys, npts);
+        char* path_str = test_path_format(orig_xs, orig_ys, npts);
         ASSERT_TRUE(path_str != NULL) << "iter=" << iter << " format returned NULL";
 
-        // Parse back
         float* parsed_xs = NULL;
         float* parsed_ys = NULL;
         uint32_t parsed_count = 0;
-        bool ok = psx_svg_player_debug_motion_path_parse(
+        bool ok = test_path_parse(
             path_str, (uint32_t)strlen(path_str),
             &parsed_xs, &parsed_ys, &parsed_count);
         EXPECT_TRUE(ok) << "iter=" << iter << " parse failed for: " << path_str;
@@ -3781,8 +3997,9 @@ TEST_F(SVGPlayerTest, MotionPath_RoundTrip_Property)
             }
         }
 
-        psx_svg_player_debug_motion_path_free(parsed_xs, parsed_ys);
-        psx_svg_player_debug_motion_path_free_str(path_str);
+        free(parsed_xs);
+        free(parsed_ys);
+        free(path_str);
     }
 }
 
@@ -3834,7 +4051,7 @@ TEST_F(SVGPlayerTest, MotionArcLength_Position_Property)
         // (a) t=0 → first point
         {
             float ox = 0, oy = 0;
-            bool ok = psx_svg_player_debug_arc_length_position(xs, ys, npts, 0.0f, &ox, &oy);
+            bool ok = test_arc_length_position(xs, ys, npts, 0.0f, &ox, &oy);
             EXPECT_TRUE(ok) << "iter=" << iter;
             if (ok) {
                 EXPECT_NEAR(xs[0], ox, 0.01f) << "iter=" << iter << " t=0 x";
@@ -3845,7 +4062,7 @@ TEST_F(SVGPlayerTest, MotionArcLength_Position_Property)
         // (b) t=1 → last point
         {
             float ox = 0, oy = 0;
-            bool ok = psx_svg_player_debug_arc_length_position(xs, ys, npts, 1.0f, &ox, &oy);
+            bool ok = test_arc_length_position(xs, ys, npts, 1.0f, &ox, &oy);
             EXPECT_TRUE(ok) << "iter=" << iter;
             if (ok) {
                 EXPECT_NEAR(xs[npts - 1], ox, 0.01f) << "iter=" << iter << " t=1 x";
@@ -3883,7 +4100,7 @@ TEST_F(SVGPlayerTest, MotionArcLength_Position_Property)
 
         {
             float ox = 0, oy = 0;
-            bool ok = psx_svg_player_debug_arc_length_position(xs, ys, npts, t, &ox, &oy);
+            bool ok = test_arc_length_position(xs, ys, npts, t, &ox, &oy);
             EXPECT_TRUE(ok) << "iter=" << iter;
             if (ok) {
                 EXPECT_NEAR(expect_x, ox, 0.1f) << "iter=" << iter << " t=" << t << " x";
