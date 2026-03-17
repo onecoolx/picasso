@@ -1905,11 +1905,185 @@ static uint32_t _motion_path_parse_float(const char* s, uint32_t pos, uint32_t l
     return pos;
 }
 
+/* ── Curve flattening helpers ──────────────────────────────────────── */
+
+#define FLATTEN_STEPS_QUAD 8
+#define FLATTEN_STEPS_CUBIC 16
+#define FLATTEN_STEPS_ARC 16
+
+/* Flatten a quadratic Bezier curve into FLATTEN_STEPS_QUAD line segments.
+ * B(t) = (1-t)^2 * P0 + 2(1-t)t * P1 + t^2 * P2
+ * Pushes points for t = i/N, i = 1..N (start point already in array). */
+static bool _motion_flatten_quadratic_bezier(
+    _motion_path_points* pts,
+    float x0, float y0,
+    float cx, float cy,
+    float ex, float ey)
+{
+    int i;
+    for (i = 1; i <= FLATTEN_STEPS_QUAD; i++) {
+        float t = (float)i / (float)FLATTEN_STEPS_QUAD;
+        float u = 1.0f - t;
+        float px = u * u * x0 + 2.0f * u * t * cx + t * t * ex;
+        float py = u * u * y0 + 2.0f * u * t * cy + t * t * ey;
+        if (!_motion_path_push(pts, px, py)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+/* Flatten a cubic Bezier curve into FLATTEN_STEPS_CUBIC line segments.
+ * B(t) = (1-t)^3 * P0 + 3(1-t)^2*t * P1 + 3(1-t)*t^2 * P2 + t^3 * P3
+ * Pushes points for t = i/N, i = 1..N (start point already in array). */
+static bool _motion_flatten_cubic_bezier(
+    _motion_path_points* pts,
+    float x0, float y0,
+    float c1x, float c1y,
+    float c2x, float c2y,
+    float ex, float ey)
+{
+    int i;
+    for (i = 1; i <= FLATTEN_STEPS_CUBIC; i++) {
+        float t = (float)i / (float)FLATTEN_STEPS_CUBIC;
+        float u = 1.0f - t;
+        float u2 = u * u;
+        float t2 = t * t;
+        float px = u2 * u * x0 + 3.0f * u2 * t * c1x + 3.0f * u * t2 * c2x + t2 * t * ex;
+        float py = u2 * u * y0 + 3.0f * u2 * t * c1y + 3.0f * u * t2 * c2y + t2 * t * ey;
+        if (!_motion_path_push(pts, px, py)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+/* Flatten an elliptical arc into FLATTEN_STEPS_ARC line segments.
+ * Implements SVG spec F.6.5/F.6.6 endpoint-to-center parameterization.
+ * Pushes points for angle = theta1 + dtheta*i/N, i = 1..N. */
+static bool _motion_flatten_arc(
+    _motion_path_points* pts,
+    float x0, float y0,
+    float rx, float ry,
+    float x_rotation_deg,
+    bool large_arc,
+    bool sweep,
+    float ex, float ey)
+{
+    /* Degenerate: start == end => skip */
+    if (x0 == ex && y0 == ey) {
+        return true;
+    }
+
+    /* Degenerate: zero radius => straight line */
+    if (rx == 0.0f || ry == 0.0f) {
+        return _motion_path_push(pts, ex, ey);
+    }
+
+    /* Ensure positive radii */
+    if (rx < 0.0f) { rx = -rx; }
+    if (ry < 0.0f) { ry = -ry; }
+
+    /* F.6.5: compute (x1', y1') in rotated coordinate system */
+    float phi = (float)(x_rotation_deg * (M_PI / 180.0));
+    float cos_phi = cosf(phi);
+    float sin_phi = sinf(phi);
+
+    float dx2 = (x0 - ex) * 0.5f;
+    float dy2 = (y0 - ey) * 0.5f;
+    float x1p =  cos_phi * dx2 + sin_phi * dy2;
+    float y1p = -sin_phi * dx2 + cos_phi * dy2;
+
+    /* F.6.6: check if radii need scaling */
+    float x1p2 = x1p * x1p;
+    float y1p2 = y1p * y1p;
+    float rx2 = rx * rx;
+    float ry2 = ry * ry;
+    float lambda = x1p2 / rx2 + y1p2 / ry2;
+    if (lambda > 1.0f) {
+        float sl = sqrtf(lambda);
+        rx *= sl;
+        ry *= sl;
+        rx2 = rx * rx;
+        ry2 = ry * ry;
+    }
+
+    /* F.6.5: compute center point (cx', cy') in rotated system */
+    float num = rx2 * ry2 - rx2 * y1p2 - ry2 * x1p2;
+    float den = rx2 * y1p2 + ry2 * x1p2;
+    float sq = 0.0f;
+    if (den > 0.0f && num > 0.0f) {
+        sq = sqrtf(num / den);
+    }
+    if (large_arc == sweep) {
+        sq = -sq;
+    }
+
+    float cxp =  sq * rx * y1p / ry;
+    float cyp = -sq * ry * x1p / rx;
+
+    /* Transform back to original coordinate system */
+    float mx = (x0 + ex) * 0.5f;
+    float my = (y0 + ey) * 0.5f;
+    float cx = cos_phi * cxp - sin_phi * cyp + mx;
+    float cy = sin_phi * cxp + cos_phi * cyp + my;
+
+    /* Compute start angle theta1 and angle extent dtheta */
+    float ux = (x1p - cxp) / rx;
+    float uy = (y1p - cyp) / ry;
+    float vx = (-x1p - cxp) / rx;
+    float vy = (-y1p - cyp) / ry;
+
+    /* angle of vector (ux, uy) relative to (1, 0) */
+    float n_u = sqrtf(ux * ux + uy * uy);
+    float theta1 = 0.0f;
+    if (n_u > 0.0f) {
+        float cos_t = ux / n_u;
+        if (cos_t < -1.0f) { cos_t = -1.0f; }
+        if (cos_t > 1.0f) { cos_t = 1.0f; }
+        theta1 = acosf(cos_t);
+        if (uy < 0.0f) { theta1 = -theta1; }
+    }
+
+    /* angle between (ux, uy) and (vx, vy) */
+    float n_v = sqrtf(vx * vx + vy * vy);
+    float dtheta = 0.0f;
+    if (n_u > 0.0f && n_v > 0.0f) {
+        float dot = ux * vx + uy * vy;
+        float cos_d = dot / (n_u * n_v);
+        if (cos_d < -1.0f) { cos_d = -1.0f; }
+        if (cos_d > 1.0f) { cos_d = 1.0f; }
+        dtheta = acosf(cos_d);
+        /* sign: cross product */
+        if (ux * vy - uy * vx < 0.0f) { dtheta = -dtheta; }
+    }
+
+    /* Adjust dtheta per sweep flag (SVG spec F.6.5 step 4) */
+    if (sweep && dtheta < 0.0f) {
+        dtheta += (float)(2.0 * M_PI);
+    } else if (!sweep && dtheta > 0.0f) {
+        dtheta -= (float)(2.0 * M_PI);
+    }
+
+    /* Sample FLATTEN_STEPS_ARC points uniformly in [theta1, theta1+dtheta] */
+    int i;
+    for (i = 1; i <= FLATTEN_STEPS_ARC; i++) {
+        float angle = theta1 + dtheta * (float)i / (float)FLATTEN_STEPS_ARC;
+        float ca = cosf(angle);
+        float sa = sinf(angle);
+        float px = cx + rx * ca * cos_phi - ry * sa * sin_phi;
+        float py = cy + rx * ca * sin_phi + ry * sa * cos_phi;
+        if (!_motion_path_push(pts, px, py)) {
+            return false;
+        }
+    }
+    return true;
+}
+
 /*
- * Parse SVG path string into line segment point array.
- * Supports: M/m (moveTo), L/l (lineTo), H/h (horizontal lineTo),
- *           V/v (vertical lineTo), Z/z (closePath).
- * Skips unsupported commands (C/S/Q/T/A) and continues parsing.
+ * Parse SVG path string into point array.
+ * Supports: M/m, L/l, H/h, V/v, Z/z, Q/q, T/t, C/c, S/s, A/a.
+ * Curves are flattened to polyline segments.
  * Returns true if at least 1 point was parsed.
  */
 static bool _motion_path_parse(const char* path_str, uint32_t len,
@@ -1931,6 +2105,12 @@ static bool _motion_path_parse(const char* path_str, uint32_t len,
     float cur_y = 0.0f;
     float start_x = 0.0f;
     float start_y = 0.0f;
+    float last_quad_cx = 0.0f;
+    float last_quad_cy = 0.0f;
+    bool has_last_quad = false;
+    float last_cubic_c2x = 0.0f;
+    float last_cubic_c2y = 0.0f;
+    bool has_last_cubic = false;
     char cmd = 0;
     uint32_t pos = 0;
 
@@ -1944,7 +2124,11 @@ static bool _motion_path_parse(const char* path_str, uint32_t len,
 
         /* Check if this is a command letter */
         if (ch == 'M' || ch == 'm' || ch == 'L' || ch == 'l'
-            || ch == 'H' || ch == 'h' || ch == 'V' || ch == 'v') {
+            || ch == 'H' || ch == 'h' || ch == 'V' || ch == 'v'
+            || ch == 'Q' || ch == 'q' || ch == 'T' || ch == 't'
+            || ch == 'C' || ch == 'c'
+            || ch == 'S' || ch == 's'
+            || ch == 'A' || ch == 'a') {
             cmd = ch;
             pos++;
         } else if (ch == 'Z' || ch == 'z') {
@@ -1958,6 +2142,8 @@ static bool _motion_path_parse(const char* path_str, uint32_t len,
                 cur_x = start_x;
                 cur_y = start_y;
             }
+            has_last_quad = false;
+            has_last_cubic = false;
             cmd = 0;
             continue;
         } else if ((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z')) {
@@ -2007,6 +2193,8 @@ static bool _motion_path_parse(const char* path_str, uint32_t len,
                 return false;
             }
             cur_x = x;
+            has_last_quad = false;
+            has_last_cubic = false;
             continue;
         }
 
@@ -2030,6 +2218,260 @@ static bool _motion_path_parse(const char* path_str, uint32_t len,
                 return false;
             }
             cur_y = y;
+            has_last_quad = false;
+            has_last_cubic = false;
+            continue;
+        }
+
+        /* Q/q: quadratic Bezier — parse 4 floats (cx, cy, ex, ey) */
+        if (cmd == 'Q' || cmd == 'q') {
+            float cx = 0.0f, cy = 0.0f, ex = 0.0f, ey = 0.0f;
+            pos = _motion_path_skip_ws(path_str, pos, len);
+            uint32_t npos = _motion_path_parse_float(path_str, pos, len, &cx);
+            if (npos == pos) { cmd = 0; continue; }
+            pos = npos;
+
+            pos = _motion_path_skip_ws(path_str, pos, len);
+            npos = _motion_path_parse_float(path_str, pos, len, &cy);
+            if (npos == pos) { cmd = 0; continue; }
+            pos = npos;
+
+            pos = _motion_path_skip_ws(path_str, pos, len);
+            npos = _motion_path_parse_float(path_str, pos, len, &ex);
+            if (npos == pos) { cmd = 0; continue; }
+            pos = npos;
+
+            pos = _motion_path_skip_ws(path_str, pos, len);
+            npos = _motion_path_parse_float(path_str, pos, len, &ey);
+            if (npos == pos) { cmd = 0; continue; }
+            pos = npos;
+
+            if (cmd == 'q') {
+                cx += cur_x;
+                cy += cur_y;
+                ex += cur_x;
+                ey += cur_y;
+            }
+
+            if (!_motion_flatten_quadratic_bezier(out, cur_x, cur_y, cx, cy, ex, ey)) {
+                _motion_path_destroy(out);
+                return false;
+            }
+            last_quad_cx = cx;
+            last_quad_cy = cy;
+            has_last_quad = true;
+            has_last_cubic = false;
+            cur_x = ex;
+            cur_y = ey;
+            continue;
+        }
+
+        /* T/t: smooth quadratic Bezier — parse 2 floats (ex, ey) */
+        if (cmd == 'T' || cmd == 't') {
+            float ex = 0.0f, ey = 0.0f;
+            pos = _motion_path_skip_ws(path_str, pos, len);
+            uint32_t npos = _motion_path_parse_float(path_str, pos, len, &ex);
+            if (npos == pos) { cmd = 0; continue; }
+            pos = npos;
+
+            pos = _motion_path_skip_ws(path_str, pos, len);
+            npos = _motion_path_parse_float(path_str, pos, len, &ey);
+            if (npos == pos) { cmd = 0; continue; }
+            pos = npos;
+
+            if (cmd == 't') {
+                ex += cur_x;
+                ey += cur_y;
+            }
+
+            /* Compute reflected control point */
+            float rcx, rcy;
+            if (has_last_quad) {
+                rcx = 2.0f * cur_x - last_quad_cx;
+                rcy = 2.0f * cur_y - last_quad_cy;
+            } else {
+                rcx = cur_x;
+                rcy = cur_y;
+            }
+
+            if (!_motion_flatten_quadratic_bezier(out, cur_x, cur_y, rcx, rcy, ex, ey)) {
+                _motion_path_destroy(out);
+                return false;
+            }
+            last_quad_cx = rcx;
+            last_quad_cy = rcy;
+            has_last_quad = true;
+            has_last_cubic = false;
+            cur_x = ex;
+            cur_y = ey;
+            continue;
+        }
+
+        /* C/c: cubic Bezier — parse 6 floats (c1x, c1y, c2x, c2y, ex, ey) */
+        if (cmd == 'C' || cmd == 'c') {
+            float c1x = 0.0f, c1y = 0.0f, c2x = 0.0f, c2y = 0.0f, ex = 0.0f, ey = 0.0f;
+            pos = _motion_path_skip_ws(path_str, pos, len);
+            uint32_t npos = _motion_path_parse_float(path_str, pos, len, &c1x);
+            if (npos == pos) { cmd = 0; continue; }
+            pos = npos;
+
+            pos = _motion_path_skip_ws(path_str, pos, len);
+            npos = _motion_path_parse_float(path_str, pos, len, &c1y);
+            if (npos == pos) { cmd = 0; continue; }
+            pos = npos;
+
+            pos = _motion_path_skip_ws(path_str, pos, len);
+            npos = _motion_path_parse_float(path_str, pos, len, &c2x);
+            if (npos == pos) { cmd = 0; continue; }
+            pos = npos;
+
+            pos = _motion_path_skip_ws(path_str, pos, len);
+            npos = _motion_path_parse_float(path_str, pos, len, &c2y);
+            if (npos == pos) { cmd = 0; continue; }
+            pos = npos;
+
+            pos = _motion_path_skip_ws(path_str, pos, len);
+            npos = _motion_path_parse_float(path_str, pos, len, &ex);
+            if (npos == pos) { cmd = 0; continue; }
+            pos = npos;
+
+            pos = _motion_path_skip_ws(path_str, pos, len);
+            npos = _motion_path_parse_float(path_str, pos, len, &ey);
+            if (npos == pos) { cmd = 0; continue; }
+            pos = npos;
+
+            if (cmd == 'c') {
+                c1x += cur_x;
+                c1y += cur_y;
+                c2x += cur_x;
+                c2y += cur_y;
+                ex += cur_x;
+                ey += cur_y;
+            }
+
+            if (!_motion_flatten_cubic_bezier(out, cur_x, cur_y, c1x, c1y, c2x, c2y, ex, ey)) {
+                _motion_path_destroy(out);
+                return false;
+            }
+            last_cubic_c2x = c2x;
+            last_cubic_c2y = c2y;
+            has_last_cubic = true;
+            has_last_quad = false;
+            cur_x = ex;
+            cur_y = ey;
+            continue;
+        }
+
+        /* S/s: smooth cubic Bezier — parse 4 floats (c2x, c2y, ex, ey) */
+        if (cmd == 'S' || cmd == 's') {
+            float c2x = 0.0f, c2y = 0.0f, ex = 0.0f, ey = 0.0f;
+            pos = _motion_path_skip_ws(path_str, pos, len);
+            uint32_t npos = _motion_path_parse_float(path_str, pos, len, &c2x);
+            if (npos == pos) { cmd = 0; continue; }
+            pos = npos;
+
+            pos = _motion_path_skip_ws(path_str, pos, len);
+            npos = _motion_path_parse_float(path_str, pos, len, &c2y);
+            if (npos == pos) { cmd = 0; continue; }
+            pos = npos;
+
+            pos = _motion_path_skip_ws(path_str, pos, len);
+            npos = _motion_path_parse_float(path_str, pos, len, &ex);
+            if (npos == pos) { cmd = 0; continue; }
+            pos = npos;
+
+            pos = _motion_path_skip_ws(path_str, pos, len);
+            npos = _motion_path_parse_float(path_str, pos, len, &ey);
+            if (npos == pos) { cmd = 0; continue; }
+            pos = npos;
+
+            if (cmd == 's') {
+                c2x += cur_x;
+                c2y += cur_y;
+                ex += cur_x;
+                ey += cur_y;
+            }
+
+            /* Compute reflected first control point */
+            float rc1x, rc1y;
+            if (has_last_cubic) {
+                rc1x = 2.0f * cur_x - last_cubic_c2x;
+                rc1y = 2.0f * cur_y - last_cubic_c2y;
+            } else {
+                rc1x = cur_x;
+                rc1y = cur_y;
+            }
+
+            if (!_motion_flatten_cubic_bezier(out, cur_x, cur_y, rc1x, rc1y, c2x, c2y, ex, ey)) {
+                _motion_path_destroy(out);
+                return false;
+            }
+            last_cubic_c2x = c2x;
+            last_cubic_c2y = c2y;
+            has_last_cubic = true;
+            has_last_quad = false;
+            cur_x = ex;
+            cur_y = ey;
+            continue;
+        }
+
+        /* A/a: elliptical arc — parse 7 params (rx, ry, rotation, large_arc, sweep, ex, ey) */
+        if (cmd == 'A' || cmd == 'a') {
+            float arx = 0.0f, ary = 0.0f, xrot = 0.0f;
+            float fla = 0.0f, fsw = 0.0f;
+            float ex = 0.0f, ey = 0.0f;
+
+            pos = _motion_path_skip_ws(path_str, pos, len);
+            uint32_t npos = _motion_path_parse_float(path_str, pos, len, &arx);
+            if (npos == pos) { cmd = 0; continue; }
+            pos = npos;
+
+            pos = _motion_path_skip_ws(path_str, pos, len);
+            npos = _motion_path_parse_float(path_str, pos, len, &ary);
+            if (npos == pos) { cmd = 0; continue; }
+            pos = npos;
+
+            pos = _motion_path_skip_ws(path_str, pos, len);
+            npos = _motion_path_parse_float(path_str, pos, len, &xrot);
+            if (npos == pos) { cmd = 0; continue; }
+            pos = npos;
+
+            pos = _motion_path_skip_ws(path_str, pos, len);
+            npos = _motion_path_parse_float(path_str, pos, len, &fla);
+            if (npos == pos) { cmd = 0; continue; }
+            pos = npos;
+
+            pos = _motion_path_skip_ws(path_str, pos, len);
+            npos = _motion_path_parse_float(path_str, pos, len, &fsw);
+            if (npos == pos) { cmd = 0; continue; }
+            pos = npos;
+
+            pos = _motion_path_skip_ws(path_str, pos, len);
+            npos = _motion_path_parse_float(path_str, pos, len, &ex);
+            if (npos == pos) { cmd = 0; continue; }
+            pos = npos;
+
+            pos = _motion_path_skip_ws(path_str, pos, len);
+            npos = _motion_path_parse_float(path_str, pos, len, &ey);
+            if (npos == pos) { cmd = 0; continue; }
+            pos = npos;
+
+            if (cmd == 'a') {
+                ex += cur_x;
+                ey += cur_y;
+            }
+
+            bool la = (fla != 0.0f);
+            bool sw = (fsw != 0.0f);
+
+            if (!_motion_flatten_arc(out, cur_x, cur_y, arx, ary, xrot, la, sw, ex, ey)) {
+                _motion_path_destroy(out);
+                return false;
+            }
+            has_last_quad = false;
+            has_last_cubic = false;
+            cur_x = ex;
+            cur_y = ey;
             continue;
         }
 
@@ -2067,6 +2509,8 @@ static bool _motion_path_parse(const char* path_str, uint32_t len,
 
         cur_x = x;
         cur_y = y;
+        has_last_quad = false;
+        has_last_cubic = false;
 
         /* After M/m, record the start point for Z/z closePath */
         if (cmd == 'M' || cmd == 'm') {

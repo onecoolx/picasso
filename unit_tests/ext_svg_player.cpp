@@ -3963,6 +3963,425 @@ TEST_F(SVGPlayerTest, AnimateMotion_NoPathNoFromTo_NoOverride)
     destroy_player(p, root);
 }
 
+TEST_F(SVGPlayerTest, AnimateMotion_Path_QuadBezier_Q)
+{
+    // Path with Q (quadratic Bezier): M 0 0 Q 50 100 100 0
+    // This is a parabolic arc from (0,0) to (100,0) with control point (50,100).
+    // At t=0 => position (0,0), at t=1 => position (100,0).
+    // At t=0.5 => midpoint of the curve, which for a quadratic Bezier is:
+    //   B(0.5) = (1-0.5)^2 * P0 + 2*(1-0.5)*0.5 * P1 + 0.5^2 * P2
+    //          = 0.25*(0,0) + 0.5*(50,100) + 0.25*(100,0) = (50, 50)
+    // The arc-length midpoint won't be exactly at parametric 0.5, but the
+    // key test is that the curve is NOT a straight line from (0,0) to (100,0).
+    // At the arc-length midpoint, y should be significantly > 0 (curve bulges up).
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"200\" height=\"200\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"5\" height=\"5\" fill=\"blue\">"
+        "    <animateMotion path=\"M 0 0 Q 50 100 100 0\" dur=\"2s\" fill=\"freeze\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_NE((psx_svg_player*)NULL, p);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    ASSERT_TRUE(n != NULL);
+
+    psx_svg_player_play(p);
+
+    // t=0: start position (0, 0)
+    psx_svg_player_seek(p, 0.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        EXPECT_NEAR(0.0f, e, 0.5f);
+        EXPECT_NEAR(0.0f, f, 0.5f);
+    }
+
+    // t=2s (end): position (100, 0)
+    psx_svg_player_seek(p, 2.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        EXPECT_NEAR(100.0f, e, 0.5f);
+        EXPECT_NEAR(0.0f, f, 0.5f);
+    }
+
+    // t=1s (midpoint): the curve should bulge — y must be significantly > 0
+    // If Q is not supported, the path degenerates to M 0 0 only (1 point),
+    // or straight line, and y would be ~0.
+    psx_svg_player_seek(p, 1.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        // x should be roughly around 50 (midpoint of curve)
+        EXPECT_GT(e, 20.0f);
+        EXPECT_LT(e, 80.0f);
+        // y must be > 0 — this is the key assertion proving the curve is followed
+        EXPECT_GT(f, 10.0f);
+    }
+
+    destroy_player(p, root);
+}
+
+TEST_F(SVGPlayerTest, MotionPath_QuadBezier_UserReportedPath)
+{
+    // User-reported rounded-rectangle path with 4 Q segments:
+    // M 250,80 H 50 Q 30,80 30,50 Q 30,20 50,20 H 250 Q 280,20,280,50 Q 280,80,250,80Z
+    //
+    // Line-only parse (test_path_parse) skips Q commands, producing only
+    // M + H + H + Z points. The real parser flattens each Q into
+    // FLATTEN_STEPS_QUAD=8 segments, so the real point count must be larger.
+
+    const char* path =
+        "M 250,80 H 50 Q 30,80 30,50 Q 30,20 50,20 H 250 Q 280,20,280,50 Q 280,80,250,80Z";
+
+    // --- Part 1: line-only parse to get baseline count ---
+    float* line_xs = NULL;
+    float* line_ys = NULL;
+    uint32_t line_count = 0;
+    bool line_ok = test_path_parse(path, (uint32_t)strlen(path),
+                                   &line_xs, &line_ys, &line_count);
+    EXPECT_TRUE(line_ok);
+    // line-only sees: M(250,80), H50 → (50,80), H250 → (250,80), Z → (250,80) closed
+    // Q commands are skipped entirely.
+    EXPECT_GT(line_count, 0u);
+    free(line_xs);
+    free(line_ys);
+
+    // --- Part 2: end-to-end via SVG player (real parser with Q support) ---
+    // Use a 4-second duration so we can seek to t=2s for the midpoint.
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"300\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"5\" height=\"5\" fill=\"blue\">"
+        "    <animateMotion path=\"M 250,80 H 50 Q 30,80 30,50 Q 30,20 50,20 H 250 Q 280,20,280,50 Q 280,80,250,80Z\" dur=\"4s\" fill=\"freeze\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_NE((psx_svg_player*)NULL, p);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    ASSERT_TRUE(n != NULL);
+
+    psx_svg_player_play(p);
+
+    // t=0: start position should be near (250, 80)
+    psx_svg_player_seek(p, 0.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        EXPECT_NEAR(250.0f, e, 1.0f);
+        EXPECT_NEAR(80.0f, f, 1.0f);
+    }
+
+    // t=2s (midpoint of 4s duration, t_norm=0.5): position should be within
+    // the path's bounding box [30..280] x [20..80].
+    // The rounded rectangle's arc-length midpoint is roughly on the top edge
+    // (the path goes right→down-curve→left→up-curve→right→down-curve→left→up-curve→close).
+    // Key assertion: position is NOT on a straight line between start and end
+    // (which would be the same point since the path is closed).
+    psx_svg_player_seek(p, 2.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        // x must be within the path's x range [30, 280]
+        EXPECT_GE(e, 25.0f);
+        EXPECT_LE(e, 285.0f);
+        // y must be within the path's y range [20, 80]
+        EXPECT_GE(f, 15.0f);
+        EXPECT_LE(f, 85.0f);
+        // The midpoint should NOT be at the start (250,80) — that would mean
+        // the curve segments were ignored and the path collapsed.
+        // At least one coordinate should differ significantly from start.
+        bool moved_x = (e < 240.0f || e > 260.0f);
+        bool moved_y = (f < 70.0f || f > 85.0f);
+        EXPECT_TRUE(moved_x || moved_y)
+            << "t=0.5 position (" << e << ", " << f
+            << ") is too close to start — Q segments may not be parsed";
+    }
+
+    destroy_player(p, root);
+}
+
+// ---------------------------------------------------------------------------
+// Unit test: Cubic Bezier basic parsing via C command
+// Validates: Requirements 2.1
+// Path "M 0,0 C 10,20 30,20 40,0" should produce FLATTEN_STEPS_CUBIC+1 = 17
+// points (1 start + 16 flattened), with the last point near (40, 0).
+// ---------------------------------------------------------------------------
+TEST_F(SVGPlayerTest, MotionPath_CubicBezier_Basic)
+{
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"2\" height=\"2\" fill=\"#000\">"
+        "    <animateMotion path=\"M 0,0 C 10,20 30,20 40,0\" dur=\"4s\" fill=\"freeze\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_NE((psx_svg_player*)NULL, p);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    ASSERT_TRUE(n != NULL);
+
+    psx_svg_player_play(p);
+
+    // t=0: start position should be at (0, 0)
+    psx_svg_player_seek(p, 0.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        EXPECT_NEAR(0.0f, e, 0.01f);
+        EXPECT_NEAR(0.0f, f, 0.01f);
+    }
+
+    // t=4s (end, fill=freeze): position should be near (40, 0)
+    psx_svg_player_seek(p, 4.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        EXPECT_NEAR(40.0f, e, 0.01f);
+        EXPECT_NEAR(0.0f, f, 0.01f);
+    }
+
+    // t=2s (midpoint): position should be on the curve, NOT on the straight
+    // line from (0,0) to (40,0). The cubic B(0.5) = (0.125*0 + 0.375*10 +
+    // 0.375*30 + 0.125*40, 0.125*0 + 0.375*20 + 0.375*20 + 0.125*0) = (20, 15).
+    // Due to arc-length parameterisation the exact position at t_norm=0.5 may
+    // differ, but y must be significantly above 0 (the curve bulges upward).
+    psx_svg_player_seek(p, 2.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        // x should be somewhere in the middle of the curve
+        EXPECT_GT(e, 5.0f);
+        EXPECT_LT(e, 35.0f);
+        // y must be positive (curve bulges upward), proving C was parsed
+        EXPECT_GT(f, 3.0f);
+    }
+
+    // Verify point count indirectly: the line-only parser sees only M(0,0)
+    // and skips C, producing 1 point. The real parser should produce 17 points
+    // (1 start + FLATTEN_STEPS_CUBIC=16). We confirm the real parser works by
+    // checking that the midpoint is NOT on the x-axis (which would happen if
+    // the C command were skipped).
+
+    destroy_player(p, root);
+}
+
+// ---------------------------------------------------------------------------
+// Unit test: Smooth Quadratic Bezier — T after Q
+// Validates: Requirements 3.1, 3.2
+// Path "M 0,0 Q 10,20 20,0 T 40,0"
+//   Q produces FLATTEN_STEPS_QUAD=8 points, T produces another 8 points.
+//   Total: 1 (M start) + 8 (Q) + 8 (T) = 17 points.
+//   Endpoint should be near (40, 0).
+// ---------------------------------------------------------------------------
+TEST_F(SVGPlayerTest, MotionPath_SmoothQuad_TAfterQ)
+{
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"2\" height=\"2\" fill=\"#000\">"
+        "    <animateMotion path=\"M 0,0 Q 10,20 20,0 T 40,0\" dur=\"4s\" fill=\"freeze\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_NE((psx_svg_player*)NULL, p);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    ASSERT_TRUE(n != NULL);
+
+    psx_svg_player_play(p);
+
+    // t=0: start at (0, 0)
+    psx_svg_player_seek(p, 0.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        EXPECT_NEAR(0.0f, e, 0.01f);
+        EXPECT_NEAR(0.0f, f, 0.01f);
+    }
+
+    // t=4s (end, fill=freeze): endpoint should be near (40, 0)
+    psx_svg_player_seek(p, 4.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        EXPECT_NEAR(40.0f, e, 0.1f);
+        EXPECT_NEAR(0.0f, f, 0.1f);
+    }
+
+    // t=2s (midpoint): the Q segment bulges upward (control at y=20) and the
+    // T segment mirrors the control point, bulging downward (reflected control
+    // at y=-20). At the arc-length midpoint the position should be near x=20
+    // (the junction between Q and T segments) with y near 0.
+    psx_svg_player_seek(p, 2.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        // x should be in the middle region
+        EXPECT_GT(e, 5.0f);
+        EXPECT_LT(e, 35.0f);
+    }
+
+    destroy_player(p, root);
+}
+
+// ---------------------------------------------------------------------------
+// Unit test: Smooth Quadratic Bezier — T without prior Q (degenerates)
+// Validates: Requirements 3.2
+// Path "M 10,10 T 50,50"
+//   No prior Q, so control point = current point (10,10).
+//   This degenerates to a straight-line flattening.
+//   Total: 1 (M start) + 8 (T) = 9 points.
+//   Endpoint should be near (50, 50).
+// ---------------------------------------------------------------------------
+TEST_F(SVGPlayerTest, MotionPath_SmoothQuad_TWithoutQ)
+{
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"2\" height=\"2\" fill=\"#000\">"
+        "    <animateMotion path=\"M 10,10 T 50,50\" dur=\"4s\" fill=\"freeze\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_NE((psx_svg_player*)NULL, p);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    ASSERT_TRUE(n != NULL);
+
+    psx_svg_player_play(p);
+
+    // t=0: start at (10, 10)
+    psx_svg_player_seek(p, 0.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        EXPECT_NEAR(10.0f, e, 0.1f);
+        EXPECT_NEAR(10.0f, f, 0.1f);
+    }
+
+    // t=4s (end, fill=freeze): endpoint should be near (50, 50)
+    psx_svg_player_seek(p, 4.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        EXPECT_NEAR(50.0f, e, 0.1f);
+        EXPECT_NEAR(50.0f, f, 0.1f);
+    }
+
+    // t=2s (midpoint): since T degenerates to a straight line from (10,10)
+    // to (50,50), the midpoint should be near (30, 30).
+    psx_svg_player_seek(p, 2.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        EXPECT_NEAR(30.0f, e, 2.0f);
+        EXPECT_NEAR(30.0f, f, 2.0f);
+    }
+
+    destroy_player(p, root);
+}
+
+// ---------------------------------------------------------------------------
+// Unit test: Smooth Cubic Bezier — S after C
+// Validates: Requirements 3.3, 3.4
+// Path "M 0,0 C 10,20 30,20 40,0 S 70,-20 80,0"
+//   C produces FLATTEN_STEPS_CUBIC=16 points, S produces another 16 points.
+//   Total: 1 (M start) + 16 (C) + 16 (S) = 33 points.
+//   Endpoint should be near (80, 0).
+//   The S command mirrors C's second control point (30,20) about (40,0)
+//   giving reflected c1 = (50,-20), with explicit c2=(70,-20), end=(80,0).
+// ---------------------------------------------------------------------------
+TEST_F(SVGPlayerTest, MotionPath_SmoothCubic_SAfterC)
+{
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"2\" height=\"2\" fill=\"#000\">"
+        "    <animateMotion path=\"M 0,0 C 10,20 30,20 40,0 S 70,-20 80,0\" dur=\"4s\" fill=\"freeze\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_NE((psx_svg_player*)NULL, p);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    ASSERT_TRUE(n != NULL);
+
+    psx_svg_player_play(p);
+
+    // t=0: start at (0, 0)
+    psx_svg_player_seek(p, 0.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        EXPECT_NEAR(0.0f, e, 0.01f);
+        EXPECT_NEAR(0.0f, f, 0.01f);
+    }
+
+    // t=4s (end, fill=freeze): endpoint should be near (80, 0)
+    psx_svg_player_seek(p, 4.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        EXPECT_NEAR(80.0f, e, 0.1f);
+        EXPECT_NEAR(0.0f, f, 0.1f);
+    }
+
+    // t=2s (midpoint): the C segment bulges upward (y>0) and the S segment
+    // bulges downward (y<0) due to the mirrored control point. At the
+    // arc-length midpoint the position should be near x=40 (the junction)
+    // with y near 0.
+    psx_svg_player_seek(p, 2.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        // x should be in the middle region of the full path [0, 80]
+        EXPECT_GT(e, 10.0f);
+        EXPECT_LT(e, 70.0f);
+        // The curve is symmetric: C bulges up, S bulges down.
+        // At the junction (x≈40) y should be near 0.
+        // With arc-length parameterisation the exact y may vary, but it
+        // should not be far from 0.
+        EXPECT_GT(f, -15.0f);
+        EXPECT_LT(f, 15.0f);
+    }
+
+    destroy_player(p, root);
+}
+
 // ---------------------------------------------------------------------------
 // Property 1: Motion path parse-format round trip
 // Feature: svg-shape-animation, Property 1: Motion path parse-format round trip
@@ -4249,5 +4668,1815 @@ TEST_F(SVGPlayerTest, AnimateMotion_EndToEnd_Position_Property)
         }
 
         destroy_player(p, root);
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Feature: motion-path-bezier, Property 1: 二次贝塞尔展平精度
+// **Validates: Requirements 1.1, 7.1**
+//
+// For any valid quadratic Bezier parameters (P0, P1, P2), the production
+// parser's flattened output (via animateMotion) should produce positions that
+// lie close to the exact Bezier curve. We verify by seeking to multiple
+// normalized times and checking that the player's reported position is near
+// the exact Bezier curve point at the corresponding arc-length parameter.
+//
+// Since the production code flattens Q into FLATTEN_STEPS_QUAD=8 uniform-t
+// segments, we independently compute the expected polyline, then use
+// arc-length interpolation to find the expected position at each seek time,
+// and compare against the player output.
+// ---------------------------------------------------------------------------
+TEST_F(SVGPlayerTest, MotionPath_Property1_QuadBezierFlattenAccuracy)
+{
+    // **Validates: Requirements 1.1, 7.1**
+    uint32_t seed = 99887u;
+    const uint32_t NUM_ITERS = 100;
+    const int FLATTEN_STEPS = 8;
+
+    for (uint32_t iter = 0; iter < NUM_ITERS; iter++) {
+        // Generate random quadratic Bezier: P0(x0,y0), P1(cx,cy), P2(ex,ey)
+        // Range [-500, 500]
+        float coords[6];
+        for (int ci = 0; ci < 6; ci++) {
+            seed = seed * 1103515245u + 12345u;
+            coords[ci] = ((float)(int32_t)(seed >> 8) / (float)(1 << 23)) * 500.0f;
+        }
+        float x0 = coords[0], y0 = coords[1];
+        float cx = coords[2], cy = coords[3];
+        float ex = coords[4], ey = coords[5];
+
+        // Compute exact flattened polyline: 9 points (start + 8 steps)
+        float poly_x[9], poly_y[9];
+        poly_x[0] = x0; poly_y[0] = y0;
+        for (int i = 1; i <= FLATTEN_STEPS; i++) {
+            float t = (float)i / (float)FLATTEN_STEPS;
+            float u = 1.0f - t;
+            poly_x[i] = u * u * x0 + 2.0f * u * t * cx + t * t * ex;
+            poly_y[i] = u * u * y0 + 2.0f * u * t * cy + t * t * ey;
+        }
+
+        // Verify each flattened point matches exact Bezier at t = i/8
+        for (int i = 1; i <= FLATTEN_STEPS; i++) {
+            float t = (float)i / (float)FLATTEN_STEPS;
+            float u = 1.0f - t;
+            float exact_x = u * u * x0 + 2.0f * u * t * cx + t * t * ex;
+            float exact_y = u * u * y0 + 2.0f * u * t * cy + t * t * ey;
+            float dx = poly_x[i] - exact_x;
+            float dy = poly_y[i] - exact_y;
+            float dist = sqrtf(dx * dx + dy * dy);
+            EXPECT_LT(dist, 0.01f)
+                << "iter=" << iter << " i=" << i
+                << " poly=(" << poly_x[i] << "," << poly_y[i] << ")"
+                << " exact=(" << exact_x << "," << exact_y << ")"
+                << " dist=" << dist;
+        }
+
+        // Now verify the production code produces the same polyline by going
+        // through the full animateMotion pipeline.
+        // Build SVG path string
+        char path_buf[256];
+        sprintf(path_buf, "M %.6g,%.6g Q %.6g,%.6g %.6g,%.6g",
+                x0, y0, cx, cy, ex, ey);
+
+        char svg_buf[1024];
+        sprintf(svg_buf,
+                "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"1200\" height=\"1200\">"
+                "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"2\" height=\"2\" fill=\"#000\">"
+                "    <animateMotion path=\"%s\" dur=\"8s\" fill=\"freeze\"/>"
+                "  </rect>"
+                "</svg>", path_buf);
+
+        psx_result r = S_OK;
+        psx_svg_node* root = NULL;
+        psx_svg_player* p = create_player(svg_buf, &r, &root);
+        if (!p) { continue; }
+
+        const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+        if (!n) { destroy_player(p, root); continue; }
+
+        psx_svg_player_play(p);
+
+        // Compute arc lengths of the expected polyline
+        float cum[9];
+        cum[0] = 0.0f;
+        for (int i = 1; i <= FLATTEN_STEPS; i++) {
+            float ddx = poly_x[i] - poly_x[i - 1];
+            float ddy = poly_y[i] - poly_y[i - 1];
+            cum[i] = cum[i - 1] + sqrtf(ddx * ddx + ddy * ddy);
+        }
+        float total_len = cum[FLATTEN_STEPS];
+
+        if (total_len < 0.01f) {
+            // Degenerate curve — skip
+            destroy_player(p, root);
+            continue;
+        }
+
+        // Check each flattened point by seeking to the corresponding arc-length fraction.
+        // Point i is at cum[i]/total_len of the total arc length.
+        // With dur=8s, seek time = (cum[i]/total_len) * 8.
+        for (int i = 1; i <= FLATTEN_STEPS; i++) {
+            float norm_t = cum[i] / total_len;
+            float seek_time = norm_t * 8.0f;
+            if (seek_time > 8.0f) { seek_time = 8.0f; }
+
+            psx_svg_player_seek(p, seek_time);
+            psx_svg_player_tick(p, 0.0f);
+
+            float a = 0, b = 0, c = 0, d = 0, te = 0, tf = 0;
+            bool got = psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &te, &tf);
+            if (!got) { continue; }
+
+            // The player position at this arc-length fraction should be at poly_x[i], poly_y[i]
+            float pdx = te - poly_x[i];
+            float pdy = tf - poly_y[i];
+            float pdist = sqrtf(pdx * pdx + pdy * pdy);
+            EXPECT_LT(pdist, 0.01f)
+                << "iter=" << iter << " i=" << i
+                << " seek=" << seek_time
+                << " player=(" << te << "," << tf << ")"
+                << " expected=(" << poly_x[i] << "," << poly_y[i] << ")"
+                << " dist=" << pdist;
+        }
+
+        destroy_player(p, root);
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Property 2: Cubic Bezier Flatten Accuracy
+// For any valid cubic Bezier parameters (P0, P1, P2, P3), the i-th flattened
+// point should match the exact Bezier curve value at t = i/FLATTEN_STEPS_CUBIC
+// within Euclidean distance < 0.01.
+// ---------------------------------------------------------------------------
+TEST_F(SVGPlayerTest, MotionPath_Property2_CubicBezierFlattenAccuracy)
+{
+    // **Validates: Requirements 2.1, 7.2**
+    uint32_t seed = 77665u;
+    const uint32_t NUM_ITERS = 100;
+    const int FLATTEN_STEPS = 16;
+
+    for (uint32_t iter = 0; iter < NUM_ITERS; iter++) {
+        // Generate random cubic Bezier: P0(x0,y0), P1(c1x,c1y), P2(c2x,c2y), P3(ex,ey)
+        // Range [-500, 500]
+        float coords[8];
+        for (int ci = 0; ci < 8; ci++) {
+            seed = seed * 1103515245u + 12345u;
+            coords[ci] = ((float)(int32_t)(seed >> 8) / (float)(1 << 23)) * 500.0f;
+        }
+        float x0  = coords[0], y0  = coords[1];
+        float c1x = coords[2], c1y = coords[3];
+        float c2x = coords[4], c2y = coords[5];
+        float ex  = coords[6], ey  = coords[7];
+
+        // Compute exact flattened polyline: 17 points (start + 16 steps)
+        float poly_x[17], poly_y[17];
+        poly_x[0] = x0; poly_y[0] = y0;
+        for (int i = 1; i <= FLATTEN_STEPS; i++) {
+            float t = (float)i / (float)FLATTEN_STEPS;
+            float u = 1.0f - t;
+            poly_x[i] = u*u*u*x0 + 3.0f*u*u*t*c1x + 3.0f*u*t*t*c2x + t*t*t*ex;
+            poly_y[i] = u*u*u*y0 + 3.0f*u*u*t*c1y + 3.0f*u*t*t*c2y + t*t*t*ey;
+        }
+
+        // Verify each flattened point matches exact cubic Bezier at t = i/16
+        for (int i = 1; i <= FLATTEN_STEPS; i++) {
+            float t = (float)i / (float)FLATTEN_STEPS;
+            float u = 1.0f - t;
+            float exact_x = u*u*u*x0 + 3.0f*u*u*t*c1x + 3.0f*u*t*t*c2x + t*t*t*ex;
+            float exact_y = u*u*u*y0 + 3.0f*u*u*t*c1y + 3.0f*u*t*t*c2y + t*t*t*ey;
+            float dx = poly_x[i] - exact_x;
+            float dy = poly_y[i] - exact_y;
+            float dist = sqrtf(dx * dx + dy * dy);
+            EXPECT_LT(dist, 0.01f)
+                << "iter=" << iter << " i=" << i
+                << " poly=(" << poly_x[i] << "," << poly_y[i] << ")"
+                << " exact=(" << exact_x << "," << exact_y << ")"
+                << " dist=" << dist;
+        }
+
+        // Verify the production code produces the same polyline through the
+        // full animateMotion pipeline.
+        char path_buf[256];
+        sprintf(path_buf, "M %.6g,%.6g C %.6g,%.6g %.6g,%.6g %.6g,%.6g",
+                x0, y0, c1x, c1y, c2x, c2y, ex, ey);
+
+        char svg_buf[1024];
+        sprintf(svg_buf,
+                "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"1200\" height=\"1200\">"
+                "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"2\" height=\"2\" fill=\"#000\">"
+                "    <animateMotion path=\"%s\" dur=\"16s\" fill=\"freeze\"/>"
+                "  </rect>"
+                "</svg>", path_buf);
+
+        psx_result r = S_OK;
+        psx_svg_node* root = NULL;
+        psx_svg_player* p = create_player(svg_buf, &r, &root);
+        if (!p) { continue; }
+
+        const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+        if (!n) { destroy_player(p, root); continue; }
+
+        psx_svg_player_play(p);
+
+        // Compute arc lengths of the expected polyline
+        float cum[17];
+        cum[0] = 0.0f;
+        for (int i = 1; i <= FLATTEN_STEPS; i++) {
+            float ddx = poly_x[i] - poly_x[i - 1];
+            float ddy = poly_y[i] - poly_y[i - 1];
+            cum[i] = cum[i - 1] + sqrtf(ddx * ddx + ddy * ddy);
+        }
+        float total_len = cum[FLATTEN_STEPS];
+
+        if (total_len < 0.01f) {
+            // Degenerate curve — skip
+            destroy_player(p, root);
+            continue;
+        }
+
+        // Check each flattened point by seeking to the corresponding arc-length fraction.
+        // With dur=16s, seek time = (cum[i]/total_len) * 16.
+        for (int i = 1; i <= FLATTEN_STEPS; i++) {
+            float norm_t = cum[i] / total_len;
+            float seek_time = norm_t * 16.0f;
+            if (seek_time > 16.0f) { seek_time = 16.0f; }
+
+            psx_svg_player_seek(p, seek_time);
+            psx_svg_player_tick(p, 0.0f);
+
+            float a = 0, b = 0, c = 0, d = 0, te = 0, tf = 0;
+            bool got = psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &te, &tf);
+            if (!got) { continue; }
+
+            // The player position at this arc-length fraction should be at poly_x[i], poly_y[i]
+            float pdx = te - poly_x[i];
+            float pdy = tf - poly_y[i];
+            float pdist = sqrtf(pdx * pdx + pdy * pdy);
+            EXPECT_LT(pdist, 0.01f)
+                << "iter=" << iter << " i=" << i
+                << " seek=" << seek_time
+                << " player=(" << te << "," << tf << ")"
+                << " expected=(" << poly_x[i] << "," << poly_y[i] << ")"
+                << " dist=" << pdist;
+        }
+
+        destroy_player(p, root);
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Property 3: Elliptical Arc Flatten Accuracy
+// For any valid elliptical arc parameters (rx>0, ry>0, rotation, large_arc,
+// sweep, start, end), the flattened points should lie on the exact elliptical
+// arc within Euclidean distance < 0.1.
+// We independently recompute the SVG spec F.6.5/F.6.6 center parameterization
+// and compare against the player output.
+// ---------------------------------------------------------------------------
+TEST_F(SVGPlayerTest, MotionPath_Property3_ArcFlattenAccuracy)
+{
+    // **Validates: Requirements 4.1, 7.3**
+    uint32_t seed = 33221u;
+    const uint32_t NUM_ITERS = 100;
+    const int FLATTEN_STEPS = 16;
+
+    for (uint32_t iter = 0; iter < NUM_ITERS; iter++) {
+        // Generate random arc parameters
+        // Start point in [-100, 100]
+        seed = seed * 1103515245u + 12345u;
+        float x0 = ((float)(int32_t)(seed >> 8) / (float)(1 << 23)) * 100.0f;
+        seed = seed * 1103515245u + 12345u;
+        float y0 = ((float)(int32_t)(seed >> 8) / (float)(1 << 23)) * 100.0f;
+
+        // Radii in [10, 100] — avoid tiny radii that cause numerical issues
+        seed = seed * 1103515245u + 12345u;
+        float rx = 10.0f + ((float)((seed >> 8) & 0xFFFFu) / 65535.0f) * 90.0f;
+        seed = seed * 1103515245u + 12345u;
+        float ry = 10.0f + ((float)((seed >> 8) & 0xFFFFu) / 65535.0f) * 90.0f;
+
+        // x_rotation in [0, 360)
+        seed = seed * 1103515245u + 12345u;
+        float x_rotation = ((float)((seed >> 8) & 0xFFFFu) / 65535.0f) * 360.0f;
+
+        // Flags
+        seed = seed * 1103515245u + 12345u;
+        int large_arc = (seed >> 16) & 1;
+        seed = seed * 1103515245u + 12345u;
+        int sweep_flag = (seed >> 16) & 1;
+
+        // Endpoint in [-100, 100], ensure different from start
+        seed = seed * 1103515245u + 12345u;
+        float ex = ((float)(int32_t)(seed >> 8) / (float)(1 << 23)) * 100.0f;
+        seed = seed * 1103515245u + 12345u;
+        float ey = ((float)(int32_t)(seed >> 8) / (float)(1 << 23)) * 100.0f;
+
+        // Skip degenerate: start == end
+        float sep = sqrtf((ex - x0) * (ex - x0) + (ey - y0) * (ey - y0));
+        if (sep < 1.0f) {
+            ex = x0 + 20.0f;
+            ey = y0 + 20.0f;
+        }
+
+        // --- Independent center parameterization (SVG spec F.6.5/F.6.6) ---
+        float phi = (float)(x_rotation * (M_PI / 180.0));
+        float cos_phi = cosf(phi);
+        float sin_phi = sinf(phi);
+
+        float dx2 = (x0 - ex) * 0.5f;
+        float dy2 = (y0 - ey) * 0.5f;
+        float x1p =  cos_phi * dx2 + sin_phi * dy2;
+        float y1p = -sin_phi * dx2 + cos_phi * dy2;
+
+        // Scale radii if needed
+        float arx = rx, ary = ry;
+        float x1p2 = x1p * x1p;
+        float y1p2 = y1p * y1p;
+        float rx2 = arx * arx;
+        float ry2 = ary * ary;
+        float lambda = x1p2 / rx2 + y1p2 / ry2;
+        if (lambda > 1.0f) {
+            float sl = sqrtf(lambda);
+            arx *= sl;
+            ary *= sl;
+            rx2 = arx * arx;
+            ry2 = ary * ary;
+        }
+
+        // Center in rotated system
+        float num = rx2 * ry2 - rx2 * y1p2 - ry2 * x1p2;
+        float den = rx2 * y1p2 + ry2 * x1p2;
+        float sq = 0.0f;
+        if (den > 0.0f && num > 0.0f) {
+            sq = sqrtf(num / den);
+        }
+        if ((large_arc != 0) == (sweep_flag != 0)) {
+            sq = -sq;
+        }
+
+        float cxp =  sq * arx * y1p / ary;
+        float cyp = -sq * ary * x1p / arx;
+
+        // Transform back to original coordinates
+        float mx = (x0 + ex) * 0.5f;
+        float my = (y0 + ey) * 0.5f;
+        float cx_c = cos_phi * cxp - sin_phi * cyp + mx;
+        float cy_c = sin_phi * cxp + cos_phi * cyp + my;
+
+        // Compute theta1 and dtheta
+        float ux = (x1p - cxp) / arx;
+        float uy = (y1p - cyp) / ary;
+        float vx = (-x1p - cxp) / arx;
+        float vy = (-y1p - cyp) / ary;
+
+        float n_u = sqrtf(ux * ux + uy * uy);
+        float theta1 = 0.0f;
+        if (n_u > 0.0f) {
+            float cos_t = ux / n_u;
+            if (cos_t < -1.0f) cos_t = -1.0f;
+            if (cos_t >  1.0f) cos_t =  1.0f;
+            theta1 = acosf(cos_t);
+            if (uy < 0.0f) theta1 = -theta1;
+        }
+
+        float n_v = sqrtf(vx * vx + vy * vy);
+        float dtheta = 0.0f;
+        if (n_u > 0.0f && n_v > 0.0f) {
+            float dot = ux * vx + uy * vy;
+            float cos_d = dot / (n_u * n_v);
+            if (cos_d < -1.0f) cos_d = -1.0f;
+            if (cos_d >  1.0f) cos_d =  1.0f;
+            dtheta = acosf(cos_d);
+            if (ux * vy - uy * vx < 0.0f) dtheta = -dtheta;
+        }
+
+        if (sweep_flag && dtheta < 0.0f) {
+            dtheta += (float)(2.0 * M_PI);
+        } else if (!sweep_flag && dtheta > 0.0f) {
+            dtheta -= (float)(2.0 * M_PI);
+        }
+
+        // Compute expected flattened polyline: start + 16 steps
+        float poly_x[17], poly_y[17];
+        poly_x[0] = x0; poly_y[0] = y0;
+        for (int i = 1; i <= FLATTEN_STEPS; i++) {
+            float angle = theta1 + dtheta * (float)i / (float)FLATTEN_STEPS;
+            float ca = cosf(angle);
+            float sa = sinf(angle);
+            poly_x[i] = cx_c + arx * ca * cos_phi - ary * sa * sin_phi;
+            poly_y[i] = cy_c + arx * ca * sin_phi + ary * sa * cos_phi;
+        }
+
+        // Verify the production code produces the same polyline through the
+        // full animateMotion pipeline.
+        char path_buf[256];
+        sprintf(path_buf, "M %.6g,%.6g A %.6g,%.6g %.6g %d %d %.6g,%.6g",
+                x0, y0, rx, ry, x_rotation, large_arc, sweep_flag, ex, ey);
+
+        char svg_buf[1024];
+        sprintf(svg_buf,
+                "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"1200\" height=\"1200\">"
+                "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"2\" height=\"2\" fill=\"#000\">"
+                "    <animateMotion path=\"%s\" dur=\"16s\" fill=\"freeze\"/>"
+                "  </rect>"
+                "</svg>", path_buf);
+
+        psx_result r = S_OK;
+        psx_svg_node* root = NULL;
+        psx_svg_player* p = create_player(svg_buf, &r, &root);
+        if (!p) { continue; }
+
+        const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+        if (!n) { destroy_player(p, root); continue; }
+
+        psx_svg_player_play(p);
+
+        // Compute arc lengths of the expected polyline
+        float cum[17];
+        cum[0] = 0.0f;
+        for (int i = 1; i <= FLATTEN_STEPS; i++) {
+            float ddx = poly_x[i] - poly_x[i - 1];
+            float ddy = poly_y[i] - poly_y[i - 1];
+            cum[i] = cum[i - 1] + sqrtf(ddx * ddx + ddy * ddy);
+        }
+        float total_len = cum[FLATTEN_STEPS];
+
+        if (total_len < 0.01f) {
+            // Degenerate arc — skip
+            destroy_player(p, root);
+            continue;
+        }
+
+        // Check each flattened point by seeking to the corresponding arc-length fraction.
+        // With dur=16s, seek time = (cum[i]/total_len) * 16.
+        for (int i = 1; i <= FLATTEN_STEPS; i++) {
+            float norm_t = cum[i] / total_len;
+            float seek_time = norm_t * 16.0f;
+            if (seek_time > 16.0f) seek_time = 16.0f;
+
+            psx_svg_player_seek(p, seek_time);
+            psx_svg_player_tick(p, 0.0f);
+
+            float a = 0, b = 0, c = 0, d = 0, te = 0, tf = 0;
+            bool got = psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &te, &tf);
+            if (!got) continue;
+
+            float pdx = te - poly_x[i];
+            float pdy = tf - poly_y[i];
+            float pdist = sqrtf(pdx * pdx + pdy * pdy);
+            EXPECT_LT(pdist, 0.1f)
+                << "iter=" << iter << " i=" << i
+                << " seek=" << seek_time
+                << " player=(" << te << "," << tf << ")"
+                << " expected=(" << poly_x[i] << "," << poly_y[i] << ")"
+                << " dist=" << pdist;
+        }
+
+        destroy_player(p, root);
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Property 6: Smooth Curve Mirror Correctness
+// For any Q+T sequence, the T command's output should be identical to an
+// explicit Q command with the reflected control point. Same for C+S.
+// We verify by building two animateMotion SVGs — one with smooth commands
+// and one with explicit commands using the reflected control point — then
+// seeking to multiple times and comparing the reported positions.
+// ---------------------------------------------------------------------------
+TEST_F(SVGPlayerTest, MotionPath_Property6_SmoothCurveMirrorCorrectness)
+{
+    // **Validates: Requirements 3.1, 3.3**
+    uint32_t seed = 55443u;
+    const uint32_t NUM_ITERS = 100;
+    const int NUM_SEEK_POINTS = 10;
+
+    // -----------------------------------------------------------------------
+    // Part A: Q + T  vs  Q + Q(reflected)
+    // -----------------------------------------------------------------------
+    for (uint32_t iter = 0; iter < NUM_ITERS; iter++) {
+        // Generate random coords: start(x0,y0), Q control(cx,cy),
+        // Q end(qex,qey), T end(tex,tey).  Range [-200, 200].
+        float coords[8];
+        for (int ci = 0; ci < 8; ci++) {
+            seed = seed * 1103515245u + 12345u;
+            coords[ci] = ((float)(int32_t)(seed >> 8) / (float)(1 << 23)) * 200.0f;
+        }
+        float x0  = coords[0], y0  = coords[1];
+        float cx  = coords[2], cy  = coords[3];
+        float qex = coords[4], qey = coords[5];
+        float tex = coords[6], tey = coords[7];
+
+        // Reflected control point for the T segment
+        float rcx = 2.0f * qex - cx;
+        float rcy = 2.0f * qey - cy;
+
+        // Path A: uses T (smooth quad)
+        char pathA[512];
+        sprintf(pathA, "M %.6g,%.6g Q %.6g,%.6g %.6g,%.6g T %.6g,%.6g",
+                x0, y0, cx, cy, qex, qey, tex, tey);
+
+        // Path B: uses explicit Q with reflected control
+        char pathB[512];
+        sprintf(pathB, "M %.6g,%.6g Q %.6g,%.6g %.6g,%.6g Q %.6g,%.6g %.6g,%.6g",
+                x0, y0, cx, cy, qex, qey, rcx, rcy, tex, tey);
+
+        char svgA[1024];
+        sprintf(svgA,
+                "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"800\" height=\"800\">"
+                "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"2\" height=\"2\" fill=\"#000\">"
+                "    <animateMotion path=\"%s\" dur=\"10s\" fill=\"freeze\"/>"
+                "  </rect>"
+                "</svg>", pathA);
+
+        char svgB[1024];
+        sprintf(svgB,
+                "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"800\" height=\"800\">"
+                "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"2\" height=\"2\" fill=\"#000\">"
+                "    <animateMotion path=\"%s\" dur=\"10s\" fill=\"freeze\"/>"
+                "  </rect>"
+                "</svg>", pathB);
+
+        psx_result rA = S_OK, rB = S_OK;
+        psx_svg_node* rootA = NULL;
+        psx_svg_node* rootB = NULL;
+        psx_svg_player* pA = create_player(svgA, &rA, &rootA);
+        psx_svg_player* pB = create_player(svgB, &rB, &rootB);
+        if (!pA || !pB) {
+            if (pA) { destroy_player(pA, rootA); }
+            if (pB) { destroy_player(pB, rootB); }
+            continue;
+        }
+
+        const psx_svg_node* nA = psx_svg_player_get_node_by_id(pA, "r");
+        const psx_svg_node* nB = psx_svg_player_get_node_by_id(pB, "r");
+        if (!nA || !nB) {
+            destroy_player(pA, rootA);
+            destroy_player(pB, rootB);
+            continue;
+        }
+
+        psx_svg_player_play(pA);
+        psx_svg_player_play(pB);
+
+        bool mismatch = false;
+        for (int si = 0; si <= NUM_SEEK_POINTS && !mismatch; si++) {
+            float seek_time = (float)si / (float)NUM_SEEK_POINTS * 10.0f;
+
+            psx_svg_player_seek(pA, seek_time);
+            psx_svg_player_tick(pA, 0.0f);
+            psx_svg_player_seek(pB, seek_time);
+            psx_svg_player_tick(pB, 0.0f);
+
+            float aA = 0, bA = 0, cA = 0, dA = 0, eA = 0, fA = 0;
+            float aB = 0, bB = 0, cB = 0, dB = 0, eB = 0, fB = 0;
+            bool gotA = psx_svg_player_debug_get_transform_override(pA, nA, &aA, &bA, &cA, &dA, &eA, &fA);
+            bool gotB = psx_svg_player_debug_get_transform_override(pB, nB, &aB, &bB, &cB, &dB, &eB, &fB);
+            if (!gotA || !gotB) { continue; }
+
+            float dx = eA - eB;
+            float dy = fA - fB;
+            float dist = sqrtf(dx * dx + dy * dy);
+            EXPECT_LT(dist, 0.01f)
+                << "Q+T iter=" << iter << " seek=" << seek_time
+                << " A=(" << eA << "," << fA << ")"
+                << " B=(" << eB << "," << fB << ")"
+                << " dist=" << dist;
+            if (dist >= 0.01f) { mismatch = true; }
+        }
+
+        destroy_player(pA, rootA);
+        destroy_player(pB, rootB);
+    }
+
+    // -----------------------------------------------------------------------
+    // Part B: C + S  vs  C + C(reflected)
+    // -----------------------------------------------------------------------
+    for (uint32_t iter = 0; iter < NUM_ITERS; iter++) {
+        // Generate random coords: start(x0,y0), C controls(c1x,c1y,c2x,c2y),
+        // C end(cex,cey), S second control(sc2x,sc2y), S end(sex,sey).
+        // That's 12 floats.  Range [-200, 200].
+        float coords[12];
+        for (int ci = 0; ci < 12; ci++) {
+            seed = seed * 1103515245u + 12345u;
+            coords[ci] = ((float)(int32_t)(seed >> 8) / (float)(1 << 23)) * 200.0f;
+        }
+        float x0   = coords[0],  y0   = coords[1];
+        float c1x  = coords[2],  c1y  = coords[3];
+        float c2x  = coords[4],  c2y  = coords[5];
+        float cex  = coords[6],  cey  = coords[7];
+        float sc2x = coords[8],  sc2y = coords[9];
+        float sex  = coords[10], sey  = coords[11];
+
+        // Reflected first control point for the S segment
+        float rc1x = 2.0f * cex - c2x;
+        float rc1y = 2.0f * cey - c2y;
+
+        // Path A: uses S (smooth cubic)
+        char pathA[512];
+        sprintf(pathA, "M %.6g,%.6g C %.6g,%.6g %.6g,%.6g %.6g,%.6g S %.6g,%.6g %.6g,%.6g",
+                x0, y0, c1x, c1y, c2x, c2y, cex, cey, sc2x, sc2y, sex, sey);
+
+        // Path B: uses explicit C with reflected first control
+        char pathB[512];
+        sprintf(pathB, "M %.6g,%.6g C %.6g,%.6g %.6g,%.6g %.6g,%.6g C %.6g,%.6g %.6g,%.6g %.6g,%.6g",
+                x0, y0, c1x, c1y, c2x, c2y, cex, cey, rc1x, rc1y, sc2x, sc2y, sex, sey);
+
+        char svgA[1024];
+        sprintf(svgA,
+                "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"800\" height=\"800\">"
+                "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"2\" height=\"2\" fill=\"#000\">"
+                "    <animateMotion path=\"%s\" dur=\"10s\" fill=\"freeze\"/>"
+                "  </rect>"
+                "</svg>", pathA);
+
+        char svgB[1024];
+        sprintf(svgB,
+                "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"800\" height=\"800\">"
+                "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"2\" height=\"2\" fill=\"#000\">"
+                "    <animateMotion path=\"%s\" dur=\"10s\" fill=\"freeze\"/>"
+                "  </rect>"
+                "</svg>", pathB);
+
+        psx_result rA = S_OK, rB = S_OK;
+        psx_svg_node* rootA = NULL;
+        psx_svg_node* rootB = NULL;
+        psx_svg_player* pA = create_player(svgA, &rA, &rootA);
+        psx_svg_player* pB = create_player(svgB, &rB, &rootB);
+        if (!pA || !pB) {
+            if (pA) { destroy_player(pA, rootA); }
+            if (pB) { destroy_player(pB, rootB); }
+            continue;
+        }
+
+        const psx_svg_node* nA = psx_svg_player_get_node_by_id(pA, "r");
+        const psx_svg_node* nB = psx_svg_player_get_node_by_id(pB, "r");
+        if (!nA || !nB) {
+            destroy_player(pA, rootA);
+            destroy_player(pB, rootB);
+            continue;
+        }
+
+        psx_svg_player_play(pA);
+        psx_svg_player_play(pB);
+
+        bool mismatch = false;
+        for (int si = 0; si <= NUM_SEEK_POINTS && !mismatch; si++) {
+            float seek_time = (float)si / (float)NUM_SEEK_POINTS * 10.0f;
+
+            psx_svg_player_seek(pA, seek_time);
+            psx_svg_player_tick(pA, 0.0f);
+            psx_svg_player_seek(pB, seek_time);
+            psx_svg_player_tick(pB, 0.0f);
+
+            float aA = 0, bA = 0, cA = 0, dA = 0, eA = 0, fA = 0;
+            float aB = 0, bB = 0, cB = 0, dB = 0, eB = 0, fB = 0;
+            bool gotA = psx_svg_player_debug_get_transform_override(pA, nA, &aA, &bA, &cA, &dA, &eA, &fA);
+            bool gotB = psx_svg_player_debug_get_transform_override(pB, nB, &aB, &bB, &cB, &dB, &eB, &fB);
+            if (!gotA || !gotB) { continue; }
+
+            float dx = eA - eB;
+            float dy = fA - fB;
+            float dist = sqrtf(dx * dx + dy * dy);
+            EXPECT_LT(dist, 0.01f)
+                << "C+S iter=" << iter << " seek=" << seek_time
+                << " A=(" << eA << "," << fA << ")"
+                << " B=(" << eB << "," << fB << ")"
+                << " dist=" << dist;
+            if (dist >= 0.01f) { mismatch = true; }
+        }
+
+        destroy_player(pA, rootA);
+        destroy_player(pB, rootB);
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Unit test: Elliptical Arc — Semicircle
+// Validates: Requirements 4.1, 4.3
+// Path "M 0,0 A 50,50 0 0 1 100,0" — semicircle from (0,0) to (100,0)
+//   with r=50, sweep=1.
+//   Center is at (50, 0). With small-arc + sweep=1 the arc passes through
+//   (50, -50) (above the chord in screen coords).
+//   At t=0: position near (0, 0)
+//   At t=end: position near (100, 0)
+//   At t=mid: position near (50, -50) — apex of the semicircle
+// ---------------------------------------------------------------------------
+TEST_F(SVGPlayerTest, MotionPath_Arc_Semicircle)
+{
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"200\" height=\"200\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"2\" height=\"2\" fill=\"#000\">"
+        "    <animateMotion path=\"M 0,0 A 50,50 0 0 1 100,0\" dur=\"4s\" fill=\"freeze\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_NE((psx_svg_player*)NULL, p);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    ASSERT_TRUE(n != NULL);
+
+    psx_svg_player_play(p);
+
+    // t=0: start position should be at (0, 0)
+    psx_svg_player_seek(p, 0.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        EXPECT_NEAR(0.0f, e, 1.0f);
+        EXPECT_NEAR(0.0f, f, 1.0f);
+    }
+
+    // t=4s (end, fill=freeze): position should be near (100, 0)
+    psx_svg_player_seek(p, 4.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        EXPECT_NEAR(100.0f, e, 1.0f);
+        EXPECT_NEAR(0.0f, f, 1.0f);
+    }
+
+    // t=2s (midpoint): position should be near (50, -50) — the apex of the
+    // semicircle. The key check is that |y| is significantly != 0, proving
+    // the A command was parsed as a curve, not a straight line.
+    psx_svg_player_seek(p, 2.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        // x should be near the middle of the arc
+        EXPECT_GT(e, 20.0f);
+        EXPECT_LT(e, 80.0f);
+        // y must be significantly negative (arc goes above the x-axis),
+        // proving the A command was parsed as a curve, not a straight line.
+        EXPECT_LT(f, -20.0f);
+        // y should be near -50 (the apex of the semicircle)
+        EXPECT_NEAR(-50.0f, f, 15.0f);
+    }
+
+    destroy_player(p, root);
+}
+
+// ---------------------------------------------------------------------------
+// Unit test: Elliptical Arc — Zero Radius degenerates to straight line
+// Validates: Requirements 4.1, 4.3
+// Path "M 10,10 A 0,5 0 0 1 50,50" — rx=0, should degenerate to line
+//   At t=0: position near (10, 10)
+//   At t=end: position near (50, 50)
+//   At t=mid: position near (30, 30) — midpoint of straight line
+// ---------------------------------------------------------------------------
+TEST_F(SVGPlayerTest, MotionPath_Arc_ZeroRadius)
+{
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"2\" height=\"2\" fill=\"#000\">"
+        "    <animateMotion path=\"M 10,10 A 0,5 0 0 1 50,50\" dur=\"4s\" fill=\"freeze\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_NE((psx_svg_player*)NULL, p);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    ASSERT_TRUE(n != NULL);
+
+    psx_svg_player_play(p);
+
+    // t=0: start position should be at (10, 10)
+    psx_svg_player_seek(p, 0.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        EXPECT_NEAR(10.0f, e, 1.0f);
+        EXPECT_NEAR(10.0f, f, 1.0f);
+    }
+
+    // t=4s (end, fill=freeze): position should be near (50, 50)
+    psx_svg_player_seek(p, 4.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        EXPECT_NEAR(50.0f, e, 1.0f);
+        EXPECT_NEAR(50.0f, f, 1.0f);
+    }
+
+    // t=2s (midpoint): since rx=0 degenerates to a straight line,
+    // the midpoint should be near (30, 30) — the linear midpoint.
+    psx_svg_player_seek(p, 2.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        // For a straight line, x and y should be near the midpoint
+        EXPECT_NEAR(30.0f, e, 3.0f);
+        EXPECT_NEAR(30.0f, f, 3.0f);
+    }
+
+    destroy_player(p, root);
+}
+
+// ---------------------------------------------------------------------------
+// Unit test: Mixed line and curve commands — verify continuity
+// Validates: Requirements 6.1, 6.2
+// Path "M 0,0 L 10,0 Q 20,0 20,10 L 20,20"
+//   At t=0: position near (0, 0)
+//   At t=end: position near (20, 20)
+//   At t=mid: position within bounding box [0,20] x [0,20]
+// ---------------------------------------------------------------------------
+TEST_F(SVGPlayerTest, MotionPath_MixedCommands)
+{
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"2\" height=\"2\" fill=\"#000\">"
+        "    <animateMotion path=\"M 0,0 L 10,0 Q 20,0 20,10 L 20,20\" dur=\"4s\" fill=\"freeze\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_NE((psx_svg_player*)NULL, p);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    ASSERT_TRUE(n != NULL);
+
+    psx_svg_player_play(p);
+
+    // t=0: start position should be at (0, 0)
+    psx_svg_player_seek(p, 0.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        EXPECT_NEAR(0.0f, e, 1.0f);
+        EXPECT_NEAR(0.0f, f, 1.0f);
+    }
+
+    // t=4s (end, fill=freeze): position should be near (20, 20)
+    psx_svg_player_seek(p, 4.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        EXPECT_NEAR(20.0f, e, 1.0f);
+        EXPECT_NEAR(20.0f, f, 1.0f);
+    }
+
+    // t=2s (midpoint): position should be somewhere along the path,
+    // within the bounding box [0,20] x [0,20]
+    psx_svg_player_seek(p, 2.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        EXPECT_GE(e, -1.0f);
+        EXPECT_LE(e, 21.0f);
+        EXPECT_GE(f, -1.0f);
+        EXPECT_LE(f, 21.0f);
+    }
+
+    destroy_player(p, root);
+}
+
+// ---------------------------------------------------------------------------
+// Unit test: Pure line-only rectangle path — regression test
+// Validates: Requirements 6.1, 6.2
+// Path "M 0,0 L 100,0 L 100,100 L 0,100 Z" — pure line-only rectangle
+//   At t=0: position near (0, 0)
+//   At t=end: position near (0, 0) (closed path returns to start)
+//   At t=0.25: position near (100, 0)
+//   At t=0.5: position near (100, 100)
+// This verifies that the new curve code doesn't break existing line-only paths.
+// ---------------------------------------------------------------------------
+TEST_F(SVGPlayerTest, MotionPath_LineOnlyRegression)
+{
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"200\" height=\"200\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"2\" height=\"2\" fill=\"#000\">"
+        "    <animateMotion path=\"M 0,0 L 100,0 L 100,100 L 0,100 Z\" dur=\"4s\" fill=\"freeze\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_NE((psx_svg_player*)NULL, p);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    ASSERT_TRUE(n != NULL);
+
+    psx_svg_player_play(p);
+
+    // t=0: start position should be at (0, 0)
+    psx_svg_player_seek(p, 0.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        EXPECT_NEAR(0.0f, e, 1.0f);
+        EXPECT_NEAR(0.0f, f, 1.0f);
+    }
+
+    // t=4s (end, fill=freeze): closed path, position should be back at (0, 0)
+    psx_svg_player_seek(p, 4.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        EXPECT_NEAR(0.0f, e, 2.0f);
+        EXPECT_NEAR(0.0f, f, 2.0f);
+    }
+
+    // t=1s (quarter, t=0.25): position should be near (100, 0)
+    // The rectangle perimeter is 400, each side is 100 units.
+    // At t=0.25 we should be at the end of the first side.
+    psx_svg_player_seek(p, 1.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        EXPECT_NEAR(100.0f, e, 2.0f);
+        EXPECT_NEAR(0.0f, f, 2.0f);
+    }
+
+    // t=2s (half, t=0.5): position should be near (100, 100)
+    psx_svg_player_seek(p, 2.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        EXPECT_NEAR(100.0f, e, 2.0f);
+        EXPECT_NEAR(100.0f, f, 2.0f);
+    }
+
+    destroy_player(p, root);
+}
+
+TEST_F(SVGPlayerTest, AnimateMotion_QuadBezierPath)
+{
+    // End-to-end test: SVG parsing -> animateMotion path parsing -> arc-length
+    // parameterization -> position interpolation -> transform override.
+    //
+    // Path: M 0,0 Q 50,100 100,0  (quadratic Bezier arc)
+    // Duration: 4s, fill=freeze
+    //
+    // Exact quadratic Bezier at parametric t=0.5:
+    //   B(0.5) = 0.25*(0,0) + 0.5*(50,100) + 0.25*(100,0) = (50, 50)
+    // Arc-length midpoint differs slightly from parametric midpoint, but the
+    // position must clearly be on the curve (y >> 0).
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"200\" height=\"200\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"red\">"
+        "    <animateMotion path=\"M 0,0 Q 50,100 100,0\" dur=\"4s\" fill=\"freeze\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_NE((psx_svg_player*)NULL, p);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    ASSERT_TRUE(n != NULL);
+
+    psx_svg_player_play(p);
+
+    // t=0: start of path, position near (0, 0)
+    psx_svg_player_seek(p, 0.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        EXPECT_NEAR(0.0f, e, 0.5f);
+        EXPECT_NEAR(0.0f, f, 0.5f);
+    }
+
+    // t=2s (midpoint of 4s duration): position on the curve
+    // The arc-length midpoint of Q 50,100 100,0 should be near (50, 50).
+    // Allow generous tolerance because arc-length parameterization shifts
+    // the midpoint slightly from the parametric midpoint.
+    psx_svg_player_seek(p, 2.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        // x should be roughly around 50
+        EXPECT_GT(e, 20.0f);
+        EXPECT_LT(e, 80.0f);
+        // y must be significantly > 0 — proves the curve is followed, not a straight line
+        EXPECT_GT(f, 20.0f);
+        EXPECT_LT(f, 80.0f);
+    }
+
+    // t=4s (end, fill=freeze): position near (100, 0)
+    psx_svg_player_seek(p, 4.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        EXPECT_NEAR(100.0f, e, 0.5f);
+        EXPECT_NEAR(0.0f, f, 0.5f);
+    }
+
+    destroy_player(p, root);
+}
+
+// ---------------------------------------------------------------------------
+// Property 4: Relative vs Absolute coordinate equivalence
+// For any curve command (Q/C/A) and random parameters, using relative
+// coordinate commands (q/c/a) should produce the same animation positions
+// as using absolute coordinate commands. Verified by creating two SVG players
+// and comparing transform overrides at multiple seek times.
+// ---------------------------------------------------------------------------
+TEST_F(SVGPlayerTest, MotionPath_Property4_RelativeAbsoluteEquivalence)
+{
+    // **Validates: Requirements 1.2, 2.2, 4.2**
+    uint32_t seed = 99887u;
+    const uint32_t NUM_ITERS = 100;
+    const int NUM_SEEK_POINTS = 10;
+
+    // -----------------------------------------------------------------------
+    // Part A: Q (absolute) vs q (relative)
+    // -----------------------------------------------------------------------
+    for (uint32_t iter = 0; iter < NUM_ITERS; iter++) {
+        float coords[6];
+        for (int ci = 0; ci < 6; ci++) {
+            seed = seed * 1103515245u + 12345u;
+            coords[ci] = ((float)(int32_t)(seed >> 8) / (float)(1 << 23)) * 200.0f;
+        }
+        float x0 = coords[0], y0 = coords[1];
+        float cx = coords[2], cy = coords[3];
+        float ex = coords[4], ey = coords[5];
+
+        // Relative params
+        float rcx = cx - x0, rcy = cy - y0;
+        float rex = ex - x0, rey = ey - y0;
+
+        // Path A: absolute Q
+        char pathA[512];
+        sprintf(pathA, "M %.6g,%.6g Q %.6g,%.6g %.6g,%.6g",
+                x0, y0, cx, cy, ex, ey);
+
+        // Path B: relative q
+        char pathB[512];
+        sprintf(pathB, "M %.6g,%.6g q %.6g,%.6g %.6g,%.6g",
+                x0, y0, rcx, rcy, rex, rey);
+
+        char svgA[1024];
+        sprintf(svgA,
+                "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"800\" height=\"800\">"
+                "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"2\" height=\"2\" fill=\"#000\">"
+                "    <animateMotion path=\"%s\" dur=\"10s\" fill=\"freeze\"/>"
+                "  </rect>"
+                "</svg>", pathA);
+
+        char svgB[1024];
+        sprintf(svgB,
+                "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"800\" height=\"800\">"
+                "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"2\" height=\"2\" fill=\"#000\">"
+                "    <animateMotion path=\"%s\" dur=\"10s\" fill=\"freeze\"/>"
+                "  </rect>"
+                "</svg>", pathB);
+
+        psx_result rA = S_OK, rB = S_OK;
+        psx_svg_node* rootA = NULL;
+        psx_svg_node* rootB = NULL;
+        psx_svg_player* pA = create_player(svgA, &rA, &rootA);
+        psx_svg_player* pB = create_player(svgB, &rB, &rootB);
+        if (!pA || !pB) {
+            if (pA) { destroy_player(pA, rootA); }
+            if (pB) { destroy_player(pB, rootB); }
+            continue;
+        }
+
+        const psx_svg_node* nA = psx_svg_player_get_node_by_id(pA, "r");
+        const psx_svg_node* nB = psx_svg_player_get_node_by_id(pB, "r");
+        if (!nA || !nB) {
+            destroy_player(pA, rootA);
+            destroy_player(pB, rootB);
+            continue;
+        }
+
+        psx_svg_player_play(pA);
+        psx_svg_player_play(pB);
+
+        bool mismatch = false;
+        for (int si = 0; si <= NUM_SEEK_POINTS && !mismatch; si++) {
+            float seek_time = (float)si / (float)NUM_SEEK_POINTS * 10.0f;
+
+            psx_svg_player_seek(pA, seek_time);
+            psx_svg_player_tick(pA, 0.0f);
+            psx_svg_player_seek(pB, seek_time);
+            psx_svg_player_tick(pB, 0.0f);
+
+            float aA = 0, bA = 0, cA = 0, dA = 0, eA = 0, fA = 0;
+            float aB = 0, bB = 0, cB = 0, dB = 0, eB = 0, fB = 0;
+            bool gotA = psx_svg_player_debug_get_transform_override(pA, nA, &aA, &bA, &cA, &dA, &eA, &fA);
+            bool gotB = psx_svg_player_debug_get_transform_override(pB, nB, &aB, &bB, &cB, &dB, &eB, &fB);
+            if (!gotA || !gotB) { continue; }
+
+            float dx = eA - eB;
+            float dy = fA - fB;
+            float dist = sqrtf(dx * dx + dy * dy);
+            EXPECT_LT(dist, 0.01f)
+                << "Q vs q iter=" << iter << " seek=" << seek_time
+                << " abs=(" << eA << "," << fA << ")"
+                << " rel=(" << eB << "," << fB << ")"
+                << " dist=" << dist;
+            if (dist >= 0.01f) { mismatch = true; }
+        }
+
+        destroy_player(pA, rootA);
+        destroy_player(pB, rootB);
+    }
+
+    // -----------------------------------------------------------------------
+    // Part B: C (absolute) vs c (relative)
+    // -----------------------------------------------------------------------
+    for (uint32_t iter = 0; iter < NUM_ITERS; iter++) {
+        float coords[8];
+        for (int ci = 0; ci < 8; ci++) {
+            seed = seed * 1103515245u + 12345u;
+            coords[ci] = ((float)(int32_t)(seed >> 8) / (float)(1 << 23)) * 200.0f;
+        }
+        float x0  = coords[0], y0  = coords[1];
+        float c1x = coords[2], c1y = coords[3];
+        float c2x = coords[4], c2y = coords[5];
+        float ex  = coords[6], ey  = coords[7];
+
+        // Relative params
+        float rc1x = c1x - x0, rc1y = c1y - y0;
+        float rc2x = c2x - x0, rc2y = c2y - y0;
+        float rex  = ex - x0,  rey  = ey - y0;
+
+        // Path A: absolute C
+        char pathA[512];
+        sprintf(pathA, "M %.6g,%.6g C %.6g,%.6g %.6g,%.6g %.6g,%.6g",
+                x0, y0, c1x, c1y, c2x, c2y, ex, ey);
+
+        // Path B: relative c
+        char pathB[512];
+        sprintf(pathB, "M %.6g,%.6g c %.6g,%.6g %.6g,%.6g %.6g,%.6g",
+                x0, y0, rc1x, rc1y, rc2x, rc2y, rex, rey);
+
+        char svgA[1024];
+        sprintf(svgA,
+                "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"800\" height=\"800\">"
+                "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"2\" height=\"2\" fill=\"#000\">"
+                "    <animateMotion path=\"%s\" dur=\"10s\" fill=\"freeze\"/>"
+                "  </rect>"
+                "</svg>", pathA);
+
+        char svgB[1024];
+        sprintf(svgB,
+                "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"800\" height=\"800\">"
+                "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"2\" height=\"2\" fill=\"#000\">"
+                "    <animateMotion path=\"%s\" dur=\"10s\" fill=\"freeze\"/>"
+                "  </rect>"
+                "</svg>", pathB);
+
+        psx_result rA = S_OK, rB = S_OK;
+        psx_svg_node* rootA = NULL;
+        psx_svg_node* rootB = NULL;
+        psx_svg_player* pA = create_player(svgA, &rA, &rootA);
+        psx_svg_player* pB = create_player(svgB, &rB, &rootB);
+        if (!pA || !pB) {
+            if (pA) { destroy_player(pA, rootA); }
+            if (pB) { destroy_player(pB, rootB); }
+            continue;
+        }
+
+        const psx_svg_node* nA = psx_svg_player_get_node_by_id(pA, "r");
+        const psx_svg_node* nB = psx_svg_player_get_node_by_id(pB, "r");
+        if (!nA || !nB) {
+            destroy_player(pA, rootA);
+            destroy_player(pB, rootB);
+            continue;
+        }
+
+        psx_svg_player_play(pA);
+        psx_svg_player_play(pB);
+
+        bool mismatch = false;
+        for (int si = 0; si <= NUM_SEEK_POINTS && !mismatch; si++) {
+            float seek_time = (float)si / (float)NUM_SEEK_POINTS * 10.0f;
+
+            psx_svg_player_seek(pA, seek_time);
+            psx_svg_player_tick(pA, 0.0f);
+            psx_svg_player_seek(pB, seek_time);
+            psx_svg_player_tick(pB, 0.0f);
+
+            float aA = 0, bA = 0, cA = 0, dA = 0, eA = 0, fA = 0;
+            float aB = 0, bB = 0, cB = 0, dB = 0, eB = 0, fB = 0;
+            bool gotA = psx_svg_player_debug_get_transform_override(pA, nA, &aA, &bA, &cA, &dA, &eA, &fA);
+            bool gotB = psx_svg_player_debug_get_transform_override(pB, nB, &aB, &bB, &cB, &dB, &eB, &fB);
+            if (!gotA || !gotB) { continue; }
+
+            float dx = eA - eB;
+            float dy = fA - fB;
+            float dist = sqrtf(dx * dx + dy * dy);
+            EXPECT_LT(dist, 0.01f)
+                << "C vs c iter=" << iter << " seek=" << seek_time
+                << " abs=(" << eA << "," << fA << ")"
+                << " rel=(" << eB << "," << fB << ")"
+                << " dist=" << dist;
+            if (dist >= 0.01f) { mismatch = true; }
+        }
+
+        destroy_player(pA, rootA);
+        destroy_player(pB, rootB);
+    }
+
+    // -----------------------------------------------------------------------
+    // Part C: A (absolute) vs a (relative)
+    // For arc, only the endpoint (ex, ey) is relative; rx, ry, rotation,
+    // large-arc-flag, sweep-flag remain the same.
+    // -----------------------------------------------------------------------
+    for (uint32_t iter = 0; iter < NUM_ITERS; iter++) {
+        // Generate start point and endpoint
+        float coords[4];
+        for (int ci = 0; ci < 4; ci++) {
+            seed = seed * 1103515245u + 12345u;
+            coords[ci] = ((float)(int32_t)(seed >> 8) / (float)(1 << 23)) * 200.0f;
+        }
+        float x0 = coords[0], y0 = coords[1];
+        float ex = coords[2], ey = coords[3];
+
+        // Generate rx, ry in [10, 200] to avoid degenerate zero-radius arcs
+        seed = seed * 1103515245u + 12345u;
+        float rx = 10.0f + (float)(seed % 190u);
+        seed = seed * 1103515245u + 12345u;
+        float ry = 10.0f + (float)(seed % 190u);
+
+        // Ensure radii are large enough to connect the endpoints
+        float dx_half = (ex - x0) * 0.5f;
+        float dy_half = (ey - y0) * 0.5f;
+        float min_r = sqrtf(dx_half * dx_half + dy_half * dy_half) + 1.0f;
+        if (rx < min_r) rx = min_r;
+        if (ry < min_r) ry = min_r;
+
+        // Random rotation [0, 360), flags
+        seed = seed * 1103515245u + 12345u;
+        float rotation = (float)(seed % 360u);
+        seed = seed * 1103515245u + 12345u;
+        int large_arc = (int)(seed % 2u);
+        seed = seed * 1103515245u + 12345u;
+        int sweep = (int)(seed % 2u);
+
+        // Relative endpoint
+        float rex = ex - x0, rey = ey - y0;
+
+        // Path A: absolute A
+        char pathA[512];
+        sprintf(pathA, "M %.6g,%.6g A %.6g,%.6g %.6g %d %d %.6g,%.6g",
+                x0, y0, rx, ry, rotation, large_arc, sweep, ex, ey);
+
+        // Path B: relative a
+        char pathB[512];
+        sprintf(pathB, "M %.6g,%.6g a %.6g,%.6g %.6g %d %d %.6g,%.6g",
+                x0, y0, rx, ry, rotation, large_arc, sweep, rex, rey);
+
+        char svgA[1024];
+        sprintf(svgA,
+                "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"800\" height=\"800\">"
+                "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"2\" height=\"2\" fill=\"#000\">"
+                "    <animateMotion path=\"%s\" dur=\"10s\" fill=\"freeze\"/>"
+                "  </rect>"
+                "</svg>", pathA);
+
+        char svgB[1024];
+        sprintf(svgB,
+                "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"800\" height=\"800\">"
+                "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"2\" height=\"2\" fill=\"#000\">"
+                "    <animateMotion path=\"%s\" dur=\"10s\" fill=\"freeze\"/>"
+                "  </rect>"
+                "</svg>", pathB);
+
+        psx_result rA = S_OK, rB = S_OK;
+        psx_svg_node* rootA = NULL;
+        psx_svg_node* rootB = NULL;
+        psx_svg_player* pA = create_player(svgA, &rA, &rootA);
+        psx_svg_player* pB = create_player(svgB, &rB, &rootB);
+        if (!pA || !pB) {
+            if (pA) { destroy_player(pA, rootA); }
+            if (pB) { destroy_player(pB, rootB); }
+            continue;
+        }
+
+        const psx_svg_node* nA = psx_svg_player_get_node_by_id(pA, "r");
+        const psx_svg_node* nB = psx_svg_player_get_node_by_id(pB, "r");
+        if (!nA || !nB) {
+            destroy_player(pA, rootA);
+            destroy_player(pB, rootB);
+            continue;
+        }
+
+        psx_svg_player_play(pA);
+        psx_svg_player_play(pB);
+
+        bool mismatch = false;
+        for (int si = 0; si <= NUM_SEEK_POINTS && !mismatch; si++) {
+            float seek_time = (float)si / (float)NUM_SEEK_POINTS * 10.0f;
+
+            psx_svg_player_seek(pA, seek_time);
+            psx_svg_player_tick(pA, 0.0f);
+            psx_svg_player_seek(pB, seek_time);
+            psx_svg_player_tick(pB, 0.0f);
+
+            float aA = 0, bA = 0, cA = 0, dA = 0, eA = 0, fA = 0;
+            float aB = 0, bB = 0, cB = 0, dB = 0, eB = 0, fB = 0;
+            bool gotA = psx_svg_player_debug_get_transform_override(pA, nA, &aA, &bA, &cA, &dA, &eA, &fA);
+            bool gotB = psx_svg_player_debug_get_transform_override(pB, nB, &aB, &bB, &cB, &dB, &eB, &fB);
+            if (!gotA || !gotB) { continue; }
+
+            float ddx = eA - eB;
+            float ddy = fA - fB;
+            float dist = sqrtf(ddx * ddx + ddy * ddy);
+            EXPECT_LT(dist, 0.01f)
+                << "A vs a iter=" << iter << " seek=" << seek_time
+                << " abs=(" << eA << "," << fA << ")"
+                << " rel=(" << eB << "," << fB << ")"
+                << " dist=" << dist;
+            if (dist >= 0.01f) { mismatch = true; }
+        }
+
+        destroy_player(pA, rootA);
+        destroy_player(pB, rootB);
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Property 5: Implicit repeat equivalence
+// For any curve command (Q/C/A) with two sets of parameters, placing both
+// sets after a single command letter (implicit repeat) should produce the
+// same animation positions as using two explicit command letters. Verified
+// by creating two SVG players and comparing transform overrides at multiple
+// seek times.
+// ---------------------------------------------------------------------------
+TEST_F(SVGPlayerTest, MotionPath_Property5_ImplicitRepeatEquivalence)
+{
+    // **Validates: Requirements 1.3, 2.3, 4.4**
+    uint32_t seed = 55443u;
+    const uint32_t NUM_ITERS = 100;
+    const int NUM_SEEK_POINTS = 10;
+
+    // -----------------------------------------------------------------------
+    // Part A: Q implicit repeat vs two explicit Q commands
+    // -----------------------------------------------------------------------
+    for (uint32_t iter = 0; iter < NUM_ITERS; iter++) {
+        float coords[10];
+        for (int ci = 0; ci < 10; ci++) {
+            seed = seed * 1103515245u + 12345u;
+            coords[ci] = ((float)(int32_t)(seed >> 8) / (float)(1 << 23)) * 200.0f;
+        }
+        float x0  = coords[0], y0  = coords[1];
+        float cx1 = coords[2], cy1 = coords[3];
+        float ex1 = coords[4], ey1 = coords[5];
+        float cx2 = coords[6], cy2 = coords[7];
+        float ex2 = coords[8], ey2 = coords[9];
+
+        // Path A: implicit repeat (one Q, two param sets)
+        char pathA[512];
+        sprintf(pathA, "M %.6g,%.6g Q %.6g,%.6g %.6g,%.6g %.6g,%.6g %.6g,%.6g",
+                x0, y0, cx1, cy1, ex1, ey1, cx2, cy2, ex2, ey2);
+
+        // Path B: explicit repeat (two Q commands)
+        char pathB[512];
+        sprintf(pathB, "M %.6g,%.6g Q %.6g,%.6g %.6g,%.6g Q %.6g,%.6g %.6g,%.6g",
+                x0, y0, cx1, cy1, ex1, ey1, cx2, cy2, ex2, ey2);
+
+        char svgA[1024];
+        sprintf(svgA,
+                "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"800\" height=\"800\">"
+                "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"2\" height=\"2\" fill=\"#000\">"
+                "    <animateMotion path=\"%s\" dur=\"10s\" fill=\"freeze\"/>"
+                "  </rect>"
+                "</svg>", pathA);
+
+        char svgB[1024];
+        sprintf(svgB,
+                "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"800\" height=\"800\">"
+                "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"2\" height=\"2\" fill=\"#000\">"
+                "    <animateMotion path=\"%s\" dur=\"10s\" fill=\"freeze\"/>"
+                "  </rect>"
+                "</svg>", pathB);
+
+        psx_result rA = S_OK, rB = S_OK;
+        psx_svg_node* rootA = NULL;
+        psx_svg_node* rootB = NULL;
+        psx_svg_player* pA = create_player(svgA, &rA, &rootA);
+        psx_svg_player* pB = create_player(svgB, &rB, &rootB);
+        if (!pA || !pB) {
+            if (pA) { destroy_player(pA, rootA); }
+            if (pB) { destroy_player(pB, rootB); }
+            continue;
+        }
+
+        const psx_svg_node* nA = psx_svg_player_get_node_by_id(pA, "r");
+        const psx_svg_node* nB = psx_svg_player_get_node_by_id(pB, "r");
+        if (!nA || !nB) {
+            destroy_player(pA, rootA);
+            destroy_player(pB, rootB);
+            continue;
+        }
+
+        psx_svg_player_play(pA);
+        psx_svg_player_play(pB);
+
+        bool mismatch = false;
+        for (int si = 0; si <= NUM_SEEK_POINTS && !mismatch; si++) {
+            float seek_time = (float)si / (float)NUM_SEEK_POINTS * 10.0f;
+
+            psx_svg_player_seek(pA, seek_time);
+            psx_svg_player_tick(pA, 0.0f);
+            psx_svg_player_seek(pB, seek_time);
+            psx_svg_player_tick(pB, 0.0f);
+
+            float aA = 0, bA = 0, cA = 0, dA = 0, eA = 0, fA = 0;
+            float aB = 0, bB = 0, cB = 0, dB = 0, eB = 0, fB = 0;
+            bool gotA = psx_svg_player_debug_get_transform_override(pA, nA, &aA, &bA, &cA, &dA, &eA, &fA);
+            bool gotB = psx_svg_player_debug_get_transform_override(pB, nB, &aB, &bB, &cB, &dB, &eB, &fB);
+            if (!gotA || !gotB) { continue; }
+
+            float dx = eA - eB;
+            float dy = fA - fB;
+            float dist = sqrtf(dx * dx + dy * dy);
+            EXPECT_LT(dist, 0.01f)
+                << "Q implicit iter=" << iter << " seek=" << seek_time
+                << " implicit=(" << eA << "," << fA << ")"
+                << " explicit=(" << eB << "," << fB << ")"
+                << " dist=" << dist;
+            if (dist >= 0.01f) { mismatch = true; }
+        }
+
+        destroy_player(pA, rootA);
+        destroy_player(pB, rootB);
+    }
+
+    // -----------------------------------------------------------------------
+    // Part B: C implicit repeat vs two explicit C commands
+    // -----------------------------------------------------------------------
+    for (uint32_t iter = 0; iter < NUM_ITERS; iter++) {
+        float coords[14];
+        for (int ci = 0; ci < 14; ci++) {
+            seed = seed * 1103515245u + 12345u;
+            coords[ci] = ((float)(int32_t)(seed >> 8) / (float)(1 << 23)) * 200.0f;
+        }
+        float x0   = coords[0],  y0   = coords[1];
+        float c1x1 = coords[2],  c1y1 = coords[3];
+        float c2x1 = coords[4],  c2y1 = coords[5];
+        float ex1  = coords[6],  ey1  = coords[7];
+        float c1x2 = coords[8],  c1y2 = coords[9];
+        float c2x2 = coords[10], c2y2 = coords[11];
+        float ex2  = coords[12], ey2  = coords[13];
+
+        // Path A: implicit repeat (one C, two param sets)
+        char pathA[768];
+        sprintf(pathA, "M %.6g,%.6g C %.6g,%.6g %.6g,%.6g %.6g,%.6g %.6g,%.6g %.6g,%.6g %.6g,%.6g",
+                x0, y0,
+                c1x1, c1y1, c2x1, c2y1, ex1, ey1,
+                c1x2, c1y2, c2x2, c2y2, ex2, ey2);
+
+        // Path B: explicit repeat (two C commands)
+        char pathB[768];
+        sprintf(pathB, "M %.6g,%.6g C %.6g,%.6g %.6g,%.6g %.6g,%.6g C %.6g,%.6g %.6g,%.6g %.6g,%.6g",
+                x0, y0,
+                c1x1, c1y1, c2x1, c2y1, ex1, ey1,
+                c1x2, c1y2, c2x2, c2y2, ex2, ey2);
+
+        char svgA[1536];
+        sprintf(svgA,
+                "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"800\" height=\"800\">"
+                "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"2\" height=\"2\" fill=\"#000\">"
+                "    <animateMotion path=\"%s\" dur=\"10s\" fill=\"freeze\"/>"
+                "  </rect>"
+                "</svg>", pathA);
+
+        char svgB[1536];
+        sprintf(svgB,
+                "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"800\" height=\"800\">"
+                "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"2\" height=\"2\" fill=\"#000\">"
+                "    <animateMotion path=\"%s\" dur=\"10s\" fill=\"freeze\"/>"
+                "  </rect>"
+                "</svg>", pathB);
+
+        psx_result rA = S_OK, rB = S_OK;
+        psx_svg_node* rootA = NULL;
+        psx_svg_node* rootB = NULL;
+        psx_svg_player* pA = create_player(svgA, &rA, &rootA);
+        psx_svg_player* pB = create_player(svgB, &rB, &rootB);
+        if (!pA || !pB) {
+            if (pA) { destroy_player(pA, rootA); }
+            if (pB) { destroy_player(pB, rootB); }
+            continue;
+        }
+
+        const psx_svg_node* nA = psx_svg_player_get_node_by_id(pA, "r");
+        const psx_svg_node* nB = psx_svg_player_get_node_by_id(pB, "r");
+        if (!nA || !nB) {
+            destroy_player(pA, rootA);
+            destroy_player(pB, rootB);
+            continue;
+        }
+
+        psx_svg_player_play(pA);
+        psx_svg_player_play(pB);
+
+        bool mismatch = false;
+        for (int si = 0; si <= NUM_SEEK_POINTS && !mismatch; si++) {
+            float seek_time = (float)si / (float)NUM_SEEK_POINTS * 10.0f;
+
+            psx_svg_player_seek(pA, seek_time);
+            psx_svg_player_tick(pA, 0.0f);
+            psx_svg_player_seek(pB, seek_time);
+            psx_svg_player_tick(pB, 0.0f);
+
+            float aA = 0, bA = 0, cA = 0, dA = 0, eA = 0, fA = 0;
+            float aB = 0, bB = 0, cB = 0, dB = 0, eB = 0, fB = 0;
+            bool gotA = psx_svg_player_debug_get_transform_override(pA, nA, &aA, &bA, &cA, &dA, &eA, &fA);
+            bool gotB = psx_svg_player_debug_get_transform_override(pB, nB, &aB, &bB, &cB, &dB, &eB, &fB);
+            if (!gotA || !gotB) { continue; }
+
+            float dx = eA - eB;
+            float dy = fA - fB;
+            float dist = sqrtf(dx * dx + dy * dy);
+            EXPECT_LT(dist, 0.01f)
+                << "C implicit iter=" << iter << " seek=" << seek_time
+                << " implicit=(" << eA << "," << fA << ")"
+                << " explicit=(" << eB << "," << fB << ")"
+                << " dist=" << dist;
+            if (dist >= 0.01f) { mismatch = true; }
+        }
+
+        destroy_player(pA, rootA);
+        destroy_player(pB, rootB);
+    }
+
+    // -----------------------------------------------------------------------
+    // Part C: A implicit repeat vs two explicit A commands
+    // -----------------------------------------------------------------------
+    for (uint32_t iter = 0; iter < NUM_ITERS; iter++) {
+        // Generate start point and two endpoints
+        float coords[6];
+        for (int ci = 0; ci < 6; ci++) {
+            seed = seed * 1103515245u + 12345u;
+            coords[ci] = ((float)(int32_t)(seed >> 8) / (float)(1 << 23)) * 200.0f;
+        }
+        float x0  = coords[0], y0  = coords[1];
+        float ex1 = coords[2], ey1 = coords[3];
+        float ex2 = coords[4], ey2 = coords[5];
+
+        // Generate shared arc params: rx, ry in [10, 200]
+        seed = seed * 1103515245u + 12345u;
+        float rx = 10.0f + (float)(seed % 190u);
+        seed = seed * 1103515245u + 12345u;
+        float ry = 10.0f + (float)(seed % 190u);
+
+        // Ensure radii large enough for both segments
+        float dx1 = (ex1 - x0) * 0.5f, dy1 = (ey1 - y0) * 0.5f;
+        float min_r1 = sqrtf(dx1 * dx1 + dy1 * dy1) + 1.0f;
+        float dx2 = (ex2 - ex1) * 0.5f, dy2 = (ey2 - ey1) * 0.5f;
+        float min_r2 = sqrtf(dx2 * dx2 + dy2 * dy2) + 1.0f;
+        float min_r = min_r1 > min_r2 ? min_r1 : min_r2;
+        if (rx < min_r) rx = min_r;
+        if (ry < min_r) ry = min_r;
+
+        seed = seed * 1103515245u + 12345u;
+        float rotation = (float)(seed % 360u);
+        seed = seed * 1103515245u + 12345u;
+        int large_arc = (int)(seed % 2u);
+        seed = seed * 1103515245u + 12345u;
+        int sweep = (int)(seed % 2u);
+
+        // Path A: implicit repeat (one A, two param sets)
+        char pathA[768];
+        sprintf(pathA, "M %.6g,%.6g A %.6g,%.6g %.6g %d %d %.6g,%.6g %.6g,%.6g %.6g %d %d %.6g,%.6g",
+                x0, y0,
+                rx, ry, rotation, large_arc, sweep, ex1, ey1,
+                rx, ry, rotation, large_arc, sweep, ex2, ey2);
+
+        // Path B: explicit repeat (two A commands)
+        char pathB[768];
+        sprintf(pathB, "M %.6g,%.6g A %.6g,%.6g %.6g %d %d %.6g,%.6g A %.6g,%.6g %.6g %d %d %.6g,%.6g",
+                x0, y0,
+                rx, ry, rotation, large_arc, sweep, ex1, ey1,
+                rx, ry, rotation, large_arc, sweep, ex2, ey2);
+
+        char svgA[1536];
+        sprintf(svgA,
+                "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"800\" height=\"800\">"
+                "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"2\" height=\"2\" fill=\"#000\">"
+                "    <animateMotion path=\"%s\" dur=\"10s\" fill=\"freeze\"/>"
+                "  </rect>"
+                "</svg>", pathA);
+
+        char svgB[1536];
+        sprintf(svgB,
+                "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"800\" height=\"800\">"
+                "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"2\" height=\"2\" fill=\"#000\">"
+                "    <animateMotion path=\"%s\" dur=\"10s\" fill=\"freeze\"/>"
+                "  </rect>"
+                "</svg>", pathB);
+
+        psx_result rA = S_OK, rB = S_OK;
+        psx_svg_node* rootA = NULL;
+        psx_svg_node* rootB = NULL;
+        psx_svg_player* pA = create_player(svgA, &rA, &rootA);
+        psx_svg_player* pB = create_player(svgB, &rB, &rootB);
+        if (!pA || !pB) {
+            if (pA) { destroy_player(pA, rootA); }
+            if (pB) { destroy_player(pB, rootB); }
+            continue;
+        }
+
+        const psx_svg_node* nA = psx_svg_player_get_node_by_id(pA, "r");
+        const psx_svg_node* nB = psx_svg_player_get_node_by_id(pB, "r");
+        if (!nA || !nB) {
+            destroy_player(pA, rootA);
+            destroy_player(pB, rootB);
+            continue;
+        }
+
+        psx_svg_player_play(pA);
+        psx_svg_player_play(pB);
+
+        bool mismatch = false;
+        for (int si = 0; si <= NUM_SEEK_POINTS && !mismatch; si++) {
+            float seek_time = (float)si / (float)NUM_SEEK_POINTS * 10.0f;
+
+            psx_svg_player_seek(pA, seek_time);
+            psx_svg_player_tick(pA, 0.0f);
+            psx_svg_player_seek(pB, seek_time);
+            psx_svg_player_tick(pB, 0.0f);
+
+            float aA = 0, bA = 0, cA = 0, dA = 0, eA = 0, fA = 0;
+            float aB = 0, bB = 0, cB = 0, dB = 0, eB = 0, fB = 0;
+            bool gotA = psx_svg_player_debug_get_transform_override(pA, nA, &aA, &bA, &cA, &dA, &eA, &fA);
+            bool gotB = psx_svg_player_debug_get_transform_override(pB, nB, &aB, &bB, &cB, &dB, &eB, &fB);
+            if (!gotA || !gotB) { continue; }
+
+            float ddx = eA - eB;
+            float ddy = fA - fB;
+            float dist = sqrtf(ddx * ddx + ddy * ddy);
+            EXPECT_LT(dist, 0.01f)
+                << "A implicit iter=" << iter << " seek=" << seek_time
+                << " implicit=(" << eA << "," << fA << ")"
+                << " explicit=(" << eB << "," << fB << ")"
+                << " dist=" << dist;
+            if (dist >= 0.01f) { mismatch = true; }
+        }
+
+        destroy_player(pA, rootA);
+        destroy_player(pB, rootB);
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Property 7: 纯直线路径回归兼容
+// For any path containing only M/L/H/V/Z commands, the new parser should
+// produce the same positions as the reference line-only parser (test_path_parse)
+// at all seek times.
+// ---------------------------------------------------------------------------
+TEST_F(SVGPlayerTest, MotionPath_Property7_LineOnlyRegression)
+{
+    // **Validates: Requirements 6.1**
+    uint32_t seed = 77442u;
+    const uint32_t NUM_ITERS = 100;
+    const int NUM_SEEK_POINTS = 10;
+
+    for (uint32_t iter = 0; iter < NUM_ITERS; iter++) {
+        // Generate a random line-only path: M x0,y0 then 2-5 segments of L/H/V
+        float cur_x = 0, cur_y = 0, start_x = 0, start_y = 0;
+        char path_str[1024];
+        int ppos = 0;
+
+        // Random start point
+        seed = seed * 1103515245u + 12345u;
+        start_x = ((float)(int32_t)(seed >> 8) / (float)(1 << 23)) * 200.0f;
+        seed = seed * 1103515245u + 12345u;
+        start_y = ((float)(int32_t)(seed >> 8) / (float)(1 << 23)) * 200.0f;
+        cur_x = start_x;
+        cur_y = start_y;
+        ppos += sprintf(path_str + ppos, "M %.6g,%.6g", start_x, start_y);
+
+        // Random number of segments: 2-5
+        seed = seed * 1103515245u + 12345u;
+        int num_segs = 2 + (int)((seed >> 16) % 4);
+
+        for (int s = 0; s < num_segs; s++) {
+            seed = seed * 1103515245u + 12345u;
+            int cmd_type = (int)((seed >> 16) % 3); // 0=L, 1=H, 2=V
+
+            if (cmd_type == 0) {
+                // L x,y
+                seed = seed * 1103515245u + 12345u;
+                float x = ((float)(int32_t)(seed >> 8) / (float)(1 << 23)) * 200.0f;
+                seed = seed * 1103515245u + 12345u;
+                float y = ((float)(int32_t)(seed >> 8) / (float)(1 << 23)) * 200.0f;
+                ppos += sprintf(path_str + ppos, " L %.6g,%.6g", x, y);
+                cur_x = x;
+                cur_y = y;
+            } else if (cmd_type == 1) {
+                // H x
+                seed = seed * 1103515245u + 12345u;
+                float x = ((float)(int32_t)(seed >> 8) / (float)(1 << 23)) * 200.0f;
+                ppos += sprintf(path_str + ppos, " H %.6g", x);
+                cur_x = x;
+            } else {
+                // V y
+                seed = seed * 1103515245u + 12345u;
+                float y = ((float)(int32_t)(seed >> 8) / (float)(1 << 23)) * 200.0f;
+                ppos += sprintf(path_str + ppos, " V %.6g", y);
+                cur_y = y;
+            }
+        }
+
+        // Optionally close with Z (50% chance)
+        seed = seed * 1103515245u + 12345u;
+        if ((seed >> 16) % 2 == 0) {
+            ppos += sprintf(path_str + ppos, " Z");
+        }
+        path_str[ppos] = '\0';
+
+        // Parse with reference line-only parser
+        float* ref_xs = NULL;
+        float* ref_ys = NULL;
+        uint32_t ref_count = 0;
+        bool ref_ok = test_path_parse(path_str, (uint32_t)ppos,
+                                      &ref_xs, &ref_ys, &ref_count);
+        if (!ref_ok || ref_count < 2) {
+            free(ref_xs);
+            free(ref_ys);
+            continue;
+        }
+
+        // Build SVG with animateMotion using the same path
+        char svg[2048];
+        sprintf(svg,
+                "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"800\" height=\"800\">"
+                "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"2\" height=\"2\" fill=\"#000\">"
+                "    <animateMotion path=\"%s\" dur=\"10s\" fill=\"freeze\"/>"
+                "  </rect>"
+                "</svg>", path_str);
+
+        psx_result r = S_OK;
+        psx_svg_node* root = NULL;
+        psx_svg_player* p = create_player(svg, &r, &root);
+        if (!p) {
+            free(ref_xs);
+            free(ref_ys);
+            continue;
+        }
+
+        const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+        if (!n) {
+            destroy_player(p, root);
+            free(ref_xs);
+            free(ref_ys);
+            continue;
+        }
+
+        psx_svg_player_play(p);
+
+        bool mismatch = false;
+        for (int si = 0; si <= NUM_SEEK_POINTS && !mismatch; si++) {
+            float t = (float)si / (float)NUM_SEEK_POINTS;
+            float seek_time = t * 10.0f;
+
+            // Reference position from test_path_parse output
+            float exp_x = 0, exp_y = 0;
+            test_arc_length_position(ref_xs, ref_ys, ref_count, t, &exp_x, &exp_y);
+
+            // Player position
+            psx_svg_player_seek(p, seek_time);
+            psx_svg_player_tick(p, 0.0f);
+
+            float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+            bool got = psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f);
+            if (!got) { continue; }
+
+            float dx = e - exp_x;
+            float dy = f - exp_y;
+            float dist = sqrtf(dx * dx + dy * dy);
+            EXPECT_LT(dist, 0.01f)
+                << "iter=" << iter << " seek_t=" << t
+                << " path=\"" << path_str << "\""
+                << " expected=(" << exp_x << "," << exp_y << ")"
+                << " actual=(" << e << "," << f << ")"
+                << " dist=" << dist;
+            if (dist >= 0.01f) { mismatch = true; }
+        }
+
+        destroy_player(p, root);
+        free(ref_xs);
+        free(ref_ys);
     }
 }
