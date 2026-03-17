@@ -60,10 +60,10 @@ void draw_test(int id, ps_context* gc)
     }
     ps_fill(gc);
 
+    ps_restore(gc);
+
     /* draw current animation frame */
     psx_svg_player_draw(player, gc);
-
-    ps_restore(gc);
 }
 
 void init_context(ps_context* gc, ps_canvas* cs, unsigned char* buf)

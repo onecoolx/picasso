@@ -159,7 +159,7 @@ static INLINE void init_draw_attrs(ps_draw_attrs* attrs)
 {
     ps_color c = { 0.0f, 0.0f, 0.0f, 1.0f };
     attrs->ref_count = 0;
-    attrs->flags = RENDER_FILL | RENDER_ATTR_FILL;
+    attrs->flags = RENDER_FILL;
     attrs->fill_color = c;
     attrs->fill_opacity = 1.0f;
     attrs->fill_rule = FILL_RULE_WINDING;
