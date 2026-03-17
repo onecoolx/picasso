@@ -3969,8 +3969,8 @@ TEST_F(SVGPlayerTest, AnimateMotion_Path_QuadBezier_Q)
     // This is a parabolic arc from (0,0) to (100,0) with control point (50,100).
     // At t=0 => position (0,0), at t=1 => position (100,0).
     // At t=0.5 => midpoint of the curve, which for a quadratic Bezier is:
-    //   B(0.5) = (1-0.5)^2 * P0 + 2*(1-0.5)*0.5 * P1 + 0.5^2 * P2
-    //          = 0.25*(0,0) + 0.5*(50,100) + 0.25*(100,0) = (50, 50)
+    // B(0.5) = (1-0.5)^2 * P0 + 2*(1-0.5)*0.5 * P1 + 0.5^2 * P2
+    // = 0.25*(0,0) + 0.5*(50,100) + 0.25*(100,0) = (50, 50)
     // The arc-length midpoint won't be exactly at parametric 0.5, but the
     // key test is that the curve is NOT a straight line from (0,0) to (100,0).
     // At the arc-length midpoint, y should be significantly > 0 (curve bulges up).
@@ -4106,8 +4106,8 @@ TEST_F(SVGPlayerTest, MotionPath_QuadBezier_UserReportedPath)
         bool moved_x = (e < 240.0f || e > 260.0f);
         bool moved_y = (f < 70.0f || f > 85.0f);
         EXPECT_TRUE(moved_x || moved_y)
-            << "t=0.5 position (" << e << ", " << f
-            << ") is too close to start — Q segments may not be parsed";
+                << "t=0.5 position (" << e << ", " << f
+                << ") is too close to start — Q segments may not be parsed";
     }
 
     destroy_player(p, root);
@@ -4188,9 +4188,9 @@ TEST_F(SVGPlayerTest, MotionPath_CubicBezier_Basic)
 // Unit test: Smooth Quadratic Bezier — T after Q
 // Validates: Requirements 3.1, 3.2
 // Path "M 0,0 Q 10,20 20,0 T 40,0"
-//   Q produces FLATTEN_STEPS_QUAD=8 points, T produces another 8 points.
-//   Total: 1 (M start) + 8 (Q) + 8 (T) = 17 points.
-//   Endpoint should be near (40, 0).
+// Q produces FLATTEN_STEPS_QUAD=8 points, T produces another 8 points.
+// Total: 1 (M start) + 8 (Q) + 8 (T) = 17 points.
+// Endpoint should be near (40, 0).
 // ---------------------------------------------------------------------------
 TEST_F(SVGPlayerTest, MotionPath_SmoothQuad_TAfterQ)
 {
@@ -4252,10 +4252,10 @@ TEST_F(SVGPlayerTest, MotionPath_SmoothQuad_TAfterQ)
 // Unit test: Smooth Quadratic Bezier — T without prior Q (degenerates)
 // Validates: Requirements 3.2
 // Path "M 10,10 T 50,50"
-//   No prior Q, so control point = current point (10,10).
-//   This degenerates to a straight-line flattening.
-//   Total: 1 (M start) + 8 (T) = 9 points.
-//   Endpoint should be near (50, 50).
+// No prior Q, so control point = current point (10,10).
+// This degenerates to a straight-line flattening.
+// Total: 1 (M start) + 8 (T) = 9 points.
+// Endpoint should be near (50, 50).
 // ---------------------------------------------------------------------------
 TEST_F(SVGPlayerTest, MotionPath_SmoothQuad_TWithoutQ)
 {
@@ -4314,11 +4314,11 @@ TEST_F(SVGPlayerTest, MotionPath_SmoothQuad_TWithoutQ)
 // Unit test: Smooth Cubic Bezier — S after C
 // Validates: Requirements 3.3, 3.4
 // Path "M 0,0 C 10,20 30,20 40,0 S 70,-20 80,0"
-//   C produces FLATTEN_STEPS_CUBIC=16 points, S produces another 16 points.
-//   Total: 1 (M start) + 16 (C) + 16 (S) = 33 points.
-//   Endpoint should be near (80, 0).
-//   The S command mirrors C's second control point (30,20) about (40,0)
-//   giving reflected c1 = (50,-20), with explicit c2=(70,-20), end=(80,0).
+// C produces FLATTEN_STEPS_CUBIC=16 points, S produces another 16 points.
+// Total: 1 (M start) + 16 (C) + 16 (S) = 33 points.
+// Endpoint should be near (80, 0).
+// The S command mirrors C's second control point (30,20) about (40,0)
+// giving reflected c1 = (50,-20), with explicit c2=(70,-20), end=(80,0).
 // ---------------------------------------------------------------------------
 TEST_F(SVGPlayerTest, MotionPath_SmoothCubic_SAfterC)
 {
@@ -4707,7 +4707,8 @@ TEST_F(SVGPlayerTest, MotionPath_Property1_QuadBezierFlattenAccuracy)
 
         // Compute exact flattened polyline: 9 points (start + 8 steps)
         float poly_x[9], poly_y[9];
-        poly_x[0] = x0; poly_y[0] = y0;
+        poly_x[0] = x0;
+        poly_y[0] = y0;
         for (int i = 1; i <= FLATTEN_STEPS; i++) {
             float t = (float)i / (float)FLATTEN_STEPS;
             float u = 1.0f - t;
@@ -4725,10 +4726,10 @@ TEST_F(SVGPlayerTest, MotionPath_Property1_QuadBezierFlattenAccuracy)
             float dy = poly_y[i] - exact_y;
             float dist = sqrtf(dx * dx + dy * dy);
             EXPECT_LT(dist, 0.01f)
-                << "iter=" << iter << " i=" << i
-                << " poly=(" << poly_x[i] << "," << poly_y[i] << ")"
-                << " exact=(" << exact_x << "," << exact_y << ")"
-                << " dist=" << dist;
+                    << "iter=" << iter << " i=" << i
+                    << " poly=(" << poly_x[i] << "," << poly_y[i] << ")"
+                    << " exact=(" << exact_x << "," << exact_y << ")"
+                    << " dist=" << dist;
         }
 
         // Now verify the production code produces the same polyline by going
@@ -4792,11 +4793,11 @@ TEST_F(SVGPlayerTest, MotionPath_Property1_QuadBezierFlattenAccuracy)
             float pdy = tf - poly_y[i];
             float pdist = sqrtf(pdx * pdx + pdy * pdy);
             EXPECT_LT(pdist, 0.01f)
-                << "iter=" << iter << " i=" << i
-                << " seek=" << seek_time
-                << " player=(" << te << "," << tf << ")"
-                << " expected=(" << poly_x[i] << "," << poly_y[i] << ")"
-                << " dist=" << pdist;
+                    << "iter=" << iter << " i=" << i
+                    << " seek=" << seek_time
+                    << " player=(" << te << "," << tf << ")"
+                    << " expected=(" << poly_x[i] << "," << poly_y[i] << ")"
+                    << " dist=" << pdist;
         }
 
         destroy_player(p, root);
@@ -4824,35 +4825,36 @@ TEST_F(SVGPlayerTest, MotionPath_Property2_CubicBezierFlattenAccuracy)
             seed = seed * 1103515245u + 12345u;
             coords[ci] = ((float)(int32_t)(seed >> 8) / (float)(1 << 23)) * 500.0f;
         }
-        float x0  = coords[0], y0  = coords[1];
+        float x0 = coords[0], y0 = coords[1];
         float c1x = coords[2], c1y = coords[3];
         float c2x = coords[4], c2y = coords[5];
-        float ex  = coords[6], ey  = coords[7];
+        float ex = coords[6], ey = coords[7];
 
         // Compute exact flattened polyline: 17 points (start + 16 steps)
         float poly_x[17], poly_y[17];
-        poly_x[0] = x0; poly_y[0] = y0;
+        poly_x[0] = x0;
+        poly_y[0] = y0;
         for (int i = 1; i <= FLATTEN_STEPS; i++) {
             float t = (float)i / (float)FLATTEN_STEPS;
             float u = 1.0f - t;
-            poly_x[i] = u*u*u*x0 + 3.0f*u*u*t*c1x + 3.0f*u*t*t*c2x + t*t*t*ex;
-            poly_y[i] = u*u*u*y0 + 3.0f*u*u*t*c1y + 3.0f*u*t*t*c2y + t*t*t*ey;
+            poly_x[i] = u * u * u * x0 + 3.0f * u * u * t * c1x + 3.0f * u * t * t * c2x + t * t * t * ex;
+            poly_y[i] = u * u * u * y0 + 3.0f * u * u * t * c1y + 3.0f * u * t * t * c2y + t * t * t * ey;
         }
 
         // Verify each flattened point matches exact cubic Bezier at t = i/16
         for (int i = 1; i <= FLATTEN_STEPS; i++) {
             float t = (float)i / (float)FLATTEN_STEPS;
             float u = 1.0f - t;
-            float exact_x = u*u*u*x0 + 3.0f*u*u*t*c1x + 3.0f*u*t*t*c2x + t*t*t*ex;
-            float exact_y = u*u*u*y0 + 3.0f*u*u*t*c1y + 3.0f*u*t*t*c2y + t*t*t*ey;
+            float exact_x = u * u * u * x0 + 3.0f * u * u * t * c1x + 3.0f * u * t * t * c2x + t * t * t * ex;
+            float exact_y = u * u * u * y0 + 3.0f * u * u * t * c1y + 3.0f * u * t * t * c2y + t * t * t * ey;
             float dx = poly_x[i] - exact_x;
             float dy = poly_y[i] - exact_y;
             float dist = sqrtf(dx * dx + dy * dy);
             EXPECT_LT(dist, 0.01f)
-                << "iter=" << iter << " i=" << i
-                << " poly=(" << poly_x[i] << "," << poly_y[i] << ")"
-                << " exact=(" << exact_x << "," << exact_y << ")"
-                << " dist=" << dist;
+                    << "iter=" << iter << " i=" << i
+                    << " poly=(" << poly_x[i] << "," << poly_y[i] << ")"
+                    << " exact=(" << exact_x << "," << exact_y << ")"
+                    << " dist=" << dist;
         }
 
         // Verify the production code produces the same polyline through the
@@ -4914,11 +4916,11 @@ TEST_F(SVGPlayerTest, MotionPath_Property2_CubicBezierFlattenAccuracy)
             float pdy = tf - poly_y[i];
             float pdist = sqrtf(pdx * pdx + pdy * pdy);
             EXPECT_LT(pdist, 0.01f)
-                << "iter=" << iter << " i=" << i
-                << " seek=" << seek_time
-                << " player=(" << te << "," << tf << ")"
-                << " expected=(" << poly_x[i] << "," << poly_y[i] << ")"
-                << " dist=" << pdist;
+                    << "iter=" << iter << " i=" << i
+                    << " seek=" << seek_time
+                    << " player=(" << te << "," << tf << ")"
+                    << " expected=(" << poly_x[i] << "," << poly_y[i] << ")"
+                    << " dist=" << pdist;
         }
 
         destroy_player(p, root);
@@ -4984,7 +4986,7 @@ TEST_F(SVGPlayerTest, MotionPath_Property3_ArcFlattenAccuracy)
 
         float dx2 = (x0 - ex) * 0.5f;
         float dy2 = (y0 - ey) * 0.5f;
-        float x1p =  cos_phi * dx2 + sin_phi * dy2;
+        float x1p = cos_phi * dx2 + sin_phi * dy2;
         float y1p = -sin_phi * dx2 + cos_phi * dy2;
 
         // Scale radii if needed
@@ -5013,7 +5015,7 @@ TEST_F(SVGPlayerTest, MotionPath_Property3_ArcFlattenAccuracy)
             sq = -sq;
         }
 
-        float cxp =  sq * arx * y1p / ary;
+        float cxp = sq * arx * y1p / ary;
         float cyp = -sq * ary * x1p / arx;
 
         // Transform back to original coordinates
@@ -5032,10 +5034,10 @@ TEST_F(SVGPlayerTest, MotionPath_Property3_ArcFlattenAccuracy)
         float theta1 = 0.0f;
         if (n_u > 0.0f) {
             float cos_t = ux / n_u;
-            if (cos_t < -1.0f) cos_t = -1.0f;
-            if (cos_t >  1.0f) cos_t =  1.0f;
+            if (cos_t < -1.0f) { cos_t = -1.0f; }
+            if (cos_t > 1.0f) { cos_t = 1.0f; }
             theta1 = acosf(cos_t);
-            if (uy < 0.0f) theta1 = -theta1;
+            if (uy < 0.0f) { theta1 = -theta1; }
         }
 
         float n_v = sqrtf(vx * vx + vy * vy);
@@ -5043,10 +5045,10 @@ TEST_F(SVGPlayerTest, MotionPath_Property3_ArcFlattenAccuracy)
         if (n_u > 0.0f && n_v > 0.0f) {
             float dot = ux * vx + uy * vy;
             float cos_d = dot / (n_u * n_v);
-            if (cos_d < -1.0f) cos_d = -1.0f;
-            if (cos_d >  1.0f) cos_d =  1.0f;
+            if (cos_d < -1.0f) { cos_d = -1.0f; }
+            if (cos_d > 1.0f) { cos_d = 1.0f; }
             dtheta = acosf(cos_d);
-            if (ux * vy - uy * vx < 0.0f) dtheta = -dtheta;
+            if (ux * vy - uy * vx < 0.0f) { dtheta = -dtheta; }
         }
 
         if (sweep_flag && dtheta < 0.0f) {
@@ -5057,7 +5059,8 @@ TEST_F(SVGPlayerTest, MotionPath_Property3_ArcFlattenAccuracy)
 
         // Compute expected flattened polyline: start + 16 steps
         float poly_x[17], poly_y[17];
-        poly_x[0] = x0; poly_y[0] = y0;
+        poly_x[0] = x0;
+        poly_y[0] = y0;
         for (int i = 1; i <= FLATTEN_STEPS; i++) {
             float angle = theta1 + dtheta * (float)i / (float)FLATTEN_STEPS;
             float ca = cosf(angle);
@@ -5111,24 +5114,24 @@ TEST_F(SVGPlayerTest, MotionPath_Property3_ArcFlattenAccuracy)
         for (int i = 1; i <= FLATTEN_STEPS; i++) {
             float norm_t = cum[i] / total_len;
             float seek_time = norm_t * 16.0f;
-            if (seek_time > 16.0f) seek_time = 16.0f;
+            if (seek_time > 16.0f) { seek_time = 16.0f; }
 
             psx_svg_player_seek(p, seek_time);
             psx_svg_player_tick(p, 0.0f);
 
             float a = 0, b = 0, c = 0, d = 0, te = 0, tf = 0;
             bool got = psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &te, &tf);
-            if (!got) continue;
+            if (!got) { continue; }
 
             float pdx = te - poly_x[i];
             float pdy = tf - poly_y[i];
             float pdist = sqrtf(pdx * pdx + pdy * pdy);
             EXPECT_LT(pdist, 0.1f)
-                << "iter=" << iter << " i=" << i
-                << " seek=" << seek_time
-                << " player=(" << te << "," << tf << ")"
-                << " expected=(" << poly_x[i] << "," << poly_y[i] << ")"
-                << " dist=" << pdist;
+                    << "iter=" << iter << " i=" << i
+                    << " seek=" << seek_time
+                    << " player=(" << te << "," << tf << ")"
+                    << " expected=(" << poly_x[i] << "," << poly_y[i] << ")"
+                    << " dist=" << pdist;
         }
 
         destroy_player(p, root);
@@ -5161,8 +5164,8 @@ TEST_F(SVGPlayerTest, MotionPath_Property6_SmoothCurveMirrorCorrectness)
             seed = seed * 1103515245u + 12345u;
             coords[ci] = ((float)(int32_t)(seed >> 8) / (float)(1 << 23)) * 200.0f;
         }
-        float x0  = coords[0], y0  = coords[1];
-        float cx  = coords[2], cy  = coords[3];
+        float x0 = coords[0], y0 = coords[1];
+        float cx = coords[2], cy = coords[3];
         float qex = coords[4], qey = coords[5];
         float tex = coords[6], tey = coords[7];
 
@@ -5237,10 +5240,10 @@ TEST_F(SVGPlayerTest, MotionPath_Property6_SmoothCurveMirrorCorrectness)
             float dy = fA - fB;
             float dist = sqrtf(dx * dx + dy * dy);
             EXPECT_LT(dist, 0.01f)
-                << "Q+T iter=" << iter << " seek=" << seek_time
-                << " A=(" << eA << "," << fA << ")"
-                << " B=(" << eB << "," << fB << ")"
-                << " dist=" << dist;
+                    << "Q+T iter=" << iter << " seek=" << seek_time
+                    << " A=(" << eA << "," << fA << ")"
+                    << " B=(" << eB << "," << fB << ")"
+                    << " dist=" << dist;
             if (dist >= 0.01f) { mismatch = true; }
         }
 
@@ -5260,12 +5263,12 @@ TEST_F(SVGPlayerTest, MotionPath_Property6_SmoothCurveMirrorCorrectness)
             seed = seed * 1103515245u + 12345u;
             coords[ci] = ((float)(int32_t)(seed >> 8) / (float)(1 << 23)) * 200.0f;
         }
-        float x0   = coords[0],  y0   = coords[1];
-        float c1x  = coords[2],  c1y  = coords[3];
-        float c2x  = coords[4],  c2y  = coords[5];
-        float cex  = coords[6],  cey  = coords[7];
-        float sc2x = coords[8],  sc2y = coords[9];
-        float sex  = coords[10], sey  = coords[11];
+        float x0 = coords[0], y0 = coords[1];
+        float c1x = coords[2], c1y = coords[3];
+        float c2x = coords[4], c2y = coords[5];
+        float cex = coords[6], cey = coords[7];
+        float sc2x = coords[8], sc2y = coords[9];
+        float sex = coords[10], sey = coords[11];
 
         // Reflected first control point for the S segment
         float rc1x = 2.0f * cex - c2x;
@@ -5338,10 +5341,10 @@ TEST_F(SVGPlayerTest, MotionPath_Property6_SmoothCurveMirrorCorrectness)
             float dy = fA - fB;
             float dist = sqrtf(dx * dx + dy * dy);
             EXPECT_LT(dist, 0.01f)
-                << "C+S iter=" << iter << " seek=" << seek_time
-                << " A=(" << eA << "," << fA << ")"
-                << " B=(" << eB << "," << fB << ")"
-                << " dist=" << dist;
+                    << "C+S iter=" << iter << " seek=" << seek_time
+                    << " A=(" << eA << "," << fA << ")"
+                    << " B=(" << eB << "," << fB << ")"
+                    << " dist=" << dist;
             if (dist >= 0.01f) { mismatch = true; }
         }
 
@@ -5354,12 +5357,12 @@ TEST_F(SVGPlayerTest, MotionPath_Property6_SmoothCurveMirrorCorrectness)
 // Unit test: Elliptical Arc — Semicircle
 // Validates: Requirements 4.1, 4.3
 // Path "M 0,0 A 50,50 0 0 1 100,0" — semicircle from (0,0) to (100,0)
-//   with r=50, sweep=1.
-//   Center is at (50, 0). With small-arc + sweep=1 the arc passes through
-//   (50, -50) (above the chord in screen coords).
-//   At t=0: position near (0, 0)
-//   At t=end: position near (100, 0)
-//   At t=mid: position near (50, -50) — apex of the semicircle
+// with r=50, sweep=1.
+// Center is at (50, 0). With small-arc + sweep=1 the arc passes through
+// (50, -50) (above the chord in screen coords).
+// At t=0: position near (0, 0)
+// At t=end: position near (100, 0)
+// At t=mid: position near (50, -50) — apex of the semicircle
 // ---------------------------------------------------------------------------
 TEST_F(SVGPlayerTest, MotionPath_Arc_Semicircle)
 {
@@ -5425,9 +5428,9 @@ TEST_F(SVGPlayerTest, MotionPath_Arc_Semicircle)
 // Unit test: Elliptical Arc — Zero Radius degenerates to straight line
 // Validates: Requirements 4.1, 4.3
 // Path "M 10,10 A 0,5 0 0 1 50,50" — rx=0, should degenerate to line
-//   At t=0: position near (10, 10)
-//   At t=end: position near (50, 50)
-//   At t=mid: position near (30, 30) — midpoint of straight line
+// At t=0: position near (10, 10)
+// At t=end: position near (50, 50)
+// At t=mid: position near (30, 30) — midpoint of straight line
 // ---------------------------------------------------------------------------
 TEST_F(SVGPlayerTest, MotionPath_Arc_ZeroRadius)
 {
@@ -5487,9 +5490,9 @@ TEST_F(SVGPlayerTest, MotionPath_Arc_ZeroRadius)
 // Unit test: Mixed line and curve commands — verify continuity
 // Validates: Requirements 6.1, 6.2
 // Path "M 0,0 L 10,0 Q 20,0 20,10 L 20,20"
-//   At t=0: position near (0, 0)
-//   At t=end: position near (20, 20)
-//   At t=mid: position within bounding box [0,20] x [0,20]
+// At t=0: position near (0, 0)
+// At t=end: position near (20, 20)
+// At t=mid: position within bounding box [0,20] x [0,20]
 // ---------------------------------------------------------------------------
 TEST_F(SVGPlayerTest, MotionPath_MixedCommands)
 {
@@ -5550,10 +5553,10 @@ TEST_F(SVGPlayerTest, MotionPath_MixedCommands)
 // Unit test: Pure line-only rectangle path — regression test
 // Validates: Requirements 6.1, 6.2
 // Path "M 0,0 L 100,0 L 100,100 L 0,100 Z" — pure line-only rectangle
-//   At t=0: position near (0, 0)
-//   At t=end: position near (0, 0) (closed path returns to start)
-//   At t=0.25: position near (100, 0)
-//   At t=0.5: position near (100, 100)
+// At t=0: position near (0, 0)
+// At t=end: position near (0, 0) (closed path returns to start)
+// At t=0.25: position near (100, 0)
+// At t=0.5: position near (100, 100)
 // This verifies that the new curve code doesn't break existing line-only paths.
 // ---------------------------------------------------------------------------
 TEST_F(SVGPlayerTest, MotionPath_LineOnlyRegression)
@@ -5629,7 +5632,7 @@ TEST_F(SVGPlayerTest, AnimateMotion_QuadBezierPath)
     // Duration: 4s, fill=freeze
     //
     // Exact quadratic Bezier at parametric t=0.5:
-    //   B(0.5) = 0.25*(0,0) + 0.5*(50,100) + 0.25*(100,0) = (50, 50)
+    // B(0.5) = 0.25*(0,0) + 0.5*(50,100) + 0.25*(100,0) = (50, 50)
     // Arc-length midpoint differs slightly from parametric midpoint, but the
     // position must clearly be on the curve (y >> 0).
     const char* svg =
@@ -5787,10 +5790,10 @@ TEST_F(SVGPlayerTest, MotionPath_Property4_RelativeAbsoluteEquivalence)
             float dy = fA - fB;
             float dist = sqrtf(dx * dx + dy * dy);
             EXPECT_LT(dist, 0.01f)
-                << "Q vs q iter=" << iter << " seek=" << seek_time
-                << " abs=(" << eA << "," << fA << ")"
-                << " rel=(" << eB << "," << fB << ")"
-                << " dist=" << dist;
+                    << "Q vs q iter=" << iter << " seek=" << seek_time
+                    << " abs=(" << eA << "," << fA << ")"
+                    << " rel=(" << eB << "," << fB << ")"
+                    << " dist=" << dist;
             if (dist >= 0.01f) { mismatch = true; }
         }
 
@@ -5807,15 +5810,15 @@ TEST_F(SVGPlayerTest, MotionPath_Property4_RelativeAbsoluteEquivalence)
             seed = seed * 1103515245u + 12345u;
             coords[ci] = ((float)(int32_t)(seed >> 8) / (float)(1 << 23)) * 200.0f;
         }
-        float x0  = coords[0], y0  = coords[1];
+        float x0 = coords[0], y0 = coords[1];
         float c1x = coords[2], c1y = coords[3];
         float c2x = coords[4], c2y = coords[5];
-        float ex  = coords[6], ey  = coords[7];
+        float ex = coords[6], ey = coords[7];
 
         // Relative params
         float rc1x = c1x - x0, rc1y = c1y - y0;
         float rc2x = c2x - x0, rc2y = c2y - y0;
-        float rex  = ex - x0,  rey  = ey - y0;
+        float rex = ex - x0, rey = ey - y0;
 
         // Path A: absolute C
         char pathA[512];
@@ -5884,10 +5887,10 @@ TEST_F(SVGPlayerTest, MotionPath_Property4_RelativeAbsoluteEquivalence)
             float dy = fA - fB;
             float dist = sqrtf(dx * dx + dy * dy);
             EXPECT_LT(dist, 0.01f)
-                << "C vs c iter=" << iter << " seek=" << seek_time
-                << " abs=(" << eA << "," << fA << ")"
-                << " rel=(" << eB << "," << fB << ")"
-                << " dist=" << dist;
+                    << "C vs c iter=" << iter << " seek=" << seek_time
+                    << " abs=(" << eA << "," << fA << ")"
+                    << " rel=(" << eB << "," << fB << ")"
+                    << " dist=" << dist;
             if (dist >= 0.01f) { mismatch = true; }
         }
 
@@ -5920,8 +5923,8 @@ TEST_F(SVGPlayerTest, MotionPath_Property4_RelativeAbsoluteEquivalence)
         float dx_half = (ex - x0) * 0.5f;
         float dy_half = (ey - y0) * 0.5f;
         float min_r = sqrtf(dx_half * dx_half + dy_half * dy_half) + 1.0f;
-        if (rx < min_r) rx = min_r;
-        if (ry < min_r) ry = min_r;
+        if (rx < min_r) { rx = min_r; }
+        if (ry < min_r) { ry = min_r; }
 
         // Random rotation [0, 360), flags
         seed = seed * 1103515245u + 12345u;
@@ -6001,10 +6004,10 @@ TEST_F(SVGPlayerTest, MotionPath_Property4_RelativeAbsoluteEquivalence)
             float ddy = fA - fB;
             float dist = sqrtf(ddx * ddx + ddy * ddy);
             EXPECT_LT(dist, 0.01f)
-                << "A vs a iter=" << iter << " seek=" << seek_time
-                << " abs=(" << eA << "," << fA << ")"
-                << " rel=(" << eB << "," << fB << ")"
-                << " dist=" << dist;
+                    << "A vs a iter=" << iter << " seek=" << seek_time
+                    << " abs=(" << eA << "," << fA << ")"
+                    << " rel=(" << eB << "," << fB << ")"
+                    << " dist=" << dist;
             if (dist >= 0.01f) { mismatch = true; }
         }
 
@@ -6037,7 +6040,7 @@ TEST_F(SVGPlayerTest, MotionPath_Property5_ImplicitRepeatEquivalence)
             seed = seed * 1103515245u + 12345u;
             coords[ci] = ((float)(int32_t)(seed >> 8) / (float)(1 << 23)) * 200.0f;
         }
-        float x0  = coords[0], y0  = coords[1];
+        float x0 = coords[0], y0 = coords[1];
         float cx1 = coords[2], cy1 = coords[3];
         float ex1 = coords[4], ey1 = coords[5];
         float cx2 = coords[6], cy2 = coords[7];
@@ -6110,10 +6113,10 @@ TEST_F(SVGPlayerTest, MotionPath_Property5_ImplicitRepeatEquivalence)
             float dy = fA - fB;
             float dist = sqrtf(dx * dx + dy * dy);
             EXPECT_LT(dist, 0.01f)
-                << "Q implicit iter=" << iter << " seek=" << seek_time
-                << " implicit=(" << eA << "," << fA << ")"
-                << " explicit=(" << eB << "," << fB << ")"
-                << " dist=" << dist;
+                    << "Q implicit iter=" << iter << " seek=" << seek_time
+                    << " implicit=(" << eA << "," << fA << ")"
+                    << " explicit=(" << eB << "," << fB << ")"
+                    << " dist=" << dist;
             if (dist >= 0.01f) { mismatch = true; }
         }
 
@@ -6130,13 +6133,13 @@ TEST_F(SVGPlayerTest, MotionPath_Property5_ImplicitRepeatEquivalence)
             seed = seed * 1103515245u + 12345u;
             coords[ci] = ((float)(int32_t)(seed >> 8) / (float)(1 << 23)) * 200.0f;
         }
-        float x0   = coords[0],  y0   = coords[1];
-        float c1x1 = coords[2],  c1y1 = coords[3];
-        float c2x1 = coords[4],  c2y1 = coords[5];
-        float ex1  = coords[6],  ey1  = coords[7];
-        float c1x2 = coords[8],  c1y2 = coords[9];
+        float x0 = coords[0], y0 = coords[1];
+        float c1x1 = coords[2], c1y1 = coords[3];
+        float c2x1 = coords[4], c2y1 = coords[5];
+        float ex1 = coords[6], ey1 = coords[7];
+        float c1x2 = coords[8], c1y2 = coords[9];
         float c2x2 = coords[10], c2y2 = coords[11];
-        float ex2  = coords[12], ey2  = coords[13];
+        float ex2 = coords[12], ey2 = coords[13];
 
         // Path A: implicit repeat (one C, two param sets)
         char pathA[768];
@@ -6209,10 +6212,10 @@ TEST_F(SVGPlayerTest, MotionPath_Property5_ImplicitRepeatEquivalence)
             float dy = fA - fB;
             float dist = sqrtf(dx * dx + dy * dy);
             EXPECT_LT(dist, 0.01f)
-                << "C implicit iter=" << iter << " seek=" << seek_time
-                << " implicit=(" << eA << "," << fA << ")"
-                << " explicit=(" << eB << "," << fB << ")"
-                << " dist=" << dist;
+                    << "C implicit iter=" << iter << " seek=" << seek_time
+                    << " implicit=(" << eA << "," << fA << ")"
+                    << " explicit=(" << eB << "," << fB << ")"
+                    << " dist=" << dist;
             if (dist >= 0.01f) { mismatch = true; }
         }
 
@@ -6230,7 +6233,7 @@ TEST_F(SVGPlayerTest, MotionPath_Property5_ImplicitRepeatEquivalence)
             seed = seed * 1103515245u + 12345u;
             coords[ci] = ((float)(int32_t)(seed >> 8) / (float)(1 << 23)) * 200.0f;
         }
-        float x0  = coords[0], y0  = coords[1];
+        float x0 = coords[0], y0 = coords[1];
         float ex1 = coords[2], ey1 = coords[3];
         float ex2 = coords[4], ey2 = coords[5];
 
@@ -6246,8 +6249,8 @@ TEST_F(SVGPlayerTest, MotionPath_Property5_ImplicitRepeatEquivalence)
         float dx2 = (ex2 - ex1) * 0.5f, dy2 = (ey2 - ey1) * 0.5f;
         float min_r2 = sqrtf(dx2 * dx2 + dy2 * dy2) + 1.0f;
         float min_r = min_r1 > min_r2 ? min_r1 : min_r2;
-        if (rx < min_r) rx = min_r;
-        if (ry < min_r) ry = min_r;
+        if (rx < min_r) { rx = min_r; }
+        if (ry < min_r) { ry = min_r; }
 
         seed = seed * 1103515245u + 12345u;
         float rotation = (float)(seed % 360u);
@@ -6327,10 +6330,10 @@ TEST_F(SVGPlayerTest, MotionPath_Property5_ImplicitRepeatEquivalence)
             float ddy = fA - fB;
             float dist = sqrtf(ddx * ddx + ddy * ddy);
             EXPECT_LT(dist, 0.01f)
-                << "A implicit iter=" << iter << " seek=" << seek_time
-                << " implicit=(" << eA << "," << fA << ")"
-                << " explicit=(" << eB << "," << fB << ")"
-                << " dist=" << dist;
+                    << "A implicit iter=" << iter << " seek=" << seek_time
+                    << " implicit=(" << eA << "," << fA << ")"
+                    << " explicit=(" << eB << "," << fB << ")"
+                    << " dist=" << dist;
             if (dist >= 0.01f) { mismatch = true; }
         }
 
@@ -6467,11 +6470,11 @@ TEST_F(SVGPlayerTest, MotionPath_Property7_LineOnlyRegression)
             float dy = f - exp_y;
             float dist = sqrtf(dx * dx + dy * dy);
             EXPECT_LT(dist, 0.01f)
-                << "iter=" << iter << " seek_t=" << t
-                << " path=\"" << path_str << "\""
-                << " expected=(" << exp_x << "," << exp_y << ")"
-                << " actual=(" << e << "," << f << ")"
-                << " dist=" << dist;
+                    << "iter=" << iter << " seek_t=" << t
+                    << " path=\"" << path_str << "\""
+                    << " expected=(" << exp_x << "," << exp_y << ")"
+                    << " actual=(" << e << "," << f << ")"
+                    << " dist=" << dist;
             if (dist >= 0.01f) { mismatch = true; }
         }
 

@@ -1991,7 +1991,7 @@ static bool _motion_flatten_arc(
 
     float dx2 = (x0 - ex) * 0.5f;
     float dy2 = (y0 - ey) * 0.5f;
-    float x1p =  cos_phi * dx2 + sin_phi * dy2;
+    float x1p = cos_phi * dx2 + sin_phi * dy2;
     float y1p = -sin_phi * dx2 + cos_phi * dy2;
 
     /* F.6.6: check if radii need scaling */
@@ -2019,7 +2019,7 @@ static bool _motion_flatten_arc(
         sq = -sq;
     }
 
-    float cxp =  sq * rx * y1p / ry;
+    float cxp = sq * rx * y1p / ry;
     float cyp = -sq * ry * x1p / rx;
 
     /* Transform back to original coordinate system */
