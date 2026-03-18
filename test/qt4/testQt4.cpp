@@ -40,7 +40,7 @@ public:
                                                 img1->height(), img1->bytesPerLine());
         set_pattern_data(img2->bits(), COLOR_FORMAT_BGRA, img2->width(),
                                                 img2->height(), img2->bytesPerLine());
-        start(100);
+        start(10);
     }
 
     virtual ~PWindow()

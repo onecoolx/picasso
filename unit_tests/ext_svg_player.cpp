@@ -6483,3 +6483,68 @@ TEST_F(SVGPlayerTest, MotionPath_Property7_LineOnlyRegression)
         free(ref_ys);
     }
 }
+
+// ── <set attributeName="visibility"> tests ──
+
+TEST_F(SVGPlayerTest, SetVisibility_BeforeBegin_NoOverride)
+{
+    const char* svg =
+        "<svg xmlns='http://www.w3.org/2000/svg' version='1.2' baseProfile='tiny'"
+        "     width='200' height='200'>"
+        "  <rect xml:id='r1' x='10' y='10' width='80' height='80' fill='red'"
+        "        visibility='hidden'>"
+        "    <set attributeName='visibility' to='visible'"
+        "         begin='2s' dur='4s' fill='freeze'/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_svg_node* root = NULL;
+    psx_result r = S_OK;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_TRUE(p != NULL);
+
+    // At t=1s, before begin=2s — no visibility override should exist.
+    psx_svg_player_seek(p, 1.0f);
+    psx_svg_player_tick(p, 0.0f);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r1");
+    EXPECT_TRUE(n != NULL);
+
+    float v = -1.0f;
+    bool got = psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_VISIBILITY, &v);
+    EXPECT_FALSE(got) << "No visibility override before begin time";
+
+    destroy_player(p, root);
+}
+
+TEST_F(SVGPlayerTest, SetVisibility_DuringActive_OverrideVisible)
+{
+    const char* svg =
+        "<svg xmlns='http://www.w3.org/2000/svg' version='1.2' baseProfile='tiny'"
+        "     width='200' height='200'>"
+        "  <rect xml:id='r1' x='10' y='10' width='80' height='80' fill='red'"
+        "        visibility='hidden'>"
+        "    <set attributeName='visibility' to='visible'"
+        "         begin='2s' dur='4s' fill='freeze'/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_svg_node* root = NULL;
+    psx_result r = S_OK;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_TRUE(p != NULL);
+
+    // At t=3s, inside [2s, 6s) — visibility should be overridden to 1.0 (visible).
+    psx_svg_player_seek(p, 3.0f);
+    psx_svg_player_tick(p, 0.0f);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r1");
+    EXPECT_TRUE(n != NULL);
+
+    float v = -1.0f;
+    bool got = psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_VISIBILITY, &v);
+    EXPECT_TRUE(got) << "Visibility override should exist during active interval";
+    EXPECT_NEAR(1.0f, v, 0.001f) << "to='visible' should produce 1.0";
+
+    destroy_player(p, root);
+}

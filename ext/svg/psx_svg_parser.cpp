@@ -1648,6 +1648,16 @@ static INLINE void _parse_animation_value(psx_svg_node* node, psx_svg_attr* attr
                                           int32_t dpi)
 {
     if (node->type() == SVG_TAG_ANIMATE || node->type() == SVG_TAG_SET) {
+        // Handle visibility string values for <set attributeName="visibility">
+        uint32_t vlen = BUF_LEN(val_start, val_end);
+        if (vlen == 7 && strncmp(val_start, "visible", 7) == 0) {
+            attr->value.fval = 1.0f;
+            return;
+        }
+        if (vlen == 6 && strncmp(val_start, "hidden", 6) == 0) {
+            attr->value.fval = 0.0f;
+            return;
+        }
         float val_number = 0.0f;
         val_start = _parse_length(val_start, val_end, dpi, &val_number);
         attr->value.fval = val_number;

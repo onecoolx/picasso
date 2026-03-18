@@ -56,6 +56,7 @@ static INLINE bool _is_supported_anim_attr(psx_svg_attr_type a)
            || a == SVG_ATTR_STROKE_OPACITY
            || a == SVG_ATTR_GRADIENT_STOP_OPACITY
            || a == SVG_ATTR_FILL
+           || a == SVG_ATTR_VISIBILITY
            || a == SVG_ATTR_TRANSFORM;
 }
 
