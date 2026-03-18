@@ -447,6 +447,7 @@ public:
         , path(o.path)
         , rule(o.rule)
         , rect(o.rect)
+        , clip_matrix(o.clip_matrix)
     {
     }
 
@@ -460,6 +461,7 @@ public:
         path = o.path;
         rule = o.rule;
         rect = o.rect;
+        clip_matrix = o.clip_matrix;
 
         return *this;
     }
@@ -479,6 +481,7 @@ public:
     graphic_path path;
     filling_rule rule;
     rect_s rect;
+    trans_affine clip_matrix; // CTM when clip path was set
 };
 
 // context state object

@@ -474,3 +474,386 @@ TEST_F(AdvancedRenderingTest, ClearGradientStops)
     ps_gradient_unref(gradient);
     EXPECT_EQ(STATUS_SUCCEED, ps_last_status());
 }
+
+TEST_F(AdvancedRenderingTest, ClipRect_TransformIntersection_CorrectRegion)
+{
+    // Test: two clip_rect calls with a transform change between them.
+    //
+    // 1. Identity CTM: clip to (0,0,200,200)
+    // 2. Translate(100,100)
+    // 3. Clip to (0,0,200,200) — device space: (100,100)->(300,300)
+    //
+    // Correct intersection in device space: (100,100)->(200,200)
+    //
+    // Fill everything red and check pixels:
+    // - (150,150) should be red  (inside intersection)
+    // - (50,50)   should be white (inside first clip only, outside second)
+    // - (250,250) should be white (inside second clip only, outside first)
+
+    const int W = 400;
+    const int H = 400;
+    uint8_t* buf = (uint8_t*)calloc(W * 4, H);
+    ASSERT_TRUE(buf != NULL);
+
+    ps_canvas* cv = ps_canvas_create_with_data(buf, COLOR_FORMAT_RGBA, W, H, W * 4);
+    ASSERT_TRUE(cv != NULL);
+
+    ps_context* lctx = ps_context_create(cv, NULL);
+    ASSERT_TRUE(lctx != NULL);
+
+    // Clear to white
+    ps_color white = {1.0f, 1.0f, 1.0f, 1.0f};
+    ps_set_source_color(lctx, &white);
+    ps_clear(lctx);
+
+    // First clip in identity coordinates: device rect (0,0)->(200,200)
+    ps_rect clip1 = {0, 0, 200, 200};
+    ps_clip_rect(lctx, &clip1);
+
+    // Change CTM: translate by (100,100)
+    ps_translate(lctx, 100.0f, 100.0f);
+
+    // Second clip in translated coordinates: device rect (100,100)->(300,300)
+    ps_rect clip2 = {0, 0, 200, 200};
+    ps_clip_rect(lctx, &clip2);
+
+    // Fill everything red
+    ps_color red = {1.0f, 0.0f, 0.0f, 1.0f};
+    ps_set_source_color(lctx, &red);
+    ps_rect big = {-200, -200, 800, 800};
+    ps_rectangle(lctx, &big);
+    ps_fill(lctx);
+
+    EXPECT_EQ(STATUS_SUCCEED, ps_last_status());
+
+    // Read pixels (RGBA, 4 bytes per pixel, pitch = W*4)
+    // Pixel at (x,y): buf[(y * W + x) * 4 + channel]
+    // Red pixel: R=255, G=0, B=0, A=255
+    // White pixel: R=255, G=255, B=255, A=255
+
+    // (150,150) — inside correct intersection — should be RED
+    int idx = (150 * W + 150) * 4;
+    EXPECT_EQ(255, buf[idx + 0]); // R
+    EXPECT_EQ(0, buf[idx + 1]); // G
+    EXPECT_EQ(0, buf[idx + 2]); // B
+
+    // (50,50) — inside first clip only, outside second — should be WHITE
+    idx = (50 * W + 50) * 4;
+    EXPECT_EQ(255, buf[idx + 0]); // R
+    EXPECT_EQ(255, buf[idx + 1]); // G — this will FAIL with current bug
+    EXPECT_EQ(255, buf[idx + 2]); // B
+
+    // (250,250) — inside second clip only, outside first — should be WHITE
+    idx = (250 * W + 250) * 4;
+    EXPECT_EQ(255, buf[idx + 0]); // R
+    EXPECT_EQ(255, buf[idx + 1]); // G
+    EXPECT_EQ(255, buf[idx + 2]); // B
+
+    ps_context_unref(lctx);
+    ps_canvas_unref(cv);
+    free(buf);
+}
+
+TEST_F(AdvancedRenderingTest, Clip_TransformRotation_CorrectIntersection)
+{
+    // Clip with rotation transform between two clips.
+    // 1. Identity: clip to (100,100,200,200) — a 200x200 box at (100,100)
+    // 2. Rotate 90 degrees around origin
+    // 3. Clip to (-300,100,200,200) — in rotated coords, this maps to
+    // device space (100,-300)->(300,-100)... but we need overlap.
+    //
+    // Simpler approach: use scale(-1,1) flip to test non-trivial transform.
+    // 1. Identity: clip to (0,0,200,200)
+    // 2. Scale(-1,1) + translate(-400,0) => mirrors x around x=200
+    // 3. Clip to (200,0,200,200) in flipped coords => device (200,0)->(400,200)
+    // Wait, scale(-1,1) maps x -> -x, so user x=200 -> device x=-200.
+    //
+    // Even simpler: use scale(2,2) to test non-identity non-translate.
+    // 1. Identity: clip to (0,0,200,200)
+    // 2. Scale(0.5, 0.5)
+    // 3. Clip to (0,0,200,200) in scaled coords => device (0,0)->(100,100)
+    // Correct intersection: (0,0)->(100,100)
+    // Fill red, check (50,50)=red, (150,150)=white
+
+    const int W = 400;
+    const int H = 400;
+    uint8_t* buf = (uint8_t*)calloc(W * 4, H);
+    ASSERT_TRUE(buf != NULL);
+    ps_canvas* cv = ps_canvas_create_with_data(buf, COLOR_FORMAT_RGBA, W, H, W * 4);
+    ASSERT_TRUE(cv != NULL);
+    ps_context* lctx = ps_context_create(cv, NULL);
+    ASSERT_TRUE(lctx != NULL);
+
+    ps_color white = {1.0f, 1.0f, 1.0f, 1.0f};
+    ps_set_source_color(lctx, &white);
+    ps_clear(lctx);
+
+    // First clip in identity
+    ps_rect clip1 = {0, 0, 200, 200};
+    ps_clip_rect(lctx, &clip1);
+
+    // Scale down by half
+    ps_scale(lctx, 0.5f, 0.5f);
+
+    // Second clip: user (0,0,200,200) => device (0,0,100,100)
+    ps_rect clip2 = {0, 0, 200, 200};
+    ps_clip_rect(lctx, &clip2);
+
+    ps_color red = {1.0f, 0.0f, 0.0f, 1.0f};
+    ps_set_source_color(lctx, &red);
+    ps_rect big = {-400, -400, 1600, 1600};
+    ps_rectangle(lctx, &big);
+    ps_fill(lctx);
+
+    // (50,50) inside intersection => RED
+    int idx = (50 * W + 50) * 4;
+    EXPECT_EQ(255, buf[idx + 0]);
+    EXPECT_EQ(0, buf[idx + 1]);
+    EXPECT_EQ(0, buf[idx + 2]);
+
+    // (150,150) inside first clip only, outside scaled second clip => WHITE
+    idx = (150 * W + 150) * 4;
+    EXPECT_EQ(255, buf[idx + 0]);
+    EXPECT_EQ(255, buf[idx + 1]);
+    EXPECT_EQ(255, buf[idx + 2]);
+
+    ps_context_unref(lctx);
+    ps_canvas_unref(cv);
+    free(buf);
+}
+
+TEST_F(AdvancedRenderingTest, Clip_PathApi_TransformIntersection)
+{
+    // Test ps_clip() (not ps_clip_rect) with transform between two clips.
+    // Same logic as the translate test but using ps_rectangle + ps_clip.
+
+    const int W = 400;
+    const int H = 400;
+    uint8_t* buf = (uint8_t*)calloc(W * 4, H);
+    ASSERT_TRUE(buf != NULL);
+    ps_canvas* cv = ps_canvas_create_with_data(buf, COLOR_FORMAT_RGBA, W, H, W * 4);
+    ASSERT_TRUE(cv != NULL);
+    ps_context* lctx = ps_context_create(cv, NULL);
+    ASSERT_TRUE(lctx != NULL);
+
+    ps_color white = {1.0f, 1.0f, 1.0f, 1.0f};
+    ps_set_source_color(lctx, &white);
+    ps_clear(lctx);
+
+    // First clip via ps_clip() in identity
+    ps_rect clip1 = {0, 0, 200, 200};
+    ps_rectangle(lctx, &clip1);
+    ps_clip(lctx);
+
+    // Translate
+    ps_translate(lctx, 100.0f, 100.0f);
+
+    // Second clip via ps_clip()
+    ps_rect clip2 = {0, 0, 200, 200};
+    ps_rectangle(lctx, &clip2);
+    ps_clip(lctx);
+
+    ps_color red = {1.0f, 0.0f, 0.0f, 1.0f};
+    ps_set_source_color(lctx, &red);
+    ps_rect big = {-200, -200, 800, 800};
+    ps_rectangle(lctx, &big);
+    ps_fill(lctx);
+
+    // (150,150) inside intersection => RED
+    int idx = (150 * W + 150) * 4;
+    EXPECT_EQ(255, buf[idx + 0]);
+    EXPECT_EQ(0, buf[idx + 1]);
+    EXPECT_EQ(0, buf[idx + 2]);
+
+    // (50,50) outside intersection => WHITE
+    idx = (50 * W + 50) * 4;
+    EXPECT_EQ(255, buf[idx + 0]);
+    EXPECT_EQ(255, buf[idx + 1]);
+    EXPECT_EQ(255, buf[idx + 2]);
+
+    ps_context_unref(lctx);
+    ps_canvas_unref(cv);
+    free(buf);
+}
+
+TEST_F(AdvancedRenderingTest, Clip_SaveRestore_PreservesClipMatrix)
+{
+    // Verify that ps_save/ps_restore correctly preserves clip_matrix.
+    // 1. Identity: clip to (0,0,200,200)
+    // 2. ps_save
+    // 3. Translate(100,100), clip to (0,0,200,200) => intersection (100,100)->(200,200)
+    // 4. ps_restore => should restore to original clip (0,0,200,200) with identity matrix
+    // 5. Translate(50,50), clip to (0,0,200,200) => intersection (50,50)->(200,200)
+    // 6. Fill red, check pixels
+
+    const int W = 400;
+    const int H = 400;
+    uint8_t* buf = (uint8_t*)calloc(W * 4, H);
+    ASSERT_TRUE(buf != NULL);
+    ps_canvas* cv = ps_canvas_create_with_data(buf, COLOR_FORMAT_RGBA, W, H, W * 4);
+    ASSERT_TRUE(cv != NULL);
+    ps_context* lctx = ps_context_create(cv, NULL);
+    ASSERT_TRUE(lctx != NULL);
+
+    ps_color white = {1.0f, 1.0f, 1.0f, 1.0f};
+    ps_set_source_color(lctx, &white);
+    ps_clear(lctx);
+
+    // First clip in identity
+    ps_rect clip1 = {0, 0, 200, 200};
+    ps_clip_rect(lctx, &clip1);
+
+    ps_save(lctx);
+
+    // Inner scope: translate + clip => intersection (100,100)->(200,200)
+    ps_translate(lctx, 100.0f, 100.0f);
+    ps_rect clip_inner = {0, 0, 200, 200};
+    ps_clip_rect(lctx, &clip_inner);
+
+    ps_restore(lctx);
+
+    // After restore: clip should be back to (0,0,200,200) with identity clip_matrix
+    // Now translate(50,50) and clip again
+    ps_translate(lctx, 50.0f, 50.0f);
+    ps_rect clip2 = {0, 0, 200, 200};
+    ps_clip_rect(lctx, &clip2);
+
+    ps_color red = {1.0f, 0.0f, 0.0f, 1.0f};
+    ps_set_source_color(lctx, &red);
+    ps_rect big = {-200, -200, 800, 800};
+    ps_rectangle(lctx, &big);
+    ps_fill(lctx);
+
+    // (75,75) inside intersection (50,50)->(200,200) => RED
+    int idx = (75 * W + 75) * 4;
+    EXPECT_EQ(255, buf[idx + 0]);
+    EXPECT_EQ(0, buf[idx + 1]);
+    EXPECT_EQ(0, buf[idx + 2]);
+
+    // (25,25) outside intersection => WHITE
+    idx = (25 * W + 25) * 4;
+    EXPECT_EQ(255, buf[idx + 0]);
+    EXPECT_EQ(255, buf[idx + 1]);
+    EXPECT_EQ(255, buf[idx + 2]);
+
+    // (250,250) outside first clip => WHITE
+    idx = (250 * W + 250) * 4;
+    EXPECT_EQ(255, buf[idx + 0]);
+    EXPECT_EQ(255, buf[idx + 1]);
+    EXPECT_EQ(255, buf[idx + 2]);
+
+    ps_context_unref(lctx);
+    ps_canvas_unref(cv);
+    free(buf);
+}
+
+TEST_F(AdvancedRenderingTest, Clip_ResetThenReclip_Works)
+{
+    // Verify reset_clip clears clip state, then a new clip works correctly.
+    // 1. Clip to (0,0,100,100)
+    // 2. Translate(50,50)
+    // 3. reset_clip
+    // 4. Clip to (0,0,200,200) in translated coords => device (50,50)->(250,250)
+    // 5. Fill red, check pixels
+
+    const int W = 400;
+    const int H = 400;
+    uint8_t* buf = (uint8_t*)calloc(W * 4, H);
+    ASSERT_TRUE(buf != NULL);
+    ps_canvas* cv = ps_canvas_create_with_data(buf, COLOR_FORMAT_RGBA, W, H, W * 4);
+    ASSERT_TRUE(cv != NULL);
+    ps_context* lctx = ps_context_create(cv, NULL);
+    ASSERT_TRUE(lctx != NULL);
+
+    ps_color white = {1.0f, 1.0f, 1.0f, 1.0f};
+    ps_set_source_color(lctx, &white);
+    ps_clear(lctx);
+
+    // First clip
+    ps_rect clip1 = {0, 0, 100, 100};
+    ps_clip_rect(lctx, &clip1);
+
+    // Transform
+    ps_translate(lctx, 50.0f, 50.0f);
+
+    // Reset clip — should clear everything including clip_matrix
+    ps_reset_clip(lctx);
+
+    // New clip after reset: (0,0,200,200) in translated coords
+    ps_rect clip2 = {0, 0, 200, 200};
+    ps_clip_rect(lctx, &clip2);
+
+    ps_color red = {1.0f, 0.0f, 0.0f, 1.0f};
+    ps_set_source_color(lctx, &red);
+    ps_rect big = {-200, -200, 800, 800};
+    ps_rectangle(lctx, &big);
+    ps_fill(lctx);
+
+    // (100,100) inside new clip => RED
+    int idx = (100 * W + 100) * 4;
+    EXPECT_EQ(255, buf[idx + 0]);
+    EXPECT_EQ(0, buf[idx + 1]);
+    EXPECT_EQ(0, buf[idx + 2]);
+
+    // (25,25) outside new clip (device 50,50 is the start) => WHITE
+    idx = (25 * W + 25) * 4;
+    EXPECT_EQ(255, buf[idx + 0]);
+    EXPECT_EQ(255, buf[idx + 1]);
+    EXPECT_EQ(255, buf[idx + 2]);
+
+    ps_context_unref(lctx);
+    ps_canvas_unref(cv);
+    free(buf);
+}
+
+TEST_F(AdvancedRenderingTest, Clip_SameTransform_NoUnnecessaryWork)
+{
+    // Two clips under the same CTM — should work as before (no transform needed).
+    // 1. Translate(50,50)
+    // 2. Clip to (0,0,200,200) => device (50,50)->(250,250)
+    // 3. Clip to (100,100,200,200) => device (150,150)->(350,350)
+    // Intersection in device: (150,150)->(250,250)
+
+    const int W = 400;
+    const int H = 400;
+    uint8_t* buf = (uint8_t*)calloc(W * 4, H);
+    ASSERT_TRUE(buf != NULL);
+    ps_canvas* cv = ps_canvas_create_with_data(buf, COLOR_FORMAT_RGBA, W, H, W * 4);
+    ASSERT_TRUE(cv != NULL);
+    ps_context* lctx = ps_context_create(cv, NULL);
+    ASSERT_TRUE(lctx != NULL);
+
+    ps_color white = {1.0f, 1.0f, 1.0f, 1.0f};
+    ps_set_source_color(lctx, &white);
+    ps_clear(lctx);
+
+    ps_translate(lctx, 50.0f, 50.0f);
+
+    ps_rect clip1 = {0, 0, 200, 200};
+    ps_clip_rect(lctx, &clip1);
+
+    ps_rect clip2 = {100, 100, 200, 200};
+    ps_clip_rect(lctx, &clip2);
+
+    ps_color red = {1.0f, 0.0f, 0.0f, 1.0f};
+    ps_set_source_color(lctx, &red);
+    ps_rect big = {-200, -200, 800, 800};
+    ps_rectangle(lctx, &big);
+    ps_fill(lctx);
+
+    // (200,200) inside intersection => RED
+    int idx = (200 * W + 200) * 4;
+    EXPECT_EQ(255, buf[idx + 0]);
+    EXPECT_EQ(0, buf[idx + 1]);
+    EXPECT_EQ(0, buf[idx + 2]);
+
+    // (100,100) inside first clip only, outside second => WHITE
+    idx = (100 * W + 100) * 4;
+    EXPECT_EQ(255, buf[idx + 0]);
+    EXPECT_EQ(255, buf[idx + 1]);
+    EXPECT_EQ(255, buf[idx + 2]);
+
+    ps_context_unref(lctx);
+    ps_canvas_unref(cv);
+    free(buf);
+}

@@ -23,10 +23,22 @@ static inline void _clip_path(context_state* state, const graphic_path& p, filli
 {
     if (!state->clip.path.total_vertices()) {
         state->clip.path = p;
+        state->clip.clip_matrix = state->world_matrix;
     } else if (p.total_vertices()) {
+        // Transform existing clip path from its original coordinate space
+        // to the current coordinate space before intersection.
+        if (state->clip.clip_matrix != state->world_matrix) {
+            trans_affine mtx = state->clip.clip_matrix;
+            trans_affine inv_cur = state->world_matrix;
+            inv_cur.invert();
+            mtx.multiply(inv_cur);
+            state->clip.path.transform_all_paths(mtx);
+        }
+
         graphic_path rp;
         _path_operation(conv_clipper::clip_intersect, state->clip.path, p, rp);
         state->clip.path = rp;
+        state->clip.clip_matrix = state->world_matrix;
     }
     state->clip.rule = r;
 }
