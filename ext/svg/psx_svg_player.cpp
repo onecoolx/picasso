@@ -3305,6 +3305,10 @@ psx_svg_player* psx_svg_player_create(const psx_svg_node* root, psx_result* out)
     psx_array_init(&p->anim_state.transforms, sizeof(psx_svg_anim_transform_item));
     p->anim_state.scratch_matrix = ps_matrix_create();
 
+    // Set anim_state pointer on all render nodes once at creation time.
+    // Nodes read overrides from this pointer in their prepare()/render() methods.
+    psx_svg_render_list_set_anim_state(p->render_list, &p->anim_state);
+
     psx_array_init(&p->anims, sizeof(psx_svg_anim_item));
     _collect_anims(p, p->root);
 
