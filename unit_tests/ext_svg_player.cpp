@@ -7054,3 +7054,102 @@ TEST_F(SVGPlayerTest, AnimateMotion_Plus_AnimateTransform_Sum_ThreeLayers)
 
     destroy_player(p, root);
 }
+
+TEST_F(SVGPlayerTest, AnimateStrokeMiterLimit_FromTo)
+{
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"50\" height=\"50\" fill=\"none\" stroke=\"#000\" stroke-width=\"2\" stroke-miterlimit=\"4\">"
+        "    <animate attributeName=\"stroke-miterlimit\" from=\"4\" to=\"10\" dur=\"2s\" fill=\"freeze\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_NE((psx_svg_player*)NULL, p);
+    EXPECT_EQ(S_OK, r);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    ASSERT_TRUE(n != NULL);
+
+    psx_svg_player_seek(p, 1.0f);
+    {
+        float v = 0;
+        ASSERT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_STROKE_MITER_LIMIT, &v));
+        EXPECT_NEAR(7.0f, v, 0.05f);
+    }
+
+    psx_svg_player_seek(p, 2.0f);
+    {
+        float v = 0;
+        ASSERT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_STROKE_MITER_LIMIT, &v));
+        EXPECT_NEAR(10.0f, v, 0.001f);
+    }
+
+    destroy_player(p, root);
+}
+
+TEST_F(SVGPlayerTest, AnimateStrokeDashOffset_FromTo)
+{
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"50\" height=\"50\" fill=\"none\" stroke=\"#000\" stroke-dasharray=\"5 3\" stroke-dashoffset=\"0\">"
+        "    <animate attributeName=\"stroke-dashoffset\" from=\"0\" to=\"8\" dur=\"2s\" fill=\"freeze\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_NE((psx_svg_player*)NULL, p);
+    EXPECT_EQ(S_OK, r);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    ASSERT_TRUE(n != NULL);
+
+    psx_svg_player_seek(p, 1.0f);
+    {
+        float v = 0;
+        ASSERT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_STROKE_DASH_OFFSET, &v));
+        EXPECT_NEAR(4.0f, v, 0.05f);
+    }
+
+    destroy_player(p, root);
+}
+
+TEST_F(SVGPlayerTest, AnimateColorStroke_FromTo_Linear)
+{
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"50\" height=\"50\" fill=\"none\" stroke=\"#000\">"
+        "    <animateColor attributeName=\"stroke\" from=\"#000000\" to=\"#FF0000\" dur=\"2s\" fill=\"freeze\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_NE((psx_svg_player*)NULL, p);
+    EXPECT_EQ(S_OK, r);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    ASSERT_TRUE(n != NULL);
+
+    psx_svg_player_seek(p, 1.0f);
+    {
+        float v = 0;
+        ASSERT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_STROKE, &v));
+        // midpoint: R=128, G=0, B=0 => 0x800000
+        union { float f; uint32_t u; } bits;
+        bits.f = v;
+        uint32_t rr = (bits.u >> 16) & 0xFF;
+        uint32_t gg = (bits.u >> 8) & 0xFF;
+        uint32_t bb = bits.u & 0xFF;
+        EXPECT_NEAR(128.0f, (float)rr, 1.0f);
+        EXPECT_EQ((uint32_t)0, gg);
+        EXPECT_EQ((uint32_t)0, bb);
+    }
+
+    destroy_player(p, root);
+}

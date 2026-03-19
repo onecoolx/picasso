@@ -605,6 +605,30 @@ protected:
         if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_STROKE_WIDTH, &v)) {
             ps_set_line_width(ctx, v);
         }
+
+        if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_STROKE_MITER_LIMIT, &v)) {
+            ps_set_miter_limit(ctx, v);
+        }
+
+        if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_STROKE_DASH_OFFSET, &v)) {
+            if (m_draw_attrs->stroke_dash_array) {
+                ps_set_line_dash(ctx, v, m_draw_attrs->stroke_dash_array, m_draw_attrs->stroke_dash_num);
+            }
+        }
+
+        if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_STROKE, &v)) {
+            union { float f; uint32_t u; } bits;
+            bits.f = v;
+            ps_color sc;
+            sc.r = ((bits.u >> 16) & 0xFF) / 255.0f;
+            sc.g = ((bits.u >> 8) & 0xFF) / 255.0f;
+            sc.b = (bits.u & 0xFF) / 255.0f;
+            sc.a = 1.0f;
+            if (m_draw_attrs->flags & RENDER_ATTR_STROKE_OPACITY) {
+                sc.a *= m_draw_attrs->stroke_opacity;
+            }
+            ps_set_stroke_color(ctx, &sc);
+        }
     }
 
     render_obj_base* m_next;

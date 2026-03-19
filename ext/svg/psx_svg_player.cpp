@@ -57,6 +57,9 @@ static INLINE bool _is_supported_anim_attr(psx_svg_attr_type a)
            || a == SVG_ATTR_STROKE_OPACITY
            || a == SVG_ATTR_GRADIENT_STOP_OPACITY
            || a == SVG_ATTR_FILL
+           || a == SVG_ATTR_STROKE
+           || a == SVG_ATTR_STROKE_MITER_LIMIT
+           || a == SVG_ATTR_STROKE_DASH_OFFSET
            || a == SVG_ATTR_VISIBILITY
            || a == SVG_ATTR_TRANSFORM;
 }
@@ -777,7 +780,8 @@ static INLINE bool _anim_eval_simple(const psx_svg_anim_item* it, float doc_t, f
     const psx_svg_attr* avals = _find_attr(it->anim_node, SVG_ATTR_VALUES);
 
     // animateColor: handle before generic float path.
-    if (it->tag == SVG_TAG_ANIMATE_COLOR && it->target_attr == SVG_ATTR_FILL) {
+    if (it->tag == SVG_TAG_ANIMATE_COLOR
+        && (it->target_attr == SVG_ATTR_FILL || it->target_attr == SVG_ATTR_STROKE)) {
         uint32_t calc_mode = SVG_ANIMATION_CALC_MODE_LINEAR;
         const psx_svg_attr* acm = _find_attr(it->anim_node, SVG_ATTR_CALC_MODE);
         if (acm && acm->val_type == SVG_ATTR_VALUE_DATA) {
