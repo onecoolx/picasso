@@ -7153,3 +7153,127 @@ TEST_F(SVGPlayerTest, AnimateColorStroke_FromTo_Linear)
 
     destroy_player(p, root);
 }
+
+TEST_F(SVGPlayerTest, SetFillRule_EvenOdd_DuringActive)
+{
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"50\" height=\"50\" fill=\"#F00\" fill-rule=\"nonzero\">"
+        "    <set attributeName=\"fill-rule\" to=\"evenodd\" begin=\"1s\" dur=\"2s\" fill=\"freeze\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_NE((psx_svg_player*)NULL, p);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    ASSERT_TRUE(n != NULL);
+
+    // Before begin: no override
+    psx_svg_player_seek(p, 0.5f);
+    {
+        int32_t v = -1;
+        EXPECT_FALSE(psx_svg_player_debug_get_int_override(p, n, SVG_ATTR_FILL_RULE, &v));
+    }
+
+    // During active: override to evenodd
+    psx_svg_player_seek(p, 1.5f);
+    {
+        int32_t v = -1;
+        EXPECT_TRUE(psx_svg_player_debug_get_int_override(p, n, SVG_ATTR_FILL_RULE, &v));
+        EXPECT_EQ((int32_t)FILL_RULE_EVEN_ODD, v);
+    }
+
+    destroy_player(p, root);
+}
+
+TEST_F(SVGPlayerTest, SetStrokeLineCap_Round_DuringActive)
+{
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <line id=\"l\" x1=\"10\" y1=\"10\" x2=\"90\" y2=\"90\" stroke=\"#000\" stroke-width=\"4\" stroke-linecap=\"butt\">"
+        "    <set attributeName=\"stroke-linecap\" to=\"round\" begin=\"0s\" dur=\"2s\" fill=\"freeze\"/>"
+        "  </line>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_NE((psx_svg_player*)NULL, p);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "l");
+    ASSERT_TRUE(n != NULL);
+
+    psx_svg_player_seek(p, 1.0f);
+    {
+        int32_t v = -1;
+        EXPECT_TRUE(psx_svg_player_debug_get_int_override(p, n, SVG_ATTR_STROKE_LINECAP, &v));
+        EXPECT_EQ((int32_t)LINE_CAP_ROUND, v);
+    }
+
+    destroy_player(p, root);
+}
+
+TEST_F(SVGPlayerTest, SetStrokeLineJoin_Bevel_DuringActive)
+{
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"50\" height=\"50\" fill=\"none\" stroke=\"#000\" stroke-width=\"4\" stroke-linejoin=\"miter\">"
+        "    <set attributeName=\"stroke-linejoin\" to=\"bevel\" begin=\"0s\" dur=\"2s\" fill=\"freeze\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_NE((psx_svg_player*)NULL, p);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    ASSERT_TRUE(n != NULL);
+
+    psx_svg_player_seek(p, 1.0f);
+    {
+        int32_t v = -1;
+        EXPECT_TRUE(psx_svg_player_debug_get_int_override(p, n, SVG_ATTR_STROKE_LINEJOIN, &v));
+        EXPECT_EQ((int32_t)LINE_JOIN_BEVEL, v);
+    }
+
+    destroy_player(p, root);
+}
+
+TEST_F(SVGPlayerTest, SetDisplay_None_DuringActive)
+{
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"50\" height=\"50\" fill=\"#F00\">"
+        "    <set attributeName=\"display\" to=\"none\" begin=\"1s\" dur=\"2s\" fill=\"freeze\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_NE((psx_svg_player*)NULL, p);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    ASSERT_TRUE(n != NULL);
+
+    // Before begin: no override
+    psx_svg_player_seek(p, 0.5f);
+    {
+        int32_t v = -1;
+        EXPECT_FALSE(psx_svg_player_debug_get_int_override(p, n, SVG_ATTR_DISPLAY, &v));
+    }
+
+    // During active: display=none => 0
+    psx_svg_player_seek(p, 1.5f);
+    {
+        int32_t v = -1;
+        EXPECT_TRUE(psx_svg_player_debug_get_int_override(p, n, SVG_ATTR_DISPLAY, &v));
+        EXPECT_EQ((int32_t)0, v);
+    }
+
+    destroy_player(p, root);
+}

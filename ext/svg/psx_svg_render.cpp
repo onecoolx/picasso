@@ -629,6 +629,20 @@ protected:
             }
             ps_set_stroke_color(ctx, &sc);
         }
+
+        int32_t iv = 0;
+
+        if (psx_svg_anim_get_int32(m_cur_anim_state, m_node, SVG_ATTR_FILL_RULE, &iv)) {
+            ps_set_fill_rule(ctx, (ps_fill_rule)iv);
+        }
+
+        if (psx_svg_anim_get_int32(m_cur_anim_state, m_node, SVG_ATTR_STROKE_LINECAP, &iv)) {
+            ps_set_line_cap(ctx, (ps_line_cap)iv);
+        }
+
+        if (psx_svg_anim_get_int32(m_cur_anim_state, m_node, SVG_ATTR_STROKE_LINEJOIN, &iv)) {
+            ps_set_line_join(ctx, (ps_line_join)iv);
+        }
     }
 
     render_obj_base* m_next;
@@ -1475,7 +1489,9 @@ public:
                 bool skip = false;
                 if (m_cur_anim_state && item->node()) {
                     int32_t vis = 0;
-                    if (psx_svg_anim_get_int32(m_cur_anim_state, item->node(), SVG_ATTR_VISIBILITY, &vis)) {
+                    if (psx_svg_anim_get_int32(m_cur_anim_state, item->node(), SVG_ATTR_DISPLAY, &vis) && vis == 0) {
+                        skip = true;
+                    } else if (psx_svg_anim_get_int32(m_cur_anim_state, item->node(), SVG_ATTR_VISIBILITY, &vis)) {
                         skip = (vis == 0);
                     } else {
                         skip = item->is_hidden();
@@ -2678,7 +2694,9 @@ bool psx_svg_render_list_draw_anim(ps_context* ctx, const psx_svg_render_list* r
             bool skip = false;
             if (anim_state && head->node()) {
                 int32_t vis = 0;
-                if (psx_svg_anim_get_int32(anim_state, head->node(), SVG_ATTR_VISIBILITY, &vis)) {
+                if (psx_svg_anim_get_int32(anim_state, head->node(), SVG_ATTR_DISPLAY, &vis) && vis == 0) {
+                    skip = true;
+                } else if (psx_svg_anim_get_int32(anim_state, head->node(), SVG_ATTR_VISIBILITY, &vis)) {
                     skip = (vis == 0);
                 } else {
                     skip = head->is_hidden();

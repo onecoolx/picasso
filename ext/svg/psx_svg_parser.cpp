@@ -1119,6 +1119,12 @@ static INLINE void _process_paint_attrs(psx_svg_node* node, psx_svg_attr_type ty
             val = 0;
         }
         attr->value.ival = val;
+    } else if (type == SVG_ATTR_DISPLAY) {
+        int32_t val = 1; // default: inline
+        if (len >= 4 && strncmp(val_start, "none", 4) == 0) {
+            val = 0;
+        }
+        attr->value.ival = val;
     }
 }
 
@@ -1656,13 +1662,68 @@ static INLINE void _parse_animation_value(psx_svg_node* node, psx_svg_attr* attr
                                           int32_t dpi)
 {
     if (node->type() == SVG_TAG_ANIMATE || node->type() == SVG_TAG_SET) {
-        // Handle visibility string values for <set attributeName="visibility">
         uint32_t vlen = BUF_LEN(val_start, val_end);
+        // visibility
         if (vlen == 7 && strncmp(val_start, "visible", 7) == 0) {
             attr->value.fval = 1.0f;
             return;
         }
         if (vlen == 6 && strncmp(val_start, "hidden", 6) == 0) {
+            attr->value.fval = 0.0f;
+            return;
+        }
+        // fill-rule
+        if (vlen == 7 && strncmp(val_start, "evenodd", 7) == 0) {
+            attr->value.fval = (float)FILL_RULE_EVEN_ODD;
+            return;
+        }
+        if (vlen == 7 && strncmp(val_start, "nonzero", 7) == 0) {
+            attr->value.fval = (float)FILL_RULE_WINDING;
+            return;
+        }
+        // stroke-linecap
+        if (vlen == 4 && strncmp(val_start, "butt", 4) == 0) {
+            attr->value.fval = (float)LINE_CAP_BUTT;
+            return;
+        }
+        if (vlen == 6 && strncmp(val_start, "square", 6) == 0) {
+            attr->value.fval = (float)LINE_CAP_SQUARE;
+            return;
+        }
+        // stroke-linejoin
+        if (vlen == 5 && strncmp(val_start, "miter", 5) == 0) {
+            attr->value.fval = (float)LINE_JOIN_MITER;
+            return;
+        }
+        if (vlen == 5 && strncmp(val_start, "bevel", 5) == 0) {
+            attr->value.fval = (float)LINE_JOIN_BEVEL;
+            return;
+        }
+        // round: shared by linecap and linejoin — context determines meaning
+        if (vlen == 5 && strncmp(val_start, "round", 5) == 0) {
+            // LINE_CAP_ROUND == 1, LINE_JOIN_ROUND == 3; peek at attributeName to decide.
+            int32_t target_attr = SVG_ATTR_INVALID;
+            uint32_t na = node->attr_count();
+            for (uint32_t i = 0; i < na; i++) {
+                const psx_svg_attr* ta = node->attr_at(i);
+                if (ta && (psx_svg_attr_type)ta->attr_id == SVG_ATTR_ATTRIBUTE_NAME) {
+                    target_attr = ta->value.ival;
+                    break;
+                }
+            }
+            if (target_attr == SVG_ATTR_STROKE_LINEJOIN) {
+                attr->value.fval = (float)LINE_JOIN_ROUND;
+            } else {
+                attr->value.fval = (float)LINE_CAP_ROUND;
+            }
+            return;
+        }
+        // display
+        if (vlen == 6 && strncmp(val_start, "inline", 6) == 0) {
+            attr->value.fval = 1.0f;
+            return;
+        }
+        if (vlen == 4 && strncmp(val_start, "none", 4) == 0) {
             attr->value.fval = 0.0f;
             return;
         }
@@ -2151,10 +2212,10 @@ static INLINE void _process_attrs_tag(psx_svg_parser* parser, psx_svg_node* node
                 _process_animation_attr_options(node, type, tok_attr->value_start, tok_attr->value_end);
                 break;
             case SVG_ATTR_VISIBILITY:
+            case SVG_ATTR_DISPLAY:
                 _process_paint_attrs(node, type, tok_attr->value_start, tok_attr->value_end);
                 break;
             case SVG_ATTR_ATTRIBUTE_TYPE:
-            case SVG_ATTR_DISPLAY:
             case SVG_ATTR_TEXT_ANCHOR:
             default:
                 // not support yet

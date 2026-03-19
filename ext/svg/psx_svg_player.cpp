@@ -60,8 +60,21 @@ static INLINE bool _is_supported_anim_attr(psx_svg_attr_type a)
            || a == SVG_ATTR_STROKE
            || a == SVG_ATTR_STROKE_MITER_LIMIT
            || a == SVG_ATTR_STROKE_DASH_OFFSET
+           || a == SVG_ATTR_FILL_RULE
+           || a == SVG_ATTR_STROKE_LINECAP
+           || a == SVG_ATTR_STROKE_LINEJOIN
+           || a == SVG_ATTR_DISPLAY
            || a == SVG_ATTR_VISIBILITY
            || a == SVG_ATTR_TRANSFORM;
+}
+
+static INLINE bool _is_int32_anim_attr(psx_svg_attr_type a)
+{
+    return a == SVG_ATTR_VISIBILITY
+           || a == SVG_ATTR_FILL_RULE
+           || a == SVG_ATTR_STROKE_LINECAP
+           || a == SVG_ATTR_STROKE_LINEJOIN
+           || a == SVG_ATTR_DISPLAY;
 }
 
 static INLINE void _anim_state_set_transform(psx_svg_anim_state* s, const psx_svg_node* target,
@@ -3475,8 +3488,8 @@ void psx_svg_player_seek(psx_svg_player* p, float seconds)
         }
         if (ok) {
             (void)hold;
-            // For animateColor(fill), v stores packed uint32 in float bits.
-            if (it->target_attr == SVG_ATTR_VISIBILITY) {
+            // For animateColor(fill/stroke), v stores packed uint32 in float bits.
+            if (_is_int32_anim_attr(it->target_attr)) {
                 _anim_state_set_int32(&p->anim_state, it->target_node, it->target_attr, (int32_t)v);
             } else {
                 _anim_state_set_float(&p->anim_state, it->target_node, it->target_attr, v);
@@ -3555,7 +3568,7 @@ void psx_svg_player_tick(psx_svg_player* p, float delta_seconds)
         }
         if (ok) {
             (void)hold;
-            if (it->target_attr == SVG_ATTR_VISIBILITY) {
+            if (_is_int32_anim_attr(it->target_attr)) {
                 _anim_state_set_int32(&p->anim_state, it->target_node, it->target_attr, (int32_t)v);
             } else {
                 _anim_state_set_float(&p->anim_state, it->target_node, it->target_attr, v);
@@ -3702,7 +3715,7 @@ void psx_svg_player_trigger(psx_svg_player* p, const char* target_id, const char
         bool hold = false;
         if (it->tag == SVG_TAG_SET) {
             if (_anim_eval_set(it, p->time_sec, &v, &hold)) {
-                if (it->target_attr == SVG_ATTR_VISIBILITY) {
+                if (_is_int32_anim_attr(it->target_attr)) {
                     _anim_state_set_int32(&p->anim_state, it->target_node, it->target_attr, (int32_t)v);
                 } else {
                     _anim_state_set_float(&p->anim_state, it->target_node, it->target_attr, v);
@@ -3710,7 +3723,7 @@ void psx_svg_player_trigger(psx_svg_player* p, const char* target_id, const char
             }
         } else {
             if (_anim_eval_simple(it, p->time_sec, &v, &hold)) {
-                if (it->target_attr == SVG_ATTR_VISIBILITY) {
+                if (_is_int32_anim_attr(it->target_attr)) {
                     _anim_state_set_int32(&p->anim_state, it->target_node, it->target_attr, (int32_t)v);
                 } else {
                     _anim_state_set_float(&p->anim_state, it->target_node, it->target_attr, v);
