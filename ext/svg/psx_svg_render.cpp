@@ -1447,7 +1447,7 @@ public:
             render_obj_base* item = *(psx_array_get(&m_items, i, render_obj_base*));
 
             if (item->has_render_type(RENDER_IN_GROUP)) {
-                // Visibility check for group children: animation override takes priority.
+                // Visibility: animation override takes priority.
                 bool skip = false;
                 if (m_cur_anim_state && item->node()) {
                     int32_t vis = 0;
@@ -1463,7 +1463,7 @@ public:
                     continue;
                 }
 
-                // Compose per-child animated transform with group matrix.
+                // Compose animated transform with group matrix.
                 const ps_matrix* child_anim_mtx = NULL;
                 if (m_cur_anim_state && item->node()) {
                     child_anim_mtx = psx_svg_anim_get_transform(m_cur_anim_state, item->node());
@@ -2655,7 +2655,7 @@ bool psx_svg_render_list_draw_anim(ps_context* ctx, const psx_svg_render_list* r
 
     while (head) {
         if (head->render_types() == RENDER_NORMAL) {
-            // Check visibility: animation override takes priority over static attribute.
+            // Visibility: animation override takes priority.
             bool skip = false;
             if (anim_state && head->node()) {
                 int32_t vis = 0;
@@ -2675,7 +2675,7 @@ bool psx_svg_render_list_draw_anim(ps_context* ctx, const psx_svg_render_list* r
             ps_save(ctx);
             head->prepare(ctx);
 
-            // Apply animated transform override if present for this node.
+            // Apply animated transform if present.
             const ps_matrix* anim_mtx = NULL;
             if (anim_state && head->node()) {
                 anim_mtx = psx_svg_anim_get_transform(anim_state, head->node());

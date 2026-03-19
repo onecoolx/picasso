@@ -93,8 +93,6 @@ static INLINE void _anim_state_set_transform(psx_svg_anim_state* s, const psx_sv
     dst->f = f;
 }
 
-// Compose (multiply) a new transform onto an existing override for the same target.
-// If no existing override, behaves like set. Result = existing * new.
 static INLINE void _anim_state_compose_transform(psx_svg_anim_state* s, const psx_svg_node* target,
                                                   float na, float nb, float nc, float nd, float ne, float nf)
 {
@@ -106,7 +104,6 @@ static INLINE void _anim_state_compose_transform(psx_svg_anim_state* s, const ps
     for (uint32_t i = 0; i < n; i++) {
         psx_svg_anim_transform_item* it = psx_array_get(&s->transforms, i, psx_svg_anim_transform_item);
         if (it && it->target == target) {
-            // Matrix multiply: result = existing * new
             float oa = it->a, ob = it->b, oc = it->c, od = it->d, oe = it->e, of_ = it->f;
             it->a = oa * na + oc * nb;
             it->b = ob * na + od * nb;
@@ -118,7 +115,6 @@ static INLINE void _anim_state_compose_transform(psx_svg_anim_state* s, const ps
         }
     }
 
-    // No existing override — just set it.
     _anim_state_set_transform(s, target, na, nb, nc, nd, ne, nf);
 }
 
@@ -136,8 +132,6 @@ static INLINE const psx_svg_anim_transform_item* _anim_state_find_transform(cons
     }
     return NULL;
 }
-
-// ── Motion transform layer (independent from animateTransform) ──
 
 static INLINE void _anim_state_set_motion_transform(psx_svg_anim_state* s, const psx_svg_node* target,
                                                      float a, float b, float c, float d, float e, float f)
@@ -203,9 +197,6 @@ static INLINE void _anim_item_end_list_normalize(psx_svg_anim_item* it)
     if (n <= 1) {
         return;
     }
-    // Sort ascending for stable selection logic.
-    // Comparator is defined later in this file; use a local one to avoid
-    // forward-decl complexity.
     struct _cmp {
         static int asc(const void* a, const void* b)
         {
@@ -222,7 +213,6 @@ static INLINE void _anim_item_end_list_normalize(psx_svg_anim_item* it)
     };
     qsort(it->ends_sec.data, n, sizeof(float), _cmp::asc);
 
-    // in-place dedupe exact duplicates
     float* d = (float*)it->ends_sec.data;
     uint32_t w = 1;
     for (uint32_t r = 1; r < n; r++) {
@@ -242,7 +232,6 @@ static INLINE float _anim_item_end_for_begin(const psx_svg_anim_item* it, float 
     if (n == 0) {
         return 0.0f;
     }
-    // ends_sec is sorted ascending
     for (uint32_t i = 0; i < n; i++) {
         const float* ep = psx_array_get((psx_array*)&it->ends_sec, i, float);
         float e = ep ? *ep : 0.0f;
@@ -380,7 +369,6 @@ static INLINE uint32_t _f32_to_u32_bits(float f)
 }
 
 // Cubic-bezier helpers for calcMode="spline".
-// Control points are (x1,y1,x2,y2) with implicit endpoints (0,0) and (1,1).
 static INLINE float _anim_cubic_bezier_sample(float a1, float a2, float u)
 {
     float inv = 1.0f - u;
@@ -397,7 +385,6 @@ static INLINE float _anim_cubic_bezier_y_for_x(float x1, float y1, float x2, flo
 {
     x = _anim_clampf(x, 0.0f, 1.0f);
 
-    // Solve _anim_cubic_bezier_sample(x1,x2,u) == x for u.
     float u = x;
     float lo = 0.0f;
     float hi = 1.0f;
@@ -413,7 +400,6 @@ static INLINE float _anim_cubic_bezier_y_for_x(float x1, float y1, float x2, flo
 
         float d = _anim_cubic_bezier_sample_derivative(x1, x2, u);
         if (d > 1e-6f) {
-            // Use signed delta for Newton step.
             float nu = u - (xu - x) / d;
             if (nu >= lo && nu <= hi) {
                 u = nu;
@@ -445,10 +431,6 @@ static INLINE float _attr_as_number(const psx_svg_attr* a)
         return 0.0f;
     }
     if (a->val_type == SVG_ATTR_VALUE_DATA) {
-        // Parser stores different kinds of data in union:
-        // - clock times in value.fval (ms)
-        // - attributeName/fill/etc in value.ival
-        // For numeric animation values (from/to/by), prefer fval.
         return a->value.fval;
     }
     if (a->val_type == SVG_ATTR_VALUE_PTR && a->value.val) {
@@ -457,7 +439,6 @@ static INLINE float _attr_as_number(const psx_svg_attr* a)
             const float* vals = (const float*)&list->data[0];
             return vals[0];
         }
-        // Fallback: some animation attributes may be stored as a string pointer.
         const char* s = (const char*)a->value.val;
         const char c0 = s[0];
         if ((c0 >= '0' && c0 <= '9') || c0 == '-' || c0 == '+' || c0 == '.') {
@@ -487,8 +468,7 @@ static INLINE float _attr_as_time_sec(const psx_svg_attr* a)
     if (!a) {
         return 0.0f;
     }
-    // Clock time attributes (begin/dur/min/max/repeatDur) are stored as DATA fval (ms)
-    // in parser (_process_clock_time). Convert to seconds here.
+    // Clock values stored as ms; convert to seconds.
     if (a->val_type == SVG_ATTR_VALUE_DATA) {
         if (a->value.fval <= 0.0f) {
             return 0.0f;
@@ -496,9 +476,8 @@ static INLINE float _attr_as_time_sec(const psx_svg_attr* a)
         return a->value.fval * 0.001f;
     }
 
-    // Fallback for any legacy representation.
+    // Fallback: list of clock values.
     if (a->val_type == SVG_ATTR_VALUE_PTR && a->value.val) {
-        // Legacy representation: list of clock values (seconds).
         const psx_svg_attr_values_list* list = (const psx_svg_attr_values_list*)a->value.val;
         if (list->length > 0) {
             const float* vals = (const float*)&list->data[0];
@@ -513,8 +492,7 @@ static INLINE float _attr_as_begin_time_sec(const psx_svg_attr* a)
     if (!a) {
         return 0.0f;
     }
-    // If begin is stored as a list (VALUE_PTR), prefer the earliest begin time.
-    // Note: for non-<set>, begin/end are parsed into a list of ms (see _animation_begin_end_cb).
+    // Prefer earliest begin time from list.
     if (a->val_type == SVG_ATTR_VALUE_PTR && a->value.val) {
         const psx_svg_attr_values_list* list = (const psx_svg_attr_values_list*)a->value.val;
         if (list->length > 0) {
@@ -631,10 +609,9 @@ static INLINE void _anim_item_begin_list_normalize(psx_svg_anim_item* it)
         return;
     }
 
-    // Sort ascending for stable selection logic and future extensions.
+    // Sort ascending.
     qsort(it->begins_sec.data, n, sizeof(float), _float_cmp_asc);
 
-    // Dedupe exact-equal values in-place.
     float* v = (float*)it->begins_sec.data;
     uint32_t w = 1;
     for (uint32_t i = 1; i < n; i++) {
@@ -788,8 +765,7 @@ static INLINE bool _anim_eval_simple(const psx_svg_anim_item* it, float doc_t, f
 
     const psx_svg_attr* avals = _find_attr(it->anim_node, SVG_ATTR_VALUES);
 
-    // animateColor: packed uint32 in float bits.
-    // Must be handled before the generic float values path.
+    // animateColor: handle before generic float path.
     if (it->tag == SVG_TAG_ANIMATE_COLOR && it->target_attr == SVG_ATTR_FILL) {
         uint32_t calc_mode = SVG_ANIMATION_CALC_MODE_LINEAR;
         const psx_svg_attr* acm = _find_attr(it->anim_node, SVG_ATTR_CALC_MODE);
@@ -1059,7 +1035,7 @@ static INLINE bool _anim_eval_transform_translate_linear(const psx_svg_anim_item
             return true;
         }
 
-        // Segment mapping via keyTimes or evenly-spaced.
+        // keyTimes or evenly-spaced segment mapping.
         const psx_svg_attr* akt = _find_attr(it->anim_node, SVG_ATTR_KEY_TIMES);
         const float* kts = NULL;
         uint32_t kt_len = 0;
@@ -1107,7 +1083,7 @@ static INLINE bool _anim_eval_transform_translate_linear(const psx_svg_anim_item
         return true;
     }
 
-    // Fallback: from/to interpolation.
+    // from/to fallback.
     const psx_svg_attr* afrom = _find_attr(it->anim_node, SVG_ATTR_FROM);
     const psx_svg_attr* ato = _find_attr(it->anim_node, SVG_ATTR_TO);
     if (!afrom || !ato) {
@@ -1120,7 +1096,6 @@ static INLINE bool _anim_eval_transform_translate_linear(const psx_svg_anim_item
         return false;
     }
 
-    // animateTransform from/to: single _transform_values_list { length; float data[4]; }
     struct _anim_transform_values_single {
         uint32_t length;
         float data[4];
@@ -1338,7 +1313,7 @@ static INLINE bool _anim_eval_transform_skewy_discrete(const psx_svg_anim_item* 
     return true;
 }
 
-// matrix(a,b,c,d,e,f) linear interpolation: each of the 6 components is lerped independently.
+// matrix linear: lerp each of the 6 components independently.
 static INLINE bool _anim_eval_transform_matrix_linear(const psx_svg_anim_item* it, float doc_t,
                                                       float* out_a, float* out_b, float* out_c,
                                                       float* out_d, float* out_e, float* out_f)
@@ -1359,7 +1334,7 @@ static INLINE bool _anim_eval_transform_matrix_linear(const psx_svg_anim_item* i
         return false;
     }
 
-    // values list takes priority over from/to
+    // values list path.
     const psx_svg_attr* avals = _find_attr(it->anim_node, SVG_ATTR_VALUES);
     if (avals && avals->val_type == SVG_ATTR_VALUE_PTR && avals->value.val) {
         const psx_svg_attr_values_list* vlist = (const psx_svg_attr_values_list*)avals->value.val;
@@ -1408,7 +1383,7 @@ static INLINE bool _anim_eval_transform_matrix_linear(const psx_svg_anim_item* i
         }
     }
 
-    // from/to
+    // from/to fallback.
     const psx_svg_attr* afrom = _find_attr(it->anim_node, SVG_ATTR_FROM);
     const psx_svg_attr* ato = _find_attr(it->anim_node, SVG_ATTR_TO);
     if (!afrom || !ato) {
@@ -1438,7 +1413,7 @@ static INLINE bool _anim_eval_transform_matrix_linear(const psx_svg_anim_item* i
     return true;
 }
 
-// matrix(a,b,c,d,e,f) discrete: snap to from or to based on t < 0.5.
+// matrix discrete: snap to from or to based on t < 0.5.
 static INLINE bool _anim_eval_transform_matrix_discrete(const psx_svg_anim_item* it, float doc_t,
                                                         float* out_a, float* out_b, float* out_c,
                                                         float* out_d, float* out_e, float* out_f)
@@ -1632,7 +1607,7 @@ static INLINE bool _anim_eval_transform_scale_linear(const psx_svg_anim_item* it
         return true;
     }
 
-    // Fallback: from/to interpolation if values is absent.
+    // from/to fallback.
     const psx_svg_attr* afrom = _find_attr(it->anim_node, SVG_ATTR_FROM);
     const psx_svg_attr* ato = _find_attr(it->anim_node, SVG_ATTR_TO);
     if (!afrom || !ato) {
@@ -1708,13 +1683,12 @@ static INLINE bool _anim_eval_transform_rotate_discrete(const psx_svg_anim_item*
         return false;
     }
 
-    // Rotate values are stored in the transform-values blob; first number is angle in degrees.
+    // First number is angle in degrees.
     float angle_deg = (vlen >= 1) ? base[0] : 0.0f;
     float angle_rad = (float)(angle_deg * (M_PI / 180.0f));
     float cs = (float)cosf(angle_rad);
     float sn = (float)sinf(angle_rad);
 
-    // Matrix for rotation about origin.
     *out_a = cs;
     *out_b = sn;
     *out_c = -sn;
@@ -1842,7 +1816,7 @@ static INLINE bool _anim_eval_transform_rotate_linear(const psx_svg_anim_item* i
         return true;
     }
 
-    // Fallback: from/to interpolation if values is absent.
+    // from/to fallback.
     {
         const psx_svg_attr* afrom = _find_attr(it->anim_node, SVG_ATTR_FROM);
         const psx_svg_attr* ato = _find_attr(it->anim_node, SVG_ATTR_TO);
@@ -1936,7 +1910,7 @@ static INLINE bool _anim_eval_transform_dispatch(const psx_svg_anim_item* it, fl
     }
 }
 
-/* ── Motion path mini-parser (M/m, L/l) ────────────────────────────── */
+/* Motion path mini-parser */
 
 typedef struct {
     float* xs; /* mem_malloc allocated x coordinate array */
@@ -2067,7 +2041,7 @@ static uint32_t _motion_path_parse_float(const char* s, uint32_t pos, uint32_t l
     return pos;
 }
 
-/* ── Curve flattening helpers ──────────────────────────────────────── */
+/* Curve flattening helpers */
 
 #define FLATTEN_STEPS_QUAD 8
 #define FLATTEN_STEPS_CUBIC 16
@@ -2691,7 +2665,7 @@ static bool _motion_path_parse(const char* path_str, uint32_t len,
     return out->count > 0;
 }
 
-/* ── Arc-length parameterization ───────────────────────────────────── */
+/* Arc-length parameterization */
 
 typedef struct {
     float* cum_lengths; /* mem_malloc allocated cumulative arc length array */
@@ -2829,11 +2803,6 @@ static float _motion_arc_tangent_angle(const _motion_path_points* pts,
     return atan2f(dy, dx);
 }
 
-// Note: psx_svg_attr_values_list is a variable-sized blob (length + data[]).
-// The element layout depends on which attribute it represents.
-
-#define _MOTION_PI 3.14159265358979f
-
 /*
  * Evaluate an <animateMotion> item at document time doc_t.
  * On success, writes a transform matrix into out_a..out_f.
@@ -2857,16 +2826,14 @@ static bool _anim_eval_motion(const psx_svg_anim_item* it, float doc_t,
     *out_e = 0.0f;
     *out_f = 0.0f;
 
-    /* 1. Resolve local time */
     float t = 0.0f;
     if (!_anim_resolve_local_t(it, doc_t, &t)) {
         return false;
     }
 
-    /* 2. Get path string from anim_node's SVG_ATTR_PATH attribute */
     const psx_svg_attr* apath = _find_attr(it->anim_node, SVG_ATTR_PATH);
     if (!apath || apath->val_type != SVG_ATTR_VALUE_PTR || !apath->value.sval) {
-        /* No path attribute — try from/to fallback */
+        // from/to fallback
         const psx_svg_attr* afrom = _find_attr(it->anim_node, SVG_ATTR_FROM);
         const psx_svg_attr* ato = _find_attr(it->anim_node, SVG_ATTR_TO);
         if (!afrom || !ato
@@ -2889,22 +2856,18 @@ static bool _anim_eval_motion(const psx_svg_anim_item* it, float doc_t,
     const char* path_str = apath->value.sval;
     uint32_t path_len = (uint32_t)strlen(path_str);
 
-    /* 3. Parse path string */
     _motion_path_points pts;
     if (!_motion_path_parse(path_str, path_len, &pts)) {
         return false;
     }
 
-    /* 4. Build arc-length table */
     _motion_arc_table arc;
     _motion_arc_build(&pts, &arc);
 
-    /* 5. Interpolate position */
     float x = 0.0f;
     float y = 0.0f;
     _motion_arc_position(&pts, &arc, t, &x, &y);
 
-    /* 6. Handle rotate attribute */
     const psx_svg_attr* arot = _find_attr(it->anim_node, SVG_ATTR_ROTATE);
     if (arot) {
         float angle_rad = 0.0f;
@@ -2912,10 +2875,10 @@ static bool _anim_eval_motion(const psx_svg_anim_item* it, float doc_t,
             /* rotate="auto" (fval=0) or rotate="auto-reverse" (fval=180) */
             float tangent = _motion_arc_tangent_angle(&pts, &arc, t);
             float extra_deg = arot->value.fval; /* 0 for auto, 180 for auto-reverse */
-            angle_rad = tangent + extra_deg * _MOTION_PI / 180.0f;
+            angle_rad = tangent + extra_deg * (float)M_PI / 180.0f;
         } else {
             /* Numeric rotate value in degrees */
-            angle_rad = arot->value.fval * _MOTION_PI / 180.0f;
+            angle_rad = arot->value.fval * (float)M_PI / 180.0f;
         }
         float ca = cosf(angle_rad);
         float sa = sinf(angle_rad);
@@ -2924,12 +2887,10 @@ static bool _anim_eval_motion(const psx_svg_anim_item* it, float doc_t,
         *out_c = -sa;
         *out_d = ca;
     }
-    /* else: no rotate → pure translate (a=1,b=0,c=0,d=1 already set) */
 
     *out_e = x;
     *out_f = y;
 
-    /* 7. Cleanup */
     _motion_arc_destroy(&arc);
     _motion_path_destroy(&pts);
 
@@ -2949,7 +2910,6 @@ static INLINE bool _anim_eval_set(const psx_svg_anim_item* it, float doc_t, floa
     }
 
     // If an explicit end (or end-list) is present, it can shorten the active interval.
-    // Effective end is the earliest end time >= current begin.
     float end_sec = 0.0f;
     if (psx_array_size((psx_array*)&it->ends_sec) > 0) {
         end_sec = _anim_item_end_for_begin(it, begin_sec);
@@ -2957,12 +2917,9 @@ static INLINE bool _anim_eval_set(const psx_svg_anim_item* it, float doc_t, floa
         end_sec = it->end_sec;
     }
     if (end_sec > 0.0f && end_sec < begin_sec) {
-        // invalid; ignore
         end_sec = 0.0f;
     }
 
-    // If explicit end is present and we've passed it, the interval is inactive
-    // for fill=remove, or held for fill=freeze.
     if (end_sec > 0.0f && doc_t > end_sec) {
         if (it->fill_mode == SVG_ANIMATION_FREEZE) {
             *out_hold = true;
@@ -2977,7 +2934,6 @@ static INLINE bool _anim_eval_set(const psx_svg_anim_item* it, float doc_t, floa
         return false;
     }
 
-    // If dur is missing/0, SVG <set> is treated as an instant change.
     if (it->dur_sec <= 0.0f) {
         const psx_svg_attr* ato = _find_attr(it->anim_node, SVG_ATTR_TO);
         if (!ato) {
@@ -2999,7 +2955,7 @@ static INLINE bool _anim_eval_set(const psx_svg_anim_item* it, float doc_t, floa
 
     float local = doc_t - begin_sec;
 
-    // If repeatDur is specified, it bounds the active duration (unless explicit end is earlier).
+    // repeatDur bounds the active duration.
     float repeat_end_sec = 0.0f;
     if (it->repeat_dur_sec > 0.0f) {
         repeat_end_sec = begin_sec + it->repeat_dur_sec;
@@ -3016,16 +2972,13 @@ static INLINE bool _anim_eval_set(const psx_svg_anim_item* it, float doc_t, floa
 
     if (end_sec > 0.0f) {
         float active_dur = end_sec - begin_sec;
-        // Per SMIL, if end <= begin then interval is empty. Treat as no-op.
         if (active_dur <= 0.0f) {
             return false;
         }
 
-        // Outside active interval
         if (doc_t > end_sec) {
             if (it->fill_mode == SVG_ANIMATION_FREEZE) {
                 *out_hold = true;
-                // treat as at end
                 local = active_dur;
             } else {
                 return false;
@@ -3042,22 +2995,17 @@ static INLINE bool _anim_eval_set(const psx_svg_anim_item* it, float doc_t, floa
             }
         }
 
-        // When explicit end is present, it defines the end of the active
-        // interval (regardless of declared dur).
+        // Explicit end bounds the active interval.
         if (local > active_dur) {
             return false;
         }
     }
 
-    // For <set>, value is constant during the active interval.
-    // Do NOT wrap with fmod: repeats don't change the value and wrapping breaks
-    // fill=remove semantics at end-of-interval.
     if (it->repeat_count != 0) {
         float total = it->dur_sec * (float)it->repeat_count;
         if (local > total) {
             if (it->fill_mode == SVG_ANIMATION_FREEZE) {
                 *out_hold = true;
-                // Hold at end value.
                 local = it->dur_sec;
             } else {
                 return false;
@@ -3065,24 +3013,16 @@ static INLINE bool _anim_eval_set(const psx_svg_anim_item* it, float doc_t, floa
         }
     }
 
-    // Active interval end:
-    // - If explicit end is present: [begin, end]
-    // - Else: [begin, begin+dur]
-    // NOTE: the end_sec path (explicit end or repeatDur mapped to end) already
-    // handles doc_t > end_sec and doc_t == end_sec above. Do not reject again
-    // here, otherwise fill=freeze at end instant/after end can be lost.
+    // No explicit end: check dur boundary.
     if (end_sec <= 0.0f) {
-        // Active during [0, dur].
         if (local > it->dur_sec) {
             return false;
         }
 
-        // If fill=freeze, keep value visible at the end instant.
         if (local == it->dur_sec) {
             if (it->fill_mode == SVG_ANIMATION_FREEZE) {
                 *out_hold = true;
             } else if (it->fill_mode == SVG_ANIMATION_REMOVE) {
-                // end instant is not active for remove
                 return false;
             }
         }
@@ -3122,7 +3062,6 @@ static void _collect_anims(psx_svg_player* p, const psx_svg_node* node)
         const psx_svg_attr* an = _find_attr(node, SVG_ATTR_ATTRIBUTE_NAME);
         psx_svg_attr_type target_attr = SVG_ATTR_INVALID;
         if (an) {
-            // attributeName is stored as DATA ival (enum psx_svg_attr_type) in parser.
             if (an->val_type == SVG_ATTR_VALUE_DATA) {
                 target_attr = (psx_svg_attr_type)an->value.ival;
             }
@@ -3130,9 +3069,7 @@ static void _collect_anims(psx_svg_player* p, const psx_svg_node* node)
 
         const psx_svg_node* target = node->parent();
         if (t == SVG_TAG_ANIMATE_MOTION) {
-            // animateMotion implicitly targets transform (no attributeName needed)
             target_attr = SVG_ATTR_TRANSFORM;
-            // for animateMotion, allow mpath child; real resolve later
             (void)_find_child_mpath(node);
         }
 
@@ -3236,8 +3173,6 @@ static void _collect_anims(psx_svg_player* p, const psx_svg_node* node)
             psx_array_append(&p->anims, NULL);
             psx_svg_anim_item* dst = psx_array_get_last(&p->anims, psx_svg_anim_item);
             *dst = item;
-
-            // No extra normalization needed: parser stores <set> begin/dur as clock-time DATA(fval ms).
         }
     }
 
@@ -3285,10 +3220,7 @@ bool psx_svg_anim_get_int32(const psx_svg_anim_state* s,
     return true;
 }
 
-// Returns a pointer to the internal scratch ps_matrix if a transform override
-// exists for target, NULL otherwise. The caller must NOT unref the returned pointer.
-// Per SVG spec, the final animated transform is: motion_transform * animateTransform.
-// If only one layer exists, it is returned directly.
+// Compose motion_transform * animateTransform per SVG spec.
 const ps_matrix* psx_svg_anim_get_transform(const psx_svg_anim_state* s,
                                             const psx_svg_node* target)
 {
@@ -3300,20 +3232,16 @@ const ps_matrix* psx_svg_anim_get_transform(const psx_svg_anim_state* s,
     }
 
     if (mt && !at) {
-        // Motion only
         ps_matrix_init(s->scratch_matrix, mt->a, mt->b, mt->c, mt->d, mt->e, mt->f);
         return s->scratch_matrix;
     }
 
     if (at && !mt) {
-        // animateTransform only
         ps_matrix_init(s->scratch_matrix, at->a, at->b, at->c, at->d, at->e, at->f);
         return s->scratch_matrix;
     }
 
-    // Both layers: compose motion * animateTransform
-    // M = motion, A = animateTransform
-    // Result = M * A
+    // Both layers: result = motion * animateTransform
     float ma = mt->a, mb = mt->b, mc = mt->c, md = mt->d, me = mt->e, mf = mt->f;
     float aa = at->a, ab = at->b, ac = at->c, ad = at->d, ae = at->e, af = at->f;
 
@@ -3376,17 +3304,12 @@ psx_svg_player* psx_svg_player_create(const psx_svg_node* root, psx_result* out)
     psx_array_init(&p->anim_state.motion_transforms, sizeof(psx_svg_anim_transform_item));
     p->anim_state.scratch_matrix = ps_matrix_create();
 
-    // Set anim_state pointer on all render nodes once at creation time.
-    // Nodes read overrides from this pointer in their prepare()/render() methods.
     psx_svg_render_list_set_anim_state(p->render_list, &p->anim_state);
 
     psx_array_init(&p->anims, sizeof(psx_svg_anim_item));
     _collect_anims(p, p->root);
 
-    // compute a simple duration hint
-    // If there is no animation, keep duration as unknown (-1). This avoids
-    // treating a static document as having duration 0 and immediately
-    // stopping on the first tick.
+    // compute duration hint
     if (psx_array_size(&p->anims) == 0) {
         p->duration_sec = -1.0f;
     } else {
@@ -3421,7 +3344,7 @@ void psx_svg_player_destroy(psx_svg_player* p)
         return;
     }
 
-    // Per-item dynamic memory
+    // free per-item dynamic memory
     {
         uint32_t n = psx_array_size(&p->anims);
         for (uint32_t i = 0; i < n; i++) {
@@ -3494,8 +3417,7 @@ void psx_svg_player_seek(psx_svg_player* p, float seconds)
         p->state = PSX_SVG_PLAYER_PAUSED;
     }
 
-    // Rebuild overrides at the new time so callers can query immediately
-    // without needing a positive tick.
+    // Rebuild overrides at seek time.
     _anim_state_reset(&p->anim_state);
     uint32_t n = psx_array_size(&p->anims);
     for (uint32_t i = 0; i < n; i++) {
@@ -3574,7 +3496,7 @@ void psx_svg_player_tick(psx_svg_player* p, float delta_seconds)
         }
     }
 
-    // Evaluate animations and update anim_state override tables.
+    // Evaluate animations.
     _anim_state_reset(&p->anim_state);
 
     uint32_t n = psx_array_size(&p->anims);
@@ -3726,7 +3648,7 @@ void psx_svg_player_trigger(psx_svg_player* p, const char* target_id, const char
         return;
     }
 
-    // Rebuild overrides at the current time so callers can query immediately.
+    // Rebuild overrides after trigger.
     _anim_state_reset(&p->anim_state);
     n = psx_array_size(&p->anims);
     for (uint32_t i = 0; i < n; i++) {
