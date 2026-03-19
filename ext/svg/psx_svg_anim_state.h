@@ -79,6 +79,7 @@ typedef struct {
     uint32_t repeat_count; // 0 => indefinite
     float repeat_dur_sec; // optional explicit repeat duration, 0 => unspecified
     uint32_t fill_mode; // SVG_ANIMATION_*
+    uint32_t additive_mode; // SVG_ANIMATION_ADDITIVE_REPLACE or SVG_ANIMATION_ADDITIVE_SUM
 
     // Minimal Tiny 1.2 external event trigger support.
     // If begin is specified as a non-numeric token (e.g. begin="click"), we
@@ -96,7 +97,10 @@ typedef struct {
 typedef struct {
     const psx_svg_node* target;
     psx_svg_attr_type attr;
-    float fval;
+    union {
+        float fval;
+        int32_t ival;
+    } u;
 } psx_svg_anim_override_item;
 
 typedef struct {
@@ -110,6 +114,11 @@ typedef struct {
  * writes the value into *out_v. */
 bool psx_svg_anim_get_float(const psx_svg_anim_state* s, const psx_svg_node* target,
                             psx_svg_attr_type attr, float* out_v);
+
+/* returns true if an integer override exists for (target, attr).
+ * writes the value into *out_v. */
+bool psx_svg_anim_get_int32(const psx_svg_anim_state* s, const psx_svg_node* target,
+                           psx_svg_attr_type attr, int32_t* out_v);
 
 /* returns a pointer to an internal scratch ps_matrix if a transform override
  * exists for target, NULL otherwise.

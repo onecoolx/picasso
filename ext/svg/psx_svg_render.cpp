@@ -632,6 +632,10 @@ public:
         float height = m_height;
 
         if (m_hasViewBox) {
+            // reset matrix to identity before recomputing viewBox transform,
+            // otherwise translate/scale accumulate across frames.
+            ps_matrix_identity(m_matrix);
+
             float* vals = m_viewBox;
 
             float scale = 1.0f;
@@ -2473,7 +2477,7 @@ bool psx_svg_render_list_draw_anim(ps_context* ctx, const psx_svg_render_list* r
     ps_identity(ctx);
 
     render_obj_base* head = list->head();
-    if (head->type() == SVG_TAG_SVG) { // viewport node
+    if (head->type() == SVG_TAG_SVG) {
         ps_rect clip_rect = {0};
         head->get_bounding_rect(&clip_rect);
         ps_clip_rect(ctx, &clip_rect);
@@ -2481,8 +2485,20 @@ bool psx_svg_render_list_draw_anim(ps_context* ctx, const psx_svg_render_list* r
 
     while (head) {
         if (head->render_types() == RENDER_NORMAL) {
-            ps_save(ctx);
             head->set_anim_state(anim_state);
+
+            // Check visibility override — skip drawing if hidden (0).
+            if (anim_state && head->node()) {
+                int32_t vis = 0;
+                if (psx_svg_anim_get_int32(anim_state, head->node(), SVG_ATTR_VISIBILITY, &vis)) {
+                    if (vis == 0) {
+                        head = head->next();
+                        continue;
+                    }
+                }
+            }
+
+            ps_save(ctx);
             head->prepare(ctx);
 
             // Apply animated transform override if present for this node.

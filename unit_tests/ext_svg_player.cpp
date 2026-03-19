@@ -84,6 +84,14 @@ static inline bool psx_svg_player_debug_get_float_override(const psx_svg_player*
     return psx_svg_anim_get_float(&p->anim_state, target, attr, out_v);
 }
 
+static inline bool psx_svg_player_debug_get_int_override(const psx_svg_player* p,
+                                                         const psx_svg_node* target,
+                                                         psx_svg_attr_type attr,
+                                                         int32_t* out_v)
+{
+    return psx_svg_anim_get_int32(&p->anim_state, target, attr, out_v);
+}
+
 static bool psx_svg_player_debug_get_transform_override(const psx_svg_player* p,
                                                         const psx_svg_node* target,
                                                         float* a, float* b, float* c, float* d, float* e, float* f)
@@ -6510,8 +6518,8 @@ TEST_F(SVGPlayerTest, SetVisibility_BeforeBegin_NoOverride)
     const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r1");
     EXPECT_TRUE(n != NULL);
 
-    float v = -1.0f;
-    bool got = psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_VISIBILITY, &v);
+    int32_t iv = -1;
+    bool got = psx_svg_player_debug_get_int_override(p, n, SVG_ATTR_VISIBILITY, &iv);
     EXPECT_FALSE(got) << "No visibility override before begin time";
 
     destroy_player(p, root);
@@ -6534,17 +6542,307 @@ TEST_F(SVGPlayerTest, SetVisibility_DuringActive_OverrideVisible)
     psx_svg_player* p = create_player(svg, &r, &root);
     ASSERT_TRUE(p != NULL);
 
-    // At t=3s, inside [2s, 6s) — visibility should be overridden to 1.0 (visible).
+    // At t=3s, inside [2s, 6s) — visibility should be overridden to 1 (visible).
     psx_svg_player_seek(p, 3.0f);
     psx_svg_player_tick(p, 0.0f);
 
     const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r1");
     EXPECT_TRUE(n != NULL);
 
-    float v = -1.0f;
-    bool got = psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_VISIBILITY, &v);
+    int32_t iv = -1;
+    bool got = psx_svg_player_debug_get_int_override(p, n, SVG_ATTR_VISIBILITY, &iv);
     EXPECT_TRUE(got) << "Visibility override should exist during active interval";
-    EXPECT_NEAR(1.0f, v, 0.001f) << "to='visible' should produce 1.0";
+    EXPECT_EQ(1, iv) << "to='visible' should produce 1";
+
+    destroy_player(p, root);
+}
+
+// ── additive="sum" for animateTransform tests ──
+
+TEST_F(SVGPlayerTest, AnimateTransform_Additive_Sum_RotateThenScale)
+{
+    // Two animateTransform on the same rect, both additive="sum".
+    // First: rotate from 0 to 90 over 5s
+    // Second: scale from 1 to 2 over 5s
+    // At t=2.5s (midpoint): rotate=45°, scale=1.5
+    // Expected combined matrix = rotate(45) * scale(1.5)
+    //   rotate(45): a=cos45, b=sin45, c=-sin45, d=cos45, e=0, f=0
+    //   scale(1.5): a=1.5, b=0, c=0, d=1.5, e=0, f=0
+    //   combined = rotate * scale:
+    //     a = cos45*1.5, b = sin45*1.5, c = -sin45*1.5, d = cos45*1.5, e=0, f=0
+    const char* svg =
+        "<svg xmlns='http://www.w3.org/2000/svg' version='1.2' baseProfile='tiny'"
+        "     width='200' height='200'>"
+        "  <rect xml:id='r1' x='10' y='10' width='80' height='80' fill='red'>"
+        "    <animateTransform attributeName='transform' type='rotate'"
+        "         from='0' to='90' dur='5s' fill='freeze' additive='sum'/>"
+        "    <animateTransform attributeName='transform' type='scale'"
+        "         from='1' to='2' dur='5s' fill='freeze' additive='sum'/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_svg_node* root = NULL;
+    psx_result r = S_OK;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_TRUE(p != NULL);
+
+    psx_svg_player_seek(p, 2.5f);
+    psx_svg_player_tick(p, 0.0f);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r1");
+    EXPECT_TRUE(n != NULL);
+
+    float a, b, c, d, e, f;
+    bool got = psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f);
+    EXPECT_TRUE(got) << "Transform override should exist";
+
+    // rotate(45) * scale(1.5):
+    // cos(45°) ≈ 0.7071, sin(45°) ≈ 0.7071
+    // a = cos45 * 1.5 ≈ 1.0607
+    // b = sin45 * 1.5 ≈ 1.0607
+    // c = -sin45 * 1.5 ≈ -1.0607
+    // d = cos45 * 1.5 ≈ 1.0607
+    float cos45 = 0.7071f;
+    float sin45 = 0.7071f;
+    EXPECT_NEAR(cos45 * 1.5f, a, 0.05f);
+    EXPECT_NEAR(sin45 * 1.5f, b, 0.05f);
+    EXPECT_NEAR(-sin45 * 1.5f, c, 0.05f);
+    EXPECT_NEAR(cos45 * 1.5f, d, 0.05f);
+    EXPECT_NEAR(0.0f, e, 0.05f);
+    EXPECT_NEAR(0.0f, f, 0.05f);
+
+    destroy_player(p, root);
+}
+
+TEST_F(SVGPlayerTest, AnimateTransform_Additive_Sum_SingleScale)
+{
+    // Single animateTransform scale with additive=sum.
+    // Without a prior override, compose should behave like set.
+    const char* svg =
+        "<svg xmlns='http://www.w3.org/2000/svg' version='1.2' baseProfile='tiny'"
+        "     width='200' height='200'>"
+        "  <rect xml:id='r1' x='10' y='10' width='80' height='80' fill='red'>"
+        "    <animateTransform attributeName='transform' type='scale'"
+        "         from='1' to='2' dur='5s' fill='freeze' additive='sum'/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_svg_node* root = NULL;
+    psx_result r = S_OK;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_TRUE(p != NULL);
+
+    psx_svg_player_seek(p, 2.5f);
+    psx_svg_player_tick(p, 0.0f);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r1");
+    EXPECT_TRUE(n != NULL);
+
+    float a, b, c, d, e, f;
+    bool got = psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f);
+    EXPECT_TRUE(got) << "Transform override should exist";
+    // scale(1.5): a=1.5, d=1.5
+    EXPECT_NEAR(1.5f, a, 0.05f);
+    EXPECT_NEAR(0.0f, b, 0.001f);
+    EXPECT_NEAR(0.0f, c, 0.001f);
+    EXPECT_NEAR(1.5f, d, 0.05f);
+
+    destroy_player(p, root);
+}
+
+// ── animateColor linear interpolation tests ──
+
+TEST_F(SVGPlayerTest, AnimateColorFill_FromTo_Linear)
+{
+    // animateColor default calcMode is linear.
+    // from=#ff0000 (red) to=#0000ff (blue) dur=1s
+    // At t=0.5: R=127, G=0, B=127 => packed 0x007F007F (approx)
+    const char* svg =
+        "<svg xmlns='http://www.w3.org/2000/svg' version='1.2' baseProfile='tiny'"
+        "     width='10' height='10'>"
+        "  <rect xml:id='r' x='0' y='0' width='10' height='10' fill='#000'>"
+        "    <animateColor attributeName='fill' from='#ff0000' to='#0000ff'"
+        "         dur='1s' fill='freeze'/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_svg_node* root = NULL;
+    psx_result r = S_OK;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_TRUE(p != NULL);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    EXPECT_TRUE(n != NULL);
+
+    // At t=0.5 (midpoint): linear lerp of each channel
+    // R: 255 -> 0, at 0.5 => ~128
+    // G: 0 -> 0, at 0.5 => 0
+    // B: 0 -> 255, at 0.5 => ~128
+    psx_svg_player_seek(p, 0.5f);
+    {
+        float v = 0;
+        bool got = psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_FILL, &v);
+        EXPECT_TRUE(got) << "Fill override should exist at t=0.5";
+
+        union { uint32_t u; float f; } bits;
+        bits.f = v;
+        uint32_t cr = (bits.u >> 16) & 0xFF;
+        uint32_t cg = (bits.u >> 8) & 0xFF;
+        uint32_t cb = bits.u & 0xFF;
+
+        // Allow ±2 tolerance for rounding
+        EXPECT_NEAR(128.0f, (float)cr, 2.0f);
+        EXPECT_NEAR(0.0f, (float)cg, 2.0f);
+        EXPECT_NEAR(128.0f, (float)cb, 2.0f);
+    }
+
+    // At t=0.0 (start): should be pure red
+    psx_svg_player_seek(p, 0.0f);
+    {
+        float v = 0;
+        bool got = psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_FILL, &v);
+        EXPECT_TRUE(got);
+
+        union { uint32_t u; float f; } bits;
+        bits.f = v;
+        uint32_t cr = (bits.u >> 16) & 0xFF;
+        uint32_t cb = bits.u & 0xFF;
+        EXPECT_EQ(255u, cr);
+        EXPECT_EQ(0u, cb);
+    }
+
+    // At t=1.0 (end, freeze): should be pure blue
+    psx_svg_player_seek(p, 1.0f);
+    {
+        float v = 0;
+        bool got = psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_FILL, &v);
+        EXPECT_TRUE(got);
+
+        union { uint32_t u; float f; } bits;
+        bits.f = v;
+        uint32_t cr = (bits.u >> 16) & 0xFF;
+        uint32_t cb = bits.u & 0xFF;
+        EXPECT_EQ(0u, cr);
+        EXPECT_EQ(255u, cb);
+    }
+
+    destroy_player(p, root);
+}
+
+TEST_F(SVGPlayerTest, AnimateColorFill_Values_Linear)
+{
+    // values list with 3 colors: red -> green -> blue over 2s
+    // At t=0.5 (25%): between red and green, midpoint
+    // R: 255->0 at 0.5 => ~128, G: 0->128 at 0.5 => ~64, B: 0->0 => 0
+    // Actually: segment 0 covers [0,1s], segment 1 covers [1s,2s]
+    // At t=0.5s => segment 0, u=0.5 => lerp(red, green, 0.5)
+    const char* svg =
+        "<svg xmlns='http://www.w3.org/2000/svg' version='1.2' baseProfile='tiny'"
+        "     width='10' height='10'>"
+        "  <rect xml:id='r' x='0' y='0' width='10' height='10' fill='#000'>"
+        "    <animateColor attributeName='fill' values='#ff0000;#00ff00;#0000ff'"
+        "         dur='2s' fill='freeze'/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_svg_node* root = NULL;
+    psx_result r = S_OK;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_TRUE(p != NULL);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    EXPECT_TRUE(n != NULL);
+
+    // At t=0.5s: segment 0, u=0.5 => lerp(#ff0000, #00ff00, 0.5)
+    // R: 255->0 => 128, G: 0->255 => 128, B: 0->0 => 0
+    psx_svg_player_seek(p, 0.5f);
+    {
+        float v = 0;
+        bool got = psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_FILL, &v);
+        EXPECT_TRUE(got);
+
+        union { uint32_t u; float f; } bits;
+        bits.f = v;
+        uint32_t cr = (bits.u >> 16) & 0xFF;
+        uint32_t cg = (bits.u >> 8) & 0xFF;
+        uint32_t cb = bits.u & 0xFF;
+
+        EXPECT_NEAR(128.0f, (float)cr, 2.0f);
+        EXPECT_NEAR(128.0f, (float)cg, 2.0f);
+        EXPECT_NEAR(0.0f, (float)cb, 2.0f);
+    }
+
+    // At t=1.5s: segment 1, u=0.5 => lerp(#00ff00, #0000ff, 0.5)
+    // R: 0->0 => 0, G: 255->0 => 128, B: 0->255 => 128
+    psx_svg_player_seek(p, 1.5f);
+    {
+        float v = 0;
+        bool got = psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_FILL, &v);
+        EXPECT_TRUE(got);
+
+        union { uint32_t u; float f; } bits;
+        bits.f = v;
+        uint32_t cr = (bits.u >> 16) & 0xFF;
+        uint32_t cg = (bits.u >> 8) & 0xFF;
+        uint32_t cb = bits.u & 0xFF;
+
+        EXPECT_NEAR(0.0f, (float)cr, 2.0f);
+        EXPECT_NEAR(128.0f, (float)cg, 2.0f);
+        EXPECT_NEAR(128.0f, (float)cb, 2.0f);
+    }
+
+    destroy_player(p, root);
+}
+
+// ── viewBox + animate regression test ──
+
+TEST_F(SVGPlayerTest, AnimateRectX_WithViewBox_OverrideProduced)
+{
+    // Exact SVG from user report: viewBox present, <animate> on x.
+    const char* svg =
+        "<svg width='300' height='200' viewBox='0 0 600 400'"
+        "     xmlns='http://www.w3.org/2000/svg' version='1.2' baseProfile='tiny'>"
+        "  <rect x='10' y='10' width='580' height='380' fill='yellow'"
+        "        stroke='blue' stroke-width='4'/>"
+        "  <rect xml:id='r1' x='100' y='100' width='200' height='100' fill='red'>"
+        "    <animate attributeName='x' from='100' to='400' dur='3s' fill='freeze'/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_svg_node* root = NULL;
+    psx_result r = S_OK;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_TRUE(p != NULL);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r1");
+    EXPECT_TRUE(n != NULL);
+
+    // t=0: x should be 100 (from value)
+    psx_svg_player_play(p);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float v = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+        EXPECT_NEAR(100.0f, v, 0.01f);
+    }
+
+    // t=1.5s (midpoint): x should be 250
+    psx_svg_player_seek(p, 1.5f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float v = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+        EXPECT_NEAR(250.0f, v, 0.1f);
+    }
+
+    // t=3s (end, freeze): x should be 400
+    psx_svg_player_seek(p, 3.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float v = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+        EXPECT_NEAR(400.0f, v, 0.01f);
+    }
 
     destroy_player(p, root);
 }

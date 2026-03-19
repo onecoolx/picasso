@@ -92,6 +92,35 @@ static INLINE void _anim_state_set_transform(psx_svg_anim_state* s, const psx_sv
     dst->f = f;
 }
 
+// Compose (multiply) a new transform onto an existing override for the same target.
+// If no existing override, behaves like set. Result = existing * new.
+static INLINE void _anim_state_compose_transform(psx_svg_anim_state* s, const psx_svg_node* target,
+                                                  float na, float nb, float nc, float nd, float ne, float nf)
+{
+    if (!s || !target) {
+        return;
+    }
+
+    uint32_t n = psx_array_size(&s->transforms);
+    for (uint32_t i = 0; i < n; i++) {
+        psx_svg_anim_transform_item* it = psx_array_get(&s->transforms, i, psx_svg_anim_transform_item);
+        if (it && it->target == target) {
+            // Matrix multiply: result = existing * new
+            float oa = it->a, ob = it->b, oc = it->c, od = it->d, oe = it->e, of_ = it->f;
+            it->a = oa * na + oc * nb;
+            it->b = ob * na + od * nb;
+            it->c = oa * nc + oc * nd;
+            it->d = ob * nc + od * nd;
+            it->e = oa * ne + oc * nf + oe;
+            it->f = ob * ne + od * nf + of_;
+            return;
+        }
+    }
+
+    // No existing override — just set it.
+    _anim_state_set_transform(s, target, na, nb, nc, nd, ne, nf);
+}
+
 static INLINE const psx_svg_anim_transform_item* _anim_state_find_transform(const psx_svg_anim_state* s, const psx_svg_node* target)
 {
     if (!s || !target) {
@@ -191,7 +220,7 @@ static INLINE void _anim_state_set_float(psx_svg_anim_state* s, const psx_svg_no
     for (uint32_t i = 0; i < n; i++) {
         psx_svg_anim_override_item* it = psx_array_get(&s->overrides, i, psx_svg_anim_override_item);
         if (it->target == target && it->attr == attr) {
-            it->fval = v;
+            it->u.fval = v;
             return;
         }
     }
@@ -199,7 +228,27 @@ static INLINE void _anim_state_set_float(psx_svg_anim_state* s, const psx_svg_no
     psx_svg_anim_override_item* dst = psx_array_get_last(&s->overrides, psx_svg_anim_override_item);
     dst->target = target;
     dst->attr = attr;
-    dst->fval = v;
+    dst->u.fval = v;
+}
+
+static INLINE void _anim_state_set_int32(psx_svg_anim_state* s, const psx_svg_node* target, psx_svg_attr_type attr, int32_t v)
+{
+    if (!s || !target || attr == SVG_ATTR_INVALID) {
+        return;
+    }
+    uint32_t n = psx_array_size(&s->overrides);
+    for (uint32_t i = 0; i < n; i++) {
+        psx_svg_anim_override_item* it = psx_array_get(&s->overrides, i, psx_svg_anim_override_item);
+        if (it->target == target && it->attr == attr) {
+            it->u.ival = v;
+            return;
+        }
+    }
+    psx_array_append(&s->overrides, NULL);
+    psx_svg_anim_override_item* dst = psx_array_get_last(&s->overrides, psx_svg_anim_override_item);
+    dst->target = target;
+    dst->attr = attr;
+    dst->u.ival = v;
 }
 
 static INLINE const psx_svg_anim_override_item* _anim_state_find(const psx_svg_anim_state* s, const psx_svg_node* target, psx_svg_attr_type attr)
@@ -658,6 +707,27 @@ static INLINE void _anim_find_segment(const psx_svg_attr_values_list* vlist,
     *out_t1 = seg_t1;
 }
 
+// Linearly interpolate two packed RGB uint32 colors, channel by channel.
+// Returns the result as packed uint32.
+static INLINE uint32_t _anim_lerp_color(uint32_t c0, uint32_t c1, float t)
+{
+    float r0 = (float)((c0 >> 16) & 0xFF);
+    float g0 = (float)((c0 >> 8) & 0xFF);
+    float b0 = (float)(c0 & 0xFF);
+    float r1 = (float)((c1 >> 16) & 0xFF);
+    float g1 = (float)((c1 >> 8) & 0xFF);
+    float b1 = (float)(c1 & 0xFF);
+
+    int ri = (int)(_anim_lerp(r0, r1, t) + 0.5f);
+    int gi = (int)(_anim_lerp(g0, g1, t) + 0.5f);
+    int bi = (int)(_anim_lerp(b0, b1, t) + 0.5f);
+    if (ri < 0) { ri = 0; } if (ri > 255) { ri = 255; }
+    if (gi < 0) { gi = 0; } if (gi > 255) { gi = 255; }
+    if (bi < 0) { bi = 0; } if (bi > 255) { bi = 255; }
+
+    return ((uint32_t)ri << 16) | ((uint32_t)gi << 8) | (uint32_t)bi;
+}
+
 static INLINE bool _anim_eval_simple(const psx_svg_anim_item* it, float doc_t, float* out_v, bool* out_hold)
 {
     if (!it || !out_v || !out_hold) {
@@ -675,6 +745,79 @@ static INLINE bool _anim_eval_simple(const psx_svg_anim_item* it, float doc_t, f
     }
 
     const psx_svg_attr* avals = _find_attr(it->anim_node, SVG_ATTR_VALUES);
+
+    // animateColor: packed uint32 in float bits.
+    // Must be handled before the generic float values path.
+    if (it->tag == SVG_TAG_ANIMATE_COLOR && it->target_attr == SVG_ATTR_FILL) {
+        uint32_t calc_mode = SVG_ANIMATION_CALC_MODE_LINEAR;
+        const psx_svg_attr* acm = _find_attr(it->anim_node, SVG_ATTR_CALC_MODE);
+        if (acm && acm->val_type == SVG_ATTR_VALUE_DATA) {
+            calc_mode = (uint32_t)acm->value.ival;
+        }
+
+        if (avals && avals->val_type == SVG_ATTR_VALUE_PTR && avals->value.val) {
+            const psx_svg_attr_values_list* vlist = (const psx_svg_attr_values_list*)avals->value.val;
+            const uint32_t* vals = (vlist->length > 0) ? (const uint32_t*)&vlist->data[0] : NULL;
+            if (vals && vlist->length >= 1) {
+                if (vlist->length == 1 || calc_mode == SVG_ANIMATION_CALC_MODE_DISCRETE) {
+                    uint32_t idx = 0;
+                    if (t >= 1.0f) {
+                        idx = vlist->length - 1;
+                    } else {
+                        float step = 1.0f / (float)vlist->length;
+                        idx = (uint32_t)(t / step);
+                        if (idx >= vlist->length) {
+                            idx = vlist->length - 1;
+                        }
+                    }
+                    *out_v = _u32_to_f32_bits(vals[idx]);
+                } else {
+                    const psx_svg_attr* akt = _find_attr(it->anim_node, SVG_ATTR_KEY_TIMES);
+                    const float* kts = NULL;
+                    uint32_t kt_len = 0;
+                    if (akt && akt->val_type == SVG_ATTR_VALUE_PTR && akt->value.val) {
+                        const psx_svg_attr_values_list* ktlist = (const psx_svg_attr_values_list*)akt->value.val;
+                        kt_len = ktlist->length;
+                        if (kt_len >= 2) {
+                            kts = (const float*)&ktlist->data[0];
+                        }
+                    }
+
+                    uint32_t seg = 0;
+                    float seg_t0 = 0.0f;
+                    float seg_t1 = 1.0f;
+                    _anim_find_segment(vlist, kts, kt_len, t, &seg, &seg_t0, &seg_t1);
+
+                    float u = 0.0f;
+                    if (seg_t1 > seg_t0) {
+                        u = (t - seg_t0) / (seg_t1 - seg_t0);
+                    }
+                    u = _anim_clampf(u, 0.0f, 1.0f);
+
+                    if (seg >= vlist->length - 1) {
+                        seg = vlist->length - 2;
+                    }
+                    *out_v = _u32_to_f32_bits(_anim_lerp_color(vals[seg], vals[seg + 1], u));
+                }
+                return true;
+            }
+        }
+
+        const psx_svg_attr* afrom_c = _find_attr(it->anim_node, SVG_ATTR_FROM);
+        const psx_svg_attr* ato_c = _find_attr(it->anim_node, SVG_ATTR_TO);
+        if (!afrom_c || !ato_c) {
+            return false;
+        }
+        uint32_t c0 = (uint32_t)afrom_c->value.uval;
+        uint32_t c1 = (uint32_t)ato_c->value.uval;
+        if (calc_mode == SVG_ANIMATION_CALC_MODE_DISCRETE) {
+            *out_v = _u32_to_f32_bits((t < 0.5f) ? c0 : c1);
+        } else {
+            *out_v = _u32_to_f32_bits(_anim_lerp_color(c0, c1, t));
+        }
+        return true;
+    }
+
     if (avals && avals->val_type == SVG_ATTR_VALUE_PTR && avals->value.val) {
         const psx_svg_attr_values_list* vlist = (const psx_svg_attr_values_list*)avals->value.val;
         if (vlist->length >= 1) {
@@ -781,30 +924,6 @@ static INLINE bool _anim_eval_simple(const psx_svg_anim_item* it, float doc_t, f
     const psx_svg_attr* ato = _find_attr(it->anim_node, SVG_ATTR_TO);
     if (!afrom || !ato) {
         return false;
-    }
-
-    // animateColor: packed uint32 in float bits, discrete only.
-    if (it->tag == SVG_TAG_ANIMATE_COLOR && it->target_attr == SVG_ATTR_FILL) {
-        const psx_svg_attr* av = _find_attr(it->anim_node, SVG_ATTR_VALUES);
-        if (av && av->val_type == SVG_ATTR_VALUE_PTR && av->value.val) {
-            const psx_svg_attr_values_list* vlist = (const psx_svg_attr_values_list*)av->value.val;
-            const uint32_t* vals = (vlist->length > 0) ? (const uint32_t*)&vlist->data[0] : NULL;
-            if (vals && vlist->length >= 1) {
-                uint32_t idx = 0;
-                if (t >= 1.0f) {
-                    idx = vlist->length - 1;
-                } else if (vlist->length >= 2 && t >= 0.5f) {
-                    idx = 1;
-                }
-                *out_v = _u32_to_f32_bits(vals[idx]);
-                return true;
-            }
-        }
-
-        uint32_t c0 = (uint32_t)afrom->value.uval;
-        uint32_t c1 = (uint32_t)ato->value.uval;
-        *out_v = _u32_to_f32_bits((t < 0.5f) ? c0 : c1);
-        return true;
     }
 
     float v0 = _attr_as_number(afrom);
@@ -1486,7 +1605,7 @@ static INLINE bool _anim_eval_transform_scale_linear(const psx_svg_anim_item* it
 
     struct _anim_transform_values_single {
         uint32_t length;
-        float data[4];
+        float data[6];
     };
 
     const struct _anim_transform_values_single* fromv = (const struct _anim_transform_values_single*)afrom->value.val;
@@ -1497,8 +1616,8 @@ static INLINE bool _anim_eval_transform_scale_linear(const psx_svg_anim_item* it
 
     float sx0 = (fromv->length >= 1) ? fromv->data[0] : 1.0f;
     float sy0 = (fromv->length >= 2) ? fromv->data[1] : sx0;
-    float sx1 = (tov->length >= 1) ? tov->data[0] : sx0;
-    float sy1 = (tov->length >= 2) ? tov->data[1] : sy0;
+    float sx1 = (tov->length >= 1) ? tov->data[0] : 1.0f;
+    float sy1 = (tov->length >= 2) ? tov->data[1] : sx1;
 
     *out_a = _anim_lerp(sx0, sx1, t);
     *out_d = _anim_lerp(sy0, sy1, t);
@@ -3066,6 +3185,12 @@ static void _collect_anims(psx_svg_player* p, const psx_svg_node* node)
                 }
             }
 
+            item.additive_mode = SVG_ANIMATION_ADDITIVE_REPLACE;
+            const psx_svg_attr* additive_attr = _find_attr(node, SVG_ATTR_ADDITIVE);
+            if (additive_attr && additive_attr->val_type == SVG_ATTR_VALUE_DATA) {
+                item.additive_mode = (uint32_t)additive_attr->value.ival;
+            }
+
             psx_array_append(&p->anims, NULL);
             psx_svg_anim_item* dst = psx_array_get_last(&p->anims, psx_svg_anim_item);
             *dst = item;
@@ -3097,7 +3222,24 @@ bool psx_svg_anim_get_float(const psx_svg_anim_state* s,
     if (!it) {
         return false;
     }
-    *out_v = it->fval;
+    *out_v = it->u.fval;
+    return true;
+}
+
+bool psx_svg_anim_get_int32(const psx_svg_anim_state* s,
+                          const psx_svg_node* target,
+                          psx_svg_attr_type attr,
+                          int32_t* out_v)
+{
+    if (!out_v) {
+        return false;
+    }
+    *out_v = 0;
+    const psx_svg_anim_override_item* it = _anim_state_find(s, target, attr);
+    if (!it) {
+        return false;
+    }
+    *out_v = it->u.ival;
     return true;
 }
 
@@ -3293,7 +3435,11 @@ void psx_svg_player_seek(psx_svg_player* p, float seconds)
         if (it->tag == SVG_TAG_ANIMATE_MOTION) {
             float a = 1, b = 0, c = 0, d = 1, e = 0, f = 0;
             if (_anim_eval_motion(it, p->time_sec, &a, &b, &c, &d, &e, &f)) {
-                _anim_state_set_transform(&p->anim_state, it->target_node, a, b, c, d, e, f);
+                if (it->additive_mode == SVG_ANIMATION_ADDITIVE_SUM) {
+                    _anim_state_compose_transform(&p->anim_state, it->target_node, a, b, c, d, e, f);
+                } else {
+                    _anim_state_set_transform(&p->anim_state, it->target_node, a, b, c, d, e, f);
+                }
             }
             continue;
         }
@@ -3301,7 +3447,11 @@ void psx_svg_player_seek(psx_svg_player* p, float seconds)
         if (it->tag == SVG_TAG_ANIMATE_TRANSFORM && it->target_attr == SVG_ATTR_TRANSFORM) {
             float a = 1, b = 0, c = 0, d = 1, e = 0, f = 0;
             if (_anim_eval_transform_dispatch(it, p->time_sec, &a, &b, &c, &d, &e, &f)) {
-                _anim_state_set_transform(&p->anim_state, it->target_node, a, b, c, d, e, f);
+                if (it->additive_mode == SVG_ANIMATION_ADDITIVE_SUM) {
+                    _anim_state_compose_transform(&p->anim_state, it->target_node, a, b, c, d, e, f);
+                } else {
+                    _anim_state_set_transform(&p->anim_state, it->target_node, a, b, c, d, e, f);
+                }
             }
             continue;
         }
@@ -3317,7 +3467,11 @@ void psx_svg_player_seek(psx_svg_player* p, float seconds)
         if (ok) {
             (void)hold;
             // For animateColor(fill), v stores packed uint32 in float bits.
-            _anim_state_set_float(&p->anim_state, it->target_node, it->target_attr, v);
+            if (it->target_attr == SVG_ATTR_VISIBILITY) {
+                _anim_state_set_int32(&p->anim_state, it->target_node, it->target_attr, (int32_t)v);
+            } else {
+                _anim_state_set_float(&p->anim_state, it->target_node, it->target_attr, v);
+            }
         }
     }
 }
@@ -3365,7 +3519,11 @@ void psx_svg_player_tick(psx_svg_player* p, float delta_seconds)
         if (it->tag == SVG_TAG_ANIMATE_MOTION) {
             float a = 1, b = 0, c = 0, d = 1, e = 0, f = 0;
             if (_anim_eval_motion(it, p->time_sec, &a, &b, &c, &d, &e, &f)) {
-                _anim_state_set_transform(&p->anim_state, it->target_node, a, b, c, d, e, f);
+                if (it->additive_mode == SVG_ANIMATION_ADDITIVE_SUM) {
+                    _anim_state_compose_transform(&p->anim_state, it->target_node, a, b, c, d, e, f);
+                } else {
+                    _anim_state_set_transform(&p->anim_state, it->target_node, a, b, c, d, e, f);
+                }
             }
             continue;
         }
@@ -3373,7 +3531,11 @@ void psx_svg_player_tick(psx_svg_player* p, float delta_seconds)
         if (it->tag == SVG_TAG_ANIMATE_TRANSFORM && it->target_attr == SVG_ATTR_TRANSFORM) {
             float a = 1, b = 0, c = 0, d = 1, e = 0, f = 0;
             if (_anim_eval_transform_dispatch(it, p->time_sec, &a, &b, &c, &d, &e, &f)) {
-                _anim_state_set_transform(&p->anim_state, it->target_node, a, b, c, d, e, f);
+                if (it->additive_mode == SVG_ANIMATION_ADDITIVE_SUM) {
+                    _anim_state_compose_transform(&p->anim_state, it->target_node, a, b, c, d, e, f);
+                } else {
+                    _anim_state_set_transform(&p->anim_state, it->target_node, a, b, c, d, e, f);
+                }
             }
             continue;
         }
@@ -3388,7 +3550,11 @@ void psx_svg_player_tick(psx_svg_player* p, float delta_seconds)
         }
         if (ok) {
             (void)hold;
-            _anim_state_set_float(&p->anim_state, it->target_node, it->target_attr, v);
+            if (it->target_attr == SVG_ATTR_VISIBILITY) {
+                _anim_state_set_int32(&p->anim_state, it->target_node, it->target_attr, (int32_t)v);
+            } else {
+                _anim_state_set_float(&p->anim_state, it->target_node, it->target_attr, v);
+            }
         }
     }
 }
@@ -3510,7 +3676,11 @@ void psx_svg_player_trigger(psx_svg_player* p, const char* target_id, const char
         if (it->tag == SVG_TAG_ANIMATE_MOTION) {
             float a = 1, b = 0, c = 0, d = 1, e = 0, f = 0;
             if (_anim_eval_motion(it, p->time_sec, &a, &b, &c, &d, &e, &f)) {
-                _anim_state_set_transform(&p->anim_state, it->target_node, a, b, c, d, e, f);
+                if (it->additive_mode == SVG_ANIMATION_ADDITIVE_SUM) {
+                    _anim_state_compose_transform(&p->anim_state, it->target_node, a, b, c, d, e, f);
+                } else {
+                    _anim_state_set_transform(&p->anim_state, it->target_node, a, b, c, d, e, f);
+                }
             }
             continue;
         }
@@ -3518,7 +3688,11 @@ void psx_svg_player_trigger(psx_svg_player* p, const char* target_id, const char
         if (it->tag == SVG_TAG_ANIMATE_TRANSFORM && it->target_attr == SVG_ATTR_TRANSFORM) {
             float a = 1, b = 0, c = 0, d = 1, e = 0, f = 0;
             if (_anim_eval_transform_dispatch(it, p->time_sec, &a, &b, &c, &d, &e, &f)) {
-                _anim_state_set_transform(&p->anim_state, it->target_node, a, b, c, d, e, f);
+                if (it->additive_mode == SVG_ANIMATION_ADDITIVE_SUM) {
+                    _anim_state_compose_transform(&p->anim_state, it->target_node, a, b, c, d, e, f);
+                } else {
+                    _anim_state_set_transform(&p->anim_state, it->target_node, a, b, c, d, e, f);
+                }
             }
             continue;
         }
@@ -3527,11 +3701,19 @@ void psx_svg_player_trigger(psx_svg_player* p, const char* target_id, const char
         bool hold = false;
         if (it->tag == SVG_TAG_SET) {
             if (_anim_eval_set(it, p->time_sec, &v, &hold)) {
-                _anim_state_set_float(&p->anim_state, it->target_node, it->target_attr, v);
+                if (it->target_attr == SVG_ATTR_VISIBILITY) {
+                    _anim_state_set_int32(&p->anim_state, it->target_node, it->target_attr, (int32_t)v);
+                } else {
+                    _anim_state_set_float(&p->anim_state, it->target_node, it->target_attr, v);
+                }
             }
         } else {
             if (_anim_eval_simple(it, p->time_sec, &v, &hold)) {
-                _anim_state_set_float(&p->anim_state, it->target_node, it->target_attr, v);
+                if (it->target_attr == SVG_ATTR_VISIBILITY) {
+                    _anim_state_set_int32(&p->anim_state, it->target_node, it->target_attr, (int32_t)v);
+                } else {
+                    _anim_state_set_float(&p->anim_state, it->target_node, it->target_attr, v);
+                }
             }
         }
     }
