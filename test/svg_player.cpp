@@ -115,7 +115,7 @@ void init_context(ps_context* gc, ps_canvas* cs, unsigned char* buf)
         }
     }
 
-    psx_svg_player_set_loop(player, true);
+    psx_svg_player_set_loop(player, false);
     psx_svg_player_play(player);
 
     last_time = get_time();

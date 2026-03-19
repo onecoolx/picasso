@@ -404,6 +404,7 @@ public:
         , m_global_matrix(NULL)
         , m_render_matrix(NULL)
         , m_node(node)
+        , m_cur_anim_state(NULL)
     {
         m_tag = node->type();
         m_matrix = ps_matrix_create();
@@ -422,6 +423,7 @@ public:
     virtual void set_attr(const psx_svg_attr* attr, _svg_list_builder_state* state);
     virtual void set_anim_state(const psx_svg_anim_state* anim_state)
     {
+        m_cur_anim_state = anim_state;
         if (!anim_state || !m_draw_attrs) { return; }
         float v = 0.0f;
         if (psx_svg_anim_get_float(anim_state, m_node, SVG_ATTR_STROKE_OPACITY, &v)) {
@@ -597,6 +599,7 @@ protected:
     ps_matrix* m_global_matrix;
     ps_matrix* m_render_matrix;
     const psx_svg_node* m_node;
+    const psx_svg_anim_state* m_cur_anim_state;
 };
 
 void render_obj_base::set_attr(const psx_svg_attr* attr, _svg_list_builder_state* state)
@@ -1365,10 +1368,43 @@ public:
             render_obj_base* item = *(psx_array_get(&m_items, i, render_obj_base*));
 
             if (item->has_render_type(RENDER_IN_GROUP)) {
+                // Propagate animation state to group children.
+                if (m_cur_anim_state) {
+                    item->set_anim_state(m_cur_anim_state);
+
+                    // Check visibility override — skip hidden children.
+                    if (item->node()) {
+                        int32_t vis = 0;
+                        if (psx_svg_anim_get_int32(m_cur_anim_state, item->node(), SVG_ATTR_VISIBILITY, &vis)) {
+                            if (vis == 0) {
+                                continue;
+                            }
+                        }
+                    }
+                }
+
+                // Get per-child animated transform, compose with group matrix.
+                const ps_matrix* child_anim_mtx = NULL;
+                if (m_cur_anim_state && item->node()) {
+                    child_anim_mtx = psx_svg_anim_get_transform(m_cur_anim_state, item->node());
+                }
+
+                ps_matrix* child_mtx = mtx;
+                ps_matrix* composed = NULL;
+                if (child_anim_mtx) {
+                    composed = ps_matrix_create_copy(mtx);
+                    ps_matrix_multiply(composed, child_anim_mtx, composed);
+                    child_mtx = composed;
+                }
+
                 ps_save(ctx);
                 item->prepare(ctx);
-                item->render(ctx, mtx);
+                item->render(ctx, child_mtx);
                 ps_restore(ctx);
+
+                if (composed) {
+                    ps_matrix_unref(composed);
+                }
             }
         }
 
