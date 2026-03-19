@@ -674,3 +674,119 @@ TEST_F(SVGRenderTest, VisibilityHidden_SkipsRendering)
     ps_canvas_unref(cvs);
     free(buf);
 }
+
+TEST_F(SVGRenderTest, StaticVisibilityHidden_SkipsRendering)
+{
+    // A rect with static visibility="hidden" should NOT be drawn,
+    // even without any animation override.
+    const char* svg =
+        "<svg xmlns='http://www.w3.org/2000/svg' version='1.2' baseProfile='tiny'"
+        "     width='200' height='200'>"
+        "  <rect x='10' y='10' width='80' height='80' fill='red'"
+        "        visibility='hidden'/>"
+        "</svg>";
+
+    const int W = 200;
+    const int H = 200;
+    uint8_t* buf = (uint8_t*)calloc(W * 4, H);
+    ASSERT_TRUE(buf != NULL);
+
+    ps_canvas* cvs = ps_canvas_create_with_data(buf, COLOR_FORMAT_RGBA, W, H, W * 4);
+    ASSERT_TRUE(cvs != NULL);
+    ps_context* ctx = ps_context_create(cvs, NULL);
+    ASSERT_TRUE(ctx != NULL);
+
+    psx_svg_node* svg_root = psx_svg_load_data(svg, (uint32_t)strlen(svg));
+    ASSERT_TRUE(svg_root != NULL);
+
+    // Draw without player (static render) — rect should be hidden.
+    psx_svg_render_list* render = psx_svg_render_list_create(svg_root);
+    ASSERT_TRUE(render != NULL);
+
+    memset(buf, 0xFF, W * H * 4);  // white background
+    psx_svg_render_list_draw(ctx, render);
+
+    {
+        int px = 50;
+        int py = 50;
+        int idx = (py * W + px) * 4;
+        // Should remain white — rect is hidden.
+        EXPECT_EQ(0xFF, buf[idx + 0]) << "R should be white (hidden rect)";
+        EXPECT_EQ(0xFF, buf[idx + 1]) << "G should be white (hidden rect)";
+        EXPECT_EQ(0xFF, buf[idx + 2]) << "B should be white (hidden rect)";
+    }
+
+    psx_svg_render_list_destroy(render);
+    psx_svg_node_destroy(svg_root);
+    ps_context_unref(ctx);
+    ps_canvas_unref(cvs);
+    free(buf);
+}
+
+TEST_F(SVGRenderTest, StaticVisibilityHidden_SetToVisible_ShowsRect)
+{
+    // A rect with static visibility="hidden" that becomes visible via <set>.
+    // Before begin: hidden (white). During active: visible (red).
+    const char* svg =
+        "<svg xmlns='http://www.w3.org/2000/svg' version='1.2' baseProfile='tiny'"
+        "     width='200' height='200'>"
+        "  <rect xml:id='r1' x='10' y='10' width='80' height='80' fill='red'"
+        "        visibility='hidden'>"
+        "    <set attributeName='visibility' to='visible'"
+        "         begin='3s' dur='6s' fill='freeze'/>"
+        "  </rect>"
+        "</svg>";
+
+    const int W = 200;
+    const int H = 200;
+    uint8_t* buf = (uint8_t*)calloc(W * 4, H);
+    ASSERT_TRUE(buf != NULL);
+
+    ps_canvas* cvs = ps_canvas_create_with_data(buf, COLOR_FORMAT_RGBA, W, H, W * 4);
+    ASSERT_TRUE(cvs != NULL);
+    ps_context* ctx = ps_context_create(cvs, NULL);
+    ASSERT_TRUE(ctx != NULL);
+
+    psx_svg_node* svg_root = psx_svg_load_data(svg, (uint32_t)strlen(svg));
+    ASSERT_TRUE(svg_root != NULL);
+
+    psx_result err = S_OK;
+    psx_svg_player* player = psx_svg_player_create(svg_root, &err);
+    ASSERT_TRUE(player != NULL);
+
+    // --- t=1s: before <set> begin, rect is hidden --- white pixel
+    memset(buf, 0xFF, W * H * 4);
+    psx_svg_player_seek(player, 1.0f);
+    psx_svg_player_tick(player, 0.0f);
+    psx_svg_player_draw(player, ctx);
+
+    {
+        int px = 50;
+        int py = 50;
+        int idx = (py * W + px) * 4;
+        EXPECT_EQ(0xFF, buf[idx + 0]) << "R at t=1s should be white (hidden)";
+        EXPECT_EQ(0xFF, buf[idx + 1]) << "G at t=1s should be white (hidden)";
+        EXPECT_EQ(0xFF, buf[idx + 2]) << "B at t=1s should be white (hidden)";
+    }
+
+    // --- t=5s: during <set> active, visibility=visible --- red pixel
+    memset(buf, 0xFF, W * H * 4);
+    psx_svg_player_seek(player, 5.0f);
+    psx_svg_player_tick(player, 0.0f);
+    psx_svg_player_draw(player, ctx);
+
+    {
+        int px = 50;
+        int py = 50;
+        int idx = (py * W + px) * 4;
+        EXPECT_GT(buf[idx + 0], 200) << "R at t=5s should be red (visible)";
+        EXPECT_LT(buf[idx + 1], 50) << "G at t=5s should be near 0 (visible)";
+        EXPECT_LT(buf[idx + 2], 50) << "B at t=5s should be near 0 (visible)";
+    }
+
+    psx_svg_player_destroy(player);
+    psx_svg_node_destroy(svg_root);
+    ps_context_unref(ctx);
+    ps_canvas_unref(cvs);
+    free(buf);
+}

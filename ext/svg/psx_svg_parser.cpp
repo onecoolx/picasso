@@ -1111,6 +1111,14 @@ static INLINE void _process_paint_attrs(psx_svg_node* node, psx_svg_attr_type ty
         float val = 0.0f;
         val_start = _parse_number(val_start, val_end, &val);
         attr->value.fval = val;
+    } else if (type == SVG_ATTR_VISIBILITY) {
+        int32_t val = 1; // default: visible
+        if (len >= 6 && strncmp(val_start, "hidden", 6) == 0) {
+            val = 0;
+        } else if (len >= 8 && strncmp(val_start, "collapse", 8) == 0) {
+            val = 0;
+        }
+        attr->value.ival = val;
     }
 }
 
@@ -2142,9 +2150,11 @@ static INLINE void _process_attrs_tag(psx_svg_parser* parser, psx_svg_node* node
             case SVG_ATTR_TRANSFORM_TYPE:
                 _process_animation_attr_options(node, type, tok_attr->value_start, tok_attr->value_end);
                 break;
+            case SVG_ATTR_VISIBILITY:
+                _process_paint_attrs(node, type, tok_attr->value_start, tok_attr->value_end);
+                break;
             case SVG_ATTR_ATTRIBUTE_TYPE:
             case SVG_ATTR_DISPLAY:
-            case SVG_ATTR_VISIBILITY:
             case SVG_ATTR_TEXT_ANCHOR:
             default:
                 // not support yet

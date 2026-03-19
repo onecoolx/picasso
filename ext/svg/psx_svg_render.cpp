@@ -392,6 +392,10 @@ enum {
     RENDER_IN_TEXT = 4,
 };
 
+enum {
+    RENDER_VISIBILITY_HIDDEN = (1 << 16),
+};
+
 class render_obj_base : public psx_svg_render_obj
 {
 public:
@@ -576,6 +580,7 @@ public:
 
     void set_head(render_obj_base* head) { m_head = head; }
     const psx_svg_node* node(void) const { return m_node; }
+    bool is_hidden(void) const { return (m_render_types & RENDER_VISIBILITY_HIDDEN) != 0; }
 protected:
     void process_animation_attrs(ps_context* ctx)
     {
@@ -622,6 +627,14 @@ void render_obj_base::set_attr(const psx_svg_attr* attr, _svg_list_builder_state
             return;
         }
         set_matrix((psx_svg_matrix*)attr->value.val);
+    } else if (attr->attr_id == SVG_ATTR_VISIBILITY) {
+        if (attr->class_type == SVG_ATTR_VALUE_INITIAL) {
+            if (attr->value.ival == 0) {
+                add_render_type(RENDER_VISIBILITY_HIDDEN);
+            } else {
+                clear_render_type(RENDER_VISIBILITY_HIDDEN);
+            }
+        }
     } else {
         set_draw_attr(state, attr->attr_id, attr);
     }
@@ -1434,14 +1447,20 @@ public:
             render_obj_base* item = *(psx_array_get(&m_items, i, render_obj_base*));
 
             if (item->has_render_type(RENDER_IN_GROUP)) {
-                // Visibility check for group children.
+                // Visibility check for group children: animation override takes priority.
+                bool skip = false;
                 if (m_cur_anim_state && item->node()) {
                     int32_t vis = 0;
                     if (psx_svg_anim_get_int32(m_cur_anim_state, item->node(), SVG_ATTR_VISIBILITY, &vis)) {
-                        if (vis == 0) {
-                            continue;
-                        }
+                        skip = (vis == 0);
+                    } else {
+                        skip = item->is_hidden();
                     }
+                } else {
+                    skip = item->is_hidden();
+                }
+                if (skip) {
+                    continue;
                 }
 
                 // Compose per-child animated transform with group matrix.
@@ -2604,15 +2623,21 @@ bool psx_svg_render_list_draw_anim(ps_context* ctx, const psx_svg_render_list* r
 
     while (head) {
         if (head->render_types() == RENDER_NORMAL) {
-            // Check visibility override — skip drawing if hidden (0).
+            // Check visibility: animation override takes priority over static attribute.
+            bool skip = false;
             if (anim_state && head->node()) {
                 int32_t vis = 0;
                 if (psx_svg_anim_get_int32(anim_state, head->node(), SVG_ATTR_VISIBILITY, &vis)) {
-                    if (vis == 0) {
-                        head = head->next();
-                        continue;
-                    }
+                    skip = (vis == 0);
+                } else {
+                    skip = head->is_hidden();
                 }
+            } else {
+                skip = head->is_hidden();
+            }
+            if (skip) {
+                head = head->next();
+                continue;
             }
 
             ps_save(ctx);
