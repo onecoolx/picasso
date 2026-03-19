@@ -2276,12 +2276,44 @@ static INLINE void init_contents(svg_render_content* content, const psx_svg_node
     uint32_t len;
     const char* str = node->content(&len);
     if (str) {
+        // SVG xml:space="default" normalization:
+        // 1. Replace \n, \r, \t with space
+        // 2. Collapse consecutive spaces into one
+        // 3. Strip leading and trailing spaces
         uint32_t* letters = (uint32_t*)state->list->alloc(len * sizeof(uint32_t));
         uint32_t offset = 0;
-        for (uint32_t i = 0; i < len; i++) {
-            letters[i] = utf8_text_encode_next(str, len, &offset);
+        uint32_t count = 0;
+        bool prev_space = true; // treat start as "after space" to strip leading
+
+        while (offset < len) {
+            uint32_t cp = utf8_text_encode_next(str, len, &offset);
+            if (cp == 0) {
+                break;
+            }
+            // Replace control whitespace with space
+            if (cp == '\n' || cp == '\r' || cp == '\t') {
+                cp = ' ';
+            }
+            // Collapse consecutive spaces
+            if (cp == ' ') {
+                if (prev_space) {
+                    continue;
+                }
+                prev_space = true;
+            } else {
+                prev_space = false;
+            }
+            letters[count++] = cp;
         }
-        content->set_contents(letters, len);
+
+        // Strip trailing space
+        if (count > 0 && letters[count - 1] == ' ') {
+            count--;
+        }
+
+        if (count > 0) {
+            content->set_contents(letters, count);
+        }
     }
 }
 

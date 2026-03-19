@@ -106,8 +106,9 @@ static bool psx_svg_player_debug_get_transform_override(const psx_svg_player* p,
         return false;
     }
 
-    const psx_svg_anim_transform_item* it = psx_svg_anim_state_find_transform(&p->anim_state, target);
-    if (!it) {
+    // Use the public API which composes motion + animateTransform layers.
+    const ps_matrix* mtx = psx_svg_anim_get_transform(&p->anim_state, target);
+    if (!mtx) {
         if (a) { *a = 1.0f; }
         if (b) { *b = 0.0f; }
         if (c) { *c = 0.0f; }
@@ -117,12 +118,51 @@ static bool psx_svg_player_debug_get_transform_override(const psx_svg_player* p,
         return false;
     }
 
-    if (a) { *a = it->a; }
-    if (b) { *b = it->b; }
-    if (c) { *c = it->c; }
-    if (d) { *d = it->d; }
-    if (e) { *e = it->e; }
-    if (f) { *f = it->f; }
+    // ps_matrix stores: sx, shy, shx, sy, tx, ty
+    // which maps to SVG matrix(a,b,c,d,e,f) as: a=sx, b=shy, c=shx, d=sy, e=tx, f=ty
+    // ps_matrix_get_value is not available; read from the anim_state directly.
+    // Since psx_svg_anim_get_transform already composed into scratch_matrix,
+    // and the scratch_matrix was just set via ps_matrix_init(sx,shy,shx,sy,tx,ty),
+    // we can read the composed result from the two layers manually.
+    const psx_svg_anim_transform_item* at = psx_svg_anim_state_find_transform(&p->anim_state, target);
+    // Also check motion layer
+    uint32_t mn = psx_array_size((psx_array*)&p->anim_state.motion_transforms);
+    const psx_svg_anim_transform_item* mt = NULL;
+    for (uint32_t i = 0; i < mn; i++) {
+        const psx_svg_anim_transform_item* it =
+            psx_array_get((psx_array*)&p->anim_state.motion_transforms, i, psx_svg_anim_transform_item);
+        if (it && it->target == target) {
+            mt = it;
+            break;
+        }
+    }
+
+    if (mt && at) {
+        // Compose: motion * animateTransform
+        float ma = mt->a, mb = mt->b, mc = mt->c, md = mt->d, me = mt->e, mf = mt->f;
+        float aa = at->a, ab = at->b, ac = at->c, ad = at->d, ae = at->e, af = at->f;
+        if (a) { *a = ma * aa + mc * ab; }
+        if (b) { *b = mb * aa + md * ab; }
+        if (c) { *c = ma * ac + mc * ad; }
+        if (d) { *d = mb * ac + md * ad; }
+        if (e) { *e = ma * ae + mc * af + me; }
+        if (f) { *f = mb * ae + md * af + mf; }
+    } else if (mt) {
+        if (a) { *a = mt->a; }
+        if (b) { *b = mt->b; }
+        if (c) { *c = mt->c; }
+        if (d) { *d = mt->d; }
+        if (e) { *e = mt->e; }
+        if (f) { *f = mt->f; }
+    } else if (at) {
+        if (a) { *a = at->a; }
+        if (b) { *b = at->b; }
+        if (c) { *c = at->c; }
+        if (d) { *d = at->d; }
+        if (e) { *e = at->e; }
+        if (f) { *f = at->f; }
+    }
+
     return true;
 }
 
@@ -6843,6 +6883,165 @@ TEST_F(SVGPlayerTest, AnimateRectX_WithViewBox_OverrideProduced)
         EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
         EXPECT_NEAR(400.0f, v, 0.01f);
     }
+
+    destroy_player(p, root);
+}
+
+// ── animateMotion + animateTransform independent layers ──
+
+// Helper to read motion transform override separately.
+static bool psx_svg_player_debug_get_motion_transform_override(const psx_svg_player* p,
+                                                               const psx_svg_node* target,
+                                                               float* a, float* b, float* c,
+                                                               float* d, float* e, float* f)
+{
+    if (!p || !target) {
+        if (a) { *a = 1.0f; } if (b) { *b = 0.0f; }
+        if (c) { *c = 0.0f; } if (d) { *d = 1.0f; }
+        if (e) { *e = 0.0f; } if (f) { *f = 0.0f; }
+        return false;
+    }
+
+    uint32_t n = psx_array_size((psx_array*)&p->anim_state.motion_transforms);
+    for (uint32_t i = 0; i < n; i++) {
+        const psx_svg_anim_transform_item* it =
+            psx_array_get((psx_array*)&p->anim_state.motion_transforms, i, psx_svg_anim_transform_item);
+        if (it && it->target == target) {
+            if (a) { *a = it->a; } if (b) { *b = it->b; }
+            if (c) { *c = it->c; } if (d) { *d = it->d; }
+            if (e) { *e = it->e; } if (f) { *f = it->f; }
+            return true;
+        }
+    }
+
+    if (a) { *a = 1.0f; } if (b) { *b = 0.0f; }
+    if (c) { *c = 0.0f; } if (d) { *d = 1.0f; }
+    if (e) { *e = 0.0f; } if (f) { *f = 0.0f; }
+    return false;
+}
+
+TEST_F(SVGPlayerTest, AnimateMotion_Plus_AnimateTransform_IndependentLayers)
+{
+    // SVG spec: animateMotion and animateTransform are independent transform layers.
+    // animateMotion produces a "supplemental transform" that is NOT overwritten
+    // by animateTransform replace mode.
+    // Final transform = motion_transform * animateTransform_result
+    //
+    // This test: animateMotion translates (100,100), animateTransform rotate(replace) from -30 to 0.
+    // At t=6s (end, freeze): motion=(100,100), rotate=0 => identity rotation.
+    // Combined transform should have e=100, f=100 (motion translation preserved).
+    const char* svg =
+        "<svg xmlns='http://www.w3.org/2000/svg' version='1.2' baseProfile='tiny'"
+        "     width='800' height='300'>"
+        "  <text xml:id='t1' x='0' y='0' font-size='20'>"
+        "    Test"
+        "    <animateMotion path='M 0 0 L 100 100'"
+        "         begin='0s' dur='6s' fill='freeze'/>"
+        "    <animateTransform attributeName='transform' type='rotate'"
+        "         from='-30' to='0' begin='0s' dur='6s' fill='freeze'/>"
+        "  </text>"
+        "</svg>";
+
+    psx_svg_node* root = NULL;
+    psx_result r = S_OK;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_TRUE(p != NULL);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "t1");
+    EXPECT_TRUE(n != NULL);
+
+    // At t=6s (freeze): motion at end of path = (100,100), rotate=0 (identity)
+    psx_svg_player_seek(p, 6.0f);
+    psx_svg_player_tick(p, 0.0f);
+
+    // The combined transform should include the motion translation.
+    float a, b, c, d, e, f;
+    bool got = psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f);
+    EXPECT_TRUE(got) << "Transform override should exist";
+
+    // rotate(0) is identity: a=1, b=0, c=0, d=1
+    // motion translate: e=100, f=100
+    // combined = motion * rotate(0) = translate(100,100)
+    EXPECT_NEAR(1.0f, a, 0.001f);
+    EXPECT_NEAR(0.0f, b, 0.001f);
+    EXPECT_NEAR(0.0f, c, 0.001f);
+    EXPECT_NEAR(1.0f, d, 0.001f);
+    EXPECT_NEAR(100.0f, e, 0.5f);
+    EXPECT_NEAR(100.0f, f, 0.5f);
+
+    destroy_player(p, root);
+}
+
+TEST_F(SVGPlayerTest, AnimateMotion_Plus_AnimateTransform_Sum_ThreeLayers)
+{
+    // Mirrors c.svg scenario: animateMotion + rotate(replace) + scale(sum).
+    // At t=6s (freeze, midpoint=3s begin, dur=6s => end=9s, so at 6s t_local=0.5):
+    //   motion: path M 0 0 L 100 100, at t_local=0.5 => (50,50)
+    //   rotate: from=-30 to=0, at t_local=0.5 => -15 degrees
+    //   scale(sum): from=1 to=3, at t_local=0.5 => 2.0
+    //
+    // animateTransform sandwich: rotate(-15) * scale(2) (rotate is replace, scale is sum)
+    // final = motion_translate(50,50) * rotate(-15) * scale(2)
+    const char* svg =
+        "<svg xmlns='http://www.w3.org/2000/svg' version='1.2' baseProfile='tiny'"
+        "     width='800' height='300'>"
+        "  <text xml:id='t1' x='0' y='0' font-size='20'>"
+        "    Test"
+        "    <animateMotion path='M 0 0 L 100 100'"
+        "         begin='0s' dur='6s' fill='freeze'/>"
+        "    <animateTransform attributeName='transform' type='rotate'"
+        "         from='-30' to='0' begin='0s' dur='6s' fill='freeze'/>"
+        "    <animateTransform attributeName='transform' type='scale'"
+        "         from='1' to='3' begin='0s' dur='6s' fill='freeze' additive='sum'/>"
+        "  </text>"
+        "</svg>";
+
+    psx_svg_node* root = NULL;
+    psx_result r = S_OK;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_TRUE(p != NULL);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "t1");
+    EXPECT_TRUE(n != NULL);
+
+    // At t=3s (midpoint of 6s dur): motion at 50%, rotate at 50%, scale at 50%
+    psx_svg_player_seek(p, 3.0f);
+    psx_svg_player_tick(p, 0.0f);
+
+    float a, b, c, d, e, f;
+    bool got = psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f);
+    EXPECT_TRUE(got) << "Transform override should exist";
+
+    // motion at t=0.5: translate(50, 50)
+    // rotate(-15): cos(-15)=0.9659, sin(-15)=-0.2588
+    // scale(2): sx=2, sy=2
+    // animateTransform result = rotate(-15) * scale(2):
+    //   ra = cos(-15)*2 = 1.9319, rb = sin(-15)*2 = -0.5176
+    //   rc = -sin(-15)*2 = 0.5176, rd = cos(-15)*2 = 1.9319
+    // final = motion * animateTransform:
+    //   a = 1*ra + 0*rb = ra, b = 0*ra + 1*rb = rb  (wait, motion is translate only)
+    //   Actually motion = [1,0,0,1,50,50], animateTransform = [ra,rb,rc,rd,0,0]
+    //   combined = motion * animateTransform:
+    //     a = 1*ra + 0*rc = ra
+    //     b = 1*rb + 0*rd = rb
+    //     c = 0*ra + 1*rc = rc
+    //     d = 0*rb + 1*rd = rd
+    //     e = 0*0 + 0*0 + 50 = 50
+    //     f = 0*0 + 0*0 + 50 = 50
+    float cos_neg15 = 0.9659f;
+    float sin_neg15 = -0.2588f;
+    float ra = cos_neg15 * 2.0f;
+    float rb = sin_neg15 * 2.0f;
+    float rc = -sin_neg15 * 2.0f;
+    float rd = cos_neg15 * 2.0f;
+
+    EXPECT_NEAR(ra, a, 0.1f);
+    EXPECT_NEAR(rb, b, 0.1f);
+    EXPECT_NEAR(rc, c, 0.1f);
+    EXPECT_NEAR(rd, d, 0.1f);
+    // Motion translation must be preserved
+    EXPECT_NEAR(50.0f, e, 1.0f);
+    EXPECT_NEAR(50.0f, f, 1.0f);
 
     destroy_player(p, root);
 }

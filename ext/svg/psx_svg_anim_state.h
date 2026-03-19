@@ -45,8 +45,9 @@ extern "C" {
 // opaque animation override state passed to renderer.
 struct psx_svg_anim_state {
     psx_array overrides;
-    psx_array transforms;
-    ps_matrix* scratch_matrix; // reused each frame; owned by this struct
+    psx_array transforms;         // animateTransform overrides
+    psx_array motion_transforms;  // animateMotion overrides (independent layer)
+    ps_matrix* scratch_matrix;    // reused each frame; owned by this struct
 };
 
 struct psx_svg_player {

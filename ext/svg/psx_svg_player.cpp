@@ -40,6 +40,7 @@ static INLINE void _anim_state_reset(psx_svg_anim_state* s)
     }
     psx_array_clear(&s->overrides);
     psx_array_clear(&s->transforms);
+    psx_array_clear(&s->motion_transforms);
 }
 
 static INLINE bool _is_supported_anim_attr(psx_svg_attr_type a)
@@ -129,6 +130,47 @@ static INLINE const psx_svg_anim_transform_item* _anim_state_find_transform(cons
     uint32_t n = psx_array_size((psx_array*)&s->transforms);
     for (uint32_t i = 0; i < n; i++) {
         const psx_svg_anim_transform_item* it = psx_array_get((psx_array*)&s->transforms, i, psx_svg_anim_transform_item);
+        if (it && it->target == target) {
+            return it;
+        }
+    }
+    return NULL;
+}
+
+// ── Motion transform layer (independent from animateTransform) ──
+
+static INLINE void _anim_state_set_motion_transform(psx_svg_anim_state* s, const psx_svg_node* target,
+                                                     float a, float b, float c, float d, float e, float f)
+{
+    if (!s || !target) {
+        return;
+    }
+
+    uint32_t n = psx_array_size(&s->motion_transforms);
+    for (uint32_t i = 0; i < n; i++) {
+        psx_svg_anim_transform_item* it = psx_array_get(&s->motion_transforms, i, psx_svg_anim_transform_item);
+        if (it && it->target == target) {
+            it->a = a; it->b = b; it->c = c;
+            it->d = d; it->e = e; it->f = f;
+            return;
+        }
+    }
+
+    psx_array_append(&s->motion_transforms, NULL);
+    psx_svg_anim_transform_item* dst = psx_array_get_last(&s->motion_transforms, psx_svg_anim_transform_item);
+    dst->target = target;
+    dst->a = a; dst->b = b; dst->c = c;
+    dst->d = d; dst->e = e; dst->f = f;
+}
+
+static INLINE const psx_svg_anim_transform_item* _anim_state_find_motion_transform(const psx_svg_anim_state* s, const psx_svg_node* target)
+{
+    if (!s || !target) {
+        return NULL;
+    }
+    uint32_t n = psx_array_size((psx_array*)&s->motion_transforms);
+    for (uint32_t i = 0; i < n; i++) {
+        const psx_svg_anim_transform_item* it = psx_array_get((psx_array*)&s->motion_transforms, i, psx_svg_anim_transform_item);
         if (it && it->target == target) {
             return it;
         }
@@ -3245,16 +3287,44 @@ bool psx_svg_anim_get_int32(const psx_svg_anim_state* s,
 
 // Returns a pointer to the internal scratch ps_matrix if a transform override
 // exists for target, NULL otherwise. The caller must NOT unref the returned pointer.
+// Per SVG spec, the final animated transform is: motion_transform * animateTransform.
+// If only one layer exists, it is returned directly.
 const ps_matrix* psx_svg_anim_get_transform(const psx_svg_anim_state* s,
                                             const psx_svg_node* target)
 {
-    const psx_svg_anim_transform_item* it = _anim_state_find_transform(s, target);
-    if (!it) {
+    const psx_svg_anim_transform_item* at = _anim_state_find_transform(s, target);
+    const psx_svg_anim_transform_item* mt = _anim_state_find_motion_transform(s, target);
+
+    if (!at && !mt) {
         return NULL;
     }
-    // Reuse the scratch matrix: init in-place with the stored SVG matrix components.
-    // ps_matrix_init(sx, shy, shx, sy, tx, ty) maps to SVG matrix(a,b,c,d,e,f).
-    ps_matrix_init(s->scratch_matrix, it->a, it->b, it->c, it->d, it->e, it->f);
+
+    if (mt && !at) {
+        // Motion only
+        ps_matrix_init(s->scratch_matrix, mt->a, mt->b, mt->c, mt->d, mt->e, mt->f);
+        return s->scratch_matrix;
+    }
+
+    if (at && !mt) {
+        // animateTransform only
+        ps_matrix_init(s->scratch_matrix, at->a, at->b, at->c, at->d, at->e, at->f);
+        return s->scratch_matrix;
+    }
+
+    // Both layers: compose motion * animateTransform
+    // M = motion, A = animateTransform
+    // Result = M * A
+    float ma = mt->a, mb = mt->b, mc = mt->c, md = mt->d, me = mt->e, mf = mt->f;
+    float aa = at->a, ab = at->b, ac = at->c, ad = at->d, ae = at->e, af = at->f;
+
+    float ra = ma * aa + mc * ab;
+    float rb = mb * aa + md * ab;
+    float rc = ma * ac + mc * ad;
+    float rd = mb * ac + md * ad;
+    float re = ma * ae + mc * af + me;
+    float rf = mb * ae + md * af + mf;
+
+    ps_matrix_init(s->scratch_matrix, ra, rb, rc, rd, re, rf);
     return s->scratch_matrix;
 }
 
@@ -3303,6 +3373,7 @@ psx_svg_player* psx_svg_player_create(const psx_svg_node* root, psx_result* out)
 
     psx_array_init(&p->anim_state.overrides, sizeof(psx_svg_anim_override_item));
     psx_array_init(&p->anim_state.transforms, sizeof(psx_svg_anim_transform_item));
+    psx_array_init(&p->anim_state.motion_transforms, sizeof(psx_svg_anim_transform_item));
     p->anim_state.scratch_matrix = ps_matrix_create();
 
     // Set anim_state pointer on all render nodes once at creation time.
@@ -3362,6 +3433,7 @@ void psx_svg_player_destroy(psx_svg_player* p)
 
     psx_array_destroy(&p->anim_state.overrides);
     psx_array_destroy(&p->anim_state.transforms);
+    psx_array_destroy(&p->anim_state.motion_transforms);
 
     if (p->anim_state.scratch_matrix) {
         ps_matrix_unref(p->anim_state.scratch_matrix);
@@ -3439,11 +3511,7 @@ void psx_svg_player_seek(psx_svg_player* p, float seconds)
         if (it->tag == SVG_TAG_ANIMATE_MOTION) {
             float a = 1, b = 0, c = 0, d = 1, e = 0, f = 0;
             if (_anim_eval_motion(it, p->time_sec, &a, &b, &c, &d, &e, &f)) {
-                if (it->additive_mode == SVG_ANIMATION_ADDITIVE_SUM) {
-                    _anim_state_compose_transform(&p->anim_state, it->target_node, a, b, c, d, e, f);
-                } else {
-                    _anim_state_set_transform(&p->anim_state, it->target_node, a, b, c, d, e, f);
-                }
+                _anim_state_set_motion_transform(&p->anim_state, it->target_node, a, b, c, d, e, f);
             }
             continue;
         }
@@ -3523,11 +3591,7 @@ void psx_svg_player_tick(psx_svg_player* p, float delta_seconds)
         if (it->tag == SVG_TAG_ANIMATE_MOTION) {
             float a = 1, b = 0, c = 0, d = 1, e = 0, f = 0;
             if (_anim_eval_motion(it, p->time_sec, &a, &b, &c, &d, &e, &f)) {
-                if (it->additive_mode == SVG_ANIMATION_ADDITIVE_SUM) {
-                    _anim_state_compose_transform(&p->anim_state, it->target_node, a, b, c, d, e, f);
-                } else {
-                    _anim_state_set_transform(&p->anim_state, it->target_node, a, b, c, d, e, f);
-                }
+                _anim_state_set_motion_transform(&p->anim_state, it->target_node, a, b, c, d, e, f);
             }
             continue;
         }
@@ -3680,11 +3744,7 @@ void psx_svg_player_trigger(psx_svg_player* p, const char* target_id, const char
         if (it->tag == SVG_TAG_ANIMATE_MOTION) {
             float a = 1, b = 0, c = 0, d = 1, e = 0, f = 0;
             if (_anim_eval_motion(it, p->time_sec, &a, &b, &c, &d, &e, &f)) {
-                if (it->additive_mode == SVG_ANIMATION_ADDITIVE_SUM) {
-                    _anim_state_compose_transform(&p->anim_state, it->target_node, a, b, c, d, e, f);
-                } else {
-                    _anim_state_set_transform(&p->anim_state, it->target_node, a, b, c, d, e, f);
-                }
+                _anim_state_set_motion_transform(&p->anim_state, it->target_node, a, b, c, d, e, f);
             }
             continue;
         }
