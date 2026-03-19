@@ -2283,7 +2283,7 @@ static INLINE void init_contents(svg_render_content* content, const psx_svg_node
         uint32_t* letters = (uint32_t*)state->list->alloc(len * sizeof(uint32_t));
         uint32_t offset = 0;
         uint32_t count = 0;
-        bool prev_space = true; // treat start as "after space" to strip leading
+        bool prev_space = false;
 
         while (offset < len) {
             uint32_t cp = utf8_text_encode_next(str, len, &offset);
@@ -2304,11 +2304,6 @@ static INLINE void init_contents(svg_render_content* content, const psx_svg_node
                 prev_space = false;
             }
             letters[count++] = cp;
-        }
-
-        // Strip trailing space
-        if (count > 0 && letters[count - 1] == ' ') {
-            count--;
         }
 
         if (count > 0) {
