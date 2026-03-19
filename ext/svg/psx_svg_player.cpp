@@ -94,7 +94,7 @@ static INLINE void _anim_state_set_transform(psx_svg_anim_state* s, const psx_sv
 }
 
 static INLINE void _anim_state_compose_transform(psx_svg_anim_state* s, const psx_svg_node* target,
-                                                  float na, float nb, float nc, float nd, float ne, float nf)
+                                                 float na, float nb, float nc, float nd, float ne, float nf)
 {
     if (!s || !target) {
         return;
@@ -134,7 +134,7 @@ static INLINE const psx_svg_anim_transform_item* _anim_state_find_transform(cons
 }
 
 static INLINE void _anim_state_set_motion_transform(psx_svg_anim_state* s, const psx_svg_node* target,
-                                                     float a, float b, float c, float d, float e, float f)
+                                                    float a, float b, float c, float d, float e, float f)
 {
     if (!s || !target) {
         return;
@@ -144,8 +144,12 @@ static INLINE void _anim_state_set_motion_transform(psx_svg_anim_state* s, const
     for (uint32_t i = 0; i < n; i++) {
         psx_svg_anim_transform_item* it = psx_array_get(&s->motion_transforms, i, psx_svg_anim_transform_item);
         if (it && it->target == target) {
-            it->a = a; it->b = b; it->c = c;
-            it->d = d; it->e = e; it->f = f;
+            it->a = a;
+            it->b = b;
+            it->c = c;
+            it->d = d;
+            it->e = e;
+            it->f = f;
             return;
         }
     }
@@ -153,8 +157,12 @@ static INLINE void _anim_state_set_motion_transform(psx_svg_anim_state* s, const
     psx_array_append(&s->motion_transforms, NULL);
     psx_svg_anim_transform_item* dst = psx_array_get_last(&s->motion_transforms, psx_svg_anim_transform_item);
     dst->target = target;
-    dst->a = a; dst->b = b; dst->c = c;
-    dst->d = d; dst->e = e; dst->f = f;
+    dst->a = a;
+    dst->b = b;
+    dst->c = c;
+    dst->d = d;
+    dst->e = e;
+    dst->f = f;
 }
 
 static INLINE const psx_svg_anim_transform_item* _anim_state_find_motion_transform(const psx_svg_anim_state* s, const psx_svg_node* target)
@@ -740,9 +748,12 @@ static INLINE uint32_t _anim_lerp_color(uint32_t c0, uint32_t c1, float t)
     int ri = (int)(_anim_lerp(r0, r1, t) + 0.5f);
     int gi = (int)(_anim_lerp(g0, g1, t) + 0.5f);
     int bi = (int)(_anim_lerp(b0, b1, t) + 0.5f);
-    if (ri < 0) { ri = 0; } if (ri > 255) { ri = 255; }
-    if (gi < 0) { gi = 0; } if (gi > 255) { gi = 255; }
-    if (bi < 0) { bi = 0; } if (bi > 255) { bi = 255; }
+    if (ri < 0) { ri = 0; }
+    if (ri > 255) { ri = 255; }
+    if (gi < 0) { gi = 0; }
+    if (gi > 255) { gi = 255; }
+    if (bi < 0) { bi = 0; }
+    if (bi > 255) { bi = 255; }
 
     return ((uint32_t)ri << 16) | ((uint32_t)gi << 8) | (uint32_t)bi;
 }
@@ -3204,9 +3215,9 @@ bool psx_svg_anim_get_float(const psx_svg_anim_state* s,
 }
 
 bool psx_svg_anim_get_int32(const psx_svg_anim_state* s,
-                          const psx_svg_node* target,
-                          psx_svg_attr_type attr,
-                          int32_t* out_v)
+                            const psx_svg_node* target,
+                            psx_svg_attr_type attr,
+                            int32_t* out_v)
 {
     if (!out_v) {
         return false;

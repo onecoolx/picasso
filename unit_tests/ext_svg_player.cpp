@@ -6606,10 +6606,10 @@ TEST_F(SVGPlayerTest, AnimateTransform_Additive_Sum_RotateThenScale)
     // Second: scale from 1 to 2 over 5s
     // At t=2.5s (midpoint): rotate=45°, scale=1.5
     // Expected combined matrix = rotate(45) * scale(1.5)
-    //   rotate(45): a=cos45, b=sin45, c=-sin45, d=cos45, e=0, f=0
-    //   scale(1.5): a=1.5, b=0, c=0, d=1.5, e=0, f=0
-    //   combined = rotate * scale:
-    //     a = cos45*1.5, b = sin45*1.5, c = -sin45*1.5, d = cos45*1.5, e=0, f=0
+    // rotate(45): a=cos45, b=sin45, c=-sin45, d=cos45, e=0, f=0
+    // scale(1.5): a=1.5, b=0, c=0, d=1.5, e=0, f=0
+    // combined = rotate * scale:
+    // a = cos45*1.5, b = sin45*1.5, c = -sin45*1.5, d = cos45*1.5, e=0, f=0
     const char* svg =
         "<svg xmlns='http://www.w3.org/2000/svg' version='1.2' baseProfile='tiny'"
         "     width='200' height='200'>"
@@ -6896,9 +6896,12 @@ static bool psx_svg_player_debug_get_motion_transform_override(const psx_svg_pla
                                                                float* d, float* e, float* f)
 {
     if (!p || !target) {
-        if (a) { *a = 1.0f; } if (b) { *b = 0.0f; }
-        if (c) { *c = 0.0f; } if (d) { *d = 1.0f; }
-        if (e) { *e = 0.0f; } if (f) { *f = 0.0f; }
+        if (a) { *a = 1.0f; }
+        if (b) { *b = 0.0f; }
+        if (c) { *c = 0.0f; }
+        if (d) { *d = 1.0f; }
+        if (e) { *e = 0.0f; }
+        if (f) { *f = 0.0f; }
         return false;
     }
 
@@ -6907,16 +6910,22 @@ static bool psx_svg_player_debug_get_motion_transform_override(const psx_svg_pla
         const psx_svg_anim_transform_item* it =
             psx_array_get((psx_array*)&p->anim_state.motion_transforms, i, psx_svg_anim_transform_item);
         if (it && it->target == target) {
-            if (a) { *a = it->a; } if (b) { *b = it->b; }
-            if (c) { *c = it->c; } if (d) { *d = it->d; }
-            if (e) { *e = it->e; } if (f) { *f = it->f; }
+            if (a) { *a = it->a; }
+            if (b) { *b = it->b; }
+            if (c) { *c = it->c; }
+            if (d) { *d = it->d; }
+            if (e) { *e = it->e; }
+            if (f) { *f = it->f; }
             return true;
         }
     }
 
-    if (a) { *a = 1.0f; } if (b) { *b = 0.0f; }
-    if (c) { *c = 0.0f; } if (d) { *d = 1.0f; }
-    if (e) { *e = 0.0f; } if (f) { *f = 0.0f; }
+    if (a) { *a = 1.0f; }
+    if (b) { *b = 0.0f; }
+    if (c) { *c = 0.0f; }
+    if (d) { *d = 1.0f; }
+    if (e) { *e = 0.0f; }
+    if (f) { *f = 0.0f; }
     return false;
 }
 
@@ -6976,9 +6985,9 @@ TEST_F(SVGPlayerTest, AnimateMotion_Plus_AnimateTransform_Sum_ThreeLayers)
 {
     // Mirrors c.svg scenario: animateMotion + rotate(replace) + scale(sum).
     // At t=6s (freeze, midpoint=3s begin, dur=6s => end=9s, so at 6s t_local=0.5):
-    //   motion: path M 0 0 L 100 100, at t_local=0.5 => (50,50)
-    //   rotate: from=-30 to=0, at t_local=0.5 => -15 degrees
-    //   scale(sum): from=1 to=3, at t_local=0.5 => 2.0
+    // motion: path M 0 0 L 100 100, at t_local=0.5 => (50,50)
+    // rotate: from=-30 to=0, at t_local=0.5 => -15 degrees
+    // scale(sum): from=1 to=3, at t_local=0.5 => 2.0
     //
     // animateTransform sandwich: rotate(-15) * scale(2) (rotate is replace, scale is sum)
     // final = motion_translate(50,50) * rotate(-15) * scale(2)
@@ -7016,18 +7025,18 @@ TEST_F(SVGPlayerTest, AnimateMotion_Plus_AnimateTransform_Sum_ThreeLayers)
     // rotate(-15): cos(-15)=0.9659, sin(-15)=-0.2588
     // scale(2): sx=2, sy=2
     // animateTransform result = rotate(-15) * scale(2):
-    //   ra = cos(-15)*2 = 1.9319, rb = sin(-15)*2 = -0.5176
-    //   rc = -sin(-15)*2 = 0.5176, rd = cos(-15)*2 = 1.9319
+    // ra = cos(-15)*2 = 1.9319, rb = sin(-15)*2 = -0.5176
+    // rc = -sin(-15)*2 = 0.5176, rd = cos(-15)*2 = 1.9319
     // final = motion * animateTransform:
-    //   a = 1*ra + 0*rb = ra, b = 0*ra + 1*rb = rb  (wait, motion is translate only)
-    //   Actually motion = [1,0,0,1,50,50], animateTransform = [ra,rb,rc,rd,0,0]
-    //   combined = motion * animateTransform:
-    //     a = 1*ra + 0*rc = ra
-    //     b = 1*rb + 0*rd = rb
-    //     c = 0*ra + 1*rc = rc
-    //     d = 0*rb + 1*rd = rd
-    //     e = 0*0 + 0*0 + 50 = 50
-    //     f = 0*0 + 0*0 + 50 = 50
+    // a = 1*ra + 0*rb = ra, b = 0*ra + 1*rb = rb  (wait, motion is translate only)
+    // Actually motion = [1,0,0,1,50,50], animateTransform = [ra,rb,rc,rd,0,0]
+    // combined = motion * animateTransform:
+    // a = 1*ra + 0*rc = ra
+    // b = 1*rb + 0*rd = rb
+    // c = 0*ra + 1*rc = rc
+    // d = 0*rb + 1*rd = rd
+    // e = 0*0 + 0*0 + 50 = 50
+    // f = 0*0 + 0*0 + 50 = 50
     float cos_neg15 = 0.9659f;
     float sin_neg15 = -0.2588f;
     float ra = cos_neg15 * 2.0f;

@@ -45,9 +45,9 @@ extern "C" {
 // opaque animation override state passed to renderer.
 struct psx_svg_anim_state {
     psx_array overrides;
-    psx_array transforms;         // animateTransform overrides
-    psx_array motion_transforms;  // animateMotion overrides (independent layer)
-    ps_matrix* scratch_matrix;    // reused each frame; owned by this struct
+    psx_array transforms; // animateTransform overrides
+    psx_array motion_transforms; // animateMotion overrides (independent layer)
+    ps_matrix* scratch_matrix; // reused each frame; owned by this struct
 };
 
 struct psx_svg_player {
@@ -119,7 +119,7 @@ bool psx_svg_anim_get_float(const psx_svg_anim_state* s, const psx_svg_node* tar
 /* returns true if an integer override exists for (target, attr).
  * writes the value into *out_v. */
 bool psx_svg_anim_get_int32(const psx_svg_anim_state* s, const psx_svg_node* target,
-                           psx_svg_attr_type attr, int32_t* out_v);
+                            psx_svg_attr_type attr, int32_t* out_v);
 
 /* returns a pointer to an internal scratch ps_matrix if a transform override
  * exists for target, NULL otherwise.

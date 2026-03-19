@@ -703,7 +703,7 @@ TEST_F(SVGRenderTest, StaticVisibilityHidden_SkipsRendering)
     psx_svg_render_list* render = psx_svg_render_list_create(svg_root);
     ASSERT_TRUE(render != NULL);
 
-    memset(buf, 0xFF, W * H * 4);  // white background
+    memset(buf, 0xFF, W * H * 4); // white background
     psx_svg_render_list_draw(ctx, render);
 
     {
