@@ -840,26 +840,29 @@ public:
 
     void render(ps_context* ctx, const ps_matrix* matrix)
     {
-        // Apply animation overrides to geometry.
+        ps_rect rc = m_rc;
+        float rx = m_rx;
+        float ry = m_ry;
+
         if (m_cur_anim_state) {
             float v = 0.0f;
             if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_X, &v)) {
-                m_rc.x = v;
+                rc.x = v;
             }
             if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_Y, &v)) {
-                m_rc.y = v;
+                rc.y = v;
             }
             if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_WIDTH, &v)) {
-                m_rc.w = v;
+                rc.w = v;
             }
             if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_HEIGHT, &v)) {
-                m_rc.h = v;
+                rc.h = v;
             }
             if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_RX, &v)) {
-                m_rx = v;
+                rx = v;
             }
             if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_RY, &v)) {
-                m_ry = v;
+                ry = v;
             }
         }
 
@@ -868,18 +871,15 @@ public:
             ps_transform(ctx, matrix);
         }
 
-        float rx = m_rx;
-        float ry = m_ry;
-
         if (rx == 0.0f && ry == 0.0f) {
-            ps_rectangle(ctx, &m_rc);
+            ps_rectangle(ctx, &rc);
         } else {
             if (rx > 0.0f && ry == 0.0f) {
                 ry = rx;
             } else if (ry > 0.0f && rx == 0.0f ) {
                 rx = ry;
             }
-            ps_rounded_rect(ctx, &m_rc, rx, ry, rx, ry, rx, ry, rx, ry);
+            ps_rounded_rect(ctx, &rc, rx, ry, rx, ry, rx, ry, rx, ry);
         }
         paint(ctx);
     }
@@ -915,6 +915,22 @@ public:
         rc->y = m_rc.y;
         rc->w = m_rc.w;
         rc->h = m_rc.h;
+
+        if (m_cur_anim_state) {
+            float v = 0.0f;
+            if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_X, &v)) {
+                rc->x = v;
+            }
+            if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_Y, &v)) {
+                rc->y = v;
+            }
+            if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_WIDTH, &v)) {
+                rc->w = v;
+            }
+            if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_HEIGHT, &v)) {
+                rc->h = v;
+            }
+        }
     }
 private:
     ps_rect m_rc;
@@ -936,16 +952,18 @@ public:
 
     void render(ps_context* ctx, const ps_matrix* matrix)
     {
+        float cx = m_cx, cy = m_cy, r = m_r;
+
         if (m_cur_anim_state) {
             float v = 0.0f;
             if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_CX, &v)) {
-                m_cx = v;
+                cx = v;
             }
             if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_CY, &v)) {
-                m_cy = v;
+                cy = v;
             }
             if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_R, &v)) {
-                m_r = v;
+                r = v;
             }
         }
 
@@ -954,7 +972,7 @@ public:
             ps_transform(ctx, matrix);
         }
 
-        ps_rect rc = { m_cx - m_r, m_cy - m_r, m_r + m_r, m_r + m_r };
+        ps_rect rc = { cx - r, cy - r, r + r, r + r };
         ps_ellipse(ctx, &rc);
 
         paint(ctx);
@@ -978,9 +996,24 @@ public:
 
     void get_bounding_rect(ps_rect* rc) const
     {
-        rc->x = m_cx - m_r;
-        rc->y = m_cy - m_r;
-        rc->w = m_r + m_r;
+        float cx = m_cx, cy = m_cy, r = m_r;
+
+        if (m_cur_anim_state) {
+            float v = 0.0f;
+            if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_CX, &v)) {
+                cx = v;
+            }
+            if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_CY, &v)) {
+                cy = v;
+            }
+            if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_R, &v)) {
+                r = v;
+            }
+        }
+
+        rc->x = cx - r;
+        rc->y = cy - r;
+        rc->w = r + r;
         rc->h = rc->w;
     }
 
@@ -1005,19 +1038,21 @@ public:
 
     void render(ps_context* ctx, const ps_matrix* matrix)
     {
+        float cx = m_cx, cy = m_cy, rx = m_rx, ry = m_ry;
+
         if (m_cur_anim_state) {
             float v = 0.0f;
             if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_CX, &v)) {
-                m_cx = v;
+                cx = v;
             }
             if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_CY, &v)) {
-                m_cy = v;
+                cy = v;
             }
             if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_RX, &v)) {
-                m_rx = v;
+                rx = v;
             }
             if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_RY, &v)) {
-                m_ry = v;
+                ry = v;
             }
         }
 
@@ -1026,7 +1061,7 @@ public:
             ps_transform(ctx, matrix);
         }
 
-        ps_rect rc = { m_cx - m_rx, m_cy - m_ry, m_rx + m_rx, m_ry + m_ry };
+        ps_rect rc = { cx - rx, cy - ry, rx + rx, ry + ry };
         ps_ellipse(ctx, &rc);
 
         paint(ctx);
@@ -1053,10 +1088,28 @@ public:
 
     void get_bounding_rect(ps_rect* rc) const
     {
-        rc->x = m_cx - m_rx;
-        rc->y = m_cy - m_ry;
-        rc->w = m_rx + m_rx;
-        rc->h = m_ry + m_ry;
+        float cx = m_cx, cy = m_cy, rx = m_rx, ry = m_ry;
+
+        if (m_cur_anim_state) {
+            float v = 0.0f;
+            if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_CX, &v)) {
+                cx = v;
+            }
+            if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_CY, &v)) {
+                cy = v;
+            }
+            if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_RX, &v)) {
+                rx = v;
+            }
+            if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_RY, &v)) {
+                ry = v;
+            }
+        }
+
+        rc->x = cx - rx;
+        rc->y = cy - ry;
+        rc->w = rx + rx;
+        rc->h = ry + ry;
     }
 
 private:
@@ -1081,19 +1134,21 @@ public:
 
     void render(ps_context* ctx, const ps_matrix* matrix)
     {
+        float x1 = m_x1, y1 = m_y1, x2 = m_x2, y2 = m_y2;
+
         if (m_cur_anim_state) {
             float v = 0.0f;
             if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_X1, &v)) {
-                m_x1 = v;
+                x1 = v;
             }
             if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_Y1, &v)) {
-                m_y1 = v;
+                y1 = v;
             }
             if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_X2, &v)) {
-                m_x2 = v;
+                x2 = v;
             }
             if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_Y2, &v)) {
-                m_y2 = v;
+                y2 = v;
             }
         }
 
@@ -1102,9 +1157,9 @@ public:
             ps_transform(ctx, matrix);
         }
 
-        ps_point p1 = { m_x1, m_y1 };
+        ps_point p1 = { x1, y1 };
         ps_move_to(ctx, &p1);
-        ps_point p2 = { m_x2, m_y2 };
+        ps_point p2 = { x2, y2 };
         ps_line_to(ctx, &p2);
 
         paint(ctx);
@@ -1131,10 +1186,28 @@ public:
 
     void get_bounding_rect(ps_rect* rc) const
     {
-        rc->x = MIN(m_x1, m_x2);
-        rc->y = MIN(m_y1, m_y2);
-        rc->w = ABS(m_x2 - m_x1);
-        rc->h = ABS(m_y2 - m_y1);
+        float x1 = m_x1, y1 = m_y1, x2 = m_x2, y2 = m_y2;
+
+        if (m_cur_anim_state) {
+            float v = 0.0f;
+            if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_X1, &v)) {
+                x1 = v;
+            }
+            if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_Y1, &v)) {
+                y1 = v;
+            }
+            if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_X2, &v)) {
+                x2 = v;
+            }
+            if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_Y2, &v)) {
+                y2 = v;
+            }
+        }
+
+        rc->x = MIN(x1, x2);
+        rc->y = MIN(y1, y2);
+        rc->w = ABS(x2 - x1);
+        rc->h = ABS(y2 - y1);
     }
 
 private:
