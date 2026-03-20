@@ -1126,7 +1126,7 @@ static INLINE bool _anim_eval_transform_translate_linear(const psx_svg_anim_item
 
     struct _anim_transform_values_single {
         uint32_t length;
-        float data[4];
+        float data[6];
     };
 
     const struct _anim_transform_values_single* fromv = (const struct _anim_transform_values_single*)afrom->value.val;
@@ -3064,21 +3064,6 @@ static INLINE bool _anim_eval_set(const psx_svg_anim_item* it, float doc_t, floa
     return true;
 }
 
-static const psx_svg_node* _find_child_mpath(const psx_svg_node* n)
-{
-    if (!n) {
-        return NULL;
-    }
-    uint32_t c = n->child_count();
-    for (uint32_t i = 0; i < c; i++) {
-        const psx_svg_node* ch = n->get_child(i);
-        if (ch && ch->type() == SVG_TAG_MPATH) {
-            return ch;
-        }
-    }
-    return NULL;
-}
-
 static void _collect_anims(psx_svg_player* p, const psx_svg_node* node)
 {
     if (!p || !node) {
@@ -3098,7 +3083,6 @@ static void _collect_anims(psx_svg_player* p, const psx_svg_node* node)
         const psx_svg_node* target = node->parent();
         if (t == SVG_TAG_ANIMATE_MOTION) {
             target_attr = SVG_ATTR_TRANSFORM;
-            (void)_find_child_mpath(node);
         }
 
         if (target && target_attr != SVG_ATTR_INVALID) {
