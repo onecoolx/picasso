@@ -220,6 +220,20 @@ TEST_F(SVGRenderTest, ShapesTest)
     draw_svg(svg_shapes_linear4);
     EXPECT_SNAPSHOT_EQ(svg_shapes_linear4);
 
+    // gradient with whitespace content nodes between stops (multiline SVG)
+    const char* svg_gradient_multiline =
+        "<svg width=\"200\" height=\"100\">"
+        "<defs>\n"
+        "  <linearGradient id=\"g1\">\n"
+        "    <stop offset=\"0\" stop-color=\"red\"/>\n"
+        "    <stop offset=\"1\" stop-color=\"blue\"/>\n"
+        "  </linearGradient>\n"
+        "</defs>"
+        "<rect x=\"0\" y=\"0\" width=\"200\" height=\"100\" fill=\"url(#g1)\"/>"
+        "</svg>";
+    draw_svg(svg_gradient_multiline);
+    EXPECT_SNAPSHOT_EQ(svg_gradient_multiline);
+
     const char* svg_shapes_linear5 = \
                                      "<svg width='144' height='144' viewBox='0 0 144 144'><g>"
                                      "<rect x='4' y='4' width='136' height='136' fill='url(#paint2_linear_13691_50994)' fill-opacity='1.0'/>"

@@ -2117,34 +2117,45 @@ public:
         m_y2 = 0.0f;
 
         uint32_t count = node->child_count();
-        m_stops = (stop_color*)allocator->alloc(allocator, count * sizeof(stop_color));
-        m_stop_count = count;
+        uint32_t stop_count = 0;
+        for (uint32_t i = 0; i < count; i++) {
+            if (node->get_child(i)->type() == SVG_TAG_STOP) {
+                ++stop_count;
+            }
+        }
+        m_stops = (stop_color*)allocator->alloc(allocator, stop_count * sizeof(stop_color));
+        m_stop_count = stop_count;
 
+        uint32_t si = 0;
         for (uint32_t i = 0; i < count; i++) {
             psx_svg_node* child_node = node->get_child(i);
+            if (child_node->type() != SVG_TAG_STOP) {
+                continue;
+            }
             uint32_t attr_num = child_node->attr_count();
 
-            m_stops[i].color.r = m_stops[i].color.g = m_stops[i].color.b = 0.0f;
-            m_stops[i].color.a = m_stops[i].opacity = 1.0f;
-            m_stops[i].start = 0.0f;
+            m_stops[si].color.r = m_stops[si].color.g = m_stops[si].color.b = 0.0f;
+            m_stops[si].color.a = m_stops[si].opacity = 1.0f;
+            m_stops[si].start = 0.0f;
 
             for (uint32_t j = 0; j < attr_num; j++) {
                 psx_svg_attr* attr = child_node->attr_at(j);
                 switch (attr->attr_id) {
                     case SVG_ATTR_GRADIENT_STOP_COLOR: {
-                            svg_to_pcolor(&m_stops[i].color, attr->value.uval);
+                            svg_to_pcolor(&m_stops[si].color, attr->value.uval);
                         }
                         break;
                     case SVG_ATTR_GRADIENT_STOP_OPACITY: {
-                            m_stops[i].opacity = attr->value.fval;
+                            m_stops[si].opacity = attr->value.fval;
                         }
                         break;
                     case SVG_ATTR_GRADIENT_STOP_OFFSET: {
-                            m_stops[i].start = attr->value.fval;
+                            m_stops[si].start = attr->value.fval;
                         }
                         break;
                 }
             }
+            ++si;
         }
     }
 
