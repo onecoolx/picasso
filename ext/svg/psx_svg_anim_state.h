@@ -81,6 +81,9 @@ typedef struct {
     float repeat_dur_sec; // optional explicit repeat duration, 0 => unspecified
     uint32_t fill_mode; // SVG_ANIMATION_*
     uint32_t additive_mode; // SVG_ANIMATION_ADDITIVE_REPLACE or SVG_ANIMATION_ADDITIVE_SUM
+    uint32_t restart_mode; // SVG_ANIMATION_RESTART_ALWAYS / WHEN_NOT_ACTIVE / NEVER
+    float min_sec; // minimum active duration (0 = unspecified)
+    float max_sec; // maximum active duration (0 = indefinite/unspecified)
 
     // Minimal Tiny 1.2 external event trigger support.
     // If begin is specified as a non-numeric token (e.g. begin="click"), we

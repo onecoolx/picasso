@@ -571,6 +571,21 @@ static INLINE const char* _dup_cstr(const char* s)
     return d;
 }
 
+/* Compute the active duration for an anim item (used by restart logic). */
+static INLINE float _anim_item_active_dur(const psx_svg_anim_item* it)
+{
+    if (!it || it->dur_sec <= 0.0f) {
+        return 0.0f;
+    }
+    if (it->repeat_dur_sec > 0.0f) {
+        return it->repeat_dur_sec;
+    }
+    if (it->repeat_count == 0) {
+        return 1e30f; /* indefinite */
+    }
+    return it->dur_sec * (float)it->repeat_count;
+}
+
 static INLINE float _anim_item_begin_for_time(const psx_svg_anim_item* it, float doc_t)
 {
     if (!it) {
@@ -584,9 +599,54 @@ static INLINE float _anim_item_begin_for_time(const psx_svg_anim_item* it, float
     if (psx_array_empty((psx_array*)&it->begins_sec)) {
         return it->begin_sec;
     }
-    // choose latest begin <= doc_t
-    float best = -1.0f;
+
     const uint32_t n = psx_array_size((psx_array*)&it->begins_sec);
+
+    // restart="never": only use the first (earliest) begin.
+    if (it->restart_mode == SVG_ANIMATION_RESTART_NEVER) {
+        const float* fp = psx_array_get((psx_array*)&it->begins_sec, 0, float);
+        return fp ? *fp : 0.0f;
+    }
+
+    // restart="whenNotActive": iterate forwards, skip begins that fall
+    // within a previous begin's active interval.
+    if (it->restart_mode == SVG_ANIMATION_RESTART_WHEN_NOT_ACTIVE) {
+        float ad = _anim_item_active_dur(it);
+        // Build valid begins by forward scan: a begin is valid only if it
+        // does not fall within the active interval of the current valid begin.
+        float cur_valid = -1.0f;
+        float best = -1.0f;
+        for (uint32_t i = 0; i < n; i++) {
+            const float* bp = psx_array_get((psx_array*)&it->begins_sec, i, float);
+            float b = bp ? *bp : 0.0f;
+            if (cur_valid < 0.0f || b >= cur_valid + ad) {
+                // This begin is valid (not inside a previous active interval).
+                cur_valid = b;
+                if (b <= doc_t && b > best) {
+                    best = b;
+                }
+            }
+            // else: b falls within cur_valid's active interval => skip
+        }
+        if (best < 0.0f) {
+            // all valid begins are in the future: return earliest valid
+            cur_valid = -1.0f;
+            for (uint32_t i = 0; i < n; i++) {
+                const float* bp = psx_array_get((psx_array*)&it->begins_sec, i, float);
+                float b = bp ? *bp : 0.0f;
+                if (cur_valid < 0.0f || b >= cur_valid + ad) {
+                    cur_valid = b;
+                    return b;
+                }
+            }
+            const float* fp = psx_array_get((psx_array*)&it->begins_sec, 0, float);
+            return fp ? *fp : 0.0f;
+        }
+        return best;
+    }
+
+    // restart="always" (default): choose latest begin <= doc_t
+    float best = -1.0f;
     for (uint32_t i = 0; i < n; i++) {
         const float* bp = psx_array_get((psx_array*)&it->begins_sec, i, float);
         float b = bp ? *bp : 0.0f;
@@ -677,6 +737,7 @@ static INLINE bool _anim_resolve_local_t(const psx_svg_anim_item* it, float doc_
 
     float total = 0.0f;
     bool has_total = false;
+    float raw_total = 0.0f;
     if (it->repeat_dur_sec > 0.0f) {
         total = it->repeat_dur_sec;
         has_total = true;
@@ -686,11 +747,37 @@ static INLINE bool _anim_resolve_local_t(const psx_svg_anim_item* it, float doc_
         total = it->dur_sec * (float)it->repeat_count;
         has_total = true;
     }
+    raw_total = total;
+
+    // Apply min/max active duration constraints (SVG Tiny 1.2 §16.3.3).
+    // min > max => both ignored.
+    if (has_total) {
+        float min_s = it->min_sec;
+        float max_s = it->max_sec;
+        if (min_s > 0.0f && max_s > 0.0f && min_s > max_s) {
+            // ignore both
+        } else {
+            if (max_s > 0.0f && total > max_s) {
+                total = max_s;
+            }
+            if (min_s > 0.0f && total < min_s) {
+                total = min_s;
+            }
+        }
+    }
 
     if (!has_total) {
         local = _anim_fmod(local, it->dur_sec);
     } else {
         if (local >= total) {
+            if (it->fill_mode == SVG_ANIMATION_FREEZE) {
+                local = it->dur_sec;
+            } else {
+                return false;
+            }
+        } else if (raw_total > 0.0f && local >= raw_total) {
+            // In min-extended region: past original duration but within min.
+            // fill=freeze: hold final value; fill=remove: no override.
             if (it->fill_mode == SVG_ANIMATION_FREEZE) {
                 local = it->dur_sec;
             } else {
@@ -968,14 +1055,23 @@ static INLINE bool _anim_eval_simple(const psx_svg_anim_item* it, float doc_t, f
 
     const psx_svg_attr* afrom = _find_attr(it->anim_node, SVG_ATTR_FROM);
     const psx_svg_attr* ato = _find_attr(it->anim_node, SVG_ATTR_TO);
-    if (!afrom || !ato) {
-        return false;
+    if (afrom && ato) {
+        float v0 = _attr_as_number(afrom);
+        float v1 = _attr_as_number(ato);
+        *out_v = _anim_lerp(v0, v1, t);
+        return true;
     }
 
-    float v0 = _attr_as_number(afrom);
-    float v1 = _attr_as_number(ato);
-    *out_v = _anim_lerp(v0, v1, t);
-    return true;
+    // by attribute fallback: by alone => from=0 to=by; from+by => to=from+by
+    const psx_svg_attr* aby = _find_attr(it->anim_node, SVG_ATTR_BY);
+    if (aby && !ato) {
+        float by_val = _attr_as_number(aby);
+        float from_val = afrom ? _attr_as_number(afrom) : 0.0f;
+        *out_v = _anim_lerp(from_val, from_val + by_val, t);
+        return true;
+    }
+
+    return false;
 }
 
 static INLINE bool _anim_eval_transform_translate_discrete(const psx_svg_anim_item* it, float doc_t,
@@ -3102,7 +3198,7 @@ static void _collect_anims(psx_svg_player* p, const psx_svg_node* node)
                     || node->type() == SVG_TAG_ANIMATE_TRANSFORM || node->type() == SVG_TAG_ANIMATE_MOTION)
                 && (abegin->attr_id == SVG_ATTR_BEGIN)) {
                 const psx_svg_timing_list* tl = (const psx_svg_timing_list*)abegin->value.val;
-                if (t == SVG_TAG_SET && tl->event_token) {
+                if (tl->event_token) {
                     item.begin_event = _dup_cstr(tl->event_token);
                     psx_array_clear(&item.begins_sec);
                     item.begin_sec = 1e30f; // don't auto-activate until triggered
@@ -3181,6 +3277,15 @@ static void _collect_anims(psx_svg_player* p, const psx_svg_node* node)
             if (additive_attr && additive_attr->val_type == SVG_ATTR_VALUE_DATA) {
                 item.additive_mode = (uint32_t)additive_attr->value.ival;
             }
+
+            item.restart_mode = SVG_ANIMATION_RESTART_ALWAYS;
+            const psx_svg_attr* arestart = _find_attr(node, SVG_ATTR_RESTART);
+            if (arestart && arestart->val_type == SVG_ATTR_VALUE_DATA) {
+                item.restart_mode = (uint32_t)arestart->value.ival;
+            }
+
+            item.min_sec = _attr_as_time_sec(_find_attr(node, SVG_ATTR_MIN));
+            item.max_sec = _attr_as_time_sec(_find_attr(node, SVG_ATTR_MAX));
 
             psx_array_append(&p->anims, NULL);
             psx_svg_anim_item* dst = psx_array_get_last(&p->anims, psx_svg_anim_item);
@@ -3651,6 +3756,21 @@ void psx_svg_player_trigger(psx_svg_player* p, const char* target_id, const char
         }
 
         float sec = p->time_sec;
+
+        // restart guard: check restart_mode before appending new begin.
+        if (it->restart_mode == SVG_ANIMATION_RESTART_NEVER) {
+            if (!psx_array_empty(&it->begins_sec)) {
+                continue; // already activated once; ignore
+            }
+        } else if (it->restart_mode == SVG_ANIMATION_RESTART_WHEN_NOT_ACTIVE) {
+            // Check if currently active: find current begin and see if sec < begin + active_dur.
+            float ad = _anim_item_active_dur(it);
+            float cur_begin = _anim_item_begin_for_time(it, sec);
+            if (cur_begin < 1e29f && sec >= cur_begin && sec < cur_begin + ad) {
+                continue; // currently active; ignore
+            }
+        }
+
         psx_array_append(&it->begins_sec, &sec);
         _anim_item_begin_list_normalize(it);
         any = true;
