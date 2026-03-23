@@ -616,6 +616,24 @@ protected:
             }
         }
 
+        /* stroke-dasharray animation override (Req 10.4). */
+        {
+            const float* dash_vals = NULL;
+            uint32_t dash_count = 0;
+            if (psx_svg_anim_get_dash(m_cur_anim_state, m_node, &dash_vals, &dash_count)) {
+                float start = 0.0f;
+                if (m_draw_attrs->flags & RENDER_ATTR_STROKE_DASH_OFFSET) {
+                    start = m_draw_attrs->stroke_dash_offset;
+                }
+                /* Check if dash-offset was also animated. */
+                float ov = 0.0f;
+                if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_STROKE_DASH_OFFSET, &ov)) {
+                    start = ov;
+                }
+                ps_set_line_dash(ctx, start, dash_vals, dash_count);
+            }
+        }
+
         if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_STROKE, &v)) {
             union { float f; uint32_t u; } bits;
             bits.f = v;
@@ -1719,6 +1737,27 @@ public:
 
     void prepare(ps_context* ctx)
     {
+        // Apply font animation overrides before building glyph paths
+        if (m_cur_anim_state) {
+            float v = 0.0f;
+            if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_FONT_SIZE, &v)) {
+                m_font_size = v;
+                ps_font_set_size(m_font, m_font_size);
+                ps_path_clear(m_path);
+            }
+            int32_t iv = 0;
+            if (psx_svg_anim_get_int32(m_cur_anim_state, m_node, SVG_ATTR_FONT_WEIGHT, &iv)) {
+                m_font_weight = iv;
+                ps_font_set_weight(m_font, (ps_font_weight)m_font_weight);
+                ps_path_clear(m_path);
+            }
+            if (psx_svg_anim_get_int32(m_cur_anim_state, m_node, SVG_ATTR_FONT_STYLE, &iv)) {
+                m_font_italic = (ps_bool)iv;
+                ps_font_set_italic(m_font, m_font_italic);
+                ps_path_clear(m_path);
+            }
+        }
+
         ps_font* old_font = ps_set_font(ctx, m_font);
         ps_font_info info;
         ps_get_font_info(ctx, &info);
@@ -2124,6 +2163,7 @@ public:
             }
         }
         m_stops = (stop_color*)allocator->alloc(allocator, stop_count * sizeof(stop_color));
+        m_stop_nodes = (const psx_svg_node**)allocator->alloc(allocator, stop_count * sizeof(const psx_svg_node*));
         m_stop_count = stop_count;
 
         uint32_t si = 0;
@@ -2137,6 +2177,7 @@ public:
             m_stops[si].color.r = m_stops[si].color.g = m_stops[si].color.b = 0.0f;
             m_stops[si].color.a = m_stops[si].opacity = 1.0f;
             m_stops[si].start = 0.0f;
+            m_stop_nodes[si] = child_node;
 
             for (uint32_t j = 0; j < attr_num; j++) {
                 psx_svg_attr* attr = child_node->attr_at(j);
@@ -2205,8 +2246,26 @@ public:
 
         for (uint32_t i = 0; i < m_stop_count; i++) {
             ps_color c = m_stops[i].color;
-            c.a *= m_stops[i].opacity;
-            ps_gradient_add_color_stop(gradient, m_stops[i].start, &c);
+            float opacity = m_stops[i].opacity;
+            float start = m_stops[i].start;
+
+            if (m_cur_anim_state && m_stop_nodes[i]) {
+                float v = 0.0f;
+                if (psx_svg_anim_get_float(m_cur_anim_state, m_stop_nodes[i], SVG_ATTR_GRADIENT_STOP_COLOR, &v)) {
+                    union { float f; uint32_t u; } bits;
+                    bits.f = v;
+                    svg_to_pcolor(&c, bits.u);
+                }
+                if (psx_svg_anim_get_float(m_cur_anim_state, m_stop_nodes[i], SVG_ATTR_GRADIENT_STOP_OPACITY, &v)) {
+                    opacity = v;
+                }
+                if (psx_svg_anim_get_float(m_cur_anim_state, m_stop_nodes[i], SVG_ATTR_GRADIENT_STOP_OFFSET, &v)) {
+                    start = v;
+                }
+            }
+
+            c.a *= opacity;
+            ps_gradient_add_color_stop(gradient, start, &c);
         }
 
         if (fill) {
@@ -2284,6 +2343,7 @@ private:
     ps_color m_color;
     float m_opacity;
     stop_color* m_stops;
+    const psx_svg_node** m_stop_nodes;
     uint32_t m_stop_count;
     int32_t m_units;
     float m_cx;

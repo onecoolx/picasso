@@ -8032,3 +8032,2301 @@ TEST_F(SVGPlayerTest, Timing_Min_FreezeHoldsDuringExtension)
 
     destroy_player(p, root);
 }
+
+TEST_F(SVGPlayerTest, Indefinite_NoAutoActivation)
+{
+    // begin="indefinite" means the animation should NOT auto-activate.
+    // Even as document time advances, no override should be produced.
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
+        "    <animate attributeName=\"x\" begin=\"indefinite\" dur=\"2s\" from=\"0\" to=\"100\" fill=\"freeze\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    if (!p) {
+        EXPECT_NE((psx_svg_player*)NULL, p);
+        return;
+    }
+    EXPECT_EQ(S_OK, r);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    if (!n) {
+        EXPECT_TRUE(n != NULL);
+        destroy_player(p, root);
+        return;
+    }
+
+    // Seek to 1s — animation should NOT be active (indefinite begin, not triggered).
+    psx_svg_player_seek(p, 1.0f);
+    {
+        float v = 0;
+        EXPECT_FALSE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+    }
+
+    // Seek further to 5s — still should NOT be active.
+    psx_svg_player_seek(p, 5.0f);
+    {
+        float v = 0;
+        EXPECT_FALSE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+    }
+
+    destroy_player(p, root);
+}
+
+TEST_F(SVGPlayerTest, Indefinite_TriggerActivates)
+{
+    // begin="indefinite" animation should activate when triggered externally.
+    // After trigger at t=1s, the animation runs from t=1s for dur=2s.
+    // At t=2s (1s into the animation), x should be lerp(0,100,0.5) = 50.
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
+        "    <animate attributeName=\"x\" begin=\"indefinite\" dur=\"2s\" from=\"0\" to=\"100\" fill=\"freeze\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    if (!p) {
+        EXPECT_NE((psx_svg_player*)NULL, p);
+        return;
+    }
+    EXPECT_EQ(S_OK, r);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    if (!n) {
+        EXPECT_TRUE(n != NULL);
+        destroy_player(p, root);
+        return;
+    }
+
+    // Before trigger: no override.
+    psx_svg_player_seek(p, 0.5f);
+    {
+        float v = 0;
+        EXPECT_FALSE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+    }
+
+    // Trigger at t=1s using the internal sentinel token for indefinite animations.
+    psx_svg_player_seek(p, 1.0f);
+    psx_svg_player_trigger(p, NULL, "__indefinite__");
+
+    // Seek to t=2s: 1s into the 2s animation => x = lerp(0,100,0.5) = 50.
+    psx_svg_player_seek(p, 2.0f);
+    {
+        float v = 0;
+        if (!psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v)) {
+            EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+            destroy_player(p, root);
+            return;
+        }
+        EXPECT_NEAR(50.0f, v, 0.1f);
+    }
+
+    // Seek to t=3s: end of animation (1+2=3s), fill=freeze should hold 100.
+    psx_svg_player_seek(p, 3.0f);
+    {
+        float v = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+        EXPECT_NEAR(100.0f, v, 0.1f);
+    }
+
+    destroy_player(p, root);
+}
+
+/* ── Event callback test helpers ── */
+
+struct _event_cb_counters {
+    int begin_count;
+    int end_count;
+    int repeat_count;
+    const char* last_anim_id;
+};
+
+static void _test_event_callback(psx_svg_anim_event_type type, const char* anim_id, void* user_data)
+{
+    _event_cb_counters* c = (_event_cb_counters*)user_data;
+    if (!c) { return; }
+    switch (type) {
+        case PSX_SVG_ANIM_EVENT_BEGIN:
+            c->begin_count++;
+            break;
+        case PSX_SVG_ANIM_EVENT_END:
+            c->end_count++;
+            break;
+        case PSX_SVG_ANIM_EVENT_REPEAT:
+            c->repeat_count++;
+            break;
+    }
+    c->last_anim_id = anim_id;
+}
+
+TEST_F(SVGPlayerTest, EventCallback_Begin_Invoked)
+{
+    // When an animation enters its active interval (begin time),
+    // the registered callback should be invoked with PSX_SVG_ANIM_EVENT_BEGIN.
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
+        "    <animate id=\"a1\" attributeName=\"x\" from=\"0\" to=\"100\" begin=\"1s\" dur=\"2s\" fill=\"freeze\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    if (!p) {
+        EXPECT_NE((psx_svg_player*)NULL, p);
+        return;
+    }
+    EXPECT_EQ(S_OK, r);
+
+    _event_cb_counters counters;
+    memset(&counters, 0, sizeof(counters));
+    psx_svg_player_set_event_callback(p, _test_event_callback, &counters);
+
+    // Before begin time — no BEGIN callback yet.
+    psx_svg_player_seek(p, 0.5f);
+    EXPECT_EQ(0, counters.begin_count);
+
+    // Seek to begin time (1s) — animation becomes active, BEGIN should fire.
+    psx_svg_player_seek(p, 1.0f);
+    EXPECT_EQ(1, counters.begin_count);
+
+    // Seek further within active interval — no additional BEGIN.
+    psx_svg_player_seek(p, 2.0f);
+    EXPECT_EQ(1, counters.begin_count);
+
+    destroy_player(p, root);
+}
+
+TEST_F(SVGPlayerTest, EventCallback_End_Invoked)
+{
+    // When an animation leaves its active interval (end time),
+    // the registered callback should be invoked with PSX_SVG_ANIM_EVENT_END.
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
+        "    <animate id=\"a1\" attributeName=\"x\" from=\"0\" to=\"100\" begin=\"0s\" dur=\"2s\" fill=\"remove\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    if (!p) {
+        EXPECT_NE((psx_svg_player*)NULL, p);
+        return;
+    }
+    EXPECT_EQ(S_OK, r);
+
+    _event_cb_counters counters;
+    memset(&counters, 0, sizeof(counters));
+    psx_svg_player_set_event_callback(p, _test_event_callback, &counters);
+
+    // Seek into active interval — BEGIN fires, no END yet.
+    psx_svg_player_seek(p, 1.0f);
+    EXPECT_EQ(0, counters.end_count);
+
+    // Seek past end time (2s) — animation leaves active interval, END should fire.
+    psx_svg_player_seek(p, 2.5f);
+    EXPECT_EQ(1, counters.end_count);
+
+    // Seek further — no additional END.
+    psx_svg_player_seek(p, 3.0f);
+    EXPECT_EQ(1, counters.end_count);
+
+    destroy_player(p, root);
+}
+
+TEST_F(SVGPlayerTest, EventCallback_Repeat_Invoked)
+{
+    // When an animation completes one repeat iteration and starts the next,
+    // the registered callback should be invoked with PSX_SVG_ANIM_EVENT_REPEAT.
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
+        "    <animate id=\"a1\" attributeName=\"x\" from=\"0\" to=\"100\" begin=\"0s\" dur=\"1s\" repeatCount=\"3\" fill=\"remove\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    if (!p) {
+        EXPECT_NE((psx_svg_player*)NULL, p);
+        return;
+    }
+    EXPECT_EQ(S_OK, r);
+
+    _event_cb_counters counters;
+    memset(&counters, 0, sizeof(counters));
+    psx_svg_player_set_event_callback(p, _test_event_callback, &counters);
+
+    // Seek into first iteration — no REPEAT yet.
+    psx_svg_player_seek(p, 0.5f);
+    EXPECT_EQ(0, counters.repeat_count);
+
+    // Seek past first dur (1s) into second iteration — REPEAT should fire once.
+    psx_svg_player_seek(p, 1.5f);
+    EXPECT_EQ(1, counters.repeat_count);
+
+    // Seek past second dur (2s) into third iteration — REPEAT should fire again.
+    psx_svg_player_seek(p, 2.5f);
+    EXPECT_EQ(2, counters.repeat_count);
+
+    destroy_player(p, root);
+}
+
+TEST_F(SVGPlayerTest, EventCallback_NullCallback_NoError)
+{
+    // When no callback is registered (NULL), the player should run normally
+    // through the entire animation lifecycle without crashing.
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
+        "    <animate id=\"a1\" attributeName=\"x\" from=\"0\" to=\"100\" begin=\"1s\" dur=\"2s\" fill=\"freeze\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    if (!p) {
+        EXPECT_NE((psx_svg_player*)NULL, p);
+        return;
+    }
+    EXPECT_EQ(S_OK, r);
+
+    // Do NOT register any callback — leave it NULL.
+
+    // Before begin — animation not yet active.
+    psx_svg_player_seek(p, 0.5f);
+
+    // At begin — animation becomes active.
+    psx_svg_player_seek(p, 1.0f);
+
+    // Mid-active interval.
+    psx_svg_player_seek(p, 2.0f);
+
+    // Past end — animation leaves active interval (fill=freeze keeps override).
+    psx_svg_player_seek(p, 3.5f);
+
+    // If we reach here without crashing, the test passes.
+
+    destroy_player(p, root);
+}
+
+TEST_F(SVGPlayerTest, EventOffset_TriggerPlusOffset_CorrectBegin)
+{
+    // begin="click+2s" means: after trigger("click"), the animation begins
+    // at trigger_time + 2s. Trigger at t=1s => begin at t=3s.
+    // dur=2s, from=0, to=100. At t=3.5s (0.5s into 2s dur):
+    // x = lerp(0, 100, 0.5/2.0) = lerp(0, 100, 0.25) = 25.
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
+        "    <animate attributeName=\"x\" begin=\"click+2s\" dur=\"2s\" from=\"0\" to=\"100\" fill=\"freeze\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    if (!p) {
+        EXPECT_NE((psx_svg_player*)NULL, p);
+        return;
+    }
+    EXPECT_EQ(S_OK, r);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    if (!n) {
+        EXPECT_TRUE(n != NULL);
+        destroy_player(p, root);
+        return;
+    }
+
+    // Before trigger: no override at t=0.5s.
+    psx_svg_player_seek(p, 0.5f);
+    {
+        float v = 0;
+        EXPECT_FALSE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+    }
+
+    // Trigger "click" at t=1s. Effective begin = 1 + 2 = 3s.
+    psx_svg_player_seek(p, 1.0f);
+    psx_svg_player_trigger(p, NULL, "click");
+
+    // Seek to t=2s: before effective begin (3s) => no override.
+    psx_svg_player_seek(p, 2.0f);
+    {
+        float v = 0;
+        EXPECT_FALSE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+    }
+
+    // Seek to t=3.5s: 0.5s into 2s dur => lerp(0, 100, 0.25) = 25.
+    psx_svg_player_seek(p, 3.5f);
+    {
+        float v = 0;
+        if (!psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v)) {
+            EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+            destroy_player(p, root);
+            return;
+        }
+        EXPECT_NEAR(25.0f, v, 0.1f);
+    }
+
+    destroy_player(p, root);
+}
+
+// Feature: svg-anim-full-compliance, Property 1: Event+offset 延迟激活
+// **Validates: Requirements 3.2**
+TEST_F(SVGPlayerTest, EventOffset_PropertyTest)
+{
+    // Property: For any trigger time T and offset O >= 0, an event+offset
+    // animation triggered at T should NOT produce an override at T+O-epsilon,
+    // and SHOULD produce an override at T+O+epsilon.
+    srand(12345);
+    const int NUM_ITERATIONS = 100;
+    int pass_count = 0;
+
+    for (int i = 0; i < NUM_ITERATIONS; i++) {
+        float T = (rand() % 10000) / 1000.0f; // [0, ~10)
+        float O = (rand() % 5000) / 1000.0f; // [0, ~5)
+
+        // Build SVG with the offset encoded in begin attribute
+        char svg[512];
+        snprintf(svg, sizeof(svg),
+                 "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+                 "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
+                 "    <animate attributeName=\"x\" begin=\"click+%.3fs\" dur=\"2s\" from=\"0\" to=\"100\" fill=\"freeze\"/>"
+                 "  </rect>"
+                 "</svg>", O);
+
+        psx_result r = S_OK;
+        psx_svg_node* root = NULL;
+        psx_svg_player* p = create_player(svg, &r, &root);
+        if (!p) {
+            EXPECT_NE((psx_svg_player*)NULL, p) << "iteration " << i
+                                                << " T=" << T << " O=" << O << " failed to create player";
+            continue;
+        }
+
+        const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+        if (!n) {
+            EXPECT_TRUE(n != NULL) << "iteration " << i << " node not found";
+            destroy_player(p, root);
+            continue;
+        }
+
+        // Trigger "click" at time T
+        psx_svg_player_seek(p, T);
+        psx_svg_player_trigger(p, NULL, "click");
+
+        float effective_begin = T + O;
+
+        // Seek to just before effective begin: should have NO override
+        float before = effective_begin - 0.01f;
+        if (before >= 0.0f) {
+            psx_svg_player_seek(p, before);
+            float v = 0;
+            EXPECT_FALSE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v))
+                    << "iteration " << i << " T=" << T << " O=" << O
+                    << " seek(" << before << ") should have no override";
+        }
+
+        // Seek to just after effective begin: should have override
+        float after = effective_begin + 0.01f;
+        psx_svg_player_seek(p, after);
+        {
+            float v = 0;
+            EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v))
+                    << "iteration " << i << " T=" << T << " O=" << O
+                    << " seek(" << after << ") should have override";
+        }
+
+        pass_count++;
+        destroy_player(p, root);
+    }
+
+    // Sanity: all iterations should have run
+    EXPECT_EQ(NUM_ITERATIONS, pass_count);
+}
+
+// ---------------------------------------------------------------------------
+// accumulate="sum" — numeric animation
+// ---------------------------------------------------------------------------
+
+TEST_F(SVGPlayerTest, Accumulate_Sum_Numeric_SecondIteration)
+{
+    // accumulate="sum": during the Nth repeat (0-based), the interpolated value
+    // is augmented by N * (single-iteration final value).
+    // from="0" to="10" dur="1s" repeatCount="3" accumulate="sum"
+    // At t=1.5s: iteration=1, fractional=0.5
+    // value = lerp(0,10,0.5) + 1*10 = 5 + 10 = 15
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
+        "    <animate attributeName=\"x\" from=\"0\" to=\"10\" dur=\"1s\""
+        "             repeatCount=\"3\" accumulate=\"sum\" fill=\"freeze\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    EXPECT_NE((psx_svg_player*)NULL, p);
+    EXPECT_EQ(S_OK, r);
+    if (!p) { return; }
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    EXPECT_TRUE(n != NULL);
+    if (!n) { destroy_player(p, root); return; }
+
+    // t=1.5s — second iteration midpoint (iteration=1, frac=0.5)
+    // expected: lerp(0,10,0.5) + 1*10 = 15
+    psx_svg_player_seek(p, 1.5f);
+    {
+        float v = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+        EXPECT_NEAR(15.0f, v, 0.1f);
+    }
+
+    // Also verify first iteration (t=0.5s, iteration=0): no accumulation
+    // expected: lerp(0,10,0.5) + 0*10 = 5
+    psx_svg_player_seek(p, 0.5f);
+    {
+        float v = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+        EXPECT_NEAR(5.0f, v, 0.1f);
+    }
+
+    // Third iteration midpoint (t=2.5s, iteration=2, frac=0.5)
+    // expected: lerp(0,10,0.5) + 2*10 = 25
+    psx_svg_player_seek(p, 2.5f);
+    {
+        float v = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+        EXPECT_NEAR(25.0f, v, 0.1f);
+    }
+
+    destroy_player(p, root);
+}
+
+TEST_F(SVGPlayerTest, Accumulate_None_Numeric_NoAccumulation)
+{
+    // accumulate="none" (default): each repeat iteration restarts from the
+    // initial value — no accumulation across iterations.
+    // from="0" to="10" dur="1s" repeatCount="3" (no accumulate attr)
+    // At t=1.5s: iteration=1, fractional=0.5
+    // value = lerp(0,10,0.5) = 5  (same as first iteration)
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
+        "    <animate attributeName=\"x\" from=\"0\" to=\"10\" dur=\"1s\""
+        "             repeatCount=\"3\" fill=\"freeze\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    EXPECT_NE((psx_svg_player*)NULL, p);
+    EXPECT_EQ(S_OK, r);
+    if (!p) { return; }
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    EXPECT_TRUE(n != NULL);
+    if (!n) { destroy_player(p, root); return; }
+
+    // t=1.5s — second iteration midpoint (iteration=1, frac=0.5)
+    // expected: lerp(0,10,0.5) = 5  (no accumulation)
+    psx_svg_player_seek(p, 1.5f);
+    {
+        float v = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+        EXPECT_NEAR(5.0f, v, 0.1f);
+    }
+
+    // t=2.5s — third iteration midpoint (iteration=2, frac=0.5)
+    // expected: lerp(0,10,0.5) = 5  (still no accumulation)
+    psx_svg_player_seek(p, 2.5f);
+    {
+        float v = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+        EXPECT_NEAR(5.0f, v, 0.1f);
+    }
+
+    destroy_player(p, root);
+}
+
+// Feature: svg-anim-full-compliance, Property 2: Accumulate 数值累加
+// **Validates: Requirements 4.2**
+TEST_F(SVGPlayerTest, Accumulate_Sum_Numeric_PropertyTest)
+{
+    // Property: For any numeric from=0/to animation with accumulate="sum" and
+    // repeatCount > 1, the value at iteration N (0-based) with fractional time
+    // frac should equal: to * frac + N * to
+    srand(23456);
+    const int NUM_ITERATIONS = 100;
+    int pass_count = 0;
+
+    for (int i = 0; i < NUM_ITERATIONS; i++) {
+        float to_val = (float)(1 + (rand() % 50)); // [1, 50]
+        int repeat = 2 + (rand() % 4); // [2, 5]
+        // Pick a random iteration index in [0, repeat-1]
+        int iteration = rand() % repeat;
+        // Pick a random fractional position in (0.05, 0.95) to avoid boundaries
+        float frac = 0.05f + (rand() % 900) / 1000.0f; // (0.05, 0.95)
+
+        float dur = 1.0f;
+        float seek_time = iteration * dur + frac * dur;
+
+        // Expected: lerp(0, to, frac) + iteration * to = to*frac + iteration*to
+        float expected = to_val * frac + iteration * to_val;
+
+        char svg[512];
+        snprintf(svg, sizeof(svg),
+                 "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+                 "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
+                 "    <animate attributeName=\"x\" from=\"0\" to=\"%.1f\" dur=\"%.1fs\""
+                 "             repeatCount=\"%d\" accumulate=\"sum\" fill=\"freeze\"/>"
+                 "  </rect>"
+                 "</svg>", to_val, dur, repeat);
+
+        psx_result r = S_OK;
+        psx_svg_node* root = NULL;
+        psx_svg_player* p = create_player(svg, &r, &root);
+        if (!p) {
+            EXPECT_NE((psx_svg_player*)NULL, p) << "iteration " << i
+                                                << " to=" << to_val << " repeat=" << repeat
+                                                << " failed to create player";
+            continue;
+        }
+
+        const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+        if (!n) {
+            EXPECT_TRUE(n != NULL) << "iteration " << i << " node not found";
+            destroy_player(p, root);
+            continue;
+        }
+
+        psx_svg_player_seek(p, seek_time);
+        {
+            float v = 0;
+            EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v))
+                    << "iteration " << i << " to=" << to_val << " repeat=" << repeat
+                    << " iter=" << iteration << " frac=" << frac
+                    << " seek(" << seek_time << ") should have override";
+            EXPECT_NEAR(expected, v, 0.1f)
+                    << "iteration " << i << " to=" << to_val << " repeat=" << repeat
+                    << " iter=" << iteration << " frac=" << frac
+                    << " expected=" << expected;
+        }
+
+        pass_count++;
+        destroy_player(p, root);
+    }
+
+    EXPECT_EQ(NUM_ITERATIONS, pass_count);
+}
+
+TEST_F(SVGPlayerTest, Accumulate_Sum_Transform_SecondIteration)
+{
+    // accumulate="sum" for animateTransform translate:
+    // from="0,0" to="100,0" dur="1s" repeatCount="2" accumulate="sum"
+    // At t=1.5s: iteration=1, frac=0.5
+    // e = lerp(0,100,0.5) + 1*100 = 50 + 100 = 150
+    // f = lerp(0,0,0.5) + 1*0 = 0
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"200\" height=\"200\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
+        "    <animateTransform attributeName=\"transform\" type=\"translate\""
+        "      from=\"0,0\" to=\"100,0\" dur=\"1s\" repeatCount=\"2\""
+        "      accumulate=\"sum\" fill=\"freeze\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    EXPECT_NE((psx_svg_player*)NULL, p);
+    EXPECT_EQ(S_OK, r);
+    if (!p) { return; }
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    EXPECT_TRUE(n != NULL);
+    if (!n) { destroy_player(p, root); return; }
+
+    // t=1.5s — second iteration midpoint (iteration=1, frac=0.5)
+    // expected: e = lerp(0,100,0.5) + 1*100 = 150, f = 0
+    psx_svg_player_seek(p, 1.5f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        EXPECT_NEAR(1.0f, a, 0.001f);
+        EXPECT_NEAR(0.0f, b, 0.001f);
+        EXPECT_NEAR(0.0f, c, 0.001f);
+        EXPECT_NEAR(1.0f, d, 0.001f);
+        EXPECT_NEAR(150.0f, e, 0.1f);
+        EXPECT_NEAR(0.0f, f, 0.1f);
+    }
+
+    // Also verify first iteration (t=0.5s, iteration=0): no accumulation
+    // expected: e = lerp(0,100,0.5) + 0*100 = 50, f = 0
+    psx_svg_player_seek(p, 0.5f);
+    {
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f));
+        EXPECT_NEAR(50.0f, e, 0.1f);
+        EXPECT_NEAR(0.0f, f, 0.1f);
+    }
+
+    destroy_player(p, root);
+}
+
+// Feature: svg-anim-full-compliance, Property 3: Accumulate transform 累加
+// **Validates: Requirements 4.3**
+TEST_F(SVGPlayerTest, Accumulate_Sum_Transform_PropertyTest)
+{
+    // Property: For any translate from="0,0" to="TX,0" animation with
+    // accumulate="sum" and repeatCount > 1, at iteration N (0-based) with
+    // fractional time frac, the transform e component should equal:
+    // e = TX * frac + N * TX = TX * (frac + N)
+    srand(34567);
+    const int NUM_ITERATIONS = 100;
+    int pass_count = 0;
+
+    for (int i = 0; i < NUM_ITERATIONS; i++) {
+        float TX = 10.0f + (float)(rand() % 191); // [10, 200]
+        int repeat = 2 + (rand() % 4); // [2, 5]
+        int iteration = rand() % repeat; // [0, repeat-1]
+        float frac = 0.05f + (rand() % 900) / 1000.0f; // (0.05, 0.95)
+
+        float dur = 1.0f;
+        float seek_time = iteration * dur + frac * dur;
+
+        // Expected: e = TX * frac + iteration * TX
+        float expected_e = TX * frac + iteration * TX;
+
+        char svg[600];
+        snprintf(svg, sizeof(svg),
+                 "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"200\" height=\"200\">"
+                 "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
+                 "    <animateTransform attributeName=\"transform\" type=\"translate\""
+                 "      from=\"0,0\" to=\"%.1f,0\" dur=\"%.1fs\" repeatCount=\"%d\""
+                 "      accumulate=\"sum\" fill=\"freeze\"/>"
+                 "  </rect>"
+                 "</svg>", TX, dur, repeat);
+
+        psx_result r = S_OK;
+        psx_svg_node* root = NULL;
+        psx_svg_player* p = create_player(svg, &r, &root);
+        if (!p) {
+            EXPECT_NE((psx_svg_player*)NULL, p) << "iteration " << i
+                                                << " TX=" << TX << " repeat=" << repeat
+                                                << " failed to create player";
+            continue;
+        }
+
+        const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+        if (!n) {
+            EXPECT_TRUE(n != NULL) << "iteration " << i << " node not found";
+            destroy_player(p, root);
+            continue;
+        }
+
+        psx_svg_player_seek(p, seek_time);
+        {
+            float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+            EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f))
+                    << "iteration " << i << " TX=" << TX << " repeat=" << repeat
+                    << " iter=" << iteration << " frac=" << frac
+                    << " seek(" << seek_time << ") should have transform override";
+            EXPECT_NEAR(1.0f, a, 0.001f) << "iteration " << i << " a should be identity";
+            EXPECT_NEAR(0.0f, b, 0.001f) << "iteration " << i << " b should be 0";
+            EXPECT_NEAR(0.0f, c, 0.001f) << "iteration " << i << " c should be 0";
+            EXPECT_NEAR(1.0f, d, 0.001f) << "iteration " << i << " d should be identity";
+            EXPECT_NEAR(expected_e, e, 1.0f)
+                    << "iteration " << i << " TX=" << TX << " repeat=" << repeat
+                    << " iter=" << iteration << " frac=" << frac
+                    << " expected_e=" << expected_e;
+            EXPECT_NEAR(0.0f, f, 0.1f)
+                    << "iteration " << i << " f should be 0 (no Y translation)";
+        }
+
+        pass_count++;
+        destroy_player(p, root);
+    }
+
+    EXPECT_EQ(NUM_ITERATIONS, pass_count);
+}
+
+/* ── End-event tests (Feature 5: event-driven end) ── */
+
+TEST_F(SVGPlayerTest, EndEvent_Trigger_EndsAnimation)
+{
+    // end="click" should terminate the animation when triggered.
+    // Animation: begin=0s, dur=10s, end="click", fill=remove (default).
+    // At t=2s the animation is active. Trigger "click" at t=3s, then at t=4s
+    // the animation should have ended (fill=remove => no override).
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
+        "    <animate attributeName=\"x\" begin=\"0s\" dur=\"10s\" end=\"click\""
+        "      from=\"0\" to=\"100\" fill=\"remove\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    if (!p) {
+        EXPECT_NE((psx_svg_player*)NULL, p);
+        return;
+    }
+    EXPECT_EQ(S_OK, r);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    if (!n) {
+        EXPECT_TRUE(n != NULL);
+        destroy_player(p, root);
+        return;
+    }
+
+    // t=2s: animation is active (begin=0, dur=10s). Override should exist.
+    psx_svg_player_seek(p, 2.0f);
+    {
+        float v = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v))
+                << "Animation should be active at t=2s";
+        EXPECT_NEAR(20.0f, v, 0.1f); // lerp(0,100, 2/10) = 20
+    }
+
+    // Trigger "click" at t=3s — this should set the end time to 3s.
+    psx_svg_player_seek(p, 3.0f);
+    psx_svg_player_trigger(p, NULL, "click");
+
+    // t=4s: animation ended at t=3s, fill=remove => no override.
+    psx_svg_player_seek(p, 4.0f);
+    {
+        float v = 0;
+        EXPECT_FALSE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v))
+                << "Animation should have ended after click trigger; fill=remove => no override at t=4s";
+    }
+
+    destroy_player(p, root);
+}
+
+TEST_F(SVGPlayerTest, EndEvent_InactiveIgnored)
+{
+    // Triggering the end event before the animation begins should have no effect.
+    // Animation: begin=5s, dur=10s, end="click".
+    // Trigger "click" at t=1s (before begin=5s). Then at t=7s the animation
+    // should still be active because the event was ignored.
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
+        "    <animate attributeName=\"x\" begin=\"5s\" dur=\"10s\" end=\"click\""
+        "      from=\"0\" to=\"100\" fill=\"remove\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    if (!p) {
+        EXPECT_NE((psx_svg_player*)NULL, p);
+        return;
+    }
+    EXPECT_EQ(S_OK, r);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    if (!n) {
+        EXPECT_TRUE(n != NULL);
+        destroy_player(p, root);
+        return;
+    }
+
+    // Before animation begins — no override.
+    psx_svg_player_seek(p, 1.0f);
+    {
+        float v = 0;
+        EXPECT_FALSE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v))
+                << "Animation should not be active at t=1s (begin=5s)";
+    }
+
+    // Trigger "click" at t=1s — animation is inactive, event should be ignored.
+    psx_svg_player_trigger(p, NULL, "click");
+
+    // t=7s: animation should still be active (begin=5s, dur=10s, end event was ignored).
+    // local = 7-5 = 2s => lerp(0,100, 2/10) = 20
+    psx_svg_player_seek(p, 7.0f);
+    {
+        float v = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v))
+                << "Animation should be active at t=7s; end event while inactive should be ignored";
+        EXPECT_NEAR(20.0f, v, 0.1f);
+    }
+
+    destroy_player(p, root);
+}
+
+// Feature: svg-anim-full-compliance, Property 4: End 事件终止动画
+// **Validates: Requirements 5.3, 5.4**
+TEST_F(SVGPlayerTest, EndEvent_MinOfTimeAndEvent_PropertyTest)
+{
+    // Property: For any animation with begin=0, dur=D, end="click" (fill=remove),
+    // and an end event triggered at time E, the animation should end at min(D, E).
+    // Before that time the animation is active; after that time no override exists.
+    srand(45678);
+    const int NUM_ITERATIONS = 100;
+    int pass_count = 0;
+
+    for (int i = 0; i < NUM_ITERATIONS; i++) {
+        // D in [2, 10], E in [1, 12]
+        float D = 2.0f + (rand() % 8001) / 1000.0f; // [2.0, 10.0]
+        float E = 1.0f + (rand() % 11001) / 1000.0f; // [1.0, 12.0]
+        float effective_end = (D < E) ? D : E;
+
+        // Build SVG: begin=0s, dur=Ds, end="click", fill=remove
+        char svg[512];
+        snprintf(svg, sizeof(svg),
+                 "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+                 "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
+                 "    <animate attributeName=\"x\" begin=\"0s\" dur=\"%.3fs\" end=\"click\""
+                 "      from=\"0\" to=\"100\" fill=\"remove\"/>"
+                 "  </rect>"
+                 "</svg>", D);
+
+        psx_result r = S_OK;
+        psx_svg_node* root = NULL;
+        psx_svg_player* p = create_player(svg, &r, &root);
+        if (!p) {
+            EXPECT_NE((psx_svg_player*)NULL, p) << "iteration " << i
+                                                << " D=" << D << " E=" << E << " failed to create player";
+            continue;
+        }
+
+        const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+        if (!n) {
+            EXPECT_TRUE(n != NULL) << "iteration " << i << " node not found";
+            destroy_player(p, root);
+            continue;
+        }
+
+        // Trigger "click" at time E (seek to E first so player time is E)
+        psx_svg_player_seek(p, E);
+        psx_svg_player_trigger(p, NULL, "click");
+
+        // Check BEFORE effective_end: animation should be active
+        float before = effective_end - 0.5f;
+        if (before > 0.0f) {
+            psx_svg_player_seek(p, before);
+            float v = 0;
+            EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v))
+                    << "iteration " << i << " D=" << D << " E=" << E
+                    << " effective_end=" << effective_end
+                    << " seek(" << before << ") should have override (animation active)";
+        }
+
+        // Check AFTER effective_end: animation should have ended (fill=remove => no override)
+        float after = effective_end + 0.5f;
+        psx_svg_player_seek(p, after);
+        {
+            float v = 0;
+            EXPECT_FALSE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v))
+                    << "iteration " << i << " D=" << D << " E=" << E
+                    << " effective_end=" << effective_end
+                    << " seek(" << after << ") should have no override (animation ended)";
+        }
+
+        pass_count++;
+        destroy_player(p, root);
+    }
+
+    EXPECT_EQ(NUM_ITERATIONS, pass_count);
+}
+
+/* ── id.event tests (Feature 6: id.event syntax) ── */
+
+TEST_F(SVGPlayerTest, IdEvent_MatchingTarget_Activates)
+{
+    // begin="btn.click" should activate only when trigger target_id matches "btn".
+    // Requirements: 6.3, 6.4
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <rect id=\"btn\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\"/>"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
+        "    <animate attributeName=\"x\" begin=\"btn.click\" dur=\"2s\" from=\"0\" to=\"100\" fill=\"freeze\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    EXPECT_NE((psx_svg_player*)NULL, p);
+    EXPECT_EQ(S_OK, r);
+    if (!p) { destroy_player(p, root); return; }
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    EXPECT_TRUE(n != NULL);
+    if (!n) { destroy_player(p, root); return; }
+
+    // Before trigger: no override.
+    psx_svg_player_seek(p, 0.0f);
+    {
+        float v = 0;
+        EXPECT_FALSE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+    }
+
+    // Trigger with matching target_id "btn" and event "click" at t=0.
+    psx_svg_player_seek(p, 0.0f);
+    psx_svg_player_trigger(p, "btn", "click");
+
+    // Seek to t=1s (midpoint of 2s animation): x = lerp(0,100,0.5) = 50.
+    psx_svg_player_seek(p, 1.0f);
+    {
+        float v = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v))
+                << "Animation with begin=\"btn.click\" should activate after trigger(\"btn\",\"click\")";
+        EXPECT_NEAR(50.0f, v, 0.1f);
+    }
+
+    destroy_player(p, root);
+}
+
+TEST_F(SVGPlayerTest, IdEvent_NonMatchingTarget_Ignored)
+{
+    // begin="btn.click" should NOT activate when trigger target_id is "other".
+    // Requirements: 6.3, 6.4
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <rect id=\"btn\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\"/>"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
+        "    <animate attributeName=\"x\" begin=\"btn.click\" dur=\"2s\" from=\"0\" to=\"100\" fill=\"freeze\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    EXPECT_NE((psx_svg_player*)NULL, p);
+    EXPECT_EQ(S_OK, r);
+    if (!p) { destroy_player(p, root); return; }
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    EXPECT_TRUE(n != NULL);
+    if (!n) { destroy_player(p, root); return; }
+
+    // Trigger with non-matching target_id "other" at t=0.
+    psx_svg_player_seek(p, 0.0f);
+    psx_svg_player_trigger(p, "other", "click");
+
+    // Seek to t=1s: animation should NOT be active.
+    psx_svg_player_seek(p, 1.0f);
+    {
+        float v = 0;
+        EXPECT_FALSE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v))
+                << "Animation with begin=\"btn.click\" should NOT activate after trigger(\"other\",\"click\")";
+    }
+
+    destroy_player(p, root);
+}
+
+// Feature: svg-anim-full-compliance, Property 5: id.event 目标过滤
+// **Validates: Requirements 6.3**
+TEST_F(SVGPlayerTest, IdEvent_TargetFilter_PropertyTest)
+{
+    // Property: For any animation with begin="tN.click" and any trigger call,
+    // the animation activates ONLY when trigger target_id matches "tN".
+    srand(56789);
+    const int NUM_ITERATIONS = 100;
+    int pass_count = 0;
+
+    for (int i = 0; i < NUM_ITERATIONS; i++) {
+        // Pick a random target id index [0..9]
+        int target_idx = rand() % 10;
+
+        // Build SVG: the target rect has id="tN", animation uses begin="tN.click"
+        char svg[512];
+        snprintf(svg, sizeof(svg),
+                 "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+                 "  <rect id=\"t%d\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\"/>"
+                 "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
+                 "    <animate attributeName=\"x\" begin=\"t%d.click\" dur=\"2s\" from=\"0\" to=\"100\" fill=\"freeze\"/>"
+                 "  </rect>"
+                 "</svg>", target_idx, target_idx);
+
+        psx_result r = S_OK;
+        psx_svg_node* root = NULL;
+        psx_svg_player* p = create_player(svg, &r, &root);
+        if (!p) {
+            EXPECT_NE((psx_svg_player*)NULL, p) << "iteration " << i
+                                                << " target_idx=" << target_idx << " failed to create player";
+            continue;
+        }
+
+        const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+        if (!n) {
+            EXPECT_TRUE(n != NULL) << "iteration " << i << " node not found";
+            destroy_player(p, root);
+            continue;
+        }
+
+        // --- Test matching trigger: trigger("tN", "click") should activate ---
+        psx_svg_player_seek(p, 0.0f);
+        {
+            char match_id[8];
+            snprintf(match_id, sizeof(match_id), "t%d", target_idx);
+            psx_svg_player_trigger(p, match_id, "click");
+        }
+
+        psx_svg_player_seek(p, 1.0f);
+        {
+            float v = 0;
+            EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v))
+                    << "iteration " << i << " target_idx=" << target_idx
+                    << " matching trigger should activate animation";
+        }
+
+        destroy_player(p, root);
+
+        // --- Test non-matching trigger: trigger("tM", "click") where M != N ---
+        // Re-create player for a clean state
+        p = create_player(svg, &r, &root);
+        if (!p) {
+            EXPECT_NE((psx_svg_player*)NULL, p) << "iteration " << i
+                                                << " target_idx=" << target_idx << " failed to create player (non-match)";
+            continue;
+        }
+
+        n = psx_svg_player_get_node_by_id(p, "r");
+        if (!n) {
+            EXPECT_TRUE(n != NULL) << "iteration " << i << " node not found (non-match)";
+            destroy_player(p, root);
+            continue;
+        }
+
+        {
+            int other_idx = (target_idx + 1 + (rand() % 9)) % 10;
+            char other_id[8];
+            snprintf(other_id, sizeof(other_id), "t%d", other_idx);
+
+            psx_svg_player_seek(p, 0.0f);
+            psx_svg_player_trigger(p, other_id, "click");
+
+            psx_svg_player_seek(p, 1.0f);
+            {
+                float v = 0;
+                EXPECT_FALSE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v))
+                        << "iteration " << i << " target_idx=" << target_idx
+                        << " other_idx=" << other_idx
+                        << " non-matching trigger should NOT activate animation";
+            }
+        }
+
+        pass_count++;
+        destroy_player(p, root);
+    }
+
+    // Sanity: all iterations should have run
+    EXPECT_EQ(NUM_ITERATIONS, pass_count);
+}
+
+TEST_F(SVGPlayerTest, IdEvent_SimpleToken_BackwardCompatible)
+{
+    // Simple token (no id prefix): begin="click" with trigger(NULL, "click") must still work.
+    // Requirements: 6.5
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
+        "    <animate attributeName=\"x\" begin=\"click\" dur=\"2s\" from=\"0\" to=\"100\" fill=\"freeze\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    EXPECT_NE((psx_svg_player*)NULL, p);
+    EXPECT_EQ(S_OK, r);
+    if (!p) { destroy_player(p, root); return; }
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    EXPECT_TRUE(n != NULL);
+    if (!n) { destroy_player(p, root); return; }
+
+    // Before trigger: no override.
+    psx_svg_player_seek(p, 0.5f);
+    {
+        float v = 0;
+        EXPECT_FALSE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+    }
+
+    // Trigger with NULL target_id and event "click" at t=0.
+    psx_svg_player_seek(p, 0.0f);
+    psx_svg_player_trigger(p, NULL, "click");
+
+    // Seek to t=1s (midpoint of 2s animation): x = lerp(0,100,0.5) = 50.
+    psx_svg_player_seek(p, 1.0f);
+    {
+        float v = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v))
+                << "Simple token begin=\"click\" should still activate with trigger(NULL,\"click\")";
+        EXPECT_NEAR(50.0f, v, 0.1f);
+    }
+
+    destroy_player(p, root);
+}
+
+/* ── additive="sum" numeric tests (Feature 7: additive="sum" numeric animation) ── */
+
+TEST_F(SVGPlayerTest, AdditiveSum_Numeric_BaseValueAdded)
+{
+    // additive="sum": override = base_value + lerp(from, to, t)
+    // base_value = 50 (from x="50"), at t=1s midpoint of 2s: lerp(0,10,0.5) = 5
+    // expected override = 50 + 5 = 55
+    // Requirements: 7.2, 7.3
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" x=\"50\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
+        "    <animate attributeName=\"x\" from=\"0\" to=\"10\" dur=\"2s\" additive=\"sum\" fill=\"freeze\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    EXPECT_NE((psx_svg_player*)NULL, p);
+    EXPECT_EQ(S_OK, r);
+    if (!p) { destroy_player(p, root); return; }
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    EXPECT_TRUE(n != NULL);
+    if (!n) { destroy_player(p, root); return; }
+
+    // Seek to t=1s (midpoint): override = 50 + lerp(0,10,0.5) = 55
+    psx_svg_player_seek(p, 1.0f);
+    {
+        float v = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v))
+                << "additive=\"sum\" animation should produce override at midpoint";
+        EXPECT_NEAR(55.0f, v, 0.1f);
+    }
+
+    destroy_player(p, root);
+}
+
+TEST_F(SVGPlayerTest, AdditiveSum_Numeric_NoBaseValue_DefaultZero)
+{
+    // additive="sum" with no DOM base value: default base = 0
+    // override = 0 + lerp(0,10,0.5) = 5
+    // Requirements: 7.2, 7.3
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
+        "    <animate attributeName=\"x\" from=\"0\" to=\"10\" dur=\"2s\" additive=\"sum\" fill=\"freeze\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    EXPECT_NE((psx_svg_player*)NULL, p);
+    EXPECT_EQ(S_OK, r);
+    if (!p) { destroy_player(p, root); return; }
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    EXPECT_TRUE(n != NULL);
+    if (!n) { destroy_player(p, root); return; }
+
+    // Seek to t=1s (midpoint): override = 0 + lerp(0,10,0.5) = 5
+    psx_svg_player_seek(p, 1.0f);
+    {
+        float v = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v))
+                << "additive=\"sum\" with no base value should produce override (default base=0)";
+        EXPECT_NEAR(5.0f, v, 0.1f);
+    }
+
+    destroy_player(p, root);
+}
+
+// Feature: svg-anim-full-compliance, Property 6: Additive 数值基值叠加
+// **Validates: Requirements 7.2**
+TEST_F(SVGPlayerTest, AdditiveSum_Numeric_PropertyTest)
+{
+    // Property: For any DOM base value B and any from/to animation with
+    // additive="sum", the override at time t should equal B + lerp(from, to, t/dur).
+    srand(67890);
+    const int NUM_ITERATIONS = 100;
+    int pass_count = 0;
+
+    for (int i = 0; i < NUM_ITERATIONS; i++) {
+        float base_val = (rand() % 10001) / 100.0f; // B in [0, 100]
+        float from_val = (rand() % 5001) / 100.0f; // from in [0, 50]
+        float to_val = (rand() % 5001) / 100.0f; // to in [0, 50]
+        float dur = 2.0f;
+        // Random time in (0.05*dur, 0.95*dur) to avoid boundaries
+        float frac = 0.05f + (rand() % 900) / 1000.0f; // (0.05, 0.95)
+        float seek_time = frac * dur;
+
+        // Expected: B + lerp(from, to, frac)
+        float expected = base_val + from_val + (to_val - from_val) * frac;
+
+        char svg[512];
+        snprintf(svg, sizeof(svg),
+                 "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+                 "  <rect id=\"r\" x=\"%.2f\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
+                 "    <animate attributeName=\"x\" from=\"%.2f\" to=\"%.2f\" dur=\"%.1fs\""
+                 "             additive=\"sum\" fill=\"freeze\"/>"
+                 "  </rect>"
+                 "</svg>", base_val, from_val, to_val, dur);
+
+        psx_result r = S_OK;
+        psx_svg_node* root = NULL;
+        psx_svg_player* p = create_player(svg, &r, &root);
+        if (!p) {
+            EXPECT_NE((psx_svg_player*)NULL, p) << "iteration " << i
+                                                << " B=" << base_val << " from=" << from_val << " to=" << to_val
+                                                << " failed to create player";
+            continue;
+        }
+
+        const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+        if (!n) {
+            EXPECT_TRUE(n != NULL) << "iteration " << i << " node not found";
+            destroy_player(p, root);
+            continue;
+        }
+
+        psx_svg_player_seek(p, seek_time);
+        {
+            float v = 0;
+            EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v))
+                    << "iteration " << i << " B=" << base_val
+                    << " from=" << from_val << " to=" << to_val
+                    << " frac=" << frac
+                    << " seek(" << seek_time << ") should have override";
+            EXPECT_NEAR(expected, v, 0.1f)
+                    << "iteration " << i << " B=" << base_val
+                    << " from=" << from_val << " to=" << to_val
+                    << " frac=" << frac
+                    << " expected=" << expected;
+        }
+
+        pass_count++;
+        destroy_player(p, root);
+    }
+
+    EXPECT_EQ(NUM_ITERATIONS, pass_count);
+}
+
+/* ── Gradient stop animation tests (Feature 8: stop-color / offset) ── */
+
+TEST_F(SVGPlayerTest, AnimateStopColor_FromTo_Linear)
+{
+    // animateColor on stop-color: from=#ff0000 (red) to=#0000ff (blue) dur=2s
+    // At t=1s (midpoint): R=128, G=0, B=128 (approx)
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <defs>"
+        "    <linearGradient id=\"g\">"
+        "      <stop id=\"s\" offset=\"0\" stop-color=\"#ff0000\">"
+        "        <animateColor attributeName=\"stop-color\" from=\"#ff0000\" to=\"#0000ff\""
+        "             dur=\"2s\" fill=\"freeze\"/>"
+        "      </stop>"
+        "    </linearGradient>"
+        "  </defs>"
+        "  <rect x=\"0\" y=\"0\" width=\"100\" height=\"100\" fill=\"url(#g)\"/>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    EXPECT_NE((psx_svg_player*)NULL, p);
+    if (!p) { return; }
+    EXPECT_EQ(S_OK, r);
+
+    const psx_svg_node* stop = psx_svg_player_get_node_by_id(p, "s");
+    EXPECT_TRUE(stop != NULL);
+    if (!stop) { destroy_player(p, root); return; }
+
+    // At t=0: should be pure red (#ff0000)
+    psx_svg_player_seek(p, 0.0f);
+    {
+        float v = 0;
+        bool got = psx_svg_player_debug_get_float_override(p, stop, SVG_ATTR_GRADIENT_STOP_COLOR, &v);
+        EXPECT_TRUE(got) << "stop-color override should exist at t=0";
+        if (got) {
+            union { uint32_t u; float f; } bits;
+            bits.f = v;
+            uint32_t cr = (bits.u >> 16) & 0xFF;
+            uint32_t cg = (bits.u >> 8) & 0xFF;
+            uint32_t cb = bits.u & 0xFF;
+            EXPECT_EQ(255u, cr);
+            EXPECT_EQ(0u, cg);
+            EXPECT_EQ(0u, cb);
+        }
+    }
+
+    // At t=1s (midpoint): R~128, G=0, B~128
+    psx_svg_player_seek(p, 1.0f);
+    {
+        float v = 0;
+        bool got = psx_svg_player_debug_get_float_override(p, stop, SVG_ATTR_GRADIENT_STOP_COLOR, &v);
+        EXPECT_TRUE(got) << "stop-color override should exist at t=1";
+        if (got) {
+            union { uint32_t u; float f; } bits;
+            bits.f = v;
+            uint32_t cr = (bits.u >> 16) & 0xFF;
+            uint32_t cg = (bits.u >> 8) & 0xFF;
+            uint32_t cb = bits.u & 0xFF;
+            EXPECT_NEAR(128.0f, (float)cr, 2.0f);
+            EXPECT_NEAR(0.0f, (float)cg, 2.0f);
+            EXPECT_NEAR(128.0f, (float)cb, 2.0f);
+        }
+    }
+
+    // At t=2s (end, freeze): should be pure blue (#0000ff)
+    psx_svg_player_seek(p, 2.0f);
+    {
+        float v = 0;
+        bool got = psx_svg_player_debug_get_float_override(p, stop, SVG_ATTR_GRADIENT_STOP_COLOR, &v);
+        EXPECT_TRUE(got) << "stop-color override should exist at t=2 (freeze)";
+        if (got) {
+            union { uint32_t u; float f; } bits;
+            bits.f = v;
+            uint32_t cr = (bits.u >> 16) & 0xFF;
+            uint32_t cb = bits.u & 0xFF;
+            EXPECT_EQ(0u, cr);
+            EXPECT_EQ(255u, cb);
+        }
+    }
+
+    destroy_player(p, root);
+}
+
+TEST_F(SVGPlayerTest, AnimateStopOffset_FromTo)
+{
+    // animate on stop offset: from=0.0 to=1.0 dur=2s
+    // At t=1s (midpoint): offset should be 0.5
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <defs>"
+        "    <linearGradient id=\"g\">"
+        "      <stop id=\"s\" offset=\"0\" stop-color=\"#000\">"
+        "        <animate attributeName=\"offset\" from=\"0\" to=\"1\" dur=\"2s\" fill=\"freeze\"/>"
+        "      </stop>"
+        "      <stop offset=\"1\" stop-color=\"#fff\"/>"
+        "    </linearGradient>"
+        "  </defs>"
+        "  <rect x=\"0\" y=\"0\" width=\"100\" height=\"100\" fill=\"url(#g)\"/>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    EXPECT_NE((psx_svg_player*)NULL, p);
+    if (!p) { return; }
+    EXPECT_EQ(S_OK, r);
+
+    const psx_svg_node* stop = psx_svg_player_get_node_by_id(p, "s");
+    EXPECT_TRUE(stop != NULL);
+    if (!stop) { destroy_player(p, root); return; }
+
+    // At t=0: offset should be 0.0
+    psx_svg_player_seek(p, 0.0f);
+    {
+        float v = -1.0f;
+        bool got = psx_svg_player_debug_get_float_override(p, stop, SVG_ATTR_GRADIENT_STOP_OFFSET, &v);
+        EXPECT_TRUE(got) << "stop-offset override should exist at t=0";
+        if (got) {
+            EXPECT_NEAR(0.0f, v, 0.001f);
+        }
+    }
+
+    // At t=1s (midpoint): offset should be 0.5
+    psx_svg_player_seek(p, 1.0f);
+    {
+        float v = -1.0f;
+        bool got = psx_svg_player_debug_get_float_override(p, stop, SVG_ATTR_GRADIENT_STOP_OFFSET, &v);
+        EXPECT_TRUE(got) << "stop-offset override should exist at t=1";
+        if (got) {
+            EXPECT_NEAR(0.5f, v, 0.001f);
+        }
+    }
+
+    // At t=2s (end, freeze): offset should be 1.0
+    psx_svg_player_seek(p, 2.0f);
+    {
+        float v = -1.0f;
+        bool got = psx_svg_player_debug_get_float_override(p, stop, SVG_ATTR_GRADIENT_STOP_OFFSET, &v);
+        EXPECT_TRUE(got) << "stop-offset override should exist at t=2 (freeze)";
+        if (got) {
+            EXPECT_NEAR(1.0f, v, 0.001f);
+        }
+    }
+
+    destroy_player(p, root);
+}
+
+/* ── accessKey() tests (Feature 9: accessKey trigger) ── */
+
+TEST_F(SVGPlayerTest, AccessKey_MatchingKey_Activates)
+{
+    // begin="accessKey(s)" should activate when send_key('s') is called.
+    // Requirements: 9.3, 9.4
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
+        "    <animate attributeName=\"x\" begin=\"accessKey(s)\" dur=\"2s\" from=\"0\" to=\"100\" fill=\"freeze\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    EXPECT_NE((psx_svg_player*)NULL, p);
+    EXPECT_EQ(S_OK, r);
+    if (!p) { destroy_player(p, root); return; }
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    EXPECT_TRUE(n != NULL);
+    if (!n) { destroy_player(p, root); return; }
+
+    // Before key press: no override.
+    psx_svg_player_seek(p, 0.5f);
+    {
+        float v = 0;
+        EXPECT_FALSE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+    }
+
+    // Send matching key 's' at t=1s.
+    psx_svg_player_seek(p, 1.0f);
+    psx_svg_player_send_key(p, 's');
+
+    // Seek to t=2s (1s into the 2s animation): x = lerp(0,100,0.5) = 50.
+    psx_svg_player_seek(p, 2.0f);
+    {
+        float v = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v))
+                << "Animation with begin=\"accessKey(s)\" should activate after send_key('s')";
+        EXPECT_NEAR(50.0f, v, 0.1f);
+    }
+
+    // Seek to t=3s (end, freeze): x = 100.
+    psx_svg_player_seek(p, 3.0f);
+    {
+        float v = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+        EXPECT_NEAR(100.0f, v, 0.1f);
+    }
+
+    destroy_player(p, root);
+}
+
+TEST_F(SVGPlayerTest, AccessKey_NonMatchingKey_Ignored)
+{
+    // begin="accessKey(s)" should NOT activate when send_key('a') is called.
+    // Requirements: 9.3, 9.4
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
+        "    <animate attributeName=\"x\" begin=\"accessKey(s)\" dur=\"2s\" from=\"0\" to=\"100\" fill=\"freeze\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    EXPECT_NE((psx_svg_player*)NULL, p);
+    EXPECT_EQ(S_OK, r);
+    if (!p) { destroy_player(p, root); return; }
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    EXPECT_TRUE(n != NULL);
+    if (!n) { destroy_player(p, root); return; }
+
+    // Send non-matching key 'a' at t=0.
+    psx_svg_player_seek(p, 0.0f);
+    psx_svg_player_send_key(p, 'a');
+
+    // Seek to t=1s: animation should NOT be active (wrong key).
+    psx_svg_player_seek(p, 1.0f);
+    {
+        float v = 0;
+        EXPECT_FALSE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v))
+                << "Animation with begin=\"accessKey(s)\" should NOT activate after send_key('a')";
+    }
+
+    // Seek further to t=3s: still no activation.
+    psx_svg_player_seek(p, 3.0f);
+    {
+        float v = 0;
+        EXPECT_FALSE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v));
+    }
+
+    destroy_player(p, root);
+}
+
+// Feature: svg-anim-full-compliance, Property 7: AccessKey 按键匹配
+// **Validates: Requirements 9.3**
+TEST_F(SVGPlayerTest, AccessKey_KeyMatch_PropertyTest)
+{
+    // Property: For any animation with begin="accessKey(c)" and any key press k,
+    // the animation activates ONLY when k == c.
+    srand(78901);
+    const int NUM_ITERATIONS = 100;
+    int pass_count = 0;
+
+    for (int i = 0; i < NUM_ITERATIONS; i++) {
+        // Pick a random lowercase letter as the accessKey character
+        char access_char = 'a' + (rand() % 26);
+
+        // Build SVG with accessKey(X)
+        char svg[512];
+        snprintf(svg, sizeof(svg),
+                 "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+                 "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
+                 "    <animate attributeName=\"x\" begin=\"accessKey(%c)\" dur=\"2s\" from=\"0\" to=\"100\" fill=\"freeze\"/>"
+                 "  </rect>"
+                 "</svg>", access_char);
+
+        // --- Test matching key: send_key(access_char) should activate ---
+        {
+            psx_result r = S_OK;
+            psx_svg_node* root = NULL;
+            psx_svg_player* p = create_player(svg, &r, &root);
+            if (!p) {
+                EXPECT_NE((psx_svg_player*)NULL, p) << "iteration " << i
+                                                    << " access_char='" << access_char << "' failed to create player (match)";
+                continue;
+            }
+
+            const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+            if (!n) {
+                EXPECT_TRUE(n != NULL) << "iteration " << i << " node not found (match)";
+                destroy_player(p, root);
+                continue;
+            }
+
+            // Send matching key at t=0
+            psx_svg_player_seek(p, 0.0f);
+            psx_svg_player_send_key(p, access_char);
+
+            // Seek to t=1s (midpoint of 2s animation): should have override
+            psx_svg_player_seek(p, 1.0f);
+            {
+                float v = 0;
+                EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v))
+                        << "iteration " << i << " access_char='" << access_char
+                        << "' matching key should activate animation";
+                EXPECT_NEAR(50.0f, v, 0.1f)
+                        << "iteration " << i << " access_char='" << access_char << "'";
+            }
+
+            destroy_player(p, root);
+        }
+
+        // --- Test non-matching key: send_key(other_char) should NOT activate ---
+        {
+            // Pick a different lowercase letter
+            char other_char = 'a' + ((access_char - 'a' + 1 + (rand() % 25)) % 26);
+
+            psx_result r = S_OK;
+            psx_svg_node* root = NULL;
+            psx_svg_player* p = create_player(svg, &r, &root);
+            if (!p) {
+                EXPECT_NE((psx_svg_player*)NULL, p) << "iteration " << i
+                                                    << " access_char='" << access_char << "' failed to create player (non-match)";
+                continue;
+            }
+
+            const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+            if (!n) {
+                EXPECT_TRUE(n != NULL) << "iteration " << i << " node not found (non-match)";
+                destroy_player(p, root);
+                continue;
+            }
+
+            // Send non-matching key at t=0
+            psx_svg_player_seek(p, 0.0f);
+            psx_svg_player_send_key(p, other_char);
+
+            // Seek to t=1s: should NOT have override
+            psx_svg_player_seek(p, 1.0f);
+            {
+                float v = 0;
+                EXPECT_FALSE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &v))
+                        << "iteration " << i << " access_char='" << access_char
+                        << "' other_char='" << other_char
+                        << "' non-matching key should NOT activate animation";
+            }
+
+            destroy_player(p, root);
+        }
+
+        pass_count++;
+    }
+
+    // Sanity: all iterations should have run
+    EXPECT_EQ(NUM_ITERATIONS, pass_count);
+}
+
+/* ── stroke-dasharray animation tests (Feature 10: dasharray) ── */
+
+/* Debug helper: read dasharray override from anim_state.
+ * Returns true if a dash override exists for the target node.
+ * Writes the dash array pointer and count into out_dashes / out_count. */
+static bool psx_svg_player_debug_get_dash_override(const psx_svg_player* p,
+                                                   const psx_svg_node* target,
+                                                   const float** out_dashes,
+                                                   uint32_t* out_count)
+{
+    if (!p || !target || !out_dashes || !out_count) { return false; }
+    uint32_t n = psx_array_size((psx_array*)&p->anim_state.dash_overrides);
+    for (uint32_t i = 0; i < n; i++) {
+        const psx_svg_anim_dash_item* it =
+            psx_array_get((psx_array*)&p->anim_state.dash_overrides, i, psx_svg_anim_dash_item);
+        if (it && it->target == target) {
+            *out_dashes = it->dashes;
+            *out_count = it->count;
+            return true;
+        }
+    }
+    return false;
+}
+
+TEST_F(SVGPlayerTest, AnimateDashArray_EqualLength_Linear)
+{
+    // Requirements: 10.2, 10.3
+    // from="5,10" to="15,20" dur="2s" => at t=1s (midpoint): [10, 15]
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"50\" height=\"50\" fill=\"none\" stroke=\"#000\" stroke-width=\"2\">"
+        "    <animate attributeName=\"stroke-dasharray\" from=\"5,10\" to=\"15,20\" dur=\"2s\" fill=\"freeze\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    if (!p) {
+        EXPECT_NE((psx_svg_player*)NULL, p);
+        return;
+    }
+    EXPECT_EQ(S_OK, r);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    if (!n) {
+        EXPECT_TRUE(n != NULL);
+        destroy_player(p, root);
+        return;
+    }
+
+    // Seek to midpoint (t=1s of dur=2s)
+    psx_svg_player_seek(p, 1.0f);
+    {
+        const float* dashes = NULL;
+        uint32_t count = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_dash_override(p, n, &dashes, &count))
+                << "Expected dasharray override at midpoint";
+        EXPECT_EQ((uint32_t)2, count);
+        if (dashes && count >= 2) {
+            EXPECT_NEAR(10.0f, dashes[0], 0.1f); // lerp(5, 15, 0.5) = 10
+            EXPECT_NEAR(15.0f, dashes[1], 0.1f); // lerp(10, 20, 0.5) = 15
+        }
+    }
+
+    // Verify freeze at end (t=2s): should hold [15, 20]
+    psx_svg_player_seek(p, 2.0f);
+    {
+        const float* dashes = NULL;
+        uint32_t count = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_dash_override(p, n, &dashes, &count))
+                << "Expected dasharray override at end (freeze)";
+        EXPECT_EQ((uint32_t)2, count);
+        if (dashes && count >= 2) {
+            EXPECT_NEAR(15.0f, dashes[0], 0.1f);
+            EXPECT_NEAR(20.0f, dashes[1], 0.1f);
+        }
+    }
+
+    destroy_player(p, root);
+}
+
+TEST_F(SVGPlayerTest, AnimateDashArray_DifferentLength_Normalized)
+{
+    // Requirements: 10.2, 10.3
+    // from="10,20" (length 2) to="1,2,3,4" (length 4)
+    // SVG spec: normalize shorter list by repeating to LCM length.
+    // LCM(2,4) = 4, so from becomes "10,20,10,20"
+    // At t=1s (midpoint of dur=2s): element-wise lerp:
+    // [lerp(10,1,0.5), lerp(20,2,0.5), lerp(10,3,0.5), lerp(20,4,0.5)]
+    // = [5.5, 11.0, 6.5, 12.0]
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"50\" height=\"50\" fill=\"none\" stroke=\"#000\" stroke-width=\"2\">"
+        "    <animate attributeName=\"stroke-dasharray\" from=\"10,20\" to=\"1,2,3,4\" dur=\"2s\" fill=\"freeze\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    if (!p) {
+        EXPECT_NE((psx_svg_player*)NULL, p);
+        return;
+    }
+    EXPECT_EQ(S_OK, r);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    if (!n) {
+        EXPECT_TRUE(n != NULL);
+        destroy_player(p, root);
+        return;
+    }
+
+    // Seek to midpoint (t=1s of dur=2s)
+    psx_svg_player_seek(p, 1.0f);
+    {
+        const float* dashes = NULL;
+        uint32_t count = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_dash_override(p, n, &dashes, &count))
+                << "Expected dasharray override at midpoint (different lengths)";
+        // After normalization both arrays are length 4
+        EXPECT_EQ((uint32_t)4, count);
+        if (dashes && count >= 4) {
+            EXPECT_NEAR(5.5f, dashes[0], 0.1f); // lerp(10, 1, 0.5)
+            EXPECT_NEAR(11.0f, dashes[1], 0.1f); // lerp(20, 2, 0.5)
+            EXPECT_NEAR(6.5f, dashes[2], 0.1f); // lerp(10, 3, 0.5)
+            EXPECT_NEAR(12.0f, dashes[3], 0.1f); // lerp(20, 4, 0.5)
+        }
+    }
+
+    destroy_player(p, root);
+}
+
+// Feature: svg-anim-full-compliance, Property 8: Dasharray 逐元素插值
+// **Validates: Requirements 10.2, 10.3**
+TEST_F(SVGPlayerTest, DashArray_ElementWiseLerp_PropertyTest)
+{
+    // Property: For any two equal-length dasharray pairs (2 elements each) and
+    // any t in [0,1], each element of the interpolated result should equal
+    // lerp(from[i], to[i], t).
+    srand(89012);
+    const int NUM_ITERATIONS = 100;
+    int pass_count = 0;
+
+    for (int i = 0; i < NUM_ITERATIONS; i++) {
+        float from0 = 1.0f + (float)(rand() % 50); // [1, 50]
+        float from1 = 1.0f + (float)(rand() % 50);
+        float to0 = 1.0f + (float)(rand() % 50);
+        float to1 = 1.0f + (float)(rand() % 50);
+        // t in (0.05, 0.95) to avoid boundary issues
+        float t = 0.05f + (rand() % 900) / 1000.0f;
+
+        float dur = 2.0f;
+        float seek_time = t * dur;
+
+        float expected0 = from0 + (to0 - from0) * t;
+        float expected1 = from1 + (to1 - from1) * t;
+
+        char svg[512];
+        snprintf(svg, sizeof(svg),
+                 "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"100\" height=\"100\">"
+                 "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"50\" height=\"50\" fill=\"none\" stroke=\"#000\" stroke-width=\"2\">"
+                 "    <animate attributeName=\"stroke-dasharray\" from=\"%.1f,%.1f\" to=\"%.1f,%.1f\" dur=\"%.1fs\" fill=\"freeze\"/>"
+                 "  </rect>"
+                 "</svg>", from0, from1, to0, to1, dur);
+
+        psx_result r = S_OK;
+        psx_svg_node* root = NULL;
+        psx_svg_player* p = create_player(svg, &r, &root);
+        if (!p) {
+            EXPECT_NE((psx_svg_player*)NULL, p) << "iteration " << i
+                                                << " from=[" << from0 << "," << from1 << "]"
+                                                << " to=[" << to0 << "," << to1 << "]"
+                                                << " failed to create player";
+            continue;
+        }
+
+        const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+        if (!n) {
+            EXPECT_TRUE(n != NULL) << "iteration " << i << " node not found";
+            destroy_player(p, root);
+            continue;
+        }
+
+        psx_svg_player_seek(p, seek_time);
+        {
+            const float* dashes = NULL;
+            uint32_t count = 0;
+            EXPECT_TRUE(psx_svg_player_debug_get_dash_override(p, n, &dashes, &count))
+                    << "iteration " << i
+                    << " from=[" << from0 << "," << from1 << "]"
+                    << " to=[" << to0 << "," << to1 << "]"
+                    << " t=" << t << " seek(" << seek_time << ")"
+                    << " should have dasharray override";
+            EXPECT_EQ((uint32_t)2, count)
+                    << "iteration " << i << " expected 2-element dasharray";
+            if (dashes && count >= 2) {
+                EXPECT_NEAR(expected0, dashes[0], 0.1f)
+                        << "iteration " << i
+                        << " from0=" << from0 << " to0=" << to0 << " t=" << t
+                        << " expected[0]=" << expected0;
+                EXPECT_NEAR(expected1, dashes[1], 0.1f)
+                        << "iteration " << i
+                        << " from1=" << from1 << " to1=" << to1 << " t=" << t
+                        << " expected[1]=" << expected1;
+            }
+        }
+
+        pass_count++;
+        destroy_player(p, root);
+    }
+
+    EXPECT_EQ(NUM_ITERATIONS, pass_count);
+}
+
+// ── Font property animation tests (Requirement 11) ──
+
+TEST_F(SVGPlayerTest, AnimateFontSize_FromTo_Linear)
+{
+    // Animate font-size from 12 to 24 over 2s; at midpoint expect 18.
+    const char* svg =
+        "<svg xmlns='http://www.w3.org/2000/svg' version='1.2' baseProfile='tiny'"
+        "     width='200' height='200'>"
+        "  <text xml:id='t1' x='10' y='50' font-size='12'>"
+        "    Test"
+        "    <animate attributeName='font-size' from='12' to='24' dur='2s' fill='freeze'/>"
+        "  </text>"
+        "</svg>";
+
+    psx_svg_node* root = NULL;
+    psx_result r = S_OK;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_TRUE(p != NULL);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "t1");
+    EXPECT_TRUE(n != NULL);
+
+    // Seek to midpoint (t=1s of dur=2s) — expect font-size = lerp(12, 24, 0.5) = 18
+    psx_svg_player_seek(p, 1.0f);
+    psx_svg_player_tick(p, 0.0f);
+
+    float v = 0.0f;
+    bool got = psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_FONT_SIZE, &v);
+    EXPECT_TRUE(got) << "font-size override should exist at midpoint";
+    EXPECT_NEAR(18.0f, v, 0.1f) << "font-size at midpoint should be 18";
+
+    destroy_player(p, root);
+}
+
+TEST_F(SVGPlayerTest, SetFontWeight_Bold_DuringActive)
+{
+    // <set> font-weight to bold during [1s, 3s); check at 1.5s.
+    const char* svg =
+        "<svg xmlns='http://www.w3.org/2000/svg' version='1.2' baseProfile='tiny'"
+        "     width='200' height='200'>"
+        "  <text xml:id='t2' x='10' y='50' font-weight='normal'>"
+        "    Test"
+        "    <set attributeName='font-weight' to='bold' begin='1s' dur='2s'/>"
+        "  </text>"
+        "</svg>";
+
+    psx_svg_node* root = NULL;
+    psx_result r = S_OK;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_TRUE(p != NULL);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "t2");
+    EXPECT_TRUE(n != NULL);
+
+    // Seek to 1.5s — inside active interval [1s, 3s)
+    psx_svg_player_seek(p, 1.5f);
+    psx_svg_player_tick(p, 0.0f);
+
+    int32_t iv = -1;
+    bool got = psx_svg_player_debug_get_int_override(p, n, SVG_ATTR_FONT_WEIGHT, &iv);
+    EXPECT_TRUE(got) << "font-weight override should exist during active interval";
+    EXPECT_EQ((int32_t)FONT_WEIGHT_BOLD, iv) << "font-weight should be FONT_WEIGHT_BOLD (700)";
+
+    destroy_player(p, root);
+}
+
+TEST_F(SVGPlayerTest, SetFontStyle_Italic_DuringActive)
+{
+    // <set> font-style to italic during [1s, 3s); check at 1.5s.
+    const char* svg =
+        "<svg xmlns='http://www.w3.org/2000/svg' version='1.2' baseProfile='tiny'"
+        "     width='200' height='200'>"
+        "  <text xml:id='t3' x='10' y='50' font-style='normal'>"
+        "    Test"
+        "    <set attributeName='font-style' to='italic' begin='1s' dur='2s'/>"
+        "  </text>"
+        "</svg>";
+
+    psx_svg_node* root = NULL;
+    psx_result r = S_OK;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_TRUE(p != NULL);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "t3");
+    EXPECT_TRUE(n != NULL);
+
+    // Seek to 1.5s — inside active interval [1s, 3s)
+    psx_svg_player_seek(p, 1.5f);
+    psx_svg_player_tick(p, 0.0f);
+
+    int32_t iv = -1;
+    bool got = psx_svg_player_debug_get_int_override(p, n, SVG_ATTR_FONT_STYLE, &iv);
+    EXPECT_TRUE(got) << "font-style override should exist during active interval";
+    EXPECT_EQ((int32_t)1, iv) << "font-style italic should produce 1 (True)";
+
+    destroy_player(p, root);
+}
+
+/* ── Syncbase timing tests (Feature 12: syncbase) ── */
+
+TEST_F(SVGPlayerTest, Syncbase_EndRef_CorrectBeginTime)
+{
+    // begin="a1.end" means: this animation starts when a1 ends.
+    // a1 has dur="2s" starting at t=0, so a1.end = 2s.
+    // The second animate (y) should start at t=2s.
+    // Requirements: 12.1, 12.4
+    const char* svg =
+        "<svg xmlns='http://www.w3.org/2000/svg' version='1.2' baseProfile='tiny'"
+        "     width='200' height='200'>"
+        "  <rect xml:id='r' x='0' y='0' width='50' height='50'>"
+        "    <animate xml:id='a1' attributeName='x' from='0' to='10' dur='2s' fill='freeze'/>"
+        "    <animate attributeName='y' begin='a1.end' dur='2s' from='0' to='50' fill='freeze'/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_svg_node* root = NULL;
+    psx_result r = S_OK;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_TRUE(p != NULL);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    EXPECT_TRUE(n != NULL);
+
+    // At t=1s: a1 is active (x should have override), y should NOT have override
+    // because a1 hasn't ended yet.
+    psx_svg_player_seek(p, 1.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float vx = 0;
+        bool got_x = psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &vx);
+        EXPECT_TRUE(got_x) << "x should have override at t=1s (a1 active)";
+        EXPECT_NEAR(5.0f, vx, 0.1f);
+
+        float vy = 0;
+        bool got_y = psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_Y, &vy);
+        EXPECT_FALSE(got_y) << "y should NOT have override at t=1s (a1 not ended yet)";
+    }
+
+    // At t=3s: a1 ended at t=2s, y started at t=2s, now 1s into its 2s duration.
+    // y = lerp(0, 50, 0.5) = 25
+    psx_svg_player_seek(p, 3.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float vx = 0;
+        bool got_x = psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &vx);
+        EXPECT_TRUE(got_x) << "x should have override at t=3s (fill=freeze)";
+        EXPECT_NEAR(10.0f, vx, 0.1f);
+
+        float vy = 0;
+        bool got_y = psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_Y, &vy);
+        EXPECT_TRUE(got_y) << "y should have override at t=3s (syncbase started at t=2s)";
+        EXPECT_NEAR(25.0f, vy, 0.1f);
+    }
+
+    destroy_player(p, root);
+}
+
+TEST_F(SVGPlayerTest, Syncbase_BeginRef_CorrectBeginTime)
+{
+    // begin="a1.begin+1s" means: this animation starts 1s after a1 begins.
+    // a1 begins at t=0, so a1.begin+1s = 1s.
+    // The second animate (y) should start at t=1s.
+    // Requirements: 12.1, 12.4
+    const char* svg =
+        "<svg xmlns='http://www.w3.org/2000/svg' version='1.2' baseProfile='tiny'"
+        "     width='200' height='200'>"
+        "  <rect xml:id='r' x='0' y='0' width='50' height='50'>"
+        "    <animate xml:id='a1' attributeName='x' from='0' to='10' dur='2s' fill='freeze'/>"
+        "    <animate attributeName='y' begin='a1.begin+1s' dur='2s' from='0' to='50' fill='freeze'/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_svg_node* root = NULL;
+    psx_result r = S_OK;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_TRUE(p != NULL);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    EXPECT_TRUE(n != NULL);
+
+    // At t=0.5s: y should NOT have override (before 1s)
+    psx_svg_player_seek(p, 0.5f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float vy = 0;
+        bool got_y = psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_Y, &vy);
+        EXPECT_FALSE(got_y) << "y should NOT have override at t=0.5s (before a1.begin+1s = 1s)";
+    }
+
+    // At t=2s: y started at t=1s, now 1s into its 2s duration.
+    // y = lerp(0, 50, 0.5) = 25
+    psx_svg_player_seek(p, 2.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float vy = 0;
+        bool got_y = psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_Y, &vy);
+        EXPECT_TRUE(got_y) << "y should have override at t=2s (1s into animation starting at t=1s)";
+        EXPECT_NEAR(25.0f, vy, 0.1f);
+    }
+
+    destroy_player(p, root);
+}
+
+TEST_F(SVGPlayerTest, Syncbase_WithOffset_CorrectBeginTime)
+{
+    // begin="a1.end+1s" means: this animation starts 1s after a1 ends.
+    // a1 has dur="2s" starting at t=0, so a1.end = 2s.
+    // The second animate (y) should start at t=2+1=3s.
+    // Requirements: 12.2, 12.4
+    const char* svg =
+        "<svg xmlns='http://www.w3.org/2000/svg' version='1.2' baseProfile='tiny'"
+        "     width='200' height='200'>"
+        "  <rect xml:id='r' x='0' y='0' width='50' height='50'>"
+        "    <animate xml:id='a1' attributeName='x' from='0' to='10' dur='2s' fill='freeze'/>"
+        "    <animate attributeName='y' begin='a1.end+1s' dur='2s' from='0' to='50' fill='freeze'/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_svg_node* root = NULL;
+    psx_result r = S_OK;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_TRUE(p != NULL);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    EXPECT_TRUE(n != NULL);
+
+    // At t=2.5s: a1 ended at t=2s, but y should NOT have override yet
+    // because y starts at a1.end+1s = 3s.
+    psx_svg_player_seek(p, 2.5f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float vy = 0;
+        bool got_y = psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_Y, &vy);
+        EXPECT_FALSE(got_y) << "y should NOT have override at t=2.5s (before a1.end+1s = 3s)";
+    }
+
+    // At t=4s: y started at t=3s, now 1s into its 2s duration.
+    // y = lerp(0, 50, 0.5) = 25
+    psx_svg_player_seek(p, 4.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float vy = 0;
+        bool got_y = psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_Y, &vy);
+        EXPECT_TRUE(got_y) << "y should have override at t=4s (1s into animation starting at t=3s)";
+        EXPECT_NEAR(25.0f, vy, 0.1f);
+    }
+
+    destroy_player(p, root);
+}
+
+TEST_F(SVGPlayerTest, Syncbase_MissingRef_Indefinite)
+{
+    // begin="nonexistent.end" references an id that does not exist in the DOM.
+    // Per Requirements 12.5, the animation should be treated as indefinite
+    // and never activate.
+    const char* svg =
+        "<svg xmlns='http://www.w3.org/2000/svg' version='1.2' baseProfile='tiny'"
+        "     width='200' height='200'>"
+        "  <rect xml:id='r' x='0' y='0' width='50' height='50'>"
+        "    <animate attributeName='x' begin='nonexistent.end' dur='2s'"
+        "             from='0' to='10' fill='freeze'/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_svg_node* root = NULL;
+    psx_result r = S_OK;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_TRUE(p != NULL);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    EXPECT_TRUE(n != NULL);
+
+    // At t=1s: animation should NOT have override (missing ref => indefinite)
+    psx_svg_player_seek(p, 1.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float vx = 0;
+        bool got_x = psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &vx);
+        EXPECT_FALSE(got_x) << "x should NOT have override at t=1s (missing syncbase ref)";
+    }
+
+    // At t=5s: still no override — the referenced id never existed
+    psx_svg_player_seek(p, 5.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float vx = 0;
+        bool got_x = psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &vx);
+        EXPECT_FALSE(got_x) << "x should NOT have override at t=5s (missing syncbase ref)";
+    }
+
+    destroy_player(p, root);
+}
+
+TEST_F(SVGPlayerTest, Syncbase_CircularDep_Indefinite)
+{
+    // a1 depends on a2.end, a2 depends on a1.end — circular dependency.
+    // Per Requirements 12.6, both animations should be treated as indefinite
+    // and never activate.
+    const char* svg =
+        "<svg xmlns='http://www.w3.org/2000/svg' version='1.2' baseProfile='tiny'"
+        "     width='200' height='200'>"
+        "  <rect xml:id='r' x='0' y='0' width='50' height='50'>"
+        "    <animate xml:id='a1' attributeName='x' begin='a2.end' dur='2s'"
+        "             from='0' to='10' fill='freeze'/>"
+        "    <animate xml:id='a2' attributeName='y' begin='a1.end' dur='2s'"
+        "             from='0' to='50' fill='freeze'/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_svg_node* root = NULL;
+    psx_result r = S_OK;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_TRUE(p != NULL);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    EXPECT_TRUE(n != NULL);
+
+    // At t=1s: neither x nor y should have override (circular dep => indefinite)
+    psx_svg_player_seek(p, 1.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float vx = 0;
+        bool got_x = psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &vx);
+        EXPECT_FALSE(got_x) << "x should NOT have override at t=1s (circular dependency)";
+
+        float vy = 0;
+        bool got_y = psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_Y, &vy);
+        EXPECT_FALSE(got_y) << "y should NOT have override at t=1s (circular dependency)";
+    }
+
+    // At t=5s: still no override — circular dependency means neither can resolve
+    psx_svg_player_seek(p, 5.0f);
+    psx_svg_player_tick(p, 0.0f);
+    {
+        float vx = 0;
+        bool got_x = psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_X, &vx);
+        EXPECT_FALSE(got_x) << "x should NOT have override at t=5s (circular dependency)";
+
+        float vy = 0;
+        bool got_y = psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_Y, &vy);
+        EXPECT_FALSE(got_y) << "y should NOT have override at t=5s (circular dependency)";
+    }
+
+    destroy_player(p, root);
+}
+
+// Feature: svg-anim-full-compliance, Property 9: Syncbase 时间解析
+// **Validates: Requirements 12.4, 12.7**
+TEST_F(SVGPlayerTest, Syncbase_EndRef_PropertyTest)
+{
+    // Property: For any animation A referencing animation B's end time (with
+    // offset O), when B has duration D, A should activate at D + O.
+    // A should NOT have an override just before D + O, and SHOULD have an
+    // override at D + O + 0.5 (well into A's active interval).
+    static const int NUM_ITERATIONS = 100;
+    uint32_t seed = 12345;
+    int pass_count = 0;
+
+    for (int i = 0; i < NUM_ITERATIONS; i++) {
+        // LCG: seed = seed * 1103515245 + 12345
+        seed = seed * 1103515245 + 12345;
+        float a1_dur = 0.5f + (seed % 10000) / 10000.0f * 4.5f; // [0.5, 5.0]
+
+        seed = seed * 1103515245 + 12345;
+        float offset = 0.0f + (seed % 10000) / 10000.0f * 3.0f; // [0.0, 3.0]
+
+        // Build SVG: a1 animates x with dur=a1_dur, a2 animates y with begin="a1.end+offset"
+        char svg[1024];
+        snprintf(svg, sizeof(svg),
+                 "<svg xmlns='http://www.w3.org/2000/svg' version='1.2' baseProfile='tiny'"
+                 "     width='200' height='200'>"
+                 "  <rect xml:id='r' x='0' y='0' width='50' height='50'>"
+                 "    <animate xml:id='a1' attributeName='x' from='0' to='10' dur='%.3fs' fill='freeze'/>"
+                 "    <animate attributeName='y' begin='a1.end+%.3fs' dur='2s' from='0' to='50' fill='freeze'/>"
+                 "  </rect>"
+                 "</svg>",
+                 a1_dur, offset);
+
+        psx_result r = S_OK;
+        psx_svg_node* root = NULL;
+        psx_svg_player* p = create_player(svg, &r, &root);
+        if (!p) {
+            EXPECT_NE((psx_svg_player*)NULL, p) << "iteration " << i
+                                                << " a1_dur=" << a1_dur << " offset=" << offset
+                                                << " failed to create player";
+            continue;
+        }
+
+        const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+        if (!n) {
+            EXPECT_TRUE(n != NULL) << "iteration " << i << " node not found";
+            destroy_player(p, root);
+            continue;
+        }
+
+        float expected_begin = a1_dur + offset;
+
+        // Seek to just before expected begin: y should have NO override
+        float before = expected_begin - 0.01f;
+        if (before >= 0.0f) {
+            psx_svg_player_seek(p, before);
+            psx_svg_player_tick(p, 0.0f);
+            float vy = 0;
+            EXPECT_FALSE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_Y, &vy))
+                    << "iteration " << i << " a1_dur=" << a1_dur << " offset=" << offset
+                    << " seek(" << before << ") y should have no override before a1.end+offset="
+                    << expected_begin;
+        }
+
+        // Seek to expected_begin + 0.5: y should have override
+        // y started at expected_begin, 0.5s into its 2s dur => t_frac=0.25
+        // y = lerp(0, 50, 0.25) = 12.5
+        float after = expected_begin + 0.5f;
+        psx_svg_player_seek(p, after);
+        psx_svg_player_tick(p, 0.0f);
+        {
+            float vy = 0;
+            EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_Y, &vy))
+                    << "iteration " << i << " a1_dur=" << a1_dur << " offset=" << offset
+                    << " seek(" << after << ") y should have override after a1.end+offset="
+                    << expected_begin;
+            if (psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_Y, &vy)) {
+                EXPECT_NEAR(12.5f, vy, 0.1f)
+                        << "iteration " << i << " a1_dur=" << a1_dur << " offset=" << offset
+                        << " y value at 0.5s into 2s dur should be ~12.5";
+            }
+        }
+
+        pass_count++;
+        destroy_player(p, root);
+    }
+
+    // Sanity: all iterations should have run
+    EXPECT_EQ(NUM_ITERATIONS, pass_count);
+}

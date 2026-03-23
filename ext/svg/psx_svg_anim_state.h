@@ -42,11 +42,18 @@
 extern "C" {
 #endif
 
+typedef struct {
+    const psx_svg_node* target;
+    float* dashes;
+    uint32_t count;
+} psx_svg_anim_dash_item;
+
 // opaque animation override state passed to renderer.
 struct psx_svg_anim_state {
     psx_array overrides;
     psx_array transforms; // animateTransform overrides
     psx_array motion_transforms; // animateMotion overrides (independent layer)
+    psx_array dash_overrides; // stroke-dasharray overrides (psx_svg_anim_dash_item[])
     ps_matrix* scratch_matrix; // reused each frame; owned by this struct
 };
 
@@ -90,12 +97,32 @@ typedef struct {
     // store the trigger name and allow external callers to start the animation
     // via psx_svg_player_trigger(). Owned by the player.
     const char* begin_event;
+    float begin_event_offset_sec; // event+offset: delay in seconds after trigger
+    const char* begin_event_target_id; // id.event: "btn" from "btn.click", NULL if none
+
+    // End event trigger support (e.g. end="click").
+    // When matched, current time is appended to ends_sec. Owned by the player.
+    const char* end_event;
+    const char* end_event_target_id; // id.event: target id for end event, NULL if none
 
     // Begin list support: store begin times (sec) and choose the latest begin <= doc_t.
     psx_array begins_sec;
 
     // End list support: store end times (sec) and choose the earliest end >= begin (per trigger).
     psx_array ends_sec;
+
+    uint32_t accumulate_mode; // SVG_ANIMATION_ACCUMULATE_NONE or _SUM
+
+    bool was_active;
+    uint32_t last_iteration;
+
+    char access_key;
+
+    const char* syncbase_ref_id;
+    uint32_t syncbase_type;
+    float syncbase_offset_sec; // offset in seconds (e.g., +1s)
+    bool syncbase_resolved; // true once begin time has been resolved
+    bool syncbase_circular; // true if circular dependency detected
 } psx_svg_anim_item;
 
 typedef struct {
@@ -137,6 +164,11 @@ const ps_matrix* psx_svg_anim_get_transform(const psx_svg_anim_state* s,
  * or until the player is destroyed.*/
 const psx_svg_anim_transform_item* psx_svg_anim_state_find_transform(const psx_svg_anim_state* s,
                                                                      const psx_svg_node* target);
+
+/* returns true if a dasharray override exists for target.
+ * writes the dash array pointer and count into *out_dashes / *out_count. */
+bool psx_svg_anim_get_dash(const psx_svg_anim_state* s, const psx_svg_node* target,
+                           const float** out_dashes, uint32_t* out_count);
 
 #ifdef __cplusplus
 }

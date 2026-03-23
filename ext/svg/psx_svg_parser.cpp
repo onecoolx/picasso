@@ -98,6 +98,14 @@ void psx_svg_timing_list_destroy(psx_svg_timing_list* tl)
         mem_free(tl->event_token);
         tl->event_token = NULL;
     }
+    if (tl->event_target_id) {
+        mem_free(tl->event_target_id);
+        tl->event_target_id = NULL;
+    }
+    if (tl->syncbase_id) {
+        mem_free(tl->syncbase_id);
+        tl->syncbase_id = NULL;
+    }
     mem_free(tl);
 }
 
@@ -1727,6 +1735,68 @@ static INLINE void _parse_animation_value(psx_svg_node* node, psx_svg_attr* attr
             attr->value.fval = 0.0f;
             return;
         }
+        // font-weight: "bold"
+        if (vlen == 4 && strncmp(val_start, "bold", 4) == 0) {
+            attr->value.fval = (float)FONT_WEIGHT_BOLD;
+            return;
+        }
+        // font-style: "italic"
+        if (vlen == 6 && strncmp(val_start, "italic", 6) == 0) {
+            attr->value.fval = 1.0f;
+            return;
+        }
+        // "normal": context-aware — font-weight maps to FONT_WEIGHT_REGULAR, font-style maps to 0
+        if (vlen == 6 && strncmp(val_start, "normal", 6) == 0) {
+            int32_t target_attr = SVG_ATTR_INVALID;
+            uint32_t na = node->attr_count();
+            for (uint32_t i = 0; i < na; i++) {
+                const psx_svg_attr* ta = node->attr_at(i);
+                if (ta && (psx_svg_attr_type)ta->attr_id == SVG_ATTR_ATTRIBUTE_NAME) {
+                    target_attr = ta->value.ival;
+                    break;
+                }
+            }
+            if (target_attr == SVG_ATTR_FONT_WEIGHT) {
+                attr->value.fval = (float)FONT_WEIGHT_REGULAR;
+            } else if (target_attr == SVG_ATTR_FONT_STYLE) {
+                attr->value.fval = 0.0f;
+            } else {
+                attr->value.fval = 0.0f;
+            }
+            return;
+        }
+        /* stroke-dasharray: parse as float array (comma/space separated). */
+        {
+            int32_t target_attr = SVG_ATTR_INVALID;
+            uint32_t na = node->attr_count();
+            for (uint32_t i = 0; i < na; i++) {
+                const psx_svg_attr* ta = node->attr_at(i);
+                if (ta && (psx_svg_attr_type)ta->attr_id == SVG_ATTR_ATTRIBUTE_NAME) {
+                    target_attr = ta->value.ival;
+                    break;
+                }
+            }
+            if (target_attr == SVG_ATTR_STROKE_DASH_ARRAY) {
+                attr->val_type = SVG_ATTR_VALUE_PTR;
+                uint32_t list_cap = 4;
+                psx_svg_attr_values_list* list = (psx_svg_attr_values_list*)mem_malloc(sizeof(float) * list_cap + sizeof(uint32_t));
+                uint32_t count = 0;
+                const char* ptr = val_start;
+                while (ptr < val_end) {
+                    if (count == list_cap) {
+                        list_cap = list_cap << 1;
+                        list = (psx_svg_attr_values_list*)mem_realloc(list, sizeof(float) * list_cap + sizeof(uint32_t));
+                    }
+                    float* val = (float*)(&list->data[0]) + count;
+                    ptr = _parse_number(ptr, val_end, val);
+                    if (!ptr) { break; }
+                    ++count;
+                }
+                list->length = count;
+                attr->value.val = list;
+                return;
+            }
+        }
         float val_number = 0.0f;
         val_start = _parse_length(val_start, val_end, dpi, &val_number);
         attr->value.fval = val_number;
@@ -1973,13 +2043,153 @@ static void _animation_begin_end_cb(psx_svg_node* node, psx_svg_attr* attr, cons
         tl->offsets_ms[tl->offsets_len++] = ms;
     } else if (!tl->event_token) {
         uint32_t len = BUF_LEN(ts, te);
-        char* s = (char*)mem_malloc(len + 1);
-        if (!s) {
-            return;
+        /* begin="indefinite" → store sentinel so trigger() can match it */
+        if (len == 10 && strncmp(ts, "indefinite", 10) == 0) {
+            const char* sentinel = "__indefinite__";
+            uint32_t slen = 14; /* strlen("__indefinite__") */
+            char* s = (char*)mem_malloc(slen + 1);
+            if (!s) {
+                return;
+            }
+            mem_copy(s, sentinel, slen);
+            s[slen] = 0;
+            tl->event_token = s;
+        } else if (len >= 12 && strncmp(ts, "accessKey(", 10) == 0) {
+            /* accessKey(x) → extract single char, store sentinel event token */
+            char key_char = ts[10];
+            if (key_char && ts[11] == ')') {
+                tl->access_key = key_char;
+                const char* sentinel = "__accessKey__";
+                uint32_t slen = 13; /* strlen("__accessKey__") */
+                char* s = (char*)mem_malloc(slen + 1);
+                if (!s) {
+                    return;
+                }
+                mem_copy(s, sentinel, slen);
+                s[slen] = 0;
+                tl->event_token = s;
+            }
+        } else {
+            /* Check for id.event syntax (e.g. "btn.click", "btn.click+2s").
+             * A dot is an id.event separator only if the first char of the
+             * token is a letter or underscore (avoids splitting numbers like
+             * "0.5s") and the char after the dot is also a letter. */
+            const char* dot = NULL;
+            if ((*ts >= 'a' && *ts <= 'z') || (*ts >= 'A' && *ts <= 'Z') || *ts == '_') {
+                for (const char* dc = ts + 1; dc < te; dc++) {
+                    if (*dc == '.' && (dc + 1) < te
+                        && ((*(dc + 1) >= 'a' && *(dc + 1) <= 'z')
+                            || (*(dc + 1) >= 'A' && *(dc + 1) <= 'Z'))) {
+                        dot = dc;
+                        break;
+                    }
+                }
+            }
+
+            const char* ev_start = ts;
+            if (dot) {
+                /* Store event_target_id = part before dot */
+                uint32_t id_len = (uint32_t)(dot - ts);
+                const char* after_dot = dot + 1;
+                uint32_t after_len = (uint32_t)(te - after_dot);
+
+                /* Check if this is a syncbase reference (id.begin or id.end) */
+                int is_syncbase = 0;
+                uint32_t sb_type = 0;
+                const char* sb_rest = NULL;
+
+                if (after_len >= 5 && strncmp(after_dot, "begin", 5) == 0) {
+                    sb_rest = after_dot + 5;
+                    /* "begin" must be followed by end-of-token, '+', or '-' */
+                    if (sb_rest >= te || *sb_rest == '+' || *sb_rest == '-') {
+                        is_syncbase = 1;
+                        sb_type = 0;
+                    }
+                } else if (after_len >= 3 && strncmp(after_dot, "end", 3) == 0) {
+                    sb_rest = after_dot + 3;
+                    /* "end" must be followed by end-of-token, '+', or '-' */
+                    if (sb_rest >= te || *sb_rest == '+' || *sb_rest == '-') {
+                        is_syncbase = 1;
+                        sb_type = 1;
+                    }
+                }
+
+                if (is_syncbase) {
+                    /* Store syncbase_id = part before dot */
+                    char* sid = (char*)mem_malloc(id_len + 1);
+                    if (!sid) {
+                        return;
+                    }
+                    mem_copy(sid, ts, id_len);
+                    sid[id_len] = 0;
+                    tl->syncbase_id = sid;
+                    tl->syncbase_type = sb_type;
+
+                    /* Check for optional +/-offset (e.g. "a1.end+1s") */
+                    if (sb_rest < te && (*sb_rest == '+' || *sb_rest == '-')) {
+                        float ms = 0.0f;
+                        if (_parse_clock_time(sb_rest, te, &ms)) {
+                            uint32_t new_len = tl->offsets_len + 1;
+                            float* nbuf = (float*)mem_realloc(tl->offsets_ms, sizeof(float) * new_len);
+                            if (nbuf) {
+                                tl->offsets_ms = nbuf;
+                                tl->offsets_ms[tl->offsets_len++] = ms;
+                            }
+                        }
+                    }
+                    return; /* syncbase handled, don't fall through to event handling */
+                }
+
+                /* Not syncbase — original id.event handling */
+                char* tid = (char*)mem_malloc(id_len + 1);
+                if (!tid) {
+                    return;
+                }
+                mem_copy(tid, ts, id_len);
+                tid[id_len] = 0;
+                tl->event_target_id = tid;
+                ev_start = dot + 1; /* remainder is the event token (+ optional offset) */
+            }
+
+            /* Check for event+offset syntax (e.g. "click+2s", "click-1s") */
+            const char* sign = NULL;
+            for (const char* sc = ev_start + 1; sc < te; sc++) {
+                if (*sc == '+' || *sc == '-') {
+                    sign = sc;
+                    break;
+                }
+            }
+            if (sign) {
+                /* event name is before the sign */
+                uint32_t elen = (uint32_t)(sign - ev_start);
+                char* s = (char*)mem_malloc(elen + 1);
+                if (!s) {
+                    return;
+                }
+                mem_copy(s, ev_start, elen);
+                s[elen] = 0;
+                tl->event_token = s;
+                /* offset is from sign to end */
+                float ms = 0.0f;
+                if (_parse_clock_time(sign, te, &ms)) {
+                    uint32_t new_len = tl->offsets_len + 1;
+                    float* nbuf = (float*)mem_realloc(tl->offsets_ms, sizeof(float) * new_len);
+                    if (nbuf) {
+                        tl->offsets_ms = nbuf;
+                        tl->offsets_ms[tl->offsets_len++] = ms;
+                    }
+                }
+            } else {
+                uint32_t elen = (uint32_t)(te - ev_start);
+                char* s = (char*)mem_malloc(elen + 1);
+                if (!s) {
+                    return;
+                }
+                mem_copy(s, ev_start, elen);
+                s[elen] = 0;
+                tl->event_token = s;
+            }
         }
-        mem_copy(s, ts, len);
-        s[len] = 0;
-        tl->event_token = s;
     }
 }
 

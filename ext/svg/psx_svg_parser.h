@@ -67,6 +67,10 @@ typedef struct psx_svg_timing_list {
     uint32_t offsets_len;
     float* offsets_ms; // length offsets_len, may be NULL if 0
     char* event_token; // optional, NULL if none
+    char* event_target_id; // optional, "btn" from "btn.click", NULL if none
+    char access_key;
+    char* syncbase_id;
+    uint32_t syncbase_type;
 } psx_svg_timing_list;
 
 // Helper for freeing a timing list allocated by the parser.
