@@ -1737,7 +1737,7 @@ public:
 
     void prepare(ps_context* ctx)
     {
-        // Apply font animation overrides before building glyph paths
+        // Apply animation overrides before building glyph paths
         if (m_cur_anim_state) {
             float v = 0.0f;
             if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_FONT_SIZE, &v)) {
@@ -1768,7 +1768,6 @@ public:
         }
 
         ps_matrix* mtx = ps_matrix_create();
-        ps_matrix_translate(mtx, m_x, m_y);
 
         // draw text contents and spans
         for (uint32_t i = 0; i < psx_array_size(&m_contents); i++) {
@@ -1787,6 +1786,20 @@ public:
         if (matrix) {
             ps_transform(ctx, matrix);
         }
+
+        // Resolve x/y: use animation override if present, else static value
+        float tx = m_x;
+        float ty = m_y;
+        if (m_cur_anim_state) {
+            float v = 0.0f;
+            if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_X, &v)) {
+                tx = v;
+            }
+            if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_Y, &v)) {
+                ty = v;
+            }
+        }
+        ps_translate(ctx, tx, ty);
 
         // draw text contents and spans
         for (uint32_t i = 0; i < psx_array_size(&m_contents); i++) {
