@@ -3217,6 +3217,12 @@ typedef struct {
     float total_length; /* total arc length */
 } _motion_arc_table;
 
+struct psx_svg_motion_cache {
+    _motion_path_points pts;
+    _motion_arc_table arc;
+    bool ready;
+};
+
 static void _motion_arc_build(const _motion_path_points* pts, _motion_arc_table* out)
 {
     out->cum_lengths = NULL;
@@ -3254,6 +3260,40 @@ static void _motion_arc_destroy(_motion_arc_table* tbl)
         tbl->cum_lengths = NULL;
     }
     tbl->total_length = 0.0f;
+}
+
+static psx_svg_motion_cache* _motion_cache_create(const char* path_str)
+{
+    if (!path_str || !*path_str) {
+        return NULL;
+    }
+
+    psx_svg_motion_cache* cache = (psx_svg_motion_cache*)mem_malloc(sizeof(psx_svg_motion_cache));
+    if (!cache) {
+        return NULL;
+    }
+    memset(cache, 0, sizeof(psx_svg_motion_cache));
+
+    uint32_t path_len = (uint32_t)strlen(path_str);
+    if (!_motion_path_parse(path_str, path_len, &cache->pts)) {
+        _motion_path_destroy(&cache->pts);
+        mem_free(cache);
+        return NULL;
+    }
+
+    _motion_arc_build(&cache->pts, &cache->arc);
+    cache->ready = true;
+    return cache;
+}
+
+static void _motion_cache_destroy(psx_svg_motion_cache* cache)
+{
+    if (!cache) {
+        return;
+    }
+    _motion_arc_destroy(&cache->arc);
+    _motion_path_destroy(&cache->pts);
+    mem_free(cache);
 }
 
 static void _motion_arc_position(const _motion_path_points* pts,
@@ -3609,6 +3649,13 @@ static void _collect_anims(psx_svg_player* p, const psx_svg_node* node)
             item.anim_node = node;
             item.target_node = target;
             item.target_attr = target_attr;
+
+            if (t == SVG_TAG_ANIMATE_MOTION) {
+                const psx_svg_attr* apath = _find_attr(node, SVG_ATTR_PATH);
+                if (apath && apath->val_type == SVG_ATTR_VALUE_PTR && apath->value.sval) {
+                    item.motion_cache = _motion_cache_create(apath->value.sval);
+                }
+            }
 
             _anim_item_begin_list_init(&item);
             _anim_item_end_list_init(&item);
@@ -4032,6 +4079,10 @@ void psx_svg_player_destroy(psx_svg_player* p)
         uint32_t n = psx_array_size(&p->anims);
         for (uint32_t i = 0; i < n; i++) {
             psx_svg_anim_item* it = psx_array_get(&p->anims, i, psx_svg_anim_item);
+            if (it && it->motion_cache) {
+                _motion_cache_destroy(it->motion_cache);
+                it->motion_cache = NULL;
+            }
             _anim_item_begin_list_destroy(it);
             _anim_item_end_list_destroy(it);
         }

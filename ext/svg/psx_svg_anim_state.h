@@ -42,6 +42,8 @@
 extern "C" {
 #endif
 
+typedef struct psx_svg_motion_cache psx_svg_motion_cache;
+
 typedef struct {
     const psx_svg_node* target;
     float* dashes;
@@ -81,6 +83,7 @@ typedef struct {
     const psx_svg_node* anim_node;
     const psx_svg_node* target_node;
     psx_svg_attr_type target_attr;
+    psx_svg_motion_cache* motion_cache; // animateMotion path cache (owned by player)
     float begin_sec; // kept for duration hint compatibility
     float dur_sec;
     float end_sec; // optional explicit end, 0 => unspecified
