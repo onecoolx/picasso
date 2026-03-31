@@ -32,6 +32,8 @@
 
 #include <string.h>
 #include <math.h>
+#include <stdint.h>
+#include <stdlib.h>
 
 static INLINE void _anim_state_reset(psx_svg_anim_state* s)
 {
@@ -325,16 +327,70 @@ static INLINE void _anim_state_set_int32(psx_svg_anim_state* s, const psx_svg_no
     dst->u.ival = v;
 }
 
+static int _anim_override_cmp(const void* a, const void* b)
+{
+    const psx_svg_anim_override_item* aa = (const psx_svg_anim_override_item*)a;
+    const psx_svg_anim_override_item* bb = (const psx_svg_anim_override_item*)b;
+    uintptr_t ta = (uintptr_t)aa->target;
+    uintptr_t tb = (uintptr_t)bb->target;
+    if (ta < tb) {
+        return -1;
+    }
+    if (ta > tb) {
+        return 1;
+    }
+    if (aa->attr < bb->attr) {
+        return -1;
+    }
+    if (aa->attr > bb->attr) {
+        return 1;
+    }
+    return 0;
+}
+
+static INLINE void _anim_state_sort_overrides(psx_svg_anim_state* s)
+{
+    if (!s) {
+        return;
+    }
+    if (psx_array_size(&s->overrides) < 2) {
+        return;
+    }
+    qsort(s->overrides.data, s->overrides.size, s->overrides.element_size, _anim_override_cmp);
+}
+
 static INLINE const psx_svg_anim_override_item* _anim_state_find(const psx_svg_anim_state* s, const psx_svg_node* target, psx_svg_attr_type attr)
 {
     if (!s || !target || attr == SVG_ATTR_INVALID) {
         return NULL;
     }
     uint32_t n = psx_array_size((psx_array*)&s->overrides);
-    for (uint32_t i = 0; i < n; i++) {
-        const psx_svg_anim_override_item* it = psx_array_get((psx_array*)&s->overrides, i, psx_svg_anim_override_item);
-        if (it->target == target && it->attr == attr) {
-            return it;
+    if (n == 0) {
+        return NULL;
+    }
+
+    uintptr_t key_target = (uintptr_t)target;
+    int32_t key_attr = (int32_t)attr;
+    uint32_t lo = 0;
+    uint32_t hi = n;
+
+    while (lo < hi) {
+        uint32_t mid = lo + ((hi - lo) >> 1);
+        const psx_svg_anim_override_item* it = psx_array_get((psx_array*)&s->overrides, mid, psx_svg_anim_override_item);
+        uintptr_t t = (uintptr_t)it->target;
+        if (t < key_target) {
+            lo = mid + 1;
+        } else if (t > key_target) {
+            hi = mid;
+        } else {
+            int32_t a = (int32_t)it->attr;
+            if (a < key_attr) {
+                lo = mid + 1;
+            } else if (a > key_attr) {
+                hi = mid;
+            } else {
+                return it;
+            }
         }
     }
     return NULL;
@@ -348,28 +404,7 @@ static INLINE float _anim_lerp(float a, float b, float t)
 static INLINE bool _anim_values_list_get_transform(const psx_svg_attr_values_list* list, uint32_t idx,
                                                    const float** out_vals, uint32_t* out_len)
 {
-    if (!out_vals || !out_len) {
-        return false;
-    }
-    *out_vals = NULL;
-    *out_len = 0;
-
-    if (!list || idx >= list->length) {
-        return false;
-    }
-
-    // Must match psx_svg_parser.cpp::_transform_values_list
-    struct _anim_transform_values_list {
-        uint32_t length;
-        float data[6];
-    };
-
-    const struct _anim_transform_values_list* base =
-        (const struct _anim_transform_values_list*)(&list->data[0]);
-    const struct _anim_transform_values_list* it = base + idx;
-    *out_vals = &it->data[0];
-    *out_len = it->length;
-    return true;
+    return psx_svg_attr_values_get_transform_entry(list, idx, out_vals, out_len);
 }
 
 static INLINE float _anim_clampf(float v, float lo, float hi)

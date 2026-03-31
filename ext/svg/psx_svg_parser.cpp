@@ -1897,6 +1897,27 @@ struct _transform_values_list {
     float data[6];
 };
 
+bool psx_svg_attr_values_get_transform_entry(const psx_svg_attr_values_list* list, uint32_t idx,
+                                             const float** out_vals, uint32_t* out_len)
+{
+    if (!out_vals || !out_len) {
+        return false;
+    }
+    *out_vals = NULL;
+    *out_len = 0;
+
+    if (!list || idx >= list->length) {
+        return false;
+    }
+
+    const struct _transform_values_list* base =
+        (const struct _transform_values_list*)(&list->data[0]);
+    const struct _transform_values_list* it = base + idx;
+    *out_vals = &it->data[0];
+    *out_len = it->length;
+    return true;
+}
+
 #define GET_NEXT_VALUE_PTR(ptr, ctx, type) \
     do { \
         psx_svg_attr_values_list * list = ctx->list; \
