@@ -33,11 +33,6 @@
 #include <string.h>
 #include <math.h>
 #include <stdlib.h>
-#include <stdlib.h>
-#include <stdlib.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <stdlib.h>
 
 static INLINE void _anim_state_reset(psx_svg_anim_state* s)
 {
@@ -47,8 +42,6 @@ static INLINE void _anim_state_reset(psx_svg_anim_state* s)
     psx_array_clear(&s->overrides);
     psx_array_clear(&s->transforms);
     psx_array_clear(&s->motion_transforms);
-
-    // Free dash override buffers before clearing.
     uint32_t n = psx_array_size(&s->dash_overrides);
     for (uint32_t i = 0; i < n; i++) {
         psx_svg_anim_dash_item* di = psx_array_get(&s->dash_overrides, i, psx_svg_anim_dash_item);
@@ -58,6 +51,7 @@ static INLINE void _anim_state_reset(psx_svg_anim_state* s)
         }
     }
     psx_array_clear(&s->dash_overrides);
+    psx_array_clear(&s->color_overrides);
 }
 
 static INLINE bool _is_supported_anim_attr(psx_svg_attr_type a)
@@ -100,6 +94,13 @@ static INLINE bool _is_int32_anim_attr(psx_svg_attr_type a)
            || a == SVG_ATTR_DISPLAY
            || a == SVG_ATTR_FONT_WEIGHT
            || a == SVG_ATTR_FONT_STYLE;
+}
+
+static INLINE bool _is_color_anim_attr(psx_svg_attr_type a)
+{
+    return a == SVG_ATTR_FILL
+           || a == SVG_ATTR_STROKE
+           || a == SVG_ATTR_GRADIENT_STOP_COLOR;
 }
 
 static INLINE void _anim_state_set_transform(psx_svg_anim_state* s, const psx_svg_node* target,
@@ -331,10 +332,51 @@ static INLINE void _anim_state_set_int32(psx_svg_anim_state* s, const psx_svg_no
     dst->u.ival = v;
 }
 
+static INLINE void _anim_state_set_color(psx_svg_anim_state* s, const psx_svg_node* target, psx_svg_attr_type attr, uint32_t color)
+{
+    if (!s || !target || attr == SVG_ATTR_INVALID) {
+        return;
+    }
+    uint32_t n = psx_array_size(&s->color_overrides);
+    for (uint32_t i = 0; i < n; i++) {
+        psx_svg_anim_color_item* it = psx_array_get(&s->color_overrides, i, psx_svg_anim_color_item);
+        if (it->target == target && it->attr == attr) {
+            it->color = color;
+            return;
+        }
+    }
+    psx_array_append(&s->color_overrides, NULL);
+    psx_svg_anim_color_item* dst = psx_array_get_last(&s->color_overrides, psx_svg_anim_color_item);
+    dst->target = target;
+    dst->attr = attr;
+    dst->color = color;
+}
+
 static int _anim_override_cmp(const void* a, const void* b)
 {
     const psx_svg_anim_override_item* aa = (const psx_svg_anim_override_item*)a;
     const psx_svg_anim_override_item* bb = (const psx_svg_anim_override_item*)b;
+    uintptr_t ta = (uintptr_t)aa->target;
+    uintptr_t tb = (uintptr_t)bb->target;
+    if (ta < tb) {
+        return -1;
+    }
+    if (ta > tb) {
+        return 1;
+    }
+    if (aa->attr < bb->attr) {
+        return -1;
+    }
+    if (aa->attr > bb->attr) {
+        return 1;
+    }
+    return 0;
+}
+
+static int _anim_color_override_cmp(const void* a, const void* b)
+{
+    const psx_svg_anim_color_item* aa = (const psx_svg_anim_color_item*)a;
+    const psx_svg_anim_color_item* bb = (const psx_svg_anim_color_item*)b;
     uintptr_t ta = (uintptr_t)aa->target;
     uintptr_t tb = (uintptr_t)bb->target;
     if (ta < tb) {
@@ -363,6 +405,17 @@ static INLINE void _anim_state_sort_overrides(psx_svg_anim_state* s)
     qsort(s->overrides.data, s->overrides.size, s->overrides.element_size, _anim_override_cmp);
 }
 
+static INLINE void _anim_state_sort_color_overrides(psx_svg_anim_state* s)
+{
+    if (!s) {
+        return;
+    }
+    if (psx_array_size(&s->color_overrides) < 2) {
+        return;
+    }
+    qsort(s->color_overrides.data, s->color_overrides.size, s->color_overrides.element_size, _anim_color_override_cmp);
+}
+
 static INLINE const psx_svg_anim_override_item* _anim_state_find(const psx_svg_anim_state* s, const psx_svg_node* target, psx_svg_attr_type attr)
 {
     if (!s || !target || attr == SVG_ATTR_INVALID) {
@@ -381,6 +434,43 @@ static INLINE const psx_svg_anim_override_item* _anim_state_find(const psx_svg_a
     while (lo < hi) {
         uint32_t mid = lo + ((hi - lo) >> 1);
         const psx_svg_anim_override_item* it = psx_array_get((psx_array*)&s->overrides, mid, psx_svg_anim_override_item);
+        uintptr_t t = (uintptr_t)it->target;
+        if (t < key_target) {
+            lo = mid + 1;
+        } else if (t > key_target) {
+            hi = mid;
+        } else {
+            int32_t a = (int32_t)it->attr;
+            if (a < key_attr) {
+                lo = mid + 1;
+            } else if (a > key_attr) {
+                hi = mid;
+            } else {
+                return it;
+            }
+        }
+    }
+    return NULL;
+}
+
+static INLINE const psx_svg_anim_color_item* _anim_state_find_color(const psx_svg_anim_state* s, const psx_svg_node* target, psx_svg_attr_type attr)
+{
+    if (!s || !target || attr == SVG_ATTR_INVALID) {
+        return NULL;
+    }
+    uint32_t n = psx_array_size((psx_array*)&s->color_overrides);
+    if (n == 0) {
+        return NULL;
+    }
+
+    uintptr_t key_target = (uintptr_t)target;
+    int32_t key_attr = (int32_t)attr;
+    uint32_t lo = 0;
+    uint32_t hi = n;
+
+    while (lo < hi) {
+        uint32_t mid = lo + ((hi - lo) >> 1);
+        const psx_svg_anim_color_item* it = psx_array_get((psx_array*)&s->color_overrides, mid, psx_svg_anim_color_item);
         uintptr_t t = (uintptr_t)it->target;
         if (t < key_target) {
             lo = mid + 1;
@@ -3303,7 +3393,7 @@ static void _motion_arc_destroy(_motion_arc_table* tbl)
 
 static psx_svg_motion_cache* _motion_cache_create(const char* path_str)
 {
-    if (!path_str || !*path_str) {
+    if (!path_str) {
         return NULL;
     }
 
@@ -3866,7 +3956,6 @@ static void _resolve_syncbase_deps(psx_svg_player* p)
                 const char* cid = candidate->anim_node->content(NULL);
                 if (cid && strcmp(cid, it->syncbase_ref_id) == 0) {
                     ref = candidate;
-                    break;
                 }
             }
 
@@ -3966,6 +4055,23 @@ bool psx_svg_anim_get_int32(const psx_svg_anim_state* s,
         return false;
     }
     *out_v = it->u.ival;
+    return true;
+}
+
+bool psx_svg_anim_get_color(const psx_svg_anim_state* s,
+                            const psx_svg_node* target,
+                            psx_svg_attr_type attr,
+                            uint32_t* out_color)
+{
+    if (!out_color) {
+        return false;
+    }
+    *out_color = 0;
+    const psx_svg_anim_color_item* it = _anim_state_find_color(s, target, attr);
+    if (!it) {
+        return false;
+    }
+    *out_color = it->color;
     return true;
 }
 
@@ -4070,6 +4176,7 @@ psx_svg_player* psx_svg_player_create(const psx_svg_node* root, psx_result* out)
     psx_array_init(&p->anim_state.transforms, sizeof(psx_svg_anim_transform_item));
     psx_array_init(&p->anim_state.motion_transforms, sizeof(psx_svg_anim_transform_item));
     psx_array_init(&p->anim_state.dash_overrides, sizeof(psx_svg_anim_dash_item));
+    psx_array_init(&p->anim_state.color_overrides, sizeof(psx_svg_anim_color_item));
     p->anim_state.scratch_matrix = ps_matrix_create();
 
     psx_svg_render_list_set_anim_state(p->render_list, &p->anim_state);
@@ -4142,6 +4249,8 @@ void psx_svg_player_destroy(psx_svg_player* p)
         }
         psx_array_destroy(&p->anim_state.dash_overrides);
     }
+
+    psx_array_destroy(&p->anim_state.color_overrides);
 
     if (p->anim_state.scratch_matrix) {
         ps_matrix_unref(p->anim_state.scratch_matrix);
@@ -4292,7 +4401,10 @@ static void _apply_animations_at_time(psx_svg_player* p)
         }
         if (ok) {
             (void)hold;
-            if (_is_int32_anim_attr(it->target_attr)) {
+            if (it->tag == SVG_TAG_ANIMATE_COLOR && _is_color_anim_attr(it->target_attr)) {
+                uint32_t color = _f32_to_u32_bits(v);
+                _anim_state_set_color(&p->anim_state, it->target_node, it->target_attr, color);
+            } else if (_is_int32_anim_attr(it->target_attr)) {
                 _anim_state_set_int32(&p->anim_state, it->target_node, it->target_attr, (int32_t)v);
             } else {
                 // additive="sum": add DOM base value for numeric attributes (Req 7.2).
@@ -4306,6 +4418,7 @@ static void _apply_animations_at_time(psx_svg_player* p)
     }
 
     _anim_state_sort_overrides(&p->anim_state);
+    _anim_state_sort_color_overrides(&p->anim_state);
 }
 
 void psx_svg_player_seek(psx_svg_player* p, float seconds)

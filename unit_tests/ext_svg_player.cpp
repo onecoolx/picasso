@@ -81,7 +81,22 @@ static inline bool psx_svg_player_debug_get_float_override(const psx_svg_player*
                                                            psx_svg_attr_type attr,
                                                            float* out_v)
 {
-    return psx_svg_anim_get_float(&p->anim_state, target, attr, out_v);
+    if (!p || !out_v) {
+        return false;
+    }
+    if (psx_svg_anim_get_float(&p->anim_state, target, attr, out_v)) {
+        return true;
+    }
+    if (attr == SVG_ATTR_FILL || attr == SVG_ATTR_STROKE || attr == SVG_ATTR_GRADIENT_STOP_COLOR) {
+        uint32_t color = 0;
+        if (psx_svg_anim_get_color(&p->anim_state, target, attr, &color)) {
+            union { uint32_t u; float f; } bits;
+            bits.u = color;
+            *out_v = bits.f;
+            return true;
+        }
+    }
+    return false;
 }
 
 static inline bool psx_svg_player_debug_get_int_override(const psx_svg_player* p,
@@ -90,6 +105,14 @@ static inline bool psx_svg_player_debug_get_int_override(const psx_svg_player* p
                                                          int32_t* out_v)
 {
     return psx_svg_anim_get_int32(&p->anim_state, target, attr, out_v);
+}
+
+static inline bool psx_svg_player_debug_get_color_override(const psx_svg_player* p,
+                                                           const psx_svg_node* target,
+                                                           psx_svg_attr_type attr,
+                                                           uint32_t* out_color)
+{
+    return psx_svg_anim_get_color(&p->anim_state, target, attr, out_color);
 }
 
 static bool psx_svg_player_debug_get_transform_override(const psx_svg_player* p,

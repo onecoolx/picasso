@@ -56,6 +56,7 @@ struct psx_svg_anim_state {
     psx_array transforms; // animateTransform overrides
     psx_array motion_transforms; // animateMotion overrides (independent layer)
     psx_array dash_overrides; // stroke-dasharray overrides (psx_svg_anim_dash_item[])
+    psx_array color_overrides; // color overrides (psx_svg_anim_color_item[])
     ps_matrix* scratch_matrix; // reused each frame; owned by this struct
 };
 
@@ -139,6 +140,12 @@ typedef struct {
 
 typedef struct {
     const psx_svg_node* target;
+    psx_svg_attr_type attr;
+    uint32_t color;
+} psx_svg_anim_color_item;
+
+typedef struct {
+    const psx_svg_node* target;
     float a, b;
     float c, d;
     float e, f;
@@ -153,6 +160,11 @@ bool psx_svg_anim_get_float(const psx_svg_anim_state* s, const psx_svg_node* tar
  * writes the value into *out_v. */
 bool psx_svg_anim_get_int32(const psx_svg_anim_state* s, const psx_svg_node* target,
                             psx_svg_attr_type attr, int32_t* out_v);
+
+/* returns true if a color override exists for (target, attr).
+ * writes the color value into *out_color. */
+bool psx_svg_anim_get_color(const psx_svg_anim_state* s, const psx_svg_node* target,
+                            psx_svg_attr_type attr, uint32_t* out_color);
 
 /* returns a pointer to an internal scratch ps_matrix if a transform override
  * exists for target, NULL otherwise.

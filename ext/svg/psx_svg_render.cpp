@@ -589,17 +589,42 @@ protected:
         }
 
         float v = 0.0f;
+        uint32_t color_u = 0;
+
+        ps_color base_fill = m_draw_attrs->fill_color;
+        bool has_fill_color = false;
+        if (psx_svg_anim_get_color(m_cur_anim_state, m_node, SVG_ATTR_FILL, &color_u)) {
+            svg_to_pcolor(&base_fill, color_u);
+            has_fill_color = true;
+        }
 
         if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_FILL_OPACITY, &v)) {
-            ps_color color = m_draw_attrs->fill_color;
+            ps_color color = base_fill;
             color.a *= v;
             ps_set_source_color(ctx, &color);
+        } else if (has_fill_color) {
+            if (m_draw_attrs->flags & RENDER_ATTR_FILL_OPACITY) {
+                base_fill.a *= m_draw_attrs->fill_opacity;
+            }
+            ps_set_source_color(ctx, &base_fill);
+        }
+
+        ps_color base_stroke = m_draw_attrs->stroke_color;
+        bool has_stroke_color = false;
+        if (psx_svg_anim_get_color(m_cur_anim_state, m_node, SVG_ATTR_STROKE, &color_u)) {
+            svg_to_pcolor(&base_stroke, color_u);
+            has_stroke_color = true;
         }
 
         if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_STROKE_OPACITY, &v)) {
-            ps_color color = m_draw_attrs->stroke_color;
+            ps_color color = base_stroke;
             color.a *= v;
             ps_set_stroke_color(ctx, &color);
+        } else if (has_stroke_color) {
+            if (m_draw_attrs->flags & RENDER_ATTR_STROKE_OPACITY) {
+                base_stroke.a *= m_draw_attrs->stroke_opacity;
+            }
+            ps_set_stroke_color(ctx, &base_stroke);
         }
 
         if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_STROKE_WIDTH, &v)) {
@@ -632,20 +657,6 @@ protected:
                 }
                 ps_set_line_dash(ctx, start, dash_vals, dash_count);
             }
-        }
-
-        if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_STROKE, &v)) {
-            union { float f; uint32_t u; } bits;
-            bits.f = v;
-            ps_color sc;
-            sc.r = ((bits.u >> 16) & 0xFF) / 255.0f;
-            sc.g = ((bits.u >> 8) & 0xFF) / 255.0f;
-            sc.b = (bits.u & 0xFF) / 255.0f;
-            sc.a = 1.0f;
-            if (m_draw_attrs->flags & RENDER_ATTR_STROKE_OPACITY) {
-                sc.a *= m_draw_attrs->stroke_opacity;
-            }
-            ps_set_stroke_color(ctx, &sc);
         }
 
         int32_t iv = 0;
@@ -2264,10 +2275,9 @@ public:
 
             if (m_cur_anim_state && m_stop_nodes[i]) {
                 float v = 0.0f;
-                if (psx_svg_anim_get_float(m_cur_anim_state, m_stop_nodes[i], SVG_ATTR_GRADIENT_STOP_COLOR, &v)) {
-                    union { float f; uint32_t u; } bits;
-                    bits.f = v;
-                    svg_to_pcolor(&c, bits.u);
+                uint32_t color_u = 0;
+                if (psx_svg_anim_get_color(m_cur_anim_state, m_stop_nodes[i], SVG_ATTR_GRADIENT_STOP_COLOR, &color_u)) {
+                    svg_to_pcolor(&c, color_u);
                 }
                 if (psx_svg_anim_get_float(m_cur_anim_state, m_stop_nodes[i], SVG_ATTR_GRADIENT_STOP_OPACITY, &v)) {
                     opacity = v;
