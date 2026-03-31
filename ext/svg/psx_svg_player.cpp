@@ -32,6 +32,10 @@
 
 #include <string.h>
 #include <math.h>
+#include <stdlib.h>
+#include <stdlib.h>
+#include <stdlib.h>
+#include <stdlib.h>
 #include <stdint.h>
 #include <stdlib.h>
 
@@ -4300,6 +4304,8 @@ static void _apply_animations_at_time(psx_svg_player* p)
             }
         }
     }
+
+    _anim_state_sort_overrides(&p->anim_state);
 }
 
 void psx_svg_player_seek(psx_svg_player* p, float seconds)
