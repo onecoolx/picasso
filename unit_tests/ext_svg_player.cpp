@@ -3787,6 +3787,76 @@ TEST_F(SVGPlayerTest, AnimateMotion_RemoveClearsAfterDur)
     destroy_player(p, root);
 }
 
+TEST_F(SVGPlayerTest, AnimateMotion_CacheConsistency_MultipleSeeks)
+{
+    // Verify that seeking to the same time multiple times returns consistent
+    // motion path calculations. This ensures the motion path cache (if any) is
+    // working correctly and not producing inconsistent results.
+    //
+    // Path: M 0 0 L 100 0 L 100 100
+    // Segments: (0,0)->(100,0) len=100, (100,0)->(100,100) len=100, total=200
+    // dur=4s, fill=freeze
+    //
+    // We'll seek to several time points multiple times and verify the transform
+    // override matches each time.
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"200\" height=\"200\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"20\" height=\"20\" fill=\"#000\">"
+        "    <animateMotion path=\"M 0 0 L 100 0 L 100 100\" dur=\"4s\" fill=\"freeze\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_NE((psx_svg_player*)NULL, p);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    ASSERT_TRUE(n != NULL);
+
+    psx_svg_player_play(p);
+
+    // Test times: 0s, 0.5s (normalized 0.0625), 1s (normalized 0.125), 2s (normalized 0.25), 4s (past end)
+    float test_times[] = {0.0f, 0.5f, 1.0f, 2.0f, 4.0f};
+    int num_tests = sizeof(test_times) / sizeof(test_times[0]);
+
+    for (int iter = 0; iter < 3; iter++) {
+        // Do 3 iterations to catch potential state corruption in caching
+        for (int i = 0; i < num_tests; i++) {
+            float t = test_times[i];
+
+            // Seek and get transform
+            psx_svg_player_seek(p, t);
+            psx_svg_player_tick(p, 0.0f);
+
+            float a1, b1, c1, d1, e1, f1;
+            bool has_override1 = psx_svg_player_debug_get_transform_override(p, n, &a1, &b1, &c1, &d1, &e1, &f1);
+
+            // Seek to same time again and get transform again
+            psx_svg_player_seek(p, t);
+            psx_svg_player_tick(p, 0.0f);
+
+            float a2, b2, c2, d2, e2, f2;
+            bool has_override2 = psx_svg_player_debug_get_transform_override(p, n, &a2, &b2, &c2, &d2, &e2, &f2);
+
+            // Verify consistency
+            EXPECT_EQ(has_override1, has_override2)
+                    << "iter=" << iter << " t=" << t << " override presence should be consistent";
+
+            if (has_override1 && has_override2) {
+                EXPECT_NEAR(a1, a2, 1e-6f) << "iter=" << iter << " t=" << t << " matrix[0] inconsistent";
+                EXPECT_NEAR(b1, b2, 1e-6f) << "iter=" << iter << " t=" << t << " matrix[1] inconsistent";
+                EXPECT_NEAR(c1, c2, 1e-6f) << "iter=" << iter << " t=" << t << " matrix[2] inconsistent";
+                EXPECT_NEAR(d1, d2, 1e-6f) << "iter=" << iter << " t=" << t << " matrix[3] inconsistent";
+                EXPECT_NEAR(e1, e2, 1e-6f) << "iter=" << iter << " t=" << t << " matrix[4] inconsistent";
+                EXPECT_NEAR(f1, f2, 1e-6f) << "iter=" << iter << " t=" << t << " matrix[5] inconsistent";
+            }
+        }
+    }
+
+    destroy_player(p, root);
+}
+
 TEST_F(SVGPlayerTest, AnimateMotion_RotateAuto_TangentAngle)
 {
     // Path: M 0 0 L 100 0 L 100 100
