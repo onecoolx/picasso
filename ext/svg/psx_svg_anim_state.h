@@ -127,6 +127,15 @@ typedef struct {
     float syncbase_offset_sec; // offset in seconds (e.g., +1s)
     bool syncbase_resolved; // true once begin time has been resolved
     bool syncbase_circular; // true if circular dependency detected
+
+    // Optimization: pre-cached attribute pointers (filled once in _collect_anims)
+    const psx_svg_attr* cached_values; // SVG_ATTR_VALUES
+    const psx_svg_attr* cached_from; // SVG_ATTR_FROM
+    const psx_svg_attr* cached_to; // SVG_ATTR_TO
+    const psx_svg_attr* cached_by; // SVG_ATTR_BY
+    const psx_svg_attr* cached_key_times; // SVG_ATTR_KEY_TIMES
+    const psx_svg_attr* cached_key_splines; // SVG_ATTR_KEY_SPLINES
+    const psx_svg_attr* cached_calc_mode; // SVG_ATTR_CALC_MODE
 } psx_svg_anim_item;
 
 typedef struct {

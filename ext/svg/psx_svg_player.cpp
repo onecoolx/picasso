@@ -54,53 +54,57 @@ static INLINE void _anim_state_reset(psx_svg_anim_state* s)
     psx_array_clear(&s->color_overrides);
 }
 
+/* --- O(1) bitmap attribute lookup (replaces long-chain conditionals) --- */
+
+#define _ATTR_BITMAP_WORDS 3  /* uint32_t[3] = 96 bits, covers enum 0..95 */
+
+/*
+ * Bitmap values computed from psx_svg_attr_type enum.
+ * Formula: bitmap[attr >> 5] |= (1u << (attr & 31))
+ */
+static const uint32_t _supported_anim_attr_bitmap[_ATTR_BITMAP_WORDS] = {
+    0xF87FFF00u, /* bits 8-22,27-31: DISPLAY..Y2, FILL..STROKE_WIDTH */
+    0x00075C7Fu, /* bits 32-38,42-44,46,48-50: LINECAP..OPACITY, STOP_OFFSET..STOP_OPACITY, FONT_STYLE, FONT_WEIGHT..TRANSFORM */
+    0x00000000u
+};
+
+static const uint32_t _int32_anim_attr_bitmap[_ATTR_BITMAP_WORDS] = {
+    0x10000300u, /* bits 8,9,28: DISPLAY, VISIBILITY, FILL_RULE */
+    0x00014003u, /* bits 32,33,46,48: LINECAP, LINEJOIN, FONT_STYLE, FONT_WEIGHT */
+    0x00000000u
+};
+
+static const uint32_t _color_anim_attr_bitmap[_ATTR_BITMAP_WORDS] = {
+    0x48000000u, /* bits 27,30: FILL, STROKE */
+    0x00000800u, /* bit 43: GRADIENT_STOP_COLOR */
+    0x00000000u
+};
+
 static INLINE bool _is_supported_anim_attr(psx_svg_attr_type a)
 {
-    return a == SVG_ATTR_X || a == SVG_ATTR_Y
-           || a == SVG_ATTR_WIDTH || a == SVG_ATTR_HEIGHT
-           || a == SVG_ATTR_OPACITY
-           || a == SVG_ATTR_RX || a == SVG_ATTR_RY
-           || a == SVG_ATTR_CX || a == SVG_ATTR_CY || a == SVG_ATTR_R
-           || a == SVG_ATTR_X1 || a == SVG_ATTR_Y1
-           || a == SVG_ATTR_X2 || a == SVG_ATTR_Y2
-           || a == SVG_ATTR_STROKE_WIDTH
-           || a == SVG_ATTR_FILL_OPACITY
-           || a == SVG_ATTR_STROKE_OPACITY
-           || a == SVG_ATTR_GRADIENT_STOP_OPACITY
-           || a == SVG_ATTR_GRADIENT_STOP_COLOR
-           || a == SVG_ATTR_GRADIENT_STOP_OFFSET
-           || a == SVG_ATTR_FILL
-           || a == SVG_ATTR_STROKE
-           || a == SVG_ATTR_STROKE_MITER_LIMIT
-           || a == SVG_ATTR_STROKE_DASH_OFFSET
-           || a == SVG_ATTR_STROKE_DASH_ARRAY
-           || a == SVG_ATTR_FILL_RULE
-           || a == SVG_ATTR_STROKE_LINECAP
-           || a == SVG_ATTR_STROKE_LINEJOIN
-           || a == SVG_ATTR_DISPLAY
-           || a == SVG_ATTR_VISIBILITY
-           || a == SVG_ATTR_FONT_SIZE
-           || a == SVG_ATTR_FONT_WEIGHT
-           || a == SVG_ATTR_FONT_STYLE
-           || a == SVG_ATTR_TRANSFORM;
+    int i = (int)a;
+    if (i < 0 || i >= _ATTR_BITMAP_WORDS * 32) {
+        return false;
+    }
+    return (_supported_anim_attr_bitmap[(unsigned)i >> 5] & (1u << ((unsigned)i & 31))) != 0;
 }
 
 static INLINE bool _is_int32_anim_attr(psx_svg_attr_type a)
 {
-    return a == SVG_ATTR_VISIBILITY
-           || a == SVG_ATTR_FILL_RULE
-           || a == SVG_ATTR_STROKE_LINECAP
-           || a == SVG_ATTR_STROKE_LINEJOIN
-           || a == SVG_ATTR_DISPLAY
-           || a == SVG_ATTR_FONT_WEIGHT
-           || a == SVG_ATTR_FONT_STYLE;
+    int i = (int)a;
+    if (i < 0 || i >= _ATTR_BITMAP_WORDS * 32) {
+        return false;
+    }
+    return (_int32_anim_attr_bitmap[(unsigned)i >> 5] & (1u << ((unsigned)i & 31))) != 0;
 }
 
 static INLINE bool _is_color_anim_attr(psx_svg_attr_type a)
 {
-    return a == SVG_ATTR_FILL
-           || a == SVG_ATTR_STROKE
-           || a == SVG_ATTR_GRADIENT_STOP_COLOR;
+    int i = (int)a;
+    if (i < 0 || i >= _ATTR_BITMAP_WORDS * 32) {
+        return false;
+    }
+    return (_color_anim_attr_bitmap[(unsigned)i >> 5] & (1u << ((unsigned)i & 31))) != 0;
 }
 
 static INLINE void _anim_state_set_transform(psx_svg_anim_state* s, const psx_svg_node* target,
@@ -394,15 +398,39 @@ static int _anim_color_override_cmp(const void* a, const void* b)
     return 0;
 }
 
+#define INSERTION_SORT_THRESHOLD 16
+
 static INLINE void _anim_state_sort_overrides(psx_svg_anim_state* s)
 {
     if (!s) {
         return;
     }
-    if (psx_array_size(&s->overrides) < 2) {
+    uint32_t size = psx_array_size(&s->overrides);
+    if (size < 2) {
         return;
     }
-    qsort(s->overrides.data, s->overrides.size, s->overrides.element_size, _anim_override_cmp);
+    if (size <= INSERTION_SORT_THRESHOLD) {
+        psx_svg_anim_override_item* arr = (psx_svg_anim_override_item*)s->overrides.data;
+        uint32_t i;
+        for (i = 1; i < size; i++) {
+            psx_svg_anim_override_item key = arr[i];
+            uintptr_t kt = (uintptr_t)key.target;
+            int32_t ka = (int32_t)key.attr;
+            int32_t j = (int32_t)i - 1;
+            while (j >= 0) {
+                uintptr_t jt = (uintptr_t)arr[j].target;
+                if (jt > kt || (jt == kt && (int32_t)arr[j].attr > ka)) {
+                    arr[j + 1] = arr[j];
+                    j--;
+                } else {
+                    break;
+                }
+            }
+            arr[j + 1] = key;
+        }
+    } else {
+        qsort(s->overrides.data, s->overrides.size, s->overrides.element_size, _anim_override_cmp);
+    }
 }
 
 static INLINE void _anim_state_sort_color_overrides(psx_svg_anim_state* s)
@@ -410,10 +438,32 @@ static INLINE void _anim_state_sort_color_overrides(psx_svg_anim_state* s)
     if (!s) {
         return;
     }
-    if (psx_array_size(&s->color_overrides) < 2) {
+    uint32_t size = psx_array_size(&s->color_overrides);
+    if (size < 2) {
         return;
     }
-    qsort(s->color_overrides.data, s->color_overrides.size, s->color_overrides.element_size, _anim_color_override_cmp);
+    if (size <= INSERTION_SORT_THRESHOLD) {
+        psx_svg_anim_color_item* arr = (psx_svg_anim_color_item*)s->color_overrides.data;
+        uint32_t i;
+        for (i = 1; i < size; i++) {
+            psx_svg_anim_color_item key = arr[i];
+            uintptr_t kt = (uintptr_t)key.target;
+            int32_t ka = (int32_t)key.attr;
+            int32_t j = (int32_t)i - 1;
+            while (j >= 0) {
+                uintptr_t jt = (uintptr_t)arr[j].target;
+                if (jt > kt || (jt == kt && (int32_t)arr[j].attr > ka)) {
+                    arr[j + 1] = arr[j];
+                    j--;
+                } else {
+                    break;
+                }
+            }
+            arr[j + 1] = key;
+        }
+    } else {
+        qsort(s->color_overrides.data, s->color_overrides.size, s->color_overrides.element_size, _anim_color_override_cmp);
+    }
 }
 
 static INLINE const psx_svg_anim_override_item* _anim_state_find(const psx_svg_anim_state* s, const psx_svg_node* target, psx_svg_attr_type attr)
@@ -1229,8 +1279,8 @@ static INLINE bool _anim_eval_dasharray(const psx_svg_anim_item* it, float doc_t
         return false;
     }
 
-    const psx_svg_attr* afrom = _find_attr(it->anim_node, SVG_ATTR_FROM);
-    const psx_svg_attr* ato = _find_attr(it->anim_node, SVG_ATTR_TO);
+    const psx_svg_attr* afrom = it->cached_from;
+    const psx_svg_attr* ato = it->cached_to;
     if (!afrom || !ato) {
         return false;
     }
@@ -1270,7 +1320,7 @@ static INLINE bool _anim_eval_dasharray(const psx_svg_anim_item* it, float doc_t
  */
 static INLINE float _anim_eval_simple_final_value(const psx_svg_anim_item* it)
 {
-    const psx_svg_attr* avals = _find_attr(it->anim_node, SVG_ATTR_VALUES);
+    const psx_svg_attr* avals = it->cached_values;
     if (avals && avals->val_type == SVG_ATTR_VALUE_PTR && avals->value.val) {
         const psx_svg_attr_values_list* vlist = (const psx_svg_attr_values_list*)avals->value.val;
         if (vlist->length >= 1) {
@@ -1278,12 +1328,12 @@ static INLINE float _anim_eval_simple_final_value(const psx_svg_anim_item* it)
             return vals[vlist->length - 1];
         }
     }
-    const psx_svg_attr* ato = _find_attr(it->anim_node, SVG_ATTR_TO);
+    const psx_svg_attr* ato = it->cached_to;
     if (ato) {
         return _attr_as_number(ato);
     }
-    const psx_svg_attr* aby = _find_attr(it->anim_node, SVG_ATTR_BY);
-    const psx_svg_attr* afrom = _find_attr(it->anim_node, SVG_ATTR_FROM);
+    const psx_svg_attr* aby = it->cached_by;
+    const psx_svg_attr* afrom = it->cached_from;
     if (aby) {
         float from_val = afrom ? _attr_as_number(afrom) : 0.0f;
         return from_val + _attr_as_number(aby);
@@ -1324,14 +1374,14 @@ static INLINE bool _anim_eval_simple(const psx_svg_anim_item* it, float doc_t, f
         *out_hold = true;
     }
 
-    const psx_svg_attr* avals = _find_attr(it->anim_node, SVG_ATTR_VALUES);
+    const psx_svg_attr* avals = it->cached_values;
 
     // animateColor: handle before generic float path.
     if (it->tag == SVG_TAG_ANIMATE_COLOR
         && (it->target_attr == SVG_ATTR_FILL || it->target_attr == SVG_ATTR_STROKE
             || it->target_attr == SVG_ATTR_GRADIENT_STOP_COLOR)) {
         uint32_t calc_mode = SVG_ANIMATION_CALC_MODE_LINEAR;
-        const psx_svg_attr* acm = _find_attr(it->anim_node, SVG_ATTR_CALC_MODE);
+        const psx_svg_attr* acm = it->cached_calc_mode;
         if (acm && acm->val_type == SVG_ATTR_VALUE_DATA) {
             calc_mode = (uint32_t)acm->value.ival;
         }
@@ -1353,7 +1403,7 @@ static INLINE bool _anim_eval_simple(const psx_svg_anim_item* it, float doc_t, f
                     }
                     *out_v = _u32_to_f32_bits(vals[idx]);
                 } else {
-                    const psx_svg_attr* akt = _find_attr(it->anim_node, SVG_ATTR_KEY_TIMES);
+                    const psx_svg_attr* akt = it->cached_key_times;
                     const float* kts = NULL;
                     uint32_t kt_len = 0;
                     if (akt && akt->val_type == SVG_ATTR_VALUE_PTR && akt->value.val) {
@@ -1384,8 +1434,8 @@ static INLINE bool _anim_eval_simple(const psx_svg_anim_item* it, float doc_t, f
             }
         }
 
-        const psx_svg_attr* afrom_c = _find_attr(it->anim_node, SVG_ATTR_FROM);
-        const psx_svg_attr* ato_c = _find_attr(it->anim_node, SVG_ATTR_TO);
+        const psx_svg_attr* afrom_c = it->cached_from;
+        const psx_svg_attr* ato_c = it->cached_to;
         if (!afrom_c || !ato_c) {
             return false;
         }
@@ -1412,12 +1462,12 @@ static INLINE bool _anim_eval_simple(const psx_svg_anim_item* it, float doc_t, f
             }
 
             uint32_t calc_mode = SVG_ANIMATION_CALC_MODE_LINEAR;
-            const psx_svg_attr* acm = _find_attr(it->anim_node, SVG_ATTR_CALC_MODE);
+            const psx_svg_attr* acm = it->cached_calc_mode;
             if (acm && acm->val_type == SVG_ATTR_VALUE_DATA) {
                 calc_mode = (uint32_t)acm->value.ival;
             }
 
-            const psx_svg_attr* akt = _find_attr(it->anim_node, SVG_ATTR_KEY_TIMES);
+            const psx_svg_attr* akt = it->cached_key_times;
             const float* kts = NULL;
             uint32_t kt_len = 0;
             if (akt && akt->val_type == SVG_ATTR_VALUE_PTR && akt->value.val) {
@@ -1483,7 +1533,7 @@ static INLINE bool _anim_eval_simple(const psx_svg_anim_item* it, float doc_t, f
             } else {
                 float eased_u = u;
                 if (calc_mode == SVG_ANIMATION_CALC_MODE_SPLINE) {
-                    const psx_svg_attr* aks = _find_attr(it->anim_node, SVG_ATTR_KEY_SPLINES);
+                    const psx_svg_attr* aks = it->cached_key_splines;
                     if (aks && aks->val_type == SVG_ATTR_VALUE_PTR && aks->value.val) {
                         const psx_svg_attr_values_list* kslist = (const psx_svg_attr_values_list*)aks->value.val;
                         uint32_t need = (vlist->length - 1) * 2;
@@ -1507,8 +1557,8 @@ static INLINE bool _anim_eval_simple(const psx_svg_anim_item* it, float doc_t, f
         }
     }
 
-    const psx_svg_attr* afrom = _find_attr(it->anim_node, SVG_ATTR_FROM);
-    const psx_svg_attr* ato = _find_attr(it->anim_node, SVG_ATTR_TO);
+    const psx_svg_attr* afrom = it->cached_from;
+    const psx_svg_attr* ato = it->cached_to;
     if (afrom && ato) {
         float v0 = _attr_as_number(afrom);
         float v1 = _attr_as_number(ato);
@@ -1520,7 +1570,7 @@ static INLINE bool _anim_eval_simple(const psx_svg_anim_item* it, float doc_t, f
     }
 
     // by attribute fallback: by alone => from=0 to=by; from+by => to=from+by
-    const psx_svg_attr* aby = _find_attr(it->anim_node, SVG_ATTR_BY);
+    const psx_svg_attr* aby = it->cached_by;
     if (aby && !ato) {
         float by_val = _attr_as_number(aby);
         float from_val = afrom ? _attr_as_number(afrom) : 0.0f;
@@ -1554,7 +1604,7 @@ static INLINE bool _anim_eval_transform_translate_discrete(const psx_svg_anim_it
         return false;
     }
 
-    const psx_svg_attr* avals = _find_attr(it->anim_node, SVG_ATTR_VALUES);
+    const psx_svg_attr* avals = it->cached_values;
     if (!avals || avals->val_type != SVG_ATTR_VALUE_PTR || !avals->value.val) {
         return false;
     }
@@ -1602,7 +1652,7 @@ static INLINE bool _anim_eval_transform_translate_linear(const psx_svg_anim_item
         return false;
     }
 
-    const psx_svg_attr* avals = _find_attr(it->anim_node, SVG_ATTR_VALUES);
+    const psx_svg_attr* avals = it->cached_values;
     if (avals && avals->val_type == SVG_ATTR_VALUE_PTR && avals->value.val) {
         const psx_svg_attr_values_list* vlist = (const psx_svg_attr_values_list*)avals->value.val;
         if (vlist->length < 1) {
@@ -1620,7 +1670,7 @@ static INLINE bool _anim_eval_transform_translate_linear(const psx_svg_anim_item
         }
 
         // keyTimes or evenly-spaced segment mapping.
-        const psx_svg_attr* akt = _find_attr(it->anim_node, SVG_ATTR_KEY_TIMES);
+        const psx_svg_attr* akt = it->cached_key_times;
         const float* kts = NULL;
         uint32_t kt_len = 0;
         if (akt && akt->val_type == SVG_ATTR_VALUE_PTR && akt->value.val) {
@@ -1668,8 +1718,8 @@ static INLINE bool _anim_eval_transform_translate_linear(const psx_svg_anim_item
     }
 
     // from/to fallback.
-    const psx_svg_attr* afrom = _find_attr(it->anim_node, SVG_ATTR_FROM);
-    const psx_svg_attr* ato = _find_attr(it->anim_node, SVG_ATTR_TO);
+    const psx_svg_attr* afrom = it->cached_from;
+    const psx_svg_attr* ato = it->cached_to;
     if (!afrom || !ato) {
         return false;
     }
@@ -1711,11 +1761,11 @@ static INLINE bool _anim_eval_angle_linear(const psx_svg_anim_item* it, float t,
         return false;
     }
 
-    const psx_svg_attr* avals = _find_attr(it->anim_node, SVG_ATTR_VALUES);
+    const psx_svg_attr* avals = it->cached_values;
     if (avals && avals->val_type == SVG_ATTR_VALUE_PTR && avals->value.val) {
         const psx_svg_attr_values_list* vlist = (const psx_svg_attr_values_list*)avals->value.val;
         if (vlist->length >= 2) {
-            const psx_svg_attr* akt = _find_attr(it->anim_node, SVG_ATTR_KEY_TIMES);
+            const psx_svg_attr* akt = it->cached_key_times;
             const float* kts = NULL;
             uint32_t kt_len = 0;
             if (akt && akt->val_type == SVG_ATTR_VALUE_PTR && akt->value.val) {
@@ -1766,8 +1816,8 @@ static INLINE bool _anim_eval_angle_linear(const psx_svg_anim_item* it, float t,
         }
     }
 
-    const psx_svg_attr* afrom = _find_attr(it->anim_node, SVG_ATTR_FROM);
-    const psx_svg_attr* ato = _find_attr(it->anim_node, SVG_ATTR_TO);
+    const psx_svg_attr* afrom = it->cached_from;
+    const psx_svg_attr* ato = it->cached_to;
     if (!afrom || !ato) {
         return false;
     }
@@ -1855,8 +1905,8 @@ static INLINE bool _anim_eval_transform_skewx_discrete(const psx_svg_anim_item* 
         return false;
     }
 
-    const psx_svg_attr* afrom = _find_attr(it->anim_node, SVG_ATTR_FROM);
-    const psx_svg_attr* ato = _find_attr(it->anim_node, SVG_ATTR_TO);
+    const psx_svg_attr* afrom = it->cached_from;
+    const psx_svg_attr* ato = it->cached_to;
     if (!afrom || !ato) {
         return false;
     }
@@ -1886,8 +1936,8 @@ static INLINE bool _anim_eval_transform_skewy_discrete(const psx_svg_anim_item* 
         return false;
     }
 
-    const psx_svg_attr* afrom = _find_attr(it->anim_node, SVG_ATTR_FROM);
-    const psx_svg_attr* ato = _find_attr(it->anim_node, SVG_ATTR_TO);
+    const psx_svg_attr* afrom = it->cached_from;
+    const psx_svg_attr* ato = it->cached_to;
     if (!afrom || !ato) {
         return false;
     }
@@ -1919,11 +1969,11 @@ static INLINE bool _anim_eval_transform_matrix_linear(const psx_svg_anim_item* i
     }
 
     // values list path.
-    const psx_svg_attr* avals = _find_attr(it->anim_node, SVG_ATTR_VALUES);
+    const psx_svg_attr* avals = it->cached_values;
     if (avals && avals->val_type == SVG_ATTR_VALUE_PTR && avals->value.val) {
         const psx_svg_attr_values_list* vlist = (const psx_svg_attr_values_list*)avals->value.val;
         if (vlist->length >= 2) {
-            const psx_svg_attr* akt = _find_attr(it->anim_node, SVG_ATTR_KEY_TIMES);
+            const psx_svg_attr* akt = it->cached_key_times;
             const float* kts = NULL;
             uint32_t kt_len = 0;
             if (akt && akt->val_type == SVG_ATTR_VALUE_PTR && akt->value.val) {
@@ -1968,8 +2018,8 @@ static INLINE bool _anim_eval_transform_matrix_linear(const psx_svg_anim_item* i
     }
 
     // from/to fallback.
-    const psx_svg_attr* afrom = _find_attr(it->anim_node, SVG_ATTR_FROM);
-    const psx_svg_attr* ato = _find_attr(it->anim_node, SVG_ATTR_TO);
+    const psx_svg_attr* afrom = it->cached_from;
+    const psx_svg_attr* ato = it->cached_to;
     if (!afrom || !ato) {
         return false;
     }
@@ -2018,8 +2068,8 @@ static INLINE bool _anim_eval_transform_matrix_discrete(const psx_svg_anim_item*
         return false;
     }
 
-    const psx_svg_attr* afrom = _find_attr(it->anim_node, SVG_ATTR_FROM);
-    const psx_svg_attr* ato = _find_attr(it->anim_node, SVG_ATTR_TO);
+    const psx_svg_attr* afrom = it->cached_from;
+    const psx_svg_attr* ato = it->cached_to;
     if (!afrom || !ato) {
         return false;
     }
@@ -2067,7 +2117,7 @@ static INLINE bool _anim_eval_transform_scale_discrete(const psx_svg_anim_item* 
         return false;
     }
 
-    const psx_svg_attr* avals = _find_attr(it->anim_node, SVG_ATTR_VALUES);
+    const psx_svg_attr* avals = it->cached_values;
     if (!avals || avals->val_type != SVG_ATTR_VALUE_PTR || !avals->value.val) {
         return false;
     }
@@ -2117,7 +2167,7 @@ static INLINE bool _anim_eval_transform_scale_linear(const psx_svg_anim_item* it
         return false;
     }
 
-    const psx_svg_attr* avals = _find_attr(it->anim_node, SVG_ATTR_VALUES);
+    const psx_svg_attr* avals = it->cached_values;
     if (avals && avals->val_type == SVG_ATTR_VALUE_PTR && avals->value.val) {
         const psx_svg_attr_values_list* vlist = (const psx_svg_attr_values_list*)avals->value.val;
         if (vlist->length < 1) {
@@ -2136,7 +2186,7 @@ static INLINE bool _anim_eval_transform_scale_linear(const psx_svg_anim_item* it
             return true;
         }
 
-        const psx_svg_attr* akt = _find_attr(it->anim_node, SVG_ATTR_KEY_TIMES);
+        const psx_svg_attr* akt = it->cached_key_times;
         const float* kts = NULL;
         uint32_t kt_len = 0;
         if (akt && akt->val_type == SVG_ATTR_VALUE_PTR && akt->value.val) {
@@ -2192,8 +2242,8 @@ static INLINE bool _anim_eval_transform_scale_linear(const psx_svg_anim_item* it
     }
 
     // from/to fallback.
-    const psx_svg_attr* afrom = _find_attr(it->anim_node, SVG_ATTR_FROM);
-    const psx_svg_attr* ato = _find_attr(it->anim_node, SVG_ATTR_TO);
+    const psx_svg_attr* afrom = it->cached_from;
+    const psx_svg_attr* ato = it->cached_to;
     if (!afrom || !ato) {
         return false;
     }
@@ -2245,7 +2295,7 @@ static INLINE bool _anim_eval_transform_rotate_discrete(const psx_svg_anim_item*
         return false;
     }
 
-    const psx_svg_attr* avals = _find_attr(it->anim_node, SVG_ATTR_VALUES);
+    const psx_svg_attr* avals = it->cached_values;
     if (!avals || avals->val_type != SVG_ATTR_VALUE_PTR || !avals->value.val) {
         return false;
     }
@@ -2300,7 +2350,7 @@ static INLINE bool _anim_eval_transform_rotate_linear(const psx_svg_anim_item* i
         return false;
     }
 
-    const psx_svg_attr* avals = _find_attr(it->anim_node, SVG_ATTR_VALUES);
+    const psx_svg_attr* avals = it->cached_values;
     if (avals && avals->val_type == SVG_ATTR_VALUE_PTR && avals->value.val) {
         const psx_svg_attr_values_list* vlist = (const psx_svg_attr_values_list*)avals->value.val;
         if (vlist->length < 1) {
@@ -2329,7 +2379,7 @@ static INLINE bool _anim_eval_transform_rotate_linear(const psx_svg_anim_item* i
             return true;
         }
 
-        const psx_svg_attr* akt = _find_attr(it->anim_node, SVG_ATTR_KEY_TIMES);
+        const psx_svg_attr* akt = it->cached_key_times;
         const float* kts = NULL;
         uint32_t kt_len = 0;
         if (akt && akt->val_type == SVG_ATTR_VALUE_PTR && akt->value.val) {
@@ -2402,8 +2452,8 @@ static INLINE bool _anim_eval_transform_rotate_linear(const psx_svg_anim_item* i
 
     // from/to fallback.
     {
-        const psx_svg_attr* afrom = _find_attr(it->anim_node, SVG_ATTR_FROM);
-        const psx_svg_attr* ato = _find_attr(it->anim_node, SVG_ATTR_TO);
+        const psx_svg_attr* afrom = it->cached_from;
+        const psx_svg_attr* ato = it->cached_to;
         if (!afrom || !ato) {
             return false;
         }
@@ -2468,7 +2518,7 @@ static INLINE void _anim_eval_transform_final_value(const psx_svg_anim_item* it,
     *out_e = 0.0f;
     *out_f = 0.0f;
 
-    const psx_svg_attr* avals = _find_attr(it->anim_node, SVG_ATTR_VALUES);
+    const psx_svg_attr* avals = it->cached_values;
     const float* final_vals = NULL;
     uint32_t final_len = 0;
 
@@ -2479,7 +2529,7 @@ static INLINE void _anim_eval_transform_final_value(const psx_svg_anim_item* it,
         }
     }
     if (!final_vals) {
-        const psx_svg_attr* ato = _find_attr(it->anim_node, SVG_ATTR_TO);
+        const psx_svg_attr* ato = it->cached_to;
         if (ato && ato->val_type == SVG_ATTR_VALUE_PTR && ato->value.val) {
             struct _tv { uint32_t length; float data[6]; };
             const struct _tv* tv = (const struct _tv*)ato->value.val;
@@ -2514,7 +2564,7 @@ static INLINE bool _anim_eval_transform_dispatch(const psx_svg_anim_item* it, fl
                                                  float* a, float* b, float* c,
                                                  float* d, float* e, float* f)
 {
-    const psx_svg_attr* acm = _find_attr(it->anim_node, SVG_ATTR_CALC_MODE);
+    const psx_svg_attr* acm = it->cached_calc_mode;
     bool is_discrete = (acm && acm->val_type == SVG_ATTR_VALUE_DATA && acm->value.ival == SVG_ANIMATION_CALC_MODE_DISCRETE) ? true : false;
     const psx_svg_attr* att = _find_attr(it->anim_node, SVG_ATTR_TRANSFORM_TYPE);
     int32_t ttype = (att && att->val_type == SVG_ATTR_VALUE_DATA) ? att->value.ival : 0;
@@ -3545,11 +3595,44 @@ static bool _anim_eval_motion(const psx_svg_anim_item* it, float doc_t,
         return false;
     }
 
-    const psx_svg_attr* apath = _find_attr(it->anim_node, SVG_ATTR_PATH);
-    if (!apath || apath->val_type != SVG_ATTR_VALUE_PTR || !apath->value.sval) {
-        // from/to fallback
-        const psx_svg_attr* afrom = _find_attr(it->anim_node, SVG_ATTR_FROM);
-        const psx_svg_attr* ato = _find_attr(it->anim_node, SVG_ATTR_TO);
+    /* Use pre-cached path data if available (created during _collect_anims) */
+    if (it->motion_cache && it->motion_cache->ready) {
+        const _motion_path_points* pts = &it->motion_cache->pts;
+        const _motion_arc_table* arc = &it->motion_cache->arc;
+
+        float x = 0.0f;
+        float y = 0.0f;
+        _motion_arc_position(pts, arc, t, &x, &y);
+
+        const psx_svg_attr* arot = _find_attr(it->anim_node, SVG_ATTR_ROTATE);
+        if (arot) {
+            float angle_rad = 0.0f;
+            if (arot->class_type == SVG_ATTR_VALUE_INHERIT) {
+                /* rotate="auto" (fval=0) or rotate="auto-reverse" (fval=180) */
+                float tangent = _motion_arc_tangent_angle(pts, arc, t);
+                float extra_deg = arot->value.fval; /* 0 for auto, 180 for auto-reverse */
+                angle_rad = tangent + extra_deg * (float)M_PI / 180.0f;
+            } else {
+                /* Numeric rotate value in degrees */
+                angle_rad = arot->value.fval * (float)M_PI / 180.0f;
+            }
+            float ca = cosf(angle_rad);
+            float sa = sinf(angle_rad);
+            *out_a = ca;
+            *out_b = sa;
+            *out_c = -sa;
+            *out_d = ca;
+        }
+
+        *out_e = x;
+        *out_f = y;
+        return true;
+    }
+
+    /* from/to fallback when no motion_cache (no path attribute) */
+    {
+        const psx_svg_attr* afrom = it->cached_from;
+        const psx_svg_attr* ato = it->cached_to;
         if (!afrom || !ato
             || afrom->val_type != SVG_ATTR_VALUE_PTR || !afrom->value.val
             || ato->val_type != SVG_ATTR_VALUE_PTR || !ato->value.val) {
@@ -3566,49 +3649,6 @@ static bool _anim_eval_motion(const psx_svg_anim_item* it, float doc_t,
         *out_f = fp->y + t * (tp->y - fp->y);
         return true;
     }
-
-    const char* path_str = apath->value.sval;
-    uint32_t path_len = (uint32_t)strlen(path_str);
-
-    _motion_path_points pts;
-    if (!_motion_path_parse(path_str, path_len, &pts)) {
-        return false;
-    }
-
-    _motion_arc_table arc;
-    _motion_arc_build(&pts, &arc);
-
-    float x = 0.0f;
-    float y = 0.0f;
-    _motion_arc_position(&pts, &arc, t, &x, &y);
-
-    const psx_svg_attr* arot = _find_attr(it->anim_node, SVG_ATTR_ROTATE);
-    if (arot) {
-        float angle_rad = 0.0f;
-        if (arot->class_type == SVG_ATTR_VALUE_INHERIT) {
-            /* rotate="auto" (fval=0) or rotate="auto-reverse" (fval=180) */
-            float tangent = _motion_arc_tangent_angle(&pts, &arc, t);
-            float extra_deg = arot->value.fval; /* 0 for auto, 180 for auto-reverse */
-            angle_rad = tangent + extra_deg * (float)M_PI / 180.0f;
-        } else {
-            /* Numeric rotate value in degrees */
-            angle_rad = arot->value.fval * (float)M_PI / 180.0f;
-        }
-        float ca = cosf(angle_rad);
-        float sa = sinf(angle_rad);
-        *out_a = ca;
-        *out_b = sa;
-        *out_c = -sa;
-        *out_d = ca;
-    }
-
-    *out_e = x;
-    *out_f = y;
-
-    _motion_arc_destroy(&arc);
-    _motion_path_destroy(&pts);
-
-    return true;
 }
 
 static INLINE bool _anim_eval_set(const psx_svg_anim_item* it, float doc_t, float* out_v, bool* out_hold)
@@ -3638,7 +3678,7 @@ static INLINE bool _anim_eval_set(const psx_svg_anim_item* it, float doc_t, floa
         if (it->fill_mode == SVG_ANIMATION_FREEZE) {
             *out_hold = true;
             // still return the frozen end value
-            const psx_svg_attr* ato = _find_attr(it->anim_node, SVG_ATTR_TO);
+            const psx_svg_attr* ato = it->cached_to;
             if (!ato) {
                 return false;
             }
@@ -3649,7 +3689,7 @@ static INLINE bool _anim_eval_set(const psx_svg_anim_item* it, float doc_t, floa
     }
 
     if (it->dur_sec <= 0.0f) {
-        const psx_svg_attr* ato = _find_attr(it->anim_node, SVG_ATTR_TO);
+        const psx_svg_attr* ato = it->cached_to;
         if (!ato) {
             return false;
         }
@@ -3742,7 +3782,7 @@ static INLINE bool _anim_eval_set(const psx_svg_anim_item* it, float doc_t, floa
         }
     }
 
-    const psx_svg_attr* ato = _find_attr(it->anim_node, SVG_ATTR_TO);
+    const psx_svg_attr* ato = it->cached_to;
     if (!ato) {
         return false;
     }
@@ -3778,6 +3818,15 @@ static void _collect_anims(psx_svg_player* p, const psx_svg_node* node)
             item.anim_node = node;
             item.target_node = target;
             item.target_attr = target_attr;
+
+            /* Pre-cache attribute pointers (Optimization 2) */
+            item.cached_values = _find_attr(node, SVG_ATTR_VALUES);
+            item.cached_from = _find_attr(node, SVG_ATTR_FROM);
+            item.cached_to = _find_attr(node, SVG_ATTR_TO);
+            item.cached_by = _find_attr(node, SVG_ATTR_BY);
+            item.cached_key_times = _find_attr(node, SVG_ATTR_KEY_TIMES);
+            item.cached_key_splines = _find_attr(node, SVG_ATTR_KEY_SPLINES);
+            item.cached_calc_mode = _find_attr(node, SVG_ATTR_CALC_MODE);
 
             if (t == SVG_TAG_ANIMATE_MOTION) {
                 const psx_svg_attr* apath = _find_attr(node, SVG_ATTR_PATH);

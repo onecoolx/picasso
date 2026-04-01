@@ -10423,3 +10423,478 @@ TEST_F(SVGPlayerTest, Syncbase_EndRef_PropertyTest)
     // Sanity: all iterations should have run
     EXPECT_EQ(NUM_ITERATIONS, pass_count);
 }
+
+// ---------------------------------------------------------------------------
+// Feature: svg-anim-perf-optimize, Property 1: Motion path evaluation correctness
+// **Validates: Requirements 1.1, 1.3**
+//
+// For an <animateMotion> with a known linear path (M0,0 L100,0 L100,100),
+// the transform override at 0%, 25%, 50%, 75%, 100% of the duration SHALL
+// match the independently computed arc-length interpolated position.
+// ---------------------------------------------------------------------------
+TEST_F(SVGPlayerTest, MotionCacheReuse_PathAnim_SameResultAsUncached)
+{
+    // Path: M 0,0 L 100,0 L 100,100
+    // Two segments: (0,0)->(100,0) len=100, (100,0)->(100,100) len=100
+    // Total arc length = 200, dur = 4s, fill = freeze
+    //
+    // Expected positions by arc-length interpolation:
+    // t=0s  (0%)   => dist=0   => (0, 0)
+    // t=1s  (25%)  => dist=50  => (50, 0)
+    // t=2s  (50%)  => dist=100 => (100, 0)
+    // t=3s  (75%)  => dist=150 => (100, 50)
+    // t=4s  (100%) => dist=200 => (100, 100)
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"200\" height=\"200\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"20\" height=\"20\" fill=\"#000\">"
+        "    <animateMotion path=\"M0,0 L100,0 L100,100\" dur=\"4s\" fill=\"freeze\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    EXPECT_NE((psx_svg_player*)NULL, p);
+    EXPECT_EQ(S_OK, r);
+    if (!p) { return; }
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    EXPECT_TRUE(n != NULL);
+    if (!n) { destroy_player(p, root); return; }
+
+    psx_svg_player_play(p);
+
+    // Expected (seek_time, expected_e, expected_f) tuples
+    // e = translate-x, f = translate-y; identity rotation => a=1,b=0,c=0,d=1
+    struct { float t; float ex; float ey; } cases[5];
+    cases[0].t = 0.0f;
+    cases[0].ex = 0.0f;
+    cases[0].ey = 0.0f; /* 0%   */
+    cases[1].t = 1.0f;
+    cases[1].ex = 50.0f;
+    cases[1].ey = 0.0f; /* 25%  */
+    cases[2].t = 2.0f;
+    cases[2].ex = 100.0f;
+    cases[2].ey = 0.0f; /* 50%  */
+    cases[3].t = 3.0f;
+    cases[3].ex = 100.0f;
+    cases[3].ey = 50.0f; /* 75%  */
+    cases[4].t = 4.0f;
+    cases[4].ex = 100.0f;
+    cases[4].ey = 100.0f; /* 100% */
+
+    for (int i = 0; i < 5; i++) {
+        psx_svg_player_seek(p, cases[i].t);
+        psx_svg_player_tick(p, 0.0f);
+
+        float a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a, &b, &c, &d, &e, &f))
+                << "case " << i << " t=" << cases[i].t << " should have transform override";
+
+        // Identity rotation components
+        EXPECT_NEAR(1.0f, a, 0.001f) << "case " << i << " t=" << cases[i].t << " a";
+        EXPECT_NEAR(0.0f, b, 0.001f) << "case " << i << " t=" << cases[i].t << " b";
+        EXPECT_NEAR(0.0f, c, 0.001f) << "case " << i << " t=" << cases[i].t << " c";
+        EXPECT_NEAR(1.0f, d, 0.001f) << "case " << i << " t=" << cases[i].t << " d";
+
+        // Translation components (position along path)
+        EXPECT_NEAR(cases[i].ex, e, 0.1f)
+                << "case " << i << " t=" << cases[i].t << " translate-x";
+        EXPECT_NEAR(cases[i].ey, f, 0.1f)
+                << "case " << i << " t=" << cases[i].t << " translate-y";
+    }
+
+    destroy_player(p, root);
+}
+
+// ---------------------------------------------------------------------------
+// Feature: svg-anim-perf-optimize, Property 2: Seek idempotence for motion
+// **Validates: Requirements 1.4**
+//
+// For an <animateMotion> with a known path, seeking to the same time point
+// twice in a row SHALL produce exactly the same transform matrix both times.
+// ---------------------------------------------------------------------------
+TEST_F(SVGPlayerTest, MotionCacheReuse_RepeatedSeek_Idempotent)
+{
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\" width=\"200\" height=\"200\">"
+        "  <rect id=\"r\" x=\"0\" y=\"0\" width=\"20\" height=\"20\" fill=\"#000\">"
+        "    <animateMotion path=\"M0,0 L100,0 L100,100\" dur=\"4s\" fill=\"freeze\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    EXPECT_NE((psx_svg_player*)NULL, p);
+    EXPECT_EQ(S_OK, r);
+    if (!p) { return; }
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    EXPECT_TRUE(n != NULL);
+    if (!n) { destroy_player(p, root); return; }
+
+    psx_svg_player_play(p);
+
+    // Test several time points across the animation duration
+    float times[3];
+    times[0] = 1.0f; /* 25% — mid first segment */
+    times[1] = 2.5f; /* 62.5% — mid second segment */
+    times[2] = 3.5f; /* 87.5% — late second segment */
+
+    for (int i = 0; i < 3; i++) {
+        /* First seek + tick */
+        psx_svg_player_seek(p, times[i]);
+        psx_svg_player_tick(p, 0.0f);
+
+        float a1 = 0, b1 = 0, c1 = 0, d1 = 0, e1 = 0, f1 = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a1, &b1, &c1, &d1, &e1, &f1))
+                << "first seek t=" << times[i] << " should have transform override";
+
+        /* Second seek to the same time + tick */
+        psx_svg_player_seek(p, times[i]);
+        psx_svg_player_tick(p, 0.0f);
+
+        float a2 = 0, b2 = 0, c2 = 0, d2 = 0, e2 = 0, f2 = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_transform_override(p, n, &a2, &b2, &c2, &d2, &e2, &f2))
+                << "second seek t=" << times[i] << " should have transform override";
+
+        /* All 6 matrix components must be identical */
+        EXPECT_NEAR(a1, a2, 0.0001f) << "t=" << times[i] << " a mismatch";
+        EXPECT_NEAR(b1, b2, 0.0001f) << "t=" << times[i] << " b mismatch";
+        EXPECT_NEAR(c1, c2, 0.0001f) << "t=" << times[i] << " c mismatch";
+        EXPECT_NEAR(d1, d2, 0.0001f) << "t=" << times[i] << " d mismatch";
+        EXPECT_NEAR(e1, e2, 0.0001f) << "t=" << times[i] << " e mismatch";
+        EXPECT_NEAR(f1, f2, 0.0001f) << "t=" << times[i] << " f mismatch";
+    }
+
+    destroy_player(p, root);
+}
+
+/* ── Property 4: Override sort correctness ──
+ * Validates: Requirements 3.3, 3.4
+ *
+ * Create an SVG with multiple animated target nodes (≤16 override entries)
+ * to exercise the override sort path. After seek, verify every override
+ * is correctly retrievable via psx_svg_player_debug_get_float_override.
+ * This test passes with the current qsort implementation and must continue
+ * to pass after the insertion-sort optimisation is applied.
+ */
+TEST_F(SVGPlayerTest, InsertionSort_MultipleTargets_CorrectLookup)
+{
+    /* 8 rect elements, each with one <animate> on a different attribute.
+     * This produces 8 float override entries — well within the ≤16 threshold
+     * that will later trigger the insertion-sort path.
+     */
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" baseProfile=\"tiny\""
+        "     width=\"200\" height=\"200\">"
+        "  <rect id=\"a1\" x=\"0\"  y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
+        "    <animate attributeName=\"x\" from=\"0\" to=\"100\" dur=\"4s\" fill=\"freeze\"/>"
+        "  </rect>"
+        "  <rect id=\"a2\" x=\"0\"  y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
+        "    <animate attributeName=\"y\" from=\"0\" to=\"80\" dur=\"4s\" fill=\"freeze\"/>"
+        "  </rect>"
+        "  <rect id=\"a3\" x=\"0\"  y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
+        "    <animate attributeName=\"width\" from=\"10\" to=\"50\" dur=\"4s\" fill=\"freeze\"/>"
+        "  </rect>"
+        "  <rect id=\"a4\" x=\"0\"  y=\"0\" width=\"10\" height=\"10\" fill=\"#000\">"
+        "    <animate attributeName=\"height\" from=\"10\" to=\"60\" dur=\"4s\" fill=\"freeze\"/>"
+        "  </rect>"
+        "  <rect id=\"a5\" x=\"0\"  y=\"0\" width=\"10\" height=\"10\" fill=\"#000\" opacity=\"0\">"
+        "    <animate attributeName=\"opacity\" from=\"0\" to=\"1\" dur=\"4s\" fill=\"freeze\"/>"
+        "  </rect>"
+        "  <rect id=\"a6\" x=\"0\"  y=\"0\" width=\"10\" height=\"10\" fill=\"#000\" rx=\"0\">"
+        "    <animate attributeName=\"rx\" from=\"0\" to=\"5\" dur=\"4s\" fill=\"freeze\"/>"
+        "  </rect>"
+        "  <rect id=\"a7\" x=\"0\"  y=\"0\" width=\"10\" height=\"10\" fill=\"none\""
+        "        stroke=\"#000\" stroke-width=\"1\">"
+        "    <animate attributeName=\"stroke-width\" from=\"1\" to=\"9\" dur=\"4s\" fill=\"freeze\"/>"
+        "  </rect>"
+        "  <rect id=\"a8\" x=\"0\"  y=\"0\" width=\"10\" height=\"10\" fill=\"#000\" fill-opacity=\"0\">"
+        "    <animate attributeName=\"fill-opacity\" from=\"0\" to=\"1\" dur=\"4s\" fill=\"freeze\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_NE((psx_svg_player*)NULL, p);
+    EXPECT_EQ(S_OK, r);
+
+    /* Look up all 8 target nodes */
+    const psx_svg_node* n1 = psx_svg_player_get_node_by_id(p, "a1");
+    const psx_svg_node* n2 = psx_svg_player_get_node_by_id(p, "a2");
+    const psx_svg_node* n3 = psx_svg_player_get_node_by_id(p, "a3");
+    const psx_svg_node* n4 = psx_svg_player_get_node_by_id(p, "a4");
+    const psx_svg_node* n5 = psx_svg_player_get_node_by_id(p, "a5");
+    const psx_svg_node* n6 = psx_svg_player_get_node_by_id(p, "a6");
+    const psx_svg_node* n7 = psx_svg_player_get_node_by_id(p, "a7");
+    const psx_svg_node* n8 = psx_svg_player_get_node_by_id(p, "a8");
+    ASSERT_TRUE(n1 != NULL);
+    ASSERT_TRUE(n2 != NULL);
+    ASSERT_TRUE(n3 != NULL);
+    ASSERT_TRUE(n4 != NULL);
+    ASSERT_TRUE(n5 != NULL);
+    ASSERT_TRUE(n6 != NULL);
+    ASSERT_TRUE(n7 != NULL);
+    ASSERT_TRUE(n8 != NULL);
+
+    /* Seek to 50% of the 4s duration => t=2s.
+     * Expected interpolated values (linear from/to at 50%):
+     *   a1 x:            0 + 0.5*(100-0)   = 50
+     *   a2 y:            0 + 0.5*(80-0)    = 40
+     *   a3 width:       10 + 0.5*(50-10)   = 30
+     *   a4 height:      10 + 0.5*(60-10)   = 35
+     *   a5 opacity:      0 + 0.5*(1-0)     = 0.5
+     *   a6 rx:           0 + 0.5*(5-0)     = 2.5
+     *   a7 stroke-width: 1 + 0.5*(9-1)     = 5
+     *   a8 fill-opacity: 0 + 0.5*(1-0)     = 0.5
+     */
+    psx_svg_player_seek(p, 2.0f);
+    psx_svg_player_tick(p, 0.0f);
+
+    float v = 0;
+
+    EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n1, SVG_ATTR_X, &v));
+    EXPECT_NEAR(50.0f, v, 0.1f) << "a1 x at 50%";
+
+    EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n2, SVG_ATTR_Y, &v));
+    EXPECT_NEAR(40.0f, v, 0.1f) << "a2 y at 50%";
+
+    EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n3, SVG_ATTR_WIDTH, &v));
+    EXPECT_NEAR(30.0f, v, 0.1f) << "a3 width at 50%";
+
+    EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n4, SVG_ATTR_HEIGHT, &v));
+    EXPECT_NEAR(35.0f, v, 0.1f) << "a4 height at 50%";
+
+    EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n5, SVG_ATTR_OPACITY, &v));
+    EXPECT_NEAR(0.5f, v, 0.05f) << "a5 opacity at 50%";
+
+    EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n6, SVG_ATTR_RX, &v));
+    EXPECT_NEAR(2.5f, v, 0.1f) << "a6 rx at 50%";
+
+    EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n7, SVG_ATTR_STROKE_WIDTH, &v));
+    EXPECT_NEAR(5.0f, v, 0.1f) << "a7 stroke-width at 50%";
+
+    EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n8, SVG_ATTR_FILL_OPACITY, &v));
+    EXPECT_NEAR(0.5f, v, 0.05f) << "a8 fill-opacity at 50%";
+
+    /* Also verify at 25% (t=1s) to confirm sort is stable across seeks */
+    psx_svg_player_seek(p, 1.0f);
+    psx_svg_player_tick(p, 0.0f);
+
+    EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n1, SVG_ATTR_X, &v));
+    EXPECT_NEAR(25.0f, v, 0.1f) << "a1 x at 25%";
+
+    EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n2, SVG_ATTR_Y, &v));
+    EXPECT_NEAR(20.0f, v, 0.1f) << "a2 y at 25%";
+
+    EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n3, SVG_ATTR_WIDTH, &v));
+    EXPECT_NEAR(20.0f, v, 0.1f) << "a3 width at 25%";
+
+    EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n4, SVG_ATTR_HEIGHT, &v));
+    EXPECT_NEAR(22.5f, v, 0.1f) << "a4 height at 25%";
+
+    EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n5, SVG_ATTR_OPACITY, &v));
+    EXPECT_NEAR(0.25f, v, 0.05f) << "a5 opacity at 25%";
+
+    EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n6, SVG_ATTR_RX, &v));
+    EXPECT_NEAR(1.25f, v, 0.1f) << "a6 rx at 25%";
+
+    EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n7, SVG_ATTR_STROKE_WIDTH, &v));
+    EXPECT_NEAR(3.0f, v, 0.1f) << "a7 stroke-width at 25%";
+
+    EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n8, SVG_ATTR_FILL_OPACITY, &v));
+    EXPECT_NEAR(0.25f, v, 0.05f) << "a8 fill-opacity at 25%";
+
+    destroy_player(p, root);
+}
+
+/* ------------------------------------------------------------------ */
+/* Property 5: Bitmap attr classification correctness                 */
+/* Validates: Requirements 4.4, 4.5                                   */
+/*                                                                    */
+/* Reference (long-chain) implementations copied from the production  */
+/* code, plus bitmap implementations that task 7.2 will move into     */
+/* psx_svg_player.cpp.  The test exhaustively checks every enum value */
+/* from SVG_ATTR_INVALID (-1) through SVG_ATTR_TRANSFORM_TYPE (74)    */
+/* plus a few out-of-range sentinels.                                 */
+/* ------------------------------------------------------------------ */
+
+/* --- reference (long-chain) versions --- */
+
+static bool _ref_is_supported_anim_attr(psx_svg_attr_type a)
+{
+    return a == SVG_ATTR_X || a == SVG_ATTR_Y
+           || a == SVG_ATTR_WIDTH || a == SVG_ATTR_HEIGHT
+           || a == SVG_ATTR_OPACITY
+           || a == SVG_ATTR_RX || a == SVG_ATTR_RY
+           || a == SVG_ATTR_CX || a == SVG_ATTR_CY || a == SVG_ATTR_R
+           || a == SVG_ATTR_X1 || a == SVG_ATTR_Y1
+           || a == SVG_ATTR_X2 || a == SVG_ATTR_Y2
+           || a == SVG_ATTR_STROKE_WIDTH
+           || a == SVG_ATTR_FILL_OPACITY
+           || a == SVG_ATTR_STROKE_OPACITY
+           || a == SVG_ATTR_GRADIENT_STOP_OPACITY
+           || a == SVG_ATTR_GRADIENT_STOP_COLOR
+           || a == SVG_ATTR_GRADIENT_STOP_OFFSET
+           || a == SVG_ATTR_FILL
+           || a == SVG_ATTR_STROKE
+           || a == SVG_ATTR_STROKE_MITER_LIMIT
+           || a == SVG_ATTR_STROKE_DASH_OFFSET
+           || a == SVG_ATTR_STROKE_DASH_ARRAY
+           || a == SVG_ATTR_FILL_RULE
+           || a == SVG_ATTR_STROKE_LINECAP
+           || a == SVG_ATTR_STROKE_LINEJOIN
+           || a == SVG_ATTR_DISPLAY
+           || a == SVG_ATTR_VISIBILITY
+           || a == SVG_ATTR_FONT_SIZE
+           || a == SVG_ATTR_FONT_WEIGHT
+           || a == SVG_ATTR_FONT_STYLE
+           || a == SVG_ATTR_TRANSFORM;
+}
+
+static bool _ref_is_int32_anim_attr(psx_svg_attr_type a)
+{
+    return a == SVG_ATTR_VISIBILITY
+           || a == SVG_ATTR_FILL_RULE
+           || a == SVG_ATTR_STROKE_LINECAP
+           || a == SVG_ATTR_STROKE_LINEJOIN
+           || a == SVG_ATTR_DISPLAY
+           || a == SVG_ATTR_FONT_WEIGHT
+           || a == SVG_ATTR_FONT_STYLE;
+}
+
+static bool _ref_is_color_anim_attr(psx_svg_attr_type a)
+{
+    return a == SVG_ATTR_FILL
+           || a == SVG_ATTR_STROKE
+           || a == SVG_ATTR_GRADIENT_STOP_COLOR;
+}
+
+/* --- bitmap (O(1) lookup) versions --- */
+
+#define _BM_ATTR_BITMAP_WORDS 3  /* uint32_t[3] = 96 bits, covers 0..95 */
+
+static bool _bm_lookup(const uint32_t bm[], int a)
+{
+    if (a < 0 || a >= _BM_ATTR_BITMAP_WORDS * 32) {
+        return false;
+    }
+    return (bm[(unsigned)a >> 5] & (1u << ((unsigned)a & 31))) != 0;
+}
+
+/* Helper: set a bit in a 3-word bitmap */
+static void _bm_set(uint32_t bm[], int bit)
+{
+    if (bit >= 0 && bit < _BM_ATTR_BITMAP_WORDS * 32) {
+        bm[(unsigned)bit >> 5] |= (1u << ((unsigned)bit & 31));
+    }
+}
+
+/* Build the supported-anim-attr bitmap at test time so it stays in
+   sync with the reference function automatically. */
+static void _build_supported_bitmap(uint32_t bm[])
+{
+    bm[0] = bm[1] = bm[2] = 0;
+    _bm_set(bm, SVG_ATTR_X);
+    _bm_set(bm, SVG_ATTR_Y);
+    _bm_set(bm, SVG_ATTR_WIDTH);
+    _bm_set(bm, SVG_ATTR_HEIGHT);
+    _bm_set(bm, SVG_ATTR_OPACITY);
+    _bm_set(bm, SVG_ATTR_RX);
+    _bm_set(bm, SVG_ATTR_RY);
+    _bm_set(bm, SVG_ATTR_CX);
+    _bm_set(bm, SVG_ATTR_CY);
+    _bm_set(bm, SVG_ATTR_R);
+    _bm_set(bm, SVG_ATTR_X1);
+    _bm_set(bm, SVG_ATTR_Y1);
+    _bm_set(bm, SVG_ATTR_X2);
+    _bm_set(bm, SVG_ATTR_Y2);
+    _bm_set(bm, SVG_ATTR_STROKE_WIDTH);
+    _bm_set(bm, SVG_ATTR_FILL_OPACITY);
+    _bm_set(bm, SVG_ATTR_STROKE_OPACITY);
+    _bm_set(bm, SVG_ATTR_GRADIENT_STOP_OPACITY);
+    _bm_set(bm, SVG_ATTR_GRADIENT_STOP_COLOR);
+    _bm_set(bm, SVG_ATTR_GRADIENT_STOP_OFFSET);
+    _bm_set(bm, SVG_ATTR_FILL);
+    _bm_set(bm, SVG_ATTR_STROKE);
+    _bm_set(bm, SVG_ATTR_STROKE_MITER_LIMIT);
+    _bm_set(bm, SVG_ATTR_STROKE_DASH_OFFSET);
+    _bm_set(bm, SVG_ATTR_STROKE_DASH_ARRAY);
+    _bm_set(bm, SVG_ATTR_FILL_RULE);
+    _bm_set(bm, SVG_ATTR_STROKE_LINECAP);
+    _bm_set(bm, SVG_ATTR_STROKE_LINEJOIN);
+    _bm_set(bm, SVG_ATTR_DISPLAY);
+    _bm_set(bm, SVG_ATTR_VISIBILITY);
+    _bm_set(bm, SVG_ATTR_FONT_SIZE);
+    _bm_set(bm, SVG_ATTR_FONT_WEIGHT);
+    _bm_set(bm, SVG_ATTR_FONT_STYLE);
+    _bm_set(bm, SVG_ATTR_TRANSFORM);
+}
+
+static void _build_int32_bitmap(uint32_t bm[])
+{
+    bm[0] = bm[1] = bm[2] = 0;
+    _bm_set(bm, SVG_ATTR_VISIBILITY);
+    _bm_set(bm, SVG_ATTR_FILL_RULE);
+    _bm_set(bm, SVG_ATTR_STROKE_LINECAP);
+    _bm_set(bm, SVG_ATTR_STROKE_LINEJOIN);
+    _bm_set(bm, SVG_ATTR_DISPLAY);
+    _bm_set(bm, SVG_ATTR_FONT_WEIGHT);
+    _bm_set(bm, SVG_ATTR_FONT_STYLE);
+}
+
+static void _build_color_bitmap(uint32_t bm[])
+{
+    bm[0] = bm[1] = bm[2] = 0;
+    _bm_set(bm, SVG_ATTR_FILL);
+    _bm_set(bm, SVG_ATTR_STROKE);
+    _bm_set(bm, SVG_ATTR_GRADIENT_STOP_COLOR);
+}
+
+/* ------------------------------------------------------------------ */
+/* Exhaustive test: bitmap lookup matches reference for every value    */
+/* ------------------------------------------------------------------ */
+
+TEST_F(SVGPlayerTest, BitmapAttrLookup_AllEnumValues_MatchOriginal)
+{
+    /* Build bitmaps */
+    uint32_t bm_supported[_BM_ATTR_BITMAP_WORDS];
+    uint32_t bm_int32[_BM_ATTR_BITMAP_WORDS];
+    uint32_t bm_color[_BM_ATTR_BITMAP_WORDS];
+
+    _build_supported_bitmap(bm_supported);
+    _build_int32_bitmap(bm_int32);
+    _build_color_bitmap(bm_color);
+
+    /* Sweep from -2 (out-of-range low) through SVG_ATTR_TRANSFORM_TYPE + 2
+       (out-of-range high) to cover all enum values plus boundary sentinels. */
+    const int lo = -2;
+    const int hi = (int)SVG_ATTR_TRANSFORM_TYPE + 2;
+
+    for (int i = lo; i <= hi; i++) {
+        psx_svg_attr_type a = (psx_svg_attr_type)i;
+
+        bool ref_sup = _ref_is_supported_anim_attr(a);
+        bool bm_sup = _bm_lookup(bm_supported, i);
+        EXPECT_EQ(ref_sup, bm_sup)
+                << "supported mismatch at enum " << i;
+
+        bool ref_i32 = _ref_is_int32_anim_attr(a);
+        bool bm_i32 = _bm_lookup(bm_int32, i);
+        EXPECT_EQ(ref_i32, bm_i32)
+                << "int32 mismatch at enum " << i;
+
+        bool ref_col = _ref_is_color_anim_attr(a);
+        bool bm_col = _bm_lookup(bm_color, i);
+        EXPECT_EQ(ref_col, bm_col)
+                << "color mismatch at enum " << i;
+    }
+
+    /* Explicit check: SVG_ATTR_INVALID (-1) must be false for all three */
+    EXPECT_FALSE(_bm_lookup(bm_supported, SVG_ATTR_INVALID));
+    EXPECT_FALSE(_bm_lookup(bm_int32, SVG_ATTR_INVALID));
+    EXPECT_FALSE(_bm_lookup(bm_color, SVG_ATTR_INVALID));
+}
