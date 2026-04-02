@@ -48,7 +48,7 @@ void draw_test (int id, ps_context* gc)
 //    ps_set_shadow(gc, 1, 1, 0.15f);
 //    ps_set_shadow_color(gc, &x);
     ps_translate(gc, -200, -200);
-    ps_rotate(gc, 0.02f);
+    ps_rotate(gc, 0.002f);
     ps_translate(gc, 200, 200);
 
   //  ps_set_text_antialias(gc, False);

@@ -19,7 +19,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Picasso API
-   &#160;<span id="projectnumber">2.8</span>
+   &#160;<span id="projectnumber">2.9</span>
    </div>
   </td>
  </tr>
@@ -48,8 +48,8 @@ $(function() {
 <li>ps_arc()
 : <a class="el" href="group__geometry.html#ga221af9d23e478b7609b20dc0e780c206">picasso.h</a>
 </li>
-<li>ps_bezier_curve_to()
-: <a class="el" href="group__geometry.html#gab8f032269b7bffbe13d65aab01dfdb22">picasso.h</a>
+<li>ps_bezier_to()
+: <a class="el" href="group__geometry.html#ga8491035eb13f729b6a31e1b04783c3b7">picasso.h</a>
 </li>
 <li>ps_canvas_bitblt()
 : <a class="el" href="group__canvas.html#ga3fd90de48e503abfb0e55f525fe43056">picasso.h</a>
@@ -124,7 +124,7 @@ $(function() {
 : <a class="el" href="group__context.html#ga2840f4f552f58220684b0023acb30e2a">picasso.h</a>
 </li>
 <li>ps_draw_text()
-: <a class="el" href="group__text.html#ga4accdd233bee66e3b25cee89bcaf4de2">picasso.h</a>
+: <a class="el" href="group__text.html#ga418cc9406d74d9fa9bde9ce038dc75e4">picasso.h</a>
 </li>
 <li>ps_ellipse()
 : <a class="el" href="group__geometry.html#ga5a24c9a87485571696f9a560e5c8afc8">picasso.h</a>
@@ -456,8 +456,8 @@ $(function() {
 <li>ps_pattern_unref()
 : <a class="el" href="group__pattern.html#gabbc7857ee6f53b0d47f9321c8c4a4351">picasso.h</a>
 </li>
-<li>ps_quad_curve_to()
-: <a class="el" href="group__geometry.html#ga1423d2871e7c875312ebd931953d4948">picasso.h</a>
+<li>ps_quad_to()
+: <a class="el" href="group__geometry.html#gae66344f8911a10c1a8ec82a0bbb24ebd">picasso.h</a>
 </li>
 <li>ps_rectangle()
 : <a class="el" href="group__geometry.html#ga5011a18fa50227967380b08956ceec0f">picasso.h</a>
@@ -530,6 +530,9 @@ $(function() {
 </li>
 <li>ps_set_matrix()
 : <a class="el" href="group__transform.html#gafdd79be45c9dd686968a28e26dad197a">picasso.h</a>
+</li>
+<li>ps_set_memory_functions()
+: <a class="el" href="group__memory.html#ga35aae841ad725b33a8d8b729478def95">picasso_backport.h</a>
 </li>
 <li>ps_set_miter_limit()
 : <a class="el" href="group__stroke.html#ga83568c0d29c26a834d05c93e48909328">picasso.h</a>
@@ -631,22 +634,22 @@ $(function() {
 : <a class="el" href="group__transform.html#ga5fc9c185a38b1a5e79a8fd7c14cbc40c">picasso.h</a>
 </li>
 <li>psx_image_create_from_data()
-: <a class="el" href="group__imgfunctions.html#gad40645d0b040d9bf426800c1ce6115c2">psx_image.h</a>
+: <a class="el" href="group__imgfunctions.html#gaf46e05a27a1ab6b8d372e1a26806ae66">psx_image.h</a>
 </li>
 <li>psx_image_destroy()
-: <a class="el" href="group__imgfunctions.html#ga018b18d8cd3730dc8fe86ff37bffd9a8">psx_image.h</a>
+: <a class="el" href="group__imgfunctions.html#ga0dddf1873aac56311807e98843c22265">psx_image.h</a>
 </li>
 <li>psx_image_init()
-: <a class="el" href="group__imgfunctions.html#ga8449a503380d339ecccdd0ecf8074b82">psx_image.h</a>
+: <a class="el" href="group__imgfunctions.html#gae574553320df7e5c22da57edef450956">psx_image.h</a>
 </li>
 <li>psx_image_load()
-: <a class="el" href="group__imgfunctions.html#gaba934b22f7e53c2d744f340cde3fefe9">psx_image.h</a>
+: <a class="el" href="group__imgfunctions.html#gadfb7d971edef0cde1566f2d0d54e04b1">psx_image.h</a>
 </li>
 <li>psx_image_load_from_memory()
-: <a class="el" href="group__imgfunctions.html#gab7b5a6aabdaf060a25bc6c608b42431c">psx_image.h</a>
+: <a class="el" href="group__imgfunctions.html#ga355fc7927641f18020ba2acd898c8010">psx_image.h</a>
 </li>
 <li>psx_image_module_get_string()
-: <a class="el" href="group__coder.html#ga6126f92a9ed2bde05a70d23304646b9b">psx_image_plugin.h</a>
+: <a class="el" href="group__coder.html#gacddcdb8dc972eac037e908340e9fbfc6">psx_image_plugin.h</a>
 </li>
 <li>psx_image_module_init()
 : <a class="el" href="group__coder.html#gab79a1526ed3284dae85ad73be7e7eb97">psx_image_plugin.h</a>
@@ -655,19 +658,22 @@ $(function() {
 : <a class="el" href="group__coder.html#ga7bce88a706a2fb89e4846f769be24aa3">psx_image_plugin.h</a>
 </li>
 <li>psx_image_register_operator()
-: <a class="el" href="group__interface.html#gac2c1fc7d317f49ee5c246f9aff61e13a">psx_image_plugin.h</a>
+: <a class="el" href="group__interface.html#ga63ad42bc0dffaffc72f8f2a34fdd3ccb">psx_image_plugin.h</a>
 </li>
 <li>psx_image_save()
-: <a class="el" href="group__imgfunctions.html#ga204b2a1fd4375d5fa75ae2c1b6f66689">psx_image.h</a>
+: <a class="el" href="group__imgfunctions.html#ga6fc85f944276d53484bce0bfee0edb53">psx_image.h</a>
 </li>
 <li>psx_image_save_to_file()
-: <a class="el" href="group__imgfunctions.html#gaa1b10b378e6c58563e5f36bdf4d282c6">psx_image.h</a>
+: <a class="el" href="group__imgfunctions.html#ga3e2a844c270f8a4815ced148d3a3178b">psx_image.h</a>
 </li>
 <li>psx_image_shutdown()
-: <a class="el" href="group__imgfunctions.html#ga886028c5ac25bb636de0abd5c508e0a1">psx_image.h</a>
+: <a class="el" href="group__imgfunctions.html#gad9c476e493f458a6dc493f4793b0d338">psx_image.h</a>
 </li>
 <li>psx_image_unregister_operator()
-: <a class="el" href="group__interface.html#ga50213dff3b0bec9b77c059bb85126bed">psx_image_plugin.h</a>
+: <a class="el" href="group__interface.html#ga722c8bc2d6bb65eb8fdeb98f44a9ade6">psx_image_plugin.h</a>
+</li>
+<li>psx_result_get_string()
+: <a class="el" href="group__extension.html#ga161f1e6151a11a5398afcaae3e0cf50c">picasso_ext.h</a>
 </li>
 <li>psx_svg_destroy()
 : <a class="el" href="group__svgfunctions.html#ga03907eadc640e2688e1a1a15444d775a">psx_svg.h</a>
@@ -680,6 +686,60 @@ $(function() {
 </li>
 <li>psx_svg_load_from_memory()
 : <a class="el" href="group__svgfunctions.html#ga43b18482c27a31b159200e0c927c4f03">psx_svg.h</a>
+</li>
+<li>psx_svg_player_create()
+: <a class="el" href="group__svgfunctions.html#gaf80533bc5d86182467bf6b8bff257941">psx_svg_animation.h</a>
+</li>
+<li>psx_svg_player_destroy()
+: <a class="el" href="group__svgfunctions.html#ga69328ee718b775d06be88c13edb5ff40">psx_svg_animation.h</a>
+</li>
+<li>psx_svg_player_draw()
+: <a class="el" href="group__svgfunctions.html#gac21baa6b0d60786dc75f4126b8870d38">psx_svg_animation.h</a>
+</li>
+<li>psx_svg_player_get_dpi()
+: <a class="el" href="group__svgfunctions.html#gaba82760c8d1bbe08108ea7e10dee51c4">psx_svg_animation.h</a>
+</li>
+<li>psx_svg_player_get_duration()
+: <a class="el" href="group__svgfunctions.html#ga991a49154d7818ce7329400aca58b8f1">psx_svg_animation.h</a>
+</li>
+<li>psx_svg_player_get_loop()
+: <a class="el" href="group__svgfunctions.html#ga2db8bfcdd2b069ca7b66dcd3bea9d1b7">psx_svg_animation.h</a>
+</li>
+<li>psx_svg_player_get_state()
+: <a class="el" href="group__svgfunctions.html#ga2cfeb8d203f425a722d45169c7f6b57e">psx_svg_animation.h</a>
+</li>
+<li>psx_svg_player_get_time()
+: <a class="el" href="group__svgfunctions.html#ga81484cb2fb09ad994519118f67745275">psx_svg_animation.h</a>
+</li>
+<li>psx_svg_player_pause()
+: <a class="el" href="group__svgfunctions.html#ga39a0ed9b1798a844dee2266efe8fc0bf">psx_svg_animation.h</a>
+</li>
+<li>psx_svg_player_play()
+: <a class="el" href="group__svgfunctions.html#ga2d1fb3c5f641ee4f00761a4772e1adab">psx_svg_animation.h</a>
+</li>
+<li>psx_svg_player_seek()
+: <a class="el" href="group__svgfunctions.html#ga06e53e2213938ae4533c216d5b3d0943">psx_svg_animation.h</a>
+</li>
+<li>psx_svg_player_send_key()
+: <a class="el" href="group__svgfunctions.html#ga7e222dc3335551150d2782996207bddf">psx_svg_animation.h</a>
+</li>
+<li>psx_svg_player_set_dpi()
+: <a class="el" href="group__svgfunctions.html#ga096fbdc76063ce1c011731fbe42bd4fd">psx_svg_animation.h</a>
+</li>
+<li>psx_svg_player_set_event_callback()
+: <a class="el" href="group__svgfunctions.html#gab57c02e717bc860ff0c3db061337cbeb">psx_svg_animation.h</a>
+</li>
+<li>psx_svg_player_set_loop()
+: <a class="el" href="group__svgfunctions.html#ga33e880ae460eec35ef4f5ed377642690">psx_svg_animation.h</a>
+</li>
+<li>psx_svg_player_stop()
+: <a class="el" href="group__svgfunctions.html#ga47a9261b87b262881f9e464767f377db">psx_svg_animation.h</a>
+</li>
+<li>psx_svg_player_tick()
+: <a class="el" href="group__svgfunctions.html#ga2c4d75849678df13c39cd3ece6472e7d">psx_svg_animation.h</a>
+</li>
+<li>psx_svg_player_trigger()
+: <a class="el" href="group__svgfunctions.html#gac025622225536f946836959728f46aa1">psx_svg_animation.h</a>
 </li>
 <li>psx_svg_render_destroy()
 : <a class="el" href="group__svgfunctions.html#ga5ebd8fb2913448a94bb40fcf99a9b588">psx_svg.h</a>

@@ -1,0 +1,302 @@
+{
+    "PathAddArc": {
+        "mid_ms": 1.25199799,
+        "avg_ms": 1.26651205,
+        "min_ms": 1.247911,
+        "max_ms": 1.30310299,
+        "std_dev": 0.01600288,
+        "cv": 0.0126354,
+        "iterations": 363,
+        "total_time_ms": 4288.41474499
+    },
+    "PathAddEllipse": {
+        "mid_ms": 2.422759,
+        "avg_ms": 2.42547634,
+        "min_ms": 2.41533,
+        "max_ms": 2.437191,
+        "std_dev": 0.00586571,
+        "cv": 0.00241837,
+        "iterations": 254,
+        "total_time_ms": 3420.33526699
+    },
+    "PathAddLine": {
+        "mid_ms": 0.179665,
+        "avg_ms": 0.18231362,
+        "min_ms": 0.179505,
+        "max_ms": 0.19000399,
+        "std_dev": 0.00359956,
+        "cv": 0.01974379,
+        "iterations": 500,
+        "total_time_ms": 5320.345763
+    },
+    "PathAddRect": {
+        "mid_ms": 0.27051049,
+        "avg_ms": 0.27673099,
+        "min_ms": 0.26768999,
+        "max_ms": 0.29630299,
+        "std_dev": 0.00830234,
+        "cv": 0.03000149,
+        "iterations": 500,
+        "total_time_ms": 5293.69455799
+    },
+    "PathAddRoundedRect": {
+        "mid_ms": 1.26397999,
+        "avg_ms": 1.26746504,
+        "min_ms": 1.26019299,
+        "max_ms": 1.27421899,
+        "std_dev": 0.00448391,
+        "cv": 0.0035377,
+        "iterations": 361,
+        "total_time_ms": 4287.591491
+    },
+    "PathAddSubPath": {
+        "mid_ms": 0.1721515,
+        "avg_ms": 0.17587022,
+        "min_ms": 0.171801,
+        "max_ms": 0.18324199,
+        "std_dev": 0.00392285,
+        "cv": 0.0223054,
+        "iterations": 500,
+        "total_time_ms": 5434.75397899
+    },
+    "PathArcOperations": {
+        "mid_ms": 5.827011,
+        "avg_ms": 5.83276402,
+        "min_ms": 5.812323,
+        "max_ms": 5.86394,
+        "std_dev": 0.01415181,
+        "cv": 0.00242626,
+        "iterations": 135,
+        "total_time_ms": 2393.631781
+    },
+    "PathBezierOperations": {
+        "mid_ms": 2.487957,
+        "avg_ms": 2.49430352,
+        "min_ms": 2.47736599,
+        "max_ms": 2.51448598,
+        "std_dev": 0.01032911,
+        "cv": 0.00414108,
+        "iterations": 249,
+        "total_time_ms": 3311.588294
+    },
+    "PathBoundingRect": {
+        "mid_ms": 5.69497499,
+        "avg_ms": 5.71556523,
+        "min_ms": 5.68379399,
+        "max_ms": 5.743927,
+        "std_dev": 0.02031478,
+        "cv": 0.00355429,
+        "iterations": 139,
+        "total_time_ms": 2429.93744199
+    },
+    "PathBuildingMoveLine": {
+        "mid_ms": 0.2199055,
+        "avg_ms": 0.22286577,
+        "min_ms": 0.21960999,
+        "max_ms": 0.22989899,
+        "std_dev": 0.00374926,
+        "cv": 0.01682298,
+        "iterations": 500,
+        "total_time_ms": 5291.61933599
+    },
+    "PathClearOperations": {
+        "mid_ms": 3.821872,
+        "avg_ms": 3.84327963,
+        "min_ms": 3.817378,
+        "max_ms": 3.883232,
+        "std_dev": 0.02014071,
+        "cv": 0.0052405,
+        "iterations": 192,
+        "total_time_ms": 2874.657929
+    },
+    "PathClippingOperations": {
+        "mid_ms": 4.101058,
+        "avg_ms": 4.16947168,
+        "min_ms": 4.077475,
+        "max_ms": 4.33650799,
+        "std_dev": 0.08280106,
+        "cv": 0.01985888,
+        "iterations": 179,
+        "total_time_ms": 2832.07471599
+    },
+    "PathComplexBuildingStress": {
+        "mid_ms": 5.57590199,
+        "avg_ms": 5.58961303,
+        "min_ms": 5.56109399,
+        "max_ms": 5.626607,
+        "std_dev": 0.01784426,
+        "cv": 0.00319239,
+        "iterations": 141,
+        "total_time_ms": 2466.71609499
+    },
+    "PathComplexClipping": {
+        "mid_ms": 0.158812,
+        "avg_ms": 0.16148668,
+        "min_ms": 0.15840599,
+        "max_ms": 0.169276,
+        "std_dev": 0.00335641,
+        "cv": 0.02078447,
+        "iterations": 500,
+        "total_time_ms": 5289.14332098
+    },
+    "PathContainsManyPoints": {
+        "mid_ms": 42.5115015,
+        "avg_ms": 42.59870481,
+        "min_ms": 42.154691,
+        "max_ms": 43.121917,
+        "std_dev": 0.31810364,
+        "cv": 0.00746744,
+        "iterations": 22,
+        "total_time_ms": 1693.45328999
+    },
+    "PathContainsTest": {
+        "mid_ms": 6.08402199,
+        "avg_ms": 6.11799851,
+        "min_ms": 6.00941199,
+        "max_ms": 6.34738299,
+        "std_dev": 0.07348185,
+        "cv": 0.01201076,
+        "iterations": 131,
+        "total_time_ms": 2393.40087598
+    },
+    "PathCreateCopy": {
+        "mid_ms": 0.22742499,
+        "avg_ms": 0.23834171,
+        "min_ms": 0.22606199,
+        "max_ms": 0.269674,
+        "std_dev": 0.01338746,
+        "cv": 0.0561692,
+        "iterations": 500,
+        "total_time_ms": 5285.52221799
+    },
+    "PathCreateDestroy": {
+        "mid_ms": 0.39628549,
+        "avg_ms": 0.40606682,
+        "min_ms": 0.38632199,
+        "max_ms": 0.45514999,
+        "std_dev": 0.01964151,
+        "cv": 0.04837015,
+        "iterations": 500,
+        "total_time_ms": 5444.19564599
+    },
+    "PathErrorHandling": {
+        "mid_ms": 1.21249499,
+        "avg_ms": 1.2169738,
+        "min_ms": 1.21039,
+        "max_ms": 1.22376599,
+        "std_dev": 0.00463674,
+        "cv": 0.00381006,
+        "iterations": 357,
+        "total_time_ms": 4338.10517
+    },
+    "PathLengthCalculation": {
+        "mid_ms": 31.0391185,
+        "avg_ms": 31.21662213,
+        "min_ms": 30.96115699,
+        "max_ms": 31.52490999,
+        "std_dev": 0.2040172,
+        "cv": 0.00653553,
+        "iterations": 30,
+        "total_time_ms": 1662.12695099
+    },
+    "PathMemoryStress": {
+        "mid_ms": 0.729978,
+        "avg_ms": 0.73370378,
+        "min_ms": 0.717961,
+        "max_ms": 0.753597,
+        "std_dev": 0.00892998,
+        "cv": 0.0121711,
+        "iterations": 450,
+        "total_time_ms": 5105.86013599
+    },
+    "PathQuadOperations": {
+        "mid_ms": 1.57805299,
+        "avg_ms": 1.58749837,
+        "min_ms": 1.56903099,
+        "max_ms": 1.60215199,
+        "std_dev": 0.01131474,
+        "cv": 0.0071274,
+        "iterations": 324,
+        "total_time_ms": 4017.38629499
+    },
+    "PathQueryOperations": {
+        "mid_ms": 5.854763,
+        "avg_ms": 5.87248239,
+        "min_ms": 5.84614699,
+        "max_ms": 5.88581099,
+        "std_dev": 0.017203,
+        "cv": 0.00292942,
+        "iterations": 136,
+        "total_time_ms": 2419.17881399
+    },
+    "PathReferenceOperations": {
+        "mid_ms": 0.87349099,
+        "avg_ms": 0.87465485,
+        "min_ms": 0.86481499,
+        "max_ms": 0.877128,
+        "std_dev": 0.00192252,
+        "cv": 0.00219804,
+        "iterations": 421,
+        "total_time_ms": 4900.772565
+    },
+    "PathStrokeContainsTest": {
+        "mid_ms": 16.82465349,
+        "avg_ms": 17.10254387,
+        "min_ms": 16.72336,
+        "max_ms": 17.70350999,
+        "std_dev": 0.33865919,
+        "cv": 0.01980167,
+        "iterations": 54,
+        "total_time_ms": 1762.26755599
+    },
+    "PathSubCloseOperations": {
+        "mid_ms": 0.450852,
+        "avg_ms": 0.45497481,
+        "min_ms": 0.44790599,
+        "max_ms": 0.459798,
+        "std_dev": 0.00522665,
+        "cv": 0.01148779,
+        "iterations": 500,
+        "total_time_ms": 5486.057291
+    },
+    "PathTangentArcOperations": {
+        "mid_ms": 1.28713899,
+        "avg_ms": 1.29214612,
+        "min_ms": 1.282394,
+        "max_ms": 1.301881,
+        "std_dev": 0.00593974,
+        "cv": 0.0045968,
+        "iterations": 358,
+        "total_time_ms": 4372.844319
+    },
+    "PathTransformStress": {
+        "mid_ms": 6.346181,
+        "avg_ms": 6.35335223,
+        "min_ms": 6.33715499,
+        "max_ms": 6.37745899,
+        "std_dev": 0.01110947,
+        "cv": 0.0017486,
+        "iterations": 122,
+        "total_time_ms": 2275.680222
+    },
+    "PathVertexEnumeration": {
+        "mid_ms": 10.60368599,
+        "avg_ms": 10.60976858,
+        "min_ms": 10.584496,
+        "max_ms": 10.638726,
+        "std_dev": 0.01568052,
+        "cv": 0.00147793,
+        "iterations": 82,
+        "total_time_ms": 1907.92706499
+    },
+    "PathVertexOperations": {
+        "mid_ms": 2.65601,
+        "avg_ms": 2.66119745,
+        "min_ms": 2.64810599,
+        "max_ms": 2.67416398,
+        "std_dev": 0.00717833,
+        "cv": 0.0026974,
+        "iterations": 240,
+        "total_time_ms": 3236.18275699
+    }
+}

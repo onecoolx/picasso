@@ -34,26 +34,26 @@ typedef struct \textbf{ \+\_\+psx\+\_\+image\+\_\+frame} \textbf{ psx\+\_\+image
 \begin{DoxyCompactList}\small\item\em A frame image data. \end{DoxyCompactList}\item 
 typedef struct \textbf{ \+\_\+psx\+\_\+image} \textbf{ psx\+\_\+image}
 \begin{DoxyCompactList}\small\item\em A image object. \end{DoxyCompactList}\item 
-typedef int($\ast$ \textbf{ image\+\_\+writer\+\_\+fn}) (void $\ast$param, const \textbf{ ps\+\_\+byte} $\ast$data, size\+\_\+t length)
+typedef int32\+\_\+t($\ast$ \textbf{ image\+\_\+writer\+\_\+fn}) (void $\ast$param, const \textbf{ ps\+\_\+byte} $\ast$data, size\+\_\+t length)
 \begin{DoxyCompactList}\small\item\em Callback function for saving image data. \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
-P\+E\+X\+P\+O\+RT int P\+I\+C\+A\+PI \textbf{ psx\+\_\+image\+\_\+init} (void)
+P\+E\+X\+P\+O\+RT \textbf{ psx\+\_\+result} P\+I\+C\+A\+PI \textbf{ psx\+\_\+image\+\_\+init} (void)
 \begin{DoxyCompactList}\small\item\em Initialze the library and load resources. \end{DoxyCompactList}\item 
-P\+E\+X\+P\+O\+RT int P\+I\+C\+A\+PI \textbf{ psx\+\_\+image\+\_\+shutdown} (void)
-\begin{DoxyCompactList}\small\item\em Release resources and shutdoen. \end{DoxyCompactList}\item 
-P\+E\+X\+P\+O\+RT \textbf{ psx\+\_\+image} $\ast$P\+I\+C\+A\+PI \textbf{ psx\+\_\+image\+\_\+create\+\_\+from\+\_\+data} (\textbf{ ps\+\_\+byte} $\ast$data, \textbf{ ps\+\_\+color\+\_\+format} fmt, int width, int height, int pitch, int $\ast$err\+\_\+code)
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ psx\+\_\+image\+\_\+shutdown} (void)
+\begin{DoxyCompactList}\small\item\em Release resources and shutdown. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ psx\+\_\+image} $\ast$P\+I\+C\+A\+PI \textbf{ psx\+\_\+image\+\_\+create\+\_\+from\+\_\+data} (\textbf{ ps\+\_\+byte} $\ast$data, \textbf{ ps\+\_\+color\+\_\+format} fmt, int32\+\_\+t width, int32\+\_\+t height, int32\+\_\+t pitch, \textbf{ psx\+\_\+result} $\ast$err\+\_\+code)
 \begin{DoxyCompactList}\small\item\em Create a new psx\+\_\+image using a copy of given address in memory. \end{DoxyCompactList}\item 
-P\+E\+X\+P\+O\+RT \textbf{ psx\+\_\+image} $\ast$P\+I\+C\+A\+PI \textbf{ psx\+\_\+image\+\_\+load} (const char $\ast$file\+\_\+name, int $\ast$err\+\_\+code)
+P\+E\+X\+P\+O\+RT \textbf{ psx\+\_\+image} $\ast$P\+I\+C\+A\+PI \textbf{ psx\+\_\+image\+\_\+load} (const char $\ast$file\+\_\+name, \textbf{ psx\+\_\+result} $\ast$err\+\_\+code)
 \begin{DoxyCompactList}\small\item\em Create a new psx\+\_\+image object and load from file. \end{DoxyCompactList}\item 
-P\+E\+X\+P\+O\+RT \textbf{ psx\+\_\+image} $\ast$P\+I\+C\+A\+PI \textbf{ psx\+\_\+image\+\_\+load\+\_\+from\+\_\+memory} (const \textbf{ ps\+\_\+byte} $\ast$data, size\+\_\+t length, int $\ast$err\+\_\+code)
+P\+E\+X\+P\+O\+RT \textbf{ psx\+\_\+image} $\ast$P\+I\+C\+A\+PI \textbf{ psx\+\_\+image\+\_\+load\+\_\+from\+\_\+memory} (const \textbf{ ps\+\_\+byte} $\ast$data, size\+\_\+t length, \textbf{ psx\+\_\+result} $\ast$err\+\_\+code)
 \begin{DoxyCompactList}\small\item\em Create a new psx\+\_\+image object and load data from memory. \end{DoxyCompactList}\item 
-P\+E\+X\+P\+O\+RT int P\+I\+C\+A\+PI \textbf{ psx\+\_\+image\+\_\+save} (const \textbf{ psx\+\_\+image} $\ast$image, \textbf{ image\+\_\+writer\+\_\+fn} func, void $\ast$param, const char $\ast$type, float quality)
+P\+E\+X\+P\+O\+RT \textbf{ psx\+\_\+result} P\+I\+C\+A\+PI \textbf{ psx\+\_\+image\+\_\+save} (const \textbf{ psx\+\_\+image} $\ast$image, \textbf{ image\+\_\+writer\+\_\+fn} func, void $\ast$param, const char $\ast$type, float quality)
 \begin{DoxyCompactList}\small\item\em Encoding psx\+\_\+image to a gaving format and output it. \end{DoxyCompactList}\item 
-P\+E\+X\+P\+O\+RT int P\+I\+C\+A\+PI \textbf{ psx\+\_\+image\+\_\+save\+\_\+to\+\_\+file} (const \textbf{ psx\+\_\+image} $\ast$image, const char $\ast$file\+\_\+name, const char $\ast$type, float quality)
+P\+E\+X\+P\+O\+RT \textbf{ psx\+\_\+result} P\+I\+C\+A\+PI \textbf{ psx\+\_\+image\+\_\+save\+\_\+to\+\_\+file} (const \textbf{ psx\+\_\+image} $\ast$image, const char $\ast$file\+\_\+name, const char $\ast$type, float quality)
 \begin{DoxyCompactList}\small\item\em Encoding psx\+\_\+image to a gaving format and output to a file. \end{DoxyCompactList}\item 
-P\+E\+X\+P\+O\+RT int P\+I\+C\+A\+PI \textbf{ psx\+\_\+image\+\_\+destroy} (\textbf{ psx\+\_\+image} $\ast$image)
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ psx\+\_\+image\+\_\+destroy} (\textbf{ psx\+\_\+image} $\ast$image)
 \begin{DoxyCompactList}\small\item\em Destroy the psx\+\_\+image object and release resources. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
@@ -64,7 +64,7 @@ Zhang Ji Peng {\texttt{ onecoolx@gmail.\+com}}
 \begin{DoxyDate}{Date}
 2012/1/31
 \end{DoxyDate}
-This file includes all interfaces of picasso extended image decoders. \begin{DoxyVerb}   Copyright (C) 2008 ~ 2024  Zhang Ji Peng
+This file includes all interfaces of picasso extended image decoders. \begin{DoxyVerb}   Copyright (C) 2008 ~ 2026  Zhang Ji Peng
 
    All rights reserved.
 

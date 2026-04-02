@@ -33,6 +33,7 @@ endif()
 
 set(UNIT_SOURCES 
     ${PROJECT_ROOT}/unit_tests/test.cpp
+    ${PROJECT_ROOT}/unit_tests/pat565.cpp
     ${PS_UNIT_SOURCES}
     ${EXT_UNIT_SOURCES}
 )
@@ -61,7 +62,7 @@ if (WIN32)
         COMMAND_EXPAND_LISTS
     )
 else()
-    target_compile_definitions(${UNIT_TESTS} PRIVATE LINUX=1)
+    target_compile_definitions(${UNIT_TESTS} PRIVATE -DLINUX=1)
     target_compile_options(${UNIT_TESTS} PRIVATE -std=gnu++17)
     configure_file(${PROJECT_ROOT}/cfg/ZCOOLXiaoWei-Regular.ttf ${CMAKE_CURRENT_BINARY_DIR}/ZCOOLXiaoWei-Regular.ttf COPYONLY)
 endif()

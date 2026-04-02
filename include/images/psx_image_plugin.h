@@ -19,6 +19,8 @@
 #define _PSX_IMAGE_PLUGININ_INTERFACE_H_
 
 #include "picasso.h"
+#include "picasso_ext.h"
+
 #include "psx_image.h"
 
 #include <stddef.h>
@@ -105,7 +107,7 @@ typedef enum _psx_priority_level {
  */
 
 /**
- * \fn int32_t psx_image_register_operator(const char* type, const ps_byte* signature, size_t sig_offset, size_t sig_len,
+ * \fn psx_result psx_image_register_operator(const char* type, const ps_byte* signature, size_t sig_offset, size_t sig_len,
  *                                                   psx_priority_level level, psx_image_operator* coder)
  * \brief Register the image operator.
  *
@@ -120,11 +122,11 @@ typedef enum _psx_priority_level {
  *
  * \sa psx_image_unregister_operator
  */
-PEXPORT int32_t psx_image_register_operator(const char* type, const ps_byte* signature, size_t sig_offset, size_t sig_len,
-                                            psx_priority_level level, psx_image_operator* coder);
+PEXPORT psx_result psx_image_register_operator(const char* type, const ps_byte* signature, size_t sig_offset, size_t sig_len,
+                                               psx_priority_level level, psx_image_operator* coder);
 
 /**
- * \fn int32_t psx_image_unregister_operator(psx_image_operator* coder)
+ * \fn psx_result psx_image_unregister_operator(psx_image_operator* coder)
  * \brief Unregister the image operator.
  *
  * \param coder The image operator which will be unregister.
@@ -133,7 +135,7 @@ PEXPORT int32_t psx_image_register_operator(const char* type, const ps_byte* sig
  *
  * \sa psx_image_register_operator
  */
-PEXPORT int32_t psx_image_unregister_operator(psx_image_operator* coder);
+PEXPORT psx_result psx_image_unregister_operator(psx_image_operator* coder);
 
 /** @} end of image register functions */
 

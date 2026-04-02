@@ -1,0 +1,202 @@
+{
+    "Arc": {
+        "mid_ms": 3.446306,
+        "avg_ms": 3.45646312,
+        "min_ms": 3.436208,
+        "max_ms": 3.48582,
+        "std_dev": 0.01380157,
+        "cv": 0.00399297,
+        "iterations": 201,
+        "total_time_ms": 2932.31859899
+    },
+    "ArcFullCircle": {
+        "mid_ms": 0.4694665,
+        "avg_ms": 0.46991379,
+        "min_ms": 0.461602,
+        "max_ms": 0.47663,
+        "std_dev": 0.00511069,
+        "cv": 0.01087581,
+        "iterations": 500,
+        "total_time_ms": 5477.264249
+    },
+    "ArcVariousAngles": {
+        "mid_ms": 2.5794315,
+        "avg_ms": 2.602607,
+        "min_ms": 2.56793599,
+        "max_ms": 2.65771298,
+        "std_dev": 0.02635953,
+        "cv": 0.01012811,
+        "iterations": 244,
+        "total_time_ms": 3368.715719
+    },
+    "BezierCurveTo": {
+        "mid_ms": 5.131314,
+        "avg_ms": 5.13603418,
+        "min_ms": 5.11265799,
+        "max_ms": 5.170496,
+        "std_dev": 0.01319772,
+        "cv": 0.00256962,
+        "iterations": 150,
+        "total_time_ms": 2563.09120799
+    },
+    "ClosePath": {
+        "mid_ms": 0.51978,
+        "avg_ms": 0.51732526,
+        "min_ms": 0.50982198,
+        "max_ms": 0.523297,
+        "std_dev": 0.00529396,
+        "cv": 0.01023334,
+        "iterations": 494,
+        "total_time_ms": 5409.364425
+    },
+    "ComplexPath": {
+        "mid_ms": 2.85197599,
+        "avg_ms": 2.85967577,
+        "min_ms": 2.845524,
+        "max_ms": 2.877043,
+        "std_dev": 0.00895671,
+        "cv": 0.00313207,
+        "iterations": 229,
+        "total_time_ms": 3160.69809599
+    },
+    "Ellipse": {
+        "mid_ms": 6.10485999,
+        "avg_ms": 6.11831803,
+        "min_ms": 6.09954999,
+        "max_ms": 6.160334,
+        "std_dev": 0.01489322,
+        "cv": 0.0024342,
+        "iterations": 131,
+        "total_time_ms": 2374.514731
+    },
+    "EllipseVariousSizes": {
+        "mid_ms": 5.60816699,
+        "avg_ms": 5.61505119,
+        "min_ms": 5.597432,
+        "max_ms": 5.63069499,
+        "std_dev": 0.0097241,
+        "cv": 0.00173179,
+        "iterations": 140,
+        "total_time_ms": 2451.371578
+    },
+    "LineTo": {
+        "mid_ms": 0.53698299,
+        "avg_ms": 0.53705632,
+        "min_ms": 0.52680399,
+        "max_ms": 0.546971,
+        "std_dev": 0.00636407,
+        "cv": 0.01184992,
+        "iterations": 495,
+        "total_time_ms": 5544.32717399
+    },
+    "MultipleSubPaths": {
+        "mid_ms": 0.660934,
+        "avg_ms": 0.67981167,
+        "min_ms": 0.65043499,
+        "max_ms": 0.755351,
+        "std_dev": 0.02795788,
+        "cv": 0.04112592,
+        "iterations": 462,
+        "total_time_ms": 5197.124823
+    },
+    "NewPathMoveTo": {
+        "mid_ms": 0.164156,
+        "avg_ms": 0.16653309,
+        "min_ms": 0.164057,
+        "max_ms": 0.17463599,
+        "std_dev": 0.0032446,
+        "cv": 0.01948325,
+        "iterations": 500,
+        "total_time_ms": 5249.015271
+    },
+    "NewSubPath": {
+        "mid_ms": 0.42834549,
+        "avg_ms": 0.43579696,
+        "min_ms": 0.426506,
+        "max_ms": 0.43945999,
+        "std_dev": 0.00655414,
+        "cv": 0.01503945,
+        "iterations": 500,
+        "total_time_ms": 5456.68449699
+    },
+    "Polygon": {
+        "mid_ms": 1.46243649,
+        "avg_ms": 1.4654601,
+        "min_ms": 1.456149,
+        "max_ms": 1.47303099,
+        "std_dev": 0.0051621,
+        "cv": 0.00352251,
+        "iterations": 336,
+        "total_time_ms": 4225.44341899
+    },
+    "Polyline": {
+        "mid_ms": 1.49849799,
+        "avg_ms": 1.49943645,
+        "min_ms": 1.490063,
+        "max_ms": 1.509219,
+        "std_dev": 0.00502924,
+        "cv": 0.00335409,
+        "iterations": 333,
+        "total_time_ms": 4027.755958
+    },
+    "QuadCurveTo": {
+        "mid_ms": 3.27926899,
+        "avg_ms": 3.29118985,
+        "min_ms": 3.267913,
+        "max_ms": 3.332563,
+        "std_dev": 0.01570357,
+        "cv": 0.00477139,
+        "iterations": 208,
+        "total_time_ms": 3011.52368499
+    },
+    "Rectangle": {
+        "mid_ms": 0.718908,
+        "avg_ms": 0.73206632,
+        "min_ms": 0.70828299,
+        "max_ms": 0.78821199,
+        "std_dev": 0.01984774,
+        "cv": 0.02711194,
+        "iterations": 446,
+        "total_time_ms": 4973.381958
+    },
+    "RoundedRect": {
+        "mid_ms": 4.84341596,
+        "avg_ms": 4.8548586,
+        "min_ms": 4.83290599,
+        "max_ms": 4.89755699,
+        "std_dev": 0.01403815,
+        "cv": 0.00289156,
+        "iterations": 157,
+        "total_time_ms": 2603.09718099
+    },
+    "SmoothCurvePath": {
+        "mid_ms": 10.743315,
+        "avg_ms": 10.74898585,
+        "min_ms": 10.70152699,
+        "max_ms": 10.80474,
+        "std_dev": 0.02930066,
+        "cv": 0.0027259,
+        "iterations": 81,
+        "total_time_ms": 1909.095212
+    },
+    "StarShape": {
+        "mid_ms": 1.08306149,
+        "avg_ms": 1.08522179,
+        "min_ms": 1.081669,
+        "max_ms": 1.090196,
+        "std_dev": 0.00241116,
+        "cv": 0.0022218,
+        "iterations": 386,
+        "total_time_ms": 4539.30619598
+    },
+    "TangentArc": {
+        "mid_ms": 6.09496799,
+        "avg_ms": 6.10305721,
+        "min_ms": 6.081123,
+        "max_ms": 6.13091599,
+        "std_dev": 0.01233137,
+        "cv": 0.00202052,
+        "iterations": 131,
+        "total_time_ms": 2399.556527
+    }
+}

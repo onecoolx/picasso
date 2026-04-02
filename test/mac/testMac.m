@@ -64,7 +64,7 @@ static uint8_t *buffer;
     [_drawView setWantsLayer:YES];
     _drawView.layer.backgroundColor = [[NSColor blackColor] CGColor];
     [self.mainWindow.contentView addSubview:_drawView];
-    _timer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(timeFired) userInfo:nil repeats:YES];
+    _timer = [NSTimer scheduledTimerWithTimeInterval:0.01 target:self selector:@selector(timeFired) userInfo:nil repeats:YES];
         
 }
 

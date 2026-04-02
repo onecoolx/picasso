@@ -25,7 +25,7 @@
  */
 
 #include "common.h"
-#include "picasso_global.h"
+#include "picasso_private.h"
 
 #if ENABLE(FREE_TYPE2)
 #include <ft2build.h>
@@ -145,7 +145,7 @@ static void text_callback(void* data, const char* s, int32_t len)
             case NAMESET_TAG: {
                     // add a new font item.
                     font_item* f = (font_item*)mem_calloc(1, sizeof(font_item));
-                    strncpy(f->font_name, s, MIN(len, MAX_FONT_NAME_LENGTH - 1));
+                    strncpy(f->font_name, s, Min(len, MAX_FONT_NAME_LENGTH - 1));
                     context->map->add(f);
                     context->remaining_names++;
                 }
@@ -154,7 +154,7 @@ static void text_callback(void* data, const char* s, int32_t len)
                     for (int32_t i = 0; i < context->remaining_names; i++) {
                         char* path = context->map->at(context->map->size() - i - 1)->font_path;
                         char buffer[MAX_FONT_PATH_LENGTH] = {0};
-                        strncpy(buffer, s, MIN(len, MAX_FONT_PATH_LENGTH - 1));
+                        strncpy(buffer, s, Min(len, MAX_FONT_PATH_LENGTH - 1));
                         snprintf(path, MAX_FONT_PATH_LENGTH - 1, "/system/fonts/%s", buffer);
                     }
                     context->remaining_names = 0;
@@ -258,8 +258,11 @@ static void write_default(void)
 
         fprintf(pf, "[%s]\n", "default");
         fprintf(pf, "path=%s\n", "ZCOOLXiaoWei-Regular.ttf");
-        fprintf(pf, "[%s]\n", "arial");
-        fprintf(pf, "path=%s\n", "arial.ttf");
+
+        /* Note: add more default fonts like this
+         * fprintf(pf, "[%s]\n", "arial");
+         * fprintf(pf, "path=%s\n", "arial.ttf");
+         */
 
         fclose(pf);
     }
@@ -334,6 +337,10 @@ bool _load_fonts(void)
     } else {
         // not found config file.
         write_default();
+
+        pf = OPENFILE(CONFIG_FILE, F("r"));
+        load_font_from_file(pf);
+        fclose(pf);
     }
 #endif
 

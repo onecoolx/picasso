@@ -1,4 +1,4 @@
-.TH "extension" 3 "Tue May 13 2025" "Version 2.8" "Picasso API" \" -*- nroff -*-
+.TH "extension" 3 "Thu Apr 2 2026" "Version 2.9" "Picasso API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -23,6 +23,14 @@ extension
 .RI "enum \fBpsx_result\fP { \fBS_OK\fP = 0, \fBS_BAD_PARAMS\fP = 1, \fBS_NOT_SUPPORT\fP = 2, \fBS_OUT_OF_MEMORY\fP = 3, \fBS_INIT_FAILURE\fP = 4, \fBS_FAILURE\fP = 5 }"
 .br
 .RI "Status code return by call APIs\&. "
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "const char * \fBpsx_result_get_string\fP (\fBpsx_result\fP result)"
+.br
+.RI "Return the string of result code\&. "
 .in -1c
 .SH "Detailed Description"
 .PP 
@@ -56,6 +64,24 @@ Not initialize system\&.
 Operation failed by internal errors\&. 
 .PP
 Definition at line 36 of file picasso_ext\&.h\&.
+.SH "Function Documentation"
+.PP 
+.SS "const char * psx_result_get_string (\fBpsx_result\fP result)"
+
+.PP
+Return the string of result code\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIresult\fP The status code of result\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The string of result code\&. 
+.RE
+.PP
+
 .SH "Author"
 .PP 
 Generated automatically by Doxygen for Picasso API from the source code\&.

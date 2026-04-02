@@ -73,7 +73,7 @@ PEXPORT psx_result PICAPI psx_svg_init(void);
 
 /**
  * \fn void psx_svg_shutdown(void)
- * \brief Release resources and shutdoen.
+ * \brief Release resources and shutdown.
  *
  * \sa psx_svg_init
  */

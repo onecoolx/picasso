@@ -1,0 +1,48 @@
+name: Performance Tests
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup Environment
+      run: |
+        echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S bash -c '
+        echo "never" > /sys/kernel/mm/transparent_hugepage/enabled
+        swapoff -a
+        sysctl -w vm.swappiness=0
+        sysctl -w kernel.sched_rt_runtime_us=950000
+        mkdir -p /sys/fs/cgroup/perf_test
+        sysctl -w kernel.watchdog=0
+        '
+    - name: Configure CMake
+      run: >
+        cmake -B ${{ github.workspace }}/build
+        -DCMAKE_BUILD_TYPE=Release
+        -DOPT_SYSTEM_MALLOC=ON
+        -DOPT_PERFTEST=ON
+        -DOPT_FAST_COPY=OFF
+        -DOPT_INTERNAL_FREETYPE=ON
+        -DOPT_DEMOS=OFF
+        -DOPT_TESTS=OFF
+        -S ${{ github.workspace }}      
+    - name: Build
+      run: cmake --build ${{ github.workspace }}/build --config Release 
+    - name: Test
+      run: |
+        cd ${{ github.workspace }}/build/
+        sudo nice -n -10 taskset -c 0-1 ./perf_tests
+    - name: Upload Test Reaults
+      if: always()
+      uses: actions/upload-artifact@v4.6.2
+      with:
+        name: test-perf_benchmark-linux
+        path: |
+          ${{ github.workspace }}/build/benchmark/

@@ -1,4 +1,4 @@
-.TH "geometry" 3 "Tue May 13 2025" "Version 2.8" "Picasso API" \" -*- nroff -*-
+.TH "geometry" 3 "Thu Apr 2 2026" "Version 2.9" "Picasso API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -42,11 +42,11 @@ geometry
 .br
 .RI "Add a line to the current path from the current point to given point\&. "
 .ti -1c
-.RI "PEXPORT void PICAPI \fBps_bezier_curve_to\fP (\fBps_context\fP *ctx, const \fBps_point\fP *fcp, const \fBps_point\fP *scp, const \fBps_point\fP *ep)"
+.RI "PEXPORT void PICAPI \fBps_bezier_to\fP (\fBps_context\fP *ctx, const \fBps_point\fP *fcp, const \fBps_point\fP *scp, const \fBps_point\fP *ep)"
 .br
 .RI "Add a cubic bezier spline to the current path from current point to end point\&. "
 .ti -1c
-.RI "PEXPORT void PICAPI \fBps_quad_curve_to\fP (\fBps_context\fP *ctx, const \fBps_point\fP *cp, const \fBps_point\fP *ep)"
+.RI "PEXPORT void PICAPI \fBps_quad_to\fP (\fBps_context\fP *ctx, const \fBps_point\fP *cp, const \fBps_point\fP *ep)"
 .br
 .RI "Add a quadratic bezier spline to the current path from current point to end point\&. "
 .ti -1c
@@ -115,11 +115,11 @@ Add a circular arc to the current path\&.
 .PP
 \fBSee also\fP
 .RS 4
-\fBps_move_to\fP, \fBps_line_to\fP, \fBps_bezier_curve_to\fP, \fBps_quad_curve_to\fP, \fBps_tangent_arc\fP, \fBps_rectangle\fP, \fBps_rounded_rect\fP, \fBps_ellipse\fP 
+\fBps_move_to\fP, \fBps_line_to\fP, \fBps_bezier_to\fP, \fBps_quad_to\fP, \fBps_tangent_arc\fP, \fBps_rectangle\fP, \fBps_rounded_rect\fP, \fBps_ellipse\fP 
 .RE
 .PP
 
-.SS "void ps_bezier_curve_to (\fBps_context\fP * ctx, const \fBps_point\fP * fcp, const \fBps_point\fP * scp, const \fBps_point\fP * ep)"
+.SS "void ps_bezier_to (\fBps_context\fP * ctx, const \fBps_point\fP * fcp, const \fBps_point\fP * scp, const \fBps_point\fP * ep)"
 
 .PP
 Add a cubic bezier spline to the current path from current point to end point\&. 
@@ -137,7 +137,7 @@ Add a cubic bezier spline to the current path from current point to end point\&.
 .PP
 \fBSee also\fP
 .RS 4
-\fBps_move_to\fP, \fBps_line_to\fP, \fBps_quad_curve_to\fP, \fBps_arc\fP, \fBps_tangent_arc\fP, \fBps_rectangle\fP, \fBps_rounded_rect\fP, \fBps_ellipse\fP 
+\fBps_move_to\fP, \fBps_line_to\fP, \fBps_quad_to\fP, \fBps_arc\fP, \fBps_tangent_arc\fP, \fBps_rectangle\fP, \fBps_rounded_rect\fP, \fBps_ellipse\fP 
 .RE
 .PP
 
@@ -171,7 +171,7 @@ Adds an ellipse to the current path which fits inside the specified rectangle\&.
 .PP
 \fBSee also\fP
 .RS 4
-\fBps_move_to\fP, \fBps_line_to\fP, \fBps_bezier_curve_to\fP, \fBps_quad_curve_to\fP, \fBps_arc\fP, \fBps_tangent_arc\fP, \fBps_rectangle\fP, \fBps_rounded_rect\fP 
+\fBps_move_to\fP, \fBps_line_to\fP, \fBps_bezier_to\fP, \fBps_quad_to\fP, \fBps_arc\fP, \fBps_tangent_arc\fP, \fBps_rectangle\fP, \fBps_rounded_rect\fP 
 .RE
 .PP
 
@@ -212,7 +212,7 @@ Add a line to the current path from the current point to given point\&.
 .PP
 \fBSee also\fP
 .RS 4
-\fBps_move_to\fP, \fBps_bezier_curve_to\fP, \fBps_quad_curve_to\fP \fBps_arc\fP, \fBps_tangent_arc\fP, \fBps_rectangle\fP, \fBps_rounded_rect\fP, \fBps_ellipse\fP 
+\fBps_move_to\fP, \fBps_bezier_to\fP, \fBps_quad_to\fP \fBps_arc\fP, \fBps_tangent_arc\fP, \fBps_rectangle\fP, \fBps_rounded_rect\fP, \fBps_ellipse\fP 
 .RE
 .PP
 
@@ -230,7 +230,7 @@ Begin a new sub path, and set the current point\&.
 .PP
 \fBSee also\fP
 .RS 4
-\fBps_line_to\fP, \fBps_bezier_curve_to\fP, \fBps_quad_curve_to\fP \fBps_arc\fP, \fBps_tangent_arc\fP, \fBps_rectangle\fP, \fBps_rounded_rect\fP, \fBps_ellipse\fP 
+\fBps_line_to\fP, \fBps_bezier_to\fP, \fBps_quad_to\fP \fBps_arc\fP, \fBps_tangent_arc\fP, \fBps_rectangle\fP, \fBps_rounded_rect\fP, \fBps_ellipse\fP 
 .RE
 .PP
 
@@ -266,7 +266,7 @@ Close the current path, and add a new empty sub path in the graphic context\&.
 .RE
 .PP
 
-.SS "void ps_quad_curve_to (\fBps_context\fP * ctx, const \fBps_point\fP * cp, const \fBps_point\fP * ep)"
+.SS "void ps_quad_to (\fBps_context\fP * ctx, const \fBps_point\fP * cp, const \fBps_point\fP * ep)"
 
 .PP
 Add a quadratic bezier spline to the current path from current point to end point\&. 
@@ -282,7 +282,7 @@ Add a quadratic bezier spline to the current path from current point to end poin
 .PP
 \fBSee also\fP
 .RS 4
-\fBps_move_to\fP, \fBps_line_to\fP, \fBps_bezier_curve_to\fP, \fBps_arc\fP, \fBps_tangent_arc\fP, \fBps_rectangle\fP, \fBps_rounded_rect\fP, \fBps_ellipse\fP 
+\fBps_move_to\fP, \fBps_line_to\fP, \fBps_bezier_to\fP, \fBps_arc\fP, \fBps_tangent_arc\fP, \fBps_rectangle\fP, \fBps_rounded_rect\fP, \fBps_ellipse\fP 
 .RE
 .PP
 
@@ -300,7 +300,7 @@ Add a rectangle to the current path\&.
 .PP
 \fBSee also\fP
 .RS 4
-\fBps_move_to\fP, \fBps_line_to\fP, \fBps_bezier_curve_to\fP, \fBps_quad_curve_to\fP, \fBps_arc\fP, \fBps_tangent_arc\fP, \fBps_rounded_rect\fP, \fBps_ellipse\fP 
+\fBps_move_to\fP, \fBps_line_to\fP, \fBps_bezier_to\fP, \fBps_quad_to\fP, \fBps_arc\fP, \fBps_tangent_arc\fP, \fBps_rounded_rect\fP, \fBps_ellipse\fP 
 .RE
 .PP
 
@@ -334,7 +334,7 @@ Add a rounded rectangle to the current path\&.
 .PP
 \fBSee also\fP
 .RS 4
-\fBps_move_to\fP, \fBps_line_to\fP, \fBps_bezier_curve_to\fP, \fBps_quad_curve_to\fP, \fBps_arc\fP, \fBps_tangent_arc\fP, \fBps_rectangle\fP, \fBps_ellipse\fP 
+\fBps_move_to\fP, \fBps_line_to\fP, \fBps_bezier_to\fP, \fBps_quad_to\fP, \fBps_arc\fP, \fBps_tangent_arc\fP, \fBps_rectangle\fP, \fBps_ellipse\fP 
 .RE
 .PP
 
@@ -374,7 +374,7 @@ Add a circular arc which is inner tangent from a rectangle\&.
 .PP
 \fBSee also\fP
 .RS 4
-\fBps_move_to\fP, \fBps_line_to\fP, \fBps_bezier_curve_to\fP, \fBps_quad_curve_to\fP, \fBps_arc\fP, \fBps_rectangle\fP, \fBps_rounded_rect\fP, \fBps_ellipse\fP 
+\fBps_move_to\fP, \fBps_line_to\fP, \fBps_bezier_to\fP, \fBps_quad_to\fP, \fBps_arc\fP, \fBps_rectangle\fP, \fBps_rounded_rect\fP, \fBps_ellipse\fP 
 .RE
 .PP
 

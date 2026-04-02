@@ -1,0 +1,141 @@
+.TH "include/svg/psx_svg_animation.h" 3 "Thu Apr 2 2026" "Version 2.9" "Picasso API" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+include/svg/psx_svg_animation.h
+.SH SYNOPSIS
+.br
+.PP
+\fC#include 'psx_svg\&.h'\fP
+.br
+
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef struct _psx_svg_player \fBpsx_svg_player\fP"
+.br
+.RI "An opaque type represents an svg animation player\&. "
+.ti -1c
+.RI "typedef void(* \fBpsx_svg_anim_event_cb\fP) (\fBpsx_svg_anim_event_type\fP type, const char *anim_id, void *user_data)"
+.br
+.RI "The callback for SVG animation event\&. "
+.in -1c
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum \fBpsx_svg_player_state\fP { \fBPSX_SVG_PLAYER_STOPPED\fP = 0, \fBPSX_SVG_PLAYER_PLAYING\fP = 1, \fBPSX_SVG_PLAYER_PAUSED\fP = 2 }"
+.br
+.RI "SVG animation player status\&. "
+.ti -1c
+.RI "enum \fBpsx_svg_anim_event_type\fP { \fBPSX_SVG_ANIM_EVENT_BEGIN\fP = 0, \fBPSX_SVG_ANIM_EVENT_END\fP, \fBPSX_SVG_ANIM_EVENT_REPEAT\fP }"
+.br
+.RI "SVG animation event callback types\&. "
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "PEXPORT \fBpsx_svg_player\fP *PICAPI \fBpsx_svg_player_create\fP (const \fBpsx_svg\fP *root, \fBpsx_result\fP *err)"
+.br
+.RI "Create a new animation player from an already-parsed SVG document\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBpsx_svg_player_destroy\fP (\fBpsx_svg_player\fP *p)"
+.br
+.RI "Destroy the psx_svg_player object and release resources\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBpsx_svg_player_set_loop\fP (\fBpsx_svg_player\fP *p, bool loop)"
+.br
+.RI "Set whether the animation should loop when it reaches the end\&. "
+.ti -1c
+.RI "PEXPORT bool PICAPI \fBpsx_svg_player_get_loop\fP (const \fBpsx_svg_player\fP *p)"
+.br
+.RI "Return whether the animation looping is enabled\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBpsx_svg_player_set_dpi\fP (\fBpsx_svg_player\fP *p, int32_t dpi)"
+.br
+.RI "Set the DPI (dots per inch) used for unit conversion\&. "
+.ti -1c
+.RI "PEXPORT int32_t PICAPI \fBpsx_svg_player_get_dpi\fP (const \fBpsx_svg_player\fP *p)"
+.br
+.RI "Return the current DPI value\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBpsx_svg_player_play\fP (\fBpsx_svg_player\fP *p)"
+.br
+.RI "Start or resume playback of the animation\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBpsx_svg_player_pause\fP (\fBpsx_svg_player\fP *p)"
+.br
+.RI "Pause the animation at the current time\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBpsx_svg_player_stop\fP (\fBpsx_svg_player\fP *p)"
+.br
+.RI "Stop the animation and seek to time 0\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBpsx_svg_player_seek\fP (\fBpsx_svg_player\fP *p, float seconds)"
+.br
+.RI "Seek the animation to an absolute time position\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBpsx_svg_player_tick\fP (\fBpsx_svg_player\fP *p, float delta_seconds)"
+.br
+.RI "Advance the animation by a relative time delta\&. "
+.ti -1c
+.RI "PEXPORT float PICAPI \fBpsx_svg_player_get_time\fP (const \fBpsx_svg_player\fP *p)"
+.br
+.RI "Return the current playback time in seconds\&. "
+.ti -1c
+.RI "PEXPORT float PICAPI \fBpsx_svg_player_get_duration\fP (const \fBpsx_svg_player\fP *p)"
+.br
+.RI "Return the total duration of the animation\&. "
+.ti -1c
+.RI "PEXPORT \fBpsx_svg_player_state\fP PICAPI \fBpsx_svg_player_get_state\fP (const \fBpsx_svg_player\fP *p)"
+.br
+.RI "Return the current playback state of the player\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBpsx_svg_player_draw\fP (\fBpsx_svg_player\fP *p, \fBps_context\fP *ctx)"
+.br
+.RI "Draw the current animation frame into the provided Picasso context\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBpsx_svg_player_set_event_callback\fP (\fBpsx_svg_player\fP *p, \fBpsx_svg_anim_event_cb\fP cb, void *user)"
+.br
+.RI "Set a callback to receive animation events (begin, end, repeat)\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBpsx_svg_player_trigger\fP (\fBpsx_svg_player\fP *p, const char *target_id, const char *event_name)"
+.br
+.RI "Send an external event trigger to the player\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBpsx_svg_player_send_key\fP (\fBpsx_svg_player\fP *p, char key)"
+.br
+.RI "Forward a keyboard event to the player\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.PP
+\fBAuthor\fP
+.RS 4
+Zhang Ji Peng onecoolx@gmail.com 
+.RE
+.PP
+\fBDate\fP
+.RS 4
+2025/5/12
+.RE
+.PP
+This file includes all interfaces of picasso's SVG animation extension\&. 
+.PP
+.nf
+   Copyright (C) 2008 ~ 2026  Zhang Ji Peng
+
+   All rights reserved.
+
+   Picasso is a vector graphic library.
+.fi
+.PP
+ 
+.PP
+Definition in file \fBpsx_svg_animation\&.h\fP\&.
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Picasso API from the source code\&.

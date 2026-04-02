@@ -13,7 +13,7 @@
 #include "graphic_helper.h"
 
 #include "picasso.h"
-#include "picasso_global.h"
+#include "picasso_private.h"
 #include "picasso_objects.h"
 
 namespace picasso {
@@ -458,8 +458,10 @@ ps_bool PICAPI ps_path_stroke_contains(const ps_path* path, const ps_point* p, f
         return False;
     }
 
+    float ed = width * 0.5f; // edge
+
     ps_rect br = picasso::_path_bounding_rect(path->path);
-    if ((p->x < br.x) || (p->y < br.y) || (p->x > (br.x + br.w)) || (p->y > (br.y + br.h))) {
+    if ((p->x < (br.x - ed)) || (p->y < (br.y - ed)) || (p->x > (br.x + br.w + ed)) || (p->y > (br.y + br.h + ed))) {
         //out of bounding rect
         global_status = STATUS_SUCCEED;
         return False;

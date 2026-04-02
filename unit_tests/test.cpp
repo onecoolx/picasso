@@ -30,22 +30,7 @@
     #include "images/psx_image_plugin.h"
 #endif
 
-volatile int tmp;
-static int dummy[4096000];
-void clear_dcache(void)
-{
-    int sum = 0;
-    for (int i = 0; i < 4096000; i++) {
-        dummy[i] = 2;
-    }
-    for (int i = 0; i < 4096000; i++) {
-        sum += dummy[i];
-    }
-
-    tmp = sum;
-}
-
-const uint8_t tolerance = 5;
+const uint8_t tolerance = 5; // pixels compare tolerance
 static uint8_t* test_buffer = NULL;
 static ps_canvas* test_canvas = NULL;
 
@@ -278,6 +263,9 @@ static int lode_release_read_png_info(psx_image_header* header)
 
 static int lode_decode_png_data(psx_image_header* header, const psx_image* image, psx_image_frame* frame, int idx, ps_byte* buffer, size_t buffer_len)
 {
+    if (!buffer || !buffer_len) {
+        return 0;
+    }
     struct lode_png_image_ctx* ctx = (struct lode_png_image_ctx*)header->priv;
     memcpy(buffer, ctx->image.data(), ctx->width * ctx->height * 4);
     return 0;

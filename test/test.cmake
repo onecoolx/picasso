@@ -113,3 +113,25 @@ foreach(image_file ${IMAGE_SOURCES})
 
 endforeach(image_file ${IMAGE_SOURCES})
 endif()
+
+if (NOT ANDROID)
+    set(SVG_PLAYER_SRC ${PROJECT_ROOT}/test/svg_player.cpp)
+    add_executable(svg_player ${app_type} ${SVG_PLAYER_SRC} ${main_file})
+    if (NOT WIN32)
+        target_compile_options(svg_player PRIVATE -Wno-deprecated-declarations -Wno-implicit-const-int-float-conversion)
+    endif()
+    if (APPLE)
+        set(CMAKE_XCODE_ATTRIBUTE_INFOPLIST_FILE "${PROJECT_ROOT}/test/mac/Info.plist")
+        set_target_properties(svg_player PROPERTIES
+            MACOSX_BUNDLE TRUE
+            RESOURCE "${resources}")
+    endif()
+    target_include_directories(svg_player PRIVATE
+        ${host_gui_inc}
+        ${PROJECT_ROOT}/ext/svg
+        ${PROJECT_ROOT}/ext/common
+        ${PROJECT_ROOT}/include
+        ${PROJECT_ROOT}/include/svg
+    )
+    target_link_libraries(svg_player PRIVATE picasso2_sw psx_svg PUBLIC ${host_gui_lib})
+endif()

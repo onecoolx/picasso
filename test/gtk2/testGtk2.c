@@ -20,12 +20,12 @@ static ps_canvas *canvas;
 
 gboolean expose (GtkWidget *widget, GdkEventExpose *event)
 {
-    suseconds_t t1, t2;
+//    suseconds_t t1, t2;
     gdk_pixbuf_fill(pixbuf, 0xFFFFFFFF);
-    t1 = get_time();
+//    t1 = get_time();
     draw_test(0, context);
-    t2 = get_time();
-    fprintf(stderr, "draw frame use %.6f ms --- %.6f fps\n", (double)(t2-t1), 1000.0/(t2-t1 ? t2-t1 : 1));
+//    t2 = get_time();
+//    fprintf(stderr, "draw frame use %.6f ms --- %.6f fps\n", (double)(t2-t1), 1000.0/(t2-t1 ? t2-t1 : 1));
     gdk_draw_pixbuf(widget->window, widget->style->white_gc, pixbuf, 0, 0, 0, 0, DEF_WIDTH, DEF_HEIGHT, 0,0,0);
     return FALSE;
 }
@@ -110,7 +110,7 @@ int main(int argc, char* argv[])
 
     g_signal_connect (G_OBJECT(drawarea), "expose_event", G_CALLBACK (expose), NULL);
 
-    g_timeout_add(100, time_func, GTK_WIDGET(drawarea));
+    g_timeout_add(10, time_func, GTK_WIDGET(drawarea));
 
     gtk_container_add (GTK_CONTAINER (window), drawarea);
 

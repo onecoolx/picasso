@@ -17,15 +17,17 @@ jobs:
           sudo apt-get -y install podman
           podman pull fedora:rawhide
       - name: Get source
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           path: 'picasso'
       - name: Create container and run tests
         run: |
           {
               echo 'FROM fedora:rawhide'
+              echo 'RUN dnf clean all && dnf makecache'
               echo 'RUN dnf -y update'
-              echo 'RUN dnf -y install cmake gcc-c++ giflib-devel gtk2-devel'
+              echo 'RUN dnf -y install xz-libs'
+              echo 'RUN dnf -y install --setopt=tsflags=noscripts fontconfig && dnf -y install cmake gcc-c++ giflib-devel gtk2-devel'
               echo 'RUN dnf -y install libjpeg-turbo-devel libwebp-devel'
               echo 'RUN dnf -y install libpng-devel zlib-ng-compat-devel'
               echo 'RUN dnf clean all'

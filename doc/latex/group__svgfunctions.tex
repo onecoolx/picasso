@@ -6,7 +6,7 @@
 P\+E\+X\+P\+O\+RT \textbf{ psx\+\_\+result} P\+I\+C\+A\+PI \textbf{ psx\+\_\+svg\+\_\+init} (void)
 \begin{DoxyCompactList}\small\item\em Initialze the library and load resources. \end{DoxyCompactList}\item 
 P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ psx\+\_\+svg\+\_\+shutdown} (void)
-\begin{DoxyCompactList}\small\item\em Release resources and shutdoen. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Release resources and shutdown. \end{DoxyCompactList}\item 
 P\+E\+X\+P\+O\+RT \textbf{ psx\+\_\+svg} $\ast$P\+I\+C\+A\+PI \textbf{ psx\+\_\+svg\+\_\+load} (const char $\ast$file\+\_\+name, \textbf{ psx\+\_\+result} $\ast$err\+\_\+code)
 \begin{DoxyCompactList}\small\item\em Create a new psx\+\_\+svg object and load from file. \end{DoxyCompactList}\item 
 P\+E\+X\+P\+O\+RT \textbf{ psx\+\_\+svg} $\ast$P\+I\+C\+A\+PI \textbf{ psx\+\_\+svg\+\_\+load\+\_\+from\+\_\+memory} (const \textbf{ ps\+\_\+byte} $\ast$data, size\+\_\+t length, \textbf{ psx\+\_\+result} $\ast$err\+\_\+code)
@@ -16,7 +16,43 @@ P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ psx\+\_\+svg\+\_\+destroy} (\text
 P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ psx\+\_\+svg\+\_\+render\+\_\+destroy} (\textbf{ psx\+\_\+svg\+\_\+render} $\ast$render)
 \begin{DoxyCompactList}\small\item\em Destroy the psx\+\_\+svg\+\_\+render object and release resources. \end{DoxyCompactList}\item 
 P\+E\+X\+P\+O\+RT \textbf{ psx\+\_\+result} P\+I\+C\+A\+PI \textbf{ psx\+\_\+svg\+\_\+render\+\_\+draw} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ psx\+\_\+svg\+\_\+render} $\ast$render)
-\begin{DoxyCompactList}\small\item\em Draws an psx\+\_\+svg\+\_\+render object into the given context. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em Draws an psx\+\_\+svg\+\_\+render object into the given context. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ psx\+\_\+svg\+\_\+player} $\ast$P\+I\+C\+A\+PI \textbf{ psx\+\_\+svg\+\_\+player\+\_\+create} (const \textbf{ psx\+\_\+svg} $\ast$root, \textbf{ psx\+\_\+result} $\ast$err)
+\begin{DoxyCompactList}\small\item\em Create a new animation player from an already-\/parsed S\+VG document. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ psx\+\_\+svg\+\_\+player\+\_\+destroy} (\textbf{ psx\+\_\+svg\+\_\+player} $\ast$p)
+\begin{DoxyCompactList}\small\item\em Destroy the psx\+\_\+svg\+\_\+player object and release resources. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ psx\+\_\+svg\+\_\+player\+\_\+set\+\_\+loop} (\textbf{ psx\+\_\+svg\+\_\+player} $\ast$p, bool loop)
+\begin{DoxyCompactList}\small\item\em Set whether the animation should loop when it reaches the end. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT bool P\+I\+C\+A\+PI \textbf{ psx\+\_\+svg\+\_\+player\+\_\+get\+\_\+loop} (const \textbf{ psx\+\_\+svg\+\_\+player} $\ast$p)
+\begin{DoxyCompactList}\small\item\em Return whether the animation looping is enabled. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ psx\+\_\+svg\+\_\+player\+\_\+set\+\_\+dpi} (\textbf{ psx\+\_\+svg\+\_\+player} $\ast$p, int32\+\_\+t dpi)
+\begin{DoxyCompactList}\small\item\em Set the D\+PI (dots per inch) used for unit conversion. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT int32\+\_\+t P\+I\+C\+A\+PI \textbf{ psx\+\_\+svg\+\_\+player\+\_\+get\+\_\+dpi} (const \textbf{ psx\+\_\+svg\+\_\+player} $\ast$p)
+\begin{DoxyCompactList}\small\item\em Return the current D\+PI value. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ psx\+\_\+svg\+\_\+player\+\_\+play} (\textbf{ psx\+\_\+svg\+\_\+player} $\ast$p)
+\begin{DoxyCompactList}\small\item\em Start or resume playback of the animation. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ psx\+\_\+svg\+\_\+player\+\_\+pause} (\textbf{ psx\+\_\+svg\+\_\+player} $\ast$p)
+\begin{DoxyCompactList}\small\item\em Pause the animation at the current time. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ psx\+\_\+svg\+\_\+player\+\_\+stop} (\textbf{ psx\+\_\+svg\+\_\+player} $\ast$p)
+\begin{DoxyCompactList}\small\item\em Stop the animation and seek to time 0. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ psx\+\_\+svg\+\_\+player\+\_\+seek} (\textbf{ psx\+\_\+svg\+\_\+player} $\ast$p, float seconds)
+\begin{DoxyCompactList}\small\item\em Seek the animation to an absolute time position. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ psx\+\_\+svg\+\_\+player\+\_\+tick} (\textbf{ psx\+\_\+svg\+\_\+player} $\ast$p, float delta\+\_\+seconds)
+\begin{DoxyCompactList}\small\item\em Advance the animation by a relative time delta. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT float P\+I\+C\+A\+PI \textbf{ psx\+\_\+svg\+\_\+player\+\_\+get\+\_\+time} (const \textbf{ psx\+\_\+svg\+\_\+player} $\ast$p)
+\begin{DoxyCompactList}\small\item\em Return the current playback time in seconds. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT float P\+I\+C\+A\+PI \textbf{ psx\+\_\+svg\+\_\+player\+\_\+get\+\_\+duration} (const \textbf{ psx\+\_\+svg\+\_\+player} $\ast$p)
+\begin{DoxyCompactList}\small\item\em Return the total duration of the animation. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ psx\+\_\+svg\+\_\+player\+\_\+state} P\+I\+C\+A\+PI \textbf{ psx\+\_\+svg\+\_\+player\+\_\+get\+\_\+state} (const \textbf{ psx\+\_\+svg\+\_\+player} $\ast$p)
+\begin{DoxyCompactList}\small\item\em Return the current playback state of the player. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ psx\+\_\+svg\+\_\+player\+\_\+draw} (\textbf{ psx\+\_\+svg\+\_\+player} $\ast$p, \textbf{ ps\+\_\+context} $\ast$ctx)
+\begin{DoxyCompactList}\small\item\em Draw the current animation frame into the provided Picasso context. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ psx\+\_\+svg\+\_\+player\+\_\+set\+\_\+event\+\_\+callback} (\textbf{ psx\+\_\+svg\+\_\+player} $\ast$p, \textbf{ psx\+\_\+svg\+\_\+anim\+\_\+event\+\_\+cb} cb, void $\ast$user)
+\begin{DoxyCompactList}\small\item\em Set a callback to receive animation events (begin, end, repeat). \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ psx\+\_\+svg\+\_\+player\+\_\+trigger} (\textbf{ psx\+\_\+svg\+\_\+player} $\ast$p, const char $\ast$target\+\_\+id, const char $\ast$event\+\_\+name)
+\begin{DoxyCompactList}\small\item\em Send an external event trigger to the player. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ psx\+\_\+svg\+\_\+player\+\_\+send\+\_\+key} (\textbf{ psx\+\_\+svg\+\_\+player} $\ast$p, char key)
+\begin{DoxyCompactList}\small\item\em Forward a keyboard event to the player. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
 \doxysubsection{Detailed Description}
@@ -105,6 +141,376 @@ If successs, the return value is the pointer to new psx\+\_\+svg object. If fail
 \begin{DoxySeeAlso}{See also}
 \doxyref{psx\+\_\+svg\+\_\+destroy}{p.}{group__svgfunctions_ga03907eadc640e2688e1a1a15444d775a} \doxyref{psx\+\_\+svg\+\_\+load}{p.}{group__svgfunctions_ga7e46c7e00c46f0c3aadd6e3b193ac78e} 
 \end{DoxySeeAlso}
+\mbox{\label{group__svgfunctions_gaf80533bc5d86182467bf6b8bff257941}} 
+\index{XSvg Functions@{XSvg Functions}!psx\_svg\_player\_create@{psx\_svg\_player\_create}}
+\index{psx\_svg\_player\_create@{psx\_svg\_player\_create}!XSvg Functions@{XSvg Functions}}
+\doxysubsubsection{psx\_svg\_player\_create()}
+{\footnotesize\ttfamily \textbf{ psx\+\_\+svg\+\_\+player} $\ast$ psx\+\_\+svg\+\_\+player\+\_\+create (\begin{DoxyParamCaption}\item[{const \textbf{ psx\+\_\+svg} $\ast$}]{root,  }\item[{\textbf{ psx\+\_\+result} $\ast$}]{err }\end{DoxyParamCaption})}
+
+
+
+Create a new animation player from an already-\/parsed S\+VG document. 
+
+The player internally builds a render list once and reuses it each frame.
+
+
+\begin{DoxyParams}{Parameters}
+{\em root} & Pointer to an existing psx\+\_\+svg object. \\
+\hline
+{\em err} & Pointer to a value to receiving the result code. Can be N\+U\+LL.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+If success, the return value is the pointer to new psx\+\_\+svg\+\_\+player object. If fails, the return value is N\+U\+LL, and result will be returned by {\itshape err}.
+\end{DoxyReturn}
+\begin{DoxySeeAlso}{See also}
+\doxyref{psx\+\_\+svg\+\_\+player\+\_\+destroy}{p.}{group__svgfunctions_ga69328ee718b775d06be88c13edb5ff40} 
+\end{DoxySeeAlso}
+\mbox{\label{group__svgfunctions_ga69328ee718b775d06be88c13edb5ff40}} 
+\index{XSvg Functions@{XSvg Functions}!psx\_svg\_player\_destroy@{psx\_svg\_player\_destroy}}
+\index{psx\_svg\_player\_destroy@{psx\_svg\_player\_destroy}!XSvg Functions@{XSvg Functions}}
+\doxysubsubsection{psx\_svg\_player\_destroy()}
+{\footnotesize\ttfamily void psx\+\_\+svg\+\_\+player\+\_\+destroy (\begin{DoxyParamCaption}\item[{\textbf{ psx\+\_\+svg\+\_\+player} $\ast$}]{p }\end{DoxyParamCaption})}
+
+
+
+Destroy the psx\+\_\+svg\+\_\+player object and release resources. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em p} & Pointer to an existing psx\+\_\+svg\+\_\+player object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{psx\+\_\+svg\+\_\+player\+\_\+create}{p.}{group__svgfunctions_gaf80533bc5d86182467bf6b8bff257941} 
+\end{DoxySeeAlso}
+\mbox{\label{group__svgfunctions_gac21baa6b0d60786dc75f4126b8870d38}} 
+\index{XSvg Functions@{XSvg Functions}!psx\_svg\_player\_draw@{psx\_svg\_player\_draw}}
+\index{psx\_svg\_player\_draw@{psx\_svg\_player\_draw}!XSvg Functions@{XSvg Functions}}
+\doxysubsubsection{psx\_svg\_player\_draw()}
+{\footnotesize\ttfamily void psx\+\_\+svg\+\_\+player\+\_\+draw (\begin{DoxyParamCaption}\item[{\textbf{ psx\+\_\+svg\+\_\+player} $\ast$}]{p,  }\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx }\end{DoxyParamCaption})}
+
+
+
+Draw the current animation frame into the provided Picasso context. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em p} & Pointer to an existing psx\+\_\+svg\+\_\+player object. \\
+\hline
+{\em ctx} & Pointer to an existing ps\+\_\+context object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{psx\+\_\+svg\+\_\+player\+\_\+seek}{p.}{group__svgfunctions_ga06e53e2213938ae4533c216d5b3d0943} \doxyref{psx\+\_\+svg\+\_\+player\+\_\+tick}{p.}{group__svgfunctions_ga2c4d75849678df13c39cd3ece6472e7d} 
+\end{DoxySeeAlso}
+\mbox{\label{group__svgfunctions_gaba82760c8d1bbe08108ea7e10dee51c4}} 
+\index{XSvg Functions@{XSvg Functions}!psx\_svg\_player\_get\_dpi@{psx\_svg\_player\_get\_dpi}}
+\index{psx\_svg\_player\_get\_dpi@{psx\_svg\_player\_get\_dpi}!XSvg Functions@{XSvg Functions}}
+\doxysubsubsection{psx\_svg\_player\_get\_dpi()}
+{\footnotesize\ttfamily int32\+\_\+t psx\+\_\+svg\+\_\+player\+\_\+get\+\_\+dpi (\begin{DoxyParamCaption}\item[{const \textbf{ psx\+\_\+svg\+\_\+player} $\ast$}]{p }\end{DoxyParamCaption})}
+
+
+
+Return the current D\+PI value. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em p} & Pointer to an existing psx\+\_\+svg\+\_\+player object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The current D\+PI value.
+\end{DoxyReturn}
+\begin{DoxySeeAlso}{See also}
+\doxyref{psx\+\_\+svg\+\_\+player\+\_\+set\+\_\+dpi}{p.}{group__svgfunctions_ga096fbdc76063ce1c011731fbe42bd4fd} 
+\end{DoxySeeAlso}
+\mbox{\label{group__svgfunctions_ga991a49154d7818ce7329400aca58b8f1}} 
+\index{XSvg Functions@{XSvg Functions}!psx\_svg\_player\_get\_duration@{psx\_svg\_player\_get\_duration}}
+\index{psx\_svg\_player\_get\_duration@{psx\_svg\_player\_get\_duration}!XSvg Functions@{XSvg Functions}}
+\doxysubsubsection{psx\_svg\_player\_get\_duration()}
+{\footnotesize\ttfamily float psx\+\_\+svg\+\_\+player\+\_\+get\+\_\+duration (\begin{DoxyParamCaption}\item[{const \textbf{ psx\+\_\+svg\+\_\+player} $\ast$}]{p }\end{DoxyParamCaption})}
+
+
+
+Return the total duration of the animation. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em p} & Pointer to an existing psx\+\_\+svg\+\_\+player object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The duration in seconds, or -\/1 for indefinite/unknown.
+\end{DoxyReturn}
+\begin{DoxySeeAlso}{See also}
+\doxyref{psx\+\_\+svg\+\_\+player\+\_\+get\+\_\+time}{p.}{group__svgfunctions_ga81484cb2fb09ad994519118f67745275} 
+\end{DoxySeeAlso}
+\mbox{\label{group__svgfunctions_ga2db8bfcdd2b069ca7b66dcd3bea9d1b7}} 
+\index{XSvg Functions@{XSvg Functions}!psx\_svg\_player\_get\_loop@{psx\_svg\_player\_get\_loop}}
+\index{psx\_svg\_player\_get\_loop@{psx\_svg\_player\_get\_loop}!XSvg Functions@{XSvg Functions}}
+\doxysubsubsection{psx\_svg\_player\_get\_loop()}
+{\footnotesize\ttfamily bool psx\+\_\+svg\+\_\+player\+\_\+get\+\_\+loop (\begin{DoxyParamCaption}\item[{const \textbf{ psx\+\_\+svg\+\_\+player} $\ast$}]{p }\end{DoxyParamCaption})}
+
+
+
+Return whether the animation looping is enabled. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em p} & Pointer to an existing psx\+\_\+svg\+\_\+player object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if looping is enabled, otherwise False.
+\end{DoxyReturn}
+\begin{DoxySeeAlso}{See also}
+\doxyref{psx\+\_\+svg\+\_\+player\+\_\+set\+\_\+loop}{p.}{group__svgfunctions_ga33e880ae460eec35ef4f5ed377642690} 
+\end{DoxySeeAlso}
+\mbox{\label{group__svgfunctions_ga2cfeb8d203f425a722d45169c7f6b57e}} 
+\index{XSvg Functions@{XSvg Functions}!psx\_svg\_player\_get\_state@{psx\_svg\_player\_get\_state}}
+\index{psx\_svg\_player\_get\_state@{psx\_svg\_player\_get\_state}!XSvg Functions@{XSvg Functions}}
+\doxysubsubsection{psx\_svg\_player\_get\_state()}
+{\footnotesize\ttfamily \textbf{ psx\+\_\+svg\+\_\+player\+\_\+state} psx\+\_\+svg\+\_\+player\+\_\+get\+\_\+state (\begin{DoxyParamCaption}\item[{const \textbf{ psx\+\_\+svg\+\_\+player} $\ast$}]{p }\end{DoxyParamCaption})}
+
+
+
+Return the current playback state of the player. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em p} & Pointer to an existing psx\+\_\+svg\+\_\+player object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The current player state.
+\end{DoxyReturn}
+\begin{DoxySeeAlso}{See also}
+\doxyref{psx\+\_\+svg\+\_\+player\+\_\+play}{p.}{group__svgfunctions_ga2d1fb3c5f641ee4f00761a4772e1adab} \doxyref{psx\+\_\+svg\+\_\+player\+\_\+pause}{p.}{group__svgfunctions_ga39a0ed9b1798a844dee2266efe8fc0bf} \doxyref{psx\+\_\+svg\+\_\+player\+\_\+stop}{p.}{group__svgfunctions_ga47a9261b87b262881f9e464767f377db} 
+\end{DoxySeeAlso}
+\mbox{\label{group__svgfunctions_ga81484cb2fb09ad994519118f67745275}} 
+\index{XSvg Functions@{XSvg Functions}!psx\_svg\_player\_get\_time@{psx\_svg\_player\_get\_time}}
+\index{psx\_svg\_player\_get\_time@{psx\_svg\_player\_get\_time}!XSvg Functions@{XSvg Functions}}
+\doxysubsubsection{psx\_svg\_player\_get\_time()}
+{\footnotesize\ttfamily float psx\+\_\+svg\+\_\+player\+\_\+get\+\_\+time (\begin{DoxyParamCaption}\item[{const \textbf{ psx\+\_\+svg\+\_\+player} $\ast$}]{p }\end{DoxyParamCaption})}
+
+
+
+Return the current playback time in seconds. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em p} & Pointer to an existing psx\+\_\+svg\+\_\+player object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The current time in seconds.
+\end{DoxyReturn}
+\begin{DoxySeeAlso}{See also}
+\doxyref{psx\+\_\+svg\+\_\+player\+\_\+seek}{p.}{group__svgfunctions_ga06e53e2213938ae4533c216d5b3d0943} \doxyref{psx\+\_\+svg\+\_\+player\+\_\+tick}{p.}{group__svgfunctions_ga2c4d75849678df13c39cd3ece6472e7d} 
+\end{DoxySeeAlso}
+\mbox{\label{group__svgfunctions_ga39a0ed9b1798a844dee2266efe8fc0bf}} 
+\index{XSvg Functions@{XSvg Functions}!psx\_svg\_player\_pause@{psx\_svg\_player\_pause}}
+\index{psx\_svg\_player\_pause@{psx\_svg\_player\_pause}!XSvg Functions@{XSvg Functions}}
+\doxysubsubsection{psx\_svg\_player\_pause()}
+{\footnotesize\ttfamily void psx\+\_\+svg\+\_\+player\+\_\+pause (\begin{DoxyParamCaption}\item[{\textbf{ psx\+\_\+svg\+\_\+player} $\ast$}]{p }\end{DoxyParamCaption})}
+
+
+
+Pause the animation at the current time. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em p} & Pointer to an existing psx\+\_\+svg\+\_\+player object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{psx\+\_\+svg\+\_\+player\+\_\+play}{p.}{group__svgfunctions_ga2d1fb3c5f641ee4f00761a4772e1adab} \doxyref{psx\+\_\+svg\+\_\+player\+\_\+stop}{p.}{group__svgfunctions_ga47a9261b87b262881f9e464767f377db} \doxyref{psx\+\_\+svg\+\_\+player\+\_\+get\+\_\+state}{p.}{group__svgfunctions_ga2cfeb8d203f425a722d45169c7f6b57e} 
+\end{DoxySeeAlso}
+\mbox{\label{group__svgfunctions_ga2d1fb3c5f641ee4f00761a4772e1adab}} 
+\index{XSvg Functions@{XSvg Functions}!psx\_svg\_player\_play@{psx\_svg\_player\_play}}
+\index{psx\_svg\_player\_play@{psx\_svg\_player\_play}!XSvg Functions@{XSvg Functions}}
+\doxysubsubsection{psx\_svg\_player\_play()}
+{\footnotesize\ttfamily void psx\+\_\+svg\+\_\+player\+\_\+play (\begin{DoxyParamCaption}\item[{\textbf{ psx\+\_\+svg\+\_\+player} $\ast$}]{p }\end{DoxyParamCaption})}
+
+
+
+Start or resume playback of the animation. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em p} & Pointer to an existing psx\+\_\+svg\+\_\+player object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{psx\+\_\+svg\+\_\+player\+\_\+pause}{p.}{group__svgfunctions_ga39a0ed9b1798a844dee2266efe8fc0bf} \doxyref{psx\+\_\+svg\+\_\+player\+\_\+stop}{p.}{group__svgfunctions_ga47a9261b87b262881f9e464767f377db} \doxyref{psx\+\_\+svg\+\_\+player\+\_\+get\+\_\+state}{p.}{group__svgfunctions_ga2cfeb8d203f425a722d45169c7f6b57e} 
+\end{DoxySeeAlso}
+\mbox{\label{group__svgfunctions_ga06e53e2213938ae4533c216d5b3d0943}} 
+\index{XSvg Functions@{XSvg Functions}!psx\_svg\_player\_seek@{psx\_svg\_player\_seek}}
+\index{psx\_svg\_player\_seek@{psx\_svg\_player\_seek}!XSvg Functions@{XSvg Functions}}
+\doxysubsubsection{psx\_svg\_player\_seek()}
+{\footnotesize\ttfamily void psx\+\_\+svg\+\_\+player\+\_\+seek (\begin{DoxyParamCaption}\item[{\textbf{ psx\+\_\+svg\+\_\+player} $\ast$}]{p,  }\item[{float}]{seconds }\end{DoxyParamCaption})}
+
+
+
+Seek the animation to an absolute time position. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em p} & Pointer to an existing psx\+\_\+svg\+\_\+player object. \\
+\hline
+{\em seconds} & The target time in seconds.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{psx\+\_\+svg\+\_\+player\+\_\+tick}{p.}{group__svgfunctions_ga2c4d75849678df13c39cd3ece6472e7d} \doxyref{psx\+\_\+svg\+\_\+player\+\_\+get\+\_\+time}{p.}{group__svgfunctions_ga81484cb2fb09ad994519118f67745275} 
+\end{DoxySeeAlso}
+\mbox{\label{group__svgfunctions_ga7e222dc3335551150d2782996207bddf}} 
+\index{XSvg Functions@{XSvg Functions}!psx\_svg\_player\_send\_key@{psx\_svg\_player\_send\_key}}
+\index{psx\_svg\_player\_send\_key@{psx\_svg\_player\_send\_key}!XSvg Functions@{XSvg Functions}}
+\doxysubsubsection{psx\_svg\_player\_send\_key()}
+{\footnotesize\ttfamily void psx\+\_\+svg\+\_\+player\+\_\+send\+\_\+key (\begin{DoxyParamCaption}\item[{\textbf{ psx\+\_\+svg\+\_\+player} $\ast$}]{p,  }\item[{char}]{key }\end{DoxyParamCaption})}
+
+
+
+Forward a keyboard event to the player. 
+
+Used for animations with begin=\char`\"{}access\+Key(x)\char`\"{} style timing.
+
+
+\begin{DoxyParams}{Parameters}
+{\em p} & Pointer to an existing psx\+\_\+svg\+\_\+player object. \\
+\hline
+{\em key} & The character key pressed.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{psx\+\_\+svg\+\_\+player\+\_\+trigger}{p.}{group__svgfunctions_gac025622225536f946836959728f46aa1} 
+\end{DoxySeeAlso}
+\mbox{\label{group__svgfunctions_ga096fbdc76063ce1c011731fbe42bd4fd}} 
+\index{XSvg Functions@{XSvg Functions}!psx\_svg\_player\_set\_dpi@{psx\_svg\_player\_set\_dpi}}
+\index{psx\_svg\_player\_set\_dpi@{psx\_svg\_player\_set\_dpi}!XSvg Functions@{XSvg Functions}}
+\doxysubsubsection{psx\_svg\_player\_set\_dpi()}
+{\footnotesize\ttfamily void psx\+\_\+svg\+\_\+player\+\_\+set\+\_\+dpi (\begin{DoxyParamCaption}\item[{\textbf{ psx\+\_\+svg\+\_\+player} $\ast$}]{p,  }\item[{int32\+\_\+t}]{dpi }\end{DoxyParamCaption})}
+
+
+
+Set the D\+PI (dots per inch) used for unit conversion. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em p} & Pointer to an existing psx\+\_\+svg\+\_\+player object. \\
+\hline
+{\em dpi} & The D\+PI value. Default is 96.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{psx\+\_\+svg\+\_\+player\+\_\+get\+\_\+dpi}{p.}{group__svgfunctions_gaba82760c8d1bbe08108ea7e10dee51c4} 
+\end{DoxySeeAlso}
+\mbox{\label{group__svgfunctions_gab57c02e717bc860ff0c3db061337cbeb}} 
+\index{XSvg Functions@{XSvg Functions}!psx\_svg\_player\_set\_event\_callback@{psx\_svg\_player\_set\_event\_callback}}
+\index{psx\_svg\_player\_set\_event\_callback@{psx\_svg\_player\_set\_event\_callback}!XSvg Functions@{XSvg Functions}}
+\doxysubsubsection{psx\_svg\_player\_set\_event\_callback()}
+{\footnotesize\ttfamily void psx\+\_\+svg\+\_\+player\+\_\+set\+\_\+event\+\_\+callback (\begin{DoxyParamCaption}\item[{\textbf{ psx\+\_\+svg\+\_\+player} $\ast$}]{p,  }\item[{\textbf{ psx\+\_\+svg\+\_\+anim\+\_\+event\+\_\+cb}}]{cb,  }\item[{void $\ast$}]{user }\end{DoxyParamCaption})}
+
+
+
+Set a callback to receive animation events (begin, end, repeat). 
+
+
+\begin{DoxyParams}{Parameters}
+{\em p} & Pointer to an existing psx\+\_\+svg\+\_\+player object. \\
+\hline
+{\em cb} & The callback function, or N\+U\+LL to clear. \\
+\hline
+{\em user} & User data pointer passed to the callback.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{psx\+\_\+svg\+\_\+anim\+\_\+event\+\_\+cb}{p.}{group__svgtypes_ga3d1b53b3f337de2b275ed406d2177d6a} \doxyref{psx\+\_\+svg\+\_\+anim\+\_\+event\+\_\+type}{p.}{group__svgtypes_gaa5c76268c5f0504b79c63e00360366b7} 
+\end{DoxySeeAlso}
+\mbox{\label{group__svgfunctions_ga33e880ae460eec35ef4f5ed377642690}} 
+\index{XSvg Functions@{XSvg Functions}!psx\_svg\_player\_set\_loop@{psx\_svg\_player\_set\_loop}}
+\index{psx\_svg\_player\_set\_loop@{psx\_svg\_player\_set\_loop}!XSvg Functions@{XSvg Functions}}
+\doxysubsubsection{psx\_svg\_player\_set\_loop()}
+{\footnotesize\ttfamily void psx\+\_\+svg\+\_\+player\+\_\+set\+\_\+loop (\begin{DoxyParamCaption}\item[{\textbf{ psx\+\_\+svg\+\_\+player} $\ast$}]{p,  }\item[{bool}]{loop }\end{DoxyParamCaption})}
+
+
+
+Set whether the animation should loop when it reaches the end. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em p} & Pointer to an existing psx\+\_\+svg\+\_\+player object. \\
+\hline
+{\em loop} & True to enable looping, False to disable.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{psx\+\_\+svg\+\_\+player\+\_\+get\+\_\+loop}{p.}{group__svgfunctions_ga2db8bfcdd2b069ca7b66dcd3bea9d1b7} 
+\end{DoxySeeAlso}
+\mbox{\label{group__svgfunctions_ga47a9261b87b262881f9e464767f377db}} 
+\index{XSvg Functions@{XSvg Functions}!psx\_svg\_player\_stop@{psx\_svg\_player\_stop}}
+\index{psx\_svg\_player\_stop@{psx\_svg\_player\_stop}!XSvg Functions@{XSvg Functions}}
+\doxysubsubsection{psx\_svg\_player\_stop()}
+{\footnotesize\ttfamily void psx\+\_\+svg\+\_\+player\+\_\+stop (\begin{DoxyParamCaption}\item[{\textbf{ psx\+\_\+svg\+\_\+player} $\ast$}]{p }\end{DoxyParamCaption})}
+
+
+
+Stop the animation and seek to time 0. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em p} & Pointer to an existing psx\+\_\+svg\+\_\+player object.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{psx\+\_\+svg\+\_\+player\+\_\+play}{p.}{group__svgfunctions_ga2d1fb3c5f641ee4f00761a4772e1adab} \doxyref{psx\+\_\+svg\+\_\+player\+\_\+pause}{p.}{group__svgfunctions_ga39a0ed9b1798a844dee2266efe8fc0bf} \doxyref{psx\+\_\+svg\+\_\+player\+\_\+get\+\_\+state}{p.}{group__svgfunctions_ga2cfeb8d203f425a722d45169c7f6b57e} 
+\end{DoxySeeAlso}
+\mbox{\label{group__svgfunctions_ga2c4d75849678df13c39cd3ece6472e7d}} 
+\index{XSvg Functions@{XSvg Functions}!psx\_svg\_player\_tick@{psx\_svg\_player\_tick}}
+\index{psx\_svg\_player\_tick@{psx\_svg\_player\_tick}!XSvg Functions@{XSvg Functions}}
+\doxysubsubsection{psx\_svg\_player\_tick()}
+{\footnotesize\ttfamily void psx\+\_\+svg\+\_\+player\+\_\+tick (\begin{DoxyParamCaption}\item[{\textbf{ psx\+\_\+svg\+\_\+player} $\ast$}]{p,  }\item[{float}]{delta\+\_\+seconds }\end{DoxyParamCaption})}
+
+
+
+Advance the animation by a relative time delta. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em p} & Pointer to an existing psx\+\_\+svg\+\_\+player object. \\
+\hline
+{\em delta\+\_\+seconds} & The time increment in seconds since the last tick.\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{psx\+\_\+svg\+\_\+player\+\_\+seek}{p.}{group__svgfunctions_ga06e53e2213938ae4533c216d5b3d0943} \doxyref{psx\+\_\+svg\+\_\+player\+\_\+get\+\_\+time}{p.}{group__svgfunctions_ga81484cb2fb09ad994519118f67745275} 
+\end{DoxySeeAlso}
+\mbox{\label{group__svgfunctions_gac025622225536f946836959728f46aa1}} 
+\index{XSvg Functions@{XSvg Functions}!psx\_svg\_player\_trigger@{psx\_svg\_player\_trigger}}
+\index{psx\_svg\_player\_trigger@{psx\_svg\_player\_trigger}!XSvg Functions@{XSvg Functions}}
+\doxysubsubsection{psx\_svg\_player\_trigger()}
+{\footnotesize\ttfamily void psx\+\_\+svg\+\_\+player\+\_\+trigger (\begin{DoxyParamCaption}\item[{\textbf{ psx\+\_\+svg\+\_\+player} $\ast$}]{p,  }\item[{const char $\ast$}]{target\+\_\+id,  }\item[{const char $\ast$}]{event\+\_\+name }\end{DoxyParamCaption})}
+
+
+
+Send an external event trigger to the player. 
+
+Used for animations with begin=\char`\"{}id.\+event\char`\"{} style timing.
+
+
+\begin{DoxyParams}{Parameters}
+{\em p} & Pointer to an existing psx\+\_\+svg\+\_\+player object. \\
+\hline
+{\em target\+\_\+id} & The target element id, or N\+U\+LL for untargeted events. \\
+\hline
+{\em event\+\_\+name} & The event name (e.\+g. \char`\"{}click\char`\"{}).\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxyref{psx\+\_\+svg\+\_\+player\+\_\+send\+\_\+key}{p.}{group__svgfunctions_ga7e222dc3335551150d2782996207bddf} 
+\end{DoxySeeAlso}
 \mbox{\label{group__svgfunctions_ga5ebd8fb2913448a94bb40fcf99a9b588}} 
 \index{XSvg Functions@{XSvg Functions}!psx\_svg\_render\_destroy@{psx\_svg\_render\_destroy}}
 \index{psx\_svg\_render\_destroy@{psx\_svg\_render\_destroy}!XSvg Functions@{XSvg Functions}}
@@ -121,7 +527,7 @@ Destroy the psx\+\_\+svg\+\_\+render object and release resources.
 \hline
 \end{DoxyParams}
 \begin{DoxySeeAlso}{See also}
-\doxyref{psx\+\_\+svg\+\_\+render\+\_\+draw}{p.}{group__svgfunctions_ga5b36c80201f532560af451d80bfdd440} psx\+\_\+svg\+\_\+render\+\_\+create 
+\doxyref{psx\+\_\+svg\+\_\+render\+\_\+draw}{p.}{group__svgfunctions_ga5b36c80201f532560af451d80bfdd440} psx\+\_\+svg\+\_\+render\+\_\+create psx\+\_\+svg\+\_\+render\+\_\+get\+\_\+size 
 \end{DoxySeeAlso}
 \mbox{\label{group__svgfunctions_ga5b36c80201f532560af451d80bfdd440}} 
 \index{XSvg Functions@{XSvg Functions}!psx\_svg\_render\_draw@{psx\_svg\_render\_draw}}
@@ -144,7 +550,7 @@ Draws an psx\+\_\+svg\+\_\+render object into the given context.
 Result code returned.
 \end{DoxyReturn}
 \begin{DoxySeeAlso}{See also}
-\doxyref{psx\+\_\+svg\+\_\+render\+\_\+draw}{p.}{group__svgfunctions_ga5b36c80201f532560af451d80bfdd440} psx\+\_\+svg\+\_\+render\+\_\+create 
+\doxyref{psx\+\_\+svg\+\_\+render\+\_\+destroy}{p.}{group__svgfunctions_ga5ebd8fb2913448a94bb40fcf99a9b588} psx\+\_\+svg\+\_\+render\+\_\+create psx\+\_\+svg\+\_\+render\+\_\+get\+\_\+size 
 \end{DoxySeeAlso}
 \mbox{\label{group__svgfunctions_ga9cbe75fa42d4c7a21155a38049bed6bf}} 
 \index{XSvg Functions@{XSvg Functions}!psx\_svg\_shutdown@{psx\_svg\_shutdown}}
@@ -154,7 +560,7 @@ Result code returned.
 
 
 
-Release resources and shutdoen. 
+Release resources and shutdown. 
 
 \begin{DoxySeeAlso}{See also}
 \doxyref{psx\+\_\+svg\+\_\+init}{p.}{group__svgfunctions_ga362a4e99a0e5a5157a68a8e379e8417d} 

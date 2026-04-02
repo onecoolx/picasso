@@ -35,6 +35,8 @@ static INLINE void _free_svg_attr_value(psx_svg_attr* attr)
         mem_free(attr->value.val);
     } else if (attr->val_type == SVG_ATTR_VALUE_PATH_PTR) {
         ps_path_unref((ps_path*)attr->value.val);
+    } else if (attr->val_type == SVG_ATTR_VALUE_TIMING_LIST_PTR) {
+        psx_svg_timing_list_destroy((psx_svg_timing_list*)attr->value.val);
     }
 }
 

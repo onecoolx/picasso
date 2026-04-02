@@ -25,7 +25,6 @@
  */
 
 #include "test.h"
-#include "timeuse.h"
 
 #include "psx_tree.h"
 

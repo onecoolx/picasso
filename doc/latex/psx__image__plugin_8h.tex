@@ -1,7 +1,9 @@
 \doxysection{include/images/psx\+\_\+image\+\_\+plugin.h File Reference}
 \label{psx__image__plugin_8h}\index{include/images/psx\_image\_plugin.h@{include/images/psx\_image\_plugin.h}}
 {\ttfamily \#include \char`\"{}picasso.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}picasso\+\_\+ext.\+h\char`\"{}}\newline
 {\ttfamily \#include \char`\"{}psx\+\_\+image.\+h\char`\"{}}\newline
+{\ttfamily \#include $<$stddef.\+h$>$}\newline
 \doxysubsection*{Data Structures}
 \begin{DoxyCompactItemize}
 \item 
@@ -34,15 +36,15 @@ enum \textbf{ \+\_\+psx\+\_\+priority\+\_\+level} \{ \textbf{ P\+R\+I\+O\+R\+I\+
 \doxysubsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
-P\+E\+X\+P\+O\+RT int \textbf{ psx\+\_\+image\+\_\+register\+\_\+operator} (const char $\ast$type, const \textbf{ ps\+\_\+byte} $\ast$signature, size\+\_\+t sig\+\_\+offset, size\+\_\+t sig\+\_\+len, \textbf{ psx\+\_\+priority\+\_\+level} level, \textbf{ psx\+\_\+image\+\_\+operator} $\ast$coder)
+P\+E\+X\+P\+O\+RT \textbf{ psx\+\_\+result} \textbf{ psx\+\_\+image\+\_\+register\+\_\+operator} (const char $\ast$type, const \textbf{ ps\+\_\+byte} $\ast$signature, size\+\_\+t sig\+\_\+offset, size\+\_\+t sig\+\_\+len, \textbf{ psx\+\_\+priority\+\_\+level} level, \textbf{ psx\+\_\+image\+\_\+operator} $\ast$coder)
 \begin{DoxyCompactList}\small\item\em Register the image operator. \end{DoxyCompactList}\item 
-P\+E\+X\+P\+O\+RT int \textbf{ psx\+\_\+image\+\_\+unregister\+\_\+operator} (\textbf{ psx\+\_\+image\+\_\+operator} $\ast$coder)
+P\+E\+X\+P\+O\+RT \textbf{ psx\+\_\+result} \textbf{ psx\+\_\+image\+\_\+unregister\+\_\+operator} (\textbf{ psx\+\_\+image\+\_\+operator} $\ast$coder)
 \begin{DoxyCompactList}\small\item\em Unregister the image operator. \end{DoxyCompactList}\item 
 P\+E\+X\+P\+O\+RT void \textbf{ psx\+\_\+image\+\_\+module\+\_\+init} (void)
 \begin{DoxyCompactList}\small\item\em Initialze the image module. \end{DoxyCompactList}\item 
 P\+E\+X\+P\+O\+RT void \textbf{ psx\+\_\+image\+\_\+module\+\_\+shutdown} (void)
 \begin{DoxyCompactList}\small\item\em Shutdown the image module. \end{DoxyCompactList}\item 
-const P\+E\+X\+P\+O\+RT char $\ast$ \textbf{ psx\+\_\+image\+\_\+module\+\_\+get\+\_\+string} (int id)
+const P\+E\+X\+P\+O\+RT char $\ast$ \textbf{ psx\+\_\+image\+\_\+module\+\_\+get\+\_\+string} (int32\+\_\+t id)
 \begin{DoxyCompactList}\small\item\em Get the string info about module. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 

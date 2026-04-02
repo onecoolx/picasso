@@ -1,0 +1,142 @@
+{
+    "ImageCreateAllFormats": {
+        "mid_ms": 1.379025,
+        "avg_ms": 1.38318775,
+        "min_ms": 1.37051899,
+        "max_ms": 1.398783,
+        "std_dev": 0.00771397,
+        "cv": 0.00557695,
+        "iterations": 345,
+        "total_time_ms": 4155.51276099
+    },
+    "ImageCreateCompatible": {
+        "mid_ms": 1.4669345,
+        "avg_ms": 1.46896869,
+        "min_ms": 1.45280299,
+        "max_ms": 1.48562399,
+        "std_dev": 0.00734921,
+        "cv": 0.00500297,
+        "iterations": 336,
+        "total_time_ms": 4100.18287799
+    },
+    "ImageCreateDestroy": {
+        "mid_ms": 2.880925,
+        "avg_ms": 2.89976649,
+        "min_ms": 2.875689,
+        "max_ms": 2.94267399,
+        "std_dev": 0.0205895,
+        "cv": 0.0071004,
+        "iterations": 228,
+        "total_time_ms": 3143.468949
+    },
+    "ImageCreateFromCanvas": {
+        "mid_ms": 0.42524899,
+        "avg_ms": 0.42886736,
+        "min_ms": 0.41494499,
+        "max_ms": 0.465779,
+        "std_dev": 0.01091572,
+        "cv": 0.02545245,
+        "iterations": 500,
+        "total_time_ms": 5387.03183199
+    },
+    "ImageCreateFromData": {
+        "mid_ms": 3.169058,
+        "avg_ms": 3.19639407,
+        "min_ms": 3.157016,
+        "max_ms": 3.265768,
+        "std_dev": 0.03522378,
+        "cv": 0.01101985,
+        "iterations": 213,
+        "total_time_ms": 3079.210565
+    },
+    "ImageCreateFromImage": {
+        "mid_ms": 0.4516735,
+        "avg_ms": 0.45594258,
+        "min_ms": 0.44128399,
+        "max_ms": 0.491258,
+        "std_dev": 0.01098212,
+        "cv": 0.02408664,
+        "iterations": 500,
+        "total_time_ms": 5490.929248
+    },
+    "ImageCreateWithData": {
+        "mid_ms": 0.575925,
+        "avg_ms": 0.60726106,
+        "min_ms": 0.56208,
+        "max_ms": 0.680911,
+        "std_dev": 0.03956631,
+        "cv": 0.06515535,
+        "iterations": 477,
+        "total_time_ms": 5266.66030599
+    },
+    "ImageDifferentDimensions": {
+        "mid_ms": 3.521276,
+        "avg_ms": 3.60833728,
+        "min_ms": 3.50529599,
+        "max_ms": 3.89583399,
+        "std_dev": 0.10765074,
+        "cv": 0.02983389,
+        "iterations": 197,
+        "total_time_ms": 2943.42166699
+    },
+    "ImageErrorHandling": {
+        "mid_ms": 4.59676899,
+        "avg_ms": 4.63702409,
+        "min_ms": 4.551209,
+        "max_ms": 4.75609199,
+        "std_dev": 0.05950707,
+        "cv": 0.01283303,
+        "iterations": 162,
+        "total_time_ms": 2646.454279
+    },
+    "ImagePropertyOperations": {
+        "mid_ms": 1.150559,
+        "avg_ms": 1.15528514,
+        "min_ms": 1.14912599,
+        "max_ms": 1.15870399,
+        "std_dev": 0.00451688,
+        "cv": 0.00390975,
+        "iterations": 375,
+        "total_time_ms": 4360.256066
+    },
+    "ImageReferenceOperations": {
+        "mid_ms": 0.904379,
+        "avg_ms": 0.90551383,
+        "min_ms": 0.903036,
+        "max_ms": 0.908016,
+        "std_dev": 0.00129415,
+        "cv": 0.00142919,
+        "iterations": 416,
+        "total_time_ms": 4822.55986099
+    },
+    "ImageReusePerformance": {
+        "mid_ms": 0.2513795,
+        "avg_ms": 0.25465333,
+        "min_ms": 0.25070799,
+        "max_ms": 0.26146799,
+        "std_dev": 0.00415255,
+        "cv": 0.01630669,
+        "iterations": 500,
+        "total_time_ms": 5328.05680199
+    },
+    "ImageStressTest": {
+        "mid_ms": 1.21489899,
+        "avg_ms": 1.21980187,
+        "min_ms": 1.19656499,
+        "max_ms": 1.247409,
+        "std_dev": 0.01331879,
+        "cv": 0.01091881,
+        "iterations": 369,
+        "total_time_ms": 4398.97961099
+    },
+    "ImageTransparencyOperations": {
+        "mid_ms": 0.263312,
+        "avg_ms": 0.26650765,
+        "min_ms": 0.262911,
+        "max_ms": 0.27337999,
+        "std_dev": 0.00407863,
+        "cv": 0.01530399,
+        "iterations": 500,
+        "total_time_ms": 5352.45481
+    }
+}

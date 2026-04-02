@@ -1,0 +1,102 @@
+{
+    "PatternCreateAllWrapModes": {
+        "mid_ms": 0.53874599,
+        "avg_ms": 0.53796851,
+        "min_ms": 0.52856799,
+        "max_ms": 0.54210199,
+        "std_dev": 0.00573849,
+        "cv": 0.01066696,
+        "iterations": 490,
+        "total_time_ms": 5430.129704
+    },
+    "PatternCreateDestroy": {
+        "mid_ms": 0.27246899,
+        "avg_ms": 0.2757414,
+        "min_ms": 0.27149699,
+        "max_ms": 0.28323899,
+        "std_dev": 0.00419193,
+        "cv": 0.0152024,
+        "iterations": 500,
+        "total_time_ms": 5313.92108499
+    },
+    "PatternCreateWithTransform": {
+        "mid_ms": 0.130388,
+        "avg_ms": 0.13172476,
+        "min_ms": 0.130083,
+        "max_ms": 0.134571,
+        "std_dev": 0.00131044,
+        "cv": 0.00994837,
+        "iterations": 500,
+        "total_time_ms": 5212.61933299
+    },
+    "PatternDifferentImageFormats": {
+        "mid_ms": 2.177466,
+        "avg_ms": 2.18449834,
+        "min_ms": 2.17520199,
+        "max_ms": 2.196292,
+        "std_dev": 0.00699403,
+        "cv": 0.00320166,
+        "iterations": 273,
+        "total_time_ms": 3542.38060799
+    },
+    "PatternDifferentImageSources": {
+        "mid_ms": 0.266533,
+        "avg_ms": 0.27032563,
+        "min_ms": 0.26611699,
+        "max_ms": 0.277318,
+        "std_dev": 0.00445014,
+        "cv": 0.01646214,
+        "iterations": 500,
+        "total_time_ms": 5346.4422
+    },
+    "PatternErrorHandling": {
+        "mid_ms": 0.194483,
+        "avg_ms": 0.1972723,
+        "min_ms": 0.194433,
+        "max_ms": 0.20498199,
+        "std_dev": 0.00339318,
+        "cv": 0.01720052,
+        "iterations": 500,
+        "total_time_ms": 5349.336748
+    },
+    "PatternLargeImages": {
+        "mid_ms": 0.02728,
+        "avg_ms": 0.02778628,
+        "min_ms": 0.027141,
+        "max_ms": 0.028192,
+        "std_dev": 0.00046184,
+        "cv": 0.01662119,
+        "iterations": 500,
+        "total_time_ms": 5192.482853
+    },
+    "PatternReferenceOperations": {
+        "mid_ms": 0.87379199,
+        "avg_ms": 0.87407819,
+        "min_ms": 0.86432399,
+        "max_ms": 0.877299,
+        "std_dev": 0.00224874,
+        "cv": 0.00257269,
+        "iterations": 421,
+        "total_time_ms": 4766.159408
+    },
+    "PatternStressTest": {
+        "mid_ms": 0.97743099,
+        "avg_ms": 0.98206507,
+        "min_ms": 0.97330799,
+        "max_ms": 0.99834399,
+        "std_dev": 0.00778331,
+        "cv": 0.00792545,
+        "iterations": 406,
+        "total_time_ms": 4662.62335999
+    },
+    "PatternTransformOperations": {
+        "mid_ms": 0.7198435,
+        "avg_ms": 0.72046212,
+        "min_ms": 0.710096,
+        "max_ms": 0.72383999,
+        "std_dev": 0.00493209,
+        "cv": 0.00684573,
+        "iterations": 446,
+        "total_time_ms": 5110.486261
+    }
+}

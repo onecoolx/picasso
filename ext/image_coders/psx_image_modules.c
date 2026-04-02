@@ -108,7 +108,8 @@ struct image_coder_node* get_first_operator(struct image_modules_mgr* mgr, const
 
     list_for_each(&(mgr->coders), ptr) {
         entry = (struct image_coder_node*)ptr;
-        if (memcmp(data + entry->magic_offset, entry->magic_hdr, entry->magic_len) == 0) {
+        if (entry && (len > (entry->magic_offset + entry->magic_len))
+            && memcmp(data + entry->magic_offset, entry->magic_hdr, entry->magic_len) == 0) {
             break;
         }
         entry = NULL;
@@ -172,8 +173,8 @@ static char* copy_magic(const char* str, size_t len)
     return dst;
 }
 
-int32_t psx_image_register_operator(const char* type, const ps_byte* header_magic,
-                                    size_t magic_offset, size_t magic_len, psx_priority_level level, psx_image_operator* coder)
+psx_result psx_image_register_operator(const char* type, const ps_byte* header_magic,
+                                       size_t magic_offset, size_t magic_len, psx_priority_level level, psx_image_operator* coder)
 {
     struct image_modules_mgr* mgr = NULL;
     struct list_hdr* ptr = NULL;
@@ -231,7 +232,7 @@ int32_t psx_image_register_operator(const char* type, const ps_byte* header_magi
     return S_OK;
 }
 
-int32_t psx_image_unregister_operator(psx_image_operator* coder)
+psx_result psx_image_unregister_operator(psx_image_operator* coder)
 {
     struct image_modules_mgr* mgr = NULL;
     struct list_hdr* ptr = NULL;

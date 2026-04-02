@@ -29,6 +29,12 @@
 
 #include "common.h"
 #include "convert.h"
+#include "math_type.h"
+#include "data_vector.h"
+#include "fixedopt.h"
+#include "global.h"
+
+#include "picasso.h"
 
 namespace picasso {
 
@@ -46,6 +52,9 @@ void _path_operation(conv_clipper::clip_op op, const graphic_path& a, const grap
 int32_t _bytes_per_color(ps_color_format fmt);
 
 } // namespace picasso
+
+// global error code
+extern "C" ps_status global_status;
 
 // Font Load
 bool platform_font_init(void);

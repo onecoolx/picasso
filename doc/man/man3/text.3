@@ -1,4 +1,4 @@
-.TH "text" 3 "Tue May 13 2025" "Version 2.8" "Picasso API" \" -*- nroff -*-
+.TH "text" 3 "Thu Apr 2 2026" "Version 2.9" "Picasso API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -17,10 +17,6 @@ text
 .RI "typedef enum \fB_ps_draw_text_type\fP \fBps_draw_text_type\fP"
 .br
 .RI "Draw mode for rending text\&. "
-.ti -1c
-.RI "typedef enum \fB_ps_text_align\fP \fBps_text_align\fP"
-.br
-.RI "Text align mode for drawing text\&. "
 .in -1c
 .SS "Enumerations"
 
@@ -82,7 +78,7 @@ text
 .br
 .RI "Draw unicode characters (ucs-2) at location in user space\&. "
 .ti -1c
-.RI "PEXPORT void PICAPI \fBps_draw_text\fP (\fBps_context\fP *ctx, const \fBps_rect\fP *area, const void *text, uint32_t length, \fBps_draw_text_type\fP type, \fBps_text_align\fP align)"
+.RI "PEXPORT void PICAPI \fBps_draw_text\fP (\fBps_context\fP *ctx, const \fBps_rect\fP *area, const void *text, uint32_t length, \fBps_draw_text_type\fP type, uint32_t align)"
 .br
 .RI "Draw text in a rectangle area, using font object which is selected in graphic context\&. "
 .ti -1c
@@ -169,7 +165,7 @@ OutLine rendering\&.
 Definition at line 2188 of file picasso\&.h\&.
 .SH "Function Documentation"
 .PP 
-.SS "void ps_draw_text (\fBps_context\fP * ctx, const \fBps_rect\fP * area, const void * text, uint32_t length, \fBps_draw_text_type\fP type, \fBps_text_align\fP align)"
+.SS "void ps_draw_text (\fBps_context\fP * ctx, const \fBps_rect\fP * area, const void * text, uint32_t length, \fBps_draw_text_type\fP type, uint32_t align)"
 
 .PP
 Draw text in a rectangle area, using font object which is selected in graphic context\&. 

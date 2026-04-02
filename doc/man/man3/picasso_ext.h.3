@@ -1,4 +1,4 @@
-.TH "include/picasso_ext.h" 3 "Tue May 13 2025" "Version 2.8" "Picasso API" \" -*- nroff -*-
+.TH "include/picasso_ext.h" 3 "Thu Apr 2 2026" "Version 2.9" "Picasso API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -16,6 +16,14 @@ include/picasso_ext.h
 .RI "enum \fBpsx_result\fP { \fBS_OK\fP = 0, \fBS_BAD_PARAMS\fP = 1, \fBS_NOT_SUPPORT\fP = 2, \fBS_OUT_OF_MEMORY\fP = 3, \fBS_INIT_FAILURE\fP = 4, \fBS_FAILURE\fP = 5 }"
 .br
 .RI "Status code return by call APIs\&. "
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "const char * \fBpsx_result_get_string\fP (\fBpsx_result\fP result)"
+.br
+.RI "Return the string of result code\&. "
 .in -1c
 .SH "Detailed Description"
 .PP 

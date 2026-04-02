@@ -11,7 +11,6 @@
 #include "geometry.h"
 #include "convert.h"
 
-#include "picasso_global.h"
 #include "picasso_private.h"
 #include "picasso_painter.h"
 #include "picasso_font.h"
@@ -72,6 +71,13 @@ int32_t font_engine::find_font(const char* font_signature)
     return -1;
 }
 
+void font_engine::relayout_fonts(void)
+{
+    for (uint32_t i = 0; i < m_max_fonts - 1; i++) {
+        m_fonts[i] = m_fonts[i + 1];
+    }
+}
+
 bool font_engine::create_font(const font_desc& desc)
 {
     if (!font::create_signature(desc, m_affine, m_antialias, m_signature)) {
@@ -88,7 +94,7 @@ bool font_engine::create_font(const font_desc& desc)
     } else {
         if (m_num_fonts >= m_max_fonts) {
             delete m_fonts[0];
-            mem_copy(m_fonts, m_fonts + 1, (m_max_fonts - 1) * sizeof(font*));
+            relayout_fonts(); // just make asan happy!
             m_num_fonts = m_max_fonts - 1;
         }
 

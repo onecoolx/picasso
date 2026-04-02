@@ -76,7 +76,7 @@ struct image_modules_mgr* _get_modules(void)
     return g_modules;
 }
 
-int32_t PICAPI psx_image_init(void)
+psx_result PICAPI psx_image_init(void)
 {
     ps_initialize();
 
@@ -93,7 +93,7 @@ int32_t PICAPI psx_image_init(void)
     return S_OK;
 }
 
-int32_t PICAPI psx_image_shutdown(void)
+void PICAPI psx_image_shutdown(void)
 {
     if (g_modules) {
         modules_destroy(g_modules);
@@ -102,11 +102,10 @@ int32_t PICAPI psx_image_shutdown(void)
     }
 
     ps_shutdown();
-    return S_OK;
 }
 
 psx_image* PICAPI psx_image_create_from_data(ps_byte* data, ps_color_format fmt,
-                                             int32_t width, int32_t height, int32_t pitch, int32_t* err_code)
+                                             int32_t width, int32_t height, int32_t pitch, psx_result* err_code)
 {
     int32_t i;
     size_t size;
@@ -191,7 +190,7 @@ psx_image* PICAPI psx_image_create_from_data(ps_byte* data, ps_color_format fmt,
     return image;
 }
 
-psx_image* PICAPI psx_image_load(const char* name, int32_t* err_code)
+psx_image* PICAPI psx_image_load(const char* name, psx_result* err_code)
 {
     size_t size;
     ps_byte* file_data;
@@ -362,7 +361,7 @@ static int32_t save_psx_image(psx_image_operator* op, const psx_image* image,
     return ret;
 }
 
-psx_image* PICAPI psx_image_load_from_memory(const ps_byte* data, size_t length, int32_t* err_code)
+psx_image* PICAPI psx_image_load_from_memory(const ps_byte* data, size_t length, psx_result* err_code)
 {
     struct image_coder_node* node = NULL;
     psx_image* image = NULL;
@@ -404,10 +403,10 @@ psx_image* PICAPI psx_image_load_from_memory(const ps_byte* data, size_t length,
     return image;
 }
 
-int32_t PICAPI psx_image_save(const psx_image* image, image_writer_fn func, void* param, const char* type, float quality)
+psx_result PICAPI psx_image_save(const psx_image* image, image_writer_fn func, void* param, const char* type, float quality)
 {
     struct image_coder_node* node = NULL;
-    int32_t ret = S_OK;
+    psx_result ret = S_OK;
     if (!image || !func || !type || quality <= 0.0f) {
         return S_BAD_PARAMS;
     }
@@ -440,31 +439,28 @@ static int32_t file_writer(void* param, const ps_byte* data, size_t len)
     }
 }
 
-int32_t PICAPI psx_image_save_to_file(const psx_image* image, const char* name, const char* type, float quality)
+psx_result PICAPI psx_image_save_to_file(const psx_image* image, const char* name, const char* type, float quality)
 {
-    int32_t ret;
-    pchar* file_name;
-
     if (!image || !name || !type || quality <= 0.0f) {
         return S_BAD_PARAMS;
     }
-    file_name = psx_path_create(name, NULL);
+
+    pchar* file_name = psx_path_create(name, NULL);
     if (psx_file_exists(file_name)) {
         psx_file_remove(file_name); // remove old file.
     }
-    ret = psx_image_save(image, file_writer, (void*)file_name, type, quality);
+    psx_result ret = psx_image_save(image, file_writer, (void*)file_name, type, quality);
     psx_path_destroy(file_name);
     return ret;
 }
 
-int32_t PICAPI psx_image_destroy(psx_image* image)
+void PICAPI psx_image_destroy(psx_image* image)
 {
-    size_t i;
     if (!image) {
-        return S_BAD_PARAMS;
+        return;
     }
 
-    for (i = 0; i < image->num_frames; i++) {
+    for (size_t i = 0; i < image->num_frames; i++) {
         // free buffer pixels data and ps_image object.
         if (image->frames[i].img) {
             ps_image_unref(image->frames[i].img);
@@ -474,5 +470,4 @@ int32_t PICAPI psx_image_destroy(psx_image* image)
 
     free(image->frames);
     free(image);
-    return S_OK;
 }

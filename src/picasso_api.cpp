@@ -11,10 +11,11 @@
 #include "convert.h"
 
 #include "picasso.h"
-#include "picasso_global.h"
 #include "picasso_objects.h"
 #include "picasso_painter.h"
 #include "picasso_private.h"
+
+#include "picasso_backport.h"
 
 namespace picasso {
 
@@ -22,10 +23,22 @@ static inline void _clip_path(context_state* state, const graphic_path& p, filli
 {
     if (!state->clip.path.total_vertices()) {
         state->clip.path = p;
+        state->clip.clip_matrix = state->world_matrix;
     } else if (p.total_vertices()) {
+        // Transform existing clip path from its original coordinate space
+        // to the current coordinate space before intersection.
+        if (state->clip.clip_matrix != state->world_matrix) {
+            trans_affine mtx = state->clip.clip_matrix;
+            trans_affine inv_cur = state->world_matrix;
+            inv_cur.invert();
+            mtx.multiply(inv_cur);
+            state->clip.path.transform_all_paths(mtx);
+        }
+
         graphic_path rp;
         _path_operation(conv_clipper::clip_intersect, state->clip.path, p, rp);
         state->clip.path = rp;
+        state->clip.clip_matrix = state->world_matrix;
     }
     state->clip.rule = r;
 }
@@ -60,6 +73,36 @@ void PICAPI ps_shutdown(void)
 ps_status PICAPI ps_last_status(void)
 {
     return global_status;
+}
+
+ps_bool PICAPI ps_set_memory_functions(const ps_memory_funcs* funcs)
+{
+#if !ENABLE(SYSTEM_MALLOC)
+    if (picasso::is_valid_system_device()) { // memory functions must be set before call ps_initialize
+        global_status = STATUS_NOT_SUPPORT;
+        return False;
+    }
+
+    if (!funcs) {
+        global_status = STATUS_INVALID_ARGUMENT;
+        return False;
+    }
+
+    if (!funcs->mem_malloc || !funcs->mem_free || !funcs->mem_calloc) {
+        global_status = STATUS_INVALID_ARGUMENT;
+        return False;
+    }
+
+    _global._malloc = funcs->mem_malloc;
+    _global._free = funcs->mem_free;
+    _global._calloc = funcs->mem_calloc;
+
+    global_status = STATUS_SUCCEED;
+    return True;
+#else
+    global_status = STATUS_NOT_SUPPORT;
+    return False;
+#endif
 }
 
 ps_context* PICAPI ps_context_create(ps_canvas* canvas, ps_context* ctx)
@@ -373,6 +416,11 @@ ps_filter PICAPI ps_set_filter(ps_context* ctx, ps_filter filter)
     }
 
     if (!ctx) {
+        global_status = STATUS_INVALID_ARGUMENT;
+        return FILTER_UNKNOWN;
+    }
+
+    if (filter < FILTER_NEAREST || filter > FILTER_QUADRIC) {
         global_status = STATUS_INVALID_ARGUMENT;
         return FILTER_UNKNOWN;
     }
@@ -993,8 +1041,8 @@ void PICAPI ps_line_to(ps_context* ctx, const ps_point* pt)
     global_status = STATUS_SUCCEED;
 }
 
-void PICAPI ps_bezier_curve_to(ps_context* ctx, const ps_point* fcp,
-                               const ps_point* scp, const ps_point* ep)
+void PICAPI ps_bezier_to(ps_context* ctx, const ps_point* fcp,
+                         const ps_point* scp, const ps_point* ep)
 {
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;
@@ -1018,7 +1066,7 @@ void PICAPI ps_bezier_curve_to(ps_context* ctx, const ps_point* fcp,
     global_status = STATUS_SUCCEED;
 }
 
-void PICAPI ps_quad_curve_to(ps_context* ctx, const ps_point* cp, const ps_point* ep)
+void PICAPI ps_quad_to(ps_context* ctx, const ps_point* cp, const ps_point* ep)
 {
     if (!picasso::is_valid_system_device()) {
         global_status = STATUS_DEVICE_ERROR;
@@ -1401,8 +1449,8 @@ ps_composite PICAPI ps_set_composite_operator(ps_context* ctx, ps_composite comp
             ctx->state->composite = picasso::comp_op_luminosity;
             break;
         default:
-            global_status = STATUS_UNKNOWN_ERROR;
-            return op;
+            global_status = STATUS_INVALID_ARGUMENT;
+            return COMPOSITE_ERROR;
     }
     global_status = STATUS_SUCCEED;
     return op;

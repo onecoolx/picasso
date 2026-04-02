@@ -6,7 +6,24 @@
 typedef struct \+\_\+psx\+\_\+svg \textbf{ psx\+\_\+svg}
 \begin{DoxyCompactList}\small\item\em An opaque type represents an svg document. \end{DoxyCompactList}\item 
 typedef struct \+\_\+psx\+\_\+svg\+\_\+render \textbf{ psx\+\_\+svg\+\_\+render}
-\begin{DoxyCompactList}\small\item\em An opaque type represents an svg render object. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em An opaque type represents an svg render object. \end{DoxyCompactList}\item 
+typedef struct \+\_\+psx\+\_\+svg\+\_\+player \textbf{ psx\+\_\+svg\+\_\+player}
+\begin{DoxyCompactList}\small\item\em An opaque type represents an svg animation player. \end{DoxyCompactList}\item 
+typedef void($\ast$ \textbf{ psx\+\_\+svg\+\_\+anim\+\_\+event\+\_\+cb}) (\textbf{ psx\+\_\+svg\+\_\+anim\+\_\+event\+\_\+type} type, const char $\ast$anim\+\_\+id, void $\ast$user\+\_\+data)
+\begin{DoxyCompactList}\small\item\em The callback for S\+VG animation event. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \textbf{ psx\+\_\+svg\+\_\+player\+\_\+state} \{ \textbf{ P\+S\+X\+\_\+\+S\+V\+G\+\_\+\+P\+L\+A\+Y\+E\+R\+\_\+\+S\+T\+O\+P\+P\+ED} = 0, 
+\textbf{ P\+S\+X\+\_\+\+S\+V\+G\+\_\+\+P\+L\+A\+Y\+E\+R\+\_\+\+P\+L\+A\+Y\+I\+NG} = 1, 
+\textbf{ P\+S\+X\+\_\+\+S\+V\+G\+\_\+\+P\+L\+A\+Y\+E\+R\+\_\+\+P\+A\+U\+S\+ED} = 2
+ \}
+\begin{DoxyCompactList}\small\item\em S\+VG animation player status. \end{DoxyCompactList}\item 
+enum \textbf{ psx\+\_\+svg\+\_\+anim\+\_\+event\+\_\+type} \{ \textbf{ P\+S\+X\+\_\+\+S\+V\+G\+\_\+\+A\+N\+I\+M\+\_\+\+E\+V\+E\+N\+T\+\_\+\+B\+E\+G\+IN} = 0, 
+\textbf{ P\+S\+X\+\_\+\+S\+V\+G\+\_\+\+A\+N\+I\+M\+\_\+\+E\+V\+E\+N\+T\+\_\+\+E\+ND}, 
+\textbf{ P\+S\+X\+\_\+\+S\+V\+G\+\_\+\+A\+N\+I\+M\+\_\+\+E\+V\+E\+N\+T\+\_\+\+R\+E\+P\+E\+AT}
+ \}
+\begin{DoxyCompactList}\small\item\em S\+VG animation event callback types. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
 \doxysubsection{Detailed Description}
@@ -30,6 +47,46 @@ An opaque type represents an svg document.
 
 Definition at line 48 of file psx\+\_\+svg.\+h.
 
+\mbox{\label{group__svgtypes_ga3d1b53b3f337de2b275ed406d2177d6a}} 
+\index{XSvg Object Types@{XSvg Object Types}!psx\_svg\_anim\_event\_cb@{psx\_svg\_anim\_event\_cb}}
+\index{psx\_svg\_anim\_event\_cb@{psx\_svg\_anim\_event\_cb}!XSvg Object Types@{XSvg Object Types}}
+\doxysubsubsection{psx\_svg\_anim\_event\_cb}
+{\footnotesize\ttfamily psx\+\_\+svg\+\_\+anim\+\_\+event\+\_\+cb}
+
+
+
+The callback for S\+VG animation event. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em type} & The animation event type. \\
+\hline
+{\em anim\+\_\+id} & The id of the animation element, can be N\+U\+LL. \\
+\hline
+{\em user\+\_\+data} & User data pointer passed to {\itshape psx\+\_\+svg\+\_\+player\+\_\+set\+\_\+event\+\_\+callback}. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 91 of file psx\+\_\+svg\+\_\+animation.\+h.
+
+\mbox{\label{group__svgtypes_ga7e1992a2db418c153d08b1f81da417e1}} 
+\index{XSvg Object Types@{XSvg Object Types}!psx\_svg\_player@{psx\_svg\_player}}
+\index{psx\_svg\_player@{psx\_svg\_player}!XSvg Object Types@{XSvg Object Types}}
+\doxysubsubsection{psx\_svg\_player}
+{\footnotesize\ttfamily \textbf{ psx\+\_\+svg\+\_\+player}}
+
+
+
+An opaque type represents an svg animation player. 
+
+\begin{DoxySeeAlso}{See also}
+\doxyref{psx\+\_\+svg\+\_\+render}{p.}{group__svgtypes_ga01286d1b137a25f1badc7a4f27af43af}, \doxyref{psx\+\_\+svg}{p.}{group__svgtypes_gaeb10426a6a4570e0176172f4bc58ec16} 
+\end{DoxySeeAlso}
+
+
+Definition at line 45 of file psx\+\_\+svg\+\_\+animation.\+h.
+
 \mbox{\label{group__svgtypes_ga01286d1b137a25f1badc7a4f27af43af}} 
 \index{XSvg Object Types@{XSvg Object Types}!psx\_svg\_render@{psx\_svg\_render}}
 \index{psx\_svg\_render@{psx\_svg\_render}!XSvg Object Types@{XSvg Object Types}}
@@ -46,4 +103,63 @@ An opaque type represents an svg render object.
 
 
 Definition at line 55 of file psx\+\_\+svg.\+h.
+
+
+
+\doxysubsection{Enumeration Type Documentation}
+\mbox{\label{group__svgtypes_gaa5c76268c5f0504b79c63e00360366b7}} 
+\index{XSvg Object Types@{XSvg Object Types}!psx\_svg\_anim\_event\_type@{psx\_svg\_anim\_event\_type}}
+\index{psx\_svg\_anim\_event\_type@{psx\_svg\_anim\_event\_type}!XSvg Object Types@{XSvg Object Types}}
+\doxysubsubsection{psx\_svg\_anim\_event\_type}
+{\footnotesize\ttfamily enum \textbf{ psx\+\_\+svg\+\_\+anim\+\_\+event\+\_\+type}}
+
+
+
+S\+VG animation event callback types. 
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{PSX\_SVG\_ANIM\_EVENT\_BEGIN@{PSX\_SVG\_ANIM\_EVENT\_BEGIN}!XSvg Object Types@{XSvg Object Types}}\index{XSvg Object Types@{XSvg Object Types}!PSX\_SVG\_ANIM\_EVENT\_BEGIN@{PSX\_SVG\_ANIM\_EVENT\_BEGIN}}}\mbox{\label{group__svgtypes_ggaa5c76268c5f0504b79c63e00360366b7a01d1f493689174f7d742f2832d695bc5}} 
+P\+S\+X\+\_\+\+S\+V\+G\+\_\+\+A\+N\+I\+M\+\_\+\+E\+V\+E\+N\+T\+\_\+\+B\+E\+G\+IN&S\+VG animation begin event. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{PSX\_SVG\_ANIM\_EVENT\_END@{PSX\_SVG\_ANIM\_EVENT\_END}!XSvg Object Types@{XSvg Object Types}}\index{XSvg Object Types@{XSvg Object Types}!PSX\_SVG\_ANIM\_EVENT\_END@{PSX\_SVG\_ANIM\_EVENT\_END}}}\mbox{\label{group__svgtypes_ggaa5c76268c5f0504b79c63e00360366b7a07fd8c1adf3a053270fa812c0f68479b}} 
+P\+S\+X\+\_\+\+S\+V\+G\+\_\+\+A\+N\+I\+M\+\_\+\+E\+V\+E\+N\+T\+\_\+\+E\+ND&S\+VG animation end event. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{PSX\_SVG\_ANIM\_EVENT\_REPEAT@{PSX\_SVG\_ANIM\_EVENT\_REPEAT}!XSvg Object Types@{XSvg Object Types}}\index{XSvg Object Types@{XSvg Object Types}!PSX\_SVG\_ANIM\_EVENT\_REPEAT@{PSX\_SVG\_ANIM\_EVENT\_REPEAT}}}\mbox{\label{group__svgtypes_ggaa5c76268c5f0504b79c63e00360366b7a930fb6714df6acbb589127456aebb8d1}} 
+P\+S\+X\+\_\+\+S\+V\+G\+\_\+\+A\+N\+I\+M\+\_\+\+E\+V\+E\+N\+T\+\_\+\+R\+E\+P\+E\+AT&S\+VG animation repeat event. \\
+\hline
+
+\end{DoxyEnumFields}
+
+
+Definition at line 68 of file psx\+\_\+svg\+\_\+animation.\+h.
+
+\mbox{\label{group__svgtypes_ga32eed20168a59443922064b044e1d97e}} 
+\index{XSvg Object Types@{XSvg Object Types}!psx\_svg\_player\_state@{psx\_svg\_player\_state}}
+\index{psx\_svg\_player\_state@{psx\_svg\_player\_state}!XSvg Object Types@{XSvg Object Types}}
+\doxysubsubsection{psx\_svg\_player\_state}
+{\footnotesize\ttfamily enum \textbf{ psx\+\_\+svg\+\_\+player\+\_\+state}}
+
+
+
+S\+VG animation player status. 
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{PSX\_SVG\_PLAYER\_STOPPED@{PSX\_SVG\_PLAYER\_STOPPED}!XSvg Object Types@{XSvg Object Types}}\index{XSvg Object Types@{XSvg Object Types}!PSX\_SVG\_PLAYER\_STOPPED@{PSX\_SVG\_PLAYER\_STOPPED}}}\mbox{\label{group__svgtypes_gga32eed20168a59443922064b044e1d97eab39bb96cf5ec15edeb3ebbf0a0b23b4a}} 
+P\+S\+X\+\_\+\+S\+V\+G\+\_\+\+P\+L\+A\+Y\+E\+R\+\_\+\+S\+T\+O\+P\+P\+ED&Player is stopped. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{PSX\_SVG\_PLAYER\_PLAYING@{PSX\_SVG\_PLAYER\_PLAYING}!XSvg Object Types@{XSvg Object Types}}\index{XSvg Object Types@{XSvg Object Types}!PSX\_SVG\_PLAYER\_PLAYING@{PSX\_SVG\_PLAYER\_PLAYING}}}\mbox{\label{group__svgtypes_gga32eed20168a59443922064b044e1d97eacf544136bffb72e5ac6a7cf96697d82d}} 
+P\+S\+X\+\_\+\+S\+V\+G\+\_\+\+P\+L\+A\+Y\+E\+R\+\_\+\+P\+L\+A\+Y\+I\+NG&Player is playing. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{PSX\_SVG\_PLAYER\_PAUSED@{PSX\_SVG\_PLAYER\_PAUSED}!XSvg Object Types@{XSvg Object Types}}\index{XSvg Object Types@{XSvg Object Types}!PSX\_SVG\_PLAYER\_PAUSED@{PSX\_SVG\_PLAYER\_PAUSED}}}\mbox{\label{group__svgtypes_gga32eed20168a59443922064b044e1d97eab322675bb64e003fb254a5c6694586cf}} 
+P\+S\+X\+\_\+\+S\+V\+G\+\_\+\+P\+L\+A\+Y\+E\+R\+\_\+\+P\+A\+U\+S\+ED&Player is paused. \\
+\hline
+
+\end{DoxyEnumFields}
+
+
+Definition at line 50 of file psx\+\_\+svg\+\_\+animation.\+h.
 

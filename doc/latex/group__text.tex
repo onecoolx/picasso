@@ -8,10 +8,7 @@ typedef enum \textbf{ \+\_\+ps\+\_\+text\+\_\+type} \textbf{ ps\+\_\+text\+\_\+t
 \begin{DoxyCompactList}\small\item\em Text rendering type. \end{DoxyCompactList}\item 
 \mbox{\label{group__text_ga40b43dab2c47ceb5785de4a3211776d5}} 
 typedef enum \textbf{ \+\_\+ps\+\_\+draw\+\_\+text\+\_\+type} \textbf{ ps\+\_\+draw\+\_\+text\+\_\+type}
-\begin{DoxyCompactList}\small\item\em Draw mode for rending text. \end{DoxyCompactList}\item 
-\mbox{\label{group__text_gab55b17eee1e3e00cfb82fa0e98d52fac}} 
-typedef enum \textbf{ \+\_\+ps\+\_\+text\+\_\+align} \textbf{ ps\+\_\+text\+\_\+align}
-\begin{DoxyCompactList}\small\item\em Text align mode for drawing text. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em Draw mode for rending text. \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsection*{Enumerations}
 \begin{DoxyCompactItemize}
 \item 
@@ -57,7 +54,7 @@ P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+text\+\_\+out\+\_\+length
 \begin{DoxyCompactList}\small\item\em Draw single byte characters (latin-\/1) at location in user space. \end{DoxyCompactList}\item 
 P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+wide\+\_\+text\+\_\+out\+\_\+length} (\textbf{ ps\+\_\+context} $\ast$ctx, float x, float y, const \textbf{ ps\+\_\+uchar16} $\ast$text, uint32\+\_\+t length)
 \begin{DoxyCompactList}\small\item\em Draw unicode characters (ucs-\/2) at location in user space. \end{DoxyCompactList}\item 
-P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+draw\+\_\+text} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+rect} $\ast$area, const void $\ast$text, uint32\+\_\+t length, \textbf{ ps\+\_\+draw\+\_\+text\+\_\+type} type, \textbf{ ps\+\_\+text\+\_\+align} align)
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+draw\+\_\+text} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+rect} $\ast$area, const void $\ast$text, uint32\+\_\+t length, \textbf{ ps\+\_\+draw\+\_\+text\+\_\+type} type, uint32\+\_\+t align)
 \begin{DoxyCompactList}\small\item\em Draw text in a rectangle area, using font object which is selected in graphic context. \end{DoxyCompactList}\item 
 P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+bool} P\+I\+C\+A\+PI \textbf{ ps\+\_\+get\+\_\+glyph} (\textbf{ ps\+\_\+context} $\ast$ctx, int32\+\_\+t ch, \textbf{ ps\+\_\+glyph} $\ast$glyph)
 \begin{DoxyCompactList}\small\item\em Get the glyph from a given character, using font object which is selected in graphic context. \end{DoxyCompactList}\item 
@@ -168,11 +165,11 @@ Definition at line 2188 of file picasso.\+h.
 
 
 \doxysubsection{Function Documentation}
-\mbox{\label{group__text_ga4accdd233bee66e3b25cee89bcaf4de2}} 
+\mbox{\label{group__text_ga418cc9406d74d9fa9bde9ce038dc75e4}} 
 \index{Text@{Text}!ps\_draw\_text@{ps\_draw\_text}}
 \index{ps\_draw\_text@{ps\_draw\_text}!Text@{Text}}
 \doxysubsubsection{ps\_draw\_text()}
-{\footnotesize\ttfamily void ps\+\_\+draw\+\_\+text (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{const \textbf{ ps\+\_\+rect} $\ast$}]{area,  }\item[{const void $\ast$}]{text,  }\item[{uint32\+\_\+t}]{length,  }\item[{\textbf{ ps\+\_\+draw\+\_\+text\+\_\+type}}]{type,  }\item[{\textbf{ ps\+\_\+text\+\_\+align}}]{align }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void ps\+\_\+draw\+\_\+text (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{const \textbf{ ps\+\_\+rect} $\ast$}]{area,  }\item[{const void $\ast$}]{text,  }\item[{uint32\+\_\+t}]{length,  }\item[{\textbf{ ps\+\_\+draw\+\_\+text\+\_\+type}}]{type,  }\item[{uint32\+\_\+t}]{align }\end{DoxyParamCaption})}
 
 
 
@@ -472,7 +469,7 @@ Draw single byte characters (latin-\/1) at location in user space.
 \hline
 \end{DoxyParams}
 \begin{DoxySeeAlso}{See also}
-\doxyref{ps\+\_\+wide\+\_\+text\+\_\+out\+\_\+length}{p.}{group__text_ga3a608d2e91a130253b00edf5ed8aee85}, \doxyref{ps\+\_\+draw\+\_\+text}{p.}{group__text_ga4accdd233bee66e3b25cee89bcaf4de2} 
+\doxyref{ps\+\_\+wide\+\_\+text\+\_\+out\+\_\+length}{p.}{group__text_ga3a608d2e91a130253b00edf5ed8aee85}, \doxyref{ps\+\_\+draw\+\_\+text}{p.}{group__text_ga418cc9406d74d9fa9bde9ce038dc75e4} 
 \end{DoxySeeAlso}
 \mbox{\label{group__text_ga50f52f55f32dedc0dc0f171298268966}} 
 \index{Text@{Text}!ps\_text\_transform@{ps\_text\_transform}}
@@ -518,5 +515,5 @@ Draw unicode characters (ucs-\/2) at location in user space.
 \hline
 \end{DoxyParams}
 \begin{DoxySeeAlso}{See also}
-\doxyref{ps\+\_\+text\+\_\+out\+\_\+length}{p.}{group__text_gac7653026ee5e744cc6917a0516d14d48}, \doxyref{ps\+\_\+draw\+\_\+text}{p.}{group__text_ga4accdd233bee66e3b25cee89bcaf4de2} 
+\doxyref{ps\+\_\+text\+\_\+out\+\_\+length}{p.}{group__text_gac7653026ee5e744cc6917a0516d14d48}, \doxyref{ps\+\_\+draw\+\_\+text}{p.}{group__text_ga418cc9406d74d9fa9bde9ce038dc75e4} 
 \end{DoxySeeAlso}

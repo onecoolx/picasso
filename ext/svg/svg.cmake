@@ -15,6 +15,7 @@ set(PXSVG_SOURCES
     ${PXSVG_DIR}/psx_svg_render.h
     ${PXSVG_DIR}/psx_svg_render.cpp
     ${PXSVG_DIR}/psx_svg.cpp
+    ${PXSVG_DIR}/psx_svg_player.cpp
 )
 
 set(LIBX_SVG psx_svg)
@@ -33,7 +34,7 @@ add_library(${LIBX_SVG} ${PXSVG_SOURCES})
 install(TARGETS ${LIBX_SVG} LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
 set_target_properties(${LIBX_SVG} PROPERTIES VERSION ${VERSION_INFO} SOVERSION ${VERSION_MAJOR})
 
-if (OPT_UNITTEST)
+if (OPT_UNITTEST OR OPT_PERFTEST)
 set(LIBX_SVG_STATIC psx_svg_static)
 add_library(${LIBX_SVG_STATIC} STATIC ${PXSVG_SOURCES})
 install(TARGETS ${LIBX_SVG_STATIC} LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)

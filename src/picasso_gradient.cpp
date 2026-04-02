@@ -9,7 +9,7 @@
 #include "matrix.h"
 #include "interfaces.h"
 
-#include "picasso_global.h"
+#include "picasso_private.h"
 #include "picasso_gradient.h"
 
 namespace picasso {

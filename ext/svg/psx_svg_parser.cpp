@@ -42,6 +42,73 @@ extern "C" {
 
 #define DEG_TO_RAD(d) ((float)((d) * M_PI / 180.0f))
 
+static INLINE void _skip_ws(const char** p, const char* end)
+{
+    while (*p < end) {
+        char c = **p;
+        if (c != ' ' && c != '\t' && c != '\r' && c != '\n') {
+            break;
+        }
+        (*p)++;
+    }
+}
+
+static INLINE void _trim_ws(const char** start, const char** end)
+{
+    while (*start < *end) {
+        char c = **start;
+        if (c != ' ' && c != '\t' && c != '\r' && c != '\n') {
+            break;
+        }
+        (*start)++;
+    }
+    while (*end > *start) {
+        char c = *(*end - 1);
+        if (c != ' ' && c != '\t' && c != '\r' && c != '\n') {
+            break;
+        }
+        (*end)--;
+    }
+}
+
+static INLINE ps_bool _token_is_clock(const char* s, const char* e)
+{
+    if (!s || !e || s >= e) {
+        return False;
+    }
+    const char* p = s;
+    _skip_ws(&p, e);
+    if (p >= e) {
+        return False;
+    }
+    char c = *p;
+    return (ps_bool)((c >= '0' && c <= '9') || c == '+' || c == '-' || c == '.');
+}
+
+void psx_svg_timing_list_destroy(psx_svg_timing_list* tl)
+{
+    if (!tl) {
+        return;
+    }
+    if (tl->offsets_ms) {
+        mem_free(tl->offsets_ms);
+        tl->offsets_ms = NULL;
+    }
+    if (tl->event_token) {
+        mem_free(tl->event_token);
+        tl->event_token = NULL;
+    }
+    if (tl->event_target_id) {
+        mem_free(tl->event_target_id);
+        tl->event_target_id = NULL;
+    }
+    if (tl->syncbase_id) {
+        mem_free(tl->syncbase_id);
+        tl->syncbase_id = NULL;
+    }
+    mem_free(tl);
+}
+
 static const struct {
     const char* name;
     uint32_t name_len;
@@ -858,7 +925,7 @@ static INLINE void _process_points_value(psx_svg_node* node, psx_svg_attr_type t
             list_cap = list_cap << 1;
             list = (psx_svg_attr_values_list*)mem_realloc(list, sizeof(psx_svg_point) * list_cap + sizeof(uint32_t));
         }
-        psx_svg_point* pt = (psx_svg_point*)(&list->data) + point_cnt;
+        psx_svg_point* pt = (psx_svg_point*)(&list->data[0]) + point_cnt;
         val = 0.0f;
         ptr = _parse_number(ptr, val_end, &val);
         pt->x = val;
@@ -1052,6 +1119,20 @@ static INLINE void _process_paint_attrs(psx_svg_node* node, psx_svg_attr_type ty
         float val = 0.0f;
         val_start = _parse_number(val_start, val_end, &val);
         attr->value.fval = val;
+    } else if (type == SVG_ATTR_VISIBILITY) {
+        int32_t val = 1; // default: visible
+        if (len >= 6 && strncmp(val_start, "hidden", 6) == 0) {
+            val = 0;
+        } else if (len >= 8 && strncmp(val_start, "collapse", 8) == 0) {
+            val = 0;
+        }
+        attr->value.ival = val;
+    } else if (type == SVG_ATTR_DISPLAY) {
+        int32_t val = 1; // default: inline
+        if (len >= 4 && strncmp(val_start, "none", 4) == 0) {
+            val = 0;
+        }
+        attr->value.ival = val;
     }
 }
 
@@ -1089,7 +1170,7 @@ static INLINE void _process_paint_dasharray(psx_svg_node* node, psx_svg_attr_typ
                 list_cap = list_cap << 1;
                 list = (psx_svg_attr_values_list*)mem_realloc(list, sizeof(float) * list_cap + sizeof(uint32_t));
             }
-            float* val = (float*)(&list->data) + count;
+            float* val = (float*)(&list->data[0]) + count;
             ptr = _parse_number(ptr, val_end, val);
             if (!ptr) {
                 break;
@@ -1572,6 +1653,9 @@ static INLINE void _process_animation_attr_options(psx_svg_node* node, psx_svg_a
                 } else if (len == 5 && strncmp(val_start, "skewY", 5) == 0) {
                     attr->value.ival = SVG_TRANSFORM_TYPE_SKEW_Y;
                     return;
+                } else if (len == 6 && strncmp(val_start, "matrix", 6) == 0) {
+                    attr->value.ival = SVG_TRANSFORM_TYPE_MATRIX;
+                    return;
                 }
             }
             break;
@@ -1586,6 +1670,133 @@ static INLINE void _parse_animation_value(psx_svg_node* node, psx_svg_attr* attr
                                           int32_t dpi)
 {
     if (node->type() == SVG_TAG_ANIMATE || node->type() == SVG_TAG_SET) {
+        uint32_t vlen = BUF_LEN(val_start, val_end);
+        // visibility
+        if (vlen == 7 && strncmp(val_start, "visible", 7) == 0) {
+            attr->value.fval = 1.0f;
+            return;
+        }
+        if (vlen == 6 && strncmp(val_start, "hidden", 6) == 0) {
+            attr->value.fval = 0.0f;
+            return;
+        }
+        // fill-rule
+        if (vlen == 7 && strncmp(val_start, "evenodd", 7) == 0) {
+            attr->value.fval = (float)FILL_RULE_EVEN_ODD;
+            return;
+        }
+        if (vlen == 7 && strncmp(val_start, "nonzero", 7) == 0) {
+            attr->value.fval = (float)FILL_RULE_WINDING;
+            return;
+        }
+        // stroke-linecap
+        if (vlen == 4 && strncmp(val_start, "butt", 4) == 0) {
+            attr->value.fval = (float)LINE_CAP_BUTT;
+            return;
+        }
+        if (vlen == 6 && strncmp(val_start, "square", 6) == 0) {
+            attr->value.fval = (float)LINE_CAP_SQUARE;
+            return;
+        }
+        // stroke-linejoin
+        if (vlen == 5 && strncmp(val_start, "miter", 5) == 0) {
+            attr->value.fval = (float)LINE_JOIN_MITER;
+            return;
+        }
+        if (vlen == 5 && strncmp(val_start, "bevel", 5) == 0) {
+            attr->value.fval = (float)LINE_JOIN_BEVEL;
+            return;
+        }
+        // round: shared by linecap and linejoin — context determines meaning
+        if (vlen == 5 && strncmp(val_start, "round", 5) == 0) {
+            // LINE_CAP_ROUND == 1, LINE_JOIN_ROUND == 3; peek at attributeName to decide.
+            int32_t target_attr = SVG_ATTR_INVALID;
+            uint32_t na = node->attr_count();
+            for (uint32_t i = 0; i < na; i++) {
+                const psx_svg_attr* ta = node->attr_at(i);
+                if (ta && (psx_svg_attr_type)ta->attr_id == SVG_ATTR_ATTRIBUTE_NAME) {
+                    target_attr = ta->value.ival;
+                    break;
+                }
+            }
+            if (target_attr == SVG_ATTR_STROKE_LINEJOIN) {
+                attr->value.fval = (float)LINE_JOIN_ROUND;
+            } else {
+                attr->value.fval = (float)LINE_CAP_ROUND;
+            }
+            return;
+        }
+        // display
+        if (vlen == 6 && strncmp(val_start, "inline", 6) == 0) {
+            attr->value.fval = 1.0f;
+            return;
+        }
+        if (vlen == 4 && strncmp(val_start, "none", 4) == 0) {
+            attr->value.fval = 0.0f;
+            return;
+        }
+        // font-weight: "bold"
+        if (vlen == 4 && strncmp(val_start, "bold", 4) == 0) {
+            attr->value.fval = (float)FONT_WEIGHT_BOLD;
+            return;
+        }
+        // font-style: "italic"
+        if (vlen == 6 && strncmp(val_start, "italic", 6) == 0) {
+            attr->value.fval = 1.0f;
+            return;
+        }
+        // "normal": context-aware — font-weight maps to FONT_WEIGHT_REGULAR, font-style maps to 0
+        if (vlen == 6 && strncmp(val_start, "normal", 6) == 0) {
+            int32_t target_attr = SVG_ATTR_INVALID;
+            uint32_t na = node->attr_count();
+            for (uint32_t i = 0; i < na; i++) {
+                const psx_svg_attr* ta = node->attr_at(i);
+                if (ta && (psx_svg_attr_type)ta->attr_id == SVG_ATTR_ATTRIBUTE_NAME) {
+                    target_attr = ta->value.ival;
+                    break;
+                }
+            }
+            if (target_attr == SVG_ATTR_FONT_WEIGHT) {
+                attr->value.fval = (float)FONT_WEIGHT_REGULAR;
+            } else if (target_attr == SVG_ATTR_FONT_STYLE) {
+                attr->value.fval = 0.0f;
+            } else {
+                attr->value.fval = 0.0f;
+            }
+            return;
+        }
+        /* stroke-dasharray: parse as float array (comma/space separated). */
+        {
+            int32_t target_attr = SVG_ATTR_INVALID;
+            uint32_t na = node->attr_count();
+            for (uint32_t i = 0; i < na; i++) {
+                const psx_svg_attr* ta = node->attr_at(i);
+                if (ta && (psx_svg_attr_type)ta->attr_id == SVG_ATTR_ATTRIBUTE_NAME) {
+                    target_attr = ta->value.ival;
+                    break;
+                }
+            }
+            if (target_attr == SVG_ATTR_STROKE_DASH_ARRAY) {
+                attr->val_type = SVG_ATTR_VALUE_PTR;
+                uint32_t list_cap = 4;
+                psx_svg_attr_values_list* list = (psx_svg_attr_values_list*)mem_malloc(sizeof(float) * list_cap + sizeof(uint32_t));
+                uint32_t count = 0;
+                const char* ptr = val_start;
+                while (ptr < val_end) {
+                    if (count == list_cap) {
+                        list_cap = list_cap << 1;
+                        list = (psx_svg_attr_values_list*)mem_realloc(list, sizeof(float) * list_cap + sizeof(uint32_t));
+                    }
+                    float* val = (float*)(&list->data[0]) + count;
+                    ptr = _parse_number(ptr, val_end, val);
+                    if (!ptr) { break; }
+                    ++count;
+                }
+                list->length = count;
+                attr->value.val = list;
+                return;
+            }
+        }
         float val_number = 0.0f;
         val_start = _parse_length(val_start, val_end, dpi, &val_number);
         attr->value.fval = val_number;
@@ -1595,14 +1806,29 @@ static INLINE void _parse_animation_value(psx_svg_node* node, psx_svg_attr* attr
         attr->value.uval = color;
     } else if (node->type() == SVG_TAG_ANIMATE_TRANSFORM) {
         attr->val_type = SVG_ATTR_VALUE_PTR;
-        psx_svg_attr_values_list* list = (psx_svg_attr_values_list*)mem_malloc(sizeof(float) * 4 + sizeof(uint32_t));
+        psx_svg_attr_values_list* list = (psx_svg_attr_values_list*)mem_malloc(sizeof(float) * 6 + sizeof(uint32_t));
 
         float val_number = 0.0f;
         uint32_t cnt = 0;
         const char* ptr = val_start;
 
-        while ((ptr < val_end) && (cnt < 3)) {
-            float* val = (float*)(&list->data) + cnt;
+        // Determine max components: matrix needs 6, others need at most 3.
+        // We peek at the transform type attr on the node to decide.
+        uint32_t max_cnt = 3;
+        {
+            uint32_t na = node->attr_count();
+            for (uint32_t i = 0; i < na; i++) {
+                const psx_svg_attr* ta = node->attr_at(i);
+                if (ta && (psx_svg_attr_type)ta->attr_id == SVG_ATTR_TRANSFORM_TYPE
+                    && ta->value.ival == SVG_TRANSFORM_TYPE_MATRIX) {
+                    max_cnt = 6;
+                    break;
+                }
+            }
+        }
+
+        while ((ptr < val_end) && (cnt < max_cnt)) {
+            float* val = (float*)(&list->data[0]) + cnt;
 
             val_number = 0.0f;
             ptr = _parse_number(ptr, val_end, &val_number);
@@ -1619,7 +1845,7 @@ static INLINE void _parse_animation_value(psx_svg_node* node, psx_svg_attr* attr
     } else if (node->type() == SVG_TAG_ANIMATE_MOTION) {
         attr->val_type = SVG_ATTR_VALUE_PTR;
         psx_svg_attr_values_list* list = (psx_svg_attr_values_list*)mem_malloc(sizeof(psx_svg_point) + sizeof(uint32_t));
-        psx_svg_point* pt = (psx_svg_point*)(&list->data);
+        psx_svg_point* pt = (psx_svg_point*)(&list->data[0]);
 
         float val = 0.0f;
         val_start = _parse_number(val_start, val_end, &val);
@@ -1668,22 +1894,46 @@ struct _parse_value_list_context {
 
 struct _transform_values_list {
     uint32_t length;
-    float data[4];
+    float data[6];
 };
+
+bool psx_svg_attr_values_get_transform_entry(const psx_svg_attr_values_list* list, uint32_t idx,
+                                             const float** out_vals, uint32_t* out_len)
+{
+    if (!out_vals || !out_len) {
+        return false;
+    }
+    *out_vals = NULL;
+    *out_len = 0;
+
+    if (!list || idx >= list->length) {
+        return false;
+    }
+
+    const struct _transform_values_list* base =
+        (const struct _transform_values_list*)(&list->data[0]);
+    const struct _transform_values_list* it = base + idx;
+    *out_vals = &it->data[0];
+    *out_len = it->length;
+    return true;
+}
 
 #define GET_NEXT_VALUE_PTR(ptr, ctx, type) \
     do { \
         psx_svg_attr_values_list * list = ctx->list; \
         if(!list) { \
-            ctx->mem_size = sizeof(type) * 4 + sizeof(uint32_t);\
+            ctx->mem_size = (uint32_t)(sizeof(type) * 4 + sizeof(uint32_t));\
             ctx->list = (psx_svg_attr_values_list *)mem_malloc(ctx->mem_size); \
             memset(ctx->list, 0, ctx->mem_size); \
             ptr = (type *)(&(ctx->list->data)); \
             ctx->list_count = 1; \
         } else { \
-            uint32_t mem = sizeof(type) * (ctx->list_count + 1) + sizeof(uint32_t); \
+            uint32_t mem = (uint32_t)(sizeof(type) * (ctx->list_count + 1) + sizeof(uint32_t)); \
             if(ctx->mem_size < mem) { \
-                ctx->mem_size = (ctx->list_count << 1) * sizeof(type) + sizeof(uint32_t); \
+                /* grow by doubling element capacity (at least 4). */ \
+                uint32_t new_count = (ctx->list_count << 1); \
+                if (new_count < 4) new_count = 4; \
+                ctx->mem_size = (uint32_t)(new_count * sizeof(type) + sizeof(uint32_t)); \
                 ctx->list = (psx_svg_attr_values_list *)mem_realloc(ctx->list, ctx->mem_size); \
             } \
             ptr = (type *)(&(ctx->list->data)) + ctx->list_count; \
@@ -1708,10 +1958,24 @@ static void _animation_values_cb(psx_svg_node* node, psx_svg_attr* attr, const c
         struct _transform_values_list* trans_vals = NULL;
         GET_NEXT_VALUE_PTR(trans_vals, ctx, struct _transform_values_list);
 
+        // Determine max components: matrix needs 6, others need at most 3.
+        uint32_t max_cnt = 3;
+        {
+            uint32_t na = node->attr_count();
+            for (uint32_t i = 0; i < na; i++) {
+                const psx_svg_attr* ta = node->attr_at(i);
+                if (ta && (psx_svg_attr_type)ta->attr_id == SVG_ATTR_TRANSFORM_TYPE
+                    && ta->value.ival == SVG_TRANSFORM_TYPE_MATRIX) {
+                    max_cnt = 6;
+                    break;
+                }
+            }
+        }
+
         uint32_t cnt = 0;
         const char* ptr = val_start;
 
-        while ((ptr < val_end) && (cnt < 3)) {
+        while ((ptr < val_end) && (cnt < max_cnt)) {
             float* val = &(trans_vals->data[cnt]);
             ptr = _parse_number(ptr, val_end, val);
             if (!ptr) {
@@ -1762,21 +2026,192 @@ static void _animation_key_splines_cb(psx_svg_node* node, psx_svg_attr* attr, co
 static void _animation_begin_end_cb(psx_svg_node* node, psx_svg_attr* attr, const char* val_start,
                                     const char* val_end, int32_t dpi, void* data)
 {
+    // NOTE: _parse_animation_value_list already splits by ';' and calls this
+    // callback for each token. We accumulate into a single timing list stored
+    // in ctx->list.
     struct _parse_value_list_context* ctx = (struct _parse_value_list_context*)data;
+    psx_svg_timing_list* tl = (psx_svg_timing_list*)ctx->list;
+    if (!tl) {
+        tl = (psx_svg_timing_list*)mem_malloc(sizeof(psx_svg_timing_list));
+        if (!tl) {
+            return;
+        }
+        memset(tl, 0, sizeof(*tl));
+        ctx->list = (psx_svg_attr_values_list*)tl; // stored opaquely
+        ctx->mem_size = 0;
+        ctx->list_count = 0;
+    }
 
-    // offset-value
-    float* val = NULL;
-    GET_NEXT_VALUE_PTR(val, ctx, float);
-    val_start = _parse_clock_time(val_start, val_end, val);
+    const char* ts = val_start;
+    const char* te = val_end;
+    _trim_ws(&ts, &te);
+    if (ts >= te) {
+        return;
+    }
 
-    //FIXME: not support begin-end type
-    // syncbase-value
-    // event-value
-    // repeat-value
-    // accessKey-value
-    // indefinite
+    if (_token_is_clock(ts, te)) {
+        float ms = 0.0f;
+        const char* r = _parse_clock_time(ts, te, &ms);
+        if (!r) {
+            return;
+        }
+        uint32_t new_len = tl->offsets_len + 1;
+        float* nbuf = (float*)mem_realloc(tl->offsets_ms, sizeof(float) * new_len);
+        if (!nbuf) {
+            return;
+        }
+        tl->offsets_ms = nbuf;
+        tl->offsets_ms[tl->offsets_len++] = ms;
+    } else if (!tl->event_token) {
+        uint32_t len = BUF_LEN(ts, te);
+        /* begin="indefinite" → store sentinel so trigger() can match it */
+        if (len == 10 && strncmp(ts, "indefinite", 10) == 0) {
+            const char* sentinel = "__indefinite__";
+            uint32_t slen = 14; /* strlen("__indefinite__") */
+            char* s = (char*)mem_malloc(slen + 1);
+            if (!s) {
+                return;
+            }
+            mem_copy(s, sentinel, slen);
+            s[slen] = 0;
+            tl->event_token = s;
+        } else if (len >= 12 && strncmp(ts, "accessKey(", 10) == 0) {
+            /* accessKey(x) → extract single char, store sentinel event token */
+            char key_char = ts[10];
+            if (key_char && ts[11] == ')') {
+                tl->access_key = key_char;
+                const char* sentinel = "__accessKey__";
+                uint32_t slen = 13; /* strlen("__accessKey__") */
+                char* s = (char*)mem_malloc(slen + 1);
+                if (!s) {
+                    return;
+                }
+                mem_copy(s, sentinel, slen);
+                s[slen] = 0;
+                tl->event_token = s;
+            }
+        } else {
+            /* Check for id.event syntax (e.g. "btn.click", "btn.click+2s").
+             * A dot is an id.event separator only if the first char of the
+             * token is a letter or underscore (avoids splitting numbers like
+             * "0.5s") and the char after the dot is also a letter. */
+            const char* dot = NULL;
+            if ((*ts >= 'a' && *ts <= 'z') || (*ts >= 'A' && *ts <= 'Z') || *ts == '_') {
+                for (const char* dc = ts + 1; dc < te; dc++) {
+                    if (*dc == '.' && (dc + 1) < te
+                        && ((*(dc + 1) >= 'a' && *(dc + 1) <= 'z')
+                            || (*(dc + 1) >= 'A' && *(dc + 1) <= 'Z'))) {
+                        dot = dc;
+                        break;
+                    }
+                }
+            }
 
-    ctx->list->length = ctx->list_count;
+            const char* ev_start = ts;
+            if (dot) {
+                /* Store event_target_id = part before dot */
+                uint32_t id_len = (uint32_t)(dot - ts);
+                const char* after_dot = dot + 1;
+                uint32_t after_len = (uint32_t)(te - after_dot);
+
+                /* Check if this is a syncbase reference (id.begin or id.end) */
+                int is_syncbase = 0;
+                uint32_t sb_type = 0;
+                const char* sb_rest = NULL;
+
+                if (after_len >= 5 && strncmp(after_dot, "begin", 5) == 0) {
+                    sb_rest = after_dot + 5;
+                    /* "begin" must be followed by end-of-token, '+', or '-' */
+                    if (sb_rest >= te || *sb_rest == '+' || *sb_rest == '-') {
+                        is_syncbase = 1;
+                        sb_type = 0;
+                    }
+                } else if (after_len >= 3 && strncmp(after_dot, "end", 3) == 0) {
+                    sb_rest = after_dot + 3;
+                    /* "end" must be followed by end-of-token, '+', or '-' */
+                    if (sb_rest >= te || *sb_rest == '+' || *sb_rest == '-') {
+                        is_syncbase = 1;
+                        sb_type = 1;
+                    }
+                }
+
+                if (is_syncbase) {
+                    /* Store syncbase_id = part before dot */
+                    char* sid = (char*)mem_malloc(id_len + 1);
+                    if (!sid) {
+                        return;
+                    }
+                    mem_copy(sid, ts, id_len);
+                    sid[id_len] = 0;
+                    tl->syncbase_id = sid;
+                    tl->syncbase_type = sb_type;
+
+                    /* Check for optional +/-offset (e.g. "a1.end+1s") */
+                    if (sb_rest < te && (*sb_rest == '+' || *sb_rest == '-')) {
+                        float ms = 0.0f;
+                        if (_parse_clock_time(sb_rest, te, &ms)) {
+                            uint32_t new_len = tl->offsets_len + 1;
+                            float* nbuf = (float*)mem_realloc(tl->offsets_ms, sizeof(float) * new_len);
+                            if (nbuf) {
+                                tl->offsets_ms = nbuf;
+                                tl->offsets_ms[tl->offsets_len++] = ms;
+                            }
+                        }
+                    }
+                    return; /* syncbase handled, don't fall through to event handling */
+                }
+
+                /* Not syncbase — original id.event handling */
+                char* tid = (char*)mem_malloc(id_len + 1);
+                if (!tid) {
+                    return;
+                }
+                mem_copy(tid, ts, id_len);
+                tid[id_len] = 0;
+                tl->event_target_id = tid;
+                ev_start = dot + 1; /* remainder is the event token (+ optional offset) */
+            }
+
+            /* Check for event+offset syntax (e.g. "click+2s", "click-1s") */
+            const char* sign = NULL;
+            for (const char* sc = ev_start + 1; sc < te; sc++) {
+                if (*sc == '+' || *sc == '-') {
+                    sign = sc;
+                    break;
+                }
+            }
+            if (sign) {
+                /* event name is before the sign */
+                uint32_t elen = (uint32_t)(sign - ev_start);
+                char* s = (char*)mem_malloc(elen + 1);
+                if (!s) {
+                    return;
+                }
+                mem_copy(s, ev_start, elen);
+                s[elen] = 0;
+                tl->event_token = s;
+                /* offset is from sign to end */
+                float ms = 0.0f;
+                if (_parse_clock_time(sign, te, &ms)) {
+                    uint32_t new_len = tl->offsets_len + 1;
+                    float* nbuf = (float*)mem_realloc(tl->offsets_ms, sizeof(float) * new_len);
+                    if (nbuf) {
+                        tl->offsets_ms = nbuf;
+                        tl->offsets_ms[tl->offsets_len++] = ms;
+                    }
+                }
+            } else {
+                uint32_t elen = (uint32_t)(te - ev_start);
+                char* s = (char*)mem_malloc(elen + 1);
+                if (!s) {
+                    return;
+                }
+                mem_copy(s, ev_start, elen);
+                s[elen] = 0;
+                tl->event_token = s;
+            }
+        }
+    }
 }
 
 static INLINE void _process_animation_attr_values(psx_svg_node* node, psx_svg_attr_type type, const char* val_start,
@@ -1813,8 +2248,8 @@ static INLINE void _process_animation_attr_values(psx_svg_node* node, psx_svg_at
         ctx.list = NULL;
         _parse_animation_value_list(node, attr, val_start, val_end, dpi, _animation_key_splines_cb, &ctx);
         attr->value.val = ctx.list;
-    } else if (type == SVG_ATTR_BEGIN || type == SVG_ATTR_END) {
-        attr->val_type = SVG_ATTR_VALUE_PTR;
+    } else if ((type == SVG_ATTR_BEGIN || type == SVG_ATTR_END)) {
+        attr->val_type = SVG_ATTR_VALUE_TIMING_LIST_PTR;
         struct _parse_value_list_context ctx;
         ctx.mem_size = 0;
         ctx.list_count = 0;
@@ -1845,7 +2280,14 @@ static INLINE void _process_animation_attr_number(psx_svg_node* node, psx_svg_at
 
         float val = 0.0f;
         val_start = _parse_number(val_start, val_end, &val);
-        attr->value.uval = (uint32_t)val;
+        // SVG allows floating repeatCount; keep minimal behavior by rounding up
+        // so repeatCount="1.2" behaves as 2 repeats instead of truncating to 1.
+        if (val <= 0.0f) {
+            attr->value.uval = 0;
+        } else {
+            uint32_t ival = (uint32_t)val;
+            attr->value.uval = (ival < val) ? (ival + 1) : ival;
+        }
     } else { // SVG_ATTR_ROTATE
         uint32_t len = BUF_LEN(val_start, val_end);
         if (len == 4 && strncmp(val_start, "auto", 4) == 0) {
@@ -1928,7 +2370,11 @@ static INLINE void _process_attrs_tag(psx_svg_parser* parser, psx_svg_node* node
                 break;
             case SVG_ATTR_D:
             case SVG_ATTR_PATH:
-                _process_path_value(node, type, tok_attr->value_start, tok_attr->value_end);
+                if (type == SVG_ATTR_PATH && node->type() == SVG_TAG_ANIMATE_MOTION) {
+                    _process_string(node, type, tok_attr->value_start, tok_attr->value_end);
+                } else {
+                    _process_path_value(node, type, tok_attr->value_start, tok_attr->value_end);
+                }
                 break;
             case SVG_ATTR_TRANSFORM:
                 _process_transform(node, type, tok_attr->value_start, tok_attr->value_end);
@@ -1996,9 +2442,11 @@ static INLINE void _process_attrs_tag(psx_svg_parser* parser, psx_svg_node* node
             case SVG_ATTR_TRANSFORM_TYPE:
                 _process_animation_attr_options(node, type, tok_attr->value_start, tok_attr->value_end);
                 break;
-            case SVG_ATTR_ATTRIBUTE_TYPE:
-            case SVG_ATTR_DISPLAY:
             case SVG_ATTR_VISIBILITY:
+            case SVG_ATTR_DISPLAY:
+                _process_paint_attrs(node, type, tok_attr->value_start, tok_attr->value_end);
+                break;
+            case SVG_ATTR_ATTRIBUTE_TYPE:
             case SVG_ATTR_TEXT_ANCHOR:
             default:
                 // not support yet

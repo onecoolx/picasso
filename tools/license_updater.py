@@ -21,7 +21,7 @@ def replace_license_in_file(file_path, new_license):
             content = raw_content.decode('utf-8')
 
         modified = False
-        pattern = re.compile(r'^\s*(#ifndef|#include)', re.MULTILINE)
+        pattern = re.compile(r'^\s*(#ifndef|#include|#define|#if|#ifdef|#undef|#line|#error|#pragma)', re.MULTILINE)
         match = pattern.search(content)
         
         if match:

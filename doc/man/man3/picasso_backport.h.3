@@ -1,0 +1,79 @@
+.TH "include/picasso_backport.h" 3 "Thu Apr 2 2026" "Version 2.9" "Picasso API" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+include/picasso_backport.h
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <stdlib\&.h>\fP
+.br
+\fC#include 'picasso\&.h'\fP
+.br
+
+.SS "Data Structures"
+
+.in +1c
+.ti -1c
+.RI "struct \fB_ps_memory_funcs\fP"
+.br
+.RI "Memory allocator functions structure\&. "
+.in -1c
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef void *(* \fBps_malloc_func\fP) (size_t size)"
+.br
+.RI "Memory allocation function pointer type\&. "
+.ti -1c
+.RI "typedef void(* \fBps_free_func\fP) (void *ptr)"
+.br
+.RI "Memory free function pointer type\&. "
+.ti -1c
+.RI "typedef void *(* \fBps_calloc_func\fP) (size_t num, size_t size)"
+.br
+.RI "Memory calloc function pointer type\&. "
+.ti -1c
+.RI "typedef struct \fB_ps_memory_funcs\fP \fBps_memory_funcs\fP"
+.br
+.RI "Memory allocator functions structure\&. "
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "PEXPORT \fBps_bool\fP PICAPI \fBps_set_memory_functions\fP (const \fBps_memory_funcs\fP *funcs)"
+.br
+.RI "Set global memory allocation functions\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.PP
+\fBAuthor\fP
+.RS 4
+Zhang Ji Peng onecoolx@gmail.com 
+.RE
+.PP
+\fBDate\fP
+.RS 4
+2026/1/17
+.RE
+.PP
+This file includes all interfaces of Picasso
+.PP
+.PP
+.nf
+   Copyright (C) 2008 ~ 2026  Zhang Ji Peng
+
+   All rights reserved.
+
+   Picasso is a vector graphic library..fi
+.PP
+ 
+.PP
+Definition in file \fBpicasso_backport\&.h\fP\&.
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Picasso API from the source code\&.

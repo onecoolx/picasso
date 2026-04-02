@@ -72,7 +72,7 @@ BEGIN
             VALUE "FileDescription", "picasso 动态链接库"
             VALUE "FileVersion", "3.0.0.1"
             VALUE "InternalName", "picasso3"
-            VALUE "LegalCopyright", "Copyright (C) 2023"
+            VALUE "LegalCopyright", "Copyright (C) 2026"
             VALUE "OriginalFilename", "picasso3_sw.dll"
             VALUE "PrivateBuild", "2296"
             VALUE "ProductName", "picasso3 动态链接库"

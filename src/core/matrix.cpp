@@ -110,10 +110,10 @@ const trans_affine& trans_affine::rotate(scalar a)
 
 const trans_affine& trans_affine::shear(scalar x, scalar y)
 {
-    scalar t0 = y * m_shx;
-    scalar t1 = y * m_sy;
     scalar t2 = x * m_sx;
     scalar t3 = x * m_shy;
+    scalar t0 = y * m_shx;
+    scalar t1 = y * m_sy;
     m_sx += t0;
     m_shy += t1;
     m_shx += t2;

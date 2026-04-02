@@ -19,9 +19,9 @@ P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+move\+\_\+to} (\textbf{ p
 \begin{DoxyCompactList}\small\item\em Begin a new sub path, and set the current point. \end{DoxyCompactList}\item 
 P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+line\+\_\+to} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+point} $\ast$point)
 \begin{DoxyCompactList}\small\item\em Add a line to the current path from the current point to given point. \end{DoxyCompactList}\item 
-P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+bezier\+\_\+curve\+\_\+to} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+point} $\ast$fcp, const \textbf{ ps\+\_\+point} $\ast$scp, const \textbf{ ps\+\_\+point} $\ast$ep)
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+bezier\+\_\+to} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+point} $\ast$fcp, const \textbf{ ps\+\_\+point} $\ast$scp, const \textbf{ ps\+\_\+point} $\ast$ep)
 \begin{DoxyCompactList}\small\item\em Add a cubic bezier spline to the current path from current point to end point. \end{DoxyCompactList}\item 
-P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+quad\+\_\+curve\+\_\+to} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+point} $\ast$cp, const \textbf{ ps\+\_\+point} $\ast$ep)
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+quad\+\_\+to} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+point} $\ast$cp, const \textbf{ ps\+\_\+point} $\ast$ep)
 \begin{DoxyCompactList}\small\item\em Add a quadratic bezier spline to the current path from current point to end point. \end{DoxyCompactList}\item 
 P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+arc} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+point} $\ast$cp, float radius, float sangle, float eangle, \textbf{ ps\+\_\+bool} clockwise)
 \begin{DoxyCompactList}\small\item\em Add a circular arc to the current path. \end{DoxyCompactList}\item 
@@ -85,13 +85,13 @@ Add a circular arc to the current path.
 \hline
 \end{DoxyParams}
 \begin{DoxySeeAlso}{See also}
-\doxyref{ps\+\_\+move\+\_\+to}{p.}{group__geometry_ga6afa05defe9e5e6bec2ba59395b9ff13}, \doxyref{ps\+\_\+line\+\_\+to}{p.}{group__geometry_ga33144a05340d81d57be43ec15572288c}, \doxyref{ps\+\_\+bezier\+\_\+curve\+\_\+to}{p.}{group__geometry_gab8f032269b7bffbe13d65aab01dfdb22}, \doxyref{ps\+\_\+quad\+\_\+curve\+\_\+to}{p.}{group__geometry_ga1423d2871e7c875312ebd931953d4948}, \doxyref{ps\+\_\+tangent\+\_\+arc}{p.}{group__geometry_ga8f17dcbbfb34fb62862141e22b6040a2}, \doxyref{ps\+\_\+rectangle}{p.}{group__geometry_ga5011a18fa50227967380b08956ceec0f}, \doxyref{ps\+\_\+rounded\+\_\+rect}{p.}{group__geometry_gabee81bb4bac4a8de1bccbd3475b52d9b}, \doxyref{ps\+\_\+ellipse}{p.}{group__geometry_ga5a24c9a87485571696f9a560e5c8afc8} 
+\doxyref{ps\+\_\+move\+\_\+to}{p.}{group__geometry_ga6afa05defe9e5e6bec2ba59395b9ff13}, \doxyref{ps\+\_\+line\+\_\+to}{p.}{group__geometry_ga33144a05340d81d57be43ec15572288c}, \doxyref{ps\+\_\+bezier\+\_\+to}{p.}{group__geometry_ga8491035eb13f729b6a31e1b04783c3b7}, \doxyref{ps\+\_\+quad\+\_\+to}{p.}{group__geometry_gae66344f8911a10c1a8ec82a0bbb24ebd}, \doxyref{ps\+\_\+tangent\+\_\+arc}{p.}{group__geometry_ga8f17dcbbfb34fb62862141e22b6040a2}, \doxyref{ps\+\_\+rectangle}{p.}{group__geometry_ga5011a18fa50227967380b08956ceec0f}, \doxyref{ps\+\_\+rounded\+\_\+rect}{p.}{group__geometry_gabee81bb4bac4a8de1bccbd3475b52d9b}, \doxyref{ps\+\_\+ellipse}{p.}{group__geometry_ga5a24c9a87485571696f9a560e5c8afc8} 
 \end{DoxySeeAlso}
-\mbox{\label{group__geometry_gab8f032269b7bffbe13d65aab01dfdb22}} 
-\index{Geometry@{Geometry}!ps\_bezier\_curve\_to@{ps\_bezier\_curve\_to}}
-\index{ps\_bezier\_curve\_to@{ps\_bezier\_curve\_to}!Geometry@{Geometry}}
-\doxysubsubsection{ps\_bezier\_curve\_to()}
-{\footnotesize\ttfamily void ps\+\_\+bezier\+\_\+curve\+\_\+to (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{const \textbf{ ps\+\_\+point} $\ast$}]{fcp,  }\item[{const \textbf{ ps\+\_\+point} $\ast$}]{scp,  }\item[{const \textbf{ ps\+\_\+point} $\ast$}]{ep }\end{DoxyParamCaption})}
+\mbox{\label{group__geometry_ga8491035eb13f729b6a31e1b04783c3b7}} 
+\index{Geometry@{Geometry}!ps\_bezier\_to@{ps\_bezier\_to}}
+\index{ps\_bezier\_to@{ps\_bezier\_to}!Geometry@{Geometry}}
+\doxysubsubsection{ps\_bezier\_to()}
+{\footnotesize\ttfamily void ps\+\_\+bezier\+\_\+to (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{const \textbf{ ps\+\_\+point} $\ast$}]{fcp,  }\item[{const \textbf{ ps\+\_\+point} $\ast$}]{scp,  }\item[{const \textbf{ ps\+\_\+point} $\ast$}]{ep }\end{DoxyParamCaption})}
 
 
 
@@ -109,7 +109,7 @@ Add a cubic bezier spline to the current path from current point to end point.
 \hline
 \end{DoxyParams}
 \begin{DoxySeeAlso}{See also}
-\doxyref{ps\+\_\+move\+\_\+to}{p.}{group__geometry_ga6afa05defe9e5e6bec2ba59395b9ff13}, \doxyref{ps\+\_\+line\+\_\+to}{p.}{group__geometry_ga33144a05340d81d57be43ec15572288c}, \doxyref{ps\+\_\+quad\+\_\+curve\+\_\+to}{p.}{group__geometry_ga1423d2871e7c875312ebd931953d4948}, \doxyref{ps\+\_\+arc}{p.}{group__geometry_ga221af9d23e478b7609b20dc0e780c206}, \doxyref{ps\+\_\+tangent\+\_\+arc}{p.}{group__geometry_ga8f17dcbbfb34fb62862141e22b6040a2}, \doxyref{ps\+\_\+rectangle}{p.}{group__geometry_ga5011a18fa50227967380b08956ceec0f}, \doxyref{ps\+\_\+rounded\+\_\+rect}{p.}{group__geometry_gabee81bb4bac4a8de1bccbd3475b52d9b}, \doxyref{ps\+\_\+ellipse}{p.}{group__geometry_ga5a24c9a87485571696f9a560e5c8afc8} 
+\doxyref{ps\+\_\+move\+\_\+to}{p.}{group__geometry_ga6afa05defe9e5e6bec2ba59395b9ff13}, \doxyref{ps\+\_\+line\+\_\+to}{p.}{group__geometry_ga33144a05340d81d57be43ec15572288c}, \doxyref{ps\+\_\+quad\+\_\+to}{p.}{group__geometry_gae66344f8911a10c1a8ec82a0bbb24ebd}, \doxyref{ps\+\_\+arc}{p.}{group__geometry_ga221af9d23e478b7609b20dc0e780c206}, \doxyref{ps\+\_\+tangent\+\_\+arc}{p.}{group__geometry_ga8f17dcbbfb34fb62862141e22b6040a2}, \doxyref{ps\+\_\+rectangle}{p.}{group__geometry_ga5011a18fa50227967380b08956ceec0f}, \doxyref{ps\+\_\+rounded\+\_\+rect}{p.}{group__geometry_gabee81bb4bac4a8de1bccbd3475b52d9b}, \doxyref{ps\+\_\+ellipse}{p.}{group__geometry_ga5a24c9a87485571696f9a560e5c8afc8} 
 \end{DoxySeeAlso}
 \mbox{\label{group__geometry_ga7ddb8dc9dd946b85960c2e220d309131}} 
 \index{Geometry@{Geometry}!ps\_close\_path@{ps\_close\_path}}
@@ -147,7 +147,7 @@ Adds an ellipse to the current path which fits inside the specified rectangle.
 \hline
 \end{DoxyParams}
 \begin{DoxySeeAlso}{See also}
-\doxyref{ps\+\_\+move\+\_\+to}{p.}{group__geometry_ga6afa05defe9e5e6bec2ba59395b9ff13}, \doxyref{ps\+\_\+line\+\_\+to}{p.}{group__geometry_ga33144a05340d81d57be43ec15572288c}, \doxyref{ps\+\_\+bezier\+\_\+curve\+\_\+to}{p.}{group__geometry_gab8f032269b7bffbe13d65aab01dfdb22}, \doxyref{ps\+\_\+quad\+\_\+curve\+\_\+to}{p.}{group__geometry_ga1423d2871e7c875312ebd931953d4948}, \doxyref{ps\+\_\+arc}{p.}{group__geometry_ga221af9d23e478b7609b20dc0e780c206}, \doxyref{ps\+\_\+tangent\+\_\+arc}{p.}{group__geometry_ga8f17dcbbfb34fb62862141e22b6040a2}, \doxyref{ps\+\_\+rectangle}{p.}{group__geometry_ga5011a18fa50227967380b08956ceec0f}, \doxyref{ps\+\_\+rounded\+\_\+rect}{p.}{group__geometry_gabee81bb4bac4a8de1bccbd3475b52d9b} 
+\doxyref{ps\+\_\+move\+\_\+to}{p.}{group__geometry_ga6afa05defe9e5e6bec2ba59395b9ff13}, \doxyref{ps\+\_\+line\+\_\+to}{p.}{group__geometry_ga33144a05340d81d57be43ec15572288c}, \doxyref{ps\+\_\+bezier\+\_\+to}{p.}{group__geometry_ga8491035eb13f729b6a31e1b04783c3b7}, \doxyref{ps\+\_\+quad\+\_\+to}{p.}{group__geometry_gae66344f8911a10c1a8ec82a0bbb24ebd}, \doxyref{ps\+\_\+arc}{p.}{group__geometry_ga221af9d23e478b7609b20dc0e780c206}, \doxyref{ps\+\_\+tangent\+\_\+arc}{p.}{group__geometry_ga8f17dcbbfb34fb62862141e22b6040a2}, \doxyref{ps\+\_\+rectangle}{p.}{group__geometry_ga5011a18fa50227967380b08956ceec0f}, \doxyref{ps\+\_\+rounded\+\_\+rect}{p.}{group__geometry_gabee81bb4bac4a8de1bccbd3475b52d9b} 
 \end{DoxySeeAlso}
 \mbox{\label{group__geometry_ga12919bbac3b448c53c1b8200a464fe01}} 
 \index{Geometry@{Geometry}!ps\_get\_path@{ps\_get\_path}}
@@ -190,7 +190,7 @@ Add a line to the current path from the current point to given point.
 \hline
 \end{DoxyParams}
 \begin{DoxySeeAlso}{See also}
-\doxyref{ps\+\_\+move\+\_\+to}{p.}{group__geometry_ga6afa05defe9e5e6bec2ba59395b9ff13}, \doxyref{ps\+\_\+bezier\+\_\+curve\+\_\+to}{p.}{group__geometry_gab8f032269b7bffbe13d65aab01dfdb22}, \doxyref{ps\+\_\+quad\+\_\+curve\+\_\+to}{p.}{group__geometry_ga1423d2871e7c875312ebd931953d4948} \doxyref{ps\+\_\+arc}{p.}{group__geometry_ga221af9d23e478b7609b20dc0e780c206}, \doxyref{ps\+\_\+tangent\+\_\+arc}{p.}{group__geometry_ga8f17dcbbfb34fb62862141e22b6040a2}, \doxyref{ps\+\_\+rectangle}{p.}{group__geometry_ga5011a18fa50227967380b08956ceec0f}, \doxyref{ps\+\_\+rounded\+\_\+rect}{p.}{group__geometry_gabee81bb4bac4a8de1bccbd3475b52d9b}, \doxyref{ps\+\_\+ellipse}{p.}{group__geometry_ga5a24c9a87485571696f9a560e5c8afc8} 
+\doxyref{ps\+\_\+move\+\_\+to}{p.}{group__geometry_ga6afa05defe9e5e6bec2ba59395b9ff13}, \doxyref{ps\+\_\+bezier\+\_\+to}{p.}{group__geometry_ga8491035eb13f729b6a31e1b04783c3b7}, \doxyref{ps\+\_\+quad\+\_\+to}{p.}{group__geometry_gae66344f8911a10c1a8ec82a0bbb24ebd} \doxyref{ps\+\_\+arc}{p.}{group__geometry_ga221af9d23e478b7609b20dc0e780c206}, \doxyref{ps\+\_\+tangent\+\_\+arc}{p.}{group__geometry_ga8f17dcbbfb34fb62862141e22b6040a2}, \doxyref{ps\+\_\+rectangle}{p.}{group__geometry_ga5011a18fa50227967380b08956ceec0f}, \doxyref{ps\+\_\+rounded\+\_\+rect}{p.}{group__geometry_gabee81bb4bac4a8de1bccbd3475b52d9b}, \doxyref{ps\+\_\+ellipse}{p.}{group__geometry_ga5a24c9a87485571696f9a560e5c8afc8} 
 \end{DoxySeeAlso}
 \mbox{\label{group__geometry_ga6afa05defe9e5e6bec2ba59395b9ff13}} 
 \index{Geometry@{Geometry}!ps\_move\_to@{ps\_move\_to}}
@@ -210,7 +210,7 @@ Begin a new sub path, and set the current point.
 \hline
 \end{DoxyParams}
 \begin{DoxySeeAlso}{See also}
-\doxyref{ps\+\_\+line\+\_\+to}{p.}{group__geometry_ga33144a05340d81d57be43ec15572288c}, \doxyref{ps\+\_\+bezier\+\_\+curve\+\_\+to}{p.}{group__geometry_gab8f032269b7bffbe13d65aab01dfdb22}, \doxyref{ps\+\_\+quad\+\_\+curve\+\_\+to}{p.}{group__geometry_ga1423d2871e7c875312ebd931953d4948} \doxyref{ps\+\_\+arc}{p.}{group__geometry_ga221af9d23e478b7609b20dc0e780c206}, \doxyref{ps\+\_\+tangent\+\_\+arc}{p.}{group__geometry_ga8f17dcbbfb34fb62862141e22b6040a2}, \doxyref{ps\+\_\+rectangle}{p.}{group__geometry_ga5011a18fa50227967380b08956ceec0f}, \doxyref{ps\+\_\+rounded\+\_\+rect}{p.}{group__geometry_gabee81bb4bac4a8de1bccbd3475b52d9b}, \doxyref{ps\+\_\+ellipse}{p.}{group__geometry_ga5a24c9a87485571696f9a560e5c8afc8} 
+\doxyref{ps\+\_\+line\+\_\+to}{p.}{group__geometry_ga33144a05340d81d57be43ec15572288c}, \doxyref{ps\+\_\+bezier\+\_\+to}{p.}{group__geometry_ga8491035eb13f729b6a31e1b04783c3b7}, \doxyref{ps\+\_\+quad\+\_\+to}{p.}{group__geometry_gae66344f8911a10c1a8ec82a0bbb24ebd} \doxyref{ps\+\_\+arc}{p.}{group__geometry_ga221af9d23e478b7609b20dc0e780c206}, \doxyref{ps\+\_\+tangent\+\_\+arc}{p.}{group__geometry_ga8f17dcbbfb34fb62862141e22b6040a2}, \doxyref{ps\+\_\+rectangle}{p.}{group__geometry_ga5011a18fa50227967380b08956ceec0f}, \doxyref{ps\+\_\+rounded\+\_\+rect}{p.}{group__geometry_gabee81bb4bac4a8de1bccbd3475b52d9b}, \doxyref{ps\+\_\+ellipse}{p.}{group__geometry_ga5a24c9a87485571696f9a560e5c8afc8} 
 \end{DoxySeeAlso}
 \mbox{\label{group__geometry_ga1dd5a2457bbc70bb4aab514c71657d47}} 
 \index{Geometry@{Geometry}!ps\_new\_path@{ps\_new\_path}}
@@ -248,11 +248,11 @@ Close the current path, and add a new empty sub path in the graphic context.
 \begin{DoxySeeAlso}{See also}
 \doxyref{ps\+\_\+new\+\_\+path}{p.}{group__geometry_ga1dd5a2457bbc70bb4aab514c71657d47}, \doxyref{ps\+\_\+set\+\_\+path}{p.}{group__geometry_gad29671ee13659f93f1ed9f04e2fef33f}, \doxyref{ps\+\_\+get\+\_\+path}{p.}{group__geometry_ga12919bbac3b448c53c1b8200a464fe01}, \doxyref{ps\+\_\+close\+\_\+path}{p.}{group__geometry_ga7ddb8dc9dd946b85960c2e220d309131}, \doxyref{ps\+\_\+add\+\_\+sub\+\_\+path}{p.}{group__geometry_gaccc48dc1075994d7ac6154676eb5641f} 
 \end{DoxySeeAlso}
-\mbox{\label{group__geometry_ga1423d2871e7c875312ebd931953d4948}} 
-\index{Geometry@{Geometry}!ps\_quad\_curve\_to@{ps\_quad\_curve\_to}}
-\index{ps\_quad\_curve\_to@{ps\_quad\_curve\_to}!Geometry@{Geometry}}
-\doxysubsubsection{ps\_quad\_curve\_to()}
-{\footnotesize\ttfamily void ps\+\_\+quad\+\_\+curve\+\_\+to (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{const \textbf{ ps\+\_\+point} $\ast$}]{cp,  }\item[{const \textbf{ ps\+\_\+point} $\ast$}]{ep }\end{DoxyParamCaption})}
+\mbox{\label{group__geometry_gae66344f8911a10c1a8ec82a0bbb24ebd}} 
+\index{Geometry@{Geometry}!ps\_quad\_to@{ps\_quad\_to}}
+\index{ps\_quad\_to@{ps\_quad\_to}!Geometry@{Geometry}}
+\doxysubsubsection{ps\_quad\_to()}
+{\footnotesize\ttfamily void ps\+\_\+quad\+\_\+to (\begin{DoxyParamCaption}\item[{\textbf{ ps\+\_\+context} $\ast$}]{ctx,  }\item[{const \textbf{ ps\+\_\+point} $\ast$}]{cp,  }\item[{const \textbf{ ps\+\_\+point} $\ast$}]{ep }\end{DoxyParamCaption})}
 
 
 
@@ -268,7 +268,7 @@ Add a quadratic bezier spline to the current path from current point to end poin
 \hline
 \end{DoxyParams}
 \begin{DoxySeeAlso}{See also}
-\doxyref{ps\+\_\+move\+\_\+to}{p.}{group__geometry_ga6afa05defe9e5e6bec2ba59395b9ff13}, \doxyref{ps\+\_\+line\+\_\+to}{p.}{group__geometry_ga33144a05340d81d57be43ec15572288c}, \doxyref{ps\+\_\+bezier\+\_\+curve\+\_\+to}{p.}{group__geometry_gab8f032269b7bffbe13d65aab01dfdb22}, \doxyref{ps\+\_\+arc}{p.}{group__geometry_ga221af9d23e478b7609b20dc0e780c206}, \doxyref{ps\+\_\+tangent\+\_\+arc}{p.}{group__geometry_ga8f17dcbbfb34fb62862141e22b6040a2}, \doxyref{ps\+\_\+rectangle}{p.}{group__geometry_ga5011a18fa50227967380b08956ceec0f}, \doxyref{ps\+\_\+rounded\+\_\+rect}{p.}{group__geometry_gabee81bb4bac4a8de1bccbd3475b52d9b}, \doxyref{ps\+\_\+ellipse}{p.}{group__geometry_ga5a24c9a87485571696f9a560e5c8afc8} 
+\doxyref{ps\+\_\+move\+\_\+to}{p.}{group__geometry_ga6afa05defe9e5e6bec2ba59395b9ff13}, \doxyref{ps\+\_\+line\+\_\+to}{p.}{group__geometry_ga33144a05340d81d57be43ec15572288c}, \doxyref{ps\+\_\+bezier\+\_\+to}{p.}{group__geometry_ga8491035eb13f729b6a31e1b04783c3b7}, \doxyref{ps\+\_\+arc}{p.}{group__geometry_ga221af9d23e478b7609b20dc0e780c206}, \doxyref{ps\+\_\+tangent\+\_\+arc}{p.}{group__geometry_ga8f17dcbbfb34fb62862141e22b6040a2}, \doxyref{ps\+\_\+rectangle}{p.}{group__geometry_ga5011a18fa50227967380b08956ceec0f}, \doxyref{ps\+\_\+rounded\+\_\+rect}{p.}{group__geometry_gabee81bb4bac4a8de1bccbd3475b52d9b}, \doxyref{ps\+\_\+ellipse}{p.}{group__geometry_ga5a24c9a87485571696f9a560e5c8afc8} 
 \end{DoxySeeAlso}
 \mbox{\label{group__geometry_ga5011a18fa50227967380b08956ceec0f}} 
 \index{Geometry@{Geometry}!ps\_rectangle@{ps\_rectangle}}
@@ -288,7 +288,7 @@ Add a rectangle to the current path.
 \hline
 \end{DoxyParams}
 \begin{DoxySeeAlso}{See also}
-\doxyref{ps\+\_\+move\+\_\+to}{p.}{group__geometry_ga6afa05defe9e5e6bec2ba59395b9ff13}, \doxyref{ps\+\_\+line\+\_\+to}{p.}{group__geometry_ga33144a05340d81d57be43ec15572288c}, \doxyref{ps\+\_\+bezier\+\_\+curve\+\_\+to}{p.}{group__geometry_gab8f032269b7bffbe13d65aab01dfdb22}, \doxyref{ps\+\_\+quad\+\_\+curve\+\_\+to}{p.}{group__geometry_ga1423d2871e7c875312ebd931953d4948}, \doxyref{ps\+\_\+arc}{p.}{group__geometry_ga221af9d23e478b7609b20dc0e780c206}, \doxyref{ps\+\_\+tangent\+\_\+arc}{p.}{group__geometry_ga8f17dcbbfb34fb62862141e22b6040a2}, \doxyref{ps\+\_\+rounded\+\_\+rect}{p.}{group__geometry_gabee81bb4bac4a8de1bccbd3475b52d9b}, \doxyref{ps\+\_\+ellipse}{p.}{group__geometry_ga5a24c9a87485571696f9a560e5c8afc8} 
+\doxyref{ps\+\_\+move\+\_\+to}{p.}{group__geometry_ga6afa05defe9e5e6bec2ba59395b9ff13}, \doxyref{ps\+\_\+line\+\_\+to}{p.}{group__geometry_ga33144a05340d81d57be43ec15572288c}, \doxyref{ps\+\_\+bezier\+\_\+to}{p.}{group__geometry_ga8491035eb13f729b6a31e1b04783c3b7}, \doxyref{ps\+\_\+quad\+\_\+to}{p.}{group__geometry_gae66344f8911a10c1a8ec82a0bbb24ebd}, \doxyref{ps\+\_\+arc}{p.}{group__geometry_ga221af9d23e478b7609b20dc0e780c206}, \doxyref{ps\+\_\+tangent\+\_\+arc}{p.}{group__geometry_ga8f17dcbbfb34fb62862141e22b6040a2}, \doxyref{ps\+\_\+rounded\+\_\+rect}{p.}{group__geometry_gabee81bb4bac4a8de1bccbd3475b52d9b}, \doxyref{ps\+\_\+ellipse}{p.}{group__geometry_ga5a24c9a87485571696f9a560e5c8afc8} 
 \end{DoxySeeAlso}
 \mbox{\label{group__geometry_gabee81bb4bac4a8de1bccbd3475b52d9b}} 
 \index{Geometry@{Geometry}!ps\_rounded\_rect@{ps\_rounded\_rect}}
@@ -324,7 +324,7 @@ Add a rounded rectangle to the current path.
 \hline
 \end{DoxyParams}
 \begin{DoxySeeAlso}{See also}
-\doxyref{ps\+\_\+move\+\_\+to}{p.}{group__geometry_ga6afa05defe9e5e6bec2ba59395b9ff13}, \doxyref{ps\+\_\+line\+\_\+to}{p.}{group__geometry_ga33144a05340d81d57be43ec15572288c}, \doxyref{ps\+\_\+bezier\+\_\+curve\+\_\+to}{p.}{group__geometry_gab8f032269b7bffbe13d65aab01dfdb22}, \doxyref{ps\+\_\+quad\+\_\+curve\+\_\+to}{p.}{group__geometry_ga1423d2871e7c875312ebd931953d4948}, \doxyref{ps\+\_\+arc}{p.}{group__geometry_ga221af9d23e478b7609b20dc0e780c206}, \doxyref{ps\+\_\+tangent\+\_\+arc}{p.}{group__geometry_ga8f17dcbbfb34fb62862141e22b6040a2}, \doxyref{ps\+\_\+rectangle}{p.}{group__geometry_ga5011a18fa50227967380b08956ceec0f}, \doxyref{ps\+\_\+ellipse}{p.}{group__geometry_ga5a24c9a87485571696f9a560e5c8afc8} 
+\doxyref{ps\+\_\+move\+\_\+to}{p.}{group__geometry_ga6afa05defe9e5e6bec2ba59395b9ff13}, \doxyref{ps\+\_\+line\+\_\+to}{p.}{group__geometry_ga33144a05340d81d57be43ec15572288c}, \doxyref{ps\+\_\+bezier\+\_\+to}{p.}{group__geometry_ga8491035eb13f729b6a31e1b04783c3b7}, \doxyref{ps\+\_\+quad\+\_\+to}{p.}{group__geometry_gae66344f8911a10c1a8ec82a0bbb24ebd}, \doxyref{ps\+\_\+arc}{p.}{group__geometry_ga221af9d23e478b7609b20dc0e780c206}, \doxyref{ps\+\_\+tangent\+\_\+arc}{p.}{group__geometry_ga8f17dcbbfb34fb62862141e22b6040a2}, \doxyref{ps\+\_\+rectangle}{p.}{group__geometry_ga5011a18fa50227967380b08956ceec0f}, \doxyref{ps\+\_\+ellipse}{p.}{group__geometry_ga5a24c9a87485571696f9a560e5c8afc8} 
 \end{DoxySeeAlso}
 \mbox{\label{group__geometry_gad29671ee13659f93f1ed9f04e2fef33f}} 
 \index{Geometry@{Geometry}!ps\_set\_path@{ps\_set\_path}}
@@ -368,5 +368,5 @@ Add a circular arc which is inner tangent from a rectangle.
 \hline
 \end{DoxyParams}
 \begin{DoxySeeAlso}{See also}
-\doxyref{ps\+\_\+move\+\_\+to}{p.}{group__geometry_ga6afa05defe9e5e6bec2ba59395b9ff13}, \doxyref{ps\+\_\+line\+\_\+to}{p.}{group__geometry_ga33144a05340d81d57be43ec15572288c}, \doxyref{ps\+\_\+bezier\+\_\+curve\+\_\+to}{p.}{group__geometry_gab8f032269b7bffbe13d65aab01dfdb22}, \doxyref{ps\+\_\+quad\+\_\+curve\+\_\+to}{p.}{group__geometry_ga1423d2871e7c875312ebd931953d4948}, \doxyref{ps\+\_\+arc}{p.}{group__geometry_ga221af9d23e478b7609b20dc0e780c206}, \doxyref{ps\+\_\+rectangle}{p.}{group__geometry_ga5011a18fa50227967380b08956ceec0f}, \doxyref{ps\+\_\+rounded\+\_\+rect}{p.}{group__geometry_gabee81bb4bac4a8de1bccbd3475b52d9b}, \doxyref{ps\+\_\+ellipse}{p.}{group__geometry_ga5a24c9a87485571696f9a560e5c8afc8} 
+\doxyref{ps\+\_\+move\+\_\+to}{p.}{group__geometry_ga6afa05defe9e5e6bec2ba59395b9ff13}, \doxyref{ps\+\_\+line\+\_\+to}{p.}{group__geometry_ga33144a05340d81d57be43ec15572288c}, \doxyref{ps\+\_\+bezier\+\_\+to}{p.}{group__geometry_ga8491035eb13f729b6a31e1b04783c3b7}, \doxyref{ps\+\_\+quad\+\_\+to}{p.}{group__geometry_gae66344f8911a10c1a8ec82a0bbb24ebd}, \doxyref{ps\+\_\+arc}{p.}{group__geometry_ga221af9d23e478b7609b20dc0e780c206}, \doxyref{ps\+\_\+rectangle}{p.}{group__geometry_ga5011a18fa50227967380b08956ceec0f}, \doxyref{ps\+\_\+rounded\+\_\+rect}{p.}{group__geometry_gabee81bb4bac4a8de1bccbd3475b52d9b}, \doxyref{ps\+\_\+ellipse}{p.}{group__geometry_ga5a24c9a87485571696f9a560e5c8afc8} 
 \end{DoxySeeAlso}

@@ -8,9 +8,9 @@
 #include "device.h"
 
 #include "picasso.h"
-#include "picasso_global.h"
 #include "picasso_mask.h"
 #include "picasso_objects.h"
+#include "picasso_private.h"
 
 #ifdef __cplusplus
 extern "C" {

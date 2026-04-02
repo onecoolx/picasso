@@ -1,0 +1,22 @@
+{
+    "CreateRenderList": {
+        "mid_ms": 5.24145899,
+        "avg_ms": 5.25633794,
+        "min_ms": 5.23063899,
+        "max_ms": 5.29353699,
+        "std_dev": 0.01831364,
+        "cv": 0.0034841,
+        "iterations": 147,
+        "total_time_ms": 2481.25306099
+    },
+    "LoadComplexSvg": {
+        "mid_ms": 63.23453149,
+        "avg_ms": 63.57097529,
+        "min_ms": 63.00629899,
+        "max_ms": 63.649471,
+        "std_dev": 0.37391063,
+        "cv": 0.00588178,
+        "iterations": 20,
+        "total_time_ms": 2276.011078
+    }
+}

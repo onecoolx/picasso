@@ -454,13 +454,13 @@ bool font_adapter::prepare_glyph(uint32_t code)
 
         if (error == 0) {
             if (m_impl->antialias && !is_sys_bitmap) {
-                if (m_impl->weight == 500) {
+                if (m_impl->weight >= 500 && m_impl->weight < 700) {
                     int32_t strength = 1 << 5;
                     FT_Outline_Embolden(&(m_impl->font->glyph->outline), strength);
-                } else if (m_impl->weight == 700) {
+                } else if (m_impl->weight >= 700 && m_impl->weight < 900) {
                     int32_t strength = 1 << 6;
                     FT_Outline_Embolden(&(m_impl->font->glyph->outline), strength);
-                } else if (m_impl->weight == 900) {
+                } else if (m_impl->weight >= 900) {
                     int32_t strength = 1 << 7;
                     FT_Outline_Embolden(&(m_impl->font->glyph->outline), strength);
                 }

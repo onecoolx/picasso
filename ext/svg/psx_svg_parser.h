@@ -58,6 +58,31 @@ bool psx_svg_parser_is_finish(psx_svg_parser* parser);
 void psx_svg_dump_tree(psx_svg_node* root, int32_t depth);
 #endif
 
+// Timing list used by SVG animation begin/end attributes.
+// Supports the common Tiny 1.2 subset:
+// - semicolon-separated clock-value offsets (stored as milliseconds)
+// - at most one non-clock token preserved as an event name (e.g. "click")
+// Ownership: allocated by parser, freed by node attr cleanup.
+typedef struct psx_svg_timing_list {
+    uint32_t offsets_len;
+    float* offsets_ms; // length offsets_len, may be NULL if 0
+    char* event_token; // optional, NULL if none
+    char* event_target_id; // optional, "btn" from "btn.click", NULL if none
+    char access_key;
+    char* syncbase_id;
+    uint32_t syncbase_type;
+} psx_svg_timing_list;
+
+// Helper for freeing a timing list allocated by the parser.
+void psx_svg_timing_list_destroy(psx_svg_timing_list* tl);
+
+// Access one transform entry stored in a parsed animation values list.
+// Returns false if out of range or list is invalid.
+bool psx_svg_attr_values_get_transform_entry(const psx_svg_attr_values_list* list,
+                                             uint32_t idx,
+                                             const float** out_vals,
+                                             uint32_t* out_len);
+
 #ifdef __cplusplus
 }
 #endif

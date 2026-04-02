@@ -25,15 +25,11 @@
  */
 
 #include "psx_svg_render.h"
+#include "psx_svg_anim_state.h"
 #include "psx_linear_allocator.h"
 #include "images/psx_image.h"
 
 #include <new>
-#include <math.h>
-
-#ifndef M_PI
-    #define M_PI 3.1415926f
-#endif
 
 #define MIN(a,b) (((a)<(b))?(a):(b))
 #define MAX(a,b) (((a)>(b))?(a):(b))
@@ -396,6 +392,10 @@ enum {
     RENDER_IN_TEXT = 4,
 };
 
+enum {
+    RENDER_VISIBILITY_HIDDEN = (1 << 16),
+};
+
 class render_obj_base : public psx_svg_render_obj
 {
 public:
@@ -407,6 +407,8 @@ public:
         , m_draw_attrs(NULL)
         , m_global_matrix(NULL)
         , m_render_matrix(NULL)
+        , m_node(node)
+        , m_cur_anim_state(NULL)
     {
         m_tag = node->type();
         m_matrix = ps_matrix_create();
@@ -423,92 +425,98 @@ public:
     }
 
     virtual void set_attr(const psx_svg_attr* attr, _svg_list_builder_state* state);
+    virtual void set_anim_state(const psx_svg_anim_state* anim_state)
+    {
+        m_cur_anim_state = anim_state;
+    }
     virtual void render(ps_context* ctx, const ps_matrix* matrix) { }
     virtual void get_bounding_rect(ps_rect* rc) const { }
     virtual void update(const psx_svg_node* node) { }
     virtual void set_fill_attrs(ps_context* ctx, const render_obj_base* obj) { }
     virtual void set_stroke_attrs(ps_context* ctx, const render_obj_base* obj) { }
 
-    virtual void prepare(ps_context* ctx) const
+    virtual void prepare(ps_context* ctx)
     {
-        if (m_draw_attrs) {
-            if (m_draw_attrs->flags & RENDER_ATTR_FILL) {
-                // color fill
-                ps_color color = m_draw_attrs->fill_color;
-                if (m_draw_attrs->flags & RENDER_ATTR_FILL_OPACITY) {
-                    color.a *= m_draw_attrs->fill_opacity;
-                }
-                ps_set_source_color(ctx, &color);
+        if (!m_draw_attrs) {
+            return;
+        }
+
+        if (m_draw_attrs->flags & RENDER_ATTR_FILL) {
+            ps_color color = m_draw_attrs->fill_color;
+            if (m_draw_attrs->flags & RENDER_ATTR_FILL_OPACITY) {
+                color.a *= m_draw_attrs->fill_opacity;
+            }
+            ps_set_source_color(ctx, &color);
+        }
+
+        if (m_draw_attrs->flags & RENDER_ATTR_FILL_RULE) {
+            ps_set_fill_rule(ctx, (ps_fill_rule)m_draw_attrs->fill_rule);
+        }
+
+        if (m_draw_attrs->flags & RENDER_ATTR_STROKE) {
+            ps_color color = m_draw_attrs->stroke_color;
+            if (m_draw_attrs->flags & RENDER_ATTR_STROKE_OPACITY) {
+                color.a *= m_draw_attrs->stroke_opacity;
+            }
+            ps_set_stroke_color(ctx, &color);
+        }
+
+        if (m_draw_attrs->flags & RENDER_ATTR_STROKE_WIDTH) {
+            ps_set_line_width(ctx, m_draw_attrs->stroke_line_width);
+        }
+
+        if (m_draw_attrs->flags & RENDER_ATTR_STROKE_LINECAP) {
+            ps_set_line_cap(ctx, (ps_line_cap)m_draw_attrs->stroke_line_cap);
+        }
+
+        if (m_draw_attrs->flags & RENDER_ATTR_STROKE_LINEJOIN) {
+            ps_set_line_join(ctx, (ps_line_join)m_draw_attrs->stroke_line_join);
+        }
+
+        if (m_draw_attrs->flags & RENDER_ATTR_STROKE_MITER_LIMIT) {
+            ps_set_miter_limit(ctx, m_draw_attrs->stroke_miter_limit);
+        }
+
+        if (m_draw_attrs->flags & RENDER_ATTR_STROKE_DASH_ARRAY) {
+            float start = 0.0f;
+            if (m_draw_attrs->flags & RENDER_ATTR_STROKE_DASH_OFFSET) {
+                start = m_draw_attrs->stroke_dash_offset;
             }
 
-            if (m_draw_attrs->flags & RENDER_ATTR_FILL_RULE) {
-                ps_set_fill_rule(ctx, (ps_fill_rule)m_draw_attrs->fill_rule);
-            }
-
-            if (m_draw_attrs->flags & RENDER_ATTR_STROKE) {
-                // color stroke
-                ps_color color = m_draw_attrs->stroke_color;
-                if (m_draw_attrs->flags & RENDER_ATTR_STROKE_OPACITY) {
-                    color.a *= m_draw_attrs->stroke_opacity;
-                }
-                ps_set_stroke_color(ctx, &color);
-            }
-
-            if (m_draw_attrs->flags & RENDER_ATTR_STROKE_WIDTH) {
-                ps_set_line_width(ctx, m_draw_attrs->stroke_line_width);
-            }
-
-            if (m_draw_attrs->flags & RENDER_ATTR_STROKE_LINECAP) {
-                ps_set_line_cap(ctx, (ps_line_cap)m_draw_attrs->stroke_line_cap);
-            }
-
-            if (m_draw_attrs->flags & RENDER_ATTR_STROKE_LINEJOIN) {
-                ps_set_line_join(ctx, (ps_line_join)m_draw_attrs->stroke_line_join);
-            }
-
-            if (m_draw_attrs->flags & RENDER_ATTR_STROKE_MITER_LIMIT) {
-                ps_set_miter_limit(ctx, m_draw_attrs->stroke_miter_limit);
-            }
-
-            if (m_draw_attrs->flags & RENDER_ATTR_STROKE_DASH_ARRAY) {
-                float start = 0.0f;
-                if (m_draw_attrs->flags & RENDER_ATTR_STROKE_DASH_OFFSET) {
-                    start = m_draw_attrs->stroke_dash_offset;
-                }
-
-                if (m_draw_attrs->stroke_dash_array) {
-                    ps_set_line_dash(ctx, start, m_draw_attrs->stroke_dash_array, m_draw_attrs->stroke_dash_num);
-                } else {
-                    ps_reset_line_dash(ctx);
-                }
-            }
-
-            if (m_draw_attrs->flags & RENDER_ATTR_REF_FILL) {
-                render_obj_base* head = m_head;
-                while (head) {
-                    if (head->id()) {
-                        if (strcmp(m_draw_attrs->fill_ref, head->id()) == 0) {
-                            head->set_fill_attrs(ctx, this);
-                            break;
-                        }
-                    }
-                    head = head->next();
-                }
-            }
-
-            if (m_draw_attrs->flags & RENDER_ATTR_REF_STROKE) {
-                render_obj_base* head = m_head;
-                while (head) {
-                    if (head->id()) {
-                        if (strcmp(m_draw_attrs->stroke_ref, head->id()) == 0) {
-                            head->set_stroke_attrs(ctx, this);
-                            break;
-                        }
-                    }
-                    head = head->next();
-                }
+            if (m_draw_attrs->stroke_dash_array) {
+                ps_set_line_dash(ctx, start, m_draw_attrs->stroke_dash_array, m_draw_attrs->stroke_dash_num);
+            } else {
+                ps_reset_line_dash(ctx);
             }
         }
+
+        if (m_draw_attrs->flags & RENDER_ATTR_REF_FILL) {
+            render_obj_base* head = m_head;
+            while (head) {
+                if (head->id()) {
+                    if (strcmp(m_draw_attrs->fill_ref, head->id()) == 0) {
+                        head->set_fill_attrs(ctx, this);
+                        break;
+                    }
+                }
+                head = head->next();
+            }
+        }
+
+        if (m_draw_attrs->flags & RENDER_ATTR_REF_STROKE) {
+            render_obj_base* head = m_head;
+            while (head) {
+                if (head->id()) {
+                    if (strcmp(m_draw_attrs->stroke_ref, head->id()) == 0) {
+                        head->set_stroke_attrs(ctx, this);
+                        break;
+                    }
+                }
+                head = head->next();
+            }
+        }
+
+        process_animation_attrs(ctx);
     }
 
     void paint(ps_context* ctx) const
@@ -571,7 +579,106 @@ public:
     const char* id(void) const { return m_id; }
 
     void set_head(render_obj_base* head) { m_head = head; }
+    const psx_svg_node* node(void) const { return m_node; }
+    bool is_hidden(void) const { return (m_render_types & RENDER_VISIBILITY_HIDDEN) != 0; }
 protected:
+    void process_animation_attrs(ps_context* ctx)
+    {
+        if (!m_cur_anim_state || !m_draw_attrs) {
+            return;
+        }
+
+        /* Fast-skip nodes with no active animation overrides. */
+        if (!_has_active_target(m_cur_anim_state, m_node)) {
+            return;
+        }
+
+        float v = 0.0f;
+        uint32_t color_u = 0;
+
+        ps_color base_fill = m_draw_attrs->fill_color;
+        bool has_fill_color = false;
+        if (psx_svg_anim_get_color(m_cur_anim_state, m_node, SVG_ATTR_FILL, &color_u)) {
+            svg_to_pcolor(&base_fill, color_u);
+            has_fill_color = true;
+        }
+
+        if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_FILL_OPACITY, &v)) {
+            ps_color color = base_fill;
+            color.a *= v;
+            ps_set_source_color(ctx, &color);
+        } else if (has_fill_color) {
+            if (m_draw_attrs->flags & RENDER_ATTR_FILL_OPACITY) {
+                base_fill.a *= m_draw_attrs->fill_opacity;
+            }
+            ps_set_source_color(ctx, &base_fill);
+        }
+
+        ps_color base_stroke = m_draw_attrs->stroke_color;
+        bool has_stroke_color = false;
+        if (psx_svg_anim_get_color(m_cur_anim_state, m_node, SVG_ATTR_STROKE, &color_u)) {
+            svg_to_pcolor(&base_stroke, color_u);
+            has_stroke_color = true;
+        }
+
+        if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_STROKE_OPACITY, &v)) {
+            ps_color color = base_stroke;
+            color.a *= v;
+            ps_set_stroke_color(ctx, &color);
+        } else if (has_stroke_color) {
+            if (m_draw_attrs->flags & RENDER_ATTR_STROKE_OPACITY) {
+                base_stroke.a *= m_draw_attrs->stroke_opacity;
+            }
+            ps_set_stroke_color(ctx, &base_stroke);
+        }
+
+        if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_STROKE_WIDTH, &v)) {
+            ps_set_line_width(ctx, v);
+        }
+
+        if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_STROKE_MITER_LIMIT, &v)) {
+            ps_set_miter_limit(ctx, v);
+        }
+
+        if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_STROKE_DASH_OFFSET, &v)) {
+            if (m_draw_attrs->stroke_dash_array) {
+                ps_set_line_dash(ctx, v, m_draw_attrs->stroke_dash_array, m_draw_attrs->stroke_dash_num);
+            }
+        }
+
+        /* stroke-dasharray animation override. */
+        {
+            const float* dash_vals = NULL;
+            uint32_t dash_count = 0;
+            if (psx_svg_anim_get_dash(m_cur_anim_state, m_node, &dash_vals, &dash_count)) {
+                float start = 0.0f;
+                if (m_draw_attrs->flags & RENDER_ATTR_STROKE_DASH_OFFSET) {
+                    start = m_draw_attrs->stroke_dash_offset;
+                }
+                /* Check if dash-offset was also animated. */
+                float ov = 0.0f;
+                if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_STROKE_DASH_OFFSET, &ov)) {
+                    start = ov;
+                }
+                ps_set_line_dash(ctx, start, dash_vals, dash_count);
+            }
+        }
+
+        int32_t iv = 0;
+
+        if (psx_svg_anim_get_int32(m_cur_anim_state, m_node, SVG_ATTR_FILL_RULE, &iv)) {
+            ps_set_fill_rule(ctx, (ps_fill_rule)iv);
+        }
+
+        if (psx_svg_anim_get_int32(m_cur_anim_state, m_node, SVG_ATTR_STROKE_LINECAP, &iv)) {
+            ps_set_line_cap(ctx, (ps_line_cap)iv);
+        }
+
+        if (psx_svg_anim_get_int32(m_cur_anim_state, m_node, SVG_ATTR_STROKE_LINEJOIN, &iv)) {
+            ps_set_line_join(ctx, (ps_line_join)iv);
+        }
+    }
+
     render_obj_base* m_next;
     psx_svg_tag m_tag;
     uint32_t m_render_types;
@@ -581,6 +688,8 @@ protected:
     ps_draw_attrs* m_draw_attrs;
     ps_matrix* m_global_matrix;
     ps_matrix* m_render_matrix;
+    const psx_svg_node* m_node;
+    const psx_svg_anim_state* m_cur_anim_state;
 };
 
 void render_obj_base::set_attr(const psx_svg_attr* attr, _svg_list_builder_state* state)
@@ -590,6 +699,14 @@ void render_obj_base::set_attr(const psx_svg_attr* attr, _svg_list_builder_state
             return;
         }
         set_matrix((psx_svg_matrix*)attr->value.val);
+    } else if (attr->attr_id == SVG_ATTR_VISIBILITY) {
+        if (attr->class_type == SVG_ATTR_VALUE_INITIAL) {
+            if (attr->value.ival == 0) {
+                add_render_type(RENDER_VISIBILITY_HIDDEN);
+            } else {
+                clear_render_type(RENDER_VISIBILITY_HIDDEN);
+            }
+        }
     } else {
         set_draw_attr(state, attr->attr_id, attr);
     }
@@ -616,6 +733,10 @@ public:
         float height = m_height;
 
         if (m_hasViewBox) {
+            // reset matrix to identity before recomputing viewBox transform,
+            // otherwise translate/scale accumulate across frames.
+            ps_matrix_identity(m_matrix);
+
             float* vals = m_viewBox;
 
             float scale = 1.0f;
@@ -707,6 +828,7 @@ public:
 
     void set_attr(const psx_svg_attr* attr, _svg_list_builder_state* state)
     {
+        set_draw_attr(state, attr->attr_id, attr);
         switch (attr->attr_id) {
             case SVG_ATTR_WIDTH:
                 m_width = attr->value.fval;
@@ -803,23 +925,46 @@ public:
 
     void render(ps_context* ctx, const ps_matrix* matrix)
     {
+        ps_rect rc = m_rc;
+        float rx = m_rx;
+        float ry = m_ry;
+
+        if (m_cur_anim_state) {
+            float v = 0.0f;
+            if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_X, &v)) {
+                rc.x = v;
+            }
+            if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_Y, &v)) {
+                rc.y = v;
+            }
+            if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_WIDTH, &v)) {
+                rc.w = v;
+            }
+            if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_HEIGHT, &v)) {
+                rc.h = v;
+            }
+            if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_RX, &v)) {
+                rx = v;
+            }
+            if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_RY, &v)) {
+                ry = v;
+            }
+        }
+
         ps_transform(ctx, m_matrix);
         if (matrix) {
             ps_transform(ctx, matrix);
         }
 
-        float rx = m_rx;
-        float ry = m_ry;
-
         if (rx == 0.0f && ry == 0.0f) {
-            ps_rectangle(ctx, &m_rc);
+            ps_rectangle(ctx, &rc);
         } else {
             if (rx > 0.0f && ry == 0.0f) {
                 ry = rx;
             } else if (ry > 0.0f && rx == 0.0f ) {
                 rx = ry;
             }
-            ps_rounded_rect(ctx, &m_rc, rx, ry, rx, ry, rx, ry, rx, ry);
+            ps_rounded_rect(ctx, &rc, rx, ry, rx, ry, rx, ry, rx, ry);
         }
         paint(ctx);
     }
@@ -855,6 +1000,22 @@ public:
         rc->y = m_rc.y;
         rc->w = m_rc.w;
         rc->h = m_rc.h;
+
+        if (m_cur_anim_state) {
+            float v = 0.0f;
+            if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_X, &v)) {
+                rc->x = v;
+            }
+            if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_Y, &v)) {
+                rc->y = v;
+            }
+            if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_WIDTH, &v)) {
+                rc->w = v;
+            }
+            if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_HEIGHT, &v)) {
+                rc->h = v;
+            }
+        }
     }
 private:
     ps_rect m_rc;
@@ -876,12 +1037,27 @@ public:
 
     void render(ps_context* ctx, const ps_matrix* matrix)
     {
+        float cx = m_cx, cy = m_cy, r = m_r;
+
+        if (m_cur_anim_state) {
+            float v = 0.0f;
+            if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_CX, &v)) {
+                cx = v;
+            }
+            if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_CY, &v)) {
+                cy = v;
+            }
+            if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_R, &v)) {
+                r = v;
+            }
+        }
+
         ps_transform(ctx, m_matrix);
         if (matrix) {
             ps_transform(ctx, matrix);
         }
 
-        ps_rect rc = { m_cx - m_r, m_cy - m_r, m_r + m_r, m_r + m_r };
+        ps_rect rc = { cx - r, cy - r, r + r, r + r };
         ps_ellipse(ctx, &rc);
 
         paint(ctx);
@@ -905,9 +1081,24 @@ public:
 
     void get_bounding_rect(ps_rect* rc) const
     {
-        rc->x = m_cx - m_r;
-        rc->y = m_cy - m_r;
-        rc->w = m_r + m_r;
+        float cx = m_cx, cy = m_cy, r = m_r;
+
+        if (m_cur_anim_state) {
+            float v = 0.0f;
+            if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_CX, &v)) {
+                cx = v;
+            }
+            if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_CY, &v)) {
+                cy = v;
+            }
+            if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_R, &v)) {
+                r = v;
+            }
+        }
+
+        rc->x = cx - r;
+        rc->y = cy - r;
+        rc->w = r + r;
         rc->h = rc->w;
     }
 
@@ -932,12 +1123,30 @@ public:
 
     void render(ps_context* ctx, const ps_matrix* matrix)
     {
+        float cx = m_cx, cy = m_cy, rx = m_rx, ry = m_ry;
+
+        if (m_cur_anim_state) {
+            float v = 0.0f;
+            if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_CX, &v)) {
+                cx = v;
+            }
+            if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_CY, &v)) {
+                cy = v;
+            }
+            if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_RX, &v)) {
+                rx = v;
+            }
+            if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_RY, &v)) {
+                ry = v;
+            }
+        }
+
         ps_transform(ctx, m_matrix);
         if (matrix) {
             ps_transform(ctx, matrix);
         }
 
-        ps_rect rc = { m_cx - m_rx, m_cy - m_ry, m_rx + m_rx, m_ry + m_ry };
+        ps_rect rc = { cx - rx, cy - ry, rx + rx, ry + ry };
         ps_ellipse(ctx, &rc);
 
         paint(ctx);
@@ -964,10 +1173,28 @@ public:
 
     void get_bounding_rect(ps_rect* rc) const
     {
-        rc->x = m_cx - m_rx;
-        rc->y = m_cy - m_ry;
-        rc->w = m_rx + m_rx;
-        rc->h = m_ry + m_ry;
+        float cx = m_cx, cy = m_cy, rx = m_rx, ry = m_ry;
+
+        if (m_cur_anim_state) {
+            float v = 0.0f;
+            if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_CX, &v)) {
+                cx = v;
+            }
+            if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_CY, &v)) {
+                cy = v;
+            }
+            if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_RX, &v)) {
+                rx = v;
+            }
+            if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_RY, &v)) {
+                ry = v;
+            }
+        }
+
+        rc->x = cx - rx;
+        rc->y = cy - ry;
+        rc->w = rx + rx;
+        rc->h = ry + ry;
     }
 
 private:
@@ -992,14 +1219,32 @@ public:
 
     void render(ps_context* ctx, const ps_matrix* matrix)
     {
+        float x1 = m_x1, y1 = m_y1, x2 = m_x2, y2 = m_y2;
+
+        if (m_cur_anim_state) {
+            float v = 0.0f;
+            if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_X1, &v)) {
+                x1 = v;
+            }
+            if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_Y1, &v)) {
+                y1 = v;
+            }
+            if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_X2, &v)) {
+                x2 = v;
+            }
+            if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_Y2, &v)) {
+                y2 = v;
+            }
+        }
+
         ps_transform(ctx, m_matrix);
         if (matrix) {
             ps_transform(ctx, matrix);
         }
 
-        ps_point p1 = { m_x1, m_y1 };
+        ps_point p1 = { x1, y1 };
         ps_move_to(ctx, &p1);
-        ps_point p2 = { m_x2, m_y2 };
+        ps_point p2 = { x2, y2 };
         ps_line_to(ctx, &p2);
 
         paint(ctx);
@@ -1026,10 +1271,28 @@ public:
 
     void get_bounding_rect(ps_rect* rc) const
     {
-        rc->x = MIN(m_x1, m_x2);
-        rc->y = MIN(m_y1, m_y2);
-        rc->w = ABS(m_x2 - m_x1);
-        rc->h = ABS(m_y2 - m_y1);
+        float x1 = m_x1, y1 = m_y1, x2 = m_x2, y2 = m_y2;
+
+        if (m_cur_anim_state) {
+            float v = 0.0f;
+            if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_X1, &v)) {
+                x1 = v;
+            }
+            if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_Y1, &v)) {
+                y1 = v;
+            }
+            if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_X2, &v)) {
+                x2 = v;
+            }
+            if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_Y2, &v)) {
+                y2 = v;
+            }
+        }
+
+        rc->x = MIN(x1, x2);
+        rc->y = MIN(y1, y2);
+        rc->w = ABS(x2 - x1);
+        rc->h = ABS(y2 - y1);
     }
 
 private:
@@ -1170,7 +1433,7 @@ public:
         }
     }
 
-    void prepare(ps_context* ctx) const
+    void prepare(ps_context* ctx)
     {
         render_obj_base::prepare(ctx);
         get_xlink();
@@ -1256,10 +1519,46 @@ public:
             render_obj_base* item = *(psx_array_get(&m_items, i, render_obj_base*));
 
             if (item->has_render_type(RENDER_IN_GROUP)) {
+                // Visibility: animation override takes priority.
+                bool skip = false;
+                if (m_cur_anim_state && item->node()) {
+                    int32_t vis = 0;
+                    if (psx_svg_anim_get_int32(m_cur_anim_state, item->node(), SVG_ATTR_DISPLAY, &vis) && vis == 0) {
+                        skip = true;
+                    } else if (psx_svg_anim_get_int32(m_cur_anim_state, item->node(), SVG_ATTR_VISIBILITY, &vis)) {
+                        skip = (vis == 0);
+                    } else {
+                        skip = item->is_hidden();
+                    }
+                } else {
+                    skip = item->is_hidden();
+                }
+                if (skip) {
+                    continue;
+                }
+
+                // Compose animated transform with group matrix.
+                const ps_matrix* child_anim_mtx = NULL;
+                if (m_cur_anim_state && item->node()) {
+                    child_anim_mtx = psx_svg_anim_get_transform(m_cur_anim_state, item->node());
+                }
+
+                ps_matrix* child_mtx = mtx;
+                ps_matrix* composed = NULL;
+                if (child_anim_mtx) {
+                    composed = ps_matrix_create_copy(mtx);
+                    ps_matrix_multiply(composed, child_anim_mtx, composed);
+                    child_mtx = composed;
+                }
+
                 ps_save(ctx);
                 item->prepare(ctx);
-                item->render(ctx, mtx);
+                item->render(ctx, child_mtx);
                 ps_restore(ctx);
+
+                if (composed) {
+                    ps_matrix_unref(composed);
+                }
             }
         }
 
@@ -1291,6 +1590,15 @@ public:
     void add_item(render_obj_base* item)
     {
         psx_array_push_back(&m_items, item);
+    }
+
+    virtual void set_anim_state(const psx_svg_anim_state* anim_state)
+    {
+        m_cur_anim_state = anim_state;
+        for (uint32_t i = 0; i < psx_array_size(&m_items); i++) {
+            render_obj_base* item = *(psx_array_get(&m_items, i, render_obj_base*));
+            item->set_anim_state(anim_state);
+        }
     }
 
 private:
@@ -1443,8 +1751,29 @@ public:
         this->svg_render_text::~svg_render_text();
     }
 
-    void prepare(ps_context* ctx) const
+    void prepare(ps_context* ctx)
     {
+        // Apply animation overrides before building glyph paths
+        if (m_cur_anim_state) {
+            float v = 0.0f;
+            if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_FONT_SIZE, &v)) {
+                m_font_size = v;
+                ps_font_set_size(m_font, m_font_size);
+                ps_path_clear(m_path);
+            }
+            int32_t iv = 0;
+            if (psx_svg_anim_get_int32(m_cur_anim_state, m_node, SVG_ATTR_FONT_WEIGHT, &iv)) {
+                m_font_weight = iv;
+                ps_font_set_weight(m_font, (ps_font_weight)m_font_weight);
+                ps_path_clear(m_path);
+            }
+            if (psx_svg_anim_get_int32(m_cur_anim_state, m_node, SVG_ATTR_FONT_STYLE, &iv)) {
+                m_font_italic = (ps_bool)iv;
+                ps_font_set_italic(m_font, m_font_italic);
+                ps_path_clear(m_path);
+            }
+        }
+
         ps_font* old_font = ps_set_font(ctx, m_font);
         ps_font_info info;
         ps_get_font_info(ctx, &info);
@@ -1455,7 +1784,6 @@ public:
         }
 
         ps_matrix* mtx = ps_matrix_create();
-        ps_matrix_translate(mtx, m_x, m_y);
 
         // draw text contents and spans
         for (uint32_t i = 0; i < psx_array_size(&m_contents); i++) {
@@ -1474,6 +1802,20 @@ public:
         if (matrix) {
             ps_transform(ctx, matrix);
         }
+
+        // Resolve x/y: use animation override if present, else static value
+        float tx = m_x;
+        float ty = m_y;
+        if (m_cur_anim_state) {
+            float v = 0.0f;
+            if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_X, &v)) {
+                tx = v;
+            }
+            if (psx_svg_anim_get_float(m_cur_anim_state, m_node, SVG_ATTR_Y, &v)) {
+                ty = v;
+            }
+        }
+        ps_translate(ctx, tx, ty);
 
         // draw text contents and spans
         for (uint32_t i = 0; i < psx_array_size(&m_contents); i++) {
@@ -1772,7 +2114,7 @@ public:
                     if (m_image) {
                         psx_image_destroy(m_image);
                     }
-                    int32_t err = 0;
+                    psx_result err = S_OK;
                     m_image = psx_image_load(xlink, &err);
                     if (err != S_OK) {
                         LOG_ERROR("Image load failed!\n");
@@ -1843,34 +2185,47 @@ public:
         m_y2 = 0.0f;
 
         uint32_t count = node->child_count();
-        m_stops = (stop_color*)allocator->alloc(allocator, count * sizeof(stop_color));
-        m_stop_count = count;
+        uint32_t stop_count = 0;
+        for (uint32_t i = 0; i < count; i++) {
+            if (node->get_child(i)->type() == SVG_TAG_STOP) {
+                ++stop_count;
+            }
+        }
+        m_stops = (stop_color*)allocator->alloc(allocator, stop_count * sizeof(stop_color));
+        m_stop_nodes = (const psx_svg_node**)allocator->alloc(allocator, stop_count * sizeof(const psx_svg_node*));
+        m_stop_count = stop_count;
 
+        uint32_t si = 0;
         for (uint32_t i = 0; i < count; i++) {
             psx_svg_node* child_node = node->get_child(i);
+            if (child_node->type() != SVG_TAG_STOP) {
+                continue;
+            }
             uint32_t attr_num = child_node->attr_count();
 
-            m_stops[i].color.r = m_stops[i].color.g = m_stops[i].color.b = 0.0f;
-            m_stops[i].color.a = m_stops[i].opacity = 1.0f;
-            m_stops[i].start = 0.0f;
+            m_stops[si].color.r = m_stops[si].color.g = m_stops[si].color.b = 0.0f;
+            m_stops[si].color.a = m_stops[si].opacity = 1.0f;
+            m_stops[si].start = 0.0f;
+            m_stop_nodes[si] = child_node;
 
             for (uint32_t j = 0; j < attr_num; j++) {
                 psx_svg_attr* attr = child_node->attr_at(j);
                 switch (attr->attr_id) {
                     case SVG_ATTR_GRADIENT_STOP_COLOR: {
-                            svg_to_pcolor(&m_stops[i].color, attr->value.uval);
+                            svg_to_pcolor(&m_stops[si].color, attr->value.uval);
                         }
                         break;
                     case SVG_ATTR_GRADIENT_STOP_OPACITY: {
-                            m_stops[i].opacity = attr->value.fval;
+                            m_stops[si].opacity = attr->value.fval;
                         }
                         break;
                     case SVG_ATTR_GRADIENT_STOP_OFFSET: {
-                            m_stops[i].start = attr->value.fval;
+                            m_stops[si].start = attr->value.fval;
                         }
                         break;
                 }
             }
+            ++si;
         }
     }
 
@@ -1920,8 +2275,25 @@ public:
 
         for (uint32_t i = 0; i < m_stop_count; i++) {
             ps_color c = m_stops[i].color;
-            c.a *= m_stops[i].opacity;
-            ps_gradient_add_color_stop(gradient, m_stops[i].start, &c);
+            float opacity = m_stops[i].opacity;
+            float start = m_stops[i].start;
+
+            if (m_cur_anim_state && m_stop_nodes[i]) {
+                float v = 0.0f;
+                uint32_t color_u = 0;
+                if (psx_svg_anim_get_color(m_cur_anim_state, m_stop_nodes[i], SVG_ATTR_GRADIENT_STOP_COLOR, &color_u)) {
+                    svg_to_pcolor(&c, color_u);
+                }
+                if (psx_svg_anim_get_float(m_cur_anim_state, m_stop_nodes[i], SVG_ATTR_GRADIENT_STOP_OPACITY, &v)) {
+                    opacity = v;
+                }
+                if (psx_svg_anim_get_float(m_cur_anim_state, m_stop_nodes[i], SVG_ATTR_GRADIENT_STOP_OFFSET, &v)) {
+                    start = v;
+                }
+            }
+
+            c.a *= opacity;
+            ps_gradient_add_color_stop(gradient, start, &c);
         }
 
         if (fill) {
@@ -1999,6 +2371,7 @@ private:
     ps_color m_color;
     float m_opacity;
     stop_color* m_stops;
+    const psx_svg_node** m_stop_nodes;
     uint32_t m_stop_count;
     int32_t m_units;
     float m_cx;
@@ -2042,12 +2415,39 @@ static INLINE void init_contents(svg_render_content* content, const psx_svg_node
     uint32_t len;
     const char* str = node->content(&len);
     if (str) {
+        // SVG xml:space="default" normalization:
+        // 1. Replace \n, \r, \t with space
+        // 2. Collapse consecutive spaces into one
+        // 3. Strip leading and trailing spaces
         uint32_t* letters = (uint32_t*)state->list->alloc(len * sizeof(uint32_t));
         uint32_t offset = 0;
-        for (uint32_t i = 0; i < len; i++) {
-            letters[i] = utf8_text_encode_next(str, len, &offset);
+        uint32_t count = 0;
+        bool prev_space = false;
+
+        while (offset < len) {
+            uint32_t cp = utf8_text_encode_next(str, len, &offset);
+            if (cp == 0) {
+                break;
+            }
+            // Replace control whitespace with space
+            if (cp == '\n' || cp == '\r' || cp == '\t') {
+                cp = ' ';
+            }
+            // Collapse consecutive spaces
+            if (cp == ' ') {
+                if (prev_space) {
+                    continue;
+                }
+                prev_space = true;
+            } else {
+                prev_space = false;
+            }
+            letters[count++] = cp;
         }
-        content->set_contents(letters, len);
+
+        if (count > 0) {
+            content->set_contents(letters, count);
+        }
     }
 }
 
@@ -2349,7 +2749,25 @@ bool psx_svg_render_list_get_size(const psx_svg_render_list* render, ps_size* rs
     return false;
 }
 
+void psx_svg_render_list_set_anim_state(psx_svg_render_list* render, const psx_svg_anim_state* anim_state)
+{
+    if (!render) {
+        return;
+    }
+    svg_render_list_impl* list = (svg_render_list_impl*)render;
+    render_obj_base* head = list->head();
+    while (head) {
+        head->set_anim_state(anim_state);
+        head = head->next();
+    }
+}
+
 bool psx_svg_render_list_draw(ps_context* ctx, const psx_svg_render_list* render)
+{
+    return psx_svg_render_list_draw_anim(ctx, render, NULL);
+}
+
+bool psx_svg_render_list_draw_anim(ps_context* ctx, const psx_svg_render_list* render, const psx_svg_anim_state* anim_state)
 {
     if (!ctx || !render) {
         LOG_ERROR("Invalid arguements for svg render!\n");
@@ -2363,11 +2781,44 @@ bool psx_svg_render_list_draw(ps_context* ctx, const psx_svg_render_list* render
     ps_identity(ctx);
 
     render_obj_base* head = list->head();
+    if (head->type() == SVG_TAG_SVG) {
+        ps_rect clip_rect = {0};
+        head->get_bounding_rect(&clip_rect);
+        ps_clip_rect(ctx, &clip_rect);
+    }
+
     while (head) {
         if (head->render_types() == RENDER_NORMAL) {
+            // Visibility: animation override takes priority.
+            bool skip = false;
+            if (anim_state && head->node()) {
+                int32_t vis = 0;
+                if (psx_svg_anim_get_int32(anim_state, head->node(), SVG_ATTR_DISPLAY, &vis) && vis == 0) {
+                    skip = true;
+                } else if (psx_svg_anim_get_int32(anim_state, head->node(), SVG_ATTR_VISIBILITY, &vis)) {
+                    skip = (vis == 0);
+                } else {
+                    skip = head->is_hidden();
+                }
+            } else {
+                skip = head->is_hidden();
+            }
+            if (skip) {
+                head = head->next();
+                continue;
+            }
+
             ps_save(ctx);
             head->prepare(ctx);
-            head->render(ctx, NULL);
+
+            // Apply animated transform if present.
+            const ps_matrix* anim_mtx = NULL;
+            if (anim_state && head->node()) {
+                anim_mtx = psx_svg_anim_get_transform(anim_state, head->node());
+            }
+
+            head->render(ctx, anim_mtx);
+
             ps_restore(ctx);
         }
         head = head->next();

@@ -17,7 +17,7 @@ int main(int argc, char* argv[])
 {
     char * path;
     psx_image * data;
-    int ret;
+    psx_result ret;
     float q = 0.9f;
 
     if (psx_image_init() != 0) {

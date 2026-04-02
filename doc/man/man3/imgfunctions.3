@@ -1,4 +1,4 @@
-.TH "imgfunctions" 3 "Tue May 13 2025" "Version 2.8" "Picasso API" \" -*- nroff -*-
+.TH "imgfunctions" 3 "Thu Apr 2 2026" "Version 2.9" "Picasso API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -10,7 +10,7 @@ imgfunctions
 
 .in +1c
 .ti -1c
-.RI "typedef int(* \fBimage_writer_fn\fP) (void *param, const \fBps_byte\fP *data, size_t length)"
+.RI "typedef int32_t(* \fBimage_writer_fn\fP) (void *param, const \fBps_byte\fP *data, size_t length)"
 .br
 .RI "Callback function for saving image data\&. "
 .in -1c
@@ -18,35 +18,35 @@ imgfunctions
 
 .in +1c
 .ti -1c
-.RI "PEXPORT int PICAPI \fBpsx_image_init\fP (void)"
+.RI "PEXPORT \fBpsx_result\fP PICAPI \fBpsx_image_init\fP (void)"
 .br
 .RI "Initialze the library and load resources\&. "
 .ti -1c
-.RI "PEXPORT int PICAPI \fBpsx_image_shutdown\fP (void)"
+.RI "PEXPORT void PICAPI \fBpsx_image_shutdown\fP (void)"
 .br
-.RI "Release resources and shutdoen\&. "
+.RI "Release resources and shutdown\&. "
 .ti -1c
-.RI "PEXPORT \fBpsx_image\fP *PICAPI \fBpsx_image_create_from_data\fP (\fBps_byte\fP *data, \fBps_color_format\fP fmt, int width, int height, int pitch, int *err_code)"
+.RI "PEXPORT \fBpsx_image\fP *PICAPI \fBpsx_image_create_from_data\fP (\fBps_byte\fP *data, \fBps_color_format\fP fmt, int32_t width, int32_t height, int32_t pitch, \fBpsx_result\fP *err_code)"
 .br
 .RI "Create a new psx_image using a copy of given address in memory\&. "
 .ti -1c
-.RI "PEXPORT \fBpsx_image\fP *PICAPI \fBpsx_image_load\fP (const char *file_name, int *err_code)"
+.RI "PEXPORT \fBpsx_image\fP *PICAPI \fBpsx_image_load\fP (const char *file_name, \fBpsx_result\fP *err_code)"
 .br
 .RI "Create a new psx_image object and load from file\&. "
 .ti -1c
-.RI "PEXPORT \fBpsx_image\fP *PICAPI \fBpsx_image_load_from_memory\fP (const \fBps_byte\fP *data, size_t length, int *err_code)"
+.RI "PEXPORT \fBpsx_image\fP *PICAPI \fBpsx_image_load_from_memory\fP (const \fBps_byte\fP *data, size_t length, \fBpsx_result\fP *err_code)"
 .br
 .RI "Create a new psx_image object and load data from memory\&. "
 .ti -1c
-.RI "PEXPORT int PICAPI \fBpsx_image_save\fP (const \fBpsx_image\fP *image, \fBimage_writer_fn\fP func, void *param, const char *type, float quality)"
+.RI "PEXPORT \fBpsx_result\fP PICAPI \fBpsx_image_save\fP (const \fBpsx_image\fP *image, \fBimage_writer_fn\fP func, void *param, const char *type, float quality)"
 .br
 .RI "Encoding psx_image to a gaving format and output it\&. "
 .ti -1c
-.RI "PEXPORT int PICAPI \fBpsx_image_save_to_file\fP (const \fBpsx_image\fP *image, const char *file_name, const char *type, float quality)"
+.RI "PEXPORT \fBpsx_result\fP PICAPI \fBpsx_image_save_to_file\fP (const \fBpsx_image\fP *image, const char *file_name, const char *type, float quality)"
 .br
 .RI "Encoding psx_image to a gaving format and output to a file\&. "
 .ti -1c
-.RI "PEXPORT int PICAPI \fBpsx_image_destroy\fP (\fBpsx_image\fP *image)"
+.RI "PEXPORT void PICAPI \fBpsx_image_destroy\fP (\fBpsx_image\fP *image)"
 .br
 .RI "Destroy the psx_image object and release resources\&. "
 .in -1c
@@ -55,7 +55,7 @@ imgfunctions
 
 .SH "Function Documentation"
 .PP 
-.SS "\fBpsx_image\fP * psx_image_create_from_data (\fBps_byte\fP * data, \fBps_color_format\fP fmt, int width, int height, int pitch, int * err_code)"
+.SS "\fBpsx_image\fP * psx_image_create_from_data (\fBps_byte\fP * data, \fBps_color_format\fP fmt, int32_t width, int32_t height, int32_t pitch, \fBpsx_result\fP * err_code)"
 
 .PP
 Create a new psx_image using a copy of given address in memory\&. 
@@ -86,7 +86,7 @@ If the function succeeds, the return value is the pointer to a new psx_image obj
 .RE
 .PP
 
-.SS "int psx_image_destroy (\fBpsx_image\fP * image)"
+.SS "int32_t psx_image_destroy (\fBpsx_image\fP * image)"
 
 .PP
 Destroy the psx_image object and release resources\&. 
@@ -96,18 +96,13 @@ Destroy the psx_image object and release resources\&.
 \fIimage\fP Pointer to an existing psx_image object\&.
 .RE
 .PP
-\fBReturns\fP
-.RS 4
-Result code returned\&.
-.RE
-.PP
 \fBSee also\fP
 .RS 4
 \fBpsx_image_load\fP \fBpsx_image_load_from_memory\fP 
 .RE
 .PP
 
-.SS "int psx_image_init (void)"
+.SS "int32_t psx_image_init (void)"
 
 .PP
 Initialze the library and load resources\&. 
@@ -123,7 +118,7 @@ Result code returned\&.
 .RE
 .PP
 
-.SS "\fBpsx_image\fP * psx_image_load (const char * file_name, int * err_code)"
+.SS "\fBpsx_image\fP * psx_image_load (const char * file_name, \fBpsx_result\fP * err_code)"
 
 .PP
 Create a new psx_image object and load from file\&. 
@@ -146,7 +141,7 @@ If successs, the return value is the pointer to new psx_image object\&. If fails
 .RE
 .PP
 
-.SS "\fBpsx_image\fP * psx_image_load_from_memory (const \fBps_byte\fP * data, size_t length, int * err_code)"
+.SS "\fBpsx_image\fP * psx_image_load_from_memory (const \fBps_byte\fP * data, size_t length, \fBpsx_result\fP * err_code)"
 
 .PP
 Create a new psx_image object and load data from memory\&. 
@@ -171,7 +166,7 @@ If successs, the return value is the pointer to new psx_image object\&. If fails
 .RE
 .PP
 
-.SS "int psx_image_save (const \fBpsx_image\fP * image, \fBimage_writer_fn\fP func, void * param, const char * type, float quality)"
+.SS "\fBpsx_result\fP psx_image_save (const \fBpsx_image\fP * image, \fBimage_writer_fn\fP func, void * param, const char * type, float quality)"
 
 .PP
 Encoding psx_image to a gaving format and output it\&. 
@@ -200,7 +195,7 @@ Result code returned\&.
 .RE
 .PP
 
-.SS "int psx_image_save_to_file (const \fBpsx_image\fP * image, const char * file_name, const char * type, float quality)"
+.SS "\fBpsx_result\fP psx_image_save_to_file (const \fBpsx_image\fP * image, const char * file_name, const char * type, float quality)"
 
 .PP
 Encoding psx_image to a gaving format and output to a file\&. 
@@ -227,15 +222,10 @@ Result code returned\&.
 .RE
 .PP
 
-.SS "int psx_image_shutdown (void)"
+.SS "int32_t psx_image_shutdown (void)"
 
 .PP
-Release resources and shutdoen\&. 
-.PP
-\fBReturns\fP
-.RS 4
-Result code returned\&.
-.RE
+Release resources and shutdown\&. 
 .PP
 \fBSee also\fP
 .RS 4

@@ -1,0 +1,77 @@
+\doxysection{include/svg/psx\+\_\+svg\+\_\+animation.h File Reference}
+\label{psx__svg__animation_8h}\index{include/svg/psx\_svg\_animation.h@{include/svg/psx\_svg\_animation.h}}
+{\ttfamily \#include \char`\"{}psx\+\_\+svg.\+h\char`\"{}}\newline
+\doxysubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef struct \+\_\+psx\+\_\+svg\+\_\+player \textbf{ psx\+\_\+svg\+\_\+player}
+\begin{DoxyCompactList}\small\item\em An opaque type represents an svg animation player. \end{DoxyCompactList}\item 
+typedef void($\ast$ \textbf{ psx\+\_\+svg\+\_\+anim\+\_\+event\+\_\+cb}) (\textbf{ psx\+\_\+svg\+\_\+anim\+\_\+event\+\_\+type} type, const char $\ast$anim\+\_\+id, void $\ast$user\+\_\+data)
+\begin{DoxyCompactList}\small\item\em The callback for S\+VG animation event. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \textbf{ psx\+\_\+svg\+\_\+player\+\_\+state} \{ \textbf{ P\+S\+X\+\_\+\+S\+V\+G\+\_\+\+P\+L\+A\+Y\+E\+R\+\_\+\+S\+T\+O\+P\+P\+ED} = 0, 
+\textbf{ P\+S\+X\+\_\+\+S\+V\+G\+\_\+\+P\+L\+A\+Y\+E\+R\+\_\+\+P\+L\+A\+Y\+I\+NG} = 1, 
+\textbf{ P\+S\+X\+\_\+\+S\+V\+G\+\_\+\+P\+L\+A\+Y\+E\+R\+\_\+\+P\+A\+U\+S\+ED} = 2
+ \}
+\begin{DoxyCompactList}\small\item\em S\+VG animation player status. \end{DoxyCompactList}\item 
+enum \textbf{ psx\+\_\+svg\+\_\+anim\+\_\+event\+\_\+type} \{ \textbf{ P\+S\+X\+\_\+\+S\+V\+G\+\_\+\+A\+N\+I\+M\+\_\+\+E\+V\+E\+N\+T\+\_\+\+B\+E\+G\+IN} = 0, 
+\textbf{ P\+S\+X\+\_\+\+S\+V\+G\+\_\+\+A\+N\+I\+M\+\_\+\+E\+V\+E\+N\+T\+\_\+\+E\+ND}, 
+\textbf{ P\+S\+X\+\_\+\+S\+V\+G\+\_\+\+A\+N\+I\+M\+\_\+\+E\+V\+E\+N\+T\+\_\+\+R\+E\+P\+E\+AT}
+ \}
+\begin{DoxyCompactList}\small\item\em S\+VG animation event callback types. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+P\+E\+X\+P\+O\+RT \textbf{ psx\+\_\+svg\+\_\+player} $\ast$P\+I\+C\+A\+PI \textbf{ psx\+\_\+svg\+\_\+player\+\_\+create} (const \textbf{ psx\+\_\+svg} $\ast$root, \textbf{ psx\+\_\+result} $\ast$err)
+\begin{DoxyCompactList}\small\item\em Create a new animation player from an already-\/parsed S\+VG document. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ psx\+\_\+svg\+\_\+player\+\_\+destroy} (\textbf{ psx\+\_\+svg\+\_\+player} $\ast$p)
+\begin{DoxyCompactList}\small\item\em Destroy the psx\+\_\+svg\+\_\+player object and release resources. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ psx\+\_\+svg\+\_\+player\+\_\+set\+\_\+loop} (\textbf{ psx\+\_\+svg\+\_\+player} $\ast$p, bool loop)
+\begin{DoxyCompactList}\small\item\em Set whether the animation should loop when it reaches the end. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT bool P\+I\+C\+A\+PI \textbf{ psx\+\_\+svg\+\_\+player\+\_\+get\+\_\+loop} (const \textbf{ psx\+\_\+svg\+\_\+player} $\ast$p)
+\begin{DoxyCompactList}\small\item\em Return whether the animation looping is enabled. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ psx\+\_\+svg\+\_\+player\+\_\+set\+\_\+dpi} (\textbf{ psx\+\_\+svg\+\_\+player} $\ast$p, int32\+\_\+t dpi)
+\begin{DoxyCompactList}\small\item\em Set the D\+PI (dots per inch) used for unit conversion. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT int32\+\_\+t P\+I\+C\+A\+PI \textbf{ psx\+\_\+svg\+\_\+player\+\_\+get\+\_\+dpi} (const \textbf{ psx\+\_\+svg\+\_\+player} $\ast$p)
+\begin{DoxyCompactList}\small\item\em Return the current D\+PI value. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ psx\+\_\+svg\+\_\+player\+\_\+play} (\textbf{ psx\+\_\+svg\+\_\+player} $\ast$p)
+\begin{DoxyCompactList}\small\item\em Start or resume playback of the animation. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ psx\+\_\+svg\+\_\+player\+\_\+pause} (\textbf{ psx\+\_\+svg\+\_\+player} $\ast$p)
+\begin{DoxyCompactList}\small\item\em Pause the animation at the current time. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ psx\+\_\+svg\+\_\+player\+\_\+stop} (\textbf{ psx\+\_\+svg\+\_\+player} $\ast$p)
+\begin{DoxyCompactList}\small\item\em Stop the animation and seek to time 0. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ psx\+\_\+svg\+\_\+player\+\_\+seek} (\textbf{ psx\+\_\+svg\+\_\+player} $\ast$p, float seconds)
+\begin{DoxyCompactList}\small\item\em Seek the animation to an absolute time position. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ psx\+\_\+svg\+\_\+player\+\_\+tick} (\textbf{ psx\+\_\+svg\+\_\+player} $\ast$p, float delta\+\_\+seconds)
+\begin{DoxyCompactList}\small\item\em Advance the animation by a relative time delta. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT float P\+I\+C\+A\+PI \textbf{ psx\+\_\+svg\+\_\+player\+\_\+get\+\_\+time} (const \textbf{ psx\+\_\+svg\+\_\+player} $\ast$p)
+\begin{DoxyCompactList}\small\item\em Return the current playback time in seconds. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT float P\+I\+C\+A\+PI \textbf{ psx\+\_\+svg\+\_\+player\+\_\+get\+\_\+duration} (const \textbf{ psx\+\_\+svg\+\_\+player} $\ast$p)
+\begin{DoxyCompactList}\small\item\em Return the total duration of the animation. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT \textbf{ psx\+\_\+svg\+\_\+player\+\_\+state} P\+I\+C\+A\+PI \textbf{ psx\+\_\+svg\+\_\+player\+\_\+get\+\_\+state} (const \textbf{ psx\+\_\+svg\+\_\+player} $\ast$p)
+\begin{DoxyCompactList}\small\item\em Return the current playback state of the player. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ psx\+\_\+svg\+\_\+player\+\_\+draw} (\textbf{ psx\+\_\+svg\+\_\+player} $\ast$p, \textbf{ ps\+\_\+context} $\ast$ctx)
+\begin{DoxyCompactList}\small\item\em Draw the current animation frame into the provided Picasso context. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ psx\+\_\+svg\+\_\+player\+\_\+set\+\_\+event\+\_\+callback} (\textbf{ psx\+\_\+svg\+\_\+player} $\ast$p, \textbf{ psx\+\_\+svg\+\_\+anim\+\_\+event\+\_\+cb} cb, void $\ast$user)
+\begin{DoxyCompactList}\small\item\em Set a callback to receive animation events (begin, end, repeat). \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ psx\+\_\+svg\+\_\+player\+\_\+trigger} (\textbf{ psx\+\_\+svg\+\_\+player} $\ast$p, const char $\ast$target\+\_\+id, const char $\ast$event\+\_\+name)
+\begin{DoxyCompactList}\small\item\em Send an external event trigger to the player. \end{DoxyCompactList}\item 
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ psx\+\_\+svg\+\_\+player\+\_\+send\+\_\+key} (\textbf{ psx\+\_\+svg\+\_\+player} $\ast$p, char key)
+\begin{DoxyCompactList}\small\item\em Forward a keyboard event to the player. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyAuthor}{Author}
+Zhang Ji Peng {\texttt{ onecoolx@gmail.\+com}} 
+\end{DoxyAuthor}
+\begin{DoxyDate}{Date}
+2025/5/12
+\end{DoxyDate}
+This file includes all interfaces of picasso\textquotesingle{}s S\+VG animation extension. \begin{DoxyVerb}   Copyright (C) 2008 ~ 2026  Zhang Ji Peng
+
+   All rights reserved.
+
+   Picasso is a vector graphic library.\end{DoxyVerb}
+ 

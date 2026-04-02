@@ -1,0 +1,202 @@
+{
+    "FontCharsetOperations": {
+        "mid_ms": 0.2317175,
+        "avg_ms": 0.23411082,
+        "min_ms": 0.231512,
+        "max_ms": 0.24173099,
+        "std_dev": 0.00348169,
+        "cv": 0.01487197,
+        "iterations": 500,
+        "total_time_ms": 5341.28200597
+    },
+    "FontComplexPropertyOperations": {
+        "mid_ms": 0.27196799,
+        "avg_ms": 0.27491617,
+        "min_ms": 0.27178699,
+        "max_ms": 0.28209599,
+        "std_dev": 0.00383891,
+        "cv": 0.01396392,
+        "iterations": 500,
+        "total_time_ms": 5430.76961799
+    },
+    "FontContextOperations": {
+        "mid_ms": 20.4002695,
+        "avg_ms": 20.48065788,
+        "min_ms": 20.214828,
+        "max_ms": 20.86355,
+        "std_dev": 0.20714044,
+        "cv": 0.01011395,
+        "iterations": 44,
+        "total_time_ms": 1661.25565099
+    },
+    "FontCreateAllCharsets": {
+        "mid_ms": 0.313495,
+        "avg_ms": 0.32416837,
+        "min_ms": 0.309699,
+        "max_ms": 0.35527299,
+        "std_dev": 0.01338981,
+        "cv": 0.04130512,
+        "iterations": 500,
+        "total_time_ms": 5424.006921
+    },
+    "FontCreateAllWeights": {
+        "mid_ms": 0.32290798,
+        "avg_ms": 0.330143,
+        "min_ms": 0.31249299,
+        "max_ms": 0.36765699,
+        "std_dev": 0.01588838,
+        "cv": 0.04812576,
+        "iterations": 500,
+        "total_time_ms": 5430.318638
+    },
+    "FontCreateCopy": {
+        "mid_ms": 0.15584649,
+        "avg_ms": 0.16244078,
+        "min_ms": 0.15498,
+        "max_ms": 0.177793,
+        "std_dev": 0.00716531,
+        "cv": 0.04411032,
+        "iterations": 500,
+        "total_time_ms": 5352.59556899
+    },
+    "FontCreateDestroy": {
+        "mid_ms": 0.3134305,
+        "avg_ms": 0.32009928,
+        "min_ms": 0.312463,
+        "max_ms": 0.32636899,
+        "std_dev": 0.00602859,
+        "cv": 0.01883351,
+        "iterations": 500,
+        "total_time_ms": 5411.62550499
+    },
+    "FontCreateDifferentSizes": {
+        "mid_ms": 0.317673,
+        "avg_ms": 0.32626071,
+        "min_ms": 0.31099,
+        "max_ms": 0.3593,
+        "std_dev": 0.01460843,
+        "cv": 0.04477534,
+        "iterations": 500,
+        "total_time_ms": 5399.493738
+    },
+    "FontCreateItalicVariants": {
+        "mid_ms": 0.31116099,
+        "avg_ms": 0.32234392,
+        "min_ms": 0.309649,
+        "max_ms": 0.35190699,
+        "std_dev": 0.01225975,
+        "cv": 0.03803316,
+        "iterations": 500,
+        "total_time_ms": 5415.465399
+    },
+    "FontErrorHandling": {
+        "mid_ms": 0.49160299,
+        "avg_ms": 0.49421013,
+        "min_ms": 0.487891,
+        "max_ms": 0.499813,
+        "std_dev": 0.00518562,
+        "cv": 0.01049275,
+        "iterations": 500,
+        "total_time_ms": 5456.800308
+    },
+    "FontFamilyVariations": {
+        "mid_ms": 0.31762799,
+        "avg_ms": 0.32707197,
+        "min_ms": 0.314437,
+        "max_ms": 0.358409,
+        "std_dev": 0.0119392,
+        "cv": 0.03650328,
+        "iterations": 500,
+        "total_time_ms": 5406.53309
+    },
+    "FontFlipOperations": {
+        "mid_ms": 0.2316825,
+        "avg_ms": 0.23491861,
+        "min_ms": 0.231513,
+        "max_ms": 0.241832,
+        "std_dev": 0.00401831,
+        "cv": 0.01710525,
+        "iterations": 500,
+        "total_time_ms": 5284.84854799
+    },
+    "FontHintOperations": {
+        "mid_ms": 0.247051,
+        "avg_ms": 0.24994657,
+        "min_ms": 0.24692099,
+        "max_ms": 0.25701997,
+        "std_dev": 0.00388119,
+        "cv": 0.01552808,
+        "iterations": 500,
+        "total_time_ms": 5333.390227
+    },
+    "FontItalicOperations": {
+        "mid_ms": 0.23177299,
+        "avg_ms": 0.2344876,
+        "min_ms": 0.23150299,
+        "max_ms": 0.241912,
+        "std_dev": 0.00369204,
+        "cv": 0.01574517,
+        "iterations": 500,
+        "total_time_ms": 5382.36495199
+    },
+    "FontMultipleReferences": {
+        "mid_ms": 0.04946249,
+        "avg_ms": 0.0504479,
+        "min_ms": 0.049282,
+        "max_ms": 0.05106499,
+        "std_dev": 0.00089703,
+        "cv": 0.01778147,
+        "iterations": 500,
+        "total_time_ms": 5312.93599499
+    },
+    "FontReferenceOperations": {
+        "mid_ms": 0.904659,
+        "avg_ms": 0.90474288,
+        "min_ms": 0.90320599,
+        "max_ms": 0.90736399,
+        "std_dev": 0.00085648,
+        "cv": 0.00094665,
+        "iterations": 415,
+        "total_time_ms": 4701.43973599
+    },
+    "FontReusePerformance": {
+        "mid_ms": 0.272118,
+        "avg_ms": 0.27593146,
+        "min_ms": 0.271777,
+        "max_ms": 0.28290899,
+        "std_dev": 0.00460842,
+        "cv": 0.01670132,
+        "iterations": 500,
+        "total_time_ms": 5332.58841999
+    },
+    "FontSizeOperations": {
+        "mid_ms": 0.26291599,
+        "avg_ms": 0.26676825,
+        "min_ms": 0.26256,
+        "max_ms": 0.27308,
+        "std_dev": 0.00454041,
+        "cv": 0.01702007,
+        "iterations": 500,
+        "total_time_ms": 5303.00967699
+    },
+    "FontStressTest": {
+        "mid_ms": 1.02505899,
+        "avg_ms": 1.02778499,
+        "min_ms": 1.01774,
+        "max_ms": 1.03959099,
+        "std_dev": 0.006152,
+        "cv": 0.00598568,
+        "iterations": 394,
+        "total_time_ms": 4589.45191198
+    },
+    "FontWeightOperations": {
+        "mid_ms": 0.12375099,
+        "avg_ms": 0.12536516,
+        "min_ms": 0.123721,
+        "max_ms": 0.13348899,
+        "std_dev": 0.00203462,
+        "cv": 0.01622955,
+        "iterations": 500,
+        "total_time_ms": 5237.305893
+    }
+}

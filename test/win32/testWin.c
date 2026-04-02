@@ -171,7 +171,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             init_context(context, canvas, buffer);    
             set_image_data(ibmp.bmBits, fmt, ibmp.bmWidth, ibmp.bmHeight, ibmp.bmWidth*CBYTE);
             set_pattern_data(abmp.bmBits, fmt, abmp.bmWidth, abmp.bmHeight, abmp.bmWidth*CBYTE);
-            SetTimer(hWnd, 33, 100, 0);
+            SetTimer(hWnd, 33, 10, 0);
         }
         break;
     case WM_TIMER:

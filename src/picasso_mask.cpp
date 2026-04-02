@@ -8,7 +8,7 @@
 #include "device.h"
 #include "interfaces.h"
 
-#include "picasso_global.h"
+#include "picasso_private.h"
 #include "picasso_mask.h"
 
 namespace picasso {

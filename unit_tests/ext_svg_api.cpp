@@ -89,3 +89,37 @@ TEST_F(SvgAPITest, SvgDrawTiger)
     psx_svg_render_destroy(render);
     psx_svg_destroy(svg);
 }
+
+TEST_F(SvgAPITest, LoadFromFileBadCase)
+{
+    psx_result err;
+    psx_svg* svg = psx_svg_load("nonexistent.svg", &err);
+    EXPECT_EQ(svg, nullptr);
+    EXPECT_EQ(err, S_BAD_PARAMS);
+
+    svg = psx_svg_load("", &err);
+    EXPECT_EQ(svg, nullptr);
+    EXPECT_EQ(err, S_BAD_PARAMS);
+}
+
+TEST_F(SvgAPITest, LoadFromMemoryBadCase)
+{
+    psx_result err;
+
+    psx_svg* svg = psx_svg_load_from_memory(nullptr, 0, &err);
+    EXPECT_EQ(svg, nullptr);
+    EXPECT_EQ(err, S_BAD_PARAMS);
+
+    const char* invalid_svg = "<invalid>";
+    svg = psx_svg_load_from_memory((ps_byte*)invalid_svg, strlen(invalid_svg), &err);
+    EXPECT_EQ(svg, nullptr);
+    EXPECT_EQ(err, S_FAILURE);
+}
+
+TEST_F(SvgAPITest, RenderBadCase)
+{
+    psx_result err;
+    psx_svg_render* render = psx_svg_render_create(nullptr, &err);
+    EXPECT_EQ(render, nullptr);
+    EXPECT_EQ(err, S_BAD_PARAMS);
+}

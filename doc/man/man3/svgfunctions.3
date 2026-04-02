@@ -1,4 +1,4 @@
-.TH "svgfunctions" 3 "Tue May 13 2025" "Version 2.8" "Picasso API" \" -*- nroff -*-
+.TH "svgfunctions" 3 "Thu Apr 2 2026" "Version 2.9" "Picasso API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -16,7 +16,7 @@ svgfunctions
 .ti -1c
 .RI "PEXPORT void PICAPI \fBpsx_svg_shutdown\fP (void)"
 .br
-.RI "Release resources and shutdoen\&. "
+.RI "Release resources and shutdown\&. "
 .ti -1c
 .RI "PEXPORT \fBpsx_svg\fP *PICAPI \fBpsx_svg_load\fP (const char *file_name, \fBpsx_result\fP *err_code)"
 .br
@@ -37,6 +37,78 @@ svgfunctions
 .RI "PEXPORT \fBpsx_result\fP PICAPI \fBpsx_svg_render_draw\fP (\fBps_context\fP *ctx, const \fBpsx_svg_render\fP *render)"
 .br
 .RI "Draws an psx_svg_render object into the given context\&. "
+.ti -1c
+.RI "PEXPORT \fBpsx_svg_player\fP *PICAPI \fBpsx_svg_player_create\fP (const \fBpsx_svg\fP *root, \fBpsx_result\fP *err)"
+.br
+.RI "Create a new animation player from an already-parsed SVG document\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBpsx_svg_player_destroy\fP (\fBpsx_svg_player\fP *p)"
+.br
+.RI "Destroy the psx_svg_player object and release resources\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBpsx_svg_player_set_loop\fP (\fBpsx_svg_player\fP *p, bool loop)"
+.br
+.RI "Set whether the animation should loop when it reaches the end\&. "
+.ti -1c
+.RI "PEXPORT bool PICAPI \fBpsx_svg_player_get_loop\fP (const \fBpsx_svg_player\fP *p)"
+.br
+.RI "Return whether the animation looping is enabled\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBpsx_svg_player_set_dpi\fP (\fBpsx_svg_player\fP *p, int32_t dpi)"
+.br
+.RI "Set the DPI (dots per inch) used for unit conversion\&. "
+.ti -1c
+.RI "PEXPORT int32_t PICAPI \fBpsx_svg_player_get_dpi\fP (const \fBpsx_svg_player\fP *p)"
+.br
+.RI "Return the current DPI value\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBpsx_svg_player_play\fP (\fBpsx_svg_player\fP *p)"
+.br
+.RI "Start or resume playback of the animation\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBpsx_svg_player_pause\fP (\fBpsx_svg_player\fP *p)"
+.br
+.RI "Pause the animation at the current time\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBpsx_svg_player_stop\fP (\fBpsx_svg_player\fP *p)"
+.br
+.RI "Stop the animation and seek to time 0\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBpsx_svg_player_seek\fP (\fBpsx_svg_player\fP *p, float seconds)"
+.br
+.RI "Seek the animation to an absolute time position\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBpsx_svg_player_tick\fP (\fBpsx_svg_player\fP *p, float delta_seconds)"
+.br
+.RI "Advance the animation by a relative time delta\&. "
+.ti -1c
+.RI "PEXPORT float PICAPI \fBpsx_svg_player_get_time\fP (const \fBpsx_svg_player\fP *p)"
+.br
+.RI "Return the current playback time in seconds\&. "
+.ti -1c
+.RI "PEXPORT float PICAPI \fBpsx_svg_player_get_duration\fP (const \fBpsx_svg_player\fP *p)"
+.br
+.RI "Return the total duration of the animation\&. "
+.ti -1c
+.RI "PEXPORT \fBpsx_svg_player_state\fP PICAPI \fBpsx_svg_player_get_state\fP (const \fBpsx_svg_player\fP *p)"
+.br
+.RI "Return the current playback state of the player\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBpsx_svg_player_draw\fP (\fBpsx_svg_player\fP *p, \fBps_context\fP *ctx)"
+.br
+.RI "Draw the current animation frame into the provided Picasso context\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBpsx_svg_player_set_event_callback\fP (\fBpsx_svg_player\fP *p, \fBpsx_svg_anim_event_cb\fP cb, void *user)"
+.br
+.RI "Set a callback to receive animation events (begin, end, repeat)\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBpsx_svg_player_trigger\fP (\fBpsx_svg_player\fP *p, const char *target_id, const char *event_name)"
+.br
+.RI "Send an external event trigger to the player\&. "
+.ti -1c
+.RI "PEXPORT void PICAPI \fBpsx_svg_player_send_key\fP (\fBpsx_svg_player\fP *p, char key)"
+.br
+.RI "Forward a keyboard event to the player\&. "
 .in -1c
 .SH "Detailed Description"
 .PP 
@@ -123,6 +195,346 @@ If successs, the return value is the pointer to new psx_svg object\&. If fails, 
 .RE
 .PP
 
+.SS "\fBpsx_svg_player\fP * psx_svg_player_create (const \fBpsx_svg\fP * root, \fBpsx_result\fP * err)"
+
+.PP
+Create a new animation player from an already-parsed SVG document\&. The player internally builds a render list once and reuses it each frame\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIroot\fP Pointer to an existing psx_svg object\&. 
+.br
+\fIerr\fP Pointer to a value to receiving the result code\&. Can be NULL\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+If success, the return value is the pointer to new psx_svg_player object\&. If fails, the return value is NULL, and result will be returned by \fIerr\fP\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBpsx_svg_player_destroy\fP 
+.RE
+.PP
+
+.SS "void psx_svg_player_destroy (\fBpsx_svg_player\fP * p)"
+
+.PP
+Destroy the psx_svg_player object and release resources\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIp\fP Pointer to an existing psx_svg_player object\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBpsx_svg_player_create\fP 
+.RE
+.PP
+
+.SS "void psx_svg_player_draw (\fBpsx_svg_player\fP * p, \fBps_context\fP * ctx)"
+
+.PP
+Draw the current animation frame into the provided Picasso context\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIp\fP Pointer to an existing psx_svg_player object\&. 
+.br
+\fIctx\fP Pointer to an existing ps_context object\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBpsx_svg_player_seek\fP \fBpsx_svg_player_tick\fP 
+.RE
+.PP
+
+.SS "int32_t psx_svg_player_get_dpi (const \fBpsx_svg_player\fP * p)"
+
+.PP
+Return the current DPI value\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIp\fP Pointer to an existing psx_svg_player object\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The current DPI value\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBpsx_svg_player_set_dpi\fP 
+.RE
+.PP
+
+.SS "float psx_svg_player_get_duration (const \fBpsx_svg_player\fP * p)"
+
+.PP
+Return the total duration of the animation\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIp\fP Pointer to an existing psx_svg_player object\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The duration in seconds, or -1 for indefinite/unknown\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBpsx_svg_player_get_time\fP 
+.RE
+.PP
+
+.SS "bool psx_svg_player_get_loop (const \fBpsx_svg_player\fP * p)"
+
+.PP
+Return whether the animation looping is enabled\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIp\fP Pointer to an existing psx_svg_player object\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+True if looping is enabled, otherwise False\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBpsx_svg_player_set_loop\fP 
+.RE
+.PP
+
+.SS "\fBpsx_svg_player_state\fP psx_svg_player_get_state (const \fBpsx_svg_player\fP * p)"
+
+.PP
+Return the current playback state of the player\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIp\fP Pointer to an existing psx_svg_player object\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The current player state\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBpsx_svg_player_play\fP \fBpsx_svg_player_pause\fP \fBpsx_svg_player_stop\fP 
+.RE
+.PP
+
+.SS "float psx_svg_player_get_time (const \fBpsx_svg_player\fP * p)"
+
+.PP
+Return the current playback time in seconds\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIp\fP Pointer to an existing psx_svg_player object\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The current time in seconds\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBpsx_svg_player_seek\fP \fBpsx_svg_player_tick\fP 
+.RE
+.PP
+
+.SS "void psx_svg_player_pause (\fBpsx_svg_player\fP * p)"
+
+.PP
+Pause the animation at the current time\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIp\fP Pointer to an existing psx_svg_player object\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBpsx_svg_player_play\fP \fBpsx_svg_player_stop\fP \fBpsx_svg_player_get_state\fP 
+.RE
+.PP
+
+.SS "void psx_svg_player_play (\fBpsx_svg_player\fP * p)"
+
+.PP
+Start or resume playback of the animation\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIp\fP Pointer to an existing psx_svg_player object\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBpsx_svg_player_pause\fP \fBpsx_svg_player_stop\fP \fBpsx_svg_player_get_state\fP 
+.RE
+.PP
+
+.SS "void psx_svg_player_seek (\fBpsx_svg_player\fP * p, float seconds)"
+
+.PP
+Seek the animation to an absolute time position\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIp\fP Pointer to an existing psx_svg_player object\&. 
+.br
+\fIseconds\fP The target time in seconds\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBpsx_svg_player_tick\fP \fBpsx_svg_player_get_time\fP 
+.RE
+.PP
+
+.SS "void psx_svg_player_send_key (\fBpsx_svg_player\fP * p, char key)"
+
+.PP
+Forward a keyboard event to the player\&. Used for animations with begin='accessKey(x)' style timing\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIp\fP Pointer to an existing psx_svg_player object\&. 
+.br
+\fIkey\fP The character key pressed\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBpsx_svg_player_trigger\fP 
+.RE
+.PP
+
+.SS "void psx_svg_player_set_dpi (\fBpsx_svg_player\fP * p, int32_t dpi)"
+
+.PP
+Set the DPI (dots per inch) used for unit conversion\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIp\fP Pointer to an existing psx_svg_player object\&. 
+.br
+\fIdpi\fP The DPI value\&. Default is 96\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBpsx_svg_player_get_dpi\fP 
+.RE
+.PP
+
+.SS "void psx_svg_player_set_event_callback (\fBpsx_svg_player\fP * p, \fBpsx_svg_anim_event_cb\fP cb, void * user)"
+
+.PP
+Set a callback to receive animation events (begin, end, repeat)\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIp\fP Pointer to an existing psx_svg_player object\&. 
+.br
+\fIcb\fP The callback function, or NULL to clear\&. 
+.br
+\fIuser\fP User data pointer passed to the callback\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBpsx_svg_anim_event_cb\fP \fBpsx_svg_anim_event_type\fP 
+.RE
+.PP
+
+.SS "void psx_svg_player_set_loop (\fBpsx_svg_player\fP * p, bool loop)"
+
+.PP
+Set whether the animation should loop when it reaches the end\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIp\fP Pointer to an existing psx_svg_player object\&. 
+.br
+\fIloop\fP True to enable looping, False to disable\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBpsx_svg_player_get_loop\fP 
+.RE
+.PP
+
+.SS "void psx_svg_player_stop (\fBpsx_svg_player\fP * p)"
+
+.PP
+Stop the animation and seek to time 0\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIp\fP Pointer to an existing psx_svg_player object\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBpsx_svg_player_play\fP \fBpsx_svg_player_pause\fP \fBpsx_svg_player_get_state\fP 
+.RE
+.PP
+
+.SS "void psx_svg_player_tick (\fBpsx_svg_player\fP * p, float delta_seconds)"
+
+.PP
+Advance the animation by a relative time delta\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIp\fP Pointer to an existing psx_svg_player object\&. 
+.br
+\fIdelta_seconds\fP The time increment in seconds since the last tick\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBpsx_svg_player_seek\fP \fBpsx_svg_player_get_time\fP 
+.RE
+.PP
+
+.SS "void psx_svg_player_trigger (\fBpsx_svg_player\fP * p, const char * target_id, const char * event_name)"
+
+.PP
+Send an external event trigger to the player\&. Used for animations with begin='id\&.event' style timing\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIp\fP Pointer to an existing psx_svg_player object\&. 
+.br
+\fItarget_id\fP The target element id, or NULL for untargeted events\&. 
+.br
+\fIevent_name\fP The event name (e\&.g\&. 'click')\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBpsx_svg_player_send_key\fP 
+.RE
+.PP
+
 .SS "void psx_svg_render_destroy (\fBpsx_svg_render\fP * render)"
 
 .PP
@@ -135,7 +547,7 @@ Destroy the psx_svg_render object and release resources\&.
 .PP
 \fBSee also\fP
 .RS 4
-\fBpsx_svg_render_draw\fP psx_svg_render_create 
+\fBpsx_svg_render_draw\fP psx_svg_render_create psx_svg_render_get_size 
 .RE
 .PP
 
@@ -158,14 +570,14 @@ Result code returned\&.
 .PP
 \fBSee also\fP
 .RS 4
-\fBpsx_svg_render_draw\fP psx_svg_render_create 
+\fBpsx_svg_render_destroy\fP psx_svg_render_create psx_svg_render_get_size 
 .RE
 .PP
 
 .SS "void psx_svg_shutdown (void)"
 
 .PP
-Release resources and shutdoen\&. 
+Release resources and shutdown\&. 
 .PP
 \fBSee also\fP
 .RS 4

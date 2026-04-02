@@ -107,7 +107,7 @@ font_adapter::font_adapter(const char* name, int32_t charset, scalar size, scala
     m_impl->leading = (scalar)CTFontGetLeading(m_impl->font);
     m_impl->units_per_em = CTFontGetUnitsPerEm(m_impl->font);
     m_impl->height = m_impl->ascent + m_impl->descent;
-    // FIXME： weight not implement.
+    m_impl->weight = weight;
     CFRelease(fName);
 }
 
@@ -158,13 +158,6 @@ static void _cgPathReader(void *info, const CGPathElement *element)
     }
 }
 
-static rect get_bounding_rect(graphic_path& path)
-{
-    rect_s rc(0,0,0,0);
-    bounding_rect(path, 0, &rc.x1, &rc.y1, &rc.x2, &rc.y2);
-    return rect((int32_t)Floor(rc.x1), (int32_t)Floor(rc.y1), (int32_t)Ceil(rc.x2), (int32_t)Ceil(rc.y2));
-}
-
 bool font_adapter::prepare_glyph(uint32_t code)
 {
     if (m_impl->font) {
@@ -177,11 +170,18 @@ bool font_adapter::prepare_glyph(uint32_t code)
         CTFontGetAdvancesForGlyphs(m_impl->font, kCTFontOrientationDefault, &(m_impl->cur_glyph_index), &advances, 1);
         m_impl->cur_advance_x = (scalar)advances.width;
         m_impl->cur_advance_y = (scalar)advances.height;
+
+        CGRect bbox;
+        CTFontGetBoundingRectsForGlyphs(m_impl->font, kCTFontOrientationDefault, &(m_impl->cur_glyph_index), &bbox, 1);
+
+        m_impl->cur_bound_rect.x1 = CGRectGetMinX(bbox);
+        m_impl->cur_bound_rect.y1 = CGRectGetMinY(bbox);
+        m_impl->cur_bound_rect.x2 = CGRectGetMaxX(bbox);
+        m_impl->cur_bound_rect.y2 = CGRectGetMaxY(bbox);
         
         CGPathRef fontPath = CTFontCreatePathForGlyph(m_impl->font, m_impl->cur_glyph_index, &m_impl->matrix);
         m_impl->cur_font_path.remove_all();
         CGPathApply(fontPath, m_impl, _cgPathReader);
-        m_impl->cur_bound_rect = get_bounding_rect(m_impl->cur_font_path);
         m_impl->cur_data_size = m_impl->cur_font_path.total_byte_size()+sizeof(uint32_t);//count data
 
         CGPathRelease(fontPath);

@@ -1,4 +1,4 @@
-.TH "_psx_image_header" 3 "Tue May 13 2025" "Version 2.8" "Picasso API" \" -*- nroff -*-
+.TH "_psx_image_header" 3 "Thu Apr 2 2026" "Version 2.9" "Picasso API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -16,73 +16,73 @@ _psx_image_header \- Image reader header define\&.
 .RI "void * \fBpriv\fP"
 .br
 .ti -1c
-.RI "int \fBwidth\fP"
+.RI "int32_t \fBwidth\fP"
 .br
 .ti -1c
-.RI "int \fBheight\fP"
+.RI "int32_t \fBheight\fP"
 .br
 .ti -1c
-.RI "int \fBpitch\fP"
+.RI "int32_t \fBpitch\fP"
 .br
 .ti -1c
-.RI "int \fBdepth\fP"
+.RI "int32_t \fBdepth\fP"
 .br
 .ti -1c
-.RI "int \fBbpp\fP"
+.RI "int32_t \fBbpp\fP"
 .br
 .ti -1c
-.RI "int \fBformat\fP"
+.RI "int32_t \fBformat\fP"
 .br
 .ti -1c
-.RI "int \fBalpha\fP"
+.RI "int32_t \fBalpha\fP"
 .br
 .ti -1c
-.RI "int \fBframes\fP"
+.RI "int32_t \fBframes\fP"
 .br
 .in -1c
 .SH "Detailed Description"
 .PP 
 Image reader header define\&. 
 .PP
-Definition at line 44 of file psx_image_plugin\&.h\&.
+Definition at line 48 of file psx_image_plugin\&.h\&.
 .SH "Field Documentation"
 .PP 
-.SS "int _psx_image_header::alpha"
+.SS "int32_t _psx_image_header::alpha"
 Image has alpha channel\&. (false: 0, true: 1) 
 .PP
-Definition at line 60 of file psx_image_plugin\&.h\&.
-.SS "int _psx_image_header::bpp"
+Definition at line 64 of file psx_image_plugin\&.h\&.
+.SS "int32_t _psx_image_header::bpp"
 Image bpp 
 .PP
-Definition at line 56 of file psx_image_plugin\&.h\&.
-.SS "int _psx_image_header::depth"
+Definition at line 60 of file psx_image_plugin\&.h\&.
+.SS "int32_t _psx_image_header::depth"
 Image depth\&. 
 .PP
-Definition at line 54 of file psx_image_plugin\&.h\&.
-.SS "int _psx_image_header::format"
+Definition at line 58 of file psx_image_plugin\&.h\&.
+.SS "int32_t _psx_image_header::format"
 Image color format 
 .PP
-Definition at line 58 of file psx_image_plugin\&.h\&.
-.SS "int _psx_image_header::frames"
+Definition at line 62 of file psx_image_plugin\&.h\&.
+.SS "int32_t _psx_image_header::frames"
 Image frame count\&. 
 .PP
-Definition at line 62 of file psx_image_plugin\&.h\&.
-.SS "int _psx_image_header::height"
+Definition at line 66 of file psx_image_plugin\&.h\&.
+.SS "int32_t _psx_image_header::height"
 Image height\&. 
 .PP
-Definition at line 50 of file psx_image_plugin\&.h\&.
-.SS "int _psx_image_header::pitch"
+Definition at line 54 of file psx_image_plugin\&.h\&.
+.SS "int32_t _psx_image_header::pitch"
 Image pitch of scanline\&. 
 .PP
-Definition at line 52 of file psx_image_plugin\&.h\&.
+Definition at line 56 of file psx_image_plugin\&.h\&.
 .SS "void* _psx_image_header::priv"
 Private data for operator\&. 
 .PP
-Definition at line 46 of file psx_image_plugin\&.h\&.
-.SS "int _psx_image_header::width"
+Definition at line 50 of file psx_image_plugin\&.h\&.
+.SS "int32_t _psx_image_header::width"
 Image width\&. 
 .PP
-Definition at line 48 of file psx_image_plugin\&.h\&.
+Definition at line 52 of file psx_image_plugin\&.h\&.
 
 .SH "Author"
 .PP 
