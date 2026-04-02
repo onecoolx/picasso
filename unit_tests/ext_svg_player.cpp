@@ -6544,6 +6544,8 @@ TEST_F(SVGPlayerTest, MotionPath_Property7_LineOnlyRegression)
         }
 
         // Optionally close with Z (50% chance)
+        (void)cur_x;
+        (void)cur_y;
         seed = seed * 1103515245u + 12345u;
         if ((seed >> 16) % 2 == 0) {
             ppos += sprintf(path_str + ppos, " Z");
@@ -6981,46 +6983,6 @@ TEST_F(SVGPlayerTest, AnimateRectX_WithViewBox_OverrideProduced)
 }
 
 // ── animateMotion + animateTransform independent layers ──
-
-// Helper to read motion transform override separately.
-static bool psx_svg_player_debug_get_motion_transform_override(const psx_svg_player* p,
-                                                               const psx_svg_node* target,
-                                                               float* a, float* b, float* c,
-                                                               float* d, float* e, float* f)
-{
-    if (!p || !target) {
-        if (a) { *a = 1.0f; }
-        if (b) { *b = 0.0f; }
-        if (c) { *c = 0.0f; }
-        if (d) { *d = 1.0f; }
-        if (e) { *e = 0.0f; }
-        if (f) { *f = 0.0f; }
-        return false;
-    }
-
-    uint32_t n = psx_array_size((psx_array*)&p->anim_state.motion_transforms);
-    for (uint32_t i = 0; i < n; i++) {
-        const psx_svg_anim_transform_item* it =
-            psx_array_get((psx_array*)&p->anim_state.motion_transforms, i, psx_svg_anim_transform_item);
-        if (it && it->target == target) {
-            if (a) { *a = it->a; }
-            if (b) { *b = it->b; }
-            if (c) { *c = it->c; }
-            if (d) { *d = it->d; }
-            if (e) { *e = it->e; }
-            if (f) { *f = it->f; }
-            return true;
-        }
-    }
-
-    if (a) { *a = 1.0f; }
-    if (b) { *b = 0.0f; }
-    if (c) { *c = 0.0f; }
-    if (d) { *d = 1.0f; }
-    if (e) { *e = 0.0f; }
-    if (f) { *f = 0.0f; }
-    return false;
-}
 
 TEST_F(SVGPlayerTest, AnimateMotion_Plus_AnimateTransform_IndependentLayers)
 {
