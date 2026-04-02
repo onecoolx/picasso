@@ -16,7 +16,7 @@
 #include "picasso.h"
 #include "picasso_ext.h"
 #include "psx_svg.h"
-#include "psx_svg_player.h"
+#include "psx_svg_animation.h"
 #include "drawFunc.h"
 #include "timeuse.h"
 
@@ -108,7 +108,7 @@ void init_context(ps_context* gc, ps_canvas* cs, unsigned char* buf)
     /* create player from the SVG DOM root */
     {
         psx_result err;
-        player = psx_svg_player_create((const psx_svg_node*)svg_doc, &err);
+        player = psx_svg_player_create(svg_doc, &err);
         if (!player) {
             fprintf(stderr, "failed to create SVG player (error=%d)\n", (int)err);
             return;

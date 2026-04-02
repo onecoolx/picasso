@@ -26,7 +26,7 @@
 
 #include "test.h"
 
-#include "psx_svg_player.h"
+#include "psx_svg_animation.h"
 #include "psx_svg_anim_state.h"
 
 #include <stdio.h>
@@ -59,7 +59,7 @@ protected:
             if (out_root) { *out_root = NULL; }
             return NULL;
         }
-        psx_svg_player* p = psx_svg_player_create(root, r);
+        psx_svg_player* p = psx_svg_player_create((const psx_svg*)root, r);
         if (!p) {
             psx_svg_node_destroy(root);
             if (out_root) { *out_root = NULL; }

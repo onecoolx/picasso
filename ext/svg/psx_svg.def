@@ -8,3 +8,23 @@ EXPORTS
     psx_svg_render_create
     psx_svg_render_destroy
     psx_svg_render_draw
+    psx_svg_player_create
+    psx_svg_player_destroy
+    psx_svg_player_set_loop
+    psx_svg_player_get_loop
+    psx_svg_player_set_dpi
+    psx_svg_player_get_dpi
+    psx_svg_player_play
+    psx_svg_player_pause
+    psx_svg_player_stop
+    psx_svg_player_seek
+    psx_svg_player_tick
+    psx_svg_player_get_time
+    psx_svg_player_get_duration
+    psx_svg_player_get_state
+    psx_svg_player_draw
+    psx_svg_player_set_event_callback
+    psx_svg_player_trigger
+    psx_svg_player_send_key
+
+

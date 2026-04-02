@@ -29,7 +29,7 @@
 
 #include "psx_svg_node.h"
 #include "psx_svg_render.h"
-#include "psx_svg_player.h"
+#include "psx_svg_animation.h"
 
 #include <string.h>
 
@@ -69,7 +69,7 @@ protected:
     {
         root = psx_svg_load_data(data, (uint32_t)strlen(data));
         psx_result err = S_OK;
-        player = psx_svg_player_create(root, &err);
+        player = psx_svg_player_create((const psx_svg*)root, &err);
     }
 
     void draw_frame(float t)

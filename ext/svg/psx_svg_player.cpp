@@ -24,10 +24,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "psx_svg_player.h"
+#include "psx_svg_animation.h"
 #include "psx_svg_anim_state.h"
 
-#include "psx_svg.h"
+#include "psx_common.h"
+#include "psx_svg_node.h"
+#include "psx_svg_render.h"
 #include "psx_svg_parser.h"
 
 #include <string.h>
@@ -4467,7 +4469,7 @@ bool psx_svg_anim_get_dash(const psx_svg_anim_state* s, const psx_svg_node* targ
     return false;
 }
 
-psx_svg_player* psx_svg_player_create(const psx_svg_node* root, psx_result* out)
+psx_svg_player* PICAPI psx_svg_player_create(const psx_svg* root, psx_result* out)
 {
     if (out) {
         *out = S_OK;
@@ -4488,11 +4490,11 @@ psx_svg_player* psx_svg_player_create(const psx_svg_node* root, psx_result* out)
     }
     memset(p, 0, sizeof(psx_svg_player));
 
-    p->root = root;
+    p->root = (const psx_svg_node*)root;
     p->loop = false;
     p->dpi = 96; // default dpi
 
-    p->render_list = psx_svg_render_list_create(root);
+    p->render_list = psx_svg_render_list_create(p->root);
     if (!p->render_list) {
         if (out) {
             *out = S_FAILURE;
@@ -4547,7 +4549,7 @@ psx_svg_player* psx_svg_player_create(const psx_svg_node* root, psx_result* out)
     return p;
 }
 
-void psx_svg_player_destroy(psx_svg_player* p)
+void PICAPI psx_svg_player_destroy(psx_svg_player* p)
 {
     if (!p) {
         return;
@@ -4605,7 +4607,7 @@ void psx_svg_player_destroy(psx_svg_player* p)
     mem_free(p);
 }
 
-void psx_svg_player_play(psx_svg_player* p)
+void PICAPI psx_svg_player_play(psx_svg_player* p)
 {
     if (!p) {
         return;
@@ -4616,7 +4618,7 @@ void psx_svg_player_play(psx_svg_player* p)
     p->state = PSX_SVG_PLAYER_PLAYING;
 }
 
-void psx_svg_player_pause(psx_svg_player* p)
+void PICAPI psx_svg_player_pause(psx_svg_player* p)
 {
     if (!p) {
         return;
@@ -4626,7 +4628,7 @@ void psx_svg_player_pause(psx_svg_player* p)
     }
 }
 
-void psx_svg_player_stop(psx_svg_player* p)
+void PICAPI psx_svg_player_stop(psx_svg_player* p)
 {
     if (!p) {
         return;
@@ -4877,7 +4879,7 @@ static void _apply_animations_at_time(psx_svg_player* p)
     _build_active_targets(&p->anim_state);
 }
 
-void psx_svg_player_seek(psx_svg_player* p, float seconds)
+void PICAPI psx_svg_player_seek(psx_svg_player* p, float seconds)
 {
     if (!p) {
         return;
@@ -4896,7 +4898,7 @@ void psx_svg_player_seek(psx_svg_player* p, float seconds)
     _anim_fire_callbacks(p);
 }
 
-void psx_svg_player_tick(psx_svg_player* p, float delta_seconds)
+void PICAPI psx_svg_player_tick(psx_svg_player* p, float delta_seconds)
 {
     if (!p) {
         return;
@@ -4927,22 +4929,22 @@ void psx_svg_player_tick(psx_svg_player* p, float delta_seconds)
     _anim_fire_callbacks(p);
 }
 
-float psx_svg_player_get_time(const psx_svg_player* p)
+float PICAPI psx_svg_player_get_time(const psx_svg_player* p)
 {
     return p ? p->time_sec : 0.0f;
 }
 
-float psx_svg_player_get_duration(const psx_svg_player* p)
+float PICAPI psx_svg_player_get_duration(const psx_svg_player* p)
 {
     return p ? p->duration_sec : -1.0f;
 }
 
-psx_svg_player_state psx_svg_player_get_state(const psx_svg_player* p)
+psx_svg_player_state PICAPI psx_svg_player_get_state(const psx_svg_player* p)
 {
     return p ? p->state : PSX_SVG_PLAYER_STOPPED;
 }
 
-void psx_svg_player_set_loop(psx_svg_player* p, bool loop)
+void PICAPI psx_svg_player_set_loop(psx_svg_player* p, bool loop)
 {
     if (!p) {
         return;
@@ -4950,12 +4952,12 @@ void psx_svg_player_set_loop(psx_svg_player* p, bool loop)
     p->loop = loop;
 }
 
-bool psx_svg_player_get_loop(const psx_svg_player* p)
+bool PICAPI psx_svg_player_get_loop(const psx_svg_player* p)
 {
     return p ? p->loop : false;
 }
 
-void psx_svg_player_set_dpi(psx_svg_player* p, int32_t dpi)
+void PICAPI psx_svg_player_set_dpi(psx_svg_player* p, int32_t dpi)
 {
     if (!p) {
         return;
@@ -4963,12 +4965,12 @@ void psx_svg_player_set_dpi(psx_svg_player* p, int32_t dpi)
     p->dpi = dpi;
 }
 
-int32_t psx_svg_player_get_dpi(const psx_svg_player* p)
+int32_t PICAPI psx_svg_player_get_dpi(const psx_svg_player* p)
 {
     return p ? p->dpi : 0;
 }
 
-void psx_svg_player_draw(psx_svg_player* p, ps_context* ctx)
+void PICAPI psx_svg_player_draw(psx_svg_player* p, ps_context* ctx)
 {
     if (!p || !ctx || !p->render_list) {
         return;
@@ -4978,7 +4980,7 @@ void psx_svg_player_draw(psx_svg_player* p, ps_context* ctx)
     psx_svg_render_list_draw_anim(ctx, p->render_list, &p->anim_state);
 }
 
-void psx_svg_player_set_event_callback(psx_svg_player* p, psx_svg_anim_event_cb cb, void* user)
+void PICAPI psx_svg_player_set_event_callback(psx_svg_player* p, psx_svg_anim_event_cb cb, void* user)
 {
     if (!p) {
         return;
@@ -4987,7 +4989,7 @@ void psx_svg_player_set_event_callback(psx_svg_player* p, psx_svg_anim_event_cb 
     p->cb_user = user;
 }
 
-void psx_svg_player_trigger(psx_svg_player* p, const char* target_id, const char* event_name)
+void PICAPI psx_svg_player_trigger(psx_svg_player* p, const char* target_id, const char* event_name)
 {
     if (!p) {
         return;
@@ -5081,7 +5083,7 @@ void psx_svg_player_trigger(psx_svg_player* p, const char* target_id, const char
     _apply_animations_at_time(p);
 }
 
-void psx_svg_player_send_key(psx_svg_player* p, char key)
+void PICAPI psx_svg_player_send_key(psx_svg_player* p, char key)
 {
     if (!p || !key) {
         return;

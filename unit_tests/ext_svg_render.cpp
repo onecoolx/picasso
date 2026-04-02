@@ -29,7 +29,7 @@
 
 #include "psx_svg_node.h"
 #include "psx_svg_render.h"
-#include "psx_svg_player.h"
+#include "psx_svg_animation.h"
 
 class SVGRenderTest : public ::testing::Test
 {
@@ -649,7 +649,7 @@ TEST_F(SVGRenderTest, VisibilityHidden_SkipsRendering)
     ASSERT_TRUE(svg_root != NULL);
 
     psx_result err = S_OK;
-    psx_svg_player* player = psx_svg_player_create(svg_root, &err);
+    psx_svg_player* player = psx_svg_player_create((const psx_svg*)svg_root, &err);
     ASSERT_TRUE(player != NULL);
 
     // --- t=1s: before <set> begin, rect is visible — should be red ---
@@ -765,7 +765,7 @@ TEST_F(SVGRenderTest, StaticVisibilityHidden_SetToVisible_ShowsRect)
     ASSERT_TRUE(svg_root != NULL);
 
     psx_result err = S_OK;
-    psx_svg_player* player = psx_svg_player_create(svg_root, &err);
+    psx_svg_player* player = psx_svg_player_create((const psx_svg*)svg_root, &err);
     ASSERT_TRUE(player != NULL);
 
     // --- t=1s: before <set> begin, rect is hidden --- white pixel

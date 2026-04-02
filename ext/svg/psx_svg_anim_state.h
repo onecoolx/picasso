@@ -27,10 +27,11 @@
 #ifndef _PSX_SVG_ANIM_STATE_H_
 #define _PSX_SVG_ANIM_STATE_H_
 
-#include "psx_svg_node.h"
-#include "psx_svg_player.h"
-#include "psx_svg_parser.h"
 #include "picasso.h"
+#include "psx_svg_node.h"
+#include "psx_svg_animation.h"
+#include "psx_svg_parser.h"
+#include "psx_svg_render.h"
 
 #include <math.h>
 
@@ -99,7 +100,7 @@ static INLINE bool _has_active_target(const psx_svg_anim_state* s, const psx_svg
     return false;
 }
 
-struct psx_svg_player {
+struct _psx_svg_player {
     const psx_svg_node* root;
     psx_svg_render_list* render_list;
 
@@ -241,6 +242,10 @@ const psx_svg_anim_transform_item* psx_svg_anim_state_find_transform(const psx_s
  * writes the dash array pointer and count into *out_dashes / *out_count. */
 bool psx_svg_anim_get_dash(const psx_svg_anim_state* s, const psx_svg_node* target,
                            const float** out_dashes, uint32_t* out_count);
+
+/* DOM helpers
+ * Returns node by element id, or NULL if not found. */
+const psx_svg_node* psx_svg_player_get_node_by_id(const psx_svg_player* p, const char* id);
 
 #ifdef __cplusplus
 }
