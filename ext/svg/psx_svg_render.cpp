@@ -588,6 +588,11 @@ protected:
             return;
         }
 
+        /* Fast-skip nodes with no active animation overrides. */
+        if (!_has_active_target(m_cur_anim_state, m_node)) {
+            return;
+        }
+
         float v = 0.0f;
         uint32_t color_u = 0;
 
@@ -641,7 +646,7 @@ protected:
             }
         }
 
-        /* stroke-dasharray animation override (Req 10.4). */
+        /* stroke-dasharray animation override. */
         {
             const float* dash_vals = NULL;
             uint32_t dash_count = 0;

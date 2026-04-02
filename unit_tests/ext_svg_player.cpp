@@ -10898,3 +10898,292 @@ TEST_F(SVGPlayerTest, BitmapAttrLookup_AllEnumValues_MatchOriginal)
     EXPECT_FALSE(_bm_lookup(bm_int32, SVG_ATTR_INVALID));
     EXPECT_FALSE(_bm_lookup(bm_color, SVG_ATTR_INVALID));
 }
+
+// Two <animate> elements target the same attribute (width) on the same node.
+// The second (last-written) animation's interpolated value should win.
+TEST_F(SVGPlayerTest, OverrideDedup_LastWriterWins)
+{
+    const char* svg =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"100\" height=\"100\">"
+        "  <rect id=\"r\" width=\"10\" height=\"10\">"
+        "    <animate attributeName=\"width\" from=\"10\" to=\"50\" dur=\"2s\" fill=\"freeze\"/>"
+        "    <animate attributeName=\"width\" from=\"10\" to=\"100\" dur=\"2s\" fill=\"freeze\"/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_NE((psx_svg_player*)NULL, p);
+    EXPECT_EQ(S_OK, r);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    ASSERT_TRUE(n != NULL);
+
+    // t=1s (midpoint of 2s duration):
+    // first  animate: width = 10 + (50-10)*0.5 = 30
+    // second animate: width = 10 + (100-10)*0.5 = 55  <-- last writer wins
+    psx_svg_player_seek(p, 1.0f);
+    {
+        float v = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_WIDTH, &v));
+        EXPECT_NEAR(55.0f, v, 0.1f) << "last-writer (second animate) should win at t=1s";
+    }
+
+    // t=0s (start): both from=10, so either way width=10
+    psx_svg_player_seek(p, 0.0f);
+    {
+        float v = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_WIDTH, &v));
+        EXPECT_NEAR(10.0f, v, 0.1f) << "both start at 10";
+    }
+
+    // t=2s (end, freeze): second animate to=100 should win
+    psx_svg_player_seek(p, 2.0f);
+    {
+        float v = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_WIDTH, &v));
+        EXPECT_NEAR(100.0f, v, 0.1f) << "last-writer freeze value should be 100";
+    }
+
+    destroy_player(p, root);
+}
+
+// SBO: single begin (inline storage path)
+TEST_F(SVGPlayerTest, SBO_SingleBegin_InlineStorage_CorrectInterpolation)
+{
+    const char* svg =
+        "<svg width='100' height='100'>"
+        "  <rect id='r' width='50' height='50'>"
+        "    <animate attributeName='width' from='10' to='90' dur='2s' begin='0s' fill='freeze'/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_TRUE(p != NULL);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    EXPECT_TRUE(n != NULL);
+
+    // t=0: from value
+    psx_svg_player_seek(p, 0.0f);
+    {
+        float v = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_WIDTH, &v));
+        EXPECT_NEAR(10.0f, v, 0.1f);
+    }
+
+    // t=1s: midpoint
+    psx_svg_player_seek(p, 1.0f);
+    {
+        float v = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_WIDTH, &v));
+        EXPECT_NEAR(50.0f, v, 0.1f);
+    }
+
+    // t=2s: freeze at to value
+    psx_svg_player_seek(p, 2.0f);
+    {
+        float v = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_WIDTH, &v));
+        EXPECT_NEAR(90.0f, v, 0.1f);
+    }
+
+    destroy_player(p, root);
+}
+
+// SBO: multiple begins (heap storage path)
+TEST_F(SVGPlayerTest, SBO_MultipleBegins_HeapStorage_BothIntervalsWork)
+{
+    const char* svg =
+        "<svg width='100' height='100'>"
+        "  <rect id='r' width='50' height='50'>"
+        "    <animate attributeName='width' from='10' to='90' dur='1s' begin='0s;2s' fill='freeze'/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_TRUE(p != NULL);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    EXPECT_TRUE(n != NULL);
+
+    // t=0.5s: first interval midpoint
+    psx_svg_player_seek(p, 0.5f);
+    {
+        float v = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_WIDTH, &v));
+        EXPECT_NEAR(50.0f, v, 0.1f);
+    }
+
+    // t=2.5s: second interval midpoint
+    psx_svg_player_seek(p, 2.5f);
+    {
+        float v = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_WIDTH, &v));
+        EXPECT_NEAR(50.0f, v, 0.1f);
+    }
+
+    // t=3.0s: second interval freeze
+    psx_svg_player_seek(p, 3.0f);
+    {
+        float v = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_WIDTH, &v));
+        EXPECT_NEAR(90.0f, v, 0.1f);
+    }
+
+    destroy_player(p, root);
+}
+
+// SBO: no explicit begin (default begin=0)
+TEST_F(SVGPlayerTest, SBO_DefaultBegin_NoExplicitBegin_StartsAtZero)
+{
+    const char* svg =
+        "<svg width='100' height='100'>"
+        "  <rect id='r' width='50' height='50'>"
+        "    <animate attributeName='width' from='0' to='100' dur='2s' fill='freeze'/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_TRUE(p != NULL);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    EXPECT_TRUE(n != NULL);
+
+    // t=0: animation starts at t=0 by default
+    psx_svg_player_seek(p, 0.0f);
+    {
+        float v = -1;
+        EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_WIDTH, &v));
+        EXPECT_NEAR(0.0f, v, 0.1f);
+    }
+
+    // t=1s: midpoint
+    psx_svg_player_seek(p, 1.0f);
+    {
+        float v = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_WIDTH, &v));
+        EXPECT_NEAR(50.0f, v, 0.1f);
+    }
+
+    destroy_player(p, root);
+}
+
+// SBO: three begins (heap path, >2 entries)
+TEST_F(SVGPlayerTest, SBO_ThreeBegins_HeapStorage_AllIntervalsWork)
+{
+    const char* svg =
+        "<svg width='100' height='100'>"
+        "  <rect id='r' width='50' height='50'>"
+        "    <animate attributeName='width' from='0' to='100' dur='1s' begin='0s;3s;6s' fill='freeze'/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_TRUE(p != NULL);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    EXPECT_TRUE(n != NULL);
+
+    // t=0.5s: first interval midpoint
+    psx_svg_player_seek(p, 0.5f);
+    {
+        float v = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_WIDTH, &v));
+        EXPECT_NEAR(50.0f, v, 0.1f);
+    }
+
+    // t=3.5s: second interval midpoint
+    psx_svg_player_seek(p, 3.5f);
+    {
+        float v = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_WIDTH, &v));
+        EXPECT_NEAR(50.0f, v, 0.1f);
+    }
+
+    // t=6.5s: third interval midpoint
+    psx_svg_player_seek(p, 6.5f);
+    {
+        float v = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_WIDTH, &v));
+        EXPECT_NEAR(50.0f, v, 0.1f);
+    }
+
+    // t=7.0s: freeze after third interval
+    psx_svg_player_seek(p, 7.0f);
+    {
+        float v = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_WIDTH, &v));
+        EXPECT_NEAR(100.0f, v, 0.1f);
+    }
+
+    destroy_player(p, root);
+}
+
+// Time-window culling: fill=freeze must NOT be skipped; fill=remove should be culled.
+TEST_F(SVGPlayerTest, TimeCull_FreezeNotSkipped_RemoveSkipped)
+{
+    // Two <animate> on the same rect, both dur=1s begin=0:
+    // - first: fill=freeze (width 10->100)
+    // - second: fill=remove (height 10->100)
+    const char* svg =
+        "<svg width='200' height='200'>"
+        "  <rect id='r' x='0' y='0' width='10' height='10'>"
+        "    <animate attributeName='width' from='10' to='100' dur='1' fill='freeze'/>"
+        "    <animate attributeName='height' from='10' to='100' dur='1' fill='remove'/>"
+        "  </rect>"
+        "</svg>";
+
+    psx_result r = S_OK;
+    psx_svg_node* root = NULL;
+    psx_svg_player* p = create_player(svg, &r, &root);
+    ASSERT_TRUE(p != NULL);
+
+    const psx_svg_node* n = psx_svg_player_get_node_by_id(p, "r");
+    EXPECT_TRUE(n != NULL);
+
+    // t=0.5s: both animations active, midpoint
+    psx_svg_player_seek(p, 0.5f);
+    {
+        float w = 0, h = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_WIDTH, &w));
+        EXPECT_NEAR(55.0f, w, 0.5f);
+        EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_HEIGHT, &h));
+        EXPECT_NEAR(55.0f, h, 0.5f);
+    }
+
+    // t=5.0s: well past active period (dur=1s)
+    // freeze animation (width) should still have override at final value
+    // remove animation (height) should NOT have override
+    psx_svg_player_seek(p, 5.0f);
+    {
+        float w = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_WIDTH, &w));
+        EXPECT_NEAR(100.0f, w, 0.1f);
+
+        float h = 0;
+        EXPECT_FALSE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_HEIGHT, &h));
+    }
+
+    // t=100.0s: very far past — same behavior
+    psx_svg_player_seek(p, 100.0f);
+    {
+        float w = 0;
+        EXPECT_TRUE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_WIDTH, &w));
+        EXPECT_NEAR(100.0f, w, 0.1f);
+
+        float h = 0;
+        EXPECT_FALSE(psx_svg_player_debug_get_float_override(p, n, SVG_ATTR_HEIGHT, &h));
+    }
+
+    destroy_player(p, root);
+}

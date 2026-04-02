@@ -50,6 +50,16 @@ typedef struct {
     uint32_t count;
 } psx_svg_anim_dash_item;
 
+/* Small Buffer Optimization list for float values.
+ * count<=1: value stored inline (no heap alloc).
+ * count>1:  values stored in heap_data. */
+typedef struct {
+    float inline_val;
+    float* heap_data;
+    uint32_t count;
+    uint32_t heap_cap;
+} _sbo_float_list;
+
 // opaque animation override state passed to renderer.
 struct psx_svg_anim_state {
     psx_array overrides;
@@ -58,7 +68,36 @@ struct psx_svg_anim_state {
     psx_array dash_overrides; // stroke-dasharray overrides (psx_svg_anim_dash_item[])
     psx_array color_overrides; // color overrides (psx_svg_anim_color_item[])
     ps_matrix* scratch_matrix; // reused each frame; owned by this struct
+
+    const psx_svg_node** active_targets; // sorted set of animated targets (for renderer fast-skip)
+    uint32_t active_target_count;
+    uint32_t active_target_cap;
+
+    uint32_t dash_high_water; // high-water mark for dash buffer reuse across frames
 };
+
+/* Binary search on the sorted active_targets array.
+ * Returns true if node is an active animation target this frame. */
+static INLINE bool _has_active_target(const psx_svg_anim_state* s, const psx_svg_node* node)
+{
+    if (!s || s->active_target_count == 0) {
+        return false;
+    }
+    uint32_t lo = 0, hi = s->active_target_count;
+    uintptr_t key = (uintptr_t)node;
+    while (lo < hi) {
+        uint32_t mid = lo + (hi - lo) / 2;
+        uintptr_t mv = (uintptr_t)s->active_targets[mid];
+        if (mv < key) {
+            lo = mid + 1;
+        } else if (mv > key) {
+            hi = mid;
+        } else {
+            return true;
+        }
+    }
+    return false;
+}
 
 struct psx_svg_player {
     const psx_svg_node* root;
@@ -110,10 +149,11 @@ typedef struct {
     const char* end_event_target_id; // id.event: target id for end event, NULL if none
 
     // Begin list support: store begin times (sec) and choose the latest begin <= doc_t.
-    psx_array begins_sec;
+    // SBO: count<=1 uses inline_val (no heap alloc); count>1 uses heap_data.
+    _sbo_float_list begins_sec;
 
     // End list support: store end times (sec) and choose the earliest end >= begin (per trigger).
-    psx_array ends_sec;
+    _sbo_float_list ends_sec;
 
     uint32_t accumulate_mode; // SVG_ANIMATION_ACCUMULATE_NONE or _SUM
 
@@ -127,6 +167,14 @@ typedef struct {
     float syncbase_offset_sec; // offset in seconds (e.g., +1s)
     bool syncbase_resolved; // true once begin time has been resolved
     bool syncbase_circular; // true if circular dependency detected
+
+    float cached_base_value; // pre-cached DOM base value for additive="sum"
+    bool has_cached_base_value;
+
+    bool eval_active; // active state from eval phase (reused by callbacks)
+    uint32_t eval_iteration;
+
+    float max_active_end_sec; // upper bound of active window (for fast culling)
 
     // Optimization: pre-cached attribute pointers (filled once in _collect_anims)
     const psx_svg_attr* cached_values; // SVG_ATTR_VALUES

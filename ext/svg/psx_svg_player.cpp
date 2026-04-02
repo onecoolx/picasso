@@ -42,16 +42,10 @@ static INLINE void _anim_state_reset(psx_svg_anim_state* s)
     psx_array_clear(&s->overrides);
     psx_array_clear(&s->transforms);
     psx_array_clear(&s->motion_transforms);
-    uint32_t n = psx_array_size(&s->dash_overrides);
-    for (uint32_t i = 0; i < n; i++) {
-        psx_svg_anim_dash_item* di = psx_array_get(&s->dash_overrides, i, psx_svg_anim_dash_item);
-        if (di && di->dashes) {
-            mem_free(di->dashes);
-            di->dashes = NULL;
-        }
-    }
-    psx_array_clear(&s->dash_overrides);
+    /* Keep dash buffers alive for reuse — just reset size, not free. */
+    s->dash_overrides.size = 0;
     psx_array_clear(&s->color_overrides);
+    s->active_target_count = 0;
 }
 
 /* --- O(1) bitmap attribute lookup (replaces long-chain conditionals) --- */
@@ -170,10 +164,22 @@ static INLINE const psx_svg_anim_transform_item* _anim_state_find_transform(cons
         return NULL;
     }
     uint32_t n = psx_array_size((psx_array*)&s->transforms);
-    for (uint32_t i = 0; i < n; i++) {
-        const psx_svg_anim_transform_item* it = psx_array_get((psx_array*)&s->transforms, i, psx_svg_anim_transform_item);
-        if (it && it->target == target) {
-            return it;
+    if (n == 0) {
+        return NULL;
+    }
+    const psx_svg_anim_transform_item* arr = (const psx_svg_anim_transform_item*)s->transforms.data;
+    uintptr_t key = (uintptr_t)target;
+    uint32_t lo = 0;
+    uint32_t hi = n;
+    while (lo < hi) {
+        uint32_t mid = lo + (hi - lo) / 2;
+        uintptr_t mt = (uintptr_t)arr[mid].target;
+        if (mt < key) {
+            lo = mid + 1;
+        } else if (mt > key) {
+            hi = mid;
+        } else {
+            return &arr[mid];
         }
     }
     return NULL;
@@ -217,21 +223,148 @@ static INLINE const psx_svg_anim_transform_item* _anim_state_find_motion_transfo
         return NULL;
     }
     uint32_t n = psx_array_size((psx_array*)&s->motion_transforms);
-    for (uint32_t i = 0; i < n; i++) {
-        const psx_svg_anim_transform_item* it = psx_array_get((psx_array*)&s->motion_transforms, i, psx_svg_anim_transform_item);
-        if (it && it->target == target) {
-            return it;
+    if (n == 0) {
+        return NULL;
+    }
+    const psx_svg_anim_transform_item* arr = (const psx_svg_anim_transform_item*)s->motion_transforms.data;
+    uintptr_t key = (uintptr_t)target;
+    uint32_t lo = 0;
+    uint32_t hi = n;
+    while (lo < hi) {
+        uint32_t mid = lo + (hi - lo) / 2;
+        uintptr_t mt = (uintptr_t)arr[mid].target;
+        if (mt < key) {
+            lo = mid + 1;
+        } else if (mt > key) {
+            hi = mid;
+        } else {
+            return &arr[mid];
         }
     }
     return NULL;
 }
+
+/* ── SBO (Small Buffer Optimization) for float lists ── */
+
+static INLINE int _float_cmp_asc_fn(const void* a, const void* b)
+{
+    const float fa = *(const float*)a;
+    const float fb = *(const float*)b;
+    if (fa < fb) { return -1; }
+    if (fa > fb) { return 1; }
+    return 0;
+}
+
+/* _sbo_float_list typedef is in psx_svg_anim_state.h */
+
+static INLINE void _sbo_init(_sbo_float_list* l)
+{
+    l->inline_val = 0.0f;
+    l->heap_data = NULL;
+    l->count = 0;
+    l->heap_cap = 0;
+}
+
+static INLINE void _sbo_destroy(_sbo_float_list* l)
+{
+    if (l->heap_data) {
+        mem_free(l->heap_data);
+        l->heap_data = NULL;
+    }
+    l->count = 0;
+    l->heap_cap = 0;
+}
+
+static INLINE void _sbo_push(_sbo_float_list* l, float val)
+{
+    if (l->count == 0) {
+        l->inline_val = val;
+        l->count = 1;
+    } else if (l->count == 1) {
+        uint32_t cap = 4;
+        float* buf = (float*)mem_malloc(cap * sizeof(float));
+        if (!buf) { return; }
+        buf[0] = l->inline_val;
+        buf[1] = val;
+        l->heap_data = buf;
+        l->heap_cap = cap;
+        l->count = 2;
+    } else {
+        if (l->count >= l->heap_cap) {
+            uint32_t new_cap = l->heap_cap * 2;
+            float* buf = (float*)mem_realloc(l->heap_data, new_cap * sizeof(float));
+            if (!buf) { return; }
+            l->heap_data = buf;
+            l->heap_cap = new_cap;
+        }
+        l->heap_data[l->count] = val;
+        l->count++;
+    }
+}
+
+static INLINE uint32_t _sbo_size(const _sbo_float_list* l)
+{
+    return l->count;
+}
+
+static INLINE float* _sbo_get(_sbo_float_list* l, uint32_t idx)
+{
+    if (l->count <= 1 && idx == 0) {
+        return &l->inline_val;
+    }
+    if (l->count > 1 && idx < l->count) {
+        return &l->heap_data[idx];
+    }
+    return NULL;
+}
+
+static INLINE const float* _sbo_get_const(const _sbo_float_list* l, uint32_t idx)
+{
+    if (l->count <= 1 && idx == 0) {
+        return &l->inline_val;
+    }
+    if (l->count > 1 && idx < l->count) {
+        return &l->heap_data[idx];
+    }
+    return NULL;
+}
+
+static INLINE void _sbo_clear(_sbo_float_list* l)
+{
+    l->count = 0;
+}
+
+static INLINE bool _sbo_empty(const _sbo_float_list* l)
+{
+    return l->count == 0;
+}
+
+static INLINE void _sbo_sort_dedup(_sbo_float_list* l)
+{
+    if (l->count <= 1) {
+        return;
+    }
+    /* sort */
+    qsort(l->heap_data, l->count, sizeof(float), _float_cmp_asc_fn);
+    /* dedup */
+    float* d = l->heap_data;
+    uint32_t w = 1;
+    for (uint32_t r = 1; r < l->count; r++) {
+        if (d[r] != d[w - 1]) {
+            d[w++] = d[r];
+        }
+    }
+    l->count = w;
+}
+
+/* ── End / Begin list helpers (SBO-backed) ── */
 
 static INLINE void _anim_item_end_list_init(psx_svg_anim_item* it)
 {
     if (!it) {
         return;
     }
-    psx_array_init_type(&it->ends_sec, float);
+    _sbo_init(&it->ends_sec);
 }
 
 static INLINE void _anim_item_end_list_destroy(psx_svg_anim_item* it)
@@ -239,7 +372,7 @@ static INLINE void _anim_item_end_list_destroy(psx_svg_anim_item* it)
     if (!it) {
         return;
     }
-    psx_array_destroy(&it->ends_sec);
+    _sbo_destroy(&it->ends_sec);
 }
 
 static INLINE void _anim_item_end_list_normalize(psx_svg_anim_item* it)
@@ -247,34 +380,7 @@ static INLINE void _anim_item_end_list_normalize(psx_svg_anim_item* it)
     if (!it) {
         return;
     }
-    uint32_t n = psx_array_size(&it->ends_sec);
-    if (n <= 1) {
-        return;
-    }
-    struct _cmp {
-        static int asc(const void* a, const void* b)
-        {
-            const float fa = *(const float*)a;
-            const float fb = *(const float*)b;
-            if (fa < fb) {
-                return -1;
-            }
-            if (fa > fb) {
-                return 1;
-            }
-            return 0;
-        }
-    };
-    qsort(it->ends_sec.data, n, sizeof(float), _cmp::asc);
-
-    float* d = (float*)it->ends_sec.data;
-    uint32_t w = 1;
-    for (uint32_t r = 1; r < n; r++) {
-        if (d[r] != d[w - 1]) {
-            d[w++] = d[r];
-        }
-    }
-    it->ends_sec.size = w;
+    _sbo_sort_dedup(&it->ends_sec);
 }
 
 static INLINE float _anim_item_end_for_begin(const psx_svg_anim_item* it, float begin_sec)
@@ -282,12 +388,12 @@ static INLINE float _anim_item_end_for_begin(const psx_svg_anim_item* it, float 
     if (!it) {
         return 0.0f;
     }
-    uint32_t n = psx_array_size((psx_array*)&it->ends_sec);
+    uint32_t n = _sbo_size(&it->ends_sec);
     if (n == 0) {
         return 0.0f;
     }
     for (uint32_t i = 0; i < n; i++) {
-        const float* ep = psx_array_get((psx_array*)&it->ends_sec, i, float);
+        const float* ep = _sbo_get_const(&it->ends_sec, i);
         float e = ep ? *ep : 0.0f;
         if (e >= begin_sec) {
             return e;
@@ -301,14 +407,6 @@ static INLINE void _anim_state_set_float(psx_svg_anim_state* s, const psx_svg_no
     if (!s || !target || attr == SVG_ATTR_INVALID) {
         return;
     }
-    uint32_t n = psx_array_size(&s->overrides);
-    for (uint32_t i = 0; i < n; i++) {
-        psx_svg_anim_override_item* it = psx_array_get(&s->overrides, i, psx_svg_anim_override_item);
-        if (it->target == target && it->attr == attr) {
-            it->u.fval = v;
-            return;
-        }
-    }
     psx_array_append(&s->overrides, NULL);
     psx_svg_anim_override_item* dst = psx_array_get_last(&s->overrides, psx_svg_anim_override_item);
     dst->target = target;
@@ -321,14 +419,6 @@ static INLINE void _anim_state_set_int32(psx_svg_anim_state* s, const psx_svg_no
     if (!s || !target || attr == SVG_ATTR_INVALID) {
         return;
     }
-    uint32_t n = psx_array_size(&s->overrides);
-    for (uint32_t i = 0; i < n; i++) {
-        psx_svg_anim_override_item* it = psx_array_get(&s->overrides, i, psx_svg_anim_override_item);
-        if (it->target == target && it->attr == attr) {
-            it->u.ival = v;
-            return;
-        }
-    }
     psx_array_append(&s->overrides, NULL);
     psx_svg_anim_override_item* dst = psx_array_get_last(&s->overrides, psx_svg_anim_override_item);
     dst->target = target;
@@ -340,14 +430,6 @@ static INLINE void _anim_state_set_color(psx_svg_anim_state* s, const psx_svg_no
 {
     if (!s || !target || attr == SVG_ATTR_INVALID) {
         return;
-    }
-    uint32_t n = psx_array_size(&s->color_overrides);
-    for (uint32_t i = 0; i < n; i++) {
-        psx_svg_anim_color_item* it = psx_array_get(&s->color_overrides, i, psx_svg_anim_color_item);
-        if (it->target == target && it->attr == attr) {
-            it->color = color;
-            return;
-        }
     }
     psx_array_append(&s->color_overrides, NULL);
     psx_svg_anim_color_item* dst = psx_array_get_last(&s->color_overrides, psx_svg_anim_color_item);
@@ -400,6 +482,48 @@ static int _anim_color_override_cmp(const void* a, const void* b)
 
 #define INSERTION_SORT_THRESHOLD 16
 
+/* ── Transform array sort (by target pointer) ── */
+
+static int _anim_transform_cmp(const void* a, const void* b)
+{
+    const psx_svg_anim_transform_item* aa = (const psx_svg_anim_transform_item*)a;
+    const psx_svg_anim_transform_item* bb = (const psx_svg_anim_transform_item*)b;
+    uintptr_t ta = (uintptr_t)aa->target;
+    uintptr_t tb = (uintptr_t)bb->target;
+    if (ta < tb) { return -1; }
+    if (ta > tb) { return 1; }
+    return 0;
+}
+
+static INLINE void _anim_state_sort_transforms(psx_array* arr)
+{
+    uint32_t size = psx_array_size(arr);
+    if (size < 2) {
+        return;
+    }
+    if (size <= INSERTION_SORT_THRESHOLD) {
+        psx_svg_anim_transform_item* items = (psx_svg_anim_transform_item*)arr->data;
+        uint32_t i;
+        for (i = 1; i < size; i++) {
+            psx_svg_anim_transform_item key = items[i];
+            uintptr_t kt = (uintptr_t)key.target;
+            int32_t j = (int32_t)i - 1;
+            while (j >= 0) {
+                uintptr_t jt = (uintptr_t)items[j].target;
+                if (jt > kt) {
+                    items[j + 1] = items[j];
+                    j--;
+                } else {
+                    break;
+                }
+            }
+            items[j + 1] = key;
+        }
+    } else {
+        qsort(arr->data, arr->size, arr->element_size, _anim_transform_cmp);
+    }
+}
+
 static INLINE void _anim_state_sort_overrides(psx_svg_anim_state* s)
 {
     if (!s) {
@@ -430,6 +554,25 @@ static INLINE void _anim_state_sort_overrides(psx_svg_anim_state* s)
         }
     } else {
         qsort(s->overrides.data, s->overrides.size, s->overrides.element_size, _anim_override_cmp);
+    }
+
+    /* Post-sort dedup: keep last entry for each (target, attr) group */
+    {
+        psx_svg_anim_override_item* items = (psx_svg_anim_override_item*)s->overrides.data;
+        uint32_t w = 0;
+        uint32_t r;
+        for (r = 1; r < s->overrides.size; r++) {
+            if (items[r].target != items[w].target || items[r].attr != items[w].attr) {
+                w++;
+                if (w != r) {
+                    items[w] = items[r];
+                }
+            } else {
+                /* same key — overwrite w with r (last-writer-wins) */
+                items[w] = items[r];
+            }
+        }
+        s->overrides.size = w + 1;
     }
 }
 
@@ -463,6 +606,25 @@ static INLINE void _anim_state_sort_color_overrides(psx_svg_anim_state* s)
         }
     } else {
         qsort(s->color_overrides.data, s->color_overrides.size, s->color_overrides.element_size, _anim_color_override_cmp);
+    }
+
+    /* Post-sort dedup: keep last entry for each (target, attr) group */
+    {
+        psx_svg_anim_color_item* items = (psx_svg_anim_color_item*)s->color_overrides.data;
+        uint32_t w = 0;
+        uint32_t r;
+        for (r = 1; r < s->color_overrides.size; r++) {
+            if (items[r].target != items[w].target || items[r].attr != items[w].attr) {
+                w++;
+                if (w != r) {
+                    items[w] = items[r];
+                }
+            } else {
+                /* same key — overwrite w with r (last-writer-wins) */
+                items[w] = items[r];
+            }
+        }
+        s->color_overrides.size = w + 1;
     }
 }
 
@@ -738,7 +900,7 @@ static INLINE void _anim_item_begin_list_init(psx_svg_anim_item* it)
     if (!it) {
         return;
     }
-    psx_array_init_type(&it->begins_sec, float);
+    _sbo_init(&it->begins_sec);
 }
 
 static INLINE void _anim_item_begin_list_destroy(psx_svg_anim_item* it)
@@ -746,7 +908,7 @@ static INLINE void _anim_item_begin_list_destroy(psx_svg_anim_item* it)
     if (!it) {
         return;
     }
-    psx_array_destroy(&it->begins_sec);
+    _sbo_destroy(&it->begins_sec);
 
     if (it->begin_event) {
         mem_free((void*)it->begin_event);
@@ -810,19 +972,19 @@ static INLINE float _anim_item_begin_for_time(const psx_svg_anim_item* it, float
         return 0.0f;
     }
     // Event-triggered animations: no instance times => not active.
-    if (it->begin_event && psx_array_empty((psx_array*)&it->begins_sec)) {
+    if (it->begin_event && _sbo_empty(&it->begins_sec)) {
         (void)doc_t;
         return 1e30f;
     }
-    if (psx_array_empty((psx_array*)&it->begins_sec)) {
+    if (_sbo_empty(&it->begins_sec)) {
         return it->begin_sec;
     }
 
-    const uint32_t n = psx_array_size((psx_array*)&it->begins_sec);
+    const uint32_t n = _sbo_size(&it->begins_sec);
 
     // restart="never": only use the first (earliest) begin.
     if (it->restart_mode == SVG_ANIMATION_RESTART_NEVER) {
-        const float* fp = psx_array_get((psx_array*)&it->begins_sec, 0, float);
+        const float* fp = _sbo_get_const(&it->begins_sec, 0);
         return fp ? *fp : 0.0f;
     }
 
@@ -835,7 +997,7 @@ static INLINE float _anim_item_begin_for_time(const psx_svg_anim_item* it, float
         float cur_valid = -1.0f;
         float best = -1.0f;
         for (uint32_t i = 0; i < n; i++) {
-            const float* bp = psx_array_get((psx_array*)&it->begins_sec, i, float);
+            const float* bp = _sbo_get_const(&it->begins_sec, i);
             float b = bp ? *bp : 0.0f;
             if (cur_valid < 0.0f || b >= cur_valid + ad) {
                 // This begin is valid (not inside a previous active interval).
@@ -850,14 +1012,14 @@ static INLINE float _anim_item_begin_for_time(const psx_svg_anim_item* it, float
             // all valid begins are in the future: return earliest valid
             cur_valid = -1.0f;
             for (uint32_t i = 0; i < n; i++) {
-                const float* bp = psx_array_get((psx_array*)&it->begins_sec, i, float);
+                const float* bp = _sbo_get_const(&it->begins_sec, i);
                 float b = bp ? *bp : 0.0f;
                 if (cur_valid < 0.0f || b >= cur_valid + ad) {
                     cur_valid = b;
                     return b;
                 }
             }
-            const float* fp = psx_array_get((psx_array*)&it->begins_sec, 0, float);
+            const float* fp = _sbo_get_const(&it->begins_sec, 0);
             return fp ? *fp : 0.0f;
         }
         return best;
@@ -866,7 +1028,7 @@ static INLINE float _anim_item_begin_for_time(const psx_svg_anim_item* it, float
     // restart="always" (default): choose latest begin <= doc_t
     float best = -1.0f;
     for (uint32_t i = 0; i < n; i++) {
-        const float* bp = psx_array_get((psx_array*)&it->begins_sec, i, float);
+        const float* bp = _sbo_get_const(&it->begins_sec, i);
         float b = bp ? *bp : 0.0f;
         if (b <= doc_t && b > best) {
             best = b;
@@ -874,10 +1036,10 @@ static INLINE float _anim_item_begin_for_time(const psx_svg_anim_item* it, float
     }
     if (best < 0.0f) {
         // all begins are in the future: keep earliest (for consistency)
-        const float* ep0 = psx_array_get((psx_array*)&it->begins_sec, 0, float);
+        const float* ep0 = _sbo_get_const(&it->begins_sec, 0);
         float earliest = ep0 ? *ep0 : 0.0f;
         for (uint32_t i = 1; i < n; i++) {
-            const float* ep = psx_array_get((psx_array*)&it->begins_sec, i, float);
+            const float* ep = _sbo_get_const(&it->begins_sec, i);
             float e = ep ? *ep : 0.0f;
             if (e < earliest) {
                 earliest = e;
@@ -908,7 +1070,7 @@ static INLINE bool _anim_is_active(const psx_svg_anim_item* it, float doc_t, uin
     // Check explicit end (ends_sec list or end_sec scalar).
     {
         float end_s = 0.0f;
-        if (psx_array_size((psx_array*)&it->ends_sec) > 0) {
+        if (_sbo_size(&it->ends_sec) > 0) {
             end_s = _anim_item_end_for_begin(it, begin_sec);
         } else if (it->end_sec > 0.0f) {
             end_s = it->end_sec;
@@ -957,40 +1119,12 @@ static INLINE bool _anim_is_active(const psx_svg_anim_item* it, float doc_t, uin
     return true;
 }
 
-static INLINE int _float_cmp_asc(const void* a, const void* b)
-{
-    const float fa = *(const float*)a;
-    const float fb = *(const float*)b;
-    if (fa < fb) {
-        return -1;
-    }
-    if (fa > fb) {
-        return 1;
-    }
-    return 0;
-}
-
 static INLINE void _anim_item_begin_list_normalize(psx_svg_anim_item* it)
 {
     if (!it) {
         return;
     }
-    uint32_t n = psx_array_size(&it->begins_sec);
-    if (n <= 1) {
-        return;
-    }
-
-    // Sort ascending.
-    qsort(it->begins_sec.data, n, sizeof(float), _float_cmp_asc);
-
-    float* v = (float*)it->begins_sec.data;
-    uint32_t w = 1;
-    for (uint32_t i = 1; i < n; i++) {
-        if (v[i] != v[w - 1]) {
-            v[w++] = v[i];
-        }
-    }
-    it->begins_sec.size = w;
+    _sbo_sort_dedup(&it->begins_sec);
 }
 
 static INLINE float _attr_as_float(const psx_svg_attr* a)
@@ -1027,7 +1161,7 @@ static INLINE bool _anim_resolve_local_t(const psx_svg_anim_item* it, float doc_
 
     // Check explicit end (ends_sec list or end_sec scalar).
     float end_sec = 0.0f;
-    if (psx_array_size((psx_array*)&it->ends_sec) > 0) {
+    if (_sbo_size(&it->ends_sec) > 0) {
         end_sec = _anim_item_end_for_begin(it, begin_sec);
     } else if (it->end_sec > 0.0f) {
         end_sec = it->end_sec;
@@ -1213,14 +1347,41 @@ static INLINE void _anim_state_set_dash(psx_svg_anim_state* s, const psx_svg_nod
         }
     }
 
-    /* Append new entry. */
-    psx_array_append(&s->dash_overrides, NULL);
-    psx_svg_anim_dash_item* dst = psx_array_get_last(&s->dash_overrides, psx_svg_anim_dash_item);
-    dst->target = target;
-    dst->count = count;
-    dst->dashes = (float*)mem_malloc(count * sizeof(float));
-    for (uint32_t j = 0; j < count; j++) {
-        dst->dashes[j] = dashes[j];
+    /* Append new entry — try to reuse ghost entry's dashes buffer. */
+    {
+        uint32_t idx = s->dash_overrides.size;
+        psx_array_append(&s->dash_overrides, NULL);
+        psx_svg_anim_dash_item* dst = psx_array_get_last(&s->dash_overrides, psx_svg_anim_dash_item);
+        /* After psx_array_append with NULL, the slot at idx still contains
+         * the ghost entry's old data (append just increments size). */
+        float* old_dashes = dst->dashes;
+        uint32_t old_count = dst->count;
+
+        dst->target = target;
+        dst->count = count;
+
+        if (idx < s->dash_high_water && old_dashes) {
+            /* Ghost entry exists with a buffer — check if reusable. */
+            if (old_count == count) {
+                /* Same size: reuse buffer, just overwrite values. */
+                dst->dashes = old_dashes;
+            } else {
+                /* Size mismatch: free old, allocate new. */
+                mem_free(old_dashes);
+                dst->dashes = (float*)mem_malloc(count * sizeof(float));
+            }
+        } else {
+            /* No ghost or ghost had NULL dashes — allocate fresh. */
+            dst->dashes = (float*)mem_malloc(count * sizeof(float));
+        }
+
+        for (uint32_t j = 0; j < count; j++) {
+            dst->dashes[j] = dashes[j];
+        }
+
+        if (s->dash_overrides.size > s->dash_high_water) {
+            s->dash_high_water = s->dash_overrides.size;
+        }
     }
 }
 
@@ -1264,7 +1425,7 @@ static INLINE uint32_t _lcm(uint32_t a, uint32_t b)
  * Evaluate a stroke-dasharray animation at document time doc_t.
  * Writes the interpolated dash array into anim_state.
  * Handles length normalization (LCM) and element-wise lerp.
- * Clamps negative values to 0 (Req 10.5).
+ * Clamps negative values to 0.
  */
 static INLINE bool _anim_eval_dasharray(const psx_svg_anim_item* it, float doc_t,
                                         psx_svg_anim_state* s)
@@ -1306,7 +1467,7 @@ static INLINE bool _anim_eval_dasharray(const psx_svg_anim_item* it, float doc_t
         float fv = from_data[i % from_len];
         float tv = to_data[i % to_len];
         float v = _anim_lerp(fv, tv, t);
-        /* Clamp negative to 0 (Req 10.5). */
+        /* Clamp negative to 0. */
         buf[i] = (v < 0.0f) ? 0.0f : v;
     }
 
@@ -1343,7 +1504,7 @@ static INLINE float _anim_eval_simple_final_value(const psx_svg_anim_item* it)
 
 /*
  * Read the static DOM base value for a numeric attribute on the target node.
- * Returns 0.0f if the attribute is not present (Req 7.3).
+ * Returns 0.0f if the attribute is not present.
  */
 static INLINE float _anim_get_base_value(const psx_svg_anim_item* it)
 {
@@ -2637,10 +2798,9 @@ static INLINE bool _anim_eval_transform_dispatch(const psx_svg_anim_item* it, fl
 /* Motion path mini-parser */
 
 typedef struct {
-    float* xs; /* mem_malloc allocated x coordinate array */
-    float* ys; /* mem_malloc allocated y coordinate array */
+    float* xy; /* mem_malloc allocated interleaved coordinate array [x0,y0,x1,y1,...] */
     uint32_t count; /* current point count */
-    uint32_t cap; /* array capacity */
+    uint32_t cap; /* array capacity (in points) */
 } _motion_path_points;
 
 static void _motion_path_destroy(_motion_path_points* pts)
@@ -2648,13 +2808,9 @@ static void _motion_path_destroy(_motion_path_points* pts)
     if (!pts) {
         return;
     }
-    if (pts->xs) {
-        mem_free(pts->xs);
-        pts->xs = NULL;
-    }
-    if (pts->ys) {
-        mem_free(pts->ys);
-        pts->ys = NULL;
+    if (pts->xy) {
+        mem_free(pts->xy);
+        pts->xy = NULL;
     }
     pts->count = 0;
     pts->cap = 0;
@@ -2667,24 +2823,15 @@ static bool _motion_path_push(_motion_path_points* pts, float x, float y)
     }
     if (pts->count >= pts->cap) {
         uint32_t new_cap = pts->cap ? pts->cap * 2 : 8;
-        float* nxs = (float*)mem_realloc(pts->xs, new_cap * sizeof(float));
-        float* nys = (float*)mem_realloc(pts->ys, new_cap * sizeof(float));
-        if (!nxs || !nys) {
-            /* On partial realloc failure, keep old pointers valid for cleanup */
-            if (nxs && nxs != pts->xs) {
-                mem_free(nxs);
-            }
-            if (nys && nys != pts->ys) {
-                mem_free(nys);
-            }
+        float* nxy = (float*)mem_realloc(pts->xy, new_cap * 2 * sizeof(float));
+        if (!nxy) {
             return false;
         }
-        pts->xs = nxs;
-        pts->ys = nys;
+        pts->xy = nxy;
         pts->cap = new_cap;
     }
-    pts->xs[pts->count] = x;
-    pts->ys[pts->count] = y;
+    pts->xy[pts->count * 2] = x;
+    pts->xy[pts->count * 2 + 1] = y;
     pts->count++;
     return true;
 }
@@ -2952,8 +3099,7 @@ static bool _motion_path_parse(const char* path_str, uint32_t len,
     if (!out) {
         return false;
     }
-    out->xs = NULL;
-    out->ys = NULL;
+    out->xy = NULL;
     out->count = 0;
     out->cap = 0;
 
@@ -3420,8 +3566,8 @@ static void _motion_arc_build(const _motion_path_points* pts, _motion_arc_table*
 
     uint32_t i;
     for (i = 1; i < pts->count; i++) {
-        float dx = pts->xs[i] - pts->xs[i - 1];
-        float dy = pts->ys[i] - pts->ys[i - 1];
+        float dx = pts->xy[i * 2] - pts->xy[(i - 1) * 2];
+        float dy = pts->xy[i * 2 + 1] - pts->xy[(i - 1) * 2 + 1];
         float seg_len = sqrtf(dx * dx + dy * dy);
         out->cum_lengths[i] = out->cum_lengths[i - 1] + seg_len;
     }
@@ -3487,20 +3633,20 @@ static void _motion_arc_position(const _motion_path_points* pts,
 
     /* Single point or zero total length → return first point */
     if (pts->count == 1 || tbl->total_length <= 0.0f) {
-        *out_x = pts->xs[0];
-        *out_y = pts->ys[0];
+        *out_x = pts->xy[0];
+        *out_y = pts->xy[1];
         return;
     }
 
     /* Clamp boundaries */
     if (t <= 0.0f) {
-        *out_x = pts->xs[0];
-        *out_y = pts->ys[0];
+        *out_x = pts->xy[0];
+        *out_y = pts->xy[1];
         return;
     }
     if (t >= 1.0f) {
-        *out_x = pts->xs[pts->count - 1];
-        *out_y = pts->ys[pts->count - 1];
+        *out_x = pts->xy[(pts->count - 1) * 2];
+        *out_y = pts->xy[(pts->count - 1) * 2 + 1];
         return;
     }
 
@@ -3528,8 +3674,8 @@ static void _motion_arc_position(const _motion_path_points* pts,
         frac = (target_dist - seg_start) / seg_len;
     }
 
-    *out_x = pts->xs[lo] + frac * (pts->xs[hi] - pts->xs[lo]);
-    *out_y = pts->ys[lo] + frac * (pts->ys[hi] - pts->ys[lo]);
+    *out_x = pts->xy[lo * 2] + frac * (pts->xy[hi * 2] - pts->xy[lo * 2]);
+    *out_y = pts->xy[lo * 2 + 1] + frac * (pts->xy[hi * 2 + 1] - pts->xy[lo * 2 + 1]);
 }
 
 /*
@@ -3561,8 +3707,8 @@ static float _motion_arc_tangent_angle(const _motion_path_points* pts,
     }
 
     /* Compute direction of segment lo -> hi */
-    float dx = pts->xs[hi] - pts->xs[lo];
-    float dy = pts->ys[hi] - pts->ys[lo];
+    float dx = pts->xy[hi * 2] - pts->xy[lo * 2];
+    float dy = pts->xy[hi * 2 + 1] - pts->xy[lo * 2 + 1];
 
     return atan2f(dy, dx);
 }
@@ -3665,7 +3811,7 @@ static INLINE bool _anim_eval_set(const psx_svg_anim_item* it, float doc_t, floa
 
     // If an explicit end (or end-list) is present, it can shorten the active interval.
     float end_sec = 0.0f;
-    if (psx_array_size((psx_array*)&it->ends_sec) > 0) {
+    if (_sbo_size(&it->ends_sec) > 0) {
         end_sec = _anim_item_end_for_begin(it, begin_sec);
     } else if (it->end_sec > 0.0f) {
         end_sec = it->end_sec;
@@ -3851,7 +3997,7 @@ static void _collect_anims(psx_svg_player* p, const psx_svg_node* node)
                                                ? (tl->offsets_ms[0] * 0.001f) : 0.0f;
                     item.syncbase_resolved = false;
                     item.syncbase_circular = false;
-                    psx_array_clear(&item.begins_sec);
+                    _sbo_clear(&item.begins_sec);
                     item.begin_sec = 1e30f; // don't auto-activate until resolved
                 } else if (tl->event_token) {
                     item.begin_event = _dup_cstr(tl->event_token);
@@ -3859,17 +4005,17 @@ static void _collect_anims(psx_svg_player* p, const psx_svg_node* node)
                                                   ? (tl->offsets_ms[0] * 0.001f) : 0.0f;
                     item.begin_event_target_id = _dup_cstr(tl->event_target_id);
                     item.access_key = tl->access_key;
-                    psx_array_clear(&item.begins_sec);
+                    _sbo_clear(&item.begins_sec);
                     item.begin_sec = 1e30f; // don't auto-activate until triggered
                 } else {
                     for (uint32_t i = 0; i < tl->offsets_len; i++) {
                         float ms = tl->offsets_ms ? tl->offsets_ms[i] : 0.0f;
                         float sec = (ms <= 0.0f) ? 0.0f : (ms * 0.001f);
-                        psx_array_append(&item.begins_sec, &sec);
+                        _sbo_push(&item.begins_sec, sec);
                     }
                     _anim_item_begin_list_normalize(&item);
-                    if (psx_array_size(&item.begins_sec) > 0) {
-                        item.begin_sec = *(psx_array_get(&item.begins_sec, 0, float));
+                    if (_sbo_size(&item.begins_sec) > 0) {
+                        item.begin_sec = *_sbo_get_const(&item.begins_sec, 0);
                     }
                 }
             } else if (abegin && abegin->val_type == SVG_ATTR_VALUE_PTR && abegin->value.val) {
@@ -3879,7 +4025,7 @@ static void _collect_anims(psx_svg_player* p, const psx_svg_node* node)
                     for (uint32_t i = 0; i < list->length; i++) {
                         float ms = vals[i];
                         float sec = (ms <= 0.0f) ? 0.0f : (ms * 0.001f);
-                        psx_array_append(&item.begins_sec, &sec);
+                        _sbo_push(&item.begins_sec, sec);
                     }
                     _anim_item_begin_list_normalize(&item);
                     item.begin_sec = _attr_as_begin_time_sec(abegin);
@@ -3890,7 +4036,7 @@ static void _collect_anims(psx_svg_player* p, const psx_svg_node* node)
                         for (uint32_t i = 0; i < list->length; i++) {
                             float ms = vals[i];
                             float sec = (ms <= 0.0f) ? 0.0f : (ms * 0.001f);
-                            psx_array_append(&item.begins_sec, &sec);
+                            _sbo_push(&item.begins_sec, sec);
                         }
 
                         _anim_item_begin_list_normalize(&item);
@@ -3915,10 +4061,10 @@ static void _collect_anims(psx_svg_player* p, const psx_svg_node* node)
                 for (uint32_t i = 0; i < tl->offsets_len; i++) {
                     float ms = tl->offsets_ms ? tl->offsets_ms[i] : 0.0f;
                     float sec = (ms <= 0.0f) ? 0.0f : (ms * 0.001f);
-                    psx_array_append(&item.ends_sec, &sec);
+                    _sbo_push(&item.ends_sec, sec);
                 }
                 _anim_item_end_list_normalize(&item);
-                item.end_sec = (psx_array_size(&item.ends_sec) > 0) ? *(psx_array_get(&item.ends_sec, 0, float)) : 0.0f;
+                item.end_sec = (_sbo_size(&item.ends_sec) > 0) ? *_sbo_get_const(&item.ends_sec, 0) : 0.0f;
             } else {
                 item.end_sec = _attr_as_time_sec(aend);
             }
@@ -3957,6 +4103,52 @@ static void _collect_anims(psx_svg_player* p, const psx_svg_node* node)
             item.min_sec = _attr_as_time_sec(_find_attr(node, SVG_ATTR_MIN));
             item.max_sec = _attr_as_time_sec(_find_attr(node, SVG_ATTR_MAX));
 
+            /* Pre-cache DOM base value for additive="sum" animations */
+            if (item.additive_mode == SVG_ANIMATION_ADDITIVE_SUM) {
+                item.cached_base_value = _anim_get_base_value(&item);
+                item.has_cached_base_value = true;
+            }
+
+            /* Pre-compute max active end time for fast culling */
+            {
+                /* If event-based begin, we can't predict — use safe fallback */
+                if (item.begin_event || item.syncbase_ref_id) {
+                    item.max_active_end_sec = 1e30f;
+                } else {
+                    /* Find the LAST (largest) begin time from begins_sec list */
+                    float last_begin = item.begin_sec;
+                    uint32_t bn = _sbo_size(&item.begins_sec);
+                    for (uint32_t bi = 0; bi < bn; bi++) {
+                        const float* bp = _sbo_get_const(&item.begins_sec, bi);
+                        if (bp && *bp > last_begin) {
+                            last_begin = *bp;
+                        }
+                    }
+
+                    float active_dur = item.dur_sec;
+                    if (item.repeat_count == 0) {
+                        /* indefinite repeat */
+                        active_dur = 1e30f;
+                    } else if (item.repeat_count > 1) {
+                        active_dur = item.dur_sec * (float)item.repeat_count;
+                    }
+                    if (item.repeat_dur_sec > 0.0f && item.repeat_dur_sec < active_dur) {
+                        active_dur = item.repeat_dur_sec;
+                    }
+                    if (item.end_sec > 0.0f) {
+                        float end_based = item.end_sec - last_begin;
+                        if (end_based > 0.0f && end_based < active_dur) {
+                            active_dur = end_based;
+                        }
+                    }
+                    if (active_dur <= 0.0f || active_dur >= 1e30f) {
+                        item.max_active_end_sec = 1e30f;
+                    } else {
+                        item.max_active_end_sec = last_begin + active_dur;
+                    }
+                }
+            }
+
             psx_array_append(&p->anims, NULL);
             psx_svg_anim_item* dst = psx_array_get_last(&p->anims, psx_svg_anim_item);
             *dst = item;
@@ -3967,6 +4159,99 @@ static void _collect_anims(psx_svg_player* p, const psx_svg_node* node)
     for (uint32_t i = 0; i < c; i++) {
         _collect_anims(p, node->get_child(i));
     }
+}
+
+/*
+ * Syncbase dependency resolution — uses sorted ID lookup table
+ * for O(log n) binary search instead of O(n) strcmp scan.
+ */
+typedef struct {
+    const char* id; /* anim_node->content(NULL) */
+    uint32_t index; /* index in p->anims */
+} _anim_id_entry;
+
+static int _anim_id_entry_cmp(const void* a, const void* b)
+{
+    const _anim_id_entry* ea = (const _anim_id_entry*)a;
+    const _anim_id_entry* eb = (const _anim_id_entry*)b;
+    return strcmp(ea->id, eb->id);
+}
+
+/* Build a sorted id->index lookup table from p->anims.
+ * Caller must mem_free the returned pointer.
+ * *out_count receives the number of entries. */
+static _anim_id_entry* _build_anim_id_table(psx_svg_player* p, uint32_t* out_count)
+{
+    uint32_t n = psx_array_size(&p->anims);
+    *out_count = 0;
+    if (n == 0) {
+        return NULL;
+    }
+
+    /* First pass: count entries with non-NULL id */
+    uint32_t id_count = 0;
+    for (uint32_t i = 0; i < n; i++) {
+        const psx_svg_anim_item* it = psx_array_get(&p->anims, i, psx_svg_anim_item);
+        if (it && it->anim_node) {
+            const char* cid = it->anim_node->content(NULL);
+            if (cid) {
+                id_count++;
+            }
+        }
+    }
+
+    if (id_count == 0) {
+        return NULL;
+    }
+
+    _anim_id_entry* table = (_anim_id_entry*)mem_malloc(id_count * sizeof(_anim_id_entry));
+    if (!table) {
+        return NULL;
+    }
+
+    /* Second pass: fill entries */
+    uint32_t idx = 0;
+    for (uint32_t i = 0; i < n; i++) {
+        const psx_svg_anim_item* it = psx_array_get(&p->anims, i, psx_svg_anim_item);
+        if (it && it->anim_node) {
+            const char* cid = it->anim_node->content(NULL);
+            if (cid) {
+                table[idx].id = cid;
+                table[idx].index = i;
+                idx++;
+            }
+        }
+    }
+
+    qsort(table, id_count, sizeof(_anim_id_entry), _anim_id_entry_cmp);
+    *out_count = id_count;
+    return table;
+}
+
+/* Binary search for an animation by id. Returns pointer into p->anims or NULL. */
+static const psx_svg_anim_item* _find_anim_by_id(psx_svg_player* p,
+                                                 const _anim_id_entry* table,
+                                                 uint32_t table_count,
+                                                 const char* id)
+{
+    if (!table || table_count == 0 || !id) {
+        return NULL;
+    }
+
+    uint32_t lo = 0;
+    uint32_t hi = table_count;
+    while (lo < hi) {
+        uint32_t mid = lo + (hi - lo) / 2;
+        int cmp = strcmp(id, table[mid].id);
+        if (cmp < 0) {
+            hi = mid;
+        } else if (cmp > 0) {
+            lo = mid + 1;
+        } else {
+            return psx_array_get(&p->anims, table[mid].index, psx_svg_anim_item);
+        }
+    }
+    return NULL;
 }
 
 /*
@@ -3985,6 +4270,10 @@ static void _resolve_syncbase_deps(psx_svg_player* p)
         return;
     }
 
+    /* Build id lookup table for O(log n) search */
+    uint32_t table_count = 0;
+    _anim_id_entry* id_table = _build_anim_id_table(p, &table_count);
+
     // Multiple passes to resolve chains. Max passes = n.
     for (uint32_t pass = 0; pass < n; pass++) {
         bool any_resolved = false;
@@ -3995,21 +4284,11 @@ static void _resolve_syncbase_deps(psx_svg_player* p)
                 continue;
             }
 
-            // Find the referenced animation by id
-            const psx_svg_anim_item* ref = NULL;
-            for (uint32_t j = 0; j < n; j++) {
-                const psx_svg_anim_item* candidate = psx_array_get(&p->anims, j, psx_svg_anim_item);
-                if (!candidate || !candidate->anim_node) {
-                    continue;
-                }
-                const char* cid = candidate->anim_node->content(NULL);
-                if (cid && strcmp(cid, it->syncbase_ref_id) == 0) {
-                    ref = candidate;
-                }
-            }
+            // Find the referenced animation by id — O(log n) binary search
+            const psx_svg_anim_item* ref = _find_anim_by_id(p, id_table, table_count, it->syncbase_ref_id);
 
             if (!ref) {
-                // Missing reference: treat as indefinite (Req 12.5)
+                // Missing reference: treat as indefinite
                 it->syncbase_circular = true;
                 continue;
             }
@@ -4049,7 +4328,7 @@ static void _resolve_syncbase_deps(psx_svg_player* p)
             }
 
             it->begin_sec = begin_time;
-            psx_array_append(&it->begins_sec, &begin_time);
+            _sbo_push(&it->begins_sec, begin_time);
             _anim_item_begin_list_normalize(it);
             it->syncbase_resolved = true;
             any_resolved = true;
@@ -4066,6 +4345,11 @@ static void _resolve_syncbase_deps(psx_svg_player* p)
         if (it && it->syncbase_ref_id && !it->syncbase_resolved && !it->syncbase_circular) {
             it->syncbase_circular = true;
         }
+    }
+
+    /* Free the temporary lookup table */
+    if (id_table) {
+        mem_free(id_table);
     }
 }
 
@@ -4221,11 +4505,11 @@ psx_svg_player* psx_svg_player_create(const psx_svg_node* root, psx_result* out)
     p->time_sec = 0.0f;
     p->duration_sec = -1.0f;
 
-    psx_array_init(&p->anim_state.overrides, sizeof(psx_svg_anim_override_item));
-    psx_array_init(&p->anim_state.transforms, sizeof(psx_svg_anim_transform_item));
-    psx_array_init(&p->anim_state.motion_transforms, sizeof(psx_svg_anim_transform_item));
-    psx_array_init(&p->anim_state.dash_overrides, sizeof(psx_svg_anim_dash_item));
-    psx_array_init(&p->anim_state.color_overrides, sizeof(psx_svg_anim_color_item));
+    psx_array_capacity_init(&p->anim_state.overrides, 2, sizeof(psx_svg_anim_override_item));
+    psx_array_capacity_init(&p->anim_state.transforms, 2, sizeof(psx_svg_anim_transform_item));
+    psx_array_capacity_init(&p->anim_state.motion_transforms, 2, sizeof(psx_svg_anim_transform_item));
+    psx_array_capacity_init(&p->anim_state.dash_overrides, 2, sizeof(psx_svg_anim_dash_item));
+    psx_array_capacity_init(&p->anim_state.color_overrides, 2, sizeof(psx_svg_anim_color_item));
     p->anim_state.scratch_matrix = ps_matrix_create();
 
     psx_svg_render_list_set_anim_state(p->render_list, &p->anim_state);
@@ -4287,19 +4571,24 @@ void psx_svg_player_destroy(psx_svg_player* p)
     psx_array_destroy(&p->anim_state.transforms);
     psx_array_destroy(&p->anim_state.motion_transforms);
 
-    /* Free dash override buffers. */
+    /* Free dash override buffers up to high-water mark (includes ghost entries). */
     {
-        uint32_t nd = psx_array_size(&p->anim_state.dash_overrides);
-        for (uint32_t i = 0; i < nd; i++) {
-            psx_svg_anim_dash_item* di = psx_array_get(&p->anim_state.dash_overrides, i, psx_svg_anim_dash_item);
-            if (di && di->dashes) {
-                mem_free(di->dashes);
+        uint32_t nd = p->anim_state.dash_high_water;
+        psx_svg_anim_dash_item* arr = (psx_svg_anim_dash_item*)p->anim_state.dash_overrides.data;
+        for (uint32_t i = 0; i < nd && arr; i++) {
+            if (arr[i].dashes) {
+                mem_free(arr[i].dashes);
             }
         }
         psx_array_destroy(&p->anim_state.dash_overrides);
     }
 
     psx_array_destroy(&p->anim_state.color_overrides);
+
+    if (p->anim_state.active_targets) {
+        mem_free(p->anim_state.active_targets);
+        p->anim_state.active_targets = NULL;
+    }
 
     if (p->anim_state.scratch_matrix) {
         ps_matrix_unref(p->anim_state.scratch_matrix);
@@ -4363,8 +4652,9 @@ static void _anim_fire_callbacks(psx_svg_player* p)
             continue;
         }
 
-        uint32_t cur_iter = 0;
-        bool active = _anim_is_active(it, p->time_sec, &cur_iter);
+        /* Use cached eval-stage active state instead of recomputing. */
+        bool active = it->eval_active;
+        uint32_t cur_iter = it->eval_iteration;
 
         const char* anim_id = it->anim_node ? it->anim_node->content(NULL) : NULL;
 
@@ -4391,6 +4681,96 @@ static void _anim_fire_callbacks(psx_svg_player* p)
     }
 }
 
+static int _ptr_cmp(const void* a, const void* b)
+{
+    uintptr_t pa = *(const uintptr_t*)a;
+    uintptr_t pb = *(const uintptr_t*)b;
+    if (pa < pb) { return -1; }
+    if (pa > pb) { return 1; }
+    return 0;
+}
+
+static void _build_active_targets(psx_svg_anim_state* s)
+{
+    /* Count max possible targets (upper bound). */
+    uint32_t max_count = psx_array_size(&s->overrides)
+                         + psx_array_size(&s->color_overrides)
+                         + psx_array_size(&s->transforms)
+                         + psx_array_size(&s->motion_transforms)
+                         + psx_array_size(&s->dash_overrides);
+    if (max_count == 0) {
+        s->active_target_count = 0;
+        return;
+    }
+
+    /* Ensure capacity. */
+    if (max_count > s->active_target_cap) {
+        const psx_svg_node** new_arr = (const psx_svg_node**)mem_realloc(
+                                           s->active_targets, max_count * sizeof(const psx_svg_node*));
+        if (!new_arr) {
+            s->active_target_count = 0;
+            return;
+        }
+        s->active_targets = new_arr;
+        s->active_target_cap = max_count;
+    }
+
+    uint32_t n = 0;
+    uint32_t i, sz;
+
+    /* Collect from overrides. */
+    sz = psx_array_size(&s->overrides);
+    for (i = 0; i < sz; i++) {
+        const psx_svg_anim_override_item* it = psx_array_get(&s->overrides, i, psx_svg_anim_override_item);
+        if (it) { s->active_targets[n++] = it->target; }
+    }
+
+    /* Collect from color_overrides. */
+    sz = psx_array_size(&s->color_overrides);
+    for (i = 0; i < sz; i++) {
+        const psx_svg_anim_color_item* it = psx_array_get(&s->color_overrides, i, psx_svg_anim_color_item);
+        if (it) { s->active_targets[n++] = it->target; }
+    }
+
+    /* Collect from transforms. */
+    sz = psx_array_size(&s->transforms);
+    for (i = 0; i < sz; i++) {
+        const psx_svg_anim_transform_item* it = psx_array_get(&s->transforms, i, psx_svg_anim_transform_item);
+        if (it) { s->active_targets[n++] = it->target; }
+    }
+
+    /* Collect from motion_transforms. */
+    sz = psx_array_size(&s->motion_transforms);
+    for (i = 0; i < sz; i++) {
+        const psx_svg_anim_transform_item* it = psx_array_get(&s->motion_transforms, i, psx_svg_anim_transform_item);
+        if (it) { s->active_targets[n++] = it->target; }
+    }
+
+    /* Collect from dash_overrides. */
+    sz = psx_array_size(&s->dash_overrides);
+    for (i = 0; i < sz; i++) {
+        const psx_svg_anim_dash_item* it = psx_array_get(&s->dash_overrides, i, psx_svg_anim_dash_item);
+        if (it) { s->active_targets[n++] = it->target; }
+    }
+
+    if (n == 0) {
+        s->active_target_count = 0;
+        return;
+    }
+
+    /* Sort by pointer value. */
+    qsort(s->active_targets, n, sizeof(const psx_svg_node*), _ptr_cmp);
+
+    /* Dedup. */
+    uint32_t w = 1;
+    for (i = 1; i < n; i++) {
+        if (s->active_targets[i] != s->active_targets[w - 1]) {
+            s->active_targets[w++] = s->active_targets[i];
+        }
+    }
+    s->active_target_count = w;
+}
+
 static void _apply_animations_at_time(psx_svg_player* p)
 {
     if (!p) {
@@ -4401,17 +4781,37 @@ static void _apply_animations_at_time(psx_svg_player* p)
 
     uint32_t n = psx_array_size(&p->anims);
     for (uint32_t i = 0; i < n; i++) {
-        const psx_svg_anim_item* it = psx_array_get(&p->anims, i, psx_svg_anim_item);
+        psx_svg_anim_item* it = psx_array_get(&p->anims, i, psx_svg_anim_item);
         if (!it) {
             continue;
         }
 
         if (!(it->tag == SVG_TAG_ANIMATE || it->tag == SVG_TAG_SET || it->tag == SVG_TAG_ANIMATE_COLOR
               || it->tag == SVG_TAG_ANIMATE_TRANSFORM || it->tag == SVG_TAG_ANIMATE_MOTION)) {
+            /* Unsupported tag — not evaluated. */
+            it->eval_active = false;
+            it->eval_iteration = 0;
             continue;
         }
         if (!_is_supported_anim_attr(it->target_attr)) {
+            /* Unsupported attr — not evaluated. */
+            it->eval_active = false;
+            it->eval_iteration = 0;
             continue;
+        }
+
+        /* Fast cull — skip animations past their active window (fill=remove only) */
+        if (it->fill_mode != SVG_ANIMATION_FREEZE && p->time_sec > it->max_active_end_sec) {
+            it->eval_active = false;
+            it->eval_iteration = 0;
+            continue;
+        }
+
+        /* Record active state once for callback reuse. */
+        {
+            uint32_t ei = 0;
+            it->eval_active = _anim_is_active(it, p->time_sec, &ei);
+            it->eval_iteration = ei;
         }
 
         if (it->tag == SVG_TAG_ANIMATE_MOTION) {
@@ -4434,7 +4834,7 @@ static void _apply_animations_at_time(psx_svg_player* p)
             continue;
         }
 
-        /* stroke-dasharray: array interpolation (Req 10). */
+        /* stroke-dasharray: array interpolation. */
         if (it->target_attr == SVG_ATTR_STROKE_DASH_ARRAY && it->tag == SVG_TAG_ANIMATE) {
             _anim_eval_dasharray(it, p->time_sec, &p->anim_state);
             continue;
@@ -4456,10 +4856,14 @@ static void _apply_animations_at_time(psx_svg_player* p)
             } else if (_is_int32_anim_attr(it->target_attr)) {
                 _anim_state_set_int32(&p->anim_state, it->target_node, it->target_attr, (int32_t)v);
             } else {
-                // additive="sum": add DOM base value for numeric attributes (Req 7.2).
+                // additive="sum": add DOM base value for numeric attributes.
                 if (it->additive_mode == SVG_ANIMATION_ADDITIVE_SUM
                     && it->tag != SVG_TAG_ANIMATE_COLOR) {
-                    v += _anim_get_base_value(it);
+                    if (it->has_cached_base_value) {
+                        v += it->cached_base_value;
+                    } else {
+                        v += _anim_get_base_value(it);
+                    }
                 }
                 _anim_state_set_float(&p->anim_state, it->target_node, it->target_attr, v);
             }
@@ -4468,6 +4872,9 @@ static void _apply_animations_at_time(psx_svg_player* p)
 
     _anim_state_sort_overrides(&p->anim_state);
     _anim_state_sort_color_overrides(&p->anim_state);
+    _anim_state_sort_transforms(&p->anim_state.transforms);
+    _anim_state_sort_transforms(&p->anim_state.motion_transforms);
+    _build_active_targets(&p->anim_state);
 }
 
 void psx_svg_player_seek(psx_svg_player* p, float seconds)
@@ -4622,7 +5029,7 @@ void psx_svg_player_trigger(psx_svg_player* p, const char* target_id, const char
 
         // restart guard: check restart_mode before appending new begin.
         if (it->restart_mode == SVG_ANIMATION_RESTART_NEVER) {
-            if (!psx_array_empty(&it->begins_sec)) {
+            if (!_sbo_empty(&it->begins_sec)) {
                 continue; // already activated once; ignore
             }
         } else if (it->restart_mode == SVG_ANIMATION_RESTART_WHEN_NOT_ACTIVE) {
@@ -4634,7 +5041,7 @@ void psx_svg_player_trigger(psx_svg_player* p, const char* target_id, const char
             }
         }
 
-        psx_array_append(&it->begins_sec, &sec);
+        _sbo_push(&it->begins_sec, sec);
         _anim_item_begin_list_normalize(it);
         any = true;
     }
@@ -4655,14 +5062,14 @@ void psx_svg_player_trigger(psx_svg_player* p, const char* target_id, const char
             }
         }
 
-        // Only end an animation that is currently active (Req 5.5).
+        // Only end an animation that is currently active.
         float begin_sec = _anim_item_begin_for_time(it, p->time_sec);
         if (p->time_sec < begin_sec) {
             continue; // not yet started; ignore end event
         }
 
         float sec = p->time_sec;
-        psx_array_append(&it->ends_sec, &sec);
+        _sbo_push(&it->ends_sec, sec);
         _anim_item_end_list_normalize(it);
         any = true;
     }
@@ -4696,7 +5103,7 @@ void psx_svg_player_send_key(psx_svg_player* p, char key)
 
         /* restart guard (same as trigger) */
         if (it->restart_mode == SVG_ANIMATION_RESTART_NEVER) {
-            if (!psx_array_empty(&it->begins_sec)) {
+            if (!_sbo_empty(&it->begins_sec)) {
                 continue;
             }
         } else if (it->restart_mode == SVG_ANIMATION_RESTART_WHEN_NOT_ACTIVE) {
@@ -4707,7 +5114,7 @@ void psx_svg_player_send_key(psx_svg_player* p, char key)
             }
         }
 
-        psx_array_append(&it->begins_sec, &sec);
+        _sbo_push(&it->begins_sec, sec);
         _anim_item_begin_list_normalize(it);
         any = true;
     }
