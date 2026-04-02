@@ -1,0 +1,42 @@
+\doxysection{include/picasso\+\_\+backport.h File Reference}
+\label{picasso__backport_8h}\index{include/picasso\_backport.h@{include/picasso\_backport.h}}
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}picasso.\+h\char`\"{}}\newline
+\doxysubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \textbf{ \+\_\+ps\+\_\+memory\+\_\+funcs}
+\begin{DoxyCompactList}\small\item\em Memory allocator functions structure. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef void $\ast$($\ast$ \textbf{ ps\+\_\+malloc\+\_\+func}) (size\+\_\+t size)
+\begin{DoxyCompactList}\small\item\em Memory allocation function pointer type. \end{DoxyCompactList}\item 
+typedef void($\ast$ \textbf{ ps\+\_\+free\+\_\+func}) (void $\ast$ptr)
+\begin{DoxyCompactList}\small\item\em Memory free function pointer type. \end{DoxyCompactList}\item 
+typedef void $\ast$($\ast$ \textbf{ ps\+\_\+calloc\+\_\+func}) (size\+\_\+t num, size\+\_\+t size)
+\begin{DoxyCompactList}\small\item\em Memory calloc function pointer type. \end{DoxyCompactList}\item 
+typedef struct \textbf{ \+\_\+ps\+\_\+memory\+\_\+funcs} \textbf{ ps\+\_\+memory\+\_\+funcs}
+\begin{DoxyCompactList}\small\item\em Memory allocator functions structure. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+bool} P\+I\+C\+A\+PI \textbf{ ps\+\_\+set\+\_\+memory\+\_\+functions} (const \textbf{ ps\+\_\+memory\+\_\+funcs} $\ast$funcs)
+\begin{DoxyCompactList}\small\item\em Set global memory allocation functions. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyAuthor}{Author}
+Zhang Ji Peng {\texttt{ onecoolx@gmail.\+com}} 
+\end{DoxyAuthor}
+\begin{DoxyDate}{Date}
+2026/1/17
+\end{DoxyDate}
+This file includes all interfaces of Picasso
+
+\begin{DoxyVerb}   Copyright (C) 2008 ~ 2026  Zhang Ji Peng
+
+   All rights reserved.
+
+   Picasso is a vector graphic library.\end{DoxyVerb}
+ 

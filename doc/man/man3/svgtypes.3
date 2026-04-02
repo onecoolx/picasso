@@ -1,4 +1,4 @@
-.TH "svgtypes" 3 "Tue May 13 2025" "Version 2.8" "Picasso API" \" -*- nroff -*-
+.TH "svgtypes" 3 "Thu Apr 2 2026" "Version 2.9" "Picasso API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -17,6 +17,26 @@ svgtypes
 .RI "typedef struct _psx_svg_render \fBpsx_svg_render\fP"
 .br
 .RI "An opaque type represents an svg render object\&. "
+.ti -1c
+.RI "typedef struct _psx_svg_player \fBpsx_svg_player\fP"
+.br
+.RI "An opaque type represents an svg animation player\&. "
+.ti -1c
+.RI "typedef void(* \fBpsx_svg_anim_event_cb\fP) (\fBpsx_svg_anim_event_type\fP type, const char *anim_id, void *user_data)"
+.br
+.RI "The callback for SVG animation event\&. "
+.in -1c
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum \fBpsx_svg_player_state\fP { \fBPSX_SVG_PLAYER_STOPPED\fP = 0, \fBPSX_SVG_PLAYER_PLAYING\fP = 1, \fBPSX_SVG_PLAYER_PAUSED\fP = 2 }"
+.br
+.RI "SVG animation player status\&. "
+.ti -1c
+.RI "enum \fBpsx_svg_anim_event_type\fP { \fBPSX_SVG_ANIM_EVENT_BEGIN\fP = 0, \fBPSX_SVG_ANIM_EVENT_END\fP, \fBPSX_SVG_ANIM_EVENT_REPEAT\fP }"
+.br
+.RI "SVG animation event callback types\&. "
 .in -1c
 .SH "Detailed Description"
 .PP 
@@ -36,6 +56,36 @@ An opaque type represents an svg document\&.
 
 .PP
 Definition at line 48 of file psx_svg\&.h\&.
+.SS "psx_svg_anim_event_cb"
+
+.PP
+The callback for SVG animation event\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fItype\fP The animation event type\&. 
+.br
+\fIanim_id\fP The id of the animation element, can be NULL\&. 
+.br
+\fIuser_data\fP User data pointer passed to \fIpsx_svg_player_set_event_callback\fP\&. 
+.RE
+.PP
+
+.PP
+Definition at line 91 of file psx_svg_animation\&.h\&.
+.SS "\fBpsx_svg_player\fP"
+
+.PP
+An opaque type represents an svg animation player\&. 
+.PP
+\fBSee also\fP
+.RS 4
+\fBpsx_svg_render\fP, \fBpsx_svg\fP 
+.RE
+.PP
+
+.PP
+Definition at line 45 of file psx_svg_animation\&.h\&.
 .SS "\fBpsx_svg_render\fP"
 
 .PP
@@ -49,6 +99,44 @@ An opaque type represents an svg render object\&.
 
 .PP
 Definition at line 55 of file psx_svg\&.h\&.
+.SH "Enumeration Type Documentation"
+.PP 
+.SS "enum \fBpsx_svg_anim_event_type\fP"
+
+.PP
+SVG animation event callback types\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIPSX_SVG_ANIM_EVENT_BEGIN \fP\fP
+SVG animation begin event\&. 
+.TP
+\fB\fIPSX_SVG_ANIM_EVENT_END \fP\fP
+SVG animation end event\&. 
+.TP
+\fB\fIPSX_SVG_ANIM_EVENT_REPEAT \fP\fP
+SVG animation repeat event\&. 
+.PP
+Definition at line 68 of file psx_svg_animation\&.h\&.
+.SS "enum \fBpsx_svg_player_state\fP"
+
+.PP
+SVG animation player status\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIPSX_SVG_PLAYER_STOPPED \fP\fP
+Player is stopped\&. 
+.TP
+\fB\fIPSX_SVG_PLAYER_PLAYING \fP\fP
+Player is playing\&. 
+.TP
+\fB\fIPSX_SVG_PLAYER_PAUSED \fP\fP
+Player is paused\&. 
+.PP
+Definition at line 50 of file psx_svg_animation\&.h\&.
 .SH "Author"
 .PP 
 Generated automatically by Doxygen for Picasso API from the source code\&.

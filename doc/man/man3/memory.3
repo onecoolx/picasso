@@ -1,0 +1,128 @@
+.TH "memory" 3 "Thu Apr 2 2026" "Version 2.9" "Picasso API" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+memory
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Structures"
+
+.in +1c
+.ti -1c
+.RI "struct \fB_ps_memory_funcs\fP"
+.br
+.RI "Memory allocator functions structure\&. "
+.in -1c
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef void *(* \fBps_malloc_func\fP) (size_t size)"
+.br
+.RI "Memory allocation function pointer type\&. "
+.ti -1c
+.RI "typedef void(* \fBps_free_func\fP) (void *ptr)"
+.br
+.RI "Memory free function pointer type\&. "
+.ti -1c
+.RI "typedef void *(* \fBps_calloc_func\fP) (size_t num, size_t size)"
+.br
+.RI "Memory calloc function pointer type\&. "
+.ti -1c
+.RI "typedef struct \fB_ps_memory_funcs\fP \fBps_memory_funcs\fP"
+.br
+.RI "Memory allocator functions structure\&. "
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "PEXPORT \fBps_bool\fP PICAPI \fBps_set_memory_functions\fP (const \fBps_memory_funcs\fP *funcs)"
+.br
+.RI "Set global memory allocation functions\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.SH "Typedef Documentation"
+.PP 
+.SS "typedef void*(* ps_calloc_func) (size_t num, size_t size)"
+
+.PP
+Memory calloc function pointer type\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fInum\fP Number of elements 
+.br
+\fIsize\fP Size of each element in bytes 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Pointer to allocated memory or NULL on failure 
+.RE
+.PP
+
+.PP
+Definition at line 58 of file picasso_backport\&.h\&.
+.SS "typedef void(* ps_free_func) (void *ptr)"
+
+.PP
+Memory free function pointer type\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIptr\fP Pointer to memory to free 
+.RE
+.PP
+
+.PP
+Definition at line 50 of file picasso_backport\&.h\&.
+.SS "typedef void*(* ps_malloc_func) (size_t size)"
+
+.PP
+Memory allocation function pointer type\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIsize\fP Size in bytes to allocate 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Pointer to allocated memory or NULL on failure 
+.RE
+.PP
+
+.PP
+Definition at line 44 of file picasso_backport\&.h\&.
+.SH "Function Documentation"
+.PP 
+.SS "\fBps_bool\fP ps_set_memory_functions (const \fBps_memory_funcs\fP * funcs)"
+
+.PP
+Set global memory allocation functions\&. This function allows you to override the default memory allocation functions used throughout the Picasso library\&. All memory allocations will be redirected to the provided functions\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIfuncs\fP Pointer to structure containing memory function pointers\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+True on success, False on failure
+.RE
+.PP
+\fBNote\fP
+.RS 4
+This function must be called before \fBps_initialize()\fP and cannot be called after the library has been initialized\&. 
+.PP
+All function pointers must be valid; NULL pointers are not allowed\&. 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Picasso API from the source code\&.

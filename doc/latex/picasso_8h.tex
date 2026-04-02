@@ -92,8 +92,6 @@ typedef enum \textbf{ \+\_\+ps\+\_\+text\+\_\+type} \textbf{ ps\+\_\+text\+\_\+t
 \begin{DoxyCompactList}\small\item\em Text rendering type. \end{DoxyCompactList}\item 
 typedef enum \textbf{ \+\_\+ps\+\_\+draw\+\_\+text\+\_\+type} \textbf{ ps\+\_\+draw\+\_\+text\+\_\+type}
 \begin{DoxyCompactList}\small\item\em Draw mode for rending text. \end{DoxyCompactList}\item 
-typedef enum \textbf{ \+\_\+ps\+\_\+text\+\_\+align} \textbf{ ps\+\_\+text\+\_\+align}
-\begin{DoxyCompactList}\small\item\em Text align mode for drawing text. \end{DoxyCompactList}\item 
 typedef enum \textbf{ \+\_\+ps\+\_\+path\+\_\+cmd} \textbf{ ps\+\_\+path\+\_\+cmd}
 \begin{DoxyCompactList}\small\item\em Path command for vertices. \end{DoxyCompactList}\item 
 typedef enum \textbf{ \+\_\+ps\+\_\+path\+\_\+op} \textbf{ ps\+\_\+path\+\_\+operation}
@@ -489,7 +487,7 @@ P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+text\+\_\+out\+\_\+length
 \begin{DoxyCompactList}\small\item\em Draw single byte characters (latin-\/1) at location in user space. \end{DoxyCompactList}\item 
 P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+wide\+\_\+text\+\_\+out\+\_\+length} (\textbf{ ps\+\_\+context} $\ast$ctx, float x, float y, const \textbf{ ps\+\_\+uchar16} $\ast$text, uint32\+\_\+t length)
 \begin{DoxyCompactList}\small\item\em Draw unicode characters (ucs-\/2) at location in user space. \end{DoxyCompactList}\item 
-P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+draw\+\_\+text} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+rect} $\ast$area, const void $\ast$text, uint32\+\_\+t length, \textbf{ ps\+\_\+draw\+\_\+text\+\_\+type} type, \textbf{ ps\+\_\+text\+\_\+align} align)
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+draw\+\_\+text} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+rect} $\ast$area, const void $\ast$text, uint32\+\_\+t length, \textbf{ ps\+\_\+draw\+\_\+text\+\_\+type} type, uint32\+\_\+t align)
 \begin{DoxyCompactList}\small\item\em Draw text in a rectangle area, using font object which is selected in graphic context. \end{DoxyCompactList}\item 
 P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+bool} P\+I\+C\+A\+PI \textbf{ ps\+\_\+get\+\_\+glyph} (\textbf{ ps\+\_\+context} $\ast$ctx, int32\+\_\+t ch, \textbf{ ps\+\_\+glyph} $\ast$glyph)
 \begin{DoxyCompactList}\small\item\em Get the glyph from a given character, using font object which is selected in graphic context. \end{DoxyCompactList}\item 
@@ -589,9 +587,9 @@ P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+move\+\_\+to} (\textbf{ p
 \begin{DoxyCompactList}\small\item\em Begin a new sub path, and set the current point. \end{DoxyCompactList}\item 
 P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+line\+\_\+to} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+point} $\ast$point)
 \begin{DoxyCompactList}\small\item\em Add a line to the current path from the current point to given point. \end{DoxyCompactList}\item 
-P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+bezier\+\_\+curve\+\_\+to} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+point} $\ast$fcp, const \textbf{ ps\+\_\+point} $\ast$scp, const \textbf{ ps\+\_\+point} $\ast$ep)
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+bezier\+\_\+to} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+point} $\ast$fcp, const \textbf{ ps\+\_\+point} $\ast$scp, const \textbf{ ps\+\_\+point} $\ast$ep)
 \begin{DoxyCompactList}\small\item\em Add a cubic bezier spline to the current path from current point to end point. \end{DoxyCompactList}\item 
-P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+quad\+\_\+curve\+\_\+to} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+point} $\ast$cp, const \textbf{ ps\+\_\+point} $\ast$ep)
+P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+quad\+\_\+to} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+point} $\ast$cp, const \textbf{ ps\+\_\+point} $\ast$ep)
 \begin{DoxyCompactList}\small\item\em Add a quadratic bezier spline to the current path from current point to end point. \end{DoxyCompactList}\item 
 P\+E\+X\+P\+O\+RT void P\+I\+C\+A\+PI \textbf{ ps\+\_\+arc} (\textbf{ ps\+\_\+context} $\ast$ctx, const \textbf{ ps\+\_\+point} $\ast$cp, float radius, float sangle, float eangle, \textbf{ ps\+\_\+bool} clockwise)
 \begin{DoxyCompactList}\small\item\em Add a circular arc to the current path. \end{DoxyCompactList}\item 

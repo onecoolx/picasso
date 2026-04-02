@@ -3,9 +3,9 @@
 \doxysubsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
-P\+E\+X\+P\+O\+RT int \textbf{ psx\+\_\+image\+\_\+register\+\_\+operator} (const char $\ast$type, const \textbf{ ps\+\_\+byte} $\ast$signature, size\+\_\+t sig\+\_\+offset, size\+\_\+t sig\+\_\+len, \textbf{ psx\+\_\+priority\+\_\+level} level, \textbf{ psx\+\_\+image\+\_\+operator} $\ast$coder)
+P\+E\+X\+P\+O\+RT \textbf{ psx\+\_\+result} \textbf{ psx\+\_\+image\+\_\+register\+\_\+operator} (const char $\ast$type, const \textbf{ ps\+\_\+byte} $\ast$signature, size\+\_\+t sig\+\_\+offset, size\+\_\+t sig\+\_\+len, \textbf{ psx\+\_\+priority\+\_\+level} level, \textbf{ psx\+\_\+image\+\_\+operator} $\ast$coder)
 \begin{DoxyCompactList}\small\item\em Register the image operator. \end{DoxyCompactList}\item 
-P\+E\+X\+P\+O\+RT int \textbf{ psx\+\_\+image\+\_\+unregister\+\_\+operator} (\textbf{ psx\+\_\+image\+\_\+operator} $\ast$coder)
+P\+E\+X\+P\+O\+RT \textbf{ psx\+\_\+result} \textbf{ psx\+\_\+image\+\_\+unregister\+\_\+operator} (\textbf{ psx\+\_\+image\+\_\+operator} $\ast$coder)
 \begin{DoxyCompactList}\small\item\em Unregister the image operator. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
@@ -13,11 +13,11 @@ P\+E\+X\+P\+O\+RT int \textbf{ psx\+\_\+image\+\_\+unregister\+\_\+operator} (\t
 
 
 \doxysubsection{Function Documentation}
-\mbox{\label{group__interface_gac2c1fc7d317f49ee5c246f9aff61e13a}} 
+\mbox{\label{group__interface_ga63ad42bc0dffaffc72f8f2a34fdd3ccb}} 
 \index{XImage Coders Register functions@{XImage Coders Register functions}!psx\_image\_register\_operator@{psx\_image\_register\_operator}}
 \index{psx\_image\_register\_operator@{psx\_image\_register\_operator}!XImage Coders Register functions@{XImage Coders Register functions}}
 \doxysubsubsection{psx\_image\_register\_operator()}
-{\footnotesize\ttfamily int psx\+\_\+image\+\_\+register\+\_\+operator (\begin{DoxyParamCaption}\item[{const char $\ast$}]{type,  }\item[{const \textbf{ ps\+\_\+byte} $\ast$}]{signature,  }\item[{size\+\_\+t}]{sig\+\_\+offset,  }\item[{size\+\_\+t}]{sig\+\_\+len,  }\item[{\textbf{ psx\+\_\+priority\+\_\+level}}]{level,  }\item[{\textbf{ psx\+\_\+image\+\_\+operator} $\ast$}]{coder }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \textbf{ psx\+\_\+result} psx\+\_\+image\+\_\+register\+\_\+operator (\begin{DoxyParamCaption}\item[{const char $\ast$}]{type,  }\item[{const \textbf{ ps\+\_\+byte} $\ast$}]{signature,  }\item[{size\+\_\+t}]{sig\+\_\+offset,  }\item[{size\+\_\+t}]{sig\+\_\+len,  }\item[{\textbf{ psx\+\_\+priority\+\_\+level}}]{level,  }\item[{\textbf{ psx\+\_\+image\+\_\+operator} $\ast$}]{coder }\end{DoxyParamCaption})}
 
 
 
@@ -42,13 +42,13 @@ Register the image operator.
 Result code returned.
 \end{DoxyReturn}
 \begin{DoxySeeAlso}{See also}
-\doxyref{psx\+\_\+image\+\_\+unregister\+\_\+operator}{p.}{group__interface_ga50213dff3b0bec9b77c059bb85126bed} 
+\doxyref{psx\+\_\+image\+\_\+unregister\+\_\+operator}{p.}{group__interface_ga722c8bc2d6bb65eb8fdeb98f44a9ade6} 
 \end{DoxySeeAlso}
-\mbox{\label{group__interface_ga50213dff3b0bec9b77c059bb85126bed}} 
+\mbox{\label{group__interface_ga722c8bc2d6bb65eb8fdeb98f44a9ade6}} 
 \index{XImage Coders Register functions@{XImage Coders Register functions}!psx\_image\_unregister\_operator@{psx\_image\_unregister\_operator}}
 \index{psx\_image\_unregister\_operator@{psx\_image\_unregister\_operator}!XImage Coders Register functions@{XImage Coders Register functions}}
 \doxysubsubsection{psx\_image\_unregister\_operator()}
-{\footnotesize\ttfamily int psx\+\_\+image\+\_\+unregister\+\_\+operator (\begin{DoxyParamCaption}\item[{\textbf{ psx\+\_\+image\+\_\+operator} $\ast$}]{coder }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \textbf{ psx\+\_\+result} psx\+\_\+image\+\_\+unregister\+\_\+operator (\begin{DoxyParamCaption}\item[{\textbf{ psx\+\_\+image\+\_\+operator} $\ast$}]{coder }\end{DoxyParamCaption})}
 
 
 
@@ -63,5 +63,5 @@ Unregister the image operator.
 Result code returned.
 \end{DoxyReturn}
 \begin{DoxySeeAlso}{See also}
-\doxyref{psx\+\_\+image\+\_\+register\+\_\+operator}{p.}{group__interface_gac2c1fc7d317f49ee5c246f9aff61e13a} 
+\doxyref{psx\+\_\+image\+\_\+register\+\_\+operator}{p.}{group__interface_ga63ad42bc0dffaffc72f8f2a34fdd3ccb} 
 \end{DoxySeeAlso}

@@ -20,6 +20,11 @@ enum \textbf{ psx\+\_\+result} \{ \newline
 \textbf{ S\+\_\+\+F\+A\+I\+L\+U\+RE} = 5
  \}
 \begin{DoxyCompactList}\small\item\em Status code return by call A\+P\+Is. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+const char $\ast$ \textbf{ psx\+\_\+result\+\_\+get\+\_\+string} (\textbf{ psx\+\_\+result} result)
+\begin{DoxyCompactList}\small\item\em Return the string of result code. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
 \doxysubsection{Detailed Description}
@@ -66,3 +71,24 @@ S\+\_\+\+F\+A\+I\+L\+U\+RE&Operation failed by internal errors. \\
 
 Definition at line 36 of file picasso\+\_\+ext.\+h.
 
+
+
+\doxysubsection{Function Documentation}
+\mbox{\label{group__extension_ga161f1e6151a11a5398afcaae3e0cf50c}} 
+\index{Extensions@{Extensions}!psx\_result\_get\_string@{psx\_result\_get\_string}}
+\index{psx\_result\_get\_string@{psx\_result\_get\_string}!Extensions@{Extensions}}
+\doxysubsubsection{psx\_result\_get\_string()}
+{\footnotesize\ttfamily const char $\ast$ psx\+\_\+result\+\_\+get\+\_\+string (\begin{DoxyParamCaption}\item[{\textbf{ psx\+\_\+result}}]{result }\end{DoxyParamCaption})}
+
+
+
+Return the string of result code. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em result} & The status code of result. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The string of result code. 
+\end{DoxyReturn}

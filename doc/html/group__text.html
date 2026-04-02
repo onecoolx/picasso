@@ -19,7 +19,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Picasso API
-   &#160;<span id="projectnumber">2.8</span>
+   &#160;<span id="projectnumber">2.9</span>
    </div>
   </td>
  </tr>
@@ -58,10 +58,6 @@ typedef enum <a class="el" href="group__text.html#gae259beafbac1631008928e8fd20f
 typedef enum <a class="el" href="group__text.html#gaf761c220adcef1796c24f81566888987">_ps_draw_text_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__text.html#ga40b43dab2c47ceb5785de4a3211776d5">ps_draw_text_type</a></td></tr>
 <tr class="memdesc:ga40b43dab2c47ceb5785de4a3211776d5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draw mode for rending text. <br /></td></tr>
 <tr class="separator:ga40b43dab2c47ceb5785de4a3211776d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gab55b17eee1e3e00cfb82fa0e98d52fac"><td class="memItemLeft" align="right" valign="top"><a id="gab55b17eee1e3e00cfb82fa0e98d52fac"></a>
-typedef enum <a class="el" href="group__text.html#gaac566a8c2ea1627be2b9cdaf8b3b39e7">_ps_text_align</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__text.html#gab55b17eee1e3e00cfb82fa0e98d52fac">ps_text_align</a></td></tr>
-<tr class="memdesc:gab55b17eee1e3e00cfb82fa0e98d52fac"><td class="mdescLeft">&#160;</td><td class="mdescRight">Text align mode for drawing text. <br /></td></tr>
-<tr class="separator:gab55b17eee1e3e00cfb82fa0e98d52fac"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
@@ -121,9 +117,9 @@ Functions</h2></td></tr>
 <tr class="memitem:ga3a608d2e91a130253b00edf5ed8aee85"><td class="memItemLeft" align="right" valign="top">PEXPORT void PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__text.html#ga3a608d2e91a130253b00edf5ed8aee85">ps_wide_text_out_length</a> (<a class="el" href="group__objects.html#ga4a70d4a51cfa38485adf65620e5a0ec9">ps_context</a> *ctx, float x, float y, const <a class="el" href="group__data.html#gaa5272625f3e613e58c9a5ce148b752bc">ps_uchar16</a> *text, uint32_t length)</td></tr>
 <tr class="memdesc:ga3a608d2e91a130253b00edf5ed8aee85"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draw unicode characters (ucs-2) at location in user space.  <a href="group__text.html#ga3a608d2e91a130253b00edf5ed8aee85">More...</a><br /></td></tr>
 <tr class="separator:ga3a608d2e91a130253b00edf5ed8aee85"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga4accdd233bee66e3b25cee89bcaf4de2"><td class="memItemLeft" align="right" valign="top">PEXPORT void PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__text.html#ga4accdd233bee66e3b25cee89bcaf4de2">ps_draw_text</a> (<a class="el" href="group__objects.html#ga4a70d4a51cfa38485adf65620e5a0ec9">ps_context</a> *ctx, const <a class="el" href="group__objects.html#ga6acefae8e0866450753775eb9424dea7">ps_rect</a> *area, const void *text, uint32_t length, <a class="el" href="group__text.html#ga40b43dab2c47ceb5785de4a3211776d5">ps_draw_text_type</a> type, <a class="el" href="group__text.html#gab55b17eee1e3e00cfb82fa0e98d52fac">ps_text_align</a> align)</td></tr>
-<tr class="memdesc:ga4accdd233bee66e3b25cee89bcaf4de2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draw text in a rectangle area, using font object which is selected in graphic context.  <a href="group__text.html#ga4accdd233bee66e3b25cee89bcaf4de2">More...</a><br /></td></tr>
-<tr class="separator:ga4accdd233bee66e3b25cee89bcaf4de2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga418cc9406d74d9fa9bde9ce038dc75e4"><td class="memItemLeft" align="right" valign="top">PEXPORT void PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__text.html#ga418cc9406d74d9fa9bde9ce038dc75e4">ps_draw_text</a> (<a class="el" href="group__objects.html#ga4a70d4a51cfa38485adf65620e5a0ec9">ps_context</a> *ctx, const <a class="el" href="group__objects.html#ga6acefae8e0866450753775eb9424dea7">ps_rect</a> *area, const void *text, uint32_t length, <a class="el" href="group__text.html#ga40b43dab2c47ceb5785de4a3211776d5">ps_draw_text_type</a> type, uint32_t align)</td></tr>
+<tr class="memdesc:ga418cc9406d74d9fa9bde9ce038dc75e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draw text in a rectangle area, using font object which is selected in graphic context.  <a href="group__text.html#ga418cc9406d74d9fa9bde9ce038dc75e4">More...</a><br /></td></tr>
+<tr class="separator:ga418cc9406d74d9fa9bde9ce038dc75e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga93bff269935a635c246f915d60cadcb9"><td class="memItemLeft" align="right" valign="top">PEXPORT <a class="el" href="group__data.html#gac6a012d4a34bcc846e7ae03790c0af4b">ps_bool</a> PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__text.html#ga93bff269935a635c246f915d60cadcb9">ps_get_glyph</a> (<a class="el" href="group__objects.html#ga4a70d4a51cfa38485adf65620e5a0ec9">ps_context</a> *ctx, int32_t ch, <a class="el" href="group__objects.html#gaa30ffeb35a078e431987fce5fa8b06ff">ps_glyph</a> *glyph)</td></tr>
 <tr class="memdesc:ga93bff269935a635c246f915d60cadcb9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the glyph from a given character, using font object which is selected in graphic context.  <a href="group__text.html#ga93bff269935a635c246f915d60cadcb9">More...</a><br /></td></tr>
 <tr class="separator:ga93bff269935a635c246f915d60cadcb9"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -222,8 +218,8 @@ Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="ga4accdd233bee66e3b25cee89bcaf4de2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga4accdd233bee66e3b25cee89bcaf4de2">&#9670;&nbsp;</a></span>ps_draw_text()</h2>
+<a id="ga418cc9406d74d9fa9bde9ce038dc75e4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga418cc9406d74d9fa9bde9ce038dc75e4">&#9670;&nbsp;</a></span>ps_draw_text()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -261,7 +257,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="group__text.html#gab55b17eee1e3e00cfb82fa0e98d52fac">ps_text_align</a>&#160;</td>
+          <td class="paramtype">uint32_t&#160;</td>
           <td class="paramname"><em>align</em>&#160;</td>
         </tr>
         <tr>
@@ -816,7 +812,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__text.html#ga3a608d2e91a130253b00edf5ed8aee85" title="Draw unicode characters (ucs-2) at location in user space.">ps_wide_text_out_length</a>, <a class="el" href="group__text.html#ga4accdd233bee66e3b25cee89bcaf4de2" title="Draw text in a rectangle area, using font object which is selected in graphic context.">ps_draw_text</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__text.html#ga3a608d2e91a130253b00edf5ed8aee85" title="Draw unicode characters (ucs-2) at location in user space.">ps_wide_text_out_length</a>, <a class="el" href="group__text.html#ga418cc9406d74d9fa9bde9ce038dc75e4" title="Draw text in a rectangle area, using font object which is selected in graphic context.">ps_draw_text</a> </dd></dl>
 
 </div>
 </div>
@@ -913,7 +909,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__text.html#gac7653026ee5e744cc6917a0516d14d48" title="Draw single byte characters (latin-1) at location in user space.">ps_text_out_length</a>, <a class="el" href="group__text.html#ga4accdd233bee66e3b25cee89bcaf4de2" title="Draw text in a rectangle area, using font object which is selected in graphic context.">ps_draw_text</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__text.html#gac7653026ee5e744cc6917a0516d14d48" title="Draw single byte characters (latin-1) at location in user space.">ps_text_out_length</a>, <a class="el" href="group__text.html#ga418cc9406d74d9fa9bde9ce038dc75e4" title="Draw text in a rectangle area, using font object which is selected in graphic context.">ps_draw_text</a> </dd></dl>
 
 </div>
 </div>

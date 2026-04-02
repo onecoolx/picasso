@@ -19,7 +19,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Picasso API
-   &#160;<span id="projectnumber">2.8</span>
+   &#160;<span id="projectnumber">2.9</span>
    </div>
   </td>
  </tr>
@@ -40,7 +40,8 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#typedef-members">Typedefs</a>  </div>
+<a href="#typedef-members">Typedefs</a> &#124;
+<a href="#enum-members">Enumerations</a>  </div>
   <div class="headertitle">
 <div class="title">XSvg Object Types<div class="ingroups"><a class="el" href="group__extension.html">Extensions</a> &raquo; <a class="el" href="group__extsvg.html">XSvg Extension</a></div></div>  </div>
 </div><!--header-->
@@ -54,6 +55,27 @@ Typedefs</h2></td></tr>
 <tr class="memitem:ga01286d1b137a25f1badc7a4f27af43af"><td class="memItemLeft" align="right" valign="top">typedef struct _psx_svg_render&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__svgtypes.html#ga01286d1b137a25f1badc7a4f27af43af">psx_svg_render</a></td></tr>
 <tr class="memdesc:ga01286d1b137a25f1badc7a4f27af43af"><td class="mdescLeft">&#160;</td><td class="mdescRight">An opaque type represents an svg render object.  <a href="group__svgtypes.html#ga01286d1b137a25f1badc7a4f27af43af">More...</a><br /></td></tr>
 <tr class="separator:ga01286d1b137a25f1badc7a4f27af43af"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga7e1992a2db418c153d08b1f81da417e1"><td class="memItemLeft" align="right" valign="top">typedef struct _psx_svg_player&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__svgtypes.html#ga7e1992a2db418c153d08b1f81da417e1">psx_svg_player</a></td></tr>
+<tr class="memdesc:ga7e1992a2db418c153d08b1f81da417e1"><td class="mdescLeft">&#160;</td><td class="mdescRight">An opaque type represents an svg animation player.  <a href="group__svgtypes.html#ga7e1992a2db418c153d08b1f81da417e1">More...</a><br /></td></tr>
+<tr class="separator:ga7e1992a2db418c153d08b1f81da417e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga3d1b53b3f337de2b275ed406d2177d6a"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__svgtypes.html#ga3d1b53b3f337de2b275ed406d2177d6a">psx_svg_anim_event_cb</a>) (<a class="el" href="group__svgtypes.html#gaa5c76268c5f0504b79c63e00360366b7">psx_svg_anim_event_type</a> type, const char *anim_id, void *user_data)</td></tr>
+<tr class="memdesc:ga3d1b53b3f337de2b275ed406d2177d6a"><td class="mdescLeft">&#160;</td><td class="mdescRight">The callback for SVG animation event.  <a href="group__svgtypes.html#ga3d1b53b3f337de2b275ed406d2177d6a">More...</a><br /></td></tr>
+<tr class="separator:ga3d1b53b3f337de2b275ed406d2177d6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
+Enumerations</h2></td></tr>
+<tr class="memitem:ga32eed20168a59443922064b044e1d97e"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__svgtypes.html#ga32eed20168a59443922064b044e1d97e">psx_svg_player_state</a> { <a class="el" href="group__svgtypes.html#gga32eed20168a59443922064b044e1d97eab39bb96cf5ec15edeb3ebbf0a0b23b4a">PSX_SVG_PLAYER_STOPPED</a> = 0, 
+<a class="el" href="group__svgtypes.html#gga32eed20168a59443922064b044e1d97eacf544136bffb72e5ac6a7cf96697d82d">PSX_SVG_PLAYER_PLAYING</a> = 1, 
+<a class="el" href="group__svgtypes.html#gga32eed20168a59443922064b044e1d97eab322675bb64e003fb254a5c6694586cf">PSX_SVG_PLAYER_PAUSED</a> = 2
+ }</td></tr>
+<tr class="memdesc:ga32eed20168a59443922064b044e1d97e"><td class="mdescLeft">&#160;</td><td class="mdescRight">SVG animation player status.  <a href="group__svgtypes.html#ga32eed20168a59443922064b044e1d97e">More...</a><br /></td></tr>
+<tr class="separator:ga32eed20168a59443922064b044e1d97e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaa5c76268c5f0504b79c63e00360366b7"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__svgtypes.html#gaa5c76268c5f0504b79c63e00360366b7">psx_svg_anim_event_type</a> { <a class="el" href="group__svgtypes.html#ggaa5c76268c5f0504b79c63e00360366b7a01d1f493689174f7d742f2832d695bc5">PSX_SVG_ANIM_EVENT_BEGIN</a> = 0, 
+<a class="el" href="group__svgtypes.html#ggaa5c76268c5f0504b79c63e00360366b7a07fd8c1adf3a053270fa812c0f68479b">PSX_SVG_ANIM_EVENT_END</a>, 
+<a class="el" href="group__svgtypes.html#ggaa5c76268c5f0504b79c63e00360366b7a930fb6714df6acbb589127456aebb8d1">PSX_SVG_ANIM_EVENT_REPEAT</a>
+ }</td></tr>
+<tr class="memdesc:gaa5c76268c5f0504b79c63e00360366b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">SVG animation event callback types.  <a href="group__svgtypes.html#gaa5c76268c5f0504b79c63e00360366b7">More...</a><br /></td></tr>
+<tr class="separator:gaa5c76268c5f0504b79c63e00360366b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <h2 class="groupheader">Typedef Documentation</h2>
@@ -76,6 +98,51 @@ Typedefs</h2></td></tr>
 
 </div>
 </div>
+<a id="ga3d1b53b3f337de2b275ed406d2177d6a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga3d1b53b3f337de2b275ed406d2177d6a">&#9670;&nbsp;</a></span>psx_svg_anim_event_cb</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">psx_svg_anim_event_cb</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>The callback for SVG animation event. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">type</td><td>The animation event type. </td></tr>
+    <tr><td class="paramname">anim_id</td><td>The id of the animation element, can be NULL. </td></tr>
+    <tr><td class="paramname">user_data</td><td>User data pointer passed to <em>psx_svg_player_set_event_callback</em>. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="psx__svg__animation_8h_source.html#l00091">91</a> of file <a class="el" href="psx__svg__animation_8h_source.html">psx_svg_animation.h</a>.</p>
+
+</div>
+</div>
+<a id="ga7e1992a2db418c153d08b1f81da417e1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga7e1992a2db418c153d08b1f81da417e1">&#9670;&nbsp;</a></span>psx_svg_player</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__svgtypes.html#ga7e1992a2db418c153d08b1f81da417e1">psx_svg_player</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>An opaque type represents an svg animation player. </p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__svgtypes.html#ga01286d1b137a25f1badc7a4f27af43af" title="An opaque type represents an svg render object.">psx_svg_render</a>, <a class="el" href="group__svgtypes.html#gaeb10426a6a4570e0176172f4bc58ec16" title="An opaque type represents an svg document.">psx_svg</a> </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="psx__svg__animation_8h_source.html#l00045">45</a> of file <a class="el" href="psx__svg__animation_8h_source.html">psx_svg_animation.h</a>.</p>
+
+</div>
+</div>
 <a id="ga01286d1b137a25f1badc7a4f27af43af"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga01286d1b137a25f1badc7a4f27af43af">&#9670;&nbsp;</a></span>psx_svg_render</h2>
 
@@ -92,6 +159,59 @@ Typedefs</h2></td></tr>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="group__svgtypes.html#gaeb10426a6a4570e0176172f4bc58ec16" title="An opaque type represents an svg document.">psx_svg</a> </dd></dl>
 
 <p class="definition">Definition at line <a class="el" href="psx__svg_8h_source.html#l00055">55</a> of file <a class="el" href="psx__svg_8h_source.html">psx_svg.h</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Enumeration Type Documentation</h2>
+<a id="gaa5c76268c5f0504b79c63e00360366b7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaa5c76268c5f0504b79c63e00360366b7">&#9670;&nbsp;</a></span>psx_svg_anim_event_type</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__svgtypes.html#gaa5c76268c5f0504b79c63e00360366b7">psx_svg_anim_event_type</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>SVG animation event callback types. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ggaa5c76268c5f0504b79c63e00360366b7a01d1f493689174f7d742f2832d695bc5"></a>PSX_SVG_ANIM_EVENT_BEGIN&#160;</td><td class="fielddoc"><p>SVG animation begin event. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ggaa5c76268c5f0504b79c63e00360366b7a07fd8c1adf3a053270fa812c0f68479b"></a>PSX_SVG_ANIM_EVENT_END&#160;</td><td class="fielddoc"><p>SVG animation end event. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ggaa5c76268c5f0504b79c63e00360366b7a930fb6714df6acbb589127456aebb8d1"></a>PSX_SVG_ANIM_EVENT_REPEAT&#160;</td><td class="fielddoc"><p>SVG animation repeat event. </p>
+</td></tr>
+</table>
+
+<p class="definition">Definition at line <a class="el" href="psx__svg__animation_8h_source.html#l00068">68</a> of file <a class="el" href="psx__svg__animation_8h_source.html">psx_svg_animation.h</a>.</p>
+
+</div>
+</div>
+<a id="ga32eed20168a59443922064b044e1d97e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga32eed20168a59443922064b044e1d97e">&#9670;&nbsp;</a></span>psx_svg_player_state</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__svgtypes.html#ga32eed20168a59443922064b044e1d97e">psx_svg_player_state</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>SVG animation player status. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="gga32eed20168a59443922064b044e1d97eab39bb96cf5ec15edeb3ebbf0a0b23b4a"></a>PSX_SVG_PLAYER_STOPPED&#160;</td><td class="fielddoc"><p>Player is stopped. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gga32eed20168a59443922064b044e1d97eacf544136bffb72e5ac6a7cf96697d82d"></a>PSX_SVG_PLAYER_PLAYING&#160;</td><td class="fielddoc"><p>Player is playing. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gga32eed20168a59443922064b044e1d97eab322675bb64e003fb254a5c6694586cf"></a>PSX_SVG_PLAYER_PAUSED&#160;</td><td class="fielddoc"><p>Player is paused. </p>
+</td></tr>
+</table>
+
+<p class="definition">Definition at line <a class="el" href="psx__svg__animation_8h_source.html#l00050">50</a> of file <a class="el" href="psx__svg__animation_8h_source.html">psx_svg_animation.h</a>.</p>
 
 </div>
 </div>

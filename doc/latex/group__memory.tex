@@ -1,0 +1,123 @@
+\doxysection{Memory Management}
+\label{group__memory}\index{Memory Management@{Memory Management}}
+\doxysubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \textbf{ \+\_\+ps\+\_\+memory\+\_\+funcs}
+\begin{DoxyCompactList}\small\item\em Memory allocator functions structure. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef void $\ast$($\ast$ \textbf{ ps\+\_\+malloc\+\_\+func}) (size\+\_\+t size)
+\begin{DoxyCompactList}\small\item\em Memory allocation function pointer type. \end{DoxyCompactList}\item 
+typedef void($\ast$ \textbf{ ps\+\_\+free\+\_\+func}) (void $\ast$ptr)
+\begin{DoxyCompactList}\small\item\em Memory free function pointer type. \end{DoxyCompactList}\item 
+typedef void $\ast$($\ast$ \textbf{ ps\+\_\+calloc\+\_\+func}) (size\+\_\+t num, size\+\_\+t size)
+\begin{DoxyCompactList}\small\item\em Memory calloc function pointer type. \end{DoxyCompactList}\item 
+\mbox{\label{group__memory_ga3bb71018839b218b078ca5cf37ce0a1d}} 
+typedef struct \textbf{ \+\_\+ps\+\_\+memory\+\_\+funcs} \textbf{ ps\+\_\+memory\+\_\+funcs}
+\begin{DoxyCompactList}\small\item\em Memory allocator functions structure. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+P\+E\+X\+P\+O\+RT \textbf{ ps\+\_\+bool} P\+I\+C\+A\+PI \textbf{ ps\+\_\+set\+\_\+memory\+\_\+functions} (const \textbf{ ps\+\_\+memory\+\_\+funcs} $\ast$funcs)
+\begin{DoxyCompactList}\small\item\em Set global memory allocation functions. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+
+
+\doxysubsection{Typedef Documentation}
+\mbox{\label{group__memory_gabbd9777a72d1f881198d0249299d2553}} 
+\index{Memory Management@{Memory Management}!ps\_calloc\_func@{ps\_calloc\_func}}
+\index{ps\_calloc\_func@{ps\_calloc\_func}!Memory Management@{Memory Management}}
+\doxysubsubsection{ps\_calloc\_func}
+{\footnotesize\ttfamily typedef void$\ast$($\ast$ ps\+\_\+calloc\+\_\+func) (size\+\_\+t num, size\+\_\+t size)}
+
+
+
+Memory calloc function pointer type. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em num} & Number of elements \\
+\hline
+{\em size} & Size of each element in bytes \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Pointer to allocated memory or N\+U\+LL on failure 
+\end{DoxyReturn}
+
+
+Definition at line 58 of file picasso\+\_\+backport.\+h.
+
+\mbox{\label{group__memory_gad45c50db2b3b780a2d157feb8d69be94}} 
+\index{Memory Management@{Memory Management}!ps\_free\_func@{ps\_free\_func}}
+\index{ps\_free\_func@{ps\_free\_func}!Memory Management@{Memory Management}}
+\doxysubsubsection{ps\_free\_func}
+{\footnotesize\ttfamily typedef void($\ast$ ps\+\_\+free\+\_\+func) (void $\ast$ptr)}
+
+
+
+Memory free function pointer type. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ptr} & Pointer to memory to free \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 50 of file picasso\+\_\+backport.\+h.
+
+\mbox{\label{group__memory_gabfafd09e097a6f2ed4aed83ad078cc8e}} 
+\index{Memory Management@{Memory Management}!ps\_malloc\_func@{ps\_malloc\_func}}
+\index{ps\_malloc\_func@{ps\_malloc\_func}!Memory Management@{Memory Management}}
+\doxysubsubsection{ps\_malloc\_func}
+{\footnotesize\ttfamily typedef void$\ast$($\ast$ ps\+\_\+malloc\+\_\+func) (size\+\_\+t size)}
+
+
+
+Memory allocation function pointer type. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em size} & Size in bytes to allocate \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Pointer to allocated memory or N\+U\+LL on failure 
+\end{DoxyReturn}
+
+
+Definition at line 44 of file picasso\+\_\+backport.\+h.
+
+
+
+\doxysubsection{Function Documentation}
+\mbox{\label{group__memory_ga35aae841ad725b33a8d8b729478def95}} 
+\index{Memory Management@{Memory Management}!ps\_set\_memory\_functions@{ps\_set\_memory\_functions}}
+\index{ps\_set\_memory\_functions@{ps\_set\_memory\_functions}!Memory Management@{Memory Management}}
+\doxysubsubsection{ps\_set\_memory\_functions()}
+{\footnotesize\ttfamily \textbf{ ps\+\_\+bool} ps\+\_\+set\+\_\+memory\+\_\+functions (\begin{DoxyParamCaption}\item[{const \textbf{ ps\+\_\+memory\+\_\+funcs} $\ast$}]{funcs }\end{DoxyParamCaption})}
+
+
+
+Set global memory allocation functions. 
+
+This function allows you to override the default memory allocation functions used throughout the Picasso library. All memory allocations will be redirected to the provided functions.
+
+
+\begin{DoxyParams}{Parameters}
+{\em funcs} & Pointer to structure containing memory function pointers. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True on success, False on failure
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+This function must be called before \doxyref{ps\+\_\+initialize()}{p.}{group__common_ga3186522b34123b27e5cedfa7ba74d253} and cannot be called after the library has been initialized. 
+
+All function pointers must be valid; N\+U\+LL pointers are not allowed. 
+\end{DoxyNote}

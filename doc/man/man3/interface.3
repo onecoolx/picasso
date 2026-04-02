@@ -1,4 +1,4 @@
-.TH "interface" 3 "Tue May 13 2025" "Version 2.8" "Picasso API" \" -*- nroff -*-
+.TH "interface" 3 "Thu Apr 2 2026" "Version 2.9" "Picasso API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -10,11 +10,11 @@ interface
 
 .in +1c
 .ti -1c
-.RI "PEXPORT int \fBpsx_image_register_operator\fP (const char *type, const \fBps_byte\fP *signature, size_t sig_offset, size_t sig_len, \fBpsx_priority_level\fP level, \fBpsx_image_operator\fP *coder)"
+.RI "PEXPORT \fBpsx_result\fP \fBpsx_image_register_operator\fP (const char *type, const \fBps_byte\fP *signature, size_t sig_offset, size_t sig_len, \fBpsx_priority_level\fP level, \fBpsx_image_operator\fP *coder)"
 .br
 .RI "Register the image operator\&. "
 .ti -1c
-.RI "PEXPORT int \fBpsx_image_unregister_operator\fP (\fBpsx_image_operator\fP *coder)"
+.RI "PEXPORT \fBpsx_result\fP \fBpsx_image_unregister_operator\fP (\fBpsx_image_operator\fP *coder)"
 .br
 .RI "Unregister the image operator\&. "
 .in -1c
@@ -23,7 +23,7 @@ interface
 
 .SH "Function Documentation"
 .PP 
-.SS "int psx_image_register_operator (const char * type, const \fBps_byte\fP * signature, size_t sig_offset, size_t sig_len, \fBpsx_priority_level\fP level, \fBpsx_image_operator\fP * coder)"
+.SS "\fBpsx_result\fP psx_image_register_operator (const char * type, const \fBps_byte\fP * signature, size_t sig_offset, size_t sig_len, \fBpsx_priority_level\fP level, \fBpsx_image_operator\fP * coder)"
 
 .PP
 Register the image operator\&. 
@@ -54,7 +54,7 @@ Result code returned\&.
 .RE
 .PP
 
-.SS "int psx_image_unregister_operator (\fBpsx_image_operator\fP * coder)"
+.SS "\fBpsx_result\fP psx_image_unregister_operator (\fBpsx_image_operator\fP * coder)"
 
 .PP
 Unregister the image operator\&. 
