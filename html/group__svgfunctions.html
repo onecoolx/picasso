@@ -19,7 +19,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Picasso API
-   &#160;<span id="projectnumber">2.8</span>
+   &#160;<span id="projectnumber">2.9</span>
    </div>
   </td>
  </tr>
@@ -52,7 +52,7 @@ Functions</h2></td></tr>
 <tr class="memdesc:ga362a4e99a0e5a5157a68a8e379e8417d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialze the library and load resources.  <a href="group__svgfunctions.html#ga362a4e99a0e5a5157a68a8e379e8417d">More...</a><br /></td></tr>
 <tr class="separator:ga362a4e99a0e5a5157a68a8e379e8417d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga9cbe75fa42d4c7a21155a38049bed6bf"><td class="memItemLeft" align="right" valign="top">PEXPORT void PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__svgfunctions.html#ga9cbe75fa42d4c7a21155a38049bed6bf">psx_svg_shutdown</a> (void)</td></tr>
-<tr class="memdesc:ga9cbe75fa42d4c7a21155a38049bed6bf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Release resources and shutdoen.  <a href="group__svgfunctions.html#ga9cbe75fa42d4c7a21155a38049bed6bf">More...</a><br /></td></tr>
+<tr class="memdesc:ga9cbe75fa42d4c7a21155a38049bed6bf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Release resources and shutdown.  <a href="group__svgfunctions.html#ga9cbe75fa42d4c7a21155a38049bed6bf">More...</a><br /></td></tr>
 <tr class="separator:ga9cbe75fa42d4c7a21155a38049bed6bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga7e46c7e00c46f0c3aadd6e3b193ac78e"><td class="memItemLeft" align="right" valign="top">PEXPORT <a class="el" href="group__svgtypes.html#gaeb10426a6a4570e0176172f4bc58ec16">psx_svg</a> *PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__svgfunctions.html#ga7e46c7e00c46f0c3aadd6e3b193ac78e">psx_svg_load</a> (const char *file_name, <a class="el" href="group__extension.html#ga928fc0f11b933610cbaf04bf3cf5619c">psx_result</a> *err_code)</td></tr>
 <tr class="memdesc:ga7e46c7e00c46f0c3aadd6e3b193ac78e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a new psx_svg object and load from file.  <a href="group__svgfunctions.html#ga7e46c7e00c46f0c3aadd6e3b193ac78e">More...</a><br /></td></tr>
@@ -69,6 +69,60 @@ Functions</h2></td></tr>
 <tr class="memitem:ga5b36c80201f532560af451d80bfdd440"><td class="memItemLeft" align="right" valign="top">PEXPORT <a class="el" href="group__extension.html#ga928fc0f11b933610cbaf04bf3cf5619c">psx_result</a> PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__svgfunctions.html#ga5b36c80201f532560af451d80bfdd440">psx_svg_render_draw</a> (<a class="el" href="group__objects.html#ga4a70d4a51cfa38485adf65620e5a0ec9">ps_context</a> *ctx, const <a class="el" href="group__svgtypes.html#ga01286d1b137a25f1badc7a4f27af43af">psx_svg_render</a> *render)</td></tr>
 <tr class="memdesc:ga5b36c80201f532560af451d80bfdd440"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws an psx_svg_render object into the given context.  <a href="group__svgfunctions.html#ga5b36c80201f532560af451d80bfdd440">More...</a><br /></td></tr>
 <tr class="separator:ga5b36c80201f532560af451d80bfdd440"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaf80533bc5d86182467bf6b8bff257941"><td class="memItemLeft" align="right" valign="top">PEXPORT <a class="el" href="group__svgtypes.html#ga7e1992a2db418c153d08b1f81da417e1">psx_svg_player</a> *PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__svgfunctions.html#gaf80533bc5d86182467bf6b8bff257941">psx_svg_player_create</a> (const <a class="el" href="group__svgtypes.html#gaeb10426a6a4570e0176172f4bc58ec16">psx_svg</a> *root, <a class="el" href="group__extension.html#ga928fc0f11b933610cbaf04bf3cf5619c">psx_result</a> *err)</td></tr>
+<tr class="memdesc:gaf80533bc5d86182467bf6b8bff257941"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a new animation player from an already-parsed SVG document.  <a href="group__svgfunctions.html#gaf80533bc5d86182467bf6b8bff257941">More...</a><br /></td></tr>
+<tr class="separator:gaf80533bc5d86182467bf6b8bff257941"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga69328ee718b775d06be88c13edb5ff40"><td class="memItemLeft" align="right" valign="top">PEXPORT void PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__svgfunctions.html#ga69328ee718b775d06be88c13edb5ff40">psx_svg_player_destroy</a> (<a class="el" href="group__svgtypes.html#ga7e1992a2db418c153d08b1f81da417e1">psx_svg_player</a> *p)</td></tr>
+<tr class="memdesc:ga69328ee718b775d06be88c13edb5ff40"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroy the psx_svg_player object and release resources.  <a href="group__svgfunctions.html#ga69328ee718b775d06be88c13edb5ff40">More...</a><br /></td></tr>
+<tr class="separator:ga69328ee718b775d06be88c13edb5ff40"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga33e880ae460eec35ef4f5ed377642690"><td class="memItemLeft" align="right" valign="top">PEXPORT void PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__svgfunctions.html#ga33e880ae460eec35ef4f5ed377642690">psx_svg_player_set_loop</a> (<a class="el" href="group__svgtypes.html#ga7e1992a2db418c153d08b1f81da417e1">psx_svg_player</a> *p, bool loop)</td></tr>
+<tr class="memdesc:ga33e880ae460eec35ef4f5ed377642690"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set whether the animation should loop when it reaches the end.  <a href="group__svgfunctions.html#ga33e880ae460eec35ef4f5ed377642690">More...</a><br /></td></tr>
+<tr class="separator:ga33e880ae460eec35ef4f5ed377642690"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga2db8bfcdd2b069ca7b66dcd3bea9d1b7"><td class="memItemLeft" align="right" valign="top">PEXPORT bool PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__svgfunctions.html#ga2db8bfcdd2b069ca7b66dcd3bea9d1b7">psx_svg_player_get_loop</a> (const <a class="el" href="group__svgtypes.html#ga7e1992a2db418c153d08b1f81da417e1">psx_svg_player</a> *p)</td></tr>
+<tr class="memdesc:ga2db8bfcdd2b069ca7b66dcd3bea9d1b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return whether the animation looping is enabled.  <a href="group__svgfunctions.html#ga2db8bfcdd2b069ca7b66dcd3bea9d1b7">More...</a><br /></td></tr>
+<tr class="separator:ga2db8bfcdd2b069ca7b66dcd3bea9d1b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga096fbdc76063ce1c011731fbe42bd4fd"><td class="memItemLeft" align="right" valign="top">PEXPORT void PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__svgfunctions.html#ga096fbdc76063ce1c011731fbe42bd4fd">psx_svg_player_set_dpi</a> (<a class="el" href="group__svgtypes.html#ga7e1992a2db418c153d08b1f81da417e1">psx_svg_player</a> *p, int32_t dpi)</td></tr>
+<tr class="memdesc:ga096fbdc76063ce1c011731fbe42bd4fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the DPI (dots per inch) used for unit conversion.  <a href="group__svgfunctions.html#ga096fbdc76063ce1c011731fbe42bd4fd">More...</a><br /></td></tr>
+<tr class="separator:ga096fbdc76063ce1c011731fbe42bd4fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaba82760c8d1bbe08108ea7e10dee51c4"><td class="memItemLeft" align="right" valign="top">PEXPORT int32_t PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__svgfunctions.html#gaba82760c8d1bbe08108ea7e10dee51c4">psx_svg_player_get_dpi</a> (const <a class="el" href="group__svgtypes.html#ga7e1992a2db418c153d08b1f81da417e1">psx_svg_player</a> *p)</td></tr>
+<tr class="memdesc:gaba82760c8d1bbe08108ea7e10dee51c4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the current DPI value.  <a href="group__svgfunctions.html#gaba82760c8d1bbe08108ea7e10dee51c4">More...</a><br /></td></tr>
+<tr class="separator:gaba82760c8d1bbe08108ea7e10dee51c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga2d1fb3c5f641ee4f00761a4772e1adab"><td class="memItemLeft" align="right" valign="top">PEXPORT void PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__svgfunctions.html#ga2d1fb3c5f641ee4f00761a4772e1adab">psx_svg_player_play</a> (<a class="el" href="group__svgtypes.html#ga7e1992a2db418c153d08b1f81da417e1">psx_svg_player</a> *p)</td></tr>
+<tr class="memdesc:ga2d1fb3c5f641ee4f00761a4772e1adab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start or resume playback of the animation.  <a href="group__svgfunctions.html#ga2d1fb3c5f641ee4f00761a4772e1adab">More...</a><br /></td></tr>
+<tr class="separator:ga2d1fb3c5f641ee4f00761a4772e1adab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga39a0ed9b1798a844dee2266efe8fc0bf"><td class="memItemLeft" align="right" valign="top">PEXPORT void PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__svgfunctions.html#ga39a0ed9b1798a844dee2266efe8fc0bf">psx_svg_player_pause</a> (<a class="el" href="group__svgtypes.html#ga7e1992a2db418c153d08b1f81da417e1">psx_svg_player</a> *p)</td></tr>
+<tr class="memdesc:ga39a0ed9b1798a844dee2266efe8fc0bf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pause the animation at the current time.  <a href="group__svgfunctions.html#ga39a0ed9b1798a844dee2266efe8fc0bf">More...</a><br /></td></tr>
+<tr class="separator:ga39a0ed9b1798a844dee2266efe8fc0bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga47a9261b87b262881f9e464767f377db"><td class="memItemLeft" align="right" valign="top">PEXPORT void PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__svgfunctions.html#ga47a9261b87b262881f9e464767f377db">psx_svg_player_stop</a> (<a class="el" href="group__svgtypes.html#ga7e1992a2db418c153d08b1f81da417e1">psx_svg_player</a> *p)</td></tr>
+<tr class="memdesc:ga47a9261b87b262881f9e464767f377db"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stop the animation and seek to time 0.  <a href="group__svgfunctions.html#ga47a9261b87b262881f9e464767f377db">More...</a><br /></td></tr>
+<tr class="separator:ga47a9261b87b262881f9e464767f377db"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga06e53e2213938ae4533c216d5b3d0943"><td class="memItemLeft" align="right" valign="top">PEXPORT void PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__svgfunctions.html#ga06e53e2213938ae4533c216d5b3d0943">psx_svg_player_seek</a> (<a class="el" href="group__svgtypes.html#ga7e1992a2db418c153d08b1f81da417e1">psx_svg_player</a> *p, float seconds)</td></tr>
+<tr class="memdesc:ga06e53e2213938ae4533c216d5b3d0943"><td class="mdescLeft">&#160;</td><td class="mdescRight">Seek the animation to an absolute time position.  <a href="group__svgfunctions.html#ga06e53e2213938ae4533c216d5b3d0943">More...</a><br /></td></tr>
+<tr class="separator:ga06e53e2213938ae4533c216d5b3d0943"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga2c4d75849678df13c39cd3ece6472e7d"><td class="memItemLeft" align="right" valign="top">PEXPORT void PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__svgfunctions.html#ga2c4d75849678df13c39cd3ece6472e7d">psx_svg_player_tick</a> (<a class="el" href="group__svgtypes.html#ga7e1992a2db418c153d08b1f81da417e1">psx_svg_player</a> *p, float delta_seconds)</td></tr>
+<tr class="memdesc:ga2c4d75849678df13c39cd3ece6472e7d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Advance the animation by a relative time delta.  <a href="group__svgfunctions.html#ga2c4d75849678df13c39cd3ece6472e7d">More...</a><br /></td></tr>
+<tr class="separator:ga2c4d75849678df13c39cd3ece6472e7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga81484cb2fb09ad994519118f67745275"><td class="memItemLeft" align="right" valign="top">PEXPORT float PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__svgfunctions.html#ga81484cb2fb09ad994519118f67745275">psx_svg_player_get_time</a> (const <a class="el" href="group__svgtypes.html#ga7e1992a2db418c153d08b1f81da417e1">psx_svg_player</a> *p)</td></tr>
+<tr class="memdesc:ga81484cb2fb09ad994519118f67745275"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the current playback time in seconds.  <a href="group__svgfunctions.html#ga81484cb2fb09ad994519118f67745275">More...</a><br /></td></tr>
+<tr class="separator:ga81484cb2fb09ad994519118f67745275"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga991a49154d7818ce7329400aca58b8f1"><td class="memItemLeft" align="right" valign="top">PEXPORT float PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__svgfunctions.html#ga991a49154d7818ce7329400aca58b8f1">psx_svg_player_get_duration</a> (const <a class="el" href="group__svgtypes.html#ga7e1992a2db418c153d08b1f81da417e1">psx_svg_player</a> *p)</td></tr>
+<tr class="memdesc:ga991a49154d7818ce7329400aca58b8f1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the total duration of the animation.  <a href="group__svgfunctions.html#ga991a49154d7818ce7329400aca58b8f1">More...</a><br /></td></tr>
+<tr class="separator:ga991a49154d7818ce7329400aca58b8f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga2cfeb8d203f425a722d45169c7f6b57e"><td class="memItemLeft" align="right" valign="top">PEXPORT <a class="el" href="group__svgtypes.html#ga32eed20168a59443922064b044e1d97e">psx_svg_player_state</a> PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__svgfunctions.html#ga2cfeb8d203f425a722d45169c7f6b57e">psx_svg_player_get_state</a> (const <a class="el" href="group__svgtypes.html#ga7e1992a2db418c153d08b1f81da417e1">psx_svg_player</a> *p)</td></tr>
+<tr class="memdesc:ga2cfeb8d203f425a722d45169c7f6b57e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the current playback state of the player.  <a href="group__svgfunctions.html#ga2cfeb8d203f425a722d45169c7f6b57e">More...</a><br /></td></tr>
+<tr class="separator:ga2cfeb8d203f425a722d45169c7f6b57e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gac21baa6b0d60786dc75f4126b8870d38"><td class="memItemLeft" align="right" valign="top">PEXPORT void PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__svgfunctions.html#gac21baa6b0d60786dc75f4126b8870d38">psx_svg_player_draw</a> (<a class="el" href="group__svgtypes.html#ga7e1992a2db418c153d08b1f81da417e1">psx_svg_player</a> *p, <a class="el" href="group__objects.html#ga4a70d4a51cfa38485adf65620e5a0ec9">ps_context</a> *ctx)</td></tr>
+<tr class="memdesc:gac21baa6b0d60786dc75f4126b8870d38"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draw the current animation frame into the provided Picasso context.  <a href="group__svgfunctions.html#gac21baa6b0d60786dc75f4126b8870d38">More...</a><br /></td></tr>
+<tr class="separator:gac21baa6b0d60786dc75f4126b8870d38"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab57c02e717bc860ff0c3db061337cbeb"><td class="memItemLeft" align="right" valign="top">PEXPORT void PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__svgfunctions.html#gab57c02e717bc860ff0c3db061337cbeb">psx_svg_player_set_event_callback</a> (<a class="el" href="group__svgtypes.html#ga7e1992a2db418c153d08b1f81da417e1">psx_svg_player</a> *p, <a class="el" href="group__svgtypes.html#ga3d1b53b3f337de2b275ed406d2177d6a">psx_svg_anim_event_cb</a> cb, void *user)</td></tr>
+<tr class="memdesc:gab57c02e717bc860ff0c3db061337cbeb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set a callback to receive animation events (begin, end, repeat).  <a href="group__svgfunctions.html#gab57c02e717bc860ff0c3db061337cbeb">More...</a><br /></td></tr>
+<tr class="separator:gab57c02e717bc860ff0c3db061337cbeb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gac025622225536f946836959728f46aa1"><td class="memItemLeft" align="right" valign="top">PEXPORT void PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__svgfunctions.html#gac025622225536f946836959728f46aa1">psx_svg_player_trigger</a> (<a class="el" href="group__svgtypes.html#ga7e1992a2db418c153d08b1f81da417e1">psx_svg_player</a> *p, const char *target_id, const char *event_name)</td></tr>
+<tr class="memdesc:gac025622225536f946836959728f46aa1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send an external event trigger to the player.  <a href="group__svgfunctions.html#gac025622225536f946836959728f46aa1">More...</a><br /></td></tr>
+<tr class="separator:gac025622225536f946836959728f46aa1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga7e222dc3335551150d2782996207bddf"><td class="memItemLeft" align="right" valign="top">PEXPORT void PICAPI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__svgfunctions.html#ga7e222dc3335551150d2782996207bddf">psx_svg_player_send_key</a> (<a class="el" href="group__svgtypes.html#ga7e1992a2db418c153d08b1f81da417e1">psx_svg_player</a> *p, char key)</td></tr>
+<tr class="memdesc:ga7e222dc3335551150d2782996207bddf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Forward a keyboard event to the player.  <a href="group__svgfunctions.html#ga7e222dc3335551150d2782996207bddf">More...</a><br /></td></tr>
+<tr class="separator:ga7e222dc3335551150d2782996207bddf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <h2 class="groupheader">Function Documentation</h2>
@@ -117,7 +171,7 @@ Functions</h2></td></tr>
 
 <p>Initialze the library and load resources. </p>
 <dl class="section return"><dt>Returns</dt><dd>Result code returned.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__svgfunctions.html#ga9cbe75fa42d4c7a21155a38049bed6bf" title="Release resources and shutdoen.">psx_svg_shutdown</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__svgfunctions.html#ga9cbe75fa42d4c7a21155a38049bed6bf" title="Release resources and shutdown.">psx_svg_shutdown</a> </dd></dl>
 
 </div>
 </div>
@@ -206,6 +260,614 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="gaf80533bc5d86182467bf6b8bff257941"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaf80533bc5d86182467bf6b8bff257941">&#9670;&nbsp;</a></span>psx_svg_player_create()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__svgtypes.html#ga7e1992a2db418c153d08b1f81da417e1">psx_svg_player</a> * psx_svg_player_create </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__svgtypes.html#gaeb10426a6a4570e0176172f4bc58ec16">psx_svg</a> *&#160;</td>
+          <td class="paramname"><em>root</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__extension.html#ga928fc0f11b933610cbaf04bf3cf5619c">psx_result</a> *&#160;</td>
+          <td class="paramname"><em>err</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Create a new animation player from an already-parsed SVG document. </p>
+<p>The player internally builds a render list once and reuses it each frame.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">root</td><td>Pointer to an existing psx_svg object. </td></tr>
+    <tr><td class="paramname">err</td><td>Pointer to a value to receiving the result code. Can be NULL.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>If success, the return value is the pointer to new psx_svg_player object. If fails, the return value is NULL, and result will be returned by <em>err</em>.</dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__svgfunctions.html#ga69328ee718b775d06be88c13edb5ff40" title="Destroy the psx_svg_player object and release resources.">psx_svg_player_destroy</a> </dd></dl>
+
+</div>
+</div>
+<a id="ga69328ee718b775d06be88c13edb5ff40"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga69328ee718b775d06be88c13edb5ff40">&#9670;&nbsp;</a></span>psx_svg_player_destroy()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void psx_svg_player_destroy </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__svgtypes.html#ga7e1992a2db418c153d08b1f81da417e1">psx_svg_player</a> *&#160;</td>
+          <td class="paramname"><em>p</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Destroy the psx_svg_player object and release resources. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">p</td><td>Pointer to an existing psx_svg_player object.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__svgfunctions.html#gaf80533bc5d86182467bf6b8bff257941" title="Create a new animation player from an already-parsed SVG document.">psx_svg_player_create</a> </dd></dl>
+
+</div>
+</div>
+<a id="gac21baa6b0d60786dc75f4126b8870d38"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gac21baa6b0d60786dc75f4126b8870d38">&#9670;&nbsp;</a></span>psx_svg_player_draw()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void psx_svg_player_draw </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__svgtypes.html#ga7e1992a2db418c153d08b1f81da417e1">psx_svg_player</a> *&#160;</td>
+          <td class="paramname"><em>p</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__objects.html#ga4a70d4a51cfa38485adf65620e5a0ec9">ps_context</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Draw the current animation frame into the provided Picasso context. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">p</td><td>Pointer to an existing psx_svg_player object. </td></tr>
+    <tr><td class="paramname">ctx</td><td>Pointer to an existing ps_context object.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__svgfunctions.html#ga06e53e2213938ae4533c216d5b3d0943" title="Seek the animation to an absolute time position.">psx_svg_player_seek</a> <a class="el" href="group__svgfunctions.html#ga2c4d75849678df13c39cd3ece6472e7d" title="Advance the animation by a relative time delta.">psx_svg_player_tick</a> </dd></dl>
+
+</div>
+</div>
+<a id="gaba82760c8d1bbe08108ea7e10dee51c4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaba82760c8d1bbe08108ea7e10dee51c4">&#9670;&nbsp;</a></span>psx_svg_player_get_dpi()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int32_t psx_svg_player_get_dpi </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__svgtypes.html#ga7e1992a2db418c153d08b1f81da417e1">psx_svg_player</a> *&#160;</td>
+          <td class="paramname"><em>p</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Return the current DPI value. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">p</td><td>Pointer to an existing psx_svg_player object.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The current DPI value.</dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__svgfunctions.html#ga096fbdc76063ce1c011731fbe42bd4fd" title="Set the DPI (dots per inch) used for unit conversion.">psx_svg_player_set_dpi</a> </dd></dl>
+
+</div>
+</div>
+<a id="ga991a49154d7818ce7329400aca58b8f1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga991a49154d7818ce7329400aca58b8f1">&#9670;&nbsp;</a></span>psx_svg_player_get_duration()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float psx_svg_player_get_duration </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__svgtypes.html#ga7e1992a2db418c153d08b1f81da417e1">psx_svg_player</a> *&#160;</td>
+          <td class="paramname"><em>p</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Return the total duration of the animation. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">p</td><td>Pointer to an existing psx_svg_player object.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The duration in seconds, or -1 for indefinite/unknown.</dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__svgfunctions.html#ga81484cb2fb09ad994519118f67745275" title="Return the current playback time in seconds.">psx_svg_player_get_time</a> </dd></dl>
+
+</div>
+</div>
+<a id="ga2db8bfcdd2b069ca7b66dcd3bea9d1b7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga2db8bfcdd2b069ca7b66dcd3bea9d1b7">&#9670;&nbsp;</a></span>psx_svg_player_get_loop()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool psx_svg_player_get_loop </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__svgtypes.html#ga7e1992a2db418c153d08b1f81da417e1">psx_svg_player</a> *&#160;</td>
+          <td class="paramname"><em>p</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Return whether the animation looping is enabled. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">p</td><td>Pointer to an existing psx_svg_player object.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True if looping is enabled, otherwise False.</dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__svgfunctions.html#ga33e880ae460eec35ef4f5ed377642690" title="Set whether the animation should loop when it reaches the end.">psx_svg_player_set_loop</a> </dd></dl>
+
+</div>
+</div>
+<a id="ga2cfeb8d203f425a722d45169c7f6b57e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga2cfeb8d203f425a722d45169c7f6b57e">&#9670;&nbsp;</a></span>psx_svg_player_get_state()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__svgtypes.html#ga32eed20168a59443922064b044e1d97e">psx_svg_player_state</a> psx_svg_player_get_state </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__svgtypes.html#ga7e1992a2db418c153d08b1f81da417e1">psx_svg_player</a> *&#160;</td>
+          <td class="paramname"><em>p</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Return the current playback state of the player. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">p</td><td>Pointer to an existing psx_svg_player object.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The current player state.</dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__svgfunctions.html#ga2d1fb3c5f641ee4f00761a4772e1adab" title="Start or resume playback of the animation.">psx_svg_player_play</a> <a class="el" href="group__svgfunctions.html#ga39a0ed9b1798a844dee2266efe8fc0bf" title="Pause the animation at the current time.">psx_svg_player_pause</a> <a class="el" href="group__svgfunctions.html#ga47a9261b87b262881f9e464767f377db" title="Stop the animation and seek to time 0.">psx_svg_player_stop</a> </dd></dl>
+
+</div>
+</div>
+<a id="ga81484cb2fb09ad994519118f67745275"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga81484cb2fb09ad994519118f67745275">&#9670;&nbsp;</a></span>psx_svg_player_get_time()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float psx_svg_player_get_time </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__svgtypes.html#ga7e1992a2db418c153d08b1f81da417e1">psx_svg_player</a> *&#160;</td>
+          <td class="paramname"><em>p</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Return the current playback time in seconds. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">p</td><td>Pointer to an existing psx_svg_player object.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The current time in seconds.</dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__svgfunctions.html#ga06e53e2213938ae4533c216d5b3d0943" title="Seek the animation to an absolute time position.">psx_svg_player_seek</a> <a class="el" href="group__svgfunctions.html#ga2c4d75849678df13c39cd3ece6472e7d" title="Advance the animation by a relative time delta.">psx_svg_player_tick</a> </dd></dl>
+
+</div>
+</div>
+<a id="ga39a0ed9b1798a844dee2266efe8fc0bf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga39a0ed9b1798a844dee2266efe8fc0bf">&#9670;&nbsp;</a></span>psx_svg_player_pause()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void psx_svg_player_pause </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__svgtypes.html#ga7e1992a2db418c153d08b1f81da417e1">psx_svg_player</a> *&#160;</td>
+          <td class="paramname"><em>p</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Pause the animation at the current time. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">p</td><td>Pointer to an existing psx_svg_player object.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__svgfunctions.html#ga2d1fb3c5f641ee4f00761a4772e1adab" title="Start or resume playback of the animation.">psx_svg_player_play</a> <a class="el" href="group__svgfunctions.html#ga47a9261b87b262881f9e464767f377db" title="Stop the animation and seek to time 0.">psx_svg_player_stop</a> <a class="el" href="group__svgfunctions.html#ga2cfeb8d203f425a722d45169c7f6b57e" title="Return the current playback state of the player.">psx_svg_player_get_state</a> </dd></dl>
+
+</div>
+</div>
+<a id="ga2d1fb3c5f641ee4f00761a4772e1adab"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga2d1fb3c5f641ee4f00761a4772e1adab">&#9670;&nbsp;</a></span>psx_svg_player_play()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void psx_svg_player_play </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__svgtypes.html#ga7e1992a2db418c153d08b1f81da417e1">psx_svg_player</a> *&#160;</td>
+          <td class="paramname"><em>p</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Start or resume playback of the animation. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">p</td><td>Pointer to an existing psx_svg_player object.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__svgfunctions.html#ga39a0ed9b1798a844dee2266efe8fc0bf" title="Pause the animation at the current time.">psx_svg_player_pause</a> <a class="el" href="group__svgfunctions.html#ga47a9261b87b262881f9e464767f377db" title="Stop the animation and seek to time 0.">psx_svg_player_stop</a> <a class="el" href="group__svgfunctions.html#ga2cfeb8d203f425a722d45169c7f6b57e" title="Return the current playback state of the player.">psx_svg_player_get_state</a> </dd></dl>
+
+</div>
+</div>
+<a id="ga06e53e2213938ae4533c216d5b3d0943"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga06e53e2213938ae4533c216d5b3d0943">&#9670;&nbsp;</a></span>psx_svg_player_seek()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void psx_svg_player_seek </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__svgtypes.html#ga7e1992a2db418c153d08b1f81da417e1">psx_svg_player</a> *&#160;</td>
+          <td class="paramname"><em>p</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>seconds</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Seek the animation to an absolute time position. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">p</td><td>Pointer to an existing psx_svg_player object. </td></tr>
+    <tr><td class="paramname">seconds</td><td>The target time in seconds.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__svgfunctions.html#ga2c4d75849678df13c39cd3ece6472e7d" title="Advance the animation by a relative time delta.">psx_svg_player_tick</a> <a class="el" href="group__svgfunctions.html#ga81484cb2fb09ad994519118f67745275" title="Return the current playback time in seconds.">psx_svg_player_get_time</a> </dd></dl>
+
+</div>
+</div>
+<a id="ga7e222dc3335551150d2782996207bddf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga7e222dc3335551150d2782996207bddf">&#9670;&nbsp;</a></span>psx_svg_player_send_key()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void psx_svg_player_send_key </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__svgtypes.html#ga7e1992a2db418c153d08b1f81da417e1">psx_svg_player</a> *&#160;</td>
+          <td class="paramname"><em>p</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char&#160;</td>
+          <td class="paramname"><em>key</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Forward a keyboard event to the player. </p>
+<p>Used for animations with begin="accessKey(x)" style timing.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">p</td><td>Pointer to an existing psx_svg_player object. </td></tr>
+    <tr><td class="paramname">key</td><td>The character key pressed.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__svgfunctions.html#gac025622225536f946836959728f46aa1" title="Send an external event trigger to the player.">psx_svg_player_trigger</a> </dd></dl>
+
+</div>
+</div>
+<a id="ga096fbdc76063ce1c011731fbe42bd4fd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga096fbdc76063ce1c011731fbe42bd4fd">&#9670;&nbsp;</a></span>psx_svg_player_set_dpi()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void psx_svg_player_set_dpi </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__svgtypes.html#ga7e1992a2db418c153d08b1f81da417e1">psx_svg_player</a> *&#160;</td>
+          <td class="paramname"><em>p</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int32_t&#160;</td>
+          <td class="paramname"><em>dpi</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Set the DPI (dots per inch) used for unit conversion. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">p</td><td>Pointer to an existing psx_svg_player object. </td></tr>
+    <tr><td class="paramname">dpi</td><td>The DPI value. Default is 96.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__svgfunctions.html#gaba82760c8d1bbe08108ea7e10dee51c4" title="Return the current DPI value.">psx_svg_player_get_dpi</a> </dd></dl>
+
+</div>
+</div>
+<a id="gab57c02e717bc860ff0c3db061337cbeb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gab57c02e717bc860ff0c3db061337cbeb">&#9670;&nbsp;</a></span>psx_svg_player_set_event_callback()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void psx_svg_player_set_event_callback </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__svgtypes.html#ga7e1992a2db418c153d08b1f81da417e1">psx_svg_player</a> *&#160;</td>
+          <td class="paramname"><em>p</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__svgtypes.html#ga3d1b53b3f337de2b275ed406d2177d6a">psx_svg_anim_event_cb</a>&#160;</td>
+          <td class="paramname"><em>cb</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>user</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Set a callback to receive animation events (begin, end, repeat). </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">p</td><td>Pointer to an existing psx_svg_player object. </td></tr>
+    <tr><td class="paramname">cb</td><td>The callback function, or NULL to clear. </td></tr>
+    <tr><td class="paramname">user</td><td>User data pointer passed to the callback.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__svgtypes.html#ga3d1b53b3f337de2b275ed406d2177d6a" title="The callback for SVG animation event.">psx_svg_anim_event_cb</a> <a class="el" href="group__svgtypes.html#gaa5c76268c5f0504b79c63e00360366b7" title="SVG animation event callback types.">psx_svg_anim_event_type</a> </dd></dl>
+
+</div>
+</div>
+<a id="ga33e880ae460eec35ef4f5ed377642690"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga33e880ae460eec35ef4f5ed377642690">&#9670;&nbsp;</a></span>psx_svg_player_set_loop()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void psx_svg_player_set_loop </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__svgtypes.html#ga7e1992a2db418c153d08b1f81da417e1">psx_svg_player</a> *&#160;</td>
+          <td class="paramname"><em>p</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>loop</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Set whether the animation should loop when it reaches the end. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">p</td><td>Pointer to an existing psx_svg_player object. </td></tr>
+    <tr><td class="paramname">loop</td><td>True to enable looping, False to disable.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__svgfunctions.html#ga2db8bfcdd2b069ca7b66dcd3bea9d1b7" title="Return whether the animation looping is enabled.">psx_svg_player_get_loop</a> </dd></dl>
+
+</div>
+</div>
+<a id="ga47a9261b87b262881f9e464767f377db"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga47a9261b87b262881f9e464767f377db">&#9670;&nbsp;</a></span>psx_svg_player_stop()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void psx_svg_player_stop </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__svgtypes.html#ga7e1992a2db418c153d08b1f81da417e1">psx_svg_player</a> *&#160;</td>
+          <td class="paramname"><em>p</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Stop the animation and seek to time 0. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">p</td><td>Pointer to an existing psx_svg_player object.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__svgfunctions.html#ga2d1fb3c5f641ee4f00761a4772e1adab" title="Start or resume playback of the animation.">psx_svg_player_play</a> <a class="el" href="group__svgfunctions.html#ga39a0ed9b1798a844dee2266efe8fc0bf" title="Pause the animation at the current time.">psx_svg_player_pause</a> <a class="el" href="group__svgfunctions.html#ga2cfeb8d203f425a722d45169c7f6b57e" title="Return the current playback state of the player.">psx_svg_player_get_state</a> </dd></dl>
+
+</div>
+</div>
+<a id="ga2c4d75849678df13c39cd3ece6472e7d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga2c4d75849678df13c39cd3ece6472e7d">&#9670;&nbsp;</a></span>psx_svg_player_tick()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void psx_svg_player_tick </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__svgtypes.html#ga7e1992a2db418c153d08b1f81da417e1">psx_svg_player</a> *&#160;</td>
+          <td class="paramname"><em>p</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>delta_seconds</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Advance the animation by a relative time delta. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">p</td><td>Pointer to an existing psx_svg_player object. </td></tr>
+    <tr><td class="paramname">delta_seconds</td><td>The time increment in seconds since the last tick.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__svgfunctions.html#ga06e53e2213938ae4533c216d5b3d0943" title="Seek the animation to an absolute time position.">psx_svg_player_seek</a> <a class="el" href="group__svgfunctions.html#ga81484cb2fb09ad994519118f67745275" title="Return the current playback time in seconds.">psx_svg_player_get_time</a> </dd></dl>
+
+</div>
+</div>
+<a id="gac025622225536f946836959728f46aa1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gac025622225536f946836959728f46aa1">&#9670;&nbsp;</a></span>psx_svg_player_trigger()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void psx_svg_player_trigger </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__svgtypes.html#ga7e1992a2db418c153d08b1f81da417e1">psx_svg_player</a> *&#160;</td>
+          <td class="paramname"><em>p</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>target_id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>event_name</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Send an external event trigger to the player. </p>
+<p>Used for animations with begin="id.event" style timing.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">p</td><td>Pointer to an existing psx_svg_player object. </td></tr>
+    <tr><td class="paramname">target_id</td><td>The target element id, or NULL for untargeted events. </td></tr>
+    <tr><td class="paramname">event_name</td><td>The event name (e.g. "click").</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__svgfunctions.html#ga7e222dc3335551150d2782996207bddf" title="Forward a keyboard event to the player.">psx_svg_player_send_key</a> </dd></dl>
+
+</div>
+</div>
 <a id="ga5ebd8fb2913448a94bb40fcf99a9b588"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga5ebd8fb2913448a94bb40fcf99a9b588">&#9670;&nbsp;</a></span>psx_svg_render_destroy()</h2>
 
@@ -229,7 +891,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__svgfunctions.html#ga5b36c80201f532560af451d80bfdd440" title="Draws an psx_svg_render object into the given context.">psx_svg_render_draw</a> psx_svg_render_create </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__svgfunctions.html#ga5b36c80201f532560af451d80bfdd440" title="Draws an psx_svg_render object into the given context.">psx_svg_render_draw</a> psx_svg_render_create psx_svg_render_get_size </dd></dl>
 
 </div>
 </div>
@@ -268,7 +930,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Result code returned.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__svgfunctions.html#ga5b36c80201f532560af451d80bfdd440" title="Draws an psx_svg_render object into the given context.">psx_svg_render_draw</a> psx_svg_render_create </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__svgfunctions.html#ga5ebd8fb2913448a94bb40fcf99a9b588" title="Destroy the psx_svg_render object and release resources.">psx_svg_render_destroy</a> psx_svg_render_create psx_svg_render_get_size </dd></dl>
 
 </div>
 </div>
@@ -288,7 +950,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Release resources and shutdoen. </p>
+<p>Release resources and shutdown. </p>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="group__svgfunctions.html#ga362a4e99a0e5a5157a68a8e379e8417d" title="Initialze the library and load resources.">psx_svg_init</a> </dd></dl>
 
 </div>
