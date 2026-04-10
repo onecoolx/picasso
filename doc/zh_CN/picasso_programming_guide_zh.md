@@ -103,7 +103,7 @@ int main(void)
 | `COLOR_FORMAT_RGB565` | 16bpp | Common on embedded devices |
 | `COLOR_FORMAT_A8` | 8bpp | Grayscale / mask |
 
-### 示例: Create a Canvas and Transfer Pixels
+### 示例：创建画布并传输像素
 
 ```c
 /* Create a 400x300 RGBA canvas */
@@ -147,7 +147,7 @@ free(buf);
 
 `ps_save`/`ps_restore` save and restore the following state: transform matrix, fill color/gradient/pattern, stroke style, clipping region, alpha, gamma, blur, compositing mode, and fill rule.
 
-### 示例: Save and Restore State
+### 示例：保存与恢复状态
 
 ```c
 ps_context* ctx = ps_context_create(canvas, NULL);
@@ -185,7 +185,7 @@ ps_context_unref(ctx);
 
 ## 4. 路径
 
-路径是所有矢量图形的基础。 Picasso supports two ways to work with paths: building paths directly on the context, or creating standalone `ps_path` objects.
+路径是所有矢量图形的基础。 Picasso 支持两种路径操作方式：直接在上下文上构建路径，或创建独立的 `ps_path` 对象。
 
 ### 上下文路径函数
 
@@ -226,7 +226,7 @@ ps_context_unref(ctx);
 | `ps_path_stroke_contains(path, &pt, width)` | Test if a point is on the stroke |
 | `ps_path_is_empty(path)` | Test if the path is empty |
 
-### 示例: Drawing Various Basic Shapes
+### 示例：绘制各种基本图形
 
 ```c
 ps_context* ctx = ps_context_create(canvas, NULL);
@@ -302,14 +302,14 @@ Picasso 提供四种基本绘制操作，作用于上下文中的当前路径。
 
 ### 填充规则
 
-Set via `ps_set_fill_rule(ctx, rule)`:
+通过 `ps_set_fill_rule(ctx, rule)` 设置：
 
 | 规则 | 说明 |
 |------|-------------|
 | `FILL_RULE_WINDING` | Non-zero winding rule (default) |
 | `FILL_RULE_EVEN_ODD` | Even-odd rule |
 
-### 示例: Fill Rule Comparison
+### 示例：填充规则对比
 
 ```c
 /* Create a five-pointed star path */
@@ -379,7 +379,7 @@ ps_path_unref(star);
 | `LINE_JOIN_ROUND` | Round join |
 | `LINE_JOIN_BEVEL` | Bevel join |
 
-### 示例: Line Caps, Joins, and Dashes
+### 示例：线帽、连接和虚线
 
 ```c
 ps_set_stroke_color(ctx, &dark);
@@ -429,7 +429,7 @@ ps_set_line_join(ctx, LINE_JOIN_ROUND);
 
 ## 7. 填充源
 
-Picasso 支持多种填充源，通过 the `ps_set_source_*` family of functions.
+Picasso 支持多种填充源，通过 `ps_set_source_*` 系列函数设置。
 
 ### 关键函数
 
@@ -452,7 +452,7 @@ typedef struct _ps_color {
 } ps_color;
 ```
 
-### 示例: Multiple Fill Sources
+### 示例：多种填充源
 
 ```c
 /* Solid color fill */
@@ -503,7 +503,7 @@ Picasso 支持三种渐变类型：线性渐变、径向渐变和锥形渐变。
 | `GRADIENT_SPREAD_REPEAT` | Repeat |
 | `GRADIENT_SPREAD_REFLECT` | Reflect |
 
-### 示例: Three Gradient Types
+### 示例：三种渐变类型
 
 ```c
 /* 1. Linear gradient */
@@ -657,7 +657,7 @@ ps_image_unref(tile);
 | `ps_world_to_viewport(ctx, &pt)` | Convert world coordinates to viewport coordinates |
 | `ps_viewport_to_world(ctx, &pt)` | Convert viewport coordinates to world coordinates |
 
-### 示例: Combined Transforms
+### 示例：组合变换
 
 ```c
 ps_color blue = {0.26f, 0.52f, 0.96f, 0.7f};
@@ -728,7 +728,7 @@ ps_restore(ctx);
 | `ps_scissor_rect(ctx, &rect)` | Scissor clip (hard boundary) |
 | `ps_reset_clip(ctx)` | Clear the clipping region |
 
-### 示例: Circular Clipping
+### 示例：圆形裁剪
 
 ```c
 ps_save(ctx);
@@ -791,7 +791,7 @@ ps_restore(ctx);  /* clipping region is restored with state */
 | `ps_image_get_format(img)` | Get format |
 | `ps_image_ref/unref` | Reference counting |
 
-### 示例: Image as Fill Source
+### 示例：图像作为填充源
 
 ```c
 /* Create a 50x50 checkerboard image */
@@ -955,7 +955,7 @@ ps_font_unref(font);
 | `psx_image_save_to_file(img, filename, type, quality)` | Save to a file |
 | `psx_image_destroy(img)` | Destroy the image |
 
-### 示例: Load and Display an Image
+### 示例：加载并显示图像
 
 ```c
 #include "psx_image.h"
@@ -981,7 +981,7 @@ psx_image_destroy(img);
 psx_image_shutdown();
 ```
 
-### Multi-Frame Images (GIF)
+### 多帧图像 (GIF)
 
 ```c
 psx_image* gif = psx_image_load("animation.gif", NULL);
@@ -1052,7 +1052,7 @@ ps_shutdown();
 
 ## 17. 扩展：SVG 动画
 
-SVG 动画播放器支持 SVG Tiny 1.2 动画规范, including `<animate>`, `<set>`, `<animateColor>`, `<animateTransform>`, and `<animateMotion>`.
+SVG 动画播放器支持 SVG Tiny 1.2 动画规范，包括 `<animate>`、`<set>`、`<animateColor>`、`<animateTransform>` 和 `<animateMotion>`。
 
 ### 关键函数
 
@@ -1082,7 +1082,7 @@ SVG 动画播放器支持 SVG Tiny 1.2 动画规范, including `<animate>`, `<se
 | `PSX_SVG_PLAYER_PLAYING` | Playing |
 | `PSX_SVG_PLAYER_PAUSED` | Paused |
 
-### 完整示例: Animation Playback Loop
+### 完整示例：动画播放循环
 
 ```c
 #include "psx_svg_animation.h"
