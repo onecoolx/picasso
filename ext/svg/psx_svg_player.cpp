@@ -78,29 +78,29 @@ static const uint32_t _color_anim_attr_bitmap[_ATTR_BITMAP_WORDS] = {
 
 static INLINE bool _is_supported_anim_attr(psx_svg_attr_type a)
 {
-    int i = (int)a;
+    int32_t i = (int32_t)a;
     if (i < 0 || i >= _ATTR_BITMAP_WORDS * 32) {
         return false;
     }
-    return (_supported_anim_attr_bitmap[(unsigned)i >> 5] & (1u << ((unsigned)i & 31))) != 0;
+    return (_supported_anim_attr_bitmap[(uint32_t)i >> 5] & (1u << ((uint32_t)i & 31))) != 0;
 }
 
 static INLINE bool _is_int32_anim_attr(psx_svg_attr_type a)
 {
-    int i = (int)a;
+    int32_t i = (int32_t)a;
     if (i < 0 || i >= _ATTR_BITMAP_WORDS * 32) {
         return false;
     }
-    return (_int32_anim_attr_bitmap[(unsigned)i >> 5] & (1u << ((unsigned)i & 31))) != 0;
+    return (_int32_anim_attr_bitmap[(uint32_t)i >> 5] & (1u << ((uint32_t)i & 31))) != 0;
 }
 
 static INLINE bool _is_color_anim_attr(psx_svg_attr_type a)
 {
-    int i = (int)a;
+    int32_t i = (int32_t)a;
     if (i < 0 || i >= _ATTR_BITMAP_WORDS * 32) {
         return false;
     }
-    return (_color_anim_attr_bitmap[(unsigned)i >> 5] & (1u << ((unsigned)i & 31))) != 0;
+    return (_color_anim_attr_bitmap[(uint32_t)i >> 5] & (1u << ((uint32_t)i & 31))) != 0;
 }
 
 static INLINE void _anim_state_set_transform(psx_svg_anim_state* s, const psx_svg_node* target,
@@ -248,7 +248,7 @@ static INLINE const psx_svg_anim_transform_item* _anim_state_find_motion_transfo
 
 /* ── SBO (Small Buffer Optimization) for float lists ── */
 
-static INLINE int _float_cmp_asc_fn(const void* a, const void* b)
+static INLINE int32_t _float_cmp_asc_fn(const void* a, const void* b)
 {
     const float fa = *(const float*)a;
     const float fb = *(const float*)b;
@@ -440,7 +440,7 @@ static INLINE void _anim_state_set_color(psx_svg_anim_state* s, const psx_svg_no
     dst->color = color;
 }
 
-static int _anim_override_cmp(const void* a, const void* b)
+static int32_t _anim_override_cmp(const void* a, const void* b)
 {
     const psx_svg_anim_override_item* aa = (const psx_svg_anim_override_item*)a;
     const psx_svg_anim_override_item* bb = (const psx_svg_anim_override_item*)b;
@@ -461,7 +461,7 @@ static int _anim_override_cmp(const void* a, const void* b)
     return 0;
 }
 
-static int _anim_color_override_cmp(const void* a, const void* b)
+static int32_t _anim_color_override_cmp(const void* a, const void* b)
 {
     const psx_svg_anim_color_item* aa = (const psx_svg_anim_color_item*)a;
     const psx_svg_anim_color_item* bb = (const psx_svg_anim_color_item*)b;
@@ -486,7 +486,7 @@ static int _anim_color_override_cmp(const void* a, const void* b)
 
 /* ── Transform array sort (by target pointer) ── */
 
-static int _anim_transform_cmp(const void* a, const void* b)
+static int32_t _anim_transform_cmp(const void* a, const void* b)
 {
     const psx_svg_anim_transform_item* aa = (const psx_svg_anim_transform_item*)a;
     const psx_svg_anim_transform_item* bb = (const psx_svg_anim_transform_item*)b;
@@ -774,7 +774,7 @@ static INLINE float _anim_cubic_bezier_y_for_x(float x1, float y1, float x2, flo
     float u = x;
     float lo = 0.0f;
     float hi = 1.0f;
-    for (int i = 0; i < 8; i++) {
+    for (int32_t i = 0; i < 8; i++) {
         float xu = _anim_cubic_bezier_sample(x1, x2, u);
         float dx = xu - x;
         if (dx < 0.0f) {
@@ -1310,9 +1310,9 @@ static INLINE uint32_t _anim_lerp_color(uint32_t c0, uint32_t c1, float t)
     float g1 = (float)((c1 >> 8) & 0xFF);
     float b1 = (float)(c1 & 0xFF);
 
-    int ri = (int)(_anim_lerp(r0, r1, t) + 0.5f);
-    int gi = (int)(_anim_lerp(g0, g1, t) + 0.5f);
-    int bi = (int)(_anim_lerp(b0, b1, t) + 0.5f);
+    int32_t ri = (int32_t)(_anim_lerp(r0, r1, t) + 0.5f);
+    int32_t gi = (int32_t)(_anim_lerp(g0, g1, t) + 0.5f);
+    int32_t bi = (int32_t)(_anim_lerp(b0, b1, t) + 0.5f);
     if (ri < 0) { ri = 0; }
     if (ri > 255) { ri = 255; }
     if (gi < 0) { gi = 0; }
@@ -2929,8 +2929,7 @@ static bool _motion_flatten_quadratic_bezier(
     float cx, float cy,
     float ex, float ey)
 {
-    int i;
-    for (i = 1; i <= FLATTEN_STEPS_QUAD; i++) {
+    for (int32_t i = 1; i <= FLATTEN_STEPS_QUAD; i++) {
         float t = (float)i / (float)FLATTEN_STEPS_QUAD;
         float u = 1.0f - t;
         float px = u * u * x0 + 2.0f * u * t * cx + t * t * ex;
@@ -2952,8 +2951,7 @@ static bool _motion_flatten_cubic_bezier(
     float c2x, float c2y,
     float ex, float ey)
 {
-    int i;
-    for (i = 1; i <= FLATTEN_STEPS_CUBIC; i++) {
+    for (int32_t i = 1; i <= FLATTEN_STEPS_CUBIC; i++) {
         float t = (float)i / (float)FLATTEN_STEPS_CUBIC;
         float u = 1.0f - t;
         float u2 = u * u;
@@ -3075,8 +3073,7 @@ static bool _motion_flatten_arc(
     }
 
     /* Sample FLATTEN_STEPS_ARC points uniformly in [theta1, theta1+dtheta] */
-    int i;
-    for (i = 1; i <= FLATTEN_STEPS_ARC; i++) {
+    for (int32_t i = 1; i <= FLATTEN_STEPS_ARC; i++) {
         float angle = theta1 + dtheta * (float)i / (float)FLATTEN_STEPS_ARC;
         float ca = cosf(angle);
         float sa = sinf(angle);
@@ -3566,8 +3563,7 @@ static void _motion_arc_build(const _motion_path_points* pts, _motion_arc_table*
 
     out->cum_lengths[0] = 0.0f;
 
-    uint32_t i;
-    for (i = 1; i < pts->count; i++) {
+    for (int32_t i = 1; i < pts->count; i++) {
         float dx = pts->xy[i * 2] - pts->xy[(i - 1) * 2];
         float dy = pts->xy[i * 2 + 1] - pts->xy[(i - 1) * 2 + 1];
         float seg_len = sqrtf(dx * dx + dy * dy);
@@ -4172,7 +4168,7 @@ typedef struct {
     uint32_t index; /* index in p->anims */
 } _anim_id_entry;
 
-static int _anim_id_entry_cmp(const void* a, const void* b)
+static int32_t _anim_id_entry_cmp(const void* a, const void* b)
 {
     const _anim_id_entry* ea = (const _anim_id_entry*)a;
     const _anim_id_entry* eb = (const _anim_id_entry*)b;
@@ -4244,7 +4240,7 @@ static const psx_svg_anim_item* _find_anim_by_id(psx_svg_player* p,
     uint32_t hi = table_count;
     while (lo < hi) {
         uint32_t mid = lo + (hi - lo) / 2;
-        int cmp = strcmp(id, table[mid].id);
+        int32_t cmp = strcmp(id, table[mid].id);
         if (cmp < 0) {
             hi = mid;
         } else if (cmp > 0) {
@@ -4683,7 +4679,7 @@ static void _anim_fire_callbacks(psx_svg_player* p)
     }
 }
 
-static int _ptr_cmp(const void* a, const void* b)
+static int32_t _ptr_cmp(const void* a, const void* b)
 {
     uintptr_t pa = *(const uintptr_t*)a;
     uintptr_t pb = *(const uintptr_t*)b;
