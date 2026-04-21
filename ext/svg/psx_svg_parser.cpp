@@ -2115,7 +2115,7 @@ static void _animation_begin_end_cb(psx_svg_node* node, psx_svg_attr* attr, cons
                 uint32_t after_len = (uint32_t)(te - after_dot);
 
                 /* Check if this is a syncbase reference (id.begin or id.end) */
-                int is_syncbase = 0;
+                int32_t is_syncbase = 0;
                 uint32_t sb_type = 0;
                 const char* sb_rest = NULL;
 
