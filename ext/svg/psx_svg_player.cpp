@@ -3563,7 +3563,7 @@ static void _motion_arc_build(const _motion_path_points* pts, _motion_arc_table*
 
     out->cum_lengths[0] = 0.0f;
 
-    for (int32_t i = 1; i < pts->count; i++) {
+    for (uint32_t i = 1; i < pts->count; i++) {
         float dx = pts->xy[i * 2] - pts->xy[(i - 1) * 2];
         float dy = pts->xy[i * 2 + 1] - pts->xy[(i - 1) * 2 + 1];
         float seg_len = sqrtf(dx * dx + dy * dy);
