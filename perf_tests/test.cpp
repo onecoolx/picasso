@@ -40,6 +40,7 @@
     #include <sched.h>
     #include <sys/resource.h>
     #include <unistd.h>
+    #include <errno.h>
 #endif
 
 static uint8_t* test_buffer = NULL;
@@ -191,7 +192,12 @@ static void set_process_priority(void)
     SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS);
     SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST);
 #else
-    setpriority(PRIO_PROCESS, 0, -20);
+    errno = 0;
+    if (setpriority(PRIO_PROCESS, 0, -20) != 0 && errno != 0) {
+        std::cerr << "[Perf Warning] setpriority(-20) failed (errno=" << errno
+                  << "); results may be noisy. Run as root or with CAP_SYS_NICE."
+                  << std::endl;
+    }
 #endif
 }
 
@@ -202,10 +208,18 @@ static void set_cpu_affinity(void)
     SetProcessAffinityMask(GetCurrentProcess(), mask);
     SetThreadAffinityMask(GetCurrentThread(), mask);
 #else
+    // Avoid CPU 0: on Linux it usually handles the most interrupts and is the
+    // noisiest core. Pin to the last online CPU instead.
+    long ncpu = sysconf(_SC_NPROCESSORS_ONLN);
+    int target = (ncpu > 1) ? (int)(ncpu - 1) : 0;
     cpu_set_t cpuset;
     CPU_ZERO(&cpuset);
-    CPU_SET(0, &cpuset);
-    sched_setaffinity(0, sizeof(cpuset), &cpuset);
+    CPU_SET(target, &cpuset);
+    if (sched_setaffinity(0, sizeof(cpuset), &cpuset) != 0) {
+        std::cerr << "[Perf Warning] sched_setaffinity(cpu=" << target
+                  << ") failed (errno=" << errno
+                  << "); results may be noisy due to core migration." << std::endl;
+    }
 #endif
 }
 

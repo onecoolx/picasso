@@ -238,7 +238,9 @@ protected:
         );
 
         BenchmarkResult result;
-        result.avg_ms = std::accumulate(times.begin(), times.end(), 0.0) / times.size();
+        // Use trimmed data for avg as well, to keep the same statistical basis
+        // as std_dev/min/max/mid which are all computed on filtered_times.
+        result.avg_ms = std::accumulate(filtered_times.begin(), filtered_times.end(), 0.0) / filtered_times.size();
         result.min_ms = filtered_times.front();
         result.max_ms = filtered_times.back();
         result.iterations = run_count;
@@ -335,7 +337,9 @@ protected:
                       << ", total: " << (result.total_time_ms / 1000.0) << "s)" << std::endl;
         } else {
             const auto& baseline = baseline_data[key];
-            double diff_percent = ((result.mid_ms - baseline.mid_ms) / baseline.mid_ms) * 100.0;
+            // Use the trimmed mean (avg_ms) consistently for diff, direction and
+            // the t-test below, so the whole decision path shares one statistic.
+            double diff_percent = ((result.avg_ms - baseline.avg_ms) / baseline.avg_ms) * 100.0;
 
             // Statistical comparison
             double t_stat, p_value;
@@ -348,23 +352,23 @@ protected:
                 // No statistically significant difference
                 std::cout << "[No Significant Change] " << test_name << ": "
                           << std::setprecision(6)
-                          << "median: " << result.mid_ms << " ms "
-                          << "(baseline: " << baseline.mid_ms << " ms, "
+                          << "avg: " << result.avg_ms << " ms "
+                          << "(baseline: " << baseline.avg_ms << " ms, "
                           << "diff: " << diff_percent << "%, "
                           << "p=" << p_value << ", not significant)" << std::endl;
             } else if (!exceeds_threshold) {
                 // Statistically significant but below threshold - acceptable
                 std::cout << "[Acceptable Change] " << test_name << ": "
                           << std::setprecision(6)
-                          << "median: " << result.mid_ms << " ms "
-                          << "(baseline: " << baseline.mid_ms << " ms, "
+                          << "avg: " << result.avg_ms << " ms "
+                          << "(baseline: " << baseline.avg_ms << " ms, "
                           << "diff: " << diff_percent << "%, "
                           << "below " << PERF_REGRESSION_THRESHOLD << "% threshold)" << std::endl;
-            } else if (result.mid_ms < baseline.mid_ms) {
+            } else if (result.avg_ms < baseline.avg_ms) {
                 // Statistically significant improvement above threshold
                 std::cout << "[Performance Improve " << std::abs(diff_percent) << "%] " << test_name << ": "
-                          << std::setprecision(6) << "median: " << result.mid_ms << " ms "
-                          << "(baseline: " << baseline.mid_ms << " ms, "
+                          << std::setprecision(6) << "avg: " << result.avg_ms << " ms "
+                          << "(baseline: " << baseline.avg_ms << " ms, "
                           << "t=" << t_stat << ", p=" << p_value << ")" << std::endl;
             } else {
                 // Statistically significant regression above threshold - FAIL
