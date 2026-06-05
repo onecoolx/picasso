@@ -1,102 +1,102 @@
 {
-    "PatternCreateAllWrapModes": {
-        "mid_ms": 0.53874599,
-        "avg_ms": 0.53796851,
-        "min_ms": 0.52856799,
-        "max_ms": 0.54210199,
-        "std_dev": 0.00573849,
-        "cv": 0.01066696,
-        "iterations": 490,
-        "total_time_ms": 5430.129704
-    },
-    "PatternCreateDestroy": {
-        "mid_ms": 0.27246899,
-        "avg_ms": 0.2757414,
-        "min_ms": 0.27149699,
-        "max_ms": 0.28323899,
-        "std_dev": 0.00419193,
-        "cv": 0.0152024,
-        "iterations": 500,
-        "total_time_ms": 5313.92108499
-    },
-    "PatternCreateWithTransform": {
-        "mid_ms": 0.130388,
-        "avg_ms": 0.13172476,
-        "min_ms": 0.130083,
-        "max_ms": 0.134571,
-        "std_dev": 0.00131044,
-        "cv": 0.00994837,
-        "iterations": 500,
-        "total_time_ms": 5212.61933299
-    },
-    "PatternDifferentImageFormats": {
-        "mid_ms": 2.177466,
-        "avg_ms": 2.18449834,
-        "min_ms": 2.17520199,
-        "max_ms": 2.196292,
-        "std_dev": 0.00699403,
-        "cv": 0.00320166,
-        "iterations": 273,
-        "total_time_ms": 3542.38060799
-    },
-    "PatternDifferentImageSources": {
-        "mid_ms": 0.266533,
-        "avg_ms": 0.27032563,
-        "min_ms": 0.26611699,
-        "max_ms": 0.277318,
-        "std_dev": 0.00445014,
-        "cv": 0.01646214,
-        "iterations": 500,
-        "total_time_ms": 5346.4422
-    },
-    "PatternErrorHandling": {
-        "mid_ms": 0.194483,
-        "avg_ms": 0.1972723,
-        "min_ms": 0.194433,
-        "max_ms": 0.20498199,
-        "std_dev": 0.00339318,
-        "cv": 0.01720052,
-        "iterations": 500,
-        "total_time_ms": 5349.336748
-    },
-    "PatternLargeImages": {
-        "mid_ms": 0.02728,
-        "avg_ms": 0.02778628,
-        "min_ms": 0.027141,
-        "max_ms": 0.028192,
-        "std_dev": 0.00046184,
-        "cv": 0.01662119,
-        "iterations": 500,
-        "total_time_ms": 5192.482853
-    },
-    "PatternReferenceOperations": {
-        "mid_ms": 0.87379199,
-        "avg_ms": 0.87407819,
-        "min_ms": 0.86432399,
-        "max_ms": 0.877299,
-        "std_dev": 0.00224874,
-        "cv": 0.00257269,
-        "iterations": 421,
-        "total_time_ms": 4766.159408
-    },
-    "PatternStressTest": {
-        "mid_ms": 0.97743099,
-        "avg_ms": 0.98206507,
-        "min_ms": 0.97330799,
-        "max_ms": 0.99834399,
-        "std_dev": 0.00778331,
-        "cv": 0.00792545,
-        "iterations": 406,
-        "total_time_ms": 4662.62335999
-    },
-    "PatternTransformOperations": {
-        "mid_ms": 0.7198435,
-        "avg_ms": 0.72046212,
-        "min_ms": 0.710096,
-        "max_ms": 0.72383999,
-        "std_dev": 0.00493209,
-        "cv": 0.00684573,
-        "iterations": 446,
-        "total_time_ms": 5110.486261
-    }
+	"PatternCreateAllWrapModes":	{
+		"mid_ms":	0.586437,
+		"avg_ms":	0.58272399,
+		"min_ms":	0.57459399,
+		"max_ms":	0.59076799,
+		"std_dev":	0.00586731,
+		"cv":	0.01006877,
+		"iterations":	490,
+		"total_time_ms":	3692.923332
+	},
+	"PatternCreateDestroy":	{
+		"mid_ms":	0.298118,
+		"avg_ms":	0.30105696,
+		"min_ms":	0.296576,
+		"max_ms":	0.31114799,
+		"std_dev":	0.00527315,
+		"cv":	0.01751548,
+		"iterations":	500,
+		"total_time_ms":	3626.68725199
+	},
+	"PatternCreateWithTransform":	{
+		"mid_ms":	0.1427495,
+		"avg_ms":	0.14340687,
+		"min_ms":	0.14194399,
+		"max_ms":	0.154623,
+		"std_dev":	0.00273424,
+		"cv":	0.01906631,
+		"iterations":	500,
+		"total_time_ms":	3536.14285599
+	},
+	"PatternDifferentImageFormats":	{
+		"mid_ms":	2.55741399,
+		"avg_ms":	2.55515615,
+		"min_ms":	2.50159099,
+		"max_ms":	2.599327,
+		"std_dev":	0.0266835,
+		"cv":	0.01044296,
+		"iterations":	273,
+		"total_time_ms":	2671.407428
+	},
+	"PatternDifferentImageSources":	{
+		"mid_ms":	0.29038649,
+		"avg_ms":	0.29317143,
+		"min_ms":	0.289244,
+		"max_ms":	0.302855,
+		"std_dev":	0.0050748,
+		"cv":	0.01731003,
+		"iterations":	500,
+		"total_time_ms":	3632.902369
+	},
+	"PatternErrorHandling":	{
+		"mid_ms":	0.196125,
+		"avg_ms":	0.19871573,
+		"min_ms":	0.195675,
+		"max_ms":	0.20853399,
+		"std_dev":	0.00420818,
+		"cv":	0.02117698,
+		"iterations":	500,
+		"total_time_ms":	3570.698561
+	},
+	"PatternLargeImages":	{
+		"mid_ms":	0.03090599,
+		"avg_ms":	0.03075365,
+		"min_ms":	0.029885,
+		"max_ms":	0.031348,
+		"std_dev":	0.00044305,
+		"cv":	0.01440673,
+		"iterations":	500,
+		"total_time_ms":	3484.232665
+	},
+	"PatternReferenceOperations":	{
+		"mid_ms":	0.98786499,
+		"avg_ms":	0.98829339,
+		"min_ms":	0.98644299,
+		"max_ms":	0.992482,
+		"std_dev":	0.0014291,
+		"cv":	0.00144603,
+		"iterations":	421,
+		"total_time_ms":	3362.95049299
+	},
+	"PatternStressTest":	{
+		"mid_ms":	1.07874648,
+		"avg_ms":	1.07713328,
+		"min_ms":	1.06642299,
+		"max_ms":	1.09045898,
+		"std_dev":	0.00799019,
+		"cv":	0.00741804,
+		"iterations":	406,
+		"total_time_ms":	3349.46950599
+	},
+	"PatternTransformOperations":	{
+		"mid_ms":	0.813493,
+		"avg_ms":	0.81246746,
+		"min_ms":	0.80193499,
+		"max_ms":	0.81797999,
+		"std_dev":	0.00402872,
+		"cv":	0.00495863,
+		"iterations":	446,
+		"total_time_ms":	3482.266011
+	}
 }
