@@ -17,6 +17,7 @@ GdkPixbuf * pixb;
 
 static ps_context *context;
 static ps_canvas *canvas;
+static guint timer_id = 0;
 
 gboolean expose (GtkWidget *widget, GdkEventExpose *event)
 {
@@ -32,6 +33,10 @@ gboolean expose (GtkWidget *widget, GdkEventExpose *event)
 
 void destroy(GtkWidget *widget, gpointer data)
 {
+    if (timer_id > 0) {
+        g_source_remove(timer_id);
+        timer_id = 0;
+    }
     dini_context(context);
     ps_context_unref(context);
     ps_canvas_unref(canvas);
@@ -110,7 +115,7 @@ int main(int argc, char* argv[])
 
     g_signal_connect (G_OBJECT(drawarea), "expose_event", G_CALLBACK (expose), NULL);
 
-    g_timeout_add(10, time_func, GTK_WIDGET(drawarea));
+    timer_id = g_timeout_add(10, time_func, GTK_WIDGET(drawarea));
 
     gtk_container_add (GTK_CONTAINER (window), drawarea);
 
