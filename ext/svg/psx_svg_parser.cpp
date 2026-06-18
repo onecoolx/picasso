@@ -1707,7 +1707,7 @@ static INLINE void _parse_animation_value(psx_svg_node* node, psx_svg_attr* attr
             attr->value.fval = (float)LINE_JOIN_BEVEL;
             return;
         }
-        // round: shared by linecap and linejoin — context determines meaning
+        // round: shared by linecap and linejoin - context determines meaning
         if (vlen == 5 && strncmp(val_start, "round", 5) == 0) {
             // LINE_CAP_ROUND == 1, LINE_JOIN_ROUND == 3; peek at attributeName to decide.
             int32_t target_attr = SVG_ATTR_INVALID;
@@ -1745,7 +1745,7 @@ static INLINE void _parse_animation_value(psx_svg_node* node, psx_svg_attr* attr
             attr->value.fval = 1.0f;
             return;
         }
-        // "normal": context-aware — font-weight maps to FONT_WEIGHT_REGULAR, font-style maps to 0
+        // "normal": context-aware - font-weight maps to FONT_WEIGHT_REGULAR, font-style maps to 0
         if (vlen == 6 && strncmp(val_start, "normal", 6) == 0) {
             int32_t target_attr = SVG_ATTR_INVALID;
             uint32_t na = node->attr_count();
@@ -2064,7 +2064,7 @@ static void _animation_begin_end_cb(psx_svg_node* node, psx_svg_attr* attr, cons
         tl->offsets_ms[tl->offsets_len++] = ms;
     } else if (!tl->event_token) {
         uint32_t len = BUF_LEN(ts, te);
-        /* begin="indefinite" → store sentinel so trigger() can match it */
+        /* begin="indefinite" -> store sentinel so trigger() can match it */
         if (len == 10 && strncmp(ts, "indefinite", 10) == 0) {
             const char* sentinel = "__indefinite__";
             uint32_t slen = 14; /* strlen("__indefinite__") */
@@ -2076,7 +2076,7 @@ static void _animation_begin_end_cb(psx_svg_node* node, psx_svg_attr* attr, cons
             s[slen] = 0;
             tl->event_token = s;
         } else if (len >= 12 && strncmp(ts, "accessKey(", 10) == 0) {
-            /* accessKey(x) → extract single char, store sentinel event token */
+            /* accessKey(x) -> extract single char, store sentinel event token */
             char key_char = ts[10];
             if (key_char && ts[11] == ')') {
                 tl->access_key = key_char;
@@ -2161,7 +2161,7 @@ static void _animation_begin_end_cb(psx_svg_node* node, psx_svg_attr* attr, cons
                     return; /* syncbase handled, don't fall through to event handling */
                 }
 
-                /* Not syncbase — original id.event handling */
+                /* Not syncbase - original id.event handling */
                 char* tid = (char*)mem_malloc(id_len + 1);
                 if (!tid) {
                     return;
