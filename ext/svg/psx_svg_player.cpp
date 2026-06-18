@@ -44,7 +44,7 @@ static INLINE void _anim_state_reset(psx_svg_anim_state* s)
     psx_array_clear(&s->overrides);
     psx_array_clear(&s->transforms);
     psx_array_clear(&s->motion_transforms);
-    /* Keep dash buffers alive for reuse — just reset size, not free. */
+    /* Keep dash buffers alive for reuse - just reset size, not free. */
     s->dash_overrides.size = 0;
     psx_array_clear(&s->color_overrides);
     s->active_target_count = 0;
@@ -246,7 +246,7 @@ static INLINE const psx_svg_anim_transform_item* _anim_state_find_motion_transfo
     return NULL;
 }
 
-/* ── SBO (Small Buffer Optimization) for float lists ── */
+/* -- SBO (Small Buffer Optimization) for float lists -- */
 
 static INLINE int32_t _float_cmp_asc_fn(const void* a, const void* b)
 {
@@ -359,7 +359,7 @@ static INLINE void _sbo_sort_dedup(_sbo_float_list* l)
     l->count = w;
 }
 
-/* ── End / Begin list helpers (SBO-backed) ── */
+/* -- End / Begin list helpers (SBO-backed) -- */
 
 static INLINE void _anim_item_end_list_init(psx_svg_anim_item* it)
 {
@@ -484,7 +484,7 @@ static int32_t _anim_color_override_cmp(const void* a, const void* b)
 
 #define INSERTION_SORT_THRESHOLD 16
 
-/* ── Transform array sort (by target pointer) ── */
+/* -- Transform array sort (by target pointer) -- */
 
 static int32_t _anim_transform_cmp(const void* a, const void* b)
 {
@@ -570,7 +570,7 @@ static INLINE void _anim_state_sort_overrides(psx_svg_anim_state* s)
                     items[w] = items[r];
                 }
             } else {
-                /* same key — overwrite w with r (last-writer-wins) */
+                /* same key - overwrite w with r (last-writer-wins) */
                 items[w] = items[r];
             }
         }
@@ -622,7 +622,7 @@ static INLINE void _anim_state_sort_color_overrides(psx_svg_anim_state* s)
                     items[w] = items[r];
                 }
             } else {
-                /* same key — overwrite w with r (last-writer-wins) */
+                /* same key - overwrite w with r (last-writer-wins) */
                 items[w] = items[r];
             }
         }
@@ -1110,7 +1110,7 @@ static INLINE bool _anim_is_active(const psx_svg_anim_item* it, float doc_t, uin
     }
 
     if (has_total && local >= total) {
-        /* Past active duration — not active for callback purposes. */
+        /* Past active duration - not active for callback purposes. */
         if (out_iteration) { *out_iteration = 0; }
         return false;
     }
@@ -1198,7 +1198,7 @@ static INLINE bool _anim_resolve_local_t(const psx_svg_anim_item* it, float doc_
     }
     raw_total = total;
 
-    // Apply min/max active duration constraints (SVG Tiny 1.2 §16.3.3).
+    // Apply min/max active duration constraints (SVG Tiny 1.2 SS16.3.3).
     // min > max => both ignored.
     if (has_total) {
         float min_s = it->min_sec;
@@ -1323,7 +1323,7 @@ static INLINE uint32_t _anim_lerp_color(uint32_t c0, uint32_t c1, float t)
     return ((uint32_t)ri << 16) | ((uint32_t)gi << 8) | (uint32_t)bi;
 }
 
-/* ── stroke-dasharray animation helpers ── */
+/* -- stroke-dasharray animation helpers -- */
 
 static INLINE void _anim_state_set_dash(psx_svg_anim_state* s, const psx_svg_node* target,
                                         const float* dashes, uint32_t count)
@@ -1349,7 +1349,7 @@ static INLINE void _anim_state_set_dash(psx_svg_anim_state* s, const psx_svg_nod
         }
     }
 
-    /* Append new entry — try to reuse ghost entry's dashes buffer. */
+    /* Append new entry - try to reuse ghost entry's dashes buffer. */
     {
         uint32_t idx = s->dash_overrides.size;
         psx_array_append(&s->dash_overrides, NULL);
@@ -1363,7 +1363,7 @@ static INLINE void _anim_state_set_dash(psx_svg_anim_state* s, const psx_svg_nod
         dst->count = count;
 
         if (idx < s->dash_high_water && old_dashes) {
-            /* Ghost entry exists with a buffer — check if reusable. */
+            /* Ghost entry exists with a buffer - check if reusable. */
             if (old_count == count) {
                 /* Same size: reuse buffer, just overwrite values. */
                 dst->dashes = old_dashes;
@@ -1373,7 +1373,7 @@ static INLINE void _anim_state_set_dash(psx_svg_anim_state* s, const psx_svg_nod
                 dst->dashes = (float*)mem_malloc(count * sizeof(float));
             }
         } else {
-            /* No ghost or ghost had NULL dashes — allocate fresh. */
+            /* No ghost or ghost had NULL dashes - allocate fresh. */
             dst->dashes = (float*)mem_malloc(count * sizeof(float));
         }
 
@@ -1400,7 +1400,7 @@ static INLINE uint32_t _attr_as_float_array(const psx_svg_attr* a, const float**
         *out_data = (const float*)&list->data[0];
         return list->length;
     }
-    /* Single fval — caller must use address of fval field. */
+    /* Single fval - caller must use address of fval field. */
     *out_data = &a->value.fval;
     return 1;
 }
@@ -3137,7 +3137,7 @@ static bool _motion_path_parse(const char* path_str, uint32_t len,
             cmd = ch;
             pos++;
         } else if (ch == 'Z' || ch == 'z') {
-            /* closePath — add line segment back to most recent M point */
+            /* closePath - add line segment back to most recent M point */
             pos++;
             if (cur_x != start_x || cur_y != start_y) {
                 if (!_motion_path_push(out, start_x, start_y)) {
@@ -3152,7 +3152,7 @@ static bool _motion_path_parse(const char* path_str, uint32_t len,
             cmd = 0;
             continue;
         } else if ((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z')) {
-            /* Unrecognized command — skip it and continue */
+            /* Unrecognized command - skip it and continue */
             cmd = 0;
             pos++;
             continue;
@@ -3160,12 +3160,12 @@ static bool _motion_path_parse(const char* path_str, uint32_t len,
         /* else: implicit repeat of previous command (number follows directly) */
 
         if (cmd == 0) {
-            /* No active command and not a number start — skip */
+            /* No active command and not a number start - skip */
             if (!((ch >= '0' && ch <= '9') || ch == '-' || ch == '+' || ch == '.')) {
                 pos++;
                 continue;
             }
-            /* Stray number with no command context — skip it */
+            /* Stray number with no command context - skip it */
             {
                 float dummy = 0.0f;
                 uint32_t npos = _motion_path_parse_float(path_str, pos, len, &dummy);
@@ -3178,7 +3178,7 @@ static bool _motion_path_parse(const char* path_str, uint32_t len,
             continue;
         }
 
-        /* H/h: horizontal lineTo — parse one float (x), keep current y */
+        /* H/h: horizontal lineTo - parse one float (x), keep current y */
         if (cmd == 'H' || cmd == 'h') {
             pos = _motion_path_skip_ws(path_str, pos, len);
             float x = 0.0f;
@@ -3203,7 +3203,7 @@ static bool _motion_path_parse(const char* path_str, uint32_t len,
             continue;
         }
 
-        /* V/v: vertical lineTo — parse one float (y), keep current x */
+        /* V/v: vertical lineTo - parse one float (y), keep current x */
         if (cmd == 'V' || cmd == 'v') {
             pos = _motion_path_skip_ws(path_str, pos, len);
             float y = 0.0f;
@@ -3228,7 +3228,7 @@ static bool _motion_path_parse(const char* path_str, uint32_t len,
             continue;
         }
 
-        /* Q/q: quadratic Bezier — parse 4 floats (cx, cy, ex, ey) */
+        /* Q/q: quadratic Bezier - parse 4 floats (cx, cy, ex, ey) */
         if (cmd == 'Q' || cmd == 'q') {
             float cx = 0.0f, cy = 0.0f, ex = 0.0f, ey = 0.0f;
             pos = _motion_path_skip_ws(path_str, pos, len);
@@ -3271,7 +3271,7 @@ static bool _motion_path_parse(const char* path_str, uint32_t len,
             continue;
         }
 
-        /* T/t: smooth quadratic Bezier — parse 2 floats (ex, ey) */
+        /* T/t: smooth quadratic Bezier - parse 2 floats (ex, ey) */
         if (cmd == 'T' || cmd == 't') {
             float ex = 0.0f, ey = 0.0f;
             pos = _motion_path_skip_ws(path_str, pos, len);
@@ -3312,7 +3312,7 @@ static bool _motion_path_parse(const char* path_str, uint32_t len,
             continue;
         }
 
-        /* C/c: cubic Bezier — parse 6 floats (c1x, c1y, c2x, c2y, ex, ey) */
+        /* C/c: cubic Bezier - parse 6 floats (c1x, c1y, c2x, c2y, ex, ey) */
         if (cmd == 'C' || cmd == 'c') {
             float c1x = 0.0f, c1y = 0.0f, c2x = 0.0f, c2y = 0.0f, ex = 0.0f, ey = 0.0f;
             pos = _motion_path_skip_ws(path_str, pos, len);
@@ -3367,7 +3367,7 @@ static bool _motion_path_parse(const char* path_str, uint32_t len,
             continue;
         }
 
-        /* S/s: smooth cubic Bezier — parse 4 floats (c2x, c2y, ex, ey) */
+        /* S/s: smooth cubic Bezier - parse 4 floats (c2x, c2y, ex, ey) */
         if (cmd == 'S' || cmd == 's') {
             float c2x = 0.0f, c2y = 0.0f, ex = 0.0f, ey = 0.0f;
             pos = _motion_path_skip_ws(path_str, pos, len);
@@ -3420,7 +3420,7 @@ static bool _motion_path_parse(const char* path_str, uint32_t len,
             continue;
         }
 
-        /* A/a: elliptical arc — parse 7 params (rx, ry, rotation, large_arc, sweep, ex, ey) */
+        /* A/a: elliptical arc - parse 7 params (rx, ry, rotation, large_arc, sweep, ex, ey) */
         if (cmd == 'A' || cmd == 'a') {
             float arx = 0.0f, ary = 0.0f, xrot = 0.0f;
             float fla = 0.0f, fsw = 0.0f;
@@ -3486,7 +3486,7 @@ static bool _motion_path_parse(const char* path_str, uint32_t len,
         float y = 0.0f;
         uint32_t npos = _motion_path_parse_float(path_str, pos, len, &x);
         if (npos == pos) {
-            /* No number found — command has no more coordinates */
+            /* No number found - command has no more coordinates */
             cmd = 0;
             continue;
         }
@@ -3495,7 +3495,7 @@ static bool _motion_path_parse(const char* path_str, uint32_t len,
         pos = _motion_path_skip_ws(path_str, pos, len);
         npos = _motion_path_parse_float(path_str, pos, len, &y);
         if (npos == pos) {
-            /* Only one number — malformed, skip */
+            /* Only one number - malformed, skip */
             cmd = 0;
             continue;
         }
@@ -3629,7 +3629,7 @@ static void _motion_arc_position(const _motion_path_points* pts,
         return;
     }
 
-    /* Single point or zero total length → return first point */
+    /* Single point or zero total length -> return first point */
     if (pts->count == 1 || tbl->total_length <= 0.0f) {
         *out_x = pts->xy[0];
         *out_y = pts->xy[1];
@@ -4109,7 +4109,7 @@ static void _collect_anims(psx_svg_player* p, const psx_svg_node* node)
 
             /* Pre-compute max active end time for fast culling */
             {
-                /* If event-based begin, we can't predict — use safe fallback */
+                /* If event-based begin, we can't predict - use safe fallback */
                 if (item.begin_event || item.syncbase_ref_id) {
                     item.max_active_end_sec = 1e30f;
                 } else {
@@ -4160,7 +4160,7 @@ static void _collect_anims(psx_svg_player* p, const psx_svg_node* node)
 }
 
 /*
- * Syncbase dependency resolution — uses sorted ID lookup table
+ * Syncbase dependency resolution - uses sorted ID lookup table
  * for O(log n) binary search instead of O(n) strcmp scan.
  */
 typedef struct {
@@ -4282,7 +4282,7 @@ static void _resolve_syncbase_deps(psx_svg_player* p)
                 continue;
             }
 
-            // Find the referenced animation by id — O(log n) binary search
+            // Find the referenced animation by id - O(log n) binary search
             const psx_svg_anim_item* ref = _find_anim_by_id(p, id_table, table_count, it->syncbase_ref_id);
 
             if (!ref) {
@@ -4293,12 +4293,12 @@ static void _resolve_syncbase_deps(psx_svg_player* p)
 
             // Check if ref itself has an unresolved syncbase dependency
             if (ref->syncbase_ref_id && !ref->syncbase_resolved && !ref->syncbase_circular) {
-                // Ref not yet resolved — try again in next pass
+                // Ref not yet resolved - try again in next pass
                 continue;
             }
 
             if (ref->syncbase_circular) {
-                // Ref is circular — we are too
+                // Ref is circular - we are too
                 it->syncbase_circular = true;
                 continue;
             }
@@ -4333,7 +4333,7 @@ static void _resolve_syncbase_deps(psx_svg_player* p)
         }
 
         if (!any_resolved) {
-            break; // No progress — remaining are circular
+            break; // No progress - remaining are circular
         }
     }
 
@@ -4657,12 +4657,12 @@ static void _anim_fire_callbacks(psx_svg_player* p)
         const char* anim_id = it->anim_node ? it->anim_node->content(NULL) : NULL;
 
         if (active && !it->was_active) {
-            /* Transition inactive → active: fire BEGIN. */
+            /* Transition inactive -> active: fire BEGIN. */
             p->cb(PSX_SVG_ANIM_EVENT_BEGIN, anim_id, p->cb_user);
         }
 
         if (!active && it->was_active) {
-            /* Transition active → inactive: fire END. */
+            /* Transition active -> inactive: fire END. */
             p->cb(PSX_SVG_ANIM_EVENT_END, anim_id, p->cb_user);
         }
 
@@ -4786,19 +4786,19 @@ static void _apply_animations_at_time(psx_svg_player* p)
 
         if (!(it->tag == SVG_TAG_ANIMATE || it->tag == SVG_TAG_SET || it->tag == SVG_TAG_ANIMATE_COLOR
               || it->tag == SVG_TAG_ANIMATE_TRANSFORM || it->tag == SVG_TAG_ANIMATE_MOTION)) {
-            /* Unsupported tag — not evaluated. */
+            /* Unsupported tag - not evaluated. */
             it->eval_active = false;
             it->eval_iteration = 0;
             continue;
         }
         if (!_is_supported_anim_attr(it->target_attr)) {
-            /* Unsupported attr — not evaluated. */
+            /* Unsupported attr - not evaluated. */
             it->eval_active = false;
             it->eval_iteration = 0;
             continue;
         }
 
-        /* Fast cull — skip animations past their active window (fill=remove only) */
+        /* Fast cull - skip animations past their active window (fill=remove only) */
         if (it->fill_mode != SVG_ANIMATION_FREEZE && p->time_sec > it->max_active_end_sec) {
             it->eval_active = false;
             it->eval_iteration = 0;
@@ -5015,7 +5015,7 @@ void PICAPI psx_svg_player_trigger(psx_svg_player* p, const char* target_id, con
             }
         } else if (filter_id) {
             // Backward compatible: no id prefix in begin token, but caller
-            // supplied a target_id — match against target/anim node ids.
+            // supplied a target_id - match against target/anim node ids.
             const char* tid = it->target_node ? it->target_node->content(NULL) : NULL;
             const char* aid = it->anim_node ? it->anim_node->content(NULL) : NULL;
             if ((!tid || strcmp(tid, filter_id) != 0) && (!aid || strcmp(aid, filter_id) != 0)) {
@@ -5044,7 +5044,7 @@ void PICAPI psx_svg_player_trigger(psx_svg_player* p, const char* target_id, con
         any = true;
     }
 
-    // Pass 2: match end events — only if animation is currently active.
+    // Pass 2: match end events - only if animation is currently active.
     for (uint32_t i = 0; i < n; i++) {
         psx_svg_anim_item* it = psx_array_get(&p->anims, i, psx_svg_anim_item);
         if (!it || !it->end_event) {
