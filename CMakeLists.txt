@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16.0)
 
-project(picasso LANGUAGES C CXX ASM HOMEPAGE_URL https://onecoolx.github.io/picasso/)
+project(picasso LANGUAGES C CXX HOMEPAGE_URL https://onecoolx.github.io/picasso/)
 
 set(PROJECT_ROOT ${CMAKE_CURRENT_LIST_DIR})
 set(PROJECT_OUT ${CMAKE_CURRENT_BINARY_DIR})
