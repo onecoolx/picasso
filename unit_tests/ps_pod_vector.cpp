@@ -26,7 +26,7 @@
 
 #include "test.h"
 #define _DEBUG 1
-#include "src/include/data_vector.h"
+#include "src/common/data_vector.h"
 
 using namespace picasso;
 

@@ -6,7 +6,7 @@
 file(GLOB_RECURSE SOURCES ${PROJECT_ROOT}/src/*.cpp)
 
 include_directories(${PROJECT_ROOT}/include
-                    ${PROJECT_ROOT}/src/include
+                    ${PROJECT_ROOT}/src/common
                     ${PROJECT_ROOT}/src
                     ${PROJECT_ROOT}/src/font
                     ${PROJECT_ROOT}/src/gfx
